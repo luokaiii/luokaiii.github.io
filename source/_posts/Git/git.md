@@ -2,8 +2,10 @@
 title: Git多账户配置
 date: 2018-09-28 16:51:15
 tags: 
-  - Testing
-  - Another Tag
+  - Git
+  - Git Bash
+categories:
+  - Git命令学习
 ---
 # 同时使用多个Git源（Github,Gitee,Gitlab等）
 
