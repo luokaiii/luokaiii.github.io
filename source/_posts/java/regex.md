@@ -1,25 +1,16 @@
-<br/>
-<p align="center">
-<img src="https://i.imgur.com/bYwl7Vf.png" alt="Learn Regex">
-</p><br/>
+---
+title: 正则表达式
+date: 2018-09-29 17:38:03
+tags:
+ - java
+categories: 
+ - Java成神之路
+---
+# 正则表达式
 
-## 翻译:
-
-* [English](README.md)
-* [Español](README-es.md)
-* [Français](README-fr.md)
-* [中文版](README-cn.md)
-* [日本語](README-ja.md)
-* [한국어](README-ko.md)
-* [Turkish](README-tr.md)
-* [Greek](README-gr.md)
-* [Magyar](README-hu.md)
-* [Polish](README-pl.md)
-
-## 什么是正则表达式?
+## 什么是正则表达式
 
 > 正则表达式是一组由字母和符号组成的特殊文本, 它可以用来从文本中找出满足你想要的格式的句子.
-
 
 一个正则表达式是在一个主体字符串中从左到右匹配字符串时的一种样式.
 "Regular expression"这个词比较拗口, 我们常使用缩写的术语"regex"或"regexp".
@@ -27,11 +18,6 @@
 
 想象你正在写一个应用, 然后你想设定一个用户命名的规则, 让用户名包含字符,数字,下划线和连字符,以及限制字符的个数,好让名字看起来没那么丑.
 我们使用以下正则表达式来验证一个用户名:
-
-<br/><br/>
-<p align="center">
-  <img src="./img/regexp-cn.png" alt="Regular expression">
-</p>
 
 以上的正则表达式可以接受 `john_doe`, `jo-hn_doe`, `john12_as`.
 但不匹配`Jo`, 因为它包含了大写的字母而且太短了.

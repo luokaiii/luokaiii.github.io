@@ -1,13 +1,24 @@
+---
+title: 基于阿里云OSS的文件上传服务
+date: 2018-09-30 14:46:03
+tags:
+ - java
+ - SpringBoot
+categories: 
+ - Java成神之路
+ - SpringBoot
+---
 # 基于阿里云OSS的文件上传服务
 
 ## 1.阿里云 OSS 服务介绍
+
     OSS(Object Storage Service) 即对象存储服务，在 OSS 中每个文件都有一个 Key，通过这个 Key 来指向不同的文件对象。      
 
     如果你提交的key为"/attachment/2016/123.txt"，那么在web管理平台上你可以看到上述以"/"分开的文件夹形式，即 OSS 中的 Key 就是"/attachement/2016/123.txt"
 
 ## 2.Java SDK
 
->   aliyun-sdk-oss
+> aliyun-sdk-oss
 
 ## 3.如何使用 OSS
 

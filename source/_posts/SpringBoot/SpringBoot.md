@@ -1,114 +1,190 @@
-﻿1.@RestController==》将controller方法都以json格式输出
-2.@SpringBootApplication   是SpringBoot的核心注解，目的是开启自动配置。
-	关闭自动配置：@SpringBootApplication(exclude={DataSourceAutoConfiguration.class})
-	运行原理：相当于是以下注解的集合：
-		@Target(Element.TYPE)
-		@Retention(RetentionPolicy.RUNTIME)
-		@Documentd
-		@Inherited
-		@Import({EnableAutoConfigurationImportSelector.class,AutoConfigurationPackages.Register.class})
-3.Thymeleaf模板引擎(同Freemarker)
-	1.通过xmlns:th=http://www.thymeleaf.org 命名空间，转换位动态视图；
-	2.使用“@{}” 方式引用web静态资源
-	3.通过“${}”访问model中的属性，如：<span th:text="${singlePerson.name}"></span>
-		注：需要处理的动态内容需要加上“th：”前缀
-	4.迭代：使用“th：each”，如：th:each="person:${person}"  其中person作为迭代元素使用
-	5.数据判断： th:if="${not #lists.isEmpty(people)}"
-	6.js中访问model  <script th:inline="javascript"> var singlePerson=[[${singlePerson}]]
-		1.使用th:inline="javascript" 使js能够访问model
-		2.通过[[${}]]获取实际的值
-4.注册Servlet、Filter、Listener
-	Servlet:ServletRegistrationBean
-		@Bean
-		public ServletRegistrationBean serbletRegistrationBean(){
-			return new ServletRegistrationBean(new XXServlet(),"/xx/*");//直接注册servlet及其请求路径
-		}
-	Filter:FilterRegisterationBean
-		@Bean
-		public FilterRegisterationBean filterRegisterationBean(){
-			FilterRegisterationBean filterRegisterationBean = new FilterRegisterationBean();
-			filterRegisterationBean.setFilter(new YYFilter());//设置过滤器
-			filterRegisterationBean.setOrder(2);//执行顺序
-			filterRegisterationBean.setName("MyFilter");//设置名称
-			filterRegisterationBean.setUrlPatterns("/*");//设置过滤路径
-			return filterRegisterationBean;
-		}
-	Listener:ServletListenerRegisterationBean
-		@Bean
-		public ServletListenerRegisterationBean<ZZListener> servletListenerRegisterationBean(){
-			return new ServletListenerRegisterationBean<ZZListener>(new ZZListener);
-		}
-5.修改tomcat、jetty、undertow
-	直接在pom文件中，修改依赖
-	<dependency>
-		<groupId>org.springframework.boot</groupId>
-		<artifactId>spring-boot-starter-web</artifactId>
-			<exclusions>
-				<exclusion>
-					<groupId>org.springframework.boot</groupId>
-					<artifactId>spring-boot-starter-tomcat</artifactId> //将web对应的服务器修改为其它
-				</exclusion>
-			</exclusions>
-		<version>1.5.9.RELEASE</version>
-	</dependency>
-	<dependency>
-		<groupId>org.springframework.boot</groupId>
-		<artifactId>spring-boot-starter-tomcat</artifactId>
-		<version>1.5.9.RELEASE</version>
-	</dependency>
-6.WebSocket
-	1.websocket的配置
-		1.使用@Configuration及@EnableWebSocketMessageBroker  来开启WebSocket支持
-		2.继承AbstratWebSocketMessageBrokerConfigurer类
-			重写registerStomEndpoint(StomEndpointRegister)与configureMessageBroker(essageBrokerRegistry)方法
-			Sregistry.addEndpoint("/endpointWisely").withSockJS();  即通过endpointWisely连接SockJs
-			Mregistry.enableSimpleBroker("/topic");  配置一个topic消息代理
-	2.wscontroller
-		@MessageMapping("/welcome") 同RequestMapping,映射地址
-		@SendTo("/topic/getResponse") 当服务端有消息时，会对订阅了"/topic/getResponse"的客户端发送消息
-		public WiselyResponse say(WiselyMessage message) throws Exception{
-			return new WiselyResponse("Welcome " +message.getName()+" ! ");  返回发送的消息
-		}
-	3.ws.html
-		1.连接并订阅
-			var socket = new SockJS('/endpointWisely');  连接名称为“。。。”的endpoint
-			var stompClient = Stomp.over(socket);     使用stomp子协议
-			stompClient.connect({},function(name){
-				stompClient.subscribe('topic/getResponse',function(response){//订阅
-					show();//自定义的展示方法
-				})
-			})
-			stompClient.send("/welcome",{},JSON.stringify({'name':name}));//发送消息
-7.Spring Data JPA
-	1.使用@EnableJpaRepositories("com.wisely.repos")来开启Spring Data JPA支持
-		其中的value参数用来扫描数据访问层所在包下的数据访问的接口定义
-	2.定义查询方法
-		常规查询：find、read、readBy、query、queryBy、get、getBy
-		查询关键字：And(和)、Or(或)、Is = Equals(等)、Between(位于之间)、LessThan(小于)、LessThanEqual(小于等于)、GreaterThan(大于)
-			GreaterThanEqual(大于等于)、After(日期大于)、Before(日期之前)、IsNull、IsNotNull = NotNull
-			Like、Not Like、Starting With(前面加%)、EndingWith(后面加%)、Containing(前后都加%)、OrderBy(排序)
-			Not、In、NotIn、True、False、IgnoreCase
-		限制查询结果：
-			Top、First
-			eg:		findFirst10ByName();	findTop30();
-		@NamedQuery:一个名称映射一个查询语句
-			eg:	@NamedQuery(name = "Person.findByName",query = "select p from Person p where p.name=?1")
-				写在实体类名上
-		@Query查询
-			直接在@Query的value中书写sql语句，参数可以使用索引("?1")或者命名(":name")
-		更新查询：使用@Modifying 和 @Query 来组合更新查询
-	3.排序与分页
-		Sort排序对象： 	List<Person> findByName(String name,Sort sort);
-		Pageable对象：	List<Person> findByName(String name,Pageable pageable);
-		使用：	List<Person> persons = personRepository.findByName("xx",new Sort(Direction.ASC,"age"));
-				List<Person> persons = personRepository.findByName("xx",new Pageable(0,10));
-	4.repository默认的方法：
-		save()	保存；		
-		findAll()	查询所有；		
-		findAll(new Sort(Sort.Direction.ASC,"age"))		排序查询所有；
-		findAll(new PageRequest(0,10))		分页查询；
-		findAll(new PageRequest(1,2,new Sort(Sort.Direction.DESC,"age")))	分页排序
-8.SpringBoot的注解式事务  @Transactional
+﻿---
+title: SpringBoot QA
+date: 2018-09-30 14:46:03
+tags:
+ - java
+ - SpringBoot
+categories: 
+ - Java成神之路
+ - SpringBoot
+---
+# SpringBoot
+
+## 1. @RestController 和 @Controller
+
+```java
+@RestController : 将所有返回的结果以字符串形式返回
+@Controller ：返回结果由视图解析器返回视图
+```
+
+## 2. @SpringBootApplication
+
+> 是SpringBoot的核心注解，目的是开启自动配置。
+
+关闭自动配置：@SpringBootApplication(exclude={DataSourceAutoConfiguration.class})
+
+运行原理：相当于是以下注解的集合：
+
+```java
+@Target(Element.TYPE)
+@Retention(RetentionPolicy.RUNTIME)
+@Documentd
+@Inherited
+@Import({EnableAutoConfigurationImportSelector.class,AutoConfigurationPackages.Register.class})
+```
+
+## 3. Thymeleaf模板引擎(同Freemarker)
+
+1. 通过 `xmlns:th=http://www.thymeleaf.org` 命名空间，转换位动态视图；
+2. 使用 `“@{}”` 方式引用web静态资源
+3. 通过“${}”访问model中的属性，如：<span th:text="${singlePerson.name}"></span>
+注：需要处理的动态内容需要加上“th：”前缀
+4. 迭代：使用“th：each”，如：th:each="person:${person}"  其中person作为迭代元素使用
+5. 数据判断： `th:if="${not #lists.isEmpty(people)}"`
+6. js中访问model  
+
+```javascript
+<script th:inline="javascript"> 
+    var singlePerson=[[${singlePerson}]]
+<script>
+```
+> 使用 `th:inline="javascript"` 使js能够访问model  
+> 通过[[${}]]获取实际的值
+
+## 4. 注册Servlet、Filter、Listener
+
+Servlet:ServletRegistrationBean
+
+```java
+@Bean
+public ServletRegistrationBean serbletRegistrationBean(){
+	//直接注册servlet及其请求路径
+    return new ServletRegistrationBean(new XXServlet(),"/xx/*");
+}
+```
+
+Filter:FilterRegisterationBean
+
+```java
+@Bean
+public FilterRegisterationBean filterRegisterationBean(){
+    //设置过滤器
+    FilterRegisterationBean filterRegisterationBean = new filterRegisterationBean.setFilter(new YYFilter());
+    //执行顺序  
+    filterRegisterationBean.setOrder(2);
+    filterRegisterationBean.setName("MyFilter");//设置名称
+    filterRegisterationBean.setUrlPatterns("/*");//设置过滤路径
+    return filterRegisterationBean;
+}
+```
+
+Listener:ServletListenerRegisterationBean
+
+```java
+@Bean
+public ServletListenerRegisterationBean<ZZListener> servletListenerRegisterationBean(){
+    return new ServletListenerRegisterationBean<ZZListener>(new ZZListener);
+}
+```
+
+## 5.修改tomcat、jetty、undertow
+
+直接在pom文件中，修改依赖
+
+```java
+<dependency>
+  <groupId>org.springframework.boot</groupId>
+    <artifactId>spring-boot-starter-web</artifactId>
+     <exclusions>
+        <exclusion>
+          <groupId>org.springframework.boot</groupId>
+            <artifactId>spring-boot-starter-tomcat</artifactId> //将web对应的服务器修改为其它
+        </exclusion>
+      </exclusions>
+  <version>1.5.9.RELEASE</version>
+</dependency>
+
+<dependency>
+  <groupId>org.springframework.boot</groupId>
+  <artifactId>spring-boot-starter-tomcat</artifactId>
+  <version>1.5.9.RELEASE</version>
+</dependency>
+```
+
+## 6. WebSocket
+
+### 1. websocket的配置
+
+1. 使用@Configuration及@EnableWebSocketMessageBroker  来开启WebSocket支持
+2. 继承AbstratWebSocketMessageBrokerConfigurer类
+    1. 重写 `registerStomEndpoint(StomEndpointRegister)` 与 `configureMessageBroker(essageBrokerRegistry)` 方法
+    2. `Sregistry.addEndpoint("/endpointWisely").withSockJS()`;  即通过endpointWisely连接SockJs
+    3. Mregistry.enableSimpleBroker("/topic");  配置一个topic消息代理
+
+### 2. wscontroller
+
+@MessageMapping("/welcome") 同RequestMapping,映射地址
+
+@SendTo("/topic/getResponse") 当服务端有消息时，会对订阅了"/topic/getResponse"的客户端发送消息
+
+```java
+public WiselyResponse say(WiselyMessage message) throws Exception{
+    return new WiselyResponse("Welcome " +message.getName()+" ! ");  返回发送的消息
+}
+```
+
+### 3. ws.html
+
+```javascript
+//连接并订阅
+var socket = new SockJS('/endpointWisely');  //连接名称为“。。。”的endpoint
+var stompClient = Stomp.over(socket);     //使用stomp子协议
+    stompClient.connect({},function(name){
+        stompClient.subscribe('topic/getResponse',function(response){//订阅
+        show();//自定义的展示方法
+    })
+})
+stompClient.send("/welcome",{},JSON.stringify({'name':name}));//发送消息
+```
+
+## 7.Spring Data JPA
+
+### 1. @EnableJpaRepositories
+    使用@EnableJpaRepositories("com.wisely.repos")来开启Spring Data JPA支持 其中的value参数用来扫描数据访问层所在包下的数据访问的接口定义
+
+### 2. 定义查询方法
+
+> `常规查询` ：find、read、readBy、query、queryBy、get、getBy  
+> `查询关键字` ：And(和)、Or(或)、Is = Equals(等)、Between(位于之间)、LessThan(小于)、LessThanEqual(小于等于)  
+GreaterThan(大于)、GreaterThanEqual(大于等于)、After(日期大于)、Before(日期之前)  
+IsNull、IsNotNull = NotNull、Like、Not Like、Starting With(前面加%) 
+EndingWith(后面加%)、Containing(前后都加%)、OrderBy(排序)、Not、In  
+NotIn、True、False、IgnoreCase  
+> `限制查询结果` ：Top、First  
+> `@NamedQuery` : 一个名称映射一个查询语句
+	eg:	@NamedQuery(name = "Person.findByName",query = "select p from Person p where p.name=?1")
+		写在实体类名上
+@Query查询
+	直接在@Query的value中书写sql语句，参数可以使用索引("?1")或者命名(":name")
+更新查询：使用@Modifying 和 @Query 来组合更新查询
+
+### 3. 排序与分页
+
+	Sort排序对象： 	List<Person> findByName(String name,Sort sort);
+	Pageable对象：	List<Person> findByName(String name,Pageable pageable);
+	使用：	List<Person> persons = personRepository.findByName("xx",new Sort(Direction.ASC,"age"));
+			List<Person> persons = personRepository.findByName("xx",new Pageable(0,10));
+
+### 4. repository默认的方法：
+
+	save()	保存；		
+	findAll()	查询所有；		
+	findAll(new Sort(Sort.Direction.ASC,"age"))		排序查询所有；
+	findAll(new PageRequest(0,10))		分页查询；
+	findAll(new PageRequest(1,2,new Sort(Sort.Direction.DESC,"age")))	分页排序
+
+## 8.SpringBoot的注解式事务  @Transactional
+
 	属性：
 		1.propagation 定义事务的生命周期
 			REQUIRED 			如果没有事务则新建
@@ -127,18 +203,7 @@
 		4.readOnly	指当前事务是否是只读事务
 		5.rollbackFor	指定哪个异常会回滚
 		6.noRollBackFor	指定哪个异常不会回滚
-		
-		
-		
-		
-		
-		
-		
-		
-		
-		
-		
-		
+
 1.@GetMapping注解：相当于 @RequestMapping(Method=RequestMethod.GET)
 	该注解将HTTP GET映射到特定的方法上
 2.@RequestParam注解：将Request参数绑定到处理函数的参数中
