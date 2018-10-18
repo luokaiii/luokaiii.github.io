@@ -1,3 +1,11 @@
+---
+title: Git常见命令
+date: 2018-09-28 16:51:15
+tags: 
+  - Git
+categories:
+  - Git命令学习
+---
 ## 1. 初始化仓库
     git init
 ## 2. 添加文件至仓库
