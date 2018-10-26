@@ -1,7 +1,16 @@
+---
+title: SpringBoot实现定时任务
+date: 2018-10-20 16:51:15
+categories:
+  - 知识广度
+---
 # 定时任务
+
     SpringBoot 已经支持了定时任务Schedule 模块
 
 ## 1. 开启支持，在启动类上面加个注解：
+
+```java
     @SpringBootApplication
     @EnableScheduling
     public class Application{
@@ -9,16 +18,20 @@
             SpringApplication.run(Application.class,args);
         }
     }
+```
 
 ## 2. 定时的两种类型：
 
 ### a. 间隔执行
+
     @Scheduled(fixedRate = 5000) ： 表示 每隔 5000 毫秒执行一次
 
 ### b. 定时执行
+
     @Scheduled(cron = "0 30 11 ? * *")  : 表示 在指定时间执行
 
 ## 3. 参数解释
+
     * 第一位，表示秒，取值 0-59
     * 第二位，表示分，取值 0-59
     * 第三位，表示小时，取值 0-23
