@@ -1,5 +1,5 @@
 ---
-title: (一)JAVA8新特性-用法详解
+title: 学习之路(一)JAVA8新特性-用法详解
 date: 2018-10-26 18:06:03
 categories: 
  - Java成神之路
@@ -8,6 +8,11 @@ categories:
 # JAVA8新特性-用法详解
 
 本文从各个方面讲解 Java 8 的新特性，从源码解析到个性小案例都有。包含的技术点：[Predicate](##Predicate接口) [Function](##Function接口) [Supplier](##Supplier接口) [Comsumer](##Comsumer接口) [Comparator](##Comparator比较) [Optional](##Optional接口) [Stream](##Stream接口) [Filter](##Filter过滤) [Sort](##Sort排序) [数值型Stream](##数值型Stream) [Match匹配](##Match匹配) [Count计数](##Count计数) [Reduce归约](##Reduce归约)及[并行与串行Stream](##并行与串行)。
+
+![JAVA8新特性-用法详解
+](https://upload-images.jianshu.io/upload_images/13603359-1671eca11ae9f3b9.png?imageMogr2/auto-orient/strip%7CimageView2/2/w/1240)
+
+<!-- More -->
 
 ## Predicate接口
 
