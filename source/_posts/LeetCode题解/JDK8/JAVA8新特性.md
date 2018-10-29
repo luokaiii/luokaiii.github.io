@@ -7,6 +7,118 @@ categories:
 ---
 # JAVA8新特性-用法详解
 
+本文从各个方面讲解 Java 8 的新特性，从源码解析到个性小案例都有。包含的技术点：[Predicate](##Predicate接口) [Function](##Function接口) [Supplier](##Supplier接口) [Comsumer](##Comsumer接口) [Comparator](##Comparator比较) [Optional](##Optional接口) [Stream](##Stream接口) [Filter](##Filter过滤) [Sort](##Sort排序) [数值型Stream](##数值型Stream) [Match匹配](##Match匹配) [Count计数](##Count计数) [Reduce归约](##Reduce归约)及[并行与串行Stream](##并行与串行)。
+
+## Predicate接口
+
+Predicate 接口只能接收一个参数，且返回 boolean 类型。类似于 Assert 的自定义断言
+
+```java
+
+例子：
+    Predicate<String> predicate = new Predicate<String>() {
+        @Override
+        public boolean test(String s) {
+            return s.equals("张三");
+        }
+    };
+    Predicate<String> predicate = s -> s.equals("张三"); // 同第一个
+    Predicate<String> predicate2 = Objects:nonNull;
+    Predicate<String> predicate3 = String::isEmpty;
+使用：
+    predicate.test("李四"); // false
+    predicate.test("张三"); // true
+    predicate.negate.test("李四"); // true,取反操作
+
+```
+
+## Function接口
+
+Function 函数，接收一个参数并返回一个结果。
+Function<String, Integer>中，第一个泛型表示入参的类型，第二个泛型表示出参的类型。
+Function 接口还附带了一些能够组合其他函数的方法(如：andThen、compose),必须实现的方法为 apply(T).
+
+```java
+
+例子：
+    /**
+     * 接收一个字符串，将其转换为整型后返回
+     */
+    final Function<String, Integer> function1 = new Function<String, Integer>() {
+        @Override
+        public Integer apply(String s) {
+            return Integer.valueOf(s);
+        }
+    };
+    final Function<String, Integer> function2 = s -> Integer.valueOf(s); // 同第一条
+    final Function<String, Integer> function3 = Integer::valueOf; // 同第二条
+
+    final Function<String, String> function4 = function3.andThen(String::valueOf);
+
+    System.out.println(function3.apply("33").getClass());
+// 输出结果：class java.lang.Integer
+    System.out.println(function4.apply("33").getClass());
+// 输出结果：class java.lang.String
+
+```
+
+## Supplier接口
+
+Supplier 接口返回一个任意泛型的值。和 Predicate 不同的是，该接口不需要参数。
+
+```java
+
+例子：
+    Supplier<CoreUser> supplier = new Supplier<CoreUser>() {
+        @Override
+        public CoreUser get() {
+            return new CoreUser();
+        }
+    };
+    Supplier<CoreUser> supplier = () -> new CoreUser(); // 同第一条
+    Supplier<CoreUser> supplier = CoreUser::new; // 同第二条
+使用：
+    supplier.get(); // 返回 CoreUser 对象
+```
+
+## Comsumer接口
+
+Consumer 接口，执行在单个参数上的操作，无返回值。
+
+```java
+
+例子：
+    final Consumer<String> consumer = new Consumer<String>() {
+        @Override
+        public void accept(String s) {
+            System.out.println(s);
+        }
+    };
+    final Consumer<String> consumer = s -> System.out.println(s); // 同第一条
+    final Consumer<String> consumer = System.out::println; // 同第二条
+使用：
+    consumer.accept("你好，世界！");
+// 输出结果：你好，世界！
+
+```
+
+## Comparator比较
+
+在讲 `sort排序` 之前，先说一下 Comparator 接口，Comparator 是一个特别经典的方法，用于两个数值之间的比较。进入 java.util.Comparator 的内部，我们看到只定义了一个 compare() 方法待实现：
+
+```java
+public interface Comparator<T> {
+    // 在其子类 SortedOps 中，使用 AbstractPipeline 比较器和Comparator来实现比较。
+    int compare(T o1, T o2);
+}
+```
+
+```java
+例子：
+    private final Comparator<User> comparatorDESC = (a, b) -> Long.compare(a.getAge(), b.getAge());
+// 通过 User 的 age 属性，来定义一个比较器
+```
+
 ## Optional接口
 
 Optional 接口是用来防止 `NullPointerException` 异常的辅助类型，是一个非常重要的概念。比如在新版本的 SpringData 中最常用的ID查询方法 `findOne()`：
@@ -235,66 +347,6 @@ userList.add(new User("罗某强",18));
 // 输出结果："杜某波"、"刘某萍"
 ```
 
-## Map映射
-
-`中间操作`，map会将元素根据指定的Function接口来依次将元素转成另外一个对象。
-
-```java
-源码：
-    /**
-     * 返回由应用给定值的结果组成的流
-     * @param <R> 流中内容的类型
-     * @param mapper 应用于每个元素的函数
-     * @return the new stream
-     */
-    <R> Stream<R> map(Function<? super T, ? extends R> mapper);
-```
-
-```java
-例子：
-    userList
-        .stream()
-        // 相当于 .map(user -> user.getUserName())
-        .map(User::getUserName)
-        .forEach(System.out::println);
-// 输出结果：李某京、杜某波、刘某萍、韩某欣、罗某强
-```
-
-与 map() 方法类似的还有：mapToInt()、mapToLong()、mapToDouble()、flatMap()、flatMapToInt()、flatMapToLong()、flatMapToDouble()，各自返回对应的 IntStream、LongStream、DoubleStream 等。
-
-## 数值型Stream
-
-在上面的 `Map映射` 中，我们提到了 IntStream、LongStream和DoubleStream 三种数值型的 Stream 对象。
-
-它们同 Stream 一样继承了 BaseStream，且拓展了一些数值的操作方法，如：
-`sum()`、`min()`、`max()`、`average()`等方法，非常适用于对集合进行操作。
-
-```java
-例子:
-    userList
-        .stream()
-        .mapToInt(User::getAge)
-        .sum();
-// 输出结果：上面几人的和（不想算）
-```
-
-## Comparator比较
-
-在讲 `sort排序` 之前，先说一下 Comparator 接口，Comparator 是一个特别经典的方法，用于两个数值之间的比较。进入 java.util.Comparator 的内部，我们看到只定义了一个 compare() 方法待实现：
-
-```java
-public interface Comparator<T> {
-    // 在其子类 SortedOps 中，使用 AbstractPipeline 比较器和Comparator来实现比较。
-    int compare(T o1, T o2);
-}
-```
-
-```java
-例子：
-    private final Comparator<User> comparatorDESC = (a, b) -> Long.compare(a.getAge(), b.getAge());
-// 通过 User 的 age 属性，来定义一个比较器
-```
-
 ## Sort排序
 
 `中间操作`，通过 Sort() 方法，返回排序之后的 Stream.
@@ -334,14 +386,178 @@ public class User implements Comparable{
 
 好像并没有什么卵用，除非你的排序比较多，而且只能用 compareTo 方法中定义的排序方式，还不如定义一个全局的 Comparable 对象。
 
+## Map映射
 
+`中间操作`，map会将元素根据指定的Function接口来依次将元素转成另外一个对象。
 
+```java
 
+源码：
+    /**
+     * 返回由应用给定值的结果组成的流
+     * @param <R> 流中内容的类型
+     * @param mapper 应用于每个元素的函数
+     * @return the new stream
+     */
+    <R> Stream<R> map(Function<? super T, ? extends R> mapper);
 
+```
+
+```java
+
+例子：
+    userList
+        .stream()
+        // 相当于 .map(user -> user.getUserName())
+        .map(User::getUserName)
+        .forEach(System.out::println);
+// 输出结果：李某京、杜某波、刘某萍、韩某欣、罗某强
+
+```
+
+与 map() 方法类似的还有：mapToInt()、mapToLong()、mapToDouble()、flatMap()、flatMapToInt()、flatMapToLong()、flatMapToDouble()，各自返回对应的 IntStream、LongStream、DoubleStream 等。
+
+## 数值型Stream
+
+在上面的 `Map映射` 中，我们提到了 IntStream、LongStream和DoubleStream 三种数值型的 Stream 对象。
+
+它们同 Stream 一样继承了 BaseStream，且拓展了一些数值的操作方法，如：
+`sum()`、`min()`、`max()`、`average()`等方法，非常适用于对集合进行操作。
+
+```java
+
+例子:
+    userList
+        .stream()
+        .mapToInt(User::getAge)
+        .sum();
+// 输出结果：上面几人的和（不想算)
+
+```
+
+## Match匹配
+
+`最终操作`,Match 是 Stream 用来检测指定的 Predicate 是否匹配整个 Stream，返回一个 Boolean 值。
+
+```java
+
+常见的方法：
+    anyMatch(); // 任一匹配
+    allMatch(); // 全匹配
+    noneMatch(); // 全不匹配
+
+```
+
+```java
+
+例子：
+    // userList 中是否存在 "age = 22" 的 user
+    boolean match = userList
+                    .stream()
+                    .anyMatch(user -> user.getAge() == 22);
+
+    // userList 中的所有人都满足 "age = 22"
+    boolean match2 = userList
+                    .stream()
+                    .allMatch(user -> user.getAge() == 22);
+
+    // userList 中没有人满足 "age = 22"
+    boolean match3 = userList
+                    .stream()
+                    .noneMatch(user -> user.getAge() == 22);
+
+```
+
+## Count计数
+
+`最终操作`，返回 Stream 中元素的个数。
+
+```java
+
+例子：
+    Long count = userList
+                .stream()
+                .count();
+
+```
+
+## Reduce归约
+
+`最终操作`，将 Stream 中的元素归约为一个元素。归约后的结果为 Optional。
+
+官方解释：虽然这似乎是执行聚合的一种更为迂回的方式与简单地在循环中突变一个正在运行的总数相比，reduce操作并行化更优雅，不需要额外的操作同步，大大降低了数据竞争的风险。
+
+```java
+
+例子：
+    final List<Integer> strings = Arrays.asList(1, 2);
+    final Optional<Integer> reduce = strings.stream().reduce((integer, integer2) -> integer + integer2);
+    reduce.ifPresent(System.out::println);
+
+```
+
+## 并行与串行
+
+Stream API 中除了提供串行流之外，还提供了并行流。它们之间的区别在于，串行流都是单线程执行，而并行流可以多线程执行。
+
+在 `java.util.COllection<E>` 中，新增了两个默认方法：
+
+1. default Stream stream() ： 返回串行流
+2. default Stream parallelStream() : 返回并行流
+
+```java
+
+    @Test
+    public void test(){
+        // 创建一个没有重复的大表
+        int max = 1000000;
+        List<String> values = new ArrayList<>();
+        for (int i = 0; i < max; i++) {
+            final UUID uuid = UUID.randomUUID();
+            values.add(uuid.toString());
+        }
+
+        parallel(values);
+        serial(values);
+    }
+
+    /**
+     * 串行操作
+     */
+    private void serial(List<String> values){
+        // 查看排序时间
+        final long startTime = System.nanoTime();
+        final long count = values.stream().sorted().count();
+        System.out.println(count);
+        final long endTime = System.nanoTime();
+
+        final long millis = TimeUnit.NANOSECONDS.toMillis(endTime - startTime);
+        System.out.println(String.format("sequential sort took: %d ms",millis));
+    }
+
+    /**
+     * 并行操作
+     */
+    private void parallel(List<String> values){
+        final long startTime = System.nanoTime();
+        final long count = values.parallelStream().count();
+        System.out.println(count);
+        final long endTime = System.nanoTime();
+
+        final long millis = TimeUnit.NANOSECONDS.toMillis(endTime - startTime);
+        System.out.println(String.format("parallel sort took: %d ms",millis));
+    }
+
+输出结果：   1000000
+            parallel sort took: 65 ms
+            1000000
+            sequential sort took: 1391 ms
+
+```
 
 ## 回顾
 
-我们通过一个实例来回顾刚刚的讲解：
+我们通过一个实例(来自官方)来回顾刚刚的讲解：
 
 ```java
 
@@ -360,5 +576,3 @@ public class User implements Comparable{
 ```
 
 上面这个例子可以理解为：通过对象流Stream的各种方法，获得一个只包含红色的小工具的总重量。
-
-## 未完待续..........。
