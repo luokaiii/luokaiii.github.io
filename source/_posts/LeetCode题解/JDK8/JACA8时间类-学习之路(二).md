@@ -188,3 +188,5 @@ ZoneId shanghaiZoneId = ZoneId.of("Asia/Shanghai");
 ZoneId systemZoneId = ZoneId.systemDefault();
 // 输出的话：[Asia/Shanghai]
 ```
+
+参考:[lw900925](https://lw900925.github.io/java/java8-newtime-api.html)、[ImportNew - Justin Wu](http://www.importnew.com/14140.html)
