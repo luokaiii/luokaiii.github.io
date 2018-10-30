@@ -8,6 +8,9 @@ categories:
 # JAVA8新特性-新的日期API
 
 Java 8 另一个新增的重要特性就是引入了新的日期API，用更加简洁的方式处理时间和日期。具体的 API 放在 `java.time` 下。
+![日期API](https://upload-images.jianshu.io/upload_images/13603359-14b7f87b789be0f4.png?imageMogr2/auto-orient/strip%7CimageView2/2/w/1240)
+
+<!-- More -->
 
 ## 旧API的缺陷
 

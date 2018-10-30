@@ -7,7 +7,7 @@ categories:
 ---
 # JAVA8新特性-用法详解
 
-本文从各个方面讲解 Java 8 的新特性，从源码解析到个性小案例都有。包含的技术点：[Predicate](##Predicate接口) [Function](##Function接口) [Supplier](##Supplier接口) [Comsumer](##Comsumer接口) [Comparator](##Comparator比较) [Optional](##Optional接口) [Stream](##Stream接口) [Filter](##Filter过滤) [Sort](##Sort排序) [数值型Stream](##数值型Stream) [Match匹配](##Match匹配) [Count计数](##Count计数) [Reduce归约](##Reduce归约)及[并行与串行Stream](##并行与串行)。
+本文从各个方面讲解 Java 8 的新特性，从源码解析到个性小案例都有。包含的技术点：[Predicate接口](##Predicate接口)、[Function接口](##Function接口)、[Supplier接口](##Supplier接口)、[Comsumer接口](##Comsumer接口)、[Comparator比较](##Comparator比较)、[Optional接口](##Optional接口)、[Stream接口](##Stream接口) [Filter过滤](##Filter过滤)、[Sort排序](##Sort排序)、[数值型Stream](##数值型Stream)、[Match匹配](##Match匹配)、[Count计数](##Count计数)、[Reduce归约](##Reduce归约)及[并行与串行Stream](##并行与串行)。
 
 ![JAVA8新特性-用法详解
 ](https://upload-images.jianshu.io/upload_images/13603359-1671eca11ae9f3b9.png?imageMogr2/auto-orient/strip%7CimageView2/2/w/1240)
