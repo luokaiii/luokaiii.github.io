@@ -13,6 +13,10 @@ categories:
 
 这里我们将生成的 Job、Trigger 持久化到 MySQL 数据库中。
 
+![Quartz](https://upload-images.jianshu.io/upload_images/13603359-55f97ba1d65bc00f.png)
+
+<!-- More -->
+
 ## 1.修改quartz.properties配置文件
 
 主要是将存储方式从 `RAMJobStore` 改为 `JobStoreTX`。
