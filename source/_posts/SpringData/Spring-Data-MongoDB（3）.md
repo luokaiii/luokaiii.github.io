@@ -1,3 +1,11 @@
+---
+title: SpringDataMongoDB(三)
+date: 2018-09-01 14:46:03
+tags:
+ - Spring Data
+categories: 
+ - Java
+---
 # Spring Data MongoDB （三） 自定义converter
 
 ```java

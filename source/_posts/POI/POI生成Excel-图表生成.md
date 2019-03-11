@@ -1,3 +1,11 @@
+---
+title: POI+XChart图形报告
+date: 2018-09-01 14:46:03
+tags:
+ - POI
+categories: 
+ - Java
+---
 # POI+XChart图形报告
 
 ## 一、基础示例，写入Excel

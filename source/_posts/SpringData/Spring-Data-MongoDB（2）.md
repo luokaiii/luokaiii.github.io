@@ -1,3 +1,11 @@
+---
+title: SpringDataMongoDB(二)
+date: 2018-09-01 14:46:03
+tags:
+ - Spring Data
+categories: 
+ - Java
+---
 # Spring Data MongoDB （二） 查询
 
 ## 创建查询（去重、区间、忽略大小写等）

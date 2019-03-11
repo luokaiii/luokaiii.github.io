@@ -1,3 +1,11 @@
+---
+title: Linux后台部署Jar
+date: 2018-09-08 14:46:03
+tags:
+ - Linux
+categories: 
+ - Linux学习之路
+---
 # 部署
 
 1. 安装git

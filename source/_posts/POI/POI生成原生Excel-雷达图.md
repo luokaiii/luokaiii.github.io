@@ -1,3 +1,11 @@
+---
+title: 使用POI结合Excel的行列生成雷达图
+date: 2018-09-01 14:46:03
+tags:
+ - POI
+categories: 
+ - Java
+---
 # 使用POI结合Excel的行列生成雷达图
 
 ## 一、先放最后输出的结果图：

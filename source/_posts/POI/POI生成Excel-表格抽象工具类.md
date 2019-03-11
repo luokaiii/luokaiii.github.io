@@ -1,3 +1,11 @@
+---
+title: POI生成Excel工具类
+date: 2018-09-01 14:46:03
+tags:
+ - POI
+categories: 
+ - Java
+---
 # POI生成Excel工具类
 
 该工具类中，包含：创建表格（带默认样式）、自定义样式（通过重写 setDefaultStyle和setFirstCellStyle）、合并单元格、宽度自适应等。
