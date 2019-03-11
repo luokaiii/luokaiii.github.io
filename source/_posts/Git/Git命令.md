@@ -96,3 +96,19 @@ categories:
   git push <remote> :<branch/tag-name> # 删除远程分支或便签
   git push --tags           # 上传所有标签
 ```
+
+> 暂存切换分支
+
+| --   | --   |
+| ---- | ---- |
+|      |      |
+
+git stash save -a "message"  会将ignore 的文件也进行暂存，当进行pop该 stash 时，会出现
+
+```shell
+Could not restore untracked files from stash
+```
+
+
+
+git stash save -u "message" 不会将ignore 的文件进行暂存
