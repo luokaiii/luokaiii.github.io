@@ -1,3 +1,4 @@
+```java
 /**
  * 只出现一次的数字
  * 
@@ -50,3 +51,5 @@ public class Six {
         return result;
     }
 }
+
+```

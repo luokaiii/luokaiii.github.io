@@ -1,3 +1,8 @@
+# 从排序数组中删除重复项
+
+![解题思路](https://koral-home.oss-cn-beijing.aliyuncs.com/blog/%E4%BB%8E%E6%8E%92%E5%BA%8F%E6%95%B0%E7%BB%84%E4%B8%AD%E5%88%A0%E9%99%A4%E9%87%8D%E5%A4%8D%E9%A1%B9.jpg)
+
+```java
 /**
  * 数组(一)：从排序数组中删除重复项
  * 给定一个排序数组，你需要在原地删除重复出现的元素，使得每个元素只出现一次，返回移除后数组的新长度。
@@ -70,3 +75,21 @@ public class One {
         return j + 1;
     }
 }
+```
+
+下面是 `LeetCode` 上执行用时最短的代码：
+
+```java
+class Solution {
+
+    public int removeDuplicates(int[] nums) {
+       int len = 0;
+        for (int i = 1; i < nums.length; i++) {
+            if(nums[i]!=nums[len]){
+                nums[++len] = nums[i];
+            }
+        }
+        return len+1;
+    }
+}
+```

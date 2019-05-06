@@ -1,3 +1,4 @@
+```java
 /**
  *  加一
  *
@@ -50,3 +51,5 @@ public class Eight {
         return digits;
     }
 }
+
+```

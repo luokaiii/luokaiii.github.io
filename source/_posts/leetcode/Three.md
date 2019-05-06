@@ -1,3 +1,4 @@
+```java
 /**
  * 阿里巴巴 Java 开发手册：
  *  不要在 foreach 循环中进行元素的 remove/add 操作。 remove 元素请使用 Iterator 方式，如果并发操作，需要对 Iterator 对象加锁。
@@ -50,3 +51,5 @@ public class Three {
      * 即当满足条件后，不执行下一个 next() 方法，也就不会触发异常
      */
 }
+
+```

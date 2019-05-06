@@ -1,3 +1,4 @@
+```java
 /**
  * 存在重复
  * 
@@ -41,3 +42,5 @@ public class Five {
         return false;
     }
 }
+
+```

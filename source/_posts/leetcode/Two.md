@@ -1,3 +1,4 @@
+```java
 /**
  * 数组(二)：买卖股票的最佳时机 II
  *
@@ -46,6 +47,7 @@ public class Two {
      */
     private static int greed(int[] prices) {
         int result = 0;
+        if(prices.length <= 0) return result;
         for (int i = 0; i < prices.length -1; i++) {
             if(prices[i+1] > prices[i]){
                 result += prices[i+1] - prices[i];
@@ -55,3 +57,27 @@ public class Two {
         return result;
     }
 }
+```
+
+下面是 `LeetCode` 上执行用时最少的代码：
+
+```java
+class Solution {
+    public int maxProfit(int[] prices) {
+        int i = 0;
+        int valley = 0;
+        int peak = 0;
+        int maxprofit = 0;
+        while (i < prices.length - 1) {
+            while (i < prices.length - 1 && prices[i] >= prices[i + 1])
+                i++;
+            valley = prices[i];
+            while (i < prices.length - 1 && prices[i] <= prices[i + 1])
+                i++;
+            peak = prices[i];
+            maxprofit += peak - valley;
+        }
+        return maxprofit;
+    }
+} 
+```

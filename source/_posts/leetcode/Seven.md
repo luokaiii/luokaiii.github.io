@@ -1,3 +1,4 @@
+```java
 /**
  * 两个数组的交集 II
  *
@@ -90,3 +91,5 @@ public class Seven {
         return result;
     }
 }
+
+```
