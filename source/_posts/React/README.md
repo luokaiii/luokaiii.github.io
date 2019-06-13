@@ -1,3 +1,11 @@
+---
+title: 完整React配置
+date: 2018-10-01 17:38:03
+tags:
+ - java
+categories: 
+ - React学习
+---
 # React 入门
 
 ## 一、初始化项目结构

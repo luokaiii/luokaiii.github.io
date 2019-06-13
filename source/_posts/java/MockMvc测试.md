@@ -1,3 +1,9 @@
+---
+title: SpringMVC测试框架
+date: 2018-10-11 11:23:10
+categories:
+  - Java成神之路
+---
 # SpringMVC测试框架
 ### 基于RESTful风格的SpringMVC的测试，我们可以测试完整的Spring MVC流程，即从URL请求到控制器处理，再到视图渲染都可以测试。
 

@@ -1,3 +1,11 @@
+---
+title: 模拟Ping
+date: 2018-09-29 17:38:03
+tags:
+ - java
+categories: 
+ - 工具函数
+---
 ```java
 import java.io.BufferedReader;
 import java.io.IOException;
