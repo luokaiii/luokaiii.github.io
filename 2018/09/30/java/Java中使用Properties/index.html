@@ -1,0 +1,268 @@
+<!DOCTYPE html>
+<html>
+<head>
+  <meta charset="utf-8">
+  
+
+  
+  <title>读取 Properties 文件的几种方式 | 罗凯的博客</title>
+  <meta name="viewport" content="width=device-width, initial-scale=1, maximum-scale=1">
+  <meta name="description" content="读取Properties文件的几种方式">
+<meta name="keywords" content="java,SpringBoot">
+<meta property="og:type" content="article">
+<meta property="og:title" content="读取 Properties 文件的几种方式">
+<meta property="og:url" content="http://yoursite.com/2018/09/30/java/Java中使用Properties/index.html">
+<meta property="og:site_name" content="罗凯的博客">
+<meta property="og:description" content="读取Properties文件的几种方式">
+<meta property="og:locale" content="zh-Hans">
+<meta property="og:image" content="https://upload-images.jianshu.io/upload_images/13603359-9bc057f7c3fab711.png?imageMogr2/auto-orient/strip%7CimageView2/2/w/1240">
+<meta property="og:updated_time" content="2019-07-01T02:49:01.398Z">
+<meta name="twitter:card" content="summary">
+<meta name="twitter:title" content="读取 Properties 文件的几种方式">
+<meta name="twitter:description" content="读取Properties文件的几种方式">
+<meta name="twitter:image" content="https://upload-images.jianshu.io/upload_images/13603359-9bc057f7c3fab711.png?imageMogr2/auto-orient/strip%7CimageView2/2/w/1240">
+  
+    <link rel="alternate" href="/atom.xml" title="罗凯的博客" type="application/atom+xml">
+  
+  
+    <link rel="icon" href="https://i.loli.net/2019/07/04/5d1db2fb9593c58427.gif">
+  
+  
+    <link href="//fonts.googleapis.com/css?family=Source+Code+Pro" rel="stylesheet" type="text/css">
+  
+  <link rel="stylesheet" href="/css/style.css">
+</head>
+
+<body>
+  <div id="container">
+    <div id="wrap">
+      <header id="header">
+  <div id="banner"></div>
+  <div id="header-outer" class="outer">
+    <div id="header-title" class="inner">
+      <h1 id="logo-wrap">
+        <a href="/" id="logo">罗凯的博客</a>
+      </h1>
+      
+        <h2 id="subtitle-wrap">
+          <a href="/" id="subtitle">一个大帅哥</a>
+        </h2>
+      
+    </div>
+    <div id="header-inner" class="inner">
+      <nav id="main-nav">
+        <a id="main-nav-toggle" class="nav-icon"></a>
+        
+          <a class="main-nav-link" href="/">Home</a>
+        
+          <a class="main-nav-link" href="/archives">Archives</a>
+        
+      </nav>
+      <nav id="sub-nav">
+        
+          <a id="nav-rss-link" class="nav-icon" href="/atom.xml" title="RSS Feed"></a>
+        
+        <a id="nav-search-btn" class="nav-icon" title="Search"></a>
+      </nav>
+      <div id="search-form-wrap">
+        <form action="//google.com/search" method="get" accept-charset="UTF-8" class="search-form"><input type="search" name="q" class="search-form-input" placeholder="Search"><button type="submit" class="search-form-submit">&#xF002;</button><input type="hidden" name="sitesearch" value="http://yoursite.com"></form>
+      </div>
+    </div>
+  </div>
+</header>
+      <div class="outer">
+        <section id="main"><article id="post-java/Java中使用Properties" class="article article-type-post" itemscope itemprop="blogPost">
+  <div class="article-meta">
+    <a href="/2018/09/30/java/Java中使用Properties/" class="article-date">
+  <time datetime="2018-09-30T06:46:03.000Z" itemprop="datePublished">2018-09-30</time>
+</a>
+    
+  <div class="article-category">
+    <a class="article-category-link" href="/categories/Java成神之路/">Java成神之路</a>
+  </div>
+
+  </div>
+  <div class="article-inner">
+    
+    
+      <header class="article-header">
+        
+  
+    <h1 class="article-title" itemprop="name">
+      读取 Properties 文件的几种方式
+    </h1>
+  
+
+      </header>
+    
+    <div class="article-entry" itemprop="articleBody">
+      
+        <h1 id="读取Properties文件的几种方式"><a href="#读取Properties文件的几种方式" class="headerlink" title="读取Properties文件的几种方式"></a>读取Properties文件的几种方式</h1><p><img src="https://upload-images.jianshu.io/upload_images/13603359-9bc057f7c3fab711.png?imageMogr2/auto-orient/strip%7CimageView2/2/w/1240" alt="读取Properties文件的几种方式"></p>
+<a id="more"></a>
+<h2 id="读取-Properties-文件"><a href="#读取-Properties-文件" class="headerlink" title="读取 Properties 文件"></a>读取 Properties 文件</h2><h3 id="1-在xml-配置文件中使用”-”"><a href="#1-在xml-配置文件中使用”-”" class="headerlink" title="1.在xml 配置文件中使用”${}”"></a>1.在xml 配置文件中使用”${}”</h3><figure class="highlight"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br></pre></td><td class="code"><pre><span class="line">&lt;bean id=<span class="string">"xxx"</span> <span class="class"><span class="keyword">class</span></span>=<span class="string">"com.javadoop.Xxx"</span>&gt;</span><br><span class="line">     &lt;property name=<span class="string">"url"</span> value=<span class="string">"$&#123;javadoop.jdbc.url&#125;"</span> /&gt;</span><br><span class="line">&lt;/bean&gt;</span><br></pre></td></tr></table></figure>
+<h3 id="2-通过-Value注解注入"><a href="#2-通过-Value注解注入" class="headerlink" title="2. 通过@Value注解注入"></a>2. 通过@Value注解注入</h3><figure class="highlight java"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br></pre></td><td class="code"><pre><span class="line"><span class="meta">@Value</span>(<span class="string">"$&#123;javadoop.jdbc.url&#125;"</span>)</span><br><span class="line"><span class="keyword">private</span> String url;</span><br></pre></td></tr></table></figure>
+<h3 id="3-通过Environment获取"><a href="#3-通过Environment获取" class="headerlink" title="3.通过Environment获取"></a>3.通过Environment获取</h3><p>注意：只有使用注解 @PropertySource 的时候才可以使用，否则会 null ; 如果是 SpringBoot 的application.properties 注册 的，也可以</p>
+<figure class="highlight java"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br></pre></td><td class="code"><pre><span class="line"><span class="meta">@Autowired</span></span><br><span class="line"><span class="keyword">private</span> Environment env;</span><br><span class="line"></span><br><span class="line"><span class="function"><span class="keyword">public</span> String <span class="title">getUrl</span><span class="params">()</span> </span>&#123;</span><br><span class="line">   <span class="keyword">return</span> env.getProperty(<span class="string">"javadoop.jdbc.url"</span>);</span><br><span class="line">&#125;</span><br></pre></td></tr></table></figure>
+<h2 id="Properties的使用"><a href="#Properties的使用" class="headerlink" title="Properties的使用"></a>Properties的使用</h2><h3 id="1-通过XML配置"><a href="#1-通过XML配置" class="headerlink" title="1.通过XML配置"></a>1.通过XML配置</h3><figure class="highlight java"><table><tr><td class="gutter"><pre><span class="line">1</span><br></pre></td><td class="code"><pre><span class="line">&lt;context:property-placeholder location=<span class="string">"classpath:sys.properties"</span> /&gt;</span><br></pre></td></tr></table></figure>
+<h3 id="2-通过-PropertySource配置"><a href="#2-通过-PropertySource配置" class="headerlink" title="2.通过@PropertySource配置"></a>2.通过@PropertySource配置</h3><figure class="highlight java"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br></pre></td><td class="code"><pre><span class="line"><span class="meta">@PropertySource</span>(<span class="string">"classpath:sys.properties"</span>)</span><br><span class="line"><span class="meta">@Configuration</span></span><br><span class="line"><span class="keyword">public</span> <span class="class"><span class="keyword">class</span> <span class="title">JavaDoopConfig</span> </span>&#123;</span><br><span class="line"></span><br><span class="line">&#125;</span><br></pre></td></tr></table></figure>
+<h3 id="3-PropertyPlaceholderConfigurer-Spring3-1之前"><a href="#3-PropertyPlaceholderConfigurer-Spring3-1之前" class="headerlink" title="3.PropertyPlaceholderConfigurer(Spring3.1之前)"></a>3.PropertyPlaceholderConfigurer(Spring3.1之前)</h3><figure class="highlight java"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br></pre></td><td class="code"><pre><span class="line"><span class="meta">@Bean</span></span><br><span class="line"><span class="function"><span class="keyword">public</span> PropertySourcesPlaceholderConfigurer <span class="title">properties</span><span class="params">()</span> </span>&#123;</span><br><span class="line">   PropertySourcesPlaceholderConfigurer pspc = <span class="keyword">new</span> PropertySourcesPlaceholderConfigurer();</span><br><span class="line">   Resource[] resources = <span class="keyword">new</span> ClassPathResource[]&#123;<span class="keyword">new</span> ClassPathResource(<span class="string">"sys.properties"</span>)&#125;;</span><br><span class="line">   pspc.setLocations(resources);</span><br><span class="line">   pspc.setIgnoreUnresolvablePlaceholders(<span class="keyword">true</span>);</span><br><span class="line">   <span class="keyword">return</span> pspc;</span><br><span class="line">&#125;</span><br></pre></td></tr></table></figure>
+<h2 id="Spring-Boot"><a href="#Spring-Boot" class="headerlink" title="Spring Boot"></a>Spring Boot</h2><p>我们先去生成一个 SpringBoot 项目，不会的可以使用 <code>SpringBoot</code> 的 <a href="start.spring.io">在线生成服务</a>,直接下载到本地即可。</p>
+<p>在生成的项目中，默认包含一个 application.properties 的配置文件，只需配置，SpringBoot 会帮我们注册。</p>
+<p>如果需要换配置文件，则在启动时指定即可：</p>
+<figure class="highlight java"><table><tr><td class="gutter"><pre><span class="line">1</span><br></pre></td><td class="code"><pre><span class="line">java -Dspring.config.location=classpath:sys.properties -jar app.jar</span><br></pre></td></tr></table></figure>
+<h3 id="application-env-properties"><a href="#application-env-properties" class="headerlink" title="application-{env}.properties"></a>application-{env}.properties</h3><p>在 application.properties 的基础上，我们还需要新建 application-dev.properties 和application-prd.properties，用于配置环境相关的信息，然后启动的时候指定环境：</p>
+<figure class="highlight java"><table><tr><td class="gutter"><pre><span class="line">1</span><br></pre></td><td class="code"><pre><span class="line">java -Dspring.profiles.active=prd -jar app.jar</span><br></pre></td></tr></table></figure>
+<p>如果 application.properties 和 application-prd.properties 有key冲突，application-prd.properties 的优先级较高。</p>
+<h3 id="ConfigurationProperties"><a href="#ConfigurationProperties" class="headerlink" title="@ConfigurationProperties"></a>@ConfigurationProperties</h3><p>这个注解是 SpringBoot 才有的,我们在 <code>application.properties</code> 中加入</p>
+<figure class="highlight java"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br></pre></td><td class="code"><pre><span class="line">javadoop.database.url=jdbc:mysql:</span><br><span class="line">javadoop.database.username=admin</span><br><span class="line">javadoop.database.password=admin123456</span><br></pre></td></tr></table></figure>
+<p>java文件</p>
+<figure class="highlight java"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br></pre></td><td class="code"><pre><span class="line"><span class="meta">@Configuration</span></span><br><span class="line"><span class="meta">@ConfigurationProperties</span>(prefix = <span class="string">"javadoop.database"</span>)</span><br><span class="line"><span class="keyword">public</span> <span class="class"><span class="keyword">class</span> <span class="title">DataBase</span> </span>&#123;</span><br><span class="line">   String url;</span><br><span class="line">   String username;</span><br><span class="line">   String password;</span><br><span class="line">   <span class="comment">// getters and setters</span></span><br><span class="line">&#125;</span><br></pre></td></tr></table></figure>
+<p>这样，就在 Spring 的容器中自动注册了一个类型为 DataBase 的 bean 了，而且属性都已经 set 好了</p>
+<p>属性配置的覆盖顺序：<br>启动参数 &gt; application-{env}.properties &gt; application.properties</p>
+<p>使用启动参数动态设置属性：</p>
+<figure class="highlight java"><table><tr><td class="gutter"><pre><span class="line">1</span><br></pre></td><td class="code"><pre><span class="line">java -Djavadoop.database.password=admin4321 -jar app.jar</span><br></pre></td></tr></table></figure>
+
+      
+    </div>
+    <footer class="article-footer">
+      <a data-url="http://yoursite.com/2018/09/30/java/Java中使用Properties/" data-id="cjxpj02vj004srgtw97ri42ii" class="article-share-link">Share</a>
+      
+      
+  <ul class="article-tag-list"><li class="article-tag-list-item"><a class="article-tag-list-link" href="/tags/SpringBoot/">SpringBoot</a></li><li class="article-tag-list-item"><a class="article-tag-list-link" href="/tags/java/">java</a></li></ul>
+
+    </footer>
+  </div>
+  
+    
+<nav id="article-nav">
+  
+    <a href="/2018/09/30/SpringBoot/OSS-阿里云文件上传/" id="article-nav-newer" class="article-nav-link-wrap">
+      <strong class="article-nav-caption">Newer</strong>
+      <div class="article-nav-title">
+        
+          基于阿里云OSS的文件上传服务
+        
+      </div>
+    </a>
+  
+  
+    <a href="/2018/09/29/java/模拟Ping获取IP响应时间/" id="article-nav-older" class="article-nav-link-wrap">
+      <strong class="article-nav-caption">Older</strong>
+      <div class="article-nav-title">模拟Ping</div>
+    </a>
+  
+</nav>
+
+  
+</article>
+
+</section>
+        
+          <aside id="sidebar">
+  
+    
+  <div class="widget-wrap">
+    <h3 class="widget-title">Categories</h3>
+    <div class="widget">
+      <ul class="category-list"><li class="category-list-item"><a class="category-list-link" href="/categories/Docker学习/">Docker学习</a></li><li class="category-list-item"><a class="category-list-link" href="/categories/Git命令学习/">Git命令学习</a></li><li class="category-list-item"><a class="category-list-link" href="/categories/JAVA-核心知识点整理/">JAVA 核心知识点整理</a></li><li class="category-list-item"><a class="category-list-link" href="/categories/Java/">Java</a></li><li class="category-list-item"><a class="category-list-link" href="/categories/Java并发编程与高并发解决方案/">Java并发编程与高并发解决方案</a></li><li class="category-list-item"><a class="category-list-link" href="/categories/Java并发编程的艺术/">Java并发编程的艺术</a></li><li class="category-list-item"><a class="category-list-link" href="/categories/Java成神之路/">Java成神之路</a><ul class="category-list-child"><li class="category-list-item"><a class="category-list-link" href="/categories/Java成神之路/SpringBoot/">SpringBoot</a></li><li class="category-list-item"><a class="category-list-link" href="/categories/Java成神之路/Study社区/">Study社区</a></li></ul></li><li class="category-list-item"><a class="category-list-link" href="/categories/Linux学习之路/">Linux学习之路</a></li><li class="category-list-item"><a class="category-list-link" href="/categories/MarkDown语法/">MarkDown语法</a></li><li class="category-list-item"><a class="category-list-link" href="/categories/React学习/">React学习</a></li><li class="category-list-item"><a class="category-list-link" href="/categories/SpringBoot-参考指南/">SpringBoot 参考指南</a></li><li class="category-list-item"><a class="category-list-link" href="/categories/工具函数/">工具函数</a></li><li class="category-list-item"><a class="category-list-link" href="/categories/设计模式/">设计模式</a></li><li class="category-list-item"><a class="category-list-link" href="/categories/高性能MySQL/">高性能MySQL</a></li></ul>
+    </div>
+  </div>
+
+
+  
+    
+  <div class="widget-wrap">
+    <h3 class="widget-title">Tags</h3>
+    <div class="widget">
+      <ul class="tag-list"><li class="tag-list-item"><a class="tag-list-link" href="/tags/Git/">Git</a></li><li class="tag-list-item"><a class="tag-list-link" href="/tags/Git-Bash/">Git Bash</a></li><li class="tag-list-item"><a class="tag-list-link" href="/tags/Linux/">Linux</a></li><li class="tag-list-item"><a class="tag-list-link" href="/tags/MQ/">MQ</a></li><li class="tag-list-item"><a class="tag-list-link" href="/tags/MySQL/">MySQL</a></li><li class="tag-list-item"><a class="tag-list-link" href="/tags/POI/">POI</a></li><li class="tag-list-item"><a class="tag-list-link" href="/tags/Spring-Cloud/">Spring Cloud</a></li><li class="tag-list-item"><a class="tag-list-link" href="/tags/Spring-Data/">Spring Data</a></li><li class="tag-list-item"><a class="tag-list-link" href="/tags/SpringBoot/">SpringBoot</a></li><li class="tag-list-item"><a class="tag-list-link" href="/tags/docker/">docker</a></li><li class="tag-list-item"><a class="tag-list-link" href="/tags/gradle/">gradle</a></li><li class="tag-list-item"><a class="tag-list-link" href="/tags/java/">java</a></li><li class="tag-list-item"><a class="tag-list-link" href="/tags/poi/">poi</a></li><li class="tag-list-item"><a class="tag-list-link" href="/tags/并发编程/">并发编程</a></li><li class="tag-list-item"><a class="tag-list-link" href="/tags/数据库/">数据库</a></li><li class="tag-list-item"><a class="tag-list-link" href="/tags/读书笔记/">读书笔记</a></li><li class="tag-list-item"><a class="tag-list-link" href="/tags/高并发/">高并发</a></li></ul>
+    </div>
+  </div>
+
+
+  
+    
+  <div class="widget-wrap">
+    <h3 class="widget-title">Tag Cloud</h3>
+    <div class="widget tagcloud">
+      <a href="/tags/Git/" style="font-size: 13.75px;">Git</a> <a href="/tags/Git-Bash/" style="font-size: 11.25px;">Git Bash</a> <a href="/tags/Linux/" style="font-size: 12.5px;">Linux</a> <a href="/tags/MQ/" style="font-size: 15px;">MQ</a> <a href="/tags/MySQL/" style="font-size: 17.5px;">MySQL</a> <a href="/tags/POI/" style="font-size: 16.25px;">POI</a> <a href="/tags/Spring-Cloud/" style="font-size: 10px;">Spring Cloud</a> <a href="/tags/Spring-Data/" style="font-size: 12.5px;">Spring Data</a> <a href="/tags/SpringBoot/" style="font-size: 15px;">SpringBoot</a> <a href="/tags/docker/" style="font-size: 10px;">docker</a> <a href="/tags/gradle/" style="font-size: 11.25px;">gradle</a> <a href="/tags/java/" style="font-size: 20px;">java</a> <a href="/tags/poi/" style="font-size: 10px;">poi</a> <a href="/tags/并发编程/" style="font-size: 12.5px;">并发编程</a> <a href="/tags/数据库/" style="font-size: 17.5px;">数据库</a> <a href="/tags/读书笔记/" style="font-size: 18.75px;">读书笔记</a> <a href="/tags/高并发/" style="font-size: 12.5px;">高并发</a>
+    </div>
+  </div>
+
+  
+    
+  <div class="widget-wrap">
+    <h3 class="widget-title">Archives</h3>
+    <div class="widget">
+      <ul class="archive-list"><li class="archive-list-item"><a class="archive-list-link" href="/archives/2019/12/">December 2019</a></li><li class="archive-list-item"><a class="archive-list-link" href="/archives/2019/11/">November 2019</a></li><li class="archive-list-item"><a class="archive-list-link" href="/archives/2019/07/">July 2019</a></li><li class="archive-list-item"><a class="archive-list-link" href="/archives/2019/06/">June 2019</a></li><li class="archive-list-item"><a class="archive-list-link" href="/archives/2019/05/">May 2019</a></li><li class="archive-list-item"><a class="archive-list-link" href="/archives/2018/11/">November 2018</a></li><li class="archive-list-item"><a class="archive-list-link" href="/archives/2018/10/">October 2018</a></li><li class="archive-list-item"><a class="archive-list-link" href="/archives/2018/09/">September 2018</a></li><li class="archive-list-item"><a class="archive-list-link" href="/archives/2017/05/">May 2017</a></li></ul>
+    </div>
+  </div>
+
+
+  
+    
+  <div class="widget-wrap">
+    <h3 class="widget-title">Recent Posts</h3>
+    <div class="widget">
+      <ul>
+        
+          <li>
+            <a href="/2019/12/30/blog/2019/">2019年目标</a>
+          </li>
+        
+          <li>
+            <a href="/2019/12/01/读书笔记/《Java并发编程的艺术》/0.0_目录/">《Java并发编程的艺术》读书笔记 - 目录</a>
+          </li>
+        
+          <li>
+            <a href="/2019/12/01/读书笔记/《Java核心知识点整理》/0.目录/">《JAVA 核心知识点整理》读书笔记 - 目录</a>
+          </li>
+        
+          <li>
+            <a href="/2019/11/30/读书笔记/《高性能MySQL》/0.目录/">《高性能MySQL》读书笔记 - 目录</a>
+          </li>
+        
+          <li>
+            <a href="/2019/07/05/读书笔记/《JavaDesignPatterns》/8.建造者模式/">《Java Design Patterns》第六章 建造者模式 - 复杂对象的组装与创建</a>
+          </li>
+        
+      </ul>
+    </div>
+  </div>
+
+  
+</aside>
+        
+      </div>
+      <footer id="footer">
+  
+  <div class="outer">
+    <div id="footer-info" class="inner">
+      &copy; 2019 koral<br>
+      Powered by <a href="http://hexo.io/" target="_blank">Hexo</a>
+    </div>
+  </div>
+</footer>
+    </div>
+    <nav id="mobile-nav">
+  
+    <a href="/" class="mobile-nav-link">Home</a>
+  
+    <a href="/archives" class="mobile-nav-link">Archives</a>
+  
+</nav>
+    
+
+<script src="//ajax.googleapis.com/ajax/libs/jquery/2.0.3/jquery.min.js"></script>
+
+
+  <link rel="stylesheet" href="/fancybox/jquery.fancybox.css">
+  <script src="/fancybox/jquery.fancybox.pack.js"></script>
+
+
+<script src="/js/script.js"></script>
+
+
+
+  </div>
+</body>
+</html>

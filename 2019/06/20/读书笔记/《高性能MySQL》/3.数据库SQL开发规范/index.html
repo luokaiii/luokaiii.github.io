@@ -1,0 +1,336 @@
+<!DOCTYPE html>
+<html>
+<head>
+  <meta charset="utf-8">
+  
+
+  
+  <title>《高性能MySQL》第一章 数据库设计规范 | 罗凯的博客</title>
+  <meta name="viewport" content="width=device-width, initial-scale=1, maximum-scale=1">
+  <meta name="description" content="第三章 数据库 SQL 开发规范 建议使用预编译语句进行数据库操作 预编译语句可以重复使用执行计划 可以有效避免动态 SQL 带来的 SQL 注入问题 只传参数，比传递 SQL 语句更高效 相同语句可以一次解析，多次使用，提高处理效率   避免数据类型的隐式转换 隐式转换会导致索引失效 eg: select name,phone from customer where id = ‘111’   充">
+<meta name="keywords" content="MySQL,数据库">
+<meta property="og:type" content="article">
+<meta property="og:title" content="《高性能MySQL》第一章 数据库设计规范">
+<meta property="og:url" content="http://yoursite.com/2019/06/20/读书笔记/《高性能MySQL》/3.数据库SQL开发规范/index.html">
+<meta property="og:site_name" content="罗凯的博客">
+<meta property="og:description" content="第三章 数据库 SQL 开发规范 建议使用预编译语句进行数据库操作 预编译语句可以重复使用执行计划 可以有效避免动态 SQL 带来的 SQL 注入问题 只传参数，比传递 SQL 语句更高效 相同语句可以一次解析，多次使用，提高处理效率   避免数据类型的隐式转换 隐式转换会导致索引失效 eg: select name,phone from customer where id = ‘111’   充">
+<meta property="og:locale" content="zh-Hans">
+<meta property="og:updated_time" content="2019-07-01T02:49:01.466Z">
+<meta name="twitter:card" content="summary">
+<meta name="twitter:title" content="《高性能MySQL》第一章 数据库设计规范">
+<meta name="twitter:description" content="第三章 数据库 SQL 开发规范 建议使用预编译语句进行数据库操作 预编译语句可以重复使用执行计划 可以有效避免动态 SQL 带来的 SQL 注入问题 只传参数，比传递 SQL 语句更高效 相同语句可以一次解析，多次使用，提高处理效率   避免数据类型的隐式转换 隐式转换会导致索引失效 eg: select name,phone from customer where id = ‘111’   充">
+  
+    <link rel="alternate" href="/atom.xml" title="罗凯的博客" type="application/atom+xml">
+  
+  
+    <link rel="icon" href="https://i.loli.net/2019/07/04/5d1db2fb9593c58427.gif">
+  
+  
+    <link href="//fonts.googleapis.com/css?family=Source+Code+Pro" rel="stylesheet" type="text/css">
+  
+  <link rel="stylesheet" href="/css/style.css">
+</head>
+
+<body>
+  <div id="container">
+    <div id="wrap">
+      <header id="header">
+  <div id="banner"></div>
+  <div id="header-outer" class="outer">
+    <div id="header-title" class="inner">
+      <h1 id="logo-wrap">
+        <a href="/" id="logo">罗凯的博客</a>
+      </h1>
+      
+        <h2 id="subtitle-wrap">
+          <a href="/" id="subtitle">一个大帅哥</a>
+        </h2>
+      
+    </div>
+    <div id="header-inner" class="inner">
+      <nav id="main-nav">
+        <a id="main-nav-toggle" class="nav-icon"></a>
+        
+          <a class="main-nav-link" href="/">Home</a>
+        
+          <a class="main-nav-link" href="/archives">Archives</a>
+        
+      </nav>
+      <nav id="sub-nav">
+        
+          <a id="nav-rss-link" class="nav-icon" href="/atom.xml" title="RSS Feed"></a>
+        
+        <a id="nav-search-btn" class="nav-icon" title="Search"></a>
+      </nav>
+      <div id="search-form-wrap">
+        <form action="//google.com/search" method="get" accept-charset="UTF-8" class="search-form"><input type="search" name="q" class="search-form-input" placeholder="Search"><button type="submit" class="search-form-submit">&#xF002;</button><input type="hidden" name="sitesearch" value="http://yoursite.com"></form>
+      </div>
+    </div>
+  </div>
+</header>
+      <div class="outer">
+        <section id="main"><article id="post-读书笔记/《高性能MySQL》/3.数据库SQL开发规范" class="article article-type-post" itemscope itemprop="blogPost">
+  <div class="article-meta">
+    <a href="/2019/06/20/读书笔记/《高性能MySQL》/3.数据库SQL开发规范/" class="article-date">
+  <time datetime="2019-06-20T06:03:30.000Z" itemprop="datePublished">2019-06-20</time>
+</a>
+    
+  <div class="article-category">
+    <a class="article-category-link" href="/categories/高性能MySQL/">高性能MySQL</a>
+  </div>
+
+  </div>
+  <div class="article-inner">
+    
+    
+      <header class="article-header">
+        
+  
+    <h1 class="article-title" itemprop="name">
+      《高性能MySQL》第一章 数据库设计规范
+    </h1>
+  
+
+      </header>
+    
+    <div class="article-entry" itemprop="articleBody">
+      
+        <h1 id="第三章-数据库-SQL-开发规范"><a href="#第三章-数据库-SQL-开发规范" class="headerlink" title="第三章 数据库 SQL 开发规范"></a>第三章 数据库 SQL 开发规范</h1><ol>
+<li>建议使用预编译语句进行数据库操作<ol>
+<li>预编译语句可以重复使用执行计划</li>
+<li>可以有效避免动态 SQL 带来的 SQL 注入问题</li>
+<li>只传参数，比传递 SQL 语句更高效</li>
+<li>相同语句可以一次解析，多次使用，提高处理效率</li>
+</ol>
+</li>
+<li>避免数据类型的隐式转换<ol>
+<li>隐式转换会导致索引失效</li>
+<li>eg: select name,phone from customer where id = ‘111’</li>
+</ol>
+</li>
+<li>充分利用表上已经存在的索引<ol>
+<li>避免使用 双% 的查询条件。如 a like ‘%123%’</li>
+<li>一个 SQL 只能利用到复合索引中的一列进行范围查询</li>
+<li>使用 left join 或 not exists 来优化 not in 操作<ol>
+<li>not in 会使索引失效</li>
+</ol>
+</li>
+</ol>
+</li>
+<li>程序连接不同的数据库使用不同的账号，禁止夸库查询<ol>
+<li>为数据库迁移和分库分表留出余地</li>
+<li>降低业务耦合度</li>
+<li>避免权限过大而产生的安全风险</li>
+</ol>
+</li>
+<li>禁止使用 SELECT * ，必须使用 SELECT &lt;字段列表&gt; 查询<ol>
+<li>消耗更多的CPU和IO，以及网络带宽资源</li>
+<li>无法使用覆盖索引</li>
+<li>可减少表结构变更带来的影响</li>
+</ol>
+</li>
+<li>禁止使用不含字段列表的 INSERT 语句<ol>
+<li>eg：insert into tb_xx values(a,b,c) 错误</li>
+<li>eg：insert into t(c1,c2,c3) values(a,b,c) 正确</li>
+<li>避免因为字段变更，导致的插入失败</li>
+</ol>
+</li>
+<li>避免使用子查询，可以把子查询优化为 join 操作<ol>
+<li>子查询的结果集无法使用索引</li>
+<li>子查询会产生临时表操作，如果子查询数据量大则严重影响效率</li>
+<li>消耗过多的 CPU 及 IO 操作</li>
+<li>包含 GROUP BY、ORDER BY 等操作的子查询，无法转换为 JOIN 操作</li>
+</ol>
+</li>
+<li>避免使用 JOIN 关联<code>太多</code>的表<ol>
+<li>每 JOIN 一个表会多占用一部分内存</li>
+<li>会产生临时表操作，影响查询操作</li>
+<li>MySQl 最多允许关联 61 个表，建议不超过 5 个</li>
+</ol>
+</li>
+<li>减少同数据库的交互次数<ol>
+<li>数据库更适合处理批量操作</li>
+<li>合并多个相同的操作到一起，可以提高处理效率</li>
+<li>eg：alter table t1 add column c1 int, change column c2 c2 int</li>
+</ol>
+</li>
+<li>使用 in 代替 or<ol>
+<li>in 的值不要超过 500个</li>
+<li>in 操作可以有效的利用索引</li>
+</ol>
+</li>
+<li>禁止使用 order by rand() 进行随机排序<ol>
+<li>会把表中所有符合条件的数据装载到内存中进行排序</li>
+<li>会消耗大量的 CPU 和 IO 及内存资源</li>
+<li>推荐在程序中获取一个随机值，然后从数据库中获取数据的方式</li>
+</ol>
+</li>
+<li>where 从句中禁止对列进行函数转换和计算<ol>
+<li>对列进行函数转换或计算会导致无法使用索引</li>
+<li>eg：where date(createtime) = ‘20160901’<ol>
+<li>这样的话，无法使用到 createtime 列上的索引</li>
+<li>可以修改为：where createtime &gt;= ‘20160901’ and createtime &lt; ‘20160902’</li>
+</ol>
+</li>
+</ol>
+</li>
+<li>在明显不会有重复值时使用 UNION ALL 而不是 UNION<ol>
+<li>UNION 会把所有数据放到临时表中后再进行去重操作</li>
+<li>UNION ALL 不会再对结果集进行去重操作</li>
+</ol>
+</li>
+<li>拆分复杂的大 SQL 为多个小 SQL<ol>
+<li>MySQL 一个 SQL 只能使用一个 CPU 进行计算</li>
+<li>SQL 拆分后可以通过并行执行来提高处理效率<ol>
+<li>拆分 SQL 之后，多个小 SQL 能够更好的利用 CPU 资源</li>
+</ol>
+</li>
+<li>需要拆分的 SQL 为书写复杂，且执行时间长的。避免因 SQL 执行过长导致处理效率缓慢。</li>
+</ol>
+</li>
+</ol>
+
+      
+    </div>
+    <footer class="article-footer">
+      <a data-url="http://yoursite.com/2019/06/20/读书笔记/《高性能MySQL》/3.数据库SQL开发规范/" data-id="cjxpj03bk00btrgtwmx8u8zwd" class="article-share-link">Share</a>
+      
+      
+  <ul class="article-tag-list"><li class="article-tag-list-item"><a class="article-tag-list-link" href="/tags/MySQL/">MySQL</a></li><li class="article-tag-list-item"><a class="article-tag-list-link" href="/tags/数据库/">数据库</a></li></ul>
+
+    </footer>
+  </div>
+  
+    
+<nav id="article-nav">
+  
+    <a href="/2019/06/20/读书笔记/《高性能MySQL》/4.数据库操作行为规范/" id="article-nav-newer" class="article-nav-link-wrap">
+      <strong class="article-nav-caption">Newer</strong>
+      <div class="article-nav-title">
+        
+          《高性能MySQL》第一章 数据库设计规范
+        
+      </div>
+    </a>
+  
+  
+    <a href="/2019/06/20/读书笔记/《高性能MySQL》/2.数据库字段设计规范/" id="article-nav-older" class="article-nav-link-wrap">
+      <strong class="article-nav-caption">Older</strong>
+      <div class="article-nav-title">《高性能MySQL》第一章 数据库设计规范</div>
+    </a>
+  
+</nav>
+
+  
+</article>
+
+</section>
+        
+          <aside id="sidebar">
+  
+    
+  <div class="widget-wrap">
+    <h3 class="widget-title">Categories</h3>
+    <div class="widget">
+      <ul class="category-list"><li class="category-list-item"><a class="category-list-link" href="/categories/Docker学习/">Docker学习</a></li><li class="category-list-item"><a class="category-list-link" href="/categories/Git命令学习/">Git命令学习</a></li><li class="category-list-item"><a class="category-list-link" href="/categories/JAVA-核心知识点整理/">JAVA 核心知识点整理</a></li><li class="category-list-item"><a class="category-list-link" href="/categories/Java/">Java</a></li><li class="category-list-item"><a class="category-list-link" href="/categories/Java并发编程与高并发解决方案/">Java并发编程与高并发解决方案</a></li><li class="category-list-item"><a class="category-list-link" href="/categories/Java并发编程的艺术/">Java并发编程的艺术</a></li><li class="category-list-item"><a class="category-list-link" href="/categories/Java成神之路/">Java成神之路</a><ul class="category-list-child"><li class="category-list-item"><a class="category-list-link" href="/categories/Java成神之路/SpringBoot/">SpringBoot</a></li><li class="category-list-item"><a class="category-list-link" href="/categories/Java成神之路/Study社区/">Study社区</a></li></ul></li><li class="category-list-item"><a class="category-list-link" href="/categories/Linux学习之路/">Linux学习之路</a></li><li class="category-list-item"><a class="category-list-link" href="/categories/MarkDown语法/">MarkDown语法</a></li><li class="category-list-item"><a class="category-list-link" href="/categories/React学习/">React学习</a></li><li class="category-list-item"><a class="category-list-link" href="/categories/SpringBoot-参考指南/">SpringBoot 参考指南</a></li><li class="category-list-item"><a class="category-list-link" href="/categories/工具函数/">工具函数</a></li><li class="category-list-item"><a class="category-list-link" href="/categories/设计模式/">设计模式</a></li><li class="category-list-item"><a class="category-list-link" href="/categories/高性能MySQL/">高性能MySQL</a></li></ul>
+    </div>
+  </div>
+
+
+  
+    
+  <div class="widget-wrap">
+    <h3 class="widget-title">Tags</h3>
+    <div class="widget">
+      <ul class="tag-list"><li class="tag-list-item"><a class="tag-list-link" href="/tags/Git/">Git</a></li><li class="tag-list-item"><a class="tag-list-link" href="/tags/Git-Bash/">Git Bash</a></li><li class="tag-list-item"><a class="tag-list-link" href="/tags/Linux/">Linux</a></li><li class="tag-list-item"><a class="tag-list-link" href="/tags/MQ/">MQ</a></li><li class="tag-list-item"><a class="tag-list-link" href="/tags/MySQL/">MySQL</a></li><li class="tag-list-item"><a class="tag-list-link" href="/tags/POI/">POI</a></li><li class="tag-list-item"><a class="tag-list-link" href="/tags/Spring-Cloud/">Spring Cloud</a></li><li class="tag-list-item"><a class="tag-list-link" href="/tags/Spring-Data/">Spring Data</a></li><li class="tag-list-item"><a class="tag-list-link" href="/tags/SpringBoot/">SpringBoot</a></li><li class="tag-list-item"><a class="tag-list-link" href="/tags/docker/">docker</a></li><li class="tag-list-item"><a class="tag-list-link" href="/tags/gradle/">gradle</a></li><li class="tag-list-item"><a class="tag-list-link" href="/tags/java/">java</a></li><li class="tag-list-item"><a class="tag-list-link" href="/tags/poi/">poi</a></li><li class="tag-list-item"><a class="tag-list-link" href="/tags/并发编程/">并发编程</a></li><li class="tag-list-item"><a class="tag-list-link" href="/tags/数据库/">数据库</a></li><li class="tag-list-item"><a class="tag-list-link" href="/tags/读书笔记/">读书笔记</a></li><li class="tag-list-item"><a class="tag-list-link" href="/tags/高并发/">高并发</a></li></ul>
+    </div>
+  </div>
+
+
+  
+    
+  <div class="widget-wrap">
+    <h3 class="widget-title">Tag Cloud</h3>
+    <div class="widget tagcloud">
+      <a href="/tags/Git/" style="font-size: 13.75px;">Git</a> <a href="/tags/Git-Bash/" style="font-size: 11.25px;">Git Bash</a> <a href="/tags/Linux/" style="font-size: 12.5px;">Linux</a> <a href="/tags/MQ/" style="font-size: 15px;">MQ</a> <a href="/tags/MySQL/" style="font-size: 17.5px;">MySQL</a> <a href="/tags/POI/" style="font-size: 16.25px;">POI</a> <a href="/tags/Spring-Cloud/" style="font-size: 10px;">Spring Cloud</a> <a href="/tags/Spring-Data/" style="font-size: 12.5px;">Spring Data</a> <a href="/tags/SpringBoot/" style="font-size: 15px;">SpringBoot</a> <a href="/tags/docker/" style="font-size: 10px;">docker</a> <a href="/tags/gradle/" style="font-size: 11.25px;">gradle</a> <a href="/tags/java/" style="font-size: 20px;">java</a> <a href="/tags/poi/" style="font-size: 10px;">poi</a> <a href="/tags/并发编程/" style="font-size: 12.5px;">并发编程</a> <a href="/tags/数据库/" style="font-size: 17.5px;">数据库</a> <a href="/tags/读书笔记/" style="font-size: 18.75px;">读书笔记</a> <a href="/tags/高并发/" style="font-size: 12.5px;">高并发</a>
+    </div>
+  </div>
+
+  
+    
+  <div class="widget-wrap">
+    <h3 class="widget-title">Archives</h3>
+    <div class="widget">
+      <ul class="archive-list"><li class="archive-list-item"><a class="archive-list-link" href="/archives/2019/12/">December 2019</a></li><li class="archive-list-item"><a class="archive-list-link" href="/archives/2019/11/">November 2019</a></li><li class="archive-list-item"><a class="archive-list-link" href="/archives/2019/07/">July 2019</a></li><li class="archive-list-item"><a class="archive-list-link" href="/archives/2019/06/">June 2019</a></li><li class="archive-list-item"><a class="archive-list-link" href="/archives/2019/05/">May 2019</a></li><li class="archive-list-item"><a class="archive-list-link" href="/archives/2018/11/">November 2018</a></li><li class="archive-list-item"><a class="archive-list-link" href="/archives/2018/10/">October 2018</a></li><li class="archive-list-item"><a class="archive-list-link" href="/archives/2018/09/">September 2018</a></li><li class="archive-list-item"><a class="archive-list-link" href="/archives/2017/05/">May 2017</a></li></ul>
+    </div>
+  </div>
+
+
+  
+    
+  <div class="widget-wrap">
+    <h3 class="widget-title">Recent Posts</h3>
+    <div class="widget">
+      <ul>
+        
+          <li>
+            <a href="/2019/12/30/blog/2019/">2019年目标</a>
+          </li>
+        
+          <li>
+            <a href="/2019/12/01/读书笔记/《Java并发编程的艺术》/0.0_目录/">《Java并发编程的艺术》读书笔记 - 目录</a>
+          </li>
+        
+          <li>
+            <a href="/2019/12/01/读书笔记/《Java核心知识点整理》/0.目录/">《JAVA 核心知识点整理》读书笔记 - 目录</a>
+          </li>
+        
+          <li>
+            <a href="/2019/11/30/读书笔记/《高性能MySQL》/0.目录/">《高性能MySQL》读书笔记 - 目录</a>
+          </li>
+        
+          <li>
+            <a href="/2019/07/05/读书笔记/《JavaDesignPatterns》/8.建造者模式/">《Java Design Patterns》第六章 建造者模式 - 复杂对象的组装与创建</a>
+          </li>
+        
+      </ul>
+    </div>
+  </div>
+
+  
+</aside>
+        
+      </div>
+      <footer id="footer">
+  
+  <div class="outer">
+    <div id="footer-info" class="inner">
+      &copy; 2019 koral<br>
+      Powered by <a href="http://hexo.io/" target="_blank">Hexo</a>
+    </div>
+  </div>
+</footer>
+    </div>
+    <nav id="mobile-nav">
+  
+    <a href="/" class="mobile-nav-link">Home</a>
+  
+    <a href="/archives" class="mobile-nav-link">Archives</a>
+  
+</nav>
+    
+
+<script src="//ajax.googleapis.com/ajax/libs/jquery/2.0.3/jquery.min.js"></script>
+
+
+  <link rel="stylesheet" href="/fancybox/jquery.fancybox.css">
+  <script src="/fancybox/jquery.fancybox.pack.js"></script>
+
+
+<script src="/js/script.js"></script>
+
+
+
+  </div>
+</body>
+</html>

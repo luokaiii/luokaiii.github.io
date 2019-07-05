@@ -1,0 +1,294 @@
+<!DOCTYPE html>
+<html>
+<head>
+  <meta charset="utf-8">
+  
+
+  
+  <title>通过 POI 将数据库中的数据上传至 OSS 对象存储 | 罗凯的博客</title>
+  <meta name="viewport" content="width=device-width, initial-scale=1, maximum-scale=1">
+  <meta name="description" content="通过 POI 将数据库中的数据上传至 OSS 对象存储我爱你，第一句是假的，第二句也是假的。">
+<meta name="keywords" content="java,poi">
+<meta property="og:type" content="article">
+<meta property="og:title" content="通过 POI 将数据库中的数据上传至 OSS 对象存储">
+<meta property="og:url" content="http://yoursite.com/2018/09/29/java/POI操作EXCEl/index.html">
+<meta property="og:site_name" content="罗凯的博客">
+<meta property="og:description" content="通过 POI 将数据库中的数据上传至 OSS 对象存储我爱你，第一句是假的，第二句也是假的。">
+<meta property="og:locale" content="zh-Hans">
+<meta property="og:image" content="https://upload-images.jianshu.io/upload_images/13603359-996a2c470135ea09.png">
+<meta property="og:updated_time" content="2019-07-01T02:49:01.401Z">
+<meta name="twitter:card" content="summary">
+<meta name="twitter:title" content="通过 POI 将数据库中的数据上传至 OSS 对象存储">
+<meta name="twitter:description" content="通过 POI 将数据库中的数据上传至 OSS 对象存储我爱你，第一句是假的，第二句也是假的。">
+<meta name="twitter:image" content="https://upload-images.jianshu.io/upload_images/13603359-996a2c470135ea09.png">
+  
+    <link rel="alternate" href="/atom.xml" title="罗凯的博客" type="application/atom+xml">
+  
+  
+    <link rel="icon" href="https://i.loli.net/2019/07/04/5d1db2fb9593c58427.gif">
+  
+  
+    <link href="//fonts.googleapis.com/css?family=Source+Code+Pro" rel="stylesheet" type="text/css">
+  
+  <link rel="stylesheet" href="/css/style.css">
+</head>
+
+<body>
+  <div id="container">
+    <div id="wrap">
+      <header id="header">
+  <div id="banner"></div>
+  <div id="header-outer" class="outer">
+    <div id="header-title" class="inner">
+      <h1 id="logo-wrap">
+        <a href="/" id="logo">罗凯的博客</a>
+      </h1>
+      
+        <h2 id="subtitle-wrap">
+          <a href="/" id="subtitle">一个大帅哥</a>
+        </h2>
+      
+    </div>
+    <div id="header-inner" class="inner">
+      <nav id="main-nav">
+        <a id="main-nav-toggle" class="nav-icon"></a>
+        
+          <a class="main-nav-link" href="/">Home</a>
+        
+          <a class="main-nav-link" href="/archives">Archives</a>
+        
+      </nav>
+      <nav id="sub-nav">
+        
+          <a id="nav-rss-link" class="nav-icon" href="/atom.xml" title="RSS Feed"></a>
+        
+        <a id="nav-search-btn" class="nav-icon" title="Search"></a>
+      </nav>
+      <div id="search-form-wrap">
+        <form action="//google.com/search" method="get" accept-charset="UTF-8" class="search-form"><input type="search" name="q" class="search-form-input" placeholder="Search"><button type="submit" class="search-form-submit">&#xF002;</button><input type="hidden" name="sitesearch" value="http://yoursite.com"></form>
+      </div>
+    </div>
+  </div>
+</header>
+      <div class="outer">
+        <section id="main"><article id="post-java/POI操作EXCEl" class="article article-type-post" itemscope itemprop="blogPost">
+  <div class="article-meta">
+    <a href="/2018/09/29/java/POI操作EXCEl/" class="article-date">
+  <time datetime="2018-09-29T09:38:03.000Z" itemprop="datePublished">2018-09-29</time>
+</a>
+    
+  <div class="article-category">
+    <a class="article-category-link" href="/categories/Java成神之路/">Java成神之路</a>
+  </div>
+
+  </div>
+  <div class="article-inner">
+    
+    
+      <header class="article-header">
+        
+  
+    <h1 class="article-title" itemprop="name">
+      通过 POI 将数据库中的数据上传至 OSS 对象存储
+    </h1>
+  
+
+      </header>
+    
+    <div class="article-entry" itemprop="articleBody">
+      
+        <h1 id="通过-POI-将数据库中的数据上传至-OSS-对象存储"><a href="#通过-POI-将数据库中的数据上传至-OSS-对象存储" class="headerlink" title="通过 POI 将数据库中的数据上传至 OSS 对象存储"></a>通过 POI 将数据库中的数据上传至 OSS 对象存储</h1><center><br><code>我爱你，第一句是假的，第二句也是假的。</code><br></center>
+
+<p><img src="https://upload-images.jianshu.io/upload_images/13603359-996a2c470135ea09.png" alt="我爱你，第一句是假的，第二句也是假的。"></p>
+<a id="more"></a>
+<p>表格的具体样式可以参考 <a href="#三、设置Excel单元格样式"><code>第三章</code></a></p>
+<p>我们以 aliyun 的 OSS 为例上传 <a href="#四、上传至OSS等对象存储"><code>上传方法</code></a></p>
+<h2 id="一、准备工作"><a href="#一、准备工作" class="headerlink" title="一、准备工作"></a>一、准备工作</h2><p>第一步：引入 Apache POI 的依赖</p>
+<figure class="highlight"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br></pre></td><td class="code"><pre><span class="line">&lt;!-- Maven 方式 --&gt;</span><br><span class="line"></span><br><span class="line">&lt;dependency&gt;</span><br><span class="line">    &lt;groupId&gt;org.apache.poi&lt;/groupId&gt;</span><br><span class="line">    &lt;artifactId&gt;poi&lt;/artifactId&gt;</span><br><span class="line">    &lt;version&gt;4.0.0&lt;/version&gt;</span><br><span class="line">&lt;/dependency&gt;</span><br></pre></td></tr></table></figure>
+<figure class="highlight java"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br></pre></td><td class="code"><pre><span class="line">&lt;!-- Gradle 方式 --&gt;</span><br><span class="line"></span><br><span class="line">compile group: <span class="string">'org.apache.poi'</span>, name: <span class="string">'poi'</span>, version: <span class="string">'4.0.0'</span></span><br></pre></td></tr></table></figure>
+<p>第二步：引入 JUnit 测试，这里就不做赘述了。</p>
+<h2 id="二、讲解测试用例"><a href="#二、讲解测试用例" class="headerlink" title="二、讲解测试用例"></a>二、讲解测试用例</h2><h3 id="Test方法"><a href="#Test方法" class="headerlink" title="Test方法"></a><code>Test</code>方法</h3><p>我们先从测试方法着手，再逐步讲解测试中所用到的方法。</p>
+<figure class="highlight java"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br></pre></td><td class="code"><pre><span class="line"><span class="meta">@Autowired</span></span><br><span class="line"><span class="keyword">private</span> UserService userService;</span><br><span class="line"></span><br><span class="line"><span class="meta">@Test</span></span><br><span class="line"><span class="function"><span class="keyword">public</span> <span class="keyword">void</span> <span class="title">upload</span><span class="params">()</span></span>&#123;</span><br><span class="line">    List&lt;User&gt; users = userService.findAll(); <span class="comment">// ①</span></span><br><span class="line"></span><br><span class="line">    <span class="keyword">final</span> ByteArrayOutputStream stream = exportProjectList(users); <span class="comment">// ②</span></span><br><span class="line"></span><br><span class="line">    String uri = uploadWorkbook(stream, <span class="string">"学生数据表.xlsx"</span>); <span class="comment">// ③</span></span><br><span class="line"></span><br><span class="line">    System.out.println(uri); <span class="comment">// ④</span></span><br><span class="line">&#125;</span><br></pre></td></tr></table></figure>
+<ol>
+<li>从数据库中取出需要导入 Excel 的数据</li>
+<li>方法：<a href="#`exportProjectList`方法"><code>exportProjectList</code></a> 将数据存入 <code>POI</code> 生成的 Excel 中，并将 Excel 转换为字节流，用来向<code>对象存储</code>中上传</li>
+<li>方法：<a href="#`uploadWorkbook`方法"><code>uploadWorkbook</code></a> 上传流式文件，和文件名称</li>
+<li>输出 <code>aliyun</code> 返回的地址，用于业务的实现，比如 <code>保存至数据库</code> 等。</li>
+</ol>
+<h3 id="exportProjectList方法"><a href="#exportProjectList方法" class="headerlink" title="exportProjectList方法"></a><code>exportProjectList</code>方法</h3><p>作用：接收从数据库查询出来的对象集合，将其插入到 Workbook 中，并生成二进制的输出流 <code>ByteArrayOutputStream</code></p>
+<p>表格的具体样式可以参考 <a href="#三、设置Excel单元格样式"><code>第三章</code></a></p>
+<figure class="highlight java"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br><span class="line">14</span><br><span class="line">15</span><br><span class="line">16</span><br><span class="line">17</span><br><span class="line">18</span><br><span class="line">19</span><br><span class="line">20</span><br><span class="line">21</span><br><span class="line">22</span><br><span class="line">23</span><br><span class="line">24</span><br><span class="line">25</span><br><span class="line">26</span><br><span class="line">27</span><br><span class="line">28</span><br><span class="line">29</span><br><span class="line">30</span><br><span class="line">31</span><br><span class="line">32</span><br><span class="line">33</span><br><span class="line">34</span><br><span class="line">35</span><br><span class="line">36</span><br><span class="line">37</span><br><span class="line">38</span><br><span class="line">39</span><br><span class="line">40</span><br><span class="line">41</span><br><span class="line">42</span><br><span class="line">43</span><br><span class="line">44</span><br><span class="line">45</span><br><span class="line">46</span><br><span class="line">47</span><br><span class="line">48</span><br><span class="line">49</span><br><span class="line">50</span><br><span class="line">51</span><br><span class="line">52</span><br><span class="line">53</span><br><span class="line">54</span><br><span class="line">55</span><br><span class="line">56</span><br><span class="line">57</span><br><span class="line">58</span><br><span class="line">59</span><br><span class="line">60</span><br><span class="line">61</span><br><span class="line">62</span><br><span class="line">63</span><br><span class="line">64</span><br><span class="line">65</span><br><span class="line">66</span><br><span class="line">67</span><br><span class="line">68</span><br></pre></td><td class="code"><pre><span class="line"><span class="function"><span class="keyword">private</span> ByteArrayOutputStream <span class="title">exportProjectList</span><span class="params">(User[] users)</span> <span class="keyword">throws</span> IOException </span>&#123;</span><br><span class="line">        <span class="comment">// Workbook 工作区</span></span><br><span class="line">        <span class="keyword">final</span> XSSFWorkbook workbook = <span class="keyword">new</span> XSSFWorkbook();</span><br><span class="line"></span><br><span class="line">        <span class="comment">// 单字体居中样式</span></span><br><span class="line">        <span class="keyword">final</span> XSSFCellStyle centerStyle = workbook.createCellStyle();</span><br><span class="line">        centerStyle.setAlignment(HorizontalAlignment.CENTER);</span><br><span class="line"></span><br><span class="line">        <span class="comment">// 字体居中加粗样式</span></span><br><span class="line">        <span class="keyword">final</span> XSSFCellStyle headerStyle = workbook.createCellStyle();</span><br><span class="line">        headerStyle.setAlignment(HorizontalAlignment.CENTER);</span><br><span class="line"></span><br><span class="line">        <span class="keyword">final</span> XSSFFont font = workbook.createFont();</span><br><span class="line">        font.setBold(<span class="keyword">true</span>);</span><br><span class="line">        headerStyle.setFont(font);</span><br><span class="line"></span><br><span class="line">        <span class="comment">// Sheet 分页</span></span><br><span class="line">        <span class="keyword">final</span> XSSFSheet sheet = workbook.createSheet(<span class="string">"Sheet Name"</span>);</span><br><span class="line"></span><br><span class="line">        <span class="keyword">final</span> String[] strings = <span class="keyword">new</span> String[]&#123;<span class="string">"序号"</span>, <span class="string">"学号"</span>, <span class="string">"姓名"</span>, <span class="string">"年龄"</span>, <span class="string">"院系"</span>, <span class="string">"班级"</span>&#125;;</span><br><span class="line"></span><br><span class="line">        <span class="comment">// 首行内容填充，以及设置样式</span></span><br><span class="line">        setFirstRow(sheet, strings, headerStyle);</span><br><span class="line"></span><br><span class="line">        <span class="keyword">int</span> rowSign = <span class="number">0</span>;</span><br><span class="line">        <span class="keyword">for</span> (user user : users) &#123;</span><br><span class="line"></span><br><span class="line">            <span class="comment">// Row 行</span></span><br><span class="line">            <span class="keyword">final</span> XSSFRow row = sheet.createRow(++rowSign);</span><br><span class="line"></span><br><span class="line">            <span class="comment">// Cell 单元格</span></span><br><span class="line">            <span class="keyword">final</span> XSSFCell firstCell = row.createCell(<span class="number">0</span>);</span><br><span class="line">            firstCell.setCellValue(rowSign);</span><br><span class="line">            firstCell.setCellStyle(centerStyle);</span><br><span class="line"></span><br><span class="line">            <span class="keyword">final</span> XSSFCell secondCell = row.createCell(<span class="number">1</span>);</span><br><span class="line">            secondCell.setCellValue(user.getStuNo());</span><br><span class="line">            secondCell.setCellStyle(centerStyle);</span><br><span class="line"></span><br><span class="line">            <span class="keyword">final</span> XSSFCell thirdCell = row.createCell(<span class="number">2</span>);</span><br><span class="line">            thirdCell.setCellValue(user.getName());</span><br><span class="line">            thirdCell.setCellStyle(centerStyle);</span><br><span class="line"></span><br><span class="line">            <span class="keyword">final</span> XSSFCell fourthCell = row.createCell(<span class="number">3</span>);</span><br><span class="line">            fourthCell.setCellValue(user.getAge());</span><br><span class="line">            fourthCell.setCellStyle(centerStyle);</span><br><span class="line"></span><br><span class="line">            <span class="keyword">final</span> XSSFCell fifthCell = row.createCell(<span class="number">4</span>);</span><br><span class="line">            fifthCell.setCellValue(user.getCollege());</span><br><span class="line">            fifthCell.setCellStyle(centerStyle);</span><br><span class="line"></span><br><span class="line">            <span class="keyword">final</span> XSSFCell sixthCell = row.createCell(<span class="number">5</span>);</span><br><span class="line">            sixthCell.setCellValue(user.getClass());</span><br><span class="line">            sixthCell.setCellStyle(centerStyle);</span><br><span class="line">        &#125;</span><br><span class="line"></span><br><span class="line">        <span class="comment">// 宽度自适应</span></span><br><span class="line">        <span class="keyword">for</span> (<span class="keyword">int</span> s = <span class="number">0</span>; s &lt; strings.length; s++) &#123;</span><br><span class="line">            sheet.autoSizeColumn(s);</span><br><span class="line">            sheet.setColumnWidth(s, sheet.getColumnWidth(s) * <span class="number">17</span> / <span class="number">10</span>);</span><br><span class="line">        &#125;</span><br><span class="line"></span><br><span class="line">        <span class="keyword">final</span> ByteArrayOutputStream stream = <span class="keyword">new</span> ByteArrayOutputStream();</span><br><span class="line"></span><br><span class="line">        workbook.write(stream);</span><br><span class="line"></span><br><span class="line">        <span class="keyword">return</span> stream;</span><br><span class="line">    &#125;</span><br></pre></td></tr></table></figure>
+<p>需要注意的是，<code>每一个单元格 (Cell) 都是不能为空的</code>。</p>
+<p>我们将设置头标题的方法抽离出来，可供其他设置的方法使用。</p>
+<figure class="highlight java"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br><span class="line">14</span><br></pre></td><td class="code"><pre><span class="line"><span class="comment">/**</span></span><br><span class="line"><span class="comment"> * 设置第一行的头标题</span></span><br><span class="line"><span class="comment"> */</span></span><br><span class="line"><span class="function"><span class="keyword">private</span> <span class="keyword">void</span> <span class="title">setFirstRow</span><span class="params">(Sheet sheet, String[] cellTitles, XSSFCellStyle headerStyle)</span> </span>&#123;</span><br><span class="line">    <span class="keyword">final</span> Row row = sheet.createRow(<span class="number">0</span>);</span><br><span class="line"></span><br><span class="line">    <span class="keyword">int</span> cellSign = <span class="number">0</span>;</span><br><span class="line"></span><br><span class="line">    <span class="keyword">for</span> (String cellName : cellTitles) &#123;</span><br><span class="line">        <span class="keyword">final</span> Cell cell = row.createCell(cellSign++);</span><br><span class="line">        cell.setCellValue(cellName);</span><br><span class="line">        cell.setCellStyle(headerStyle);</span><br><span class="line">    &#125;</span><br><span class="line">&#125;</span><br></pre></td></tr></table></figure>
+<p>在做完前面的工作之后，我们就可以开始写测试方法了</p>
+<h3 id="uploadWorkbook方法"><a href="#uploadWorkbook方法" class="headerlink" title="uploadWorkbook方法"></a><code>uploadWorkbook</code>方法</h3><p>该方法用于：<code>接收 Workbook 生成的流，并将其保存至 OSS 上</code>，本方法适用于 <code>aliyun</code> 的 <code>OSS 对象存储</code>，其他的具体实现都可以从官方API中查到。</p>
+<figure class="highlight java"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br></pre></td><td class="code"><pre><span class="line"><span class="function"><span class="keyword">private</span> String <span class="title">uploadWorkbook</span><span class="params">(ByteArrayOutputStream stream, String fileId)</span> <span class="keyword">throws</span> IOException </span>&#123;</span><br><span class="line">    <span class="keyword">final</span> ByteArrayInputStream inputStream = <span class="keyword">new</span> ByteArrayInputStream(stream.toByteArray()); <span class="comment">// ①</span></span><br><span class="line"></span><br><span class="line">    ObjectMetadata objectMetadata = <span class="keyword">new</span> ObjectMetadata();</span><br><span class="line">    objectMetadata.setContentLength(stream.size());</span><br><span class="line">    objectMetadata.setContentEncoding(<span class="string">"utf-8"</span>);</span><br><span class="line">    objectMetadata.setCacheControl(<span class="string">"no-cache"</span>);</span><br><span class="line">    objectMetadata.setHeader(<span class="string">"Pragma"</span>, <span class="string">"no-cache"</span>);</span><br><span class="line">    objectMetadata.setContentDisposition(<span class="string">"inline;filename="</span> + <span class="string">"学生表数据.xlsx"</span>); <span class="comment">// ②</span></span><br><span class="line"></span><br><span class="line">    <span class="keyword">return</span> ossCore.uploadByStream(fileId, objectMetadata, inputStream); <span class="comment">// ③</span></span><br><span class="line">&#125;</span><br></pre></td></tr></table></figure>
+<ol>
+<li>将输出流转换为输入流</li>
+<li>保存对象的媒体信息</li>
+<li>上传至 <code>aliyun</code> 的 <code>OSS</code> 对象存储，具体实现可以看 <a href="#四、上传至OSS等对象存储"><code>第四部分</code></a></li>
+</ol>
+<h2 id="三、设置Excel单元格样式"><a href="#三、设置Excel单元格样式" class="headerlink" title="三、设置Excel单元格样式"></a>三、设置Excel单元格样式</h2><p>创建sheet</p>
+<figure class="highlight java"><table><tr><td class="gutter"><pre><span class="line">1</span><br></pre></td><td class="code"><pre><span class="line">HSSFCellStyle cellStyle = wb.createCellStyle();</span><br></pre></td></tr></table></figure>
+<p> 一、设置背景色:</p>
+<figure class="highlight java"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br></pre></td><td class="code"><pre><span class="line">cellStyle.setFillForegroundColor((<span class="keyword">short</span>) <span class="number">13</span>);<span class="comment">// 设置背景色  </span></span><br><span class="line">cellStyle.setFillPattern(HSSFCellStyle.SOLID_FOREGROUND);</span><br></pre></td></tr></table></figure>
+<p>二、设置边框:</p>
+<figure class="highlight java"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br></pre></td><td class="code"><pre><span class="line">cellStyle.setBorderBottom(HSSFCellStyle.BORDER_THIN); <span class="comment">//下边框  </span></span><br><span class="line">cellStyle.setBorderLeft(HSSFCellStyle.BORDER_THIN);<span class="comment">//左边框  </span></span><br><span class="line">cellStyle.setBorderTop(HSSFCellStyle.BORDER_THIN);<span class="comment">//上边框  </span></span><br><span class="line">cellStyle.setBorderRight(HSSFCellStyle.BORDER_THIN);<span class="comment">//右边框</span></span><br></pre></td></tr></table></figure>
+<p>三、设置居中:</p>
+<figure class="highlight java"><table><tr><td class="gutter"><pre><span class="line">1</span><br></pre></td><td class="code"><pre><span class="line">cellStyle.setAlignment(HSSFCellStyle.ALIGN_CENTER); <span class="comment">// 居中</span></span><br></pre></td></tr></table></figure>
+<p>四、设置字体:</p>
+<figure class="highlight java"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br></pre></td><td class="code"><pre><span class="line">HSSFFont font = wb.createFont();  </span><br><span class="line">font.setFontName(<span class="string">"黑体"</span>);  </span><br><span class="line">font.setFontHeightInPoints((<span class="keyword">short</span>) <span class="number">16</span>);<span class="comment">//设置字体大小  </span></span><br><span class="line">  </span><br><span class="line">HSSFFont font2 = wb.createFont();  </span><br><span class="line">font2.setFontName(<span class="string">"仿宋_GB2312"</span>);  </span><br><span class="line">font2.setBoldweight(HSSFFont.BOLDWEIGHT_BOLD);<span class="comment">//粗体显示  </span></span><br><span class="line">font2.setFontHeightInPoints((<span class="keyword">short</span>) <span class="number">12</span>);  </span><br><span class="line">  </span><br><span class="line">cellStyle.setFont(font);<span class="comment">//选择需要用到的字体格式</span></span><br></pre></td></tr></table></figure>
+<p>五、设置列宽:</p>
+<figure class="highlight java"><table><tr><td class="gutter"><pre><span class="line">1</span><br></pre></td><td class="code"><pre><span class="line">sheet.setColumnWidth(<span class="number">0</span>, <span class="number">3766</span>); <span class="comment">//第一个参数代表列id(从0开始),第2个参数代表宽度值  参考 ："2012-08-10"的宽度为2500</span></span><br></pre></td></tr></table></figure>
+<p>六、设置自动换行:</p>
+<figure class="highlight java"><table><tr><td class="gutter"><pre><span class="line">1</span><br></pre></td><td class="code"><pre><span class="line">cellStyle.setWrapText(<span class="keyword">true</span>);<span class="comment">//设置自动换行</span></span><br></pre></td></tr></table></figure>
+<p>七、合并单元格:</p>
+<figure class="highlight java"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br></pre></td><td class="code"><pre><span class="line">Region region1 = <span class="keyword">new</span> Region(<span class="number">0</span>, (<span class="keyword">short</span>) <span class="number">0</span>, <span class="number">0</span>, (<span class="keyword">short</span>) <span class="number">6</span>);<span class="comment">//参数1：行号 参数2：起始列号 参数3：行号 参数4：终止列号</span></span><br><span class="line"><span class="comment">//此方法在POI3.8中已经被废弃，建议使用下面一个  </span></span><br><span class="line">或者用</span><br><span class="line"></span><br><span class="line">CellRangeAddress region1 = <span class="keyword">new</span> CellRangeAddress(rowNumber, rowNumber, (<span class="keyword">short</span>) <span class="number">0</span>, (<span class="keyword">short</span>) <span class="number">11</span>);</span><br><span class="line"></span><br><span class="line"><span class="comment">//参数1：起始行 参数2：终止行 参数3：起始列 参数4：终止列</span></span><br><span class="line">但应注意两个构造方法的参数不是一样的，具体使用哪个取决于POI的不同版本。</span><br><span class="line"></span><br><span class="line"></span><br><span class="line">sheet.addMergedRegion(region1);</span><br></pre></td></tr></table></figure>
+<h2 id="四、上传至OSS等对象存储"><a href="#四、上传至OSS等对象存储" class="headerlink" title="四、上传至OSS等对象存储"></a>四、上传至OSS等对象存储</h2><p>作用：<code>上传 stream流 至 OSS</code></p>
+<figure class="highlight java"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br><span class="line">14</span><br><span class="line">15</span><br><span class="line">16</span><br><span class="line">17</span><br><span class="line">18</span><br><span class="line">19</span><br><span class="line">20</span><br><span class="line">21</span><br><span class="line">22</span><br></pre></td><td class="code"><pre><span class="line"><span class="function"><span class="keyword">public</span> String <span class="title">uploadByStream</span><span class="params">(String fileId, ObjectMetadata metadata, InputStream in)</span> </span>&#123;</span><br><span class="line">        String ossUrl = <span class="keyword">null</span>;</span><br><span class="line">        OSSClient ossClient = <span class="keyword">new</span> OSSClient(ENDPOINT, ACCESS_KEY_ID, ACCESS_KEY_SECRET);</span><br><span class="line">        ossClientMap.put(fileId, ossClient);</span><br><span class="line">        <span class="keyword">try</span> &#123;</span><br><span class="line">            putUploadProgress(fileId, <span class="number">0</span>);</span><br><span class="line">            PutObjectRequest req = <span class="keyword">new</span> PutObjectRequest(OssConnectionUtil.getBucketName(), fileId, in, metadata);</span><br><span class="line">            req.setProgressListener(<span class="keyword">new</span> UploadProgressListener(req));</span><br><span class="line">            PutObjectResult putResult = ossClient.putObject(req);</span><br><span class="line">            <span class="keyword">if</span> (putResult.getETag() != <span class="keyword">null</span>) &#123;</span><br><span class="line">                ossUrl =  getOssURL(ossClient, fileId);</span><br><span class="line">            &#125;</span><br><span class="line">            <span class="keyword">return</span> ossUrl;</span><br><span class="line">        &#125; <span class="keyword">catch</span>(ClientException ce) &#123;</span><br><span class="line">            <span class="keyword">return</span> <span class="keyword">null</span>;</span><br><span class="line">        &#125; <span class="keyword">catch</span> (Exception e) &#123;</span><br><span class="line">            <span class="keyword">return</span> <span class="keyword">null</span>;</span><br><span class="line">        &#125; <span class="keyword">finally</span> &#123;</span><br><span class="line">            ossClient.shutdown();</span><br><span class="line">            ossClientMap.remove(fileId);</span><br><span class="line">        &#125;</span><br><span class="line">    &#125;</span><br></pre></td></tr></table></figure>
+
+      
+    </div>
+    <footer class="article-footer">
+      <a data-url="http://yoursite.com/2018/09/29/java/POI操作EXCEl/" data-id="cjxpj0341008argtwaff2h9ja" class="article-share-link">Share</a>
+      
+      
+  <ul class="article-tag-list"><li class="article-tag-list-item"><a class="article-tag-list-link" href="/tags/java/">java</a></li><li class="article-tag-list-item"><a class="article-tag-list-link" href="/tags/poi/">poi</a></li></ul>
+
+    </footer>
+  </div>
+  
+    
+<nav id="article-nav">
+  
+    <a href="/2018/09/29/java/钩子函数/" id="article-nav-newer" class="article-nav-link-wrap">
+      <strong class="article-nav-caption">Newer</strong>
+      <div class="article-nav-title">
+        
+          钩子函数
+        
+      </div>
+    </a>
+  
+  
+    <a href="/2018/09/29/java/regex/" id="article-nav-older" class="article-nav-link-wrap">
+      <strong class="article-nav-caption">Older</strong>
+      <div class="article-nav-title">正则表达式</div>
+    </a>
+  
+</nav>
+
+  
+</article>
+
+</section>
+        
+          <aside id="sidebar">
+  
+    
+  <div class="widget-wrap">
+    <h3 class="widget-title">Categories</h3>
+    <div class="widget">
+      <ul class="category-list"><li class="category-list-item"><a class="category-list-link" href="/categories/Docker学习/">Docker学习</a></li><li class="category-list-item"><a class="category-list-link" href="/categories/Git命令学习/">Git命令学习</a></li><li class="category-list-item"><a class="category-list-link" href="/categories/JAVA-核心知识点整理/">JAVA 核心知识点整理</a></li><li class="category-list-item"><a class="category-list-link" href="/categories/Java/">Java</a></li><li class="category-list-item"><a class="category-list-link" href="/categories/Java并发编程与高并发解决方案/">Java并发编程与高并发解决方案</a></li><li class="category-list-item"><a class="category-list-link" href="/categories/Java并发编程的艺术/">Java并发编程的艺术</a></li><li class="category-list-item"><a class="category-list-link" href="/categories/Java成神之路/">Java成神之路</a><ul class="category-list-child"><li class="category-list-item"><a class="category-list-link" href="/categories/Java成神之路/SpringBoot/">SpringBoot</a></li><li class="category-list-item"><a class="category-list-link" href="/categories/Java成神之路/Study社区/">Study社区</a></li></ul></li><li class="category-list-item"><a class="category-list-link" href="/categories/Linux学习之路/">Linux学习之路</a></li><li class="category-list-item"><a class="category-list-link" href="/categories/MarkDown语法/">MarkDown语法</a></li><li class="category-list-item"><a class="category-list-link" href="/categories/React学习/">React学习</a></li><li class="category-list-item"><a class="category-list-link" href="/categories/SpringBoot-参考指南/">SpringBoot 参考指南</a></li><li class="category-list-item"><a class="category-list-link" href="/categories/工具函数/">工具函数</a></li><li class="category-list-item"><a class="category-list-link" href="/categories/设计模式/">设计模式</a></li><li class="category-list-item"><a class="category-list-link" href="/categories/高性能MySQL/">高性能MySQL</a></li></ul>
+    </div>
+  </div>
+
+
+  
+    
+  <div class="widget-wrap">
+    <h3 class="widget-title">Tags</h3>
+    <div class="widget">
+      <ul class="tag-list"><li class="tag-list-item"><a class="tag-list-link" href="/tags/Git/">Git</a></li><li class="tag-list-item"><a class="tag-list-link" href="/tags/Git-Bash/">Git Bash</a></li><li class="tag-list-item"><a class="tag-list-link" href="/tags/Linux/">Linux</a></li><li class="tag-list-item"><a class="tag-list-link" href="/tags/MQ/">MQ</a></li><li class="tag-list-item"><a class="tag-list-link" href="/tags/MySQL/">MySQL</a></li><li class="tag-list-item"><a class="tag-list-link" href="/tags/POI/">POI</a></li><li class="tag-list-item"><a class="tag-list-link" href="/tags/Spring-Cloud/">Spring Cloud</a></li><li class="tag-list-item"><a class="tag-list-link" href="/tags/Spring-Data/">Spring Data</a></li><li class="tag-list-item"><a class="tag-list-link" href="/tags/SpringBoot/">SpringBoot</a></li><li class="tag-list-item"><a class="tag-list-link" href="/tags/docker/">docker</a></li><li class="tag-list-item"><a class="tag-list-link" href="/tags/gradle/">gradle</a></li><li class="tag-list-item"><a class="tag-list-link" href="/tags/java/">java</a></li><li class="tag-list-item"><a class="tag-list-link" href="/tags/poi/">poi</a></li><li class="tag-list-item"><a class="tag-list-link" href="/tags/并发编程/">并发编程</a></li><li class="tag-list-item"><a class="tag-list-link" href="/tags/数据库/">数据库</a></li><li class="tag-list-item"><a class="tag-list-link" href="/tags/读书笔记/">读书笔记</a></li><li class="tag-list-item"><a class="tag-list-link" href="/tags/高并发/">高并发</a></li></ul>
+    </div>
+  </div>
+
+
+  
+    
+  <div class="widget-wrap">
+    <h3 class="widget-title">Tag Cloud</h3>
+    <div class="widget tagcloud">
+      <a href="/tags/Git/" style="font-size: 13.75px;">Git</a> <a href="/tags/Git-Bash/" style="font-size: 11.25px;">Git Bash</a> <a href="/tags/Linux/" style="font-size: 12.5px;">Linux</a> <a href="/tags/MQ/" style="font-size: 15px;">MQ</a> <a href="/tags/MySQL/" style="font-size: 17.5px;">MySQL</a> <a href="/tags/POI/" style="font-size: 16.25px;">POI</a> <a href="/tags/Spring-Cloud/" style="font-size: 10px;">Spring Cloud</a> <a href="/tags/Spring-Data/" style="font-size: 12.5px;">Spring Data</a> <a href="/tags/SpringBoot/" style="font-size: 15px;">SpringBoot</a> <a href="/tags/docker/" style="font-size: 10px;">docker</a> <a href="/tags/gradle/" style="font-size: 11.25px;">gradle</a> <a href="/tags/java/" style="font-size: 20px;">java</a> <a href="/tags/poi/" style="font-size: 10px;">poi</a> <a href="/tags/并发编程/" style="font-size: 12.5px;">并发编程</a> <a href="/tags/数据库/" style="font-size: 17.5px;">数据库</a> <a href="/tags/读书笔记/" style="font-size: 18.75px;">读书笔记</a> <a href="/tags/高并发/" style="font-size: 12.5px;">高并发</a>
+    </div>
+  </div>
+
+  
+    
+  <div class="widget-wrap">
+    <h3 class="widget-title">Archives</h3>
+    <div class="widget">
+      <ul class="archive-list"><li class="archive-list-item"><a class="archive-list-link" href="/archives/2019/12/">December 2019</a></li><li class="archive-list-item"><a class="archive-list-link" href="/archives/2019/11/">November 2019</a></li><li class="archive-list-item"><a class="archive-list-link" href="/archives/2019/07/">July 2019</a></li><li class="archive-list-item"><a class="archive-list-link" href="/archives/2019/06/">June 2019</a></li><li class="archive-list-item"><a class="archive-list-link" href="/archives/2019/05/">May 2019</a></li><li class="archive-list-item"><a class="archive-list-link" href="/archives/2018/11/">November 2018</a></li><li class="archive-list-item"><a class="archive-list-link" href="/archives/2018/10/">October 2018</a></li><li class="archive-list-item"><a class="archive-list-link" href="/archives/2018/09/">September 2018</a></li><li class="archive-list-item"><a class="archive-list-link" href="/archives/2017/05/">May 2017</a></li></ul>
+    </div>
+  </div>
+
+
+  
+    
+  <div class="widget-wrap">
+    <h3 class="widget-title">Recent Posts</h3>
+    <div class="widget">
+      <ul>
+        
+          <li>
+            <a href="/2019/12/30/blog/2019/">2019年目标</a>
+          </li>
+        
+          <li>
+            <a href="/2019/12/01/读书笔记/《Java并发编程的艺术》/0.0_目录/">《Java并发编程的艺术》读书笔记 - 目录</a>
+          </li>
+        
+          <li>
+            <a href="/2019/12/01/读书笔记/《Java核心知识点整理》/0.目录/">《JAVA 核心知识点整理》读书笔记 - 目录</a>
+          </li>
+        
+          <li>
+            <a href="/2019/11/30/读书笔记/《高性能MySQL》/0.目录/">《高性能MySQL》读书笔记 - 目录</a>
+          </li>
+        
+          <li>
+            <a href="/2019/07/05/读书笔记/《JavaDesignPatterns》/8.建造者模式/">《Java Design Patterns》第六章 建造者模式 - 复杂对象的组装与创建</a>
+          </li>
+        
+      </ul>
+    </div>
+  </div>
+
+  
+</aside>
+        
+      </div>
+      <footer id="footer">
+  
+  <div class="outer">
+    <div id="footer-info" class="inner">
+      &copy; 2019 koral<br>
+      Powered by <a href="http://hexo.io/" target="_blank">Hexo</a>
+    </div>
+  </div>
+</footer>
+    </div>
+    <nav id="mobile-nav">
+  
+    <a href="/" class="mobile-nav-link">Home</a>
+  
+    <a href="/archives" class="mobile-nav-link">Archives</a>
+  
+</nav>
+    
+
+<script src="//ajax.googleapis.com/ajax/libs/jquery/2.0.3/jquery.min.js"></script>
+
+
+  <link rel="stylesheet" href="/fancybox/jquery.fancybox.css">
+  <script src="/fancybox/jquery.fancybox.pack.js"></script>
+
+
+<script src="/js/script.js"></script>
+
+
+
+  </div>
+</body>
+</html>

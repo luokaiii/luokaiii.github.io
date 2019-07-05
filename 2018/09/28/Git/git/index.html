@@ -1,0 +1,259 @@
+<!DOCTYPE html>
+<html>
+<head>
+  <meta charset="utf-8">
+  
+
+  
+  <title>Git多账户配置 | 罗凯的博客</title>
+  <meta name="viewport" content="width=device-width, initial-scale=1, maximum-scale=1">
+  <meta name="description" content="这是一段描述的话">
+<meta name="keywords" content="Git,Git Bash">
+<meta property="og:type" content="article">
+<meta property="og:title" content="Git多账户配置">
+<meta property="og:url" content="http://yoursite.com/2018/09/28/Git/git/index.html">
+<meta property="og:site_name" content="罗凯的博客">
+<meta property="og:description" content="这是一段描述的话">
+<meta property="og:locale" content="zh-Hans">
+<meta property="og:image" content="https://upload-images.jianshu.io/upload_images/13603359-accb6aef01836f8e.png?imageMogr2/auto-orient/strip%7CimageView2/2/w/1240">
+<meta property="og:image" content="https://upload-images.jianshu.io/upload_images/13603359-c8f3bdda9deef6da.png?imageMogr2/auto-orient/strip%7CimageView2/2/w/1240">
+<meta property="og:image" content="https://upload-images.jianshu.io/upload_images/13603359-1381194685beccaa.png?imageMogr2/auto-orient/strip%7CimageView2/2/w/1240">
+<meta property="og:updated_time" content="2019-07-01T02:49:01.343Z">
+<meta name="twitter:card" content="summary">
+<meta name="twitter:title" content="Git多账户配置">
+<meta name="twitter:description" content="这是一段描述的话">
+<meta name="twitter:image" content="https://upload-images.jianshu.io/upload_images/13603359-accb6aef01836f8e.png?imageMogr2/auto-orient/strip%7CimageView2/2/w/1240">
+  
+    <link rel="alternate" href="/atom.xml" title="罗凯的博客" type="application/atom+xml">
+  
+  
+    <link rel="icon" href="https://i.loli.net/2019/07/04/5d1db2fb9593c58427.gif">
+  
+  
+    <link href="//fonts.googleapis.com/css?family=Source+Code+Pro" rel="stylesheet" type="text/css">
+  
+  <link rel="stylesheet" href="/css/style.css">
+</head>
+
+<body>
+  <div id="container">
+    <div id="wrap">
+      <header id="header">
+  <div id="banner"></div>
+  <div id="header-outer" class="outer">
+    <div id="header-title" class="inner">
+      <h1 id="logo-wrap">
+        <a href="/" id="logo">罗凯的博客</a>
+      </h1>
+      
+        <h2 id="subtitle-wrap">
+          <a href="/" id="subtitle">一个大帅哥</a>
+        </h2>
+      
+    </div>
+    <div id="header-inner" class="inner">
+      <nav id="main-nav">
+        <a id="main-nav-toggle" class="nav-icon"></a>
+        
+          <a class="main-nav-link" href="/">Home</a>
+        
+          <a class="main-nav-link" href="/archives">Archives</a>
+        
+      </nav>
+      <nav id="sub-nav">
+        
+          <a id="nav-rss-link" class="nav-icon" href="/atom.xml" title="RSS Feed"></a>
+        
+        <a id="nav-search-btn" class="nav-icon" title="Search"></a>
+      </nav>
+      <div id="search-form-wrap">
+        <form action="//google.com/search" method="get" accept-charset="UTF-8" class="search-form"><input type="search" name="q" class="search-form-input" placeholder="Search"><button type="submit" class="search-form-submit">&#xF002;</button><input type="hidden" name="sitesearch" value="http://yoursite.com"></form>
+      </div>
+    </div>
+  </div>
+</header>
+      <div class="outer">
+        <section id="main"><article id="post-Git/git" class="article article-type-post" itemscope itemprop="blogPost">
+  <div class="article-meta">
+    <a href="/2018/09/28/Git/git/" class="article-date">
+  <time datetime="2018-09-28T08:51:15.000Z" itemprop="datePublished">2018-09-28</time>
+</a>
+    
+  <div class="article-category">
+    <a class="article-category-link" href="/categories/Git命令学习/">Git命令学习</a>
+  </div>
+
+  </div>
+  <div class="article-inner">
+    
+    
+      <header class="article-header">
+        
+  
+    <h1 class="article-title" itemprop="name">
+      Git多账户配置
+    </h1>
+  
+
+      </header>
+    
+    <div class="article-entry" itemprop="articleBody">
+      
+        <h1 id="同时使用多个Git源（Github-Gitee-Gitlab等）"><a href="#同时使用多个Git源（Github-Gitee-Gitlab等）" class="headerlink" title="同时使用多个Git源（Github,Gitee,Gitlab等）"></a>同时使用多个Git源（Github,Gitee,Gitlab等）</h1><p>在很多情况下，我们在同一台PC上可能需要关联多个 <code>Git 源</code>。比如公司的项目放在 <code>gitee</code> 上，但是个人有很多学习的小项目都放在 <code>github</code> 上，此时就需要有能连接多个 <code>ssh</code> 的需求。</p>
+<h2 id="第一步：为每个-git-在线服务生成一对公私钥"><a href="#第一步：为每个-git-在线服务生成一对公私钥" class="headerlink" title="第一步：为每个 git 在线服务生成一对公私钥"></a>第一步：为每个 git 在线服务生成一对公私钥</h2><figure class="highlight plain"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br></pre></td><td class="code"><pre><span class="line">$ ssh-keygen -t rsa -C &quot;yourEmail@email.com&quot;</span><br><span class="line"></span><br><span class="line">Enter file in which to save the key (/c/Users/user/.ssh/id_rsa): /c/User/user/.ssh/id_rsa_github</span><br></pre></td></tr></table></figure>
+<p>我们以 id_rsa_github 为生成的公私钥文件命名，并指定文件的存储路径为 “/c/User/user/.ssh/“ 下</p>
+<p><img src="https://upload-images.jianshu.io/upload_images/13603359-accb6aef01836f8e.png?imageMogr2/auto-orient/strip%7CimageView2/2/w/1240" alt="生成的公私钥"></p>
+<p>如果你需要多个服务，则依次 <code>重复第一步</code> 即可。<br><code>注意每一对公私钥的命名不能重复。</code></p>
+<h2 id="第二步：在-c-User-user-ssh-下创建-config-文件，并填入刚刚的公私钥名"><a href="#第二步：在-c-User-user-ssh-下创建-config-文件，并填入刚刚的公私钥名" class="headerlink" title="第二步：在 /c/User/user/.ssh/ 下创建 config 文件，并填入刚刚的公私钥名"></a>第二步：在 /c/User/user/.ssh/ 下创建 config 文件，并填入刚刚的公私钥名</h2><figure class="highlight groovy"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br></pre></td><td class="code"><pre><span class="line">Host gitee.com</span><br><span class="line">  Hostname gitee.com</span><br><span class="line">  PreferredAuthentications publickey</span><br><span class="line">  IdentityFile <span class="regexp">~/.ssh/</span>id_rsa_gitee</span><br><span class="line">  User koral</span><br><span class="line"></span><br><span class="line">Host github.com</span><br><span class="line">  Hostname github.com</span><br><span class="line">  PreferredAuthentications publickey</span><br><span class="line">  IdentityFile <span class="regexp">~/.ssh/</span>id_rsa_github</span><br><span class="line">  User koral</span><br></pre></td></tr></table></figure>
+<p>这一步表示，在git发起 ssh 链接时，对应着哪一个 ssh 私钥。这里我只以 码云( <code>gitee@OSC</code> )和 <code>github</code> 为例。</p>
+<p>不要问我 <code>~/.ssh/</code> 前面的 <code>~</code> 表示什么意思。我也不会告诉你，它表示当前PC用户的根目录的。至于你想设置为全局的，我也不知道。</p>
+<h2 id="第三步：将生成的公钥添加至各自的-SSH-中"><a href="#第三步：将生成的公钥添加至各自的-SSH-中" class="headerlink" title="第三步：将生成的公钥添加至各自的 SSH 中"></a>第三步：将生成的公钥添加至各自的 SSH 中</h2><p>这里以 Github 为例，其他几个网站类似：</p>
+<h3 id="在-SSH-keys-中”New-SSH-key”"><a href="#在-SSH-keys-中”New-SSH-key”" class="headerlink" title="在 SSH keys 中”New SSH key”"></a>在 SSH keys 中”New SSH key”</h3><p><img src="https://upload-images.jianshu.io/upload_images/13603359-c8f3bdda9deef6da.png?imageMogr2/auto-orient/strip%7CimageView2/2/w/1240" alt="找到github的ssh"></p>
+<h3 id="写入生成的SSH"><a href="#写入生成的SSH" class="headerlink" title="写入生成的SSH"></a>写入生成的SSH</h3><p>找到第一步中生成的SSH公钥(以”.pub”结尾的)，并填入，Title随便写<br><img src="https://upload-images.jianshu.io/upload_images/13603359-1381194685beccaa.png?imageMogr2/auto-orient/strip%7CimageView2/2/w/1240" alt="image.png"></p>
+<h2 id="第四步：测试"><a href="#第四步：测试" class="headerlink" title="第四步：测试"></a>第四步：测试</h2><figure class="highlight shell"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br></pre></td><td class="code"><pre><span class="line">ssh -T git@github.com</span><br><span class="line">ssh -T git@gitee.com</span><br></pre></td></tr></table></figure>
+<p>如果提示了什么不得了的东西，请先删除 “/c/User/user/.ssh/“ 目录下的 “known_hosts”，并重新执行测试。它会重新生成一个。<br>当出现 <code>Hi koral! You&#39;ve successfully authenticated, but GitHub does not provide shell access.</code> 时，恭喜你，连接成功。</p>
+
+      
+    </div>
+    <footer class="article-footer">
+      <a data-url="http://yoursite.com/2018/09/28/Git/git/" data-id="cjxpj02q30006rgtw3mzfkhzp" class="article-share-link">Share</a>
+      
+      
+  <ul class="article-tag-list"><li class="article-tag-list-item"><a class="article-tag-list-link" href="/tags/Git/">Git</a></li><li class="article-tag-list-item"><a class="article-tag-list-link" href="/tags/Git-Bash/">Git Bash</a></li></ul>
+
+    </footer>
+  </div>
+  
+    
+<nav id="article-nav">
+  
+    <a href="/2018/09/28/Git/博客系统的学习/" id="article-nav-newer" class="article-nav-link-wrap">
+      <strong class="article-nav-caption">Newer</strong>
+      <div class="article-nav-title">
+        
+          使用 Hexo + Github Pages 搭建个人博客
+        
+      </div>
+    </a>
+  
+  
+    <a href="/2018/09/28/Git/Git命令/" id="article-nav-older" class="article-nav-link-wrap">
+      <strong class="article-nav-caption">Older</strong>
+      <div class="article-nav-title">Git常见命令</div>
+    </a>
+  
+</nav>
+
+  
+</article>
+
+</section>
+        
+          <aside id="sidebar">
+  
+    
+  <div class="widget-wrap">
+    <h3 class="widget-title">Categories</h3>
+    <div class="widget">
+      <ul class="category-list"><li class="category-list-item"><a class="category-list-link" href="/categories/Docker学习/">Docker学习</a></li><li class="category-list-item"><a class="category-list-link" href="/categories/Git命令学习/">Git命令学习</a></li><li class="category-list-item"><a class="category-list-link" href="/categories/JAVA-核心知识点整理/">JAVA 核心知识点整理</a></li><li class="category-list-item"><a class="category-list-link" href="/categories/Java/">Java</a></li><li class="category-list-item"><a class="category-list-link" href="/categories/Java并发编程与高并发解决方案/">Java并发编程与高并发解决方案</a></li><li class="category-list-item"><a class="category-list-link" href="/categories/Java并发编程的艺术/">Java并发编程的艺术</a></li><li class="category-list-item"><a class="category-list-link" href="/categories/Java成神之路/">Java成神之路</a><ul class="category-list-child"><li class="category-list-item"><a class="category-list-link" href="/categories/Java成神之路/SpringBoot/">SpringBoot</a></li><li class="category-list-item"><a class="category-list-link" href="/categories/Java成神之路/Study社区/">Study社区</a></li></ul></li><li class="category-list-item"><a class="category-list-link" href="/categories/Linux学习之路/">Linux学习之路</a></li><li class="category-list-item"><a class="category-list-link" href="/categories/MarkDown语法/">MarkDown语法</a></li><li class="category-list-item"><a class="category-list-link" href="/categories/React学习/">React学习</a></li><li class="category-list-item"><a class="category-list-link" href="/categories/SpringBoot-参考指南/">SpringBoot 参考指南</a></li><li class="category-list-item"><a class="category-list-link" href="/categories/工具函数/">工具函数</a></li><li class="category-list-item"><a class="category-list-link" href="/categories/设计模式/">设计模式</a></li><li class="category-list-item"><a class="category-list-link" href="/categories/高性能MySQL/">高性能MySQL</a></li></ul>
+    </div>
+  </div>
+
+
+  
+    
+  <div class="widget-wrap">
+    <h3 class="widget-title">Tags</h3>
+    <div class="widget">
+      <ul class="tag-list"><li class="tag-list-item"><a class="tag-list-link" href="/tags/Git/">Git</a></li><li class="tag-list-item"><a class="tag-list-link" href="/tags/Git-Bash/">Git Bash</a></li><li class="tag-list-item"><a class="tag-list-link" href="/tags/Linux/">Linux</a></li><li class="tag-list-item"><a class="tag-list-link" href="/tags/MQ/">MQ</a></li><li class="tag-list-item"><a class="tag-list-link" href="/tags/MySQL/">MySQL</a></li><li class="tag-list-item"><a class="tag-list-link" href="/tags/POI/">POI</a></li><li class="tag-list-item"><a class="tag-list-link" href="/tags/Spring-Cloud/">Spring Cloud</a></li><li class="tag-list-item"><a class="tag-list-link" href="/tags/Spring-Data/">Spring Data</a></li><li class="tag-list-item"><a class="tag-list-link" href="/tags/SpringBoot/">SpringBoot</a></li><li class="tag-list-item"><a class="tag-list-link" href="/tags/docker/">docker</a></li><li class="tag-list-item"><a class="tag-list-link" href="/tags/gradle/">gradle</a></li><li class="tag-list-item"><a class="tag-list-link" href="/tags/java/">java</a></li><li class="tag-list-item"><a class="tag-list-link" href="/tags/poi/">poi</a></li><li class="tag-list-item"><a class="tag-list-link" href="/tags/并发编程/">并发编程</a></li><li class="tag-list-item"><a class="tag-list-link" href="/tags/数据库/">数据库</a></li><li class="tag-list-item"><a class="tag-list-link" href="/tags/读书笔记/">读书笔记</a></li><li class="tag-list-item"><a class="tag-list-link" href="/tags/高并发/">高并发</a></li></ul>
+    </div>
+  </div>
+
+
+  
+    
+  <div class="widget-wrap">
+    <h3 class="widget-title">Tag Cloud</h3>
+    <div class="widget tagcloud">
+      <a href="/tags/Git/" style="font-size: 13.75px;">Git</a> <a href="/tags/Git-Bash/" style="font-size: 11.25px;">Git Bash</a> <a href="/tags/Linux/" style="font-size: 12.5px;">Linux</a> <a href="/tags/MQ/" style="font-size: 15px;">MQ</a> <a href="/tags/MySQL/" style="font-size: 17.5px;">MySQL</a> <a href="/tags/POI/" style="font-size: 16.25px;">POI</a> <a href="/tags/Spring-Cloud/" style="font-size: 10px;">Spring Cloud</a> <a href="/tags/Spring-Data/" style="font-size: 12.5px;">Spring Data</a> <a href="/tags/SpringBoot/" style="font-size: 15px;">SpringBoot</a> <a href="/tags/docker/" style="font-size: 10px;">docker</a> <a href="/tags/gradle/" style="font-size: 11.25px;">gradle</a> <a href="/tags/java/" style="font-size: 20px;">java</a> <a href="/tags/poi/" style="font-size: 10px;">poi</a> <a href="/tags/并发编程/" style="font-size: 12.5px;">并发编程</a> <a href="/tags/数据库/" style="font-size: 17.5px;">数据库</a> <a href="/tags/读书笔记/" style="font-size: 18.75px;">读书笔记</a> <a href="/tags/高并发/" style="font-size: 12.5px;">高并发</a>
+    </div>
+  </div>
+
+  
+    
+  <div class="widget-wrap">
+    <h3 class="widget-title">Archives</h3>
+    <div class="widget">
+      <ul class="archive-list"><li class="archive-list-item"><a class="archive-list-link" href="/archives/2019/12/">December 2019</a></li><li class="archive-list-item"><a class="archive-list-link" href="/archives/2019/11/">November 2019</a></li><li class="archive-list-item"><a class="archive-list-link" href="/archives/2019/07/">July 2019</a></li><li class="archive-list-item"><a class="archive-list-link" href="/archives/2019/06/">June 2019</a></li><li class="archive-list-item"><a class="archive-list-link" href="/archives/2019/05/">May 2019</a></li><li class="archive-list-item"><a class="archive-list-link" href="/archives/2018/11/">November 2018</a></li><li class="archive-list-item"><a class="archive-list-link" href="/archives/2018/10/">October 2018</a></li><li class="archive-list-item"><a class="archive-list-link" href="/archives/2018/09/">September 2018</a></li><li class="archive-list-item"><a class="archive-list-link" href="/archives/2017/05/">May 2017</a></li></ul>
+    </div>
+  </div>
+
+
+  
+    
+  <div class="widget-wrap">
+    <h3 class="widget-title">Recent Posts</h3>
+    <div class="widget">
+      <ul>
+        
+          <li>
+            <a href="/2019/12/30/blog/2019/">2019年目标</a>
+          </li>
+        
+          <li>
+            <a href="/2019/12/01/读书笔记/《Java并发编程的艺术》/0.0_目录/">《Java并发编程的艺术》读书笔记 - 目录</a>
+          </li>
+        
+          <li>
+            <a href="/2019/12/01/读书笔记/《Java核心知识点整理》/0.目录/">《JAVA 核心知识点整理》读书笔记 - 目录</a>
+          </li>
+        
+          <li>
+            <a href="/2019/11/30/读书笔记/《高性能MySQL》/0.目录/">《高性能MySQL》读书笔记 - 目录</a>
+          </li>
+        
+          <li>
+            <a href="/2019/07/05/读书笔记/《JavaDesignPatterns》/8.建造者模式/">《Java Design Patterns》第六章 建造者模式 - 复杂对象的组装与创建</a>
+          </li>
+        
+      </ul>
+    </div>
+  </div>
+
+  
+</aside>
+        
+      </div>
+      <footer id="footer">
+  
+  <div class="outer">
+    <div id="footer-info" class="inner">
+      &copy; 2019 koral<br>
+      Powered by <a href="http://hexo.io/" target="_blank">Hexo</a>
+    </div>
+  </div>
+</footer>
+    </div>
+    <nav id="mobile-nav">
+  
+    <a href="/" class="mobile-nav-link">Home</a>
+  
+    <a href="/archives" class="mobile-nav-link">Archives</a>
+  
+</nav>
+    
+
+<script src="//ajax.googleapis.com/ajax/libs/jquery/2.0.3/jquery.min.js"></script>
+
+
+  <link rel="stylesheet" href="/fancybox/jquery.fancybox.css">
+  <script src="/fancybox/jquery.fancybox.pack.js"></script>
+
+
+<script src="/js/script.js"></script>
+
+
+
+  </div>
+</body>
+</html>

@@ -1,0 +1,248 @@
+<!DOCTYPE html>
+<html>
+<head>
+  <meta charset="utf-8">
+  
+
+  
+  <title>使用POI结合Excel的行列生成雷达图 | 罗凯的博客</title>
+  <meta name="viewport" content="width=device-width, initial-scale=1, maximum-scale=1">
+  <meta name="description" content="使用POI结合Excel的行列生成雷达图一、先放最后输出的结果图： 二、代码123456789101112131415161718192021222324252627282930313233343536373839404142434445464748495051525354555657585960616263646566676869707172737475767778798081828384858">
+<meta name="keywords" content="POI">
+<meta property="og:type" content="article">
+<meta property="og:title" content="使用POI结合Excel的行列生成雷达图">
+<meta property="og:url" content="http://yoursite.com/2018/09/01/POI/POI生成原生Excel-雷达图/index.html">
+<meta property="og:site_name" content="罗凯的博客">
+<meta property="og:description" content="使用POI结合Excel的行列生成雷达图一、先放最后输出的结果图： 二、代码123456789101112131415161718192021222324252627282930313233343536373839404142434445464748495051525354555657585960616263646566676869707172737475767778798081828384858">
+<meta property="og:locale" content="zh-Hans">
+<meta property="og:image" content="https://koral-home.oss-cn-beijing.aliyuncs.com/blog/RadarChart.png">
+<meta property="og:updated_time" content="2019-07-01T02:49:01.356Z">
+<meta name="twitter:card" content="summary">
+<meta name="twitter:title" content="使用POI结合Excel的行列生成雷达图">
+<meta name="twitter:description" content="使用POI结合Excel的行列生成雷达图一、先放最后输出的结果图： 二、代码123456789101112131415161718192021222324252627282930313233343536373839404142434445464748495051525354555657585960616263646566676869707172737475767778798081828384858">
+<meta name="twitter:image" content="https://koral-home.oss-cn-beijing.aliyuncs.com/blog/RadarChart.png">
+  
+    <link rel="alternate" href="/atom.xml" title="罗凯的博客" type="application/atom+xml">
+  
+  
+    <link rel="icon" href="https://i.loli.net/2019/07/04/5d1db2fb9593c58427.gif">
+  
+  
+    <link href="//fonts.googleapis.com/css?family=Source+Code+Pro" rel="stylesheet" type="text/css">
+  
+  <link rel="stylesheet" href="/css/style.css">
+</head>
+
+<body>
+  <div id="container">
+    <div id="wrap">
+      <header id="header">
+  <div id="banner"></div>
+  <div id="header-outer" class="outer">
+    <div id="header-title" class="inner">
+      <h1 id="logo-wrap">
+        <a href="/" id="logo">罗凯的博客</a>
+      </h1>
+      
+        <h2 id="subtitle-wrap">
+          <a href="/" id="subtitle">一个大帅哥</a>
+        </h2>
+      
+    </div>
+    <div id="header-inner" class="inner">
+      <nav id="main-nav">
+        <a id="main-nav-toggle" class="nav-icon"></a>
+        
+          <a class="main-nav-link" href="/">Home</a>
+        
+          <a class="main-nav-link" href="/archives">Archives</a>
+        
+      </nav>
+      <nav id="sub-nav">
+        
+          <a id="nav-rss-link" class="nav-icon" href="/atom.xml" title="RSS Feed"></a>
+        
+        <a id="nav-search-btn" class="nav-icon" title="Search"></a>
+      </nav>
+      <div id="search-form-wrap">
+        <form action="//google.com/search" method="get" accept-charset="UTF-8" class="search-form"><input type="search" name="q" class="search-form-input" placeholder="Search"><button type="submit" class="search-form-submit">&#xF002;</button><input type="hidden" name="sitesearch" value="http://yoursite.com"></form>
+      </div>
+    </div>
+  </div>
+</header>
+      <div class="outer">
+        <section id="main"><article id="post-POI/POI生成原生Excel-雷达图" class="article article-type-post" itemscope itemprop="blogPost">
+  <div class="article-meta">
+    <a href="/2018/09/01/POI/POI生成原生Excel-雷达图/" class="article-date">
+  <time datetime="2018-09-01T06:46:03.000Z" itemprop="datePublished">2018-09-01</time>
+</a>
+    
+  <div class="article-category">
+    <a class="article-category-link" href="/categories/Java/">Java</a>
+  </div>
+
+  </div>
+  <div class="article-inner">
+    
+    
+      <header class="article-header">
+        
+  
+    <h1 class="article-title" itemprop="name">
+      使用POI结合Excel的行列生成雷达图
+    </h1>
+  
+
+      </header>
+    
+    <div class="article-entry" itemprop="articleBody">
+      
+        <h1 id="使用POI结合Excel的行列生成雷达图"><a href="#使用POI结合Excel的行列生成雷达图" class="headerlink" title="使用POI结合Excel的行列生成雷达图"></a>使用POI结合Excel的行列生成雷达图</h1><h2 id="一、先放最后输出的结果图："><a href="#一、先放最后输出的结果图：" class="headerlink" title="一、先放最后输出的结果图："></a>一、先放最后输出的结果图：</h2><p><img src="https://koral-home.oss-cn-beijing.aliyuncs.com/blog/RadarChart.png" alt="雷达图"></p>
+<h2 id="二、代码"><a href="#二、代码" class="headerlink" title="二、代码"></a>二、代码</h2><figure class="highlight java"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br><span class="line">14</span><br><span class="line">15</span><br><span class="line">16</span><br><span class="line">17</span><br><span class="line">18</span><br><span class="line">19</span><br><span class="line">20</span><br><span class="line">21</span><br><span class="line">22</span><br><span class="line">23</span><br><span class="line">24</span><br><span class="line">25</span><br><span class="line">26</span><br><span class="line">27</span><br><span class="line">28</span><br><span class="line">29</span><br><span class="line">30</span><br><span class="line">31</span><br><span class="line">32</span><br><span class="line">33</span><br><span class="line">34</span><br><span class="line">35</span><br><span class="line">36</span><br><span class="line">37</span><br><span class="line">38</span><br><span class="line">39</span><br><span class="line">40</span><br><span class="line">41</span><br><span class="line">42</span><br><span class="line">43</span><br><span class="line">44</span><br><span class="line">45</span><br><span class="line">46</span><br><span class="line">47</span><br><span class="line">48</span><br><span class="line">49</span><br><span class="line">50</span><br><span class="line">51</span><br><span class="line">52</span><br><span class="line">53</span><br><span class="line">54</span><br><span class="line">55</span><br><span class="line">56</span><br><span class="line">57</span><br><span class="line">58</span><br><span class="line">59</span><br><span class="line">60</span><br><span class="line">61</span><br><span class="line">62</span><br><span class="line">63</span><br><span class="line">64</span><br><span class="line">65</span><br><span class="line">66</span><br><span class="line">67</span><br><span class="line">68</span><br><span class="line">69</span><br><span class="line">70</span><br><span class="line">71</span><br><span class="line">72</span><br><span class="line">73</span><br><span class="line">74</span><br><span class="line">75</span><br><span class="line">76</span><br><span class="line">77</span><br><span class="line">78</span><br><span class="line">79</span><br><span class="line">80</span><br><span class="line">81</span><br><span class="line">82</span><br><span class="line">83</span><br><span class="line">84</span><br><span class="line">85</span><br><span class="line">86</span><br><span class="line">87</span><br><span class="line">88</span><br><span class="line">89</span><br><span class="line">90</span><br><span class="line">91</span><br><span class="line">92</span><br><span class="line">93</span><br><span class="line">94</span><br><span class="line">95</span><br><span class="line">96</span><br><span class="line">97</span><br><span class="line">98</span><br><span class="line">99</span><br><span class="line">100</span><br><span class="line">101</span><br><span class="line">102</span><br><span class="line">103</span><br><span class="line">104</span><br><span class="line">105</span><br><span class="line">106</span><br><span class="line">107</span><br><span class="line">108</span><br><span class="line">109</span><br><span class="line">110</span><br><span class="line">111</span><br><span class="line">112</span><br><span class="line">113</span><br><span class="line">114</span><br><span class="line">115</span><br><span class="line">116</span><br><span class="line">117</span><br><span class="line">118</span><br><span class="line">119</span><br><span class="line">120</span><br><span class="line">121</span><br><span class="line">122</span><br><span class="line">123</span><br><span class="line">124</span><br><span class="line">125</span><br><span class="line">126</span><br><span class="line">127</span><br><span class="line">128</span><br><span class="line">129</span><br><span class="line">130</span><br><span class="line">131</span><br><span class="line">132</span><br></pre></td><td class="code"><pre><span class="line">    <span class="meta">@Test</span></span><br><span class="line">    <span class="function"><span class="keyword">public</span> <span class="keyword">void</span> <span class="title">createRadar</span><span class="params">()</span> <span class="keyword">throws</span> IOException </span>&#123;</span><br><span class="line">        <span class="keyword">final</span> String sheetName = <span class="string">"RadarChart"</span>;</span><br><span class="line">        <span class="keyword">try</span> (XSSFWorkbook workbook = <span class="keyword">new</span> XSSFWorkbook()) &#123;</span><br><span class="line">            XSSFSheet sheet = workbook.createSheet(sheetName);</span><br><span class="line"></span><br><span class="line">            <span class="keyword">for</span> (<span class="keyword">int</span> i = <span class="number">0</span>; i &lt; <span class="number">16</span>; i++) &#123;</span><br><span class="line">                XSSFRow row = sheet.createRow(i);</span><br><span class="line">                XSSFCell cell = row.createCell(<span class="number">0</span>);</span><br><span class="line">                cell.setCellValue(i + <span class="string">"行"</span>);</span><br><span class="line">                XSSFCell cell1 = row.createCell(<span class="number">1</span>);</span><br><span class="line">                cell1.setCellValue(RandomUtils.nextInt(<span class="number">0</span>, <span class="number">20</span>));</span><br><span class="line">            &#125;</span><br><span class="line"></span><br><span class="line">            XSSFDrawing drawing = sheet.createDrawingPatriarch();</span><br><span class="line">            XSSFClientAnchor anchor = drawing.createAnchor(<span class="number">0</span>, <span class="number">0</span>, <span class="number">0</span>, <span class="number">0</span>, <span class="number">2</span>, <span class="number">0</span>, <span class="number">7</span>, <span class="number">16</span>);</span><br><span class="line">            XSSFChart chart = drawing.createChart(anchor);</span><br><span class="line"></span><br><span class="line">            CTChart ctChart = chart.getCTChart();</span><br><span class="line">            ctChart.addNewAutoTitleDeleted().setVal(<span class="keyword">false</span>);</span><br><span class="line"><span class="comment">//            ctChart.addNewPlotVisOnly().setVal(true);</span></span><br><span class="line"><span class="comment">//            ctChart.addNewDispBlanksAs().setVal(STDispBlanksAs.GAP);</span></span><br><span class="line"><span class="comment">//            ctChart.addNewShowDLblsOverMax().setVal(false);</span></span><br><span class="line"></span><br><span class="line">            CTPlotArea ctPlotArea = ctChart.addNewPlotArea();</span><br><span class="line">            ctPlotArea.addNewLayout();</span><br><span class="line"><span class="comment">//            CTShapeProperties ctShapeProperties = ctPlotArea.addNewSpPr();</span></span><br><span class="line"><span class="comment">//            ctShapeProperties.addNewNoFill();</span></span><br><span class="line"><span class="comment">//            ctShapeProperties.addNewLn().addNewNoFill();</span></span><br><span class="line"><span class="comment">//            ctShapeProperties.addNewEffectLst();</span></span><br><span class="line"></span><br><span class="line">            CTRadarChart ctRadarChart = ctPlotArea.addNewRadarChart();</span><br><span class="line">            <span class="comment">// 这两个值应该对应着catAx和valAx</span></span><br><span class="line">            ctRadarChart.addNewAxId().setVal(<span class="number">123456</span>);</span><br><span class="line">            ctRadarChart.addNewAxId().setVal(<span class="number">123457</span>);</span><br><span class="line">            <span class="comment">// 分类标签等是否显示</span></span><br><span class="line">            CTDLbls ctdLbls = ctRadarChart.addNewDLbls();</span><br><span class="line">            ctdLbls.addNewShowLegendKey().setVal(<span class="keyword">false</span>);</span><br><span class="line">            ctdLbls.addNewShowVal().setVal(<span class="keyword">false</span>);</span><br><span class="line">            ctdLbls.addNewShowCatName().setVal(<span class="keyword">false</span>);</span><br><span class="line">            ctdLbls.addNewShowSerName().setVal(<span class="keyword">false</span>);</span><br><span class="line">            ctdLbls.addNewShowPercent().setVal(<span class="keyword">false</span>);</span><br><span class="line">            ctdLbls.addNewShowBubbleSize().setVal(<span class="keyword">false</span>);</span><br><span class="line">            <span class="comment">// 不允许自定义颜色、以及标记的形状</span></span><br><span class="line">            ctRadarChart.addNewRadarStyle().setVal(STRadarStyle.MARKER);</span><br><span class="line">            ctRadarChart.addNewVaryColors().setVal(<span class="keyword">false</span>);</span><br><span class="line"></span><br><span class="line">            CTRadarSer ctRadarSer = ctRadarChart.addNewSer();</span><br><span class="line">            ctRadarSer.addNewIdx().setVal(<span class="number">0</span>);</span><br><span class="line">            ctRadarSer.addNewOrder().setVal(<span class="number">0</span>);</span><br><span class="line">            CTLineProperties ctLineProperties = ctRadarSer.addNewSpPr().addNewLn();</span><br><span class="line">            ctLineProperties.addNewRound();</span><br><span class="line">            ctLineProperties.addNewSolidFill().addNewSchemeClr().setVal(STSchemeColorVal.ACCENT_1);</span><br><span class="line">            <span class="comment">// 渲染数据</span></span><br><span class="line">            ctRadarSer.addNewCat().addNewStrRef().setF(sheetName + <span class="string">"!$A$1:$A$6"</span>);</span><br><span class="line">            ctRadarSer.addNewVal().addNewNumRef().setF(sheetName + <span class="string">"!$B$2:$B$6"</span>);</span><br><span class="line"></span><br><span class="line">            CTCatAx ctCatAx = ctPlotArea.addNewCatAx();</span><br><span class="line">            ctCatAx.addNewAxId().setVal(<span class="number">123456</span>);</span><br><span class="line">            ctCatAx.addNewScaling().addNewOrientation().setVal(MIN_MAX);</span><br><span class="line">            ctCatAx.addNewDelete().setVal(<span class="keyword">false</span>);</span><br><span class="line">            ctCatAx.addNewAxPos().setVal(STAxPos.B);</span><br><span class="line">            ctCatAx.addNewCrossAx().setVal(<span class="number">123457</span>);</span><br><span class="line">            ctCatAx.addNewMajorTickMark().setVal(STTickMark.NONE);</span><br><span class="line">            ctCatAx.addNewMinorTickMark().setVal(STTickMark.NONE);</span><br><span class="line">            ctCatAx.addNewTickLblPos().setVal(NEXT_TO);</span><br><span class="line"><span class="comment">//            ctCatAx.addNewCrosses().setVal(STCrosses.AUTO_ZERO);</span></span><br><span class="line"><span class="comment">//            ctCatAx.addNewAuto().setVal(true);</span></span><br><span class="line"><span class="comment">//            ctCatAx.addNewLblAlgn().setVal(STLblAlgn.CTR);</span></span><br><span class="line"><span class="comment">//            ctCatAx.addNewLblOffset().setVal(100);</span></span><br><span class="line"><span class="comment">//            ctCatAx.addNewNoMultiLvlLbl().setVal(false);</span></span><br><span class="line">            <span class="comment">// spPr</span></span><br><span class="line"><span class="comment">//            CTShapeProperties ctShapeProperties = ctCatAx.addNewSpPr();</span></span><br><span class="line"><span class="comment">//            ctShapeProperties.addNewNoFill();</span></span><br><span class="line"><span class="comment">//            ctShapeProperties.addNewEffectLst();</span></span><br><span class="line"><span class="comment">//            CTLineProperties ctLineProperties1 = ctShapeProperties.addNewLn();</span></span><br><span class="line"><span class="comment">//            ctLineProperties1.setW(9525);</span></span><br><span class="line"><span class="comment">//            ctLineProperties1.setCap(STLineCap.FLAT);</span></span><br><span class="line"><span class="comment">//            ctLineProperties1.setCmpd(STCompoundLine.SNG);</span></span><br><span class="line"><span class="comment">//            ctLineProperties1.setAlgn(STPenAlignment.CTR);</span></span><br><span class="line"><span class="comment">//            CTSchemeColor ctSchemeColor = ctLineProperties1.addNewSolidFill().addNewSchemeClr();</span></span><br><span class="line"><span class="comment">//            ctSchemeColor.setVal(STSchemeColorVal.TX_1);</span></span><br><span class="line"><span class="comment">//            ctSchemeColor.addNewLumMod().setVal(15000);</span></span><br><span class="line"><span class="comment">//            ctSchemeColor.addNewLumOff().setVal(85000);</span></span><br><span class="line">            <span class="comment">// txPr</span></span><br><span class="line"><span class="comment">//            CTTextBody ctTextBody = ctCatAx.addNewTxPr();</span></span><br><span class="line"><span class="comment">//            CTTextCharacterProperties ctTextCharacterProperties = ctTextBody.addNewP().addNewPPr().addNewDefRPr();</span></span><br><span class="line"><span class="comment">//            ctTextCharacterProperties.setU(STTextUnderlineType.NONE);</span></span><br><span class="line"><span class="comment">//            ctTextCharacterProperties.setStrike(STTextStrikeType.NO_STRIKE);</span></span><br><span class="line"><span class="comment">//            ctTextCharacterProperties.setSz(900);</span></span><br><span class="line"><span class="comment">//            ctTextCharacterProperties.setB(false);</span></span><br><span class="line"><span class="comment">//            ctTextCharacterProperties.setI(false);</span></span><br><span class="line"><span class="comment">//            ctTextCharacterProperties.setBaseline(0);</span></span><br><span class="line"><span class="comment">//            ctTextCharacterProperties.setKern(1200);</span></span><br><span class="line"><span class="comment">//            CTSchemeColor ctSchemeColor = ctTextCharacterProperties.addNewSolidFill().addNewSchemeClr();</span></span><br><span class="line"><span class="comment">//            ctSchemeColor.setVal(STSchemeColorVal.TX_1);</span></span><br><span class="line"><span class="comment">//            ctSchemeColor.addNewLumMod().setVal(65000);</span></span><br><span class="line"><span class="comment">//            ctSchemeColor.addNewLumOff().setVal(35000);</span></span><br><span class="line"></span><br><span class="line"></span><br><span class="line">            CTValAx ctValAx = ctPlotArea.addNewValAx();</span><br><span class="line">            ctValAx.addNewAxId().setVal(<span class="number">123457</span>);</span><br><span class="line">            ctValAx.addNewScaling().addNewOrientation().setVal(MIN_MAX);</span><br><span class="line">            ctValAx.addNewDelete().setVal(<span class="keyword">false</span>);</span><br><span class="line">            ctValAx.addNewAxPos().setVal(STAxPos.L);</span><br><span class="line">            ctValAx.addNewCrossAx().setVal(<span class="number">123456</span>);</span><br><span class="line">            ctValAx.addNewMajorTickMark().setVal(STTickMark.NONE);</span><br><span class="line">            ctValAx.addNewMinorTickMark().setVal(STTickMark.NONE);</span><br><span class="line">            ctValAx.addNewTickLblPos().setVal(NEXT_TO);</span><br><span class="line"><span class="comment">//            ctValAx.addNewCrosses().setVal(STCrosses.AUTO_ZERO);</span></span><br><span class="line"><span class="comment">//            ctValAx.addNewCrossBetween().setVal(STCrossBetween.BETWEEN);</span></span><br><span class="line">            <span class="comment">// 设置网格线</span></span><br><span class="line">            CTShapeProperties ctShapeProperties = ctValAx.addNewMajorGridlines().addNewSpPr();</span><br><span class="line">            CTLineProperties ctLineProperties1 = ctShapeProperties.addNewLn();</span><br><span class="line">            ctLineProperties1.setW(<span class="number">9525</span>);</span><br><span class="line">            ctLineProperties1.setCap(STLineCap.FLAT);</span><br><span class="line">            ctLineProperties1.setCmpd(STCompoundLine.SNG);</span><br><span class="line">            ctLineProperties1.setAlgn(STPenAlignment.CTR);</span><br><span class="line">            <span class="comment">// 值的纵坐标线，不显示</span></span><br><span class="line">            ctValAx.addNewSpPr().addNewLn().addNewNoFill();</span><br><span class="line">            <span class="comment">// 值的纵坐标值，不显示</span></span><br><span class="line">            ctValAx.addNewTxPr().addNewP().addNewPPr().addNewDefRPr().addNewNoFill();</span><br><span class="line"></span><br><span class="line">            System.out.println(ctChart);</span><br><span class="line"></span><br><span class="line">            FileOutputStream outputStream =</span><br><span class="line">                    <span class="keyword">new</span> FileOutputStream(<span class="string">"C:\\Users\\user\\Desktop\\out.xlsx"</span>);</span><br><span class="line">            workbook.write(outputStream);</span><br><span class="line">            outputStream.flush();</span><br><span class="line">            outputStream.close();</span><br><span class="line">        &#125;</span><br><span class="line">    &#125;</span><br></pre></td></tr></table></figure>
+<h2 id="三、XML结构"><a href="#三、XML结构" class="headerlink" title="三、XML结构"></a>三、XML结构</h2><p>以上生成的图表，归根结底是属于XML的一种，通过 <code>RadarChart</code> 的继承关系可以看到，它其实是 <code>XmlObject</code>的一种实现。</p>
+<figure class="highlight xml"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br><span class="line">14</span><br><span class="line">15</span><br><span class="line">16</span><br><span class="line">17</span><br><span class="line">18</span><br><span class="line">19</span><br><span class="line">20</span><br><span class="line">21</span><br><span class="line">22</span><br><span class="line">23</span><br><span class="line">24</span><br><span class="line">25</span><br><span class="line">26</span><br><span class="line">27</span><br><span class="line">28</span><br><span class="line">29</span><br><span class="line">30</span><br><span class="line">31</span><br><span class="line">32</span><br><span class="line">33</span><br><span class="line">34</span><br><span class="line">35</span><br><span class="line">36</span><br><span class="line">37</span><br><span class="line">38</span><br><span class="line">39</span><br><span class="line">40</span><br><span class="line">41</span><br><span class="line">42</span><br><span class="line">43</span><br><span class="line">44</span><br><span class="line">45</span><br><span class="line">46</span><br><span class="line">47</span><br><span class="line">48</span><br><span class="line">49</span><br><span class="line">50</span><br><span class="line">51</span><br><span class="line">52</span><br><span class="line">53</span><br><span class="line">54</span><br><span class="line">55</span><br><span class="line">56</span><br><span class="line">57</span><br><span class="line">58</span><br><span class="line">59</span><br><span class="line">60</span><br><span class="line">61</span><br><span class="line">62</span><br><span class="line">63</span><br><span class="line">64</span><br><span class="line">65</span><br><span class="line">66</span><br><span class="line">67</span><br><span class="line">68</span><br><span class="line">69</span><br><span class="line">70</span><br><span class="line">71</span><br><span class="line">72</span><br><span class="line">73</span><br><span class="line">74</span><br><span class="line">75</span><br><span class="line">76</span><br><span class="line">77</span><br><span class="line">78</span><br><span class="line">79</span><br><span class="line">80</span><br><span class="line">81</span><br><span class="line">82</span><br><span class="line">83</span><br><span class="line">84</span><br><span class="line">85</span><br><span class="line">86</span><br><span class="line">87</span><br><span class="line">88</span><br><span class="line">89</span><br></pre></td><td class="code"><pre><span class="line"><span class="tag">&lt;<span class="name">xml-fragment</span> <span class="attr">xmlns:char</span>=<span class="string">"http://schemas.openxmlformats.org/drawingml/2006/chart"</span> <span class="attr">xmlns:main</span>=<span class="string">"http://schemas.openxmlformats.org/drawingml/2006/main"</span>&gt;</span></span><br><span class="line">  <span class="tag">&lt;<span class="name">char:autoTitleDeleted</span> <span class="attr">val</span>=<span class="string">"false"</span>/&gt;</span></span><br><span class="line">  <span class="tag">&lt;<span class="name">char:plotArea</span>&gt;</span></span><br><span class="line">    <span class="tag">&lt;<span class="name">char:layout</span>/&gt;</span></span><br><span class="line">  <span class="tag">&lt;/<span class="name">char:plotArea</span>&gt;</span></span><br><span class="line">  <span class="tag">&lt;<span class="name">char:plotArea</span>&gt;</span></span><br><span class="line">    <span class="tag">&lt;<span class="name">char:layout</span>/&gt;</span></span><br><span class="line">    <span class="tag">&lt;<span class="name">char:radarChart</span>&gt;</span></span><br><span class="line">      <span class="tag">&lt;<span class="name">char:radarStyle</span> <span class="attr">val</span>=<span class="string">"marker"</span>/&gt;</span></span><br><span class="line">      <span class="tag">&lt;<span class="name">char:varyColors</span> <span class="attr">val</span>=<span class="string">"false"</span>/&gt;</span></span><br><span class="line">      <span class="tag">&lt;<span class="name">char:ser</span>&gt;</span></span><br><span class="line">        <span class="tag">&lt;<span class="name">char:idx</span> <span class="attr">val</span>=<span class="string">"0"</span>/&gt;</span></span><br><span class="line">        <span class="tag">&lt;<span class="name">char:order</span> <span class="attr">val</span>=<span class="string">"0"</span>/&gt;</span></span><br><span class="line">        <span class="tag">&lt;<span class="name">char:spPr</span>&gt;</span></span><br><span class="line">          <span class="tag">&lt;<span class="name">main:ln</span>&gt;</span></span><br><span class="line">            <span class="tag">&lt;<span class="name">main:solidFill</span>&gt;</span></span><br><span class="line">              <span class="tag">&lt;<span class="name">main:schemeClr</span> <span class="attr">val</span>=<span class="string">"accent1"</span>/&gt;</span></span><br><span class="line">            <span class="tag">&lt;/<span class="name">main:solidFill</span>&gt;</span></span><br><span class="line">            <span class="tag">&lt;<span class="name">main:round</span>/&gt;</span></span><br><span class="line">          <span class="tag">&lt;/<span class="name">main:ln</span>&gt;</span></span><br><span class="line">        <span class="tag">&lt;/<span class="name">char:spPr</span>&gt;</span></span><br><span class="line">        <span class="tag">&lt;<span class="name">char:cat</span>&gt;</span></span><br><span class="line">          <span class="tag">&lt;<span class="name">char:strRef</span>&gt;</span></span><br><span class="line">            <span class="tag">&lt;<span class="name">char:f</span>&gt;</span>RadarChart!$A$1:$A$6<span class="tag">&lt;/<span class="name">char:f</span>&gt;</span></span><br><span class="line">          <span class="tag">&lt;/<span class="name">char:strRef</span>&gt;</span></span><br><span class="line">        <span class="tag">&lt;/<span class="name">char:cat</span>&gt;</span></span><br><span class="line">        <span class="tag">&lt;<span class="name">char:val</span>&gt;</span></span><br><span class="line">          <span class="tag">&lt;<span class="name">char:numRef</span>&gt;</span></span><br><span class="line">            <span class="tag">&lt;<span class="name">char:f</span>&gt;</span>RadarChart!$B$2:$B$6<span class="tag">&lt;/<span class="name">char:f</span>&gt;</span></span><br><span class="line">          <span class="tag">&lt;/<span class="name">char:numRef</span>&gt;</span></span><br><span class="line">        <span class="tag">&lt;/<span class="name">char:val</span>&gt;</span></span><br><span class="line">      <span class="tag">&lt;/<span class="name">char:ser</span>&gt;</span></span><br><span class="line">      <span class="tag">&lt;<span class="name">char:dLbls</span>&gt;</span></span><br><span class="line">        <span class="tag">&lt;<span class="name">char:showLegendKey</span> <span class="attr">val</span>=<span class="string">"false"</span>/&gt;</span></span><br><span class="line">        <span class="tag">&lt;<span class="name">char:showVal</span> <span class="attr">val</span>=<span class="string">"false"</span>/&gt;</span></span><br><span class="line">        <span class="tag">&lt;<span class="name">char:showCatName</span> <span class="attr">val</span>=<span class="string">"false"</span>/&gt;</span></span><br><span class="line">        <span class="tag">&lt;<span class="name">char:showSerName</span> <span class="attr">val</span>=<span class="string">"false"</span>/&gt;</span></span><br><span class="line">        <span class="tag">&lt;<span class="name">char:showPercent</span> <span class="attr">val</span>=<span class="string">"false"</span>/&gt;</span></span><br><span class="line">        <span class="tag">&lt;<span class="name">char:showBubbleSize</span> <span class="attr">val</span>=<span class="string">"false"</span>/&gt;</span></span><br><span class="line">      <span class="tag">&lt;/<span class="name">char:dLbls</span>&gt;</span></span><br><span class="line">      <span class="tag">&lt;<span class="name">char:axId</span> <span class="attr">val</span>=<span class="string">"123456"</span>/&gt;</span></span><br><span class="line">      <span class="tag">&lt;<span class="name">char:axId</span> <span class="attr">val</span>=<span class="string">"123457"</span>/&gt;</span></span><br><span class="line">    <span class="tag">&lt;/<span class="name">char:radarChart</span>&gt;</span></span><br><span class="line">    <span class="tag">&lt;<span class="name">char:catAx</span>&gt;</span></span><br><span class="line">      <span class="tag">&lt;<span class="name">char:axId</span> <span class="attr">val</span>=<span class="string">"123456"</span>/&gt;</span></span><br><span class="line">      <span class="tag">&lt;<span class="name">char:scaling</span>&gt;</span></span><br><span class="line">        <span class="tag">&lt;<span class="name">char:orientation</span> <span class="attr">val</span>=<span class="string">"minMax"</span>/&gt;</span></span><br><span class="line">      <span class="tag">&lt;/<span class="name">char:scaling</span>&gt;</span></span><br><span class="line">      <span class="tag">&lt;<span class="name">char:delete</span> <span class="attr">val</span>=<span class="string">"false"</span>/&gt;</span></span><br><span class="line">      <span class="tag">&lt;<span class="name">char:axPos</span> <span class="attr">val</span>=<span class="string">"b"</span>/&gt;</span></span><br><span class="line">      <span class="tag">&lt;<span class="name">char:majorTickMark</span> <span class="attr">val</span>=<span class="string">"none"</span>/&gt;</span></span><br><span class="line">      <span class="tag">&lt;<span class="name">char:minorTickMark</span> <span class="attr">val</span>=<span class="string">"none"</span>/&gt;</span></span><br><span class="line">      <span class="tag">&lt;<span class="name">char:tickLblPos</span> <span class="attr">val</span>=<span class="string">"nextTo"</span>/&gt;</span></span><br><span class="line">      <span class="tag">&lt;<span class="name">char:crossAx</span> <span class="attr">val</span>=<span class="string">"123457"</span>/&gt;</span></span><br><span class="line">    <span class="tag">&lt;/<span class="name">char:catAx</span>&gt;</span></span><br><span class="line">    <span class="tag">&lt;<span class="name">char:valAx</span>&gt;</span></span><br><span class="line">      <span class="tag">&lt;<span class="name">char:axId</span> <span class="attr">val</span>=<span class="string">"123457"</span>/&gt;</span></span><br><span class="line">      <span class="tag">&lt;<span class="name">char:scaling</span>&gt;</span></span><br><span class="line">        <span class="tag">&lt;<span class="name">char:orientation</span> <span class="attr">val</span>=<span class="string">"minMax"</span>/&gt;</span></span><br><span class="line">      <span class="tag">&lt;/<span class="name">char:scaling</span>&gt;</span></span><br><span class="line">      <span class="tag">&lt;<span class="name">char:delete</span> <span class="attr">val</span>=<span class="string">"false"</span>/&gt;</span></span><br><span class="line">      <span class="tag">&lt;<span class="name">char:axPos</span> <span class="attr">val</span>=<span class="string">"l"</span>/&gt;</span></span><br><span class="line">      <span class="tag">&lt;<span class="name">char:majorGridlines</span>&gt;</span></span><br><span class="line">        <span class="tag">&lt;<span class="name">char:spPr</span>&gt;</span></span><br><span class="line">          <span class="tag">&lt;<span class="name">main:ln</span> <span class="attr">w</span>=<span class="string">"9525"</span> <span class="attr">cap</span>=<span class="string">"flat"</span> <span class="attr">cmpd</span>=<span class="string">"sng"</span> <span class="attr">algn</span>=<span class="string">"ctr"</span>/&gt;</span></span><br><span class="line">        <span class="tag">&lt;/<span class="name">char:spPr</span>&gt;</span></span><br><span class="line">      <span class="tag">&lt;/<span class="name">char:majorGridlines</span>&gt;</span></span><br><span class="line">      <span class="tag">&lt;<span class="name">char:majorTickMark</span> <span class="attr">val</span>=<span class="string">"none"</span>/&gt;</span></span><br><span class="line">      <span class="tag">&lt;<span class="name">char:minorTickMark</span> <span class="attr">val</span>=<span class="string">"none"</span>/&gt;</span></span><br><span class="line">      <span class="tag">&lt;<span class="name">char:tickLblPos</span> <span class="attr">val</span>=<span class="string">"nextTo"</span>/&gt;</span></span><br><span class="line">      <span class="tag">&lt;<span class="name">char:spPr</span>&gt;</span></span><br><span class="line">        <span class="tag">&lt;<span class="name">main:ln</span>&gt;</span></span><br><span class="line">          <span class="tag">&lt;<span class="name">main:noFill</span>/&gt;</span></span><br><span class="line">        <span class="tag">&lt;/<span class="name">main:ln</span>&gt;</span></span><br><span class="line">      <span class="tag">&lt;/<span class="name">char:spPr</span>&gt;</span></span><br><span class="line">      <span class="tag">&lt;<span class="name">char:txPr</span>&gt;</span></span><br><span class="line">        <span class="tag">&lt;<span class="name">main:p</span>&gt;</span></span><br><span class="line">          <span class="tag">&lt;<span class="name">main:pPr</span>&gt;</span></span><br><span class="line">            <span class="tag">&lt;<span class="name">main:defRPr</span>&gt;</span></span><br><span class="line">              <span class="tag">&lt;<span class="name">main:noFill</span>/&gt;</span></span><br><span class="line">            <span class="tag">&lt;/<span class="name">main:defRPr</span>&gt;</span></span><br><span class="line">          <span class="tag">&lt;/<span class="name">main:pPr</span>&gt;</span></span><br><span class="line">        <span class="tag">&lt;/<span class="name">main:p</span>&gt;</span></span><br><span class="line">      <span class="tag">&lt;/<span class="name">char:txPr</span>&gt;</span></span><br><span class="line">      <span class="tag">&lt;<span class="name">char:crossAx</span> <span class="attr">val</span>=<span class="string">"123456"</span>/&gt;</span></span><br><span class="line">    <span class="tag">&lt;/<span class="name">char:valAx</span>&gt;</span></span><br><span class="line">  <span class="tag">&lt;/<span class="name">char:plotArea</span>&gt;</span></span><br><span class="line">  <span class="tag">&lt;<span class="name">char:plotVisOnly</span> <span class="attr">val</span>=<span class="string">"true"</span>/&gt;</span></span><br><span class="line"><span class="tag">&lt;/<span class="name">xml-fragment</span>&gt;</span></span><br></pre></td></tr></table></figure>
+<h2 id="四、工具类，我放在-POI生成原生图表-工具类-中"><a href="#四、工具类，我放在-POI生成原生图表-工具类-中" class="headerlink" title="四、工具类，我放在 POI生成原生图表-工具类 中"></a>四、工具类，我放在 <a href="www.baidu.com">POI生成原生图表-工具类</a> 中</h2>
+      
+    </div>
+    <footer class="article-footer">
+      <a data-url="http://yoursite.com/2018/09/01/POI/POI生成原生Excel-雷达图/" data-id="cjxpj0336007prgtwhq602qq1" class="article-share-link">Share</a>
+      
+      
+  <ul class="article-tag-list"><li class="article-tag-list-item"><a class="article-tag-list-link" href="/tags/POI/">POI</a></li></ul>
+
+    </footer>
+  </div>
+  
+    
+<nav id="article-nav">
+  
+    <a href="/2018/09/01/SpringBootWebsocket/SpringBoot消息机制(四)-ActiveMQ介绍/" id="article-nav-newer" class="article-nav-link-wrap">
+      <strong class="article-nav-caption">Newer</strong>
+      <div class="article-nav-title">
+        
+          SpringBoot消息机制(四)-ActiveMQ介绍
+        
+      </div>
+    </a>
+  
+  
+    <a href="/2018/09/01/POI/POI生成Excel-表格抽象工具类/" id="article-nav-older" class="article-nav-link-wrap">
+      <strong class="article-nav-caption">Older</strong>
+      <div class="article-nav-title">POI生成Excel工具类</div>
+    </a>
+  
+</nav>
+
+  
+</article>
+
+</section>
+        
+          <aside id="sidebar">
+  
+    
+  <div class="widget-wrap">
+    <h3 class="widget-title">Categories</h3>
+    <div class="widget">
+      <ul class="category-list"><li class="category-list-item"><a class="category-list-link" href="/categories/Docker学习/">Docker学习</a></li><li class="category-list-item"><a class="category-list-link" href="/categories/Git命令学习/">Git命令学习</a></li><li class="category-list-item"><a class="category-list-link" href="/categories/JAVA-核心知识点整理/">JAVA 核心知识点整理</a></li><li class="category-list-item"><a class="category-list-link" href="/categories/Java/">Java</a></li><li class="category-list-item"><a class="category-list-link" href="/categories/Java并发编程与高并发解决方案/">Java并发编程与高并发解决方案</a></li><li class="category-list-item"><a class="category-list-link" href="/categories/Java并发编程的艺术/">Java并发编程的艺术</a></li><li class="category-list-item"><a class="category-list-link" href="/categories/Java成神之路/">Java成神之路</a><ul class="category-list-child"><li class="category-list-item"><a class="category-list-link" href="/categories/Java成神之路/SpringBoot/">SpringBoot</a></li><li class="category-list-item"><a class="category-list-link" href="/categories/Java成神之路/Study社区/">Study社区</a></li></ul></li><li class="category-list-item"><a class="category-list-link" href="/categories/Linux学习之路/">Linux学习之路</a></li><li class="category-list-item"><a class="category-list-link" href="/categories/MarkDown语法/">MarkDown语法</a></li><li class="category-list-item"><a class="category-list-link" href="/categories/React学习/">React学习</a></li><li class="category-list-item"><a class="category-list-link" href="/categories/SpringBoot-参考指南/">SpringBoot 参考指南</a></li><li class="category-list-item"><a class="category-list-link" href="/categories/工具函数/">工具函数</a></li><li class="category-list-item"><a class="category-list-link" href="/categories/设计模式/">设计模式</a></li><li class="category-list-item"><a class="category-list-link" href="/categories/高性能MySQL/">高性能MySQL</a></li></ul>
+    </div>
+  </div>
+
+
+  
+    
+  <div class="widget-wrap">
+    <h3 class="widget-title">Tags</h3>
+    <div class="widget">
+      <ul class="tag-list"><li class="tag-list-item"><a class="tag-list-link" href="/tags/Git/">Git</a></li><li class="tag-list-item"><a class="tag-list-link" href="/tags/Git-Bash/">Git Bash</a></li><li class="tag-list-item"><a class="tag-list-link" href="/tags/Linux/">Linux</a></li><li class="tag-list-item"><a class="tag-list-link" href="/tags/MQ/">MQ</a></li><li class="tag-list-item"><a class="tag-list-link" href="/tags/MySQL/">MySQL</a></li><li class="tag-list-item"><a class="tag-list-link" href="/tags/POI/">POI</a></li><li class="tag-list-item"><a class="tag-list-link" href="/tags/Spring-Cloud/">Spring Cloud</a></li><li class="tag-list-item"><a class="tag-list-link" href="/tags/Spring-Data/">Spring Data</a></li><li class="tag-list-item"><a class="tag-list-link" href="/tags/SpringBoot/">SpringBoot</a></li><li class="tag-list-item"><a class="tag-list-link" href="/tags/docker/">docker</a></li><li class="tag-list-item"><a class="tag-list-link" href="/tags/gradle/">gradle</a></li><li class="tag-list-item"><a class="tag-list-link" href="/tags/java/">java</a></li><li class="tag-list-item"><a class="tag-list-link" href="/tags/poi/">poi</a></li><li class="tag-list-item"><a class="tag-list-link" href="/tags/并发编程/">并发编程</a></li><li class="tag-list-item"><a class="tag-list-link" href="/tags/数据库/">数据库</a></li><li class="tag-list-item"><a class="tag-list-link" href="/tags/读书笔记/">读书笔记</a></li><li class="tag-list-item"><a class="tag-list-link" href="/tags/高并发/">高并发</a></li></ul>
+    </div>
+  </div>
+
+
+  
+    
+  <div class="widget-wrap">
+    <h3 class="widget-title">Tag Cloud</h3>
+    <div class="widget tagcloud">
+      <a href="/tags/Git/" style="font-size: 13.75px;">Git</a> <a href="/tags/Git-Bash/" style="font-size: 11.25px;">Git Bash</a> <a href="/tags/Linux/" style="font-size: 12.5px;">Linux</a> <a href="/tags/MQ/" style="font-size: 15px;">MQ</a> <a href="/tags/MySQL/" style="font-size: 17.5px;">MySQL</a> <a href="/tags/POI/" style="font-size: 16.25px;">POI</a> <a href="/tags/Spring-Cloud/" style="font-size: 10px;">Spring Cloud</a> <a href="/tags/Spring-Data/" style="font-size: 12.5px;">Spring Data</a> <a href="/tags/SpringBoot/" style="font-size: 15px;">SpringBoot</a> <a href="/tags/docker/" style="font-size: 10px;">docker</a> <a href="/tags/gradle/" style="font-size: 11.25px;">gradle</a> <a href="/tags/java/" style="font-size: 20px;">java</a> <a href="/tags/poi/" style="font-size: 10px;">poi</a> <a href="/tags/并发编程/" style="font-size: 12.5px;">并发编程</a> <a href="/tags/数据库/" style="font-size: 17.5px;">数据库</a> <a href="/tags/读书笔记/" style="font-size: 18.75px;">读书笔记</a> <a href="/tags/高并发/" style="font-size: 12.5px;">高并发</a>
+    </div>
+  </div>
+
+  
+    
+  <div class="widget-wrap">
+    <h3 class="widget-title">Archives</h3>
+    <div class="widget">
+      <ul class="archive-list"><li class="archive-list-item"><a class="archive-list-link" href="/archives/2019/12/">December 2019</a></li><li class="archive-list-item"><a class="archive-list-link" href="/archives/2019/11/">November 2019</a></li><li class="archive-list-item"><a class="archive-list-link" href="/archives/2019/07/">July 2019</a></li><li class="archive-list-item"><a class="archive-list-link" href="/archives/2019/06/">June 2019</a></li><li class="archive-list-item"><a class="archive-list-link" href="/archives/2019/05/">May 2019</a></li><li class="archive-list-item"><a class="archive-list-link" href="/archives/2018/11/">November 2018</a></li><li class="archive-list-item"><a class="archive-list-link" href="/archives/2018/10/">October 2018</a></li><li class="archive-list-item"><a class="archive-list-link" href="/archives/2018/09/">September 2018</a></li><li class="archive-list-item"><a class="archive-list-link" href="/archives/2017/05/">May 2017</a></li></ul>
+    </div>
+  </div>
+
+
+  
+    
+  <div class="widget-wrap">
+    <h3 class="widget-title">Recent Posts</h3>
+    <div class="widget">
+      <ul>
+        
+          <li>
+            <a href="/2019/12/30/blog/2019/">2019年目标</a>
+          </li>
+        
+          <li>
+            <a href="/2019/12/01/读书笔记/《Java并发编程的艺术》/0.0_目录/">《Java并发编程的艺术》读书笔记 - 目录</a>
+          </li>
+        
+          <li>
+            <a href="/2019/12/01/读书笔记/《Java核心知识点整理》/0.目录/">《JAVA 核心知识点整理》读书笔记 - 目录</a>
+          </li>
+        
+          <li>
+            <a href="/2019/11/30/读书笔记/《高性能MySQL》/0.目录/">《高性能MySQL》读书笔记 - 目录</a>
+          </li>
+        
+          <li>
+            <a href="/2019/07/05/读书笔记/《JavaDesignPatterns》/8.建造者模式/">《Java Design Patterns》第六章 建造者模式 - 复杂对象的组装与创建</a>
+          </li>
+        
+      </ul>
+    </div>
+  </div>
+
+  
+</aside>
+        
+      </div>
+      <footer id="footer">
+  
+  <div class="outer">
+    <div id="footer-info" class="inner">
+      &copy; 2019 koral<br>
+      Powered by <a href="http://hexo.io/" target="_blank">Hexo</a>
+    </div>
+  </div>
+</footer>
+    </div>
+    <nav id="mobile-nav">
+  
+    <a href="/" class="mobile-nav-link">Home</a>
+  
+    <a href="/archives" class="mobile-nav-link">Archives</a>
+  
+</nav>
+    
+
+<script src="//ajax.googleapis.com/ajax/libs/jquery/2.0.3/jquery.min.js"></script>
+
+
+  <link rel="stylesheet" href="/fancybox/jquery.fancybox.css">
+  <script src="/fancybox/jquery.fancybox.pack.js"></script>
+
+
+<script src="/js/script.js"></script>
+
+
+
+  </div>
+</body>
+</html>

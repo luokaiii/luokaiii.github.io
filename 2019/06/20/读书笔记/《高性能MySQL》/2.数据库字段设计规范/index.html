@@ -1,0 +1,305 @@
+<!DOCTYPE html>
+<html>
+<head>
+  <meta charset="utf-8">
+  
+
+  
+  <title>《高性能MySQL》第一章 数据库设计规范 | 罗凯的博客</title>
+  <meta name="viewport" content="width=device-width, initial-scale=1, maximum-scale=1">
+  <meta name="description" content="第二张 数据库字段设计规范字段类型的选择，会直接影响数据库的性能。  优先选择符合存储需要的最小的数据类型 字段的长度越长，导致索引的长度也会越长 将字符串转换为数字类型存储 INET_ATON(‘255.255.255.255’) = 4294967295 INET_NTOA(4294967295) = ‘255.255.255.255’   对于非负整数的数据，优先使用无符号整型存储 无符号比">
+<meta name="keywords" content="MySQL,数据库">
+<meta property="og:type" content="article">
+<meta property="og:title" content="《高性能MySQL》第一章 数据库设计规范">
+<meta property="og:url" content="http://yoursite.com/2019/06/20/读书笔记/《高性能MySQL》/2.数据库字段设计规范/index.html">
+<meta property="og:site_name" content="罗凯的博客">
+<meta property="og:description" content="第二张 数据库字段设计规范字段类型的选择，会直接影响数据库的性能。  优先选择符合存储需要的最小的数据类型 字段的长度越长，导致索引的长度也会越长 将字符串转换为数字类型存储 INET_ATON(‘255.255.255.255’) = 4294967295 INET_NTOA(4294967295) = ‘255.255.255.255’   对于非负整数的数据，优先使用无符号整型存储 无符号比">
+<meta property="og:locale" content="zh-Hans">
+<meta property="og:updated_time" content="2019-07-01T02:49:01.465Z">
+<meta name="twitter:card" content="summary">
+<meta name="twitter:title" content="《高性能MySQL》第一章 数据库设计规范">
+<meta name="twitter:description" content="第二张 数据库字段设计规范字段类型的选择，会直接影响数据库的性能。  优先选择符合存储需要的最小的数据类型 字段的长度越长，导致索引的长度也会越长 将字符串转换为数字类型存储 INET_ATON(‘255.255.255.255’) = 4294967295 INET_NTOA(4294967295) = ‘255.255.255.255’   对于非负整数的数据，优先使用无符号整型存储 无符号比">
+  
+    <link rel="alternate" href="/atom.xml" title="罗凯的博客" type="application/atom+xml">
+  
+  
+    <link rel="icon" href="https://i.loli.net/2019/07/04/5d1db2fb9593c58427.gif">
+  
+  
+    <link href="//fonts.googleapis.com/css?family=Source+Code+Pro" rel="stylesheet" type="text/css">
+  
+  <link rel="stylesheet" href="/css/style.css">
+</head>
+
+<body>
+  <div id="container">
+    <div id="wrap">
+      <header id="header">
+  <div id="banner"></div>
+  <div id="header-outer" class="outer">
+    <div id="header-title" class="inner">
+      <h1 id="logo-wrap">
+        <a href="/" id="logo">罗凯的博客</a>
+      </h1>
+      
+        <h2 id="subtitle-wrap">
+          <a href="/" id="subtitle">一个大帅哥</a>
+        </h2>
+      
+    </div>
+    <div id="header-inner" class="inner">
+      <nav id="main-nav">
+        <a id="main-nav-toggle" class="nav-icon"></a>
+        
+          <a class="main-nav-link" href="/">Home</a>
+        
+          <a class="main-nav-link" href="/archives">Archives</a>
+        
+      </nav>
+      <nav id="sub-nav">
+        
+          <a id="nav-rss-link" class="nav-icon" href="/atom.xml" title="RSS Feed"></a>
+        
+        <a id="nav-search-btn" class="nav-icon" title="Search"></a>
+      </nav>
+      <div id="search-form-wrap">
+        <form action="//google.com/search" method="get" accept-charset="UTF-8" class="search-form"><input type="search" name="q" class="search-form-input" placeholder="Search"><button type="submit" class="search-form-submit">&#xF002;</button><input type="hidden" name="sitesearch" value="http://yoursite.com"></form>
+      </div>
+    </div>
+  </div>
+</header>
+      <div class="outer">
+        <section id="main"><article id="post-读书笔记/《高性能MySQL》/2.数据库字段设计规范" class="article article-type-post" itemscope itemprop="blogPost">
+  <div class="article-meta">
+    <a href="/2019/06/20/读书笔记/《高性能MySQL》/2.数据库字段设计规范/" class="article-date">
+  <time datetime="2019-06-20T03:05:23.000Z" itemprop="datePublished">2019-06-20</time>
+</a>
+    
+  <div class="article-category">
+    <a class="article-category-link" href="/categories/高性能MySQL/">高性能MySQL</a>
+  </div>
+
+  </div>
+  <div class="article-inner">
+    
+    
+      <header class="article-header">
+        
+  
+    <h1 class="article-title" itemprop="name">
+      《高性能MySQL》第一章 数据库设计规范
+    </h1>
+  
+
+      </header>
+    
+    <div class="article-entry" itemprop="articleBody">
+      
+        <h1 id="第二张-数据库字段设计规范"><a href="#第二张-数据库字段设计规范" class="headerlink" title="第二张 数据库字段设计规范"></a>第二张 数据库字段设计规范</h1><p>字段类型的选择，会直接影响数据库的性能。</p>
+<ol>
+<li>优先选择符合存储需要的最小的数据类型<ol>
+<li>字段的长度越长，导致索引的长度也会越长</li>
+<li>将字符串转换为数字类型存储<ol>
+<li>INET_ATON(‘255.255.255.255’) = 4294967295</li>
+<li>INET_NTOA(4294967295) = ‘255.255.255.255’</li>
+</ol>
+</li>
+<li>对于非负整数的数据，优先使用无符号整型存储<ol>
+<li>无符号比有符号的数据多出一倍的存储空间</li>
+<li>eg：SIGNED INT -2147483648 ~ 2147483647 ; UNSIGNED INT = 4294967295</li>
+</ol>
+</li>
+<li>VARCHAR(N) 中的N代表的是字符数，而不是字节数</li>
+<li>使用 UTF8 存储汉字 Varchar(255) = 765个字节</li>
+<li>过大的长度会消耗更多的内存</li>
+</ol>
+</li>
+<li>避免使用 TEXT、BLOB 数据类型<ol>
+<li>建议把 BLOB 或是 TEXT 列分离到单独的扩展表中，且不要使用 SELECT * 这样的查询</li>
+<li>TEXT 或 BLOB 类型只能使用前缀索引</li>
+</ol>
+</li>
+<li>避免使用 ENUM 数据类型<ol>
+<li>修改 ENUM 值需要使用 ALTER 语句</li>
+<li>ENUM类型的 ORDER BY 操作效率低，需要额外操作<ol>
+<li>ENUM 在进行 ORDER BY 操作时，会将枚举转换为整型进行排序，排序效率低</li>
+</ol>
+</li>
+<li>禁止使用数值作为 ENUM 数据类型</li>
+</ol>
+</li>
+<li>尽可能把所有列定义为 NOT NULL<ol>
+<li>索引 NULL 列需要额外的空间来保存<ol>
+<li>为 NULL 的列索引，会多出一部分存储空间，用来标识该列是否为空</li>
+<li>索引空间占用越少越好</li>
+</ol>
+</li>
+<li>进行比较和计算时对 NULL 值做特别的处理</li>
+</ol>
+</li>
+<li>不建议使用，字符串存储日期型的数据<ol>
+<li>缺点一：无法使用日期函数进行计算和比较</li>
+<li>缺点二：用字符串存储日期需要占用更多的空间<ol>
+<li>使用字符串存储需要占用 16 个字节</li>
+<li>而使用日期类型只需要 8 个字节</li>
+</ol>
+</li>
+</ol>
+</li>
+<li>使用 TIMESTAMP 或 DATETIME 类型存储时间<ol>
+<li>TIMESTAMP 1970-01-01 ~ 2038-01-19</li>
+<li>TIMESTAMP 占用 4 字节，底层以 INT 存储，但是可读性比 INT 高</li>
+</ol>
+</li>
+<li>同财务相关的金额类数据，必须使用 decimal 类型<ol>
+<li>Decimal 类型为精准浮点数，在计算时不会丢失精度</li>
+<li>占用空间由定义的宽度决定</li>
+<li>可用于存储比 bigint 更大的整型数据</li>
+</ol>
+</li>
+</ol>
+
+      
+    </div>
+    <footer class="article-footer">
+      <a data-url="http://yoursite.com/2019/06/20/读书笔记/《高性能MySQL》/2.数据库字段设计规范/" data-id="cjxpj03bd00borgtwsmb69qr1" class="article-share-link">Share</a>
+      
+      
+  <ul class="article-tag-list"><li class="article-tag-list-item"><a class="article-tag-list-link" href="/tags/MySQL/">MySQL</a></li><li class="article-tag-list-item"><a class="article-tag-list-link" href="/tags/数据库/">数据库</a></li></ul>
+
+    </footer>
+  </div>
+  
+    
+<nav id="article-nav">
+  
+    <a href="/2019/06/20/读书笔记/《高性能MySQL》/3.数据库SQL开发规范/" id="article-nav-newer" class="article-nav-link-wrap">
+      <strong class="article-nav-caption">Newer</strong>
+      <div class="article-nav-title">
+        
+          《高性能MySQL》第一章 数据库设计规范
+        
+      </div>
+    </a>
+  
+  
+    <a href="/2019/06/20/读书笔记/《高性能MySQL》/1.数据库设计规范/" id="article-nav-older" class="article-nav-link-wrap">
+      <strong class="article-nav-caption">Older</strong>
+      <div class="article-nav-title">《高性能MySQL》第一章 数据库设计规范</div>
+    </a>
+  
+</nav>
+
+  
+</article>
+
+</section>
+        
+          <aside id="sidebar">
+  
+    
+  <div class="widget-wrap">
+    <h3 class="widget-title">Categories</h3>
+    <div class="widget">
+      <ul class="category-list"><li class="category-list-item"><a class="category-list-link" href="/categories/Docker学习/">Docker学习</a></li><li class="category-list-item"><a class="category-list-link" href="/categories/Git命令学习/">Git命令学习</a></li><li class="category-list-item"><a class="category-list-link" href="/categories/JAVA-核心知识点整理/">JAVA 核心知识点整理</a></li><li class="category-list-item"><a class="category-list-link" href="/categories/Java/">Java</a></li><li class="category-list-item"><a class="category-list-link" href="/categories/Java并发编程与高并发解决方案/">Java并发编程与高并发解决方案</a></li><li class="category-list-item"><a class="category-list-link" href="/categories/Java并发编程的艺术/">Java并发编程的艺术</a></li><li class="category-list-item"><a class="category-list-link" href="/categories/Java成神之路/">Java成神之路</a><ul class="category-list-child"><li class="category-list-item"><a class="category-list-link" href="/categories/Java成神之路/SpringBoot/">SpringBoot</a></li><li class="category-list-item"><a class="category-list-link" href="/categories/Java成神之路/Study社区/">Study社区</a></li></ul></li><li class="category-list-item"><a class="category-list-link" href="/categories/Linux学习之路/">Linux学习之路</a></li><li class="category-list-item"><a class="category-list-link" href="/categories/MarkDown语法/">MarkDown语法</a></li><li class="category-list-item"><a class="category-list-link" href="/categories/React学习/">React学习</a></li><li class="category-list-item"><a class="category-list-link" href="/categories/SpringBoot-参考指南/">SpringBoot 参考指南</a></li><li class="category-list-item"><a class="category-list-link" href="/categories/工具函数/">工具函数</a></li><li class="category-list-item"><a class="category-list-link" href="/categories/设计模式/">设计模式</a></li><li class="category-list-item"><a class="category-list-link" href="/categories/高性能MySQL/">高性能MySQL</a></li></ul>
+    </div>
+  </div>
+
+
+  
+    
+  <div class="widget-wrap">
+    <h3 class="widget-title">Tags</h3>
+    <div class="widget">
+      <ul class="tag-list"><li class="tag-list-item"><a class="tag-list-link" href="/tags/Git/">Git</a></li><li class="tag-list-item"><a class="tag-list-link" href="/tags/Git-Bash/">Git Bash</a></li><li class="tag-list-item"><a class="tag-list-link" href="/tags/Linux/">Linux</a></li><li class="tag-list-item"><a class="tag-list-link" href="/tags/MQ/">MQ</a></li><li class="tag-list-item"><a class="tag-list-link" href="/tags/MySQL/">MySQL</a></li><li class="tag-list-item"><a class="tag-list-link" href="/tags/POI/">POI</a></li><li class="tag-list-item"><a class="tag-list-link" href="/tags/Spring-Cloud/">Spring Cloud</a></li><li class="tag-list-item"><a class="tag-list-link" href="/tags/Spring-Data/">Spring Data</a></li><li class="tag-list-item"><a class="tag-list-link" href="/tags/SpringBoot/">SpringBoot</a></li><li class="tag-list-item"><a class="tag-list-link" href="/tags/docker/">docker</a></li><li class="tag-list-item"><a class="tag-list-link" href="/tags/gradle/">gradle</a></li><li class="tag-list-item"><a class="tag-list-link" href="/tags/java/">java</a></li><li class="tag-list-item"><a class="tag-list-link" href="/tags/poi/">poi</a></li><li class="tag-list-item"><a class="tag-list-link" href="/tags/并发编程/">并发编程</a></li><li class="tag-list-item"><a class="tag-list-link" href="/tags/数据库/">数据库</a></li><li class="tag-list-item"><a class="tag-list-link" href="/tags/读书笔记/">读书笔记</a></li><li class="tag-list-item"><a class="tag-list-link" href="/tags/高并发/">高并发</a></li></ul>
+    </div>
+  </div>
+
+
+  
+    
+  <div class="widget-wrap">
+    <h3 class="widget-title">Tag Cloud</h3>
+    <div class="widget tagcloud">
+      <a href="/tags/Git/" style="font-size: 13.75px;">Git</a> <a href="/tags/Git-Bash/" style="font-size: 11.25px;">Git Bash</a> <a href="/tags/Linux/" style="font-size: 12.5px;">Linux</a> <a href="/tags/MQ/" style="font-size: 15px;">MQ</a> <a href="/tags/MySQL/" style="font-size: 17.5px;">MySQL</a> <a href="/tags/POI/" style="font-size: 16.25px;">POI</a> <a href="/tags/Spring-Cloud/" style="font-size: 10px;">Spring Cloud</a> <a href="/tags/Spring-Data/" style="font-size: 12.5px;">Spring Data</a> <a href="/tags/SpringBoot/" style="font-size: 15px;">SpringBoot</a> <a href="/tags/docker/" style="font-size: 10px;">docker</a> <a href="/tags/gradle/" style="font-size: 11.25px;">gradle</a> <a href="/tags/java/" style="font-size: 20px;">java</a> <a href="/tags/poi/" style="font-size: 10px;">poi</a> <a href="/tags/并发编程/" style="font-size: 12.5px;">并发编程</a> <a href="/tags/数据库/" style="font-size: 17.5px;">数据库</a> <a href="/tags/读书笔记/" style="font-size: 18.75px;">读书笔记</a> <a href="/tags/高并发/" style="font-size: 12.5px;">高并发</a>
+    </div>
+  </div>
+
+  
+    
+  <div class="widget-wrap">
+    <h3 class="widget-title">Archives</h3>
+    <div class="widget">
+      <ul class="archive-list"><li class="archive-list-item"><a class="archive-list-link" href="/archives/2019/12/">December 2019</a></li><li class="archive-list-item"><a class="archive-list-link" href="/archives/2019/11/">November 2019</a></li><li class="archive-list-item"><a class="archive-list-link" href="/archives/2019/07/">July 2019</a></li><li class="archive-list-item"><a class="archive-list-link" href="/archives/2019/06/">June 2019</a></li><li class="archive-list-item"><a class="archive-list-link" href="/archives/2019/05/">May 2019</a></li><li class="archive-list-item"><a class="archive-list-link" href="/archives/2018/11/">November 2018</a></li><li class="archive-list-item"><a class="archive-list-link" href="/archives/2018/10/">October 2018</a></li><li class="archive-list-item"><a class="archive-list-link" href="/archives/2018/09/">September 2018</a></li><li class="archive-list-item"><a class="archive-list-link" href="/archives/2017/05/">May 2017</a></li></ul>
+    </div>
+  </div>
+
+
+  
+    
+  <div class="widget-wrap">
+    <h3 class="widget-title">Recent Posts</h3>
+    <div class="widget">
+      <ul>
+        
+          <li>
+            <a href="/2019/12/30/blog/2019/">2019年目标</a>
+          </li>
+        
+          <li>
+            <a href="/2019/12/01/读书笔记/《Java并发编程的艺术》/0.0_目录/">《Java并发编程的艺术》读书笔记 - 目录</a>
+          </li>
+        
+          <li>
+            <a href="/2019/12/01/读书笔记/《Java核心知识点整理》/0.目录/">《JAVA 核心知识点整理》读书笔记 - 目录</a>
+          </li>
+        
+          <li>
+            <a href="/2019/11/30/读书笔记/《高性能MySQL》/0.目录/">《高性能MySQL》读书笔记 - 目录</a>
+          </li>
+        
+          <li>
+            <a href="/2019/07/05/读书笔记/《JavaDesignPatterns》/8.建造者模式/">《Java Design Patterns》第六章 建造者模式 - 复杂对象的组装与创建</a>
+          </li>
+        
+      </ul>
+    </div>
+  </div>
+
+  
+</aside>
+        
+      </div>
+      <footer id="footer">
+  
+  <div class="outer">
+    <div id="footer-info" class="inner">
+      &copy; 2019 koral<br>
+      Powered by <a href="http://hexo.io/" target="_blank">Hexo</a>
+    </div>
+  </div>
+</footer>
+    </div>
+    <nav id="mobile-nav">
+  
+    <a href="/" class="mobile-nav-link">Home</a>
+  
+    <a href="/archives" class="mobile-nav-link">Archives</a>
+  
+</nav>
+    
+
+<script src="//ajax.googleapis.com/ajax/libs/jquery/2.0.3/jquery.min.js"></script>
+
+
+  <link rel="stylesheet" href="/fancybox/jquery.fancybox.css">
+  <script src="/fancybox/jquery.fancybox.pack.js"></script>
+
+
+<script src="/js/script.js"></script>
+
+
+
+  </div>
+</body>
+</html>

@@ -1,0 +1,303 @@
+<!DOCTYPE html>
+<html>
+<head>
+  <meta charset="utf-8">
+  
+
+  
+  <title>《Java Design Patterns》第六章 建造者模式 - 复杂对象的组装与创建 | 罗凯的博客</title>
+  <meta name="viewport" content="width=device-width, initial-scale=1, maximum-scale=1">
+  <meta name="description" content="第六章 建造者模式 - 复杂对象的组装与创建一、设计一个游戏角色作为 RPG 游戏的一个重要组成部分，游戏角色拥有其特定的性别、脸型、服装、发型等外部特性。 无论何种造型的游戏角色，它们的创建步骤都大同小异，都需要逐步创建其组成部分，再将各组成部分装配成一个完整的游戏角色。 而建造者模式就是为了解决，各个组件组合为复杂对象的问题。 二、建造者模式2.1 概述建造者模式，将客户端与包含多个组成部分的">
+<meta name="keywords" content="读书笔记">
+<meta property="og:type" content="article">
+<meta property="og:title" content="《Java Design Patterns》第六章 建造者模式 - 复杂对象的组装与创建">
+<meta property="og:url" content="http://yoursite.com/2019/07/05/读书笔记/《JavaDesignPatterns》/8.建造者模式/index.html">
+<meta property="og:site_name" content="罗凯的博客">
+<meta property="og:description" content="第六章 建造者模式 - 复杂对象的组装与创建一、设计一个游戏角色作为 RPG 游戏的一个重要组成部分，游戏角色拥有其特定的性别、脸型、服装、发型等外部特性。 无论何种造型的游戏角色，它们的创建步骤都大同小异，都需要逐步创建其组成部分，再将各组成部分装配成一个完整的游戏角色。 而建造者模式就是为了解决，各个组件组合为复杂对象的问题。 二、建造者模式2.1 概述建造者模式，将客户端与包含多个组成部分的">
+<meta property="og:locale" content="zh-Hans">
+<meta property="og:updated_time" content="2019-07-05T03:00:53.185Z">
+<meta name="twitter:card" content="summary">
+<meta name="twitter:title" content="《Java Design Patterns》第六章 建造者模式 - 复杂对象的组装与创建">
+<meta name="twitter:description" content="第六章 建造者模式 - 复杂对象的组装与创建一、设计一个游戏角色作为 RPG 游戏的一个重要组成部分，游戏角色拥有其特定的性别、脸型、服装、发型等外部特性。 无论何种造型的游戏角色，它们的创建步骤都大同小异，都需要逐步创建其组成部分，再将各组成部分装配成一个完整的游戏角色。 而建造者模式就是为了解决，各个组件组合为复杂对象的问题。 二、建造者模式2.1 概述建造者模式，将客户端与包含多个组成部分的">
+  
+    <link rel="alternate" href="/atom.xml" title="罗凯的博客" type="application/atom+xml">
+  
+  
+    <link rel="icon" href="https://i.loli.net/2019/07/04/5d1db2fb9593c58427.gif">
+  
+  
+    <link href="//fonts.googleapis.com/css?family=Source+Code+Pro" rel="stylesheet" type="text/css">
+  
+  <link rel="stylesheet" href="/css/style.css">
+</head>
+
+<body>
+  <div id="container">
+    <div id="wrap">
+      <header id="header">
+  <div id="banner"></div>
+  <div id="header-outer" class="outer">
+    <div id="header-title" class="inner">
+      <h1 id="logo-wrap">
+        <a href="/" id="logo">罗凯的博客</a>
+      </h1>
+      
+        <h2 id="subtitle-wrap">
+          <a href="/" id="subtitle">一个大帅哥</a>
+        </h2>
+      
+    </div>
+    <div id="header-inner" class="inner">
+      <nav id="main-nav">
+        <a id="main-nav-toggle" class="nav-icon"></a>
+        
+          <a class="main-nav-link" href="/">Home</a>
+        
+          <a class="main-nav-link" href="/archives">Archives</a>
+        
+      </nav>
+      <nav id="sub-nav">
+        
+          <a id="nav-rss-link" class="nav-icon" href="/atom.xml" title="RSS Feed"></a>
+        
+        <a id="nav-search-btn" class="nav-icon" title="Search"></a>
+      </nav>
+      <div id="search-form-wrap">
+        <form action="//google.com/search" method="get" accept-charset="UTF-8" class="search-form"><input type="search" name="q" class="search-form-input" placeholder="Search"><button type="submit" class="search-form-submit">&#xF002;</button><input type="hidden" name="sitesearch" value="http://yoursite.com"></form>
+      </div>
+    </div>
+  </div>
+</header>
+      <div class="outer">
+        <section id="main"><article id="post-读书笔记/《JavaDesignPatterns》/8.建造者模式" class="article article-type-post" itemscope itemprop="blogPost">
+  <div class="article-meta">
+    <a href="/2019/07/05/读书笔记/《JavaDesignPatterns》/8.建造者模式/" class="article-date">
+  <time datetime="2019-07-05T03:00:00.000Z" itemprop="datePublished">2019-07-05</time>
+</a>
+    
+  <div class="article-category">
+    <a class="article-category-link" href="/categories/设计模式/">设计模式</a>
+  </div>
+
+  </div>
+  <div class="article-inner">
+    
+    
+      <header class="article-header">
+        
+  
+    <h1 class="article-title" itemprop="name">
+      《Java Design Patterns》第六章 建造者模式 - 复杂对象的组装与创建
+    </h1>
+  
+
+      </header>
+    
+    <div class="article-entry" itemprop="articleBody">
+      
+        <h1 id="第六章-建造者模式-复杂对象的组装与创建"><a href="#第六章-建造者模式-复杂对象的组装与创建" class="headerlink" title="第六章 建造者模式 - 复杂对象的组装与创建"></a>第六章 建造者模式 - 复杂对象的组装与创建</h1><h2 id="一、设计一个游戏角色"><a href="#一、设计一个游戏角色" class="headerlink" title="一、设计一个游戏角色"></a>一、设计一个游戏角色</h2><p>作为 RPG 游戏的一个重要组成部分，游戏角色拥有其特定的性别、脸型、服装、发型等外部特性。</p>
+<p>无论何种造型的游戏角色，它们的创建步骤都大同小异，都需要逐步创建其组成部分，再将各组成部分装配成一个完整的游戏角色。</p>
+<p>而建造者模式就是为了解决，各个组件组合为复杂对象的问题。</p>
+<h2 id="二、建造者模式"><a href="#二、建造者模式" class="headerlink" title="二、建造者模式"></a>二、建造者模式</h2><h3 id="2-1-概述"><a href="#2-1-概述" class="headerlink" title="2.1 概述"></a>2.1 概述</h3><p>建造者模式，将客户端与包含多个组成部分的复杂对象的创建过程分离，客户端无须知道复杂对象的内部组成部分与装配方式，只需要知道所需建造者的类型即可。</p>
+<p>建造者模式：将一个复杂对象的构建与它的表示分离，使得同样的构建过程可以创建不同的表示。属于一种对象创建型模式。</p>
+<h3 id="2-2-建造者模式中的几个角色"><a href="#2-2-建造者模式中的几个角色" class="headerlink" title="2.2 建造者模式中的几个角色"></a>2.2 建造者模式中的几个角色</h3><ol>
+<li>Builder - 抽象建造者<ol>
+<li>为创建一个产品对象的各个部件指定抽象接口</li>
+<li>一般声明两类方法：一类方法是buildPartX()，用于创建复杂对象的各个部件；另一类是getResult()，用于返回复杂对象</li>
+<li>抽象类或接口</li>
+</ol>
+</li>
+<li>ConcreteBuilder - 具体建造者<ol>
+<li>实现了Builder接口，实现各个部件的具体构造和装配方法</li>
+</ol>
+</li>
+<li>Product - 产品角色<ol>
+<li>被构建的复杂对象，包含多个组成部件</li>
+<li>由具体建造者创建该产品的内部表示并定义它的装配过程</li>
+</ol>
+</li>
+<li>Director - 指挥者<ol>
+<li>又称为导演类，负责安排复杂对象的建造次序</li>
+<li>客户端一般只需与指挥者交互，由客户端确定具体建造者的类型，并实例化具体建造者对象，然后通过指挥者类的构造函数或setter方法将对象传入指挥类中</li>
+</ol>
+</li>
+</ol>
+<h3 id="2-3-复杂对象、建造者与指挥者"><a href="#2-3-复杂对象、建造者与指挥者" class="headerlink" title="2.3 复杂对象、建造者与指挥者"></a>2.3 复杂对象、建造者与指挥者</h3><figure class="highlight java"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br></pre></td><td class="code"><pre><span class="line"><span class="comment">// 复杂对象，主要是包含多种不同类型的成员属性(部件)</span></span><br><span class="line"><span class="class"><span class="keyword">class</span> <span class="title">Product</span> </span>&#123;</span><br><span class="line">    <span class="keyword">private</span> String partA;</span><br><span class="line">    <span class="keyword">private</span> Object partB;</span><br><span class="line">    <span class="keyword">private</span> User partC;</span><br><span class="line">&#125;</span><br></pre></td></tr></table></figure>
+<figure class="highlight java"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br><span class="line">14</span><br></pre></td><td class="code"><pre><span class="line"><span class="keyword">abstract</span> <span class="class"><span class="keyword">class</span> <span class="title">Builder</span></span>&#123;</span><br><span class="line">    <span class="comment">// 创建产品对象</span></span><br><span class="line">    <span class="keyword">protected</span> Product product = <span class="keyword">new</span> Product();</span><br><span class="line">    </span><br><span class="line">    <span class="comment">// buildPartX() 方法为产品对象的成员属性设值</span></span><br><span class="line">    <span class="function"><span class="keyword">public</span> <span class="keyword">abstract</span> <span class="keyword">void</span> <span class="title">buildPartA</span><span class="params">()</span></span>;</span><br><span class="line">    <span class="function"><span class="keyword">public</span> <span class="keyword">abstract</span> <span class="keyword">void</span> <span class="title">buildPartB</span><span class="params">()</span></span>;</span><br><span class="line">    <span class="function"><span class="keyword">public</span> <span class="keyword">abstract</span> <span class="keyword">void</span> <span class="title">buildPartC</span><span class="params">()</span></span>;</span><br><span class="line">    </span><br><span class="line">    <span class="comment">// getResult 返回复杂对象</span></span><br><span class="line">    <span class="function"><span class="keyword">public</span> Product <span class="title">getResult</span><span class="params">()</span></span>&#123;</span><br><span class="line">        <span class="keyword">return</span> product;</span><br><span class="line">    &#125;</span><br><span class="line">&#125;</span><br></pre></td></tr></table></figure>
+<figure class="highlight java"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br><span class="line">14</span><br><span class="line">15</span><br><span class="line">16</span><br><span class="line">17</span><br><span class="line">18</span><br><span class="line">19</span><br><span class="line">20</span><br></pre></td><td class="code"><pre><span class="line"><span class="class"><span class="keyword">class</span> <span class="title">Director</span> </span>&#123;</span><br><span class="line">    <span class="keyword">private</span> Builder builder;</span><br><span class="line">    </span><br><span class="line">    <span class="comment">/**</span></span><br><span class="line"><span class="comment">     * 通过构造方法或者setter方法注入一个抽象建造者，由调用者确定使用何种类型的建造者</span></span><br><span class="line"><span class="comment">     */</span></span><br><span class="line">    <span class="function"><span class="keyword">public</span> <span class="title">Direct</span><span class="params">(Builder builder)</span></span>&#123;</span><br><span class="line">        <span class="keyword">this</span>.builder = builder;</span><br><span class="line">    &#125;</span><br><span class="line">    </span><br><span class="line">    <span class="comment">/**</span></span><br><span class="line"><span class="comment">     * construct 方法中调用builder对象的构造部件方法，返回一个产品对象</span></span><br><span class="line"><span class="comment">     */</span></span><br><span class="line">    <span class="function"><span class="keyword">public</span> Product <span class="title">construct</span><span class="params">()</span> </span>&#123;</span><br><span class="line">        build.buildPartA();</span><br><span class="line">        build.buildPartB();</span><br><span class="line">        build.buildPartC();</span><br><span class="line">        <span class="keyword">return</span> builder.getResult();</span><br><span class="line">    &#125;</span><br><span class="line">&#125;</span><br></pre></td></tr></table></figure>
+<p>需要扩展新的建造者时，只需要重新实现抽象建造者即可，无需修改源代码，系统扩展十分方便。</p>
+<p>在客户端代码中，无需关系产品对象的具体组装过程，只需要指定具体建造者的类型即可。</p>
+<h3 id="2-4-建造者模式的使用"><a href="#2-4-建造者模式的使用" class="headerlink" title="2.4 建造者模式的使用"></a>2.4 建造者模式的使用</h3><figure class="highlight java"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br></pre></td><td class="code"><pre><span class="line">Builder builder = <span class="keyword">new</span> ConcreteBuilder();</span><br><span class="line">Director director = <span class="keyword">new</span> Director(builder);</span><br><span class="line">Product product = director.construct();</span><br></pre></td></tr></table></figure>
+<h3 id="2-5-建造者模式与抽象工厂模式"><a href="#2-5-建造者模式与抽象工厂模式" class="headerlink" title="2.5 建造者模式与抽象工厂模式"></a>2.5 建造者模式与抽象工厂模式</h3><p>建造者模式与抽象工厂模式很类似：</p>
+<p>抽象工厂模式返回一系列相关的产品，而建造者模式返回一个完整的复杂产品。</p>
+<p>抽象工厂模式中，客户端通过选择具体工厂来生成所需对象，而建造者模式中，客户端通过指定具体建造者类型并指导Director类去生成对象，侧重于一步步构建复杂对象，然后将结果返回。</p>
+<p>类似于：抽象工厂生产出不同类型的汽车配件，而建造者模式就是汽车组装厂。</p>
+<h2 id="三、完整案例"><a href="#三、完整案例" class="headerlink" title="三、完整案例"></a>三、完整案例</h2><figure class="highlight java"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br><span class="line">14</span><br><span class="line">15</span><br><span class="line">16</span><br><span class="line">17</span><br><span class="line">18</span><br><span class="line">19</span><br><span class="line">20</span><br><span class="line">21</span><br><span class="line">22</span><br><span class="line">23</span><br><span class="line">24</span><br><span class="line">25</span><br><span class="line">26</span><br><span class="line">27</span><br><span class="line">28</span><br><span class="line">29</span><br><span class="line">30</span><br><span class="line">31</span><br><span class="line">32</span><br><span class="line">33</span><br><span class="line">34</span><br><span class="line">35</span><br><span class="line">36</span><br><span class="line">37</span><br><span class="line">38</span><br><span class="line">39</span><br><span class="line">40</span><br><span class="line">41</span><br><span class="line">42</span><br><span class="line">43</span><br><span class="line">44</span><br><span class="line">45</span><br><span class="line">46</span><br><span class="line">47</span><br><span class="line">48</span><br><span class="line">49</span><br><span class="line">50</span><br><span class="line">51</span><br><span class="line">52</span><br><span class="line">53</span><br><span class="line">54</span><br><span class="line">55</span><br><span class="line">56</span><br><span class="line">57</span><br><span class="line">58</span><br><span class="line">59</span><br><span class="line">60</span><br><span class="line">61</span><br><span class="line">62</span><br><span class="line">63</span><br><span class="line">64</span><br><span class="line">65</span><br><span class="line">66</span><br><span class="line">67</span><br><span class="line">68</span><br><span class="line">69</span><br><span class="line">70</span><br><span class="line">71</span><br><span class="line">72</span><br><span class="line">73</span><br><span class="line">74</span><br><span class="line">75</span><br><span class="line">76</span><br><span class="line">77</span><br><span class="line">78</span><br><span class="line">79</span><br><span class="line">80</span><br><span class="line">81</span><br><span class="line">82</span><br><span class="line">83</span><br><span class="line">84</span><br><span class="line">85</span><br><span class="line">86</span><br><span class="line">87</span><br><span class="line">88</span><br><span class="line">89</span><br><span class="line">90</span><br><span class="line">91</span><br><span class="line">92</span><br><span class="line">93</span><br><span class="line">94</span><br><span class="line">95</span><br><span class="line">96</span><br><span class="line">97</span><br><span class="line">98</span><br><span class="line">99</span><br><span class="line">100</span><br><span class="line">101</span><br><span class="line">102</span><br><span class="line">103</span><br><span class="line">104</span><br><span class="line">105</span><br><span class="line">106</span><br><span class="line">107</span><br><span class="line">108</span><br><span class="line">109</span><br><span class="line">110</span><br><span class="line">111</span><br><span class="line">112</span><br><span class="line">113</span><br><span class="line">114</span><br></pre></td><td class="code"><pre><span class="line"><span class="keyword">import</span> lombok.Getter;</span><br><span class="line"><span class="keyword">import</span> lombok.Setter;</span><br><span class="line"></span><br><span class="line"><span class="comment">// 角色类 - 复杂产品</span></span><br><span class="line"><span class="meta">@Getter</span></span><br><span class="line"><span class="meta">@Setter</span></span><br><span class="line"><span class="keyword">public</span> <span class="class"><span class="keyword">class</span> <span class="title">Actor</span> </span>&#123;</span><br><span class="line">    <span class="keyword">private</span> String type; <span class="comment">// 角色类型</span></span><br><span class="line">    <span class="keyword">private</span> String sex; <span class="comment">// 性别</span></span><br><span class="line">    <span class="keyword">private</span> String face; <span class="comment">// 脸型</span></span><br><span class="line">    <span class="keyword">private</span> String costume; <span class="comment">// 服装</span></span><br><span class="line">    <span class="keyword">private</span> String hairStyle; <span class="comment">// 发型</span></span><br><span class="line">&#125;</span><br><span class="line"></span><br><span class="line"><span class="comment">// 角色建造器 - 抽象建造者</span></span><br><span class="line"><span class="keyword">abstract</span> <span class="class"><span class="keyword">class</span> <span class="title">ActorBuilder</span> </span>&#123;</span><br><span class="line">    <span class="keyword">protected</span> Actor actor = <span class="keyword">new</span> Actor();</span><br><span class="line"></span><br><span class="line">    <span class="function"><span class="keyword">public</span> <span class="keyword">abstract</span> <span class="keyword">void</span> <span class="title">buildType</span><span class="params">()</span></span>;</span><br><span class="line"></span><br><span class="line">    <span class="function"><span class="keyword">public</span> <span class="keyword">abstract</span> <span class="keyword">void</span> <span class="title">buildSex</span><span class="params">()</span></span>;</span><br><span class="line"></span><br><span class="line">    <span class="function"><span class="keyword">public</span> <span class="keyword">abstract</span> <span class="keyword">void</span> <span class="title">buildFace</span><span class="params">()</span></span>;</span><br><span class="line"></span><br><span class="line">    <span class="function"><span class="keyword">public</span> <span class="keyword">abstract</span> <span class="keyword">void</span> <span class="title">buildCostume</span><span class="params">()</span></span>;</span><br><span class="line"></span><br><span class="line">    <span class="function"><span class="keyword">public</span> <span class="keyword">abstract</span> <span class="keyword">void</span> <span class="title">buildHairStyle</span><span class="params">()</span></span>;</span><br><span class="line"></span><br><span class="line">    <span class="comment">// 工厂方法，返回一个完整的游戏角色对象</span></span><br><span class="line">    <span class="function"><span class="keyword">public</span> Actor <span class="title">createActor</span><span class="params">()</span> </span>&#123;</span><br><span class="line">        <span class="keyword">return</span> actor;</span><br><span class="line">    &#125;</span><br><span class="line">&#125;</span><br><span class="line"></span><br><span class="line"><span class="comment">// 天使角色建造器 - 具体建造者</span></span><br><span class="line"><span class="class"><span class="keyword">class</span> <span class="title">AngelBuilder</span> <span class="keyword">extends</span> <span class="title">ActorBuilder</span> </span>&#123;</span><br><span class="line"></span><br><span class="line">    <span class="meta">@Override</span></span><br><span class="line">    <span class="function"><span class="keyword">public</span> <span class="keyword">void</span> <span class="title">buildType</span><span class="params">()</span> </span>&#123;</span><br><span class="line">        actor.setType(<span class="string">"天使"</span>);</span><br><span class="line">    &#125;</span><br><span class="line"></span><br><span class="line">    <span class="meta">@Override</span></span><br><span class="line">    <span class="function"><span class="keyword">public</span> <span class="keyword">void</span> <span class="title">buildSex</span><span class="params">()</span> </span>&#123;</span><br><span class="line">        actor.setSex(<span class="string">"女"</span>);</span><br><span class="line">    &#125;</span><br><span class="line"></span><br><span class="line">    <span class="meta">@Override</span></span><br><span class="line">    <span class="function"><span class="keyword">public</span> <span class="keyword">void</span> <span class="title">buildFace</span><span class="params">()</span> </span>&#123;</span><br><span class="line">        actor.setFace(<span class="string">"漂亮"</span>);</span><br><span class="line">    &#125;</span><br><span class="line"></span><br><span class="line">    <span class="meta">@Override</span></span><br><span class="line">    <span class="function"><span class="keyword">public</span> <span class="keyword">void</span> <span class="title">buildCostume</span><span class="params">()</span> </span>&#123;</span><br><span class="line">        actor.setCostume(<span class="string">"白裙子"</span>);</span><br><span class="line">    &#125;</span><br><span class="line"></span><br><span class="line">    <span class="meta">@Override</span></span><br><span class="line">    <span class="function"><span class="keyword">public</span> <span class="keyword">void</span> <span class="title">buildHairStyle</span><span class="params">()</span> </span>&#123;</span><br><span class="line">        actor.setHairStyle(<span class="string">"披肩长发"</span>);</span><br><span class="line">    &#125;</span><br><span class="line">&#125;</span><br><span class="line"></span><br><span class="line"><span class="comment">// 恶魔角色建造器 - 具体建造者</span></span><br><span class="line"><span class="class"><span class="keyword">class</span> <span class="title">DevilBuilder</span> <span class="keyword">extends</span> <span class="title">ActorBuilder</span> </span>&#123;</span><br><span class="line"></span><br><span class="line">    <span class="meta">@Override</span></span><br><span class="line">    <span class="function"><span class="keyword">public</span> <span class="keyword">void</span> <span class="title">buildType</span><span class="params">()</span> </span>&#123;</span><br><span class="line">        actor.setType(<span class="string">"恶魔"</span>);</span><br><span class="line">    &#125;</span><br><span class="line"></span><br><span class="line">    <span class="meta">@Override</span></span><br><span class="line">    <span class="function"><span class="keyword">public</span> <span class="keyword">void</span> <span class="title">buildSex</span><span class="params">()</span> </span>&#123;</span><br><span class="line">        actor.setSex(<span class="string">"男"</span>);</span><br><span class="line">    &#125;</span><br><span class="line"></span><br><span class="line">    <span class="meta">@Override</span></span><br><span class="line">    <span class="function"><span class="keyword">public</span> <span class="keyword">void</span> <span class="title">buildFace</span><span class="params">()</span> </span>&#123;</span><br><span class="line">        actor.setFace(<span class="string">"丑陋"</span>);</span><br><span class="line">    &#125;</span><br><span class="line"></span><br><span class="line">    <span class="meta">@Override</span></span><br><span class="line">    <span class="function"><span class="keyword">public</span> <span class="keyword">void</span> <span class="title">buildCostume</span><span class="params">()</span> </span>&#123;</span><br><span class="line">        actor.setCostume(<span class="string">"丑陋"</span>);</span><br><span class="line">    &#125;</span><br><span class="line"></span><br><span class="line">    <span class="meta">@Override</span></span><br><span class="line">    <span class="function"><span class="keyword">public</span> <span class="keyword">void</span> <span class="title">buildHairStyle</span><span class="params">()</span> </span>&#123;</span><br><span class="line">        actor.setHairStyle(<span class="string">"光头"</span>);</span><br><span class="line">    &#125;</span><br><span class="line">&#125;</span><br><span class="line"></span><br><span class="line"><span class="comment">// 游戏角色创建控制器 - 指挥者</span></span><br><span class="line"><span class="class"><span class="keyword">class</span> <span class="title">ActorController</span> </span>&#123;</span><br><span class="line">    <span class="comment">// 逐步构建复杂产品对象</span></span><br><span class="line">    <span class="function"><span class="keyword">public</span> Actor <span class="title">construct</span><span class="params">(ActorBuilder buidler)</span> </span>&#123;</span><br><span class="line">        buidler.buildType();</span><br><span class="line">        buidler.buildSex();</span><br><span class="line">        buidler.buildFace();</span><br><span class="line">        buidler.buildCostume();</span><br><span class="line">        buidler.buildHairStyle();</span><br><span class="line">        <span class="keyword">return</span> buidler.createActor();</span><br><span class="line">    &#125;</span><br><span class="line">&#125;</span><br><span class="line"></span><br><span class="line"><span class="comment">// 测试客户端，调用指挥者通过具体建造者来构建完整的复杂对象</span></span><br><span class="line"><span class="class"><span class="keyword">class</span> <span class="title">Client</span> </span>&#123;</span><br><span class="line">    <span class="function"><span class="keyword">public</span> <span class="keyword">static</span> <span class="keyword">void</span> <span class="title">main</span><span class="params">(String[] args)</span> </span>&#123;</span><br><span class="line">        ActorBuilder actorBuilder = <span class="keyword">new</span> AngelBuilder();</span><br><span class="line">        ActorController actorController = <span class="keyword">new</span> ActorController();</span><br><span class="line">        Actor actor = actorController.construct(actorBuilder);</span><br><span class="line">        System.out.println(actor.getType() + <span class="string">":"</span> + actor.getFace());</span><br><span class="line">    &#125;</span><br><span class="line">&#125;</span><br></pre></td></tr></table></figure>
+<h2 id="四、扩展"><a href="#四、扩展" class="headerlink" title="四、扩展"></a>四、扩展</h2><h3 id="4-1-省略Director指挥者"><a href="#4-1-省略Director指挥者" class="headerlink" title="4.1 省略Director指挥者"></a>4.1 省略Director指挥者</h3><p>为了简化系统结构，可以将Director与抽象建造者Builder合并，如下：</p>
+<figure class="highlight java"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br><span class="line">14</span><br><span class="line">15</span><br><span class="line">16</span><br><span class="line">17</span><br><span class="line">18</span><br><span class="line">19</span><br><span class="line">20</span><br><span class="line">21</span><br><span class="line">22</span><br><span class="line">23</span><br><span class="line">24</span><br></pre></td><td class="code"><pre><span class="line"><span class="comment">// 角色建造器 - 抽象建造者</span></span><br><span class="line"><span class="keyword">abstract</span> <span class="class"><span class="keyword">class</span> <span class="title">ActorBuilder</span> </span>&#123;</span><br><span class="line">    <span class="keyword">protected</span> <span class="keyword">static</span> Actor actor = <span class="keyword">new</span> Actor();</span><br><span class="line"></span><br><span class="line">    <span class="function"><span class="keyword">public</span> <span class="keyword">abstract</span> <span class="keyword">void</span> <span class="title">buildType</span><span class="params">()</span></span>;</span><br><span class="line"></span><br><span class="line">    <span class="function"><span class="keyword">public</span> <span class="keyword">abstract</span> <span class="keyword">void</span> <span class="title">buildSex</span><span class="params">()</span></span>;</span><br><span class="line"></span><br><span class="line">    <span class="function"><span class="keyword">public</span> <span class="keyword">abstract</span> <span class="keyword">void</span> <span class="title">buildFace</span><span class="params">()</span></span>;</span><br><span class="line"></span><br><span class="line">    <span class="function"><span class="keyword">public</span> <span class="keyword">abstract</span> <span class="keyword">void</span> <span class="title">buildCostume</span><span class="params">()</span></span>;</span><br><span class="line"></span><br><span class="line">    <span class="function"><span class="keyword">public</span> <span class="keyword">abstract</span> <span class="keyword">void</span> <span class="title">buildHairStyle</span><span class="params">()</span></span>;</span><br><span class="line"></span><br><span class="line">    <span class="comment">// 工厂方法，返回一个完整的游戏角色对象</span></span><br><span class="line">    <span class="function"><span class="keyword">public</span> <span class="keyword">static</span> Actor <span class="title">construct</span><span class="params">(ActorBuilder buidler)</span> </span>&#123;</span><br><span class="line">        buidler.buildType();</span><br><span class="line">        buidler.buildSex();</span><br><span class="line">        buidler.buildFace();</span><br><span class="line">        buidler.buildCostume();</span><br><span class="line">        buidler.buildHairStyle();</span><br><span class="line">        <span class="keyword">return</span> actor;</span><br><span class="line">    &#125;</span><br><span class="line">&#125;</span><br></pre></td></tr></table></figure>
+<h3 id="4-2-钩子方法"><a href="#4-2-钩子方法" class="headerlink" title="4.2 钩子方法"></a>4.2 钩子方法</h3><p>建造者模式除了逐步构建一个复杂产品对象外，还可以通过Director类来精细控制产品的创建过程，如增加一个钩子方法来控制是否构建某个buildPartX()的调用。</p>
+<figure class="highlight java"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br><span class="line">14</span><br><span class="line">15</span><br><span class="line">16</span><br><span class="line">17</span><br><span class="line">18</span><br><span class="line">19</span><br><span class="line">20</span><br><span class="line">21</span><br><span class="line">22</span><br><span class="line">23</span><br><span class="line">24</span><br><span class="line">25</span><br><span class="line">26</span><br><span class="line">27</span><br><span class="line">28</span><br><span class="line">29</span><br><span class="line">30</span><br><span class="line">31</span><br><span class="line">32</span><br><span class="line">33</span><br></pre></td><td class="code"><pre><span class="line"><span class="keyword">abstract</span> <span class="class"><span class="keyword">class</span> <span class="title">ActorBuilder</span></span>&#123;</span><br><span class="line">    <span class="keyword">protected</span> Actor actor = <span class="keyword">new</span> Actor();</span><br><span class="line"></span><br><span class="line">    <span class="function"><span class="keyword">public</span> <span class="keyword">abstract</span> <span class="keyword">void</span> <span class="title">buildType</span><span class="params">()</span></span>;</span><br><span class="line"></span><br><span class="line">    <span class="function"><span class="keyword">public</span> <span class="keyword">abstract</span> <span class="keyword">void</span> <span class="title">buildSex</span><span class="params">()</span></span>;</span><br><span class="line"></span><br><span class="line">    <span class="function"><span class="keyword">public</span> <span class="keyword">abstract</span> <span class="keyword">void</span> <span class="title">buildFace</span><span class="params">()</span></span>;</span><br><span class="line"></span><br><span class="line">    <span class="function"><span class="keyword">public</span> <span class="keyword">abstract</span> <span class="keyword">void</span> <span class="title">buildCostume</span><span class="params">()</span></span>;</span><br><span class="line"></span><br><span class="line">    <span class="function"><span class="keyword">public</span> <span class="keyword">abstract</span> <span class="keyword">void</span> <span class="title">buildHairStyle</span><span class="params">()</span></span>;</span><br><span class="line">    </span><br><span class="line">    <span class="comment">// 钩子方法 - 是否是光头，true则不进行buildHairStyle</span></span><br><span class="line">    <span class="function"><span class="keyword">public</span> <span class="keyword">boolean</span> <span class="title">isBareheaded</span><span class="params">()</span></span>&#123;</span><br><span class="line">        <span class="keyword">return</span> <span class="keyword">false</span>;</span><br><span class="line">    &#125;</span><br><span class="line">&#125;</span><br><span class="line"></span><br><span class="line"><span class="comment">// 游戏角色创建控制器 - 指挥者</span></span><br><span class="line"><span class="class"><span class="keyword">class</span> <span class="title">ActorController</span> </span>&#123;</span><br><span class="line">    <span class="comment">// 逐步构建复杂产品对象</span></span><br><span class="line">    <span class="function"><span class="keyword">public</span> Actor <span class="title">construct</span><span class="params">(ActorBuilder buidler)</span> </span>&#123;</span><br><span class="line">        buidler.buildType();</span><br><span class="line">        buidler.buildSex();</span><br><span class="line">        buidler.buildFace();</span><br><span class="line">        buidler.buildCostume();</span><br><span class="line">        <span class="keyword">if</span>(!isBareheaded)&#123;</span><br><span class="line">            buidler.buildHairStyle();</span><br><span class="line">        &#125;</span><br><span class="line">        <span class="keyword">return</span> buidler.createActor();</span><br><span class="line">    &#125;</span><br><span class="line">&#125;</span><br></pre></td></tr></table></figure>
+<h2 id="五、总结"><a href="#五、总结" class="headerlink" title="五、总结"></a>五、总结</h2><h3 id="优点"><a href="#优点" class="headerlink" title="优点"></a>优点</h3><ol>
+<li>在建造者模式中，客户端不必知道产品内部组成细节，将产品本身和产品的创建过程解耦，使得相同创建过程能够创建出不同的产品对象</li>
+<li>每个具体建造者都相对独立，可以方便地替换或增加具体建造者，符合“开闭原则”</li>
+<li>将复杂产品的创建步骤分解在不同方法中，使创建过程更清晰，也更方便程序控制创建的过程</li>
+</ol>
+<h3 id="缺点"><a href="#缺点" class="headerlink" title="缺点"></a>缺点</h3><ol>
+<li>建造者模式所创建的产品具有许多共同点，其组成部分相似。如果产品间差异过大，则不适合建造者模式，使用范围有限</li>
+<li>如果产品内部变化复杂，会导致需要许多具体建造者来实现该变化，会导致系统庞大，增加系统理解难度和运行成本</li>
+</ol>
+<h3 id="适用场景"><a href="#适用场景" class="headerlink" title="适用场景"></a>适用场景</h3><ol>
+<li>需要生成的产品对象有复杂的内部结构，即多个成员属性</li>
+<li>产品对象的属性相互依赖，需要指定其生成顺序</li>
+<li>对象的创建过程独立于创建该对象的类。在建造者模式中，创建过程封装在指挥者类中，而不再建造者和客户端中</li>
+<li>隔离复杂对象的创建和使用，且相同的创建过程能够创建不同的产品</li>
+</ol>
+<h2 id="六、练习"><a href="#六、练习" class="headerlink" title="六、练习"></a>六、练习</h2><blockquote>
+<p>Sunny软件公司欲开发一个视频播放软件，为了给用户使用提供方便，该播放软件提供多种界面显示模式，如完整模式、精简模式、记忆模式、网络模式等。在不同的显示模式下主界面的组成元素有所差异，如在完整模式下将显示菜单、播放列表、主窗口、控制条等，在精简模式下只显示主窗口和控制条，而在记忆模式下将显示主窗口、控制条、收藏列表等。尝试使用建造者模式设计该软件。</p>
+</blockquote>
+<figure class="highlight java"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br><span class="line">14</span><br><span class="line">15</span><br><span class="line">16</span><br><span class="line">17</span><br><span class="line">18</span><br><span class="line">19</span><br><span class="line">20</span><br><span class="line">21</span><br><span class="line">22</span><br><span class="line">23</span><br><span class="line">24</span><br><span class="line">25</span><br><span class="line">26</span><br><span class="line">27</span><br><span class="line">28</span><br><span class="line">29</span><br><span class="line">30</span><br><span class="line">31</span><br><span class="line">32</span><br><span class="line">33</span><br><span class="line">34</span><br><span class="line">35</span><br><span class="line">36</span><br><span class="line">37</span><br><span class="line">38</span><br><span class="line">39</span><br><span class="line">40</span><br><span class="line">41</span><br><span class="line">42</span><br><span class="line">43</span><br><span class="line">44</span><br><span class="line">45</span><br><span class="line">46</span><br><span class="line">47</span><br><span class="line">48</span><br><span class="line">49</span><br><span class="line">50</span><br><span class="line">51</span><br><span class="line">52</span><br><span class="line">53</span><br><span class="line">54</span><br><span class="line">55</span><br><span class="line">56</span><br><span class="line">57</span><br><span class="line">58</span><br><span class="line">59</span><br><span class="line">60</span><br><span class="line">61</span><br><span class="line">62</span><br><span class="line">63</span><br><span class="line">64</span><br><span class="line">65</span><br><span class="line">66</span><br><span class="line">67</span><br><span class="line">68</span><br><span class="line">69</span><br><span class="line">70</span><br><span class="line">71</span><br><span class="line">72</span><br><span class="line">73</span><br><span class="line">74</span><br><span class="line">75</span><br><span class="line">76</span><br><span class="line">77</span><br><span class="line">78</span><br><span class="line">79</span><br><span class="line">80</span><br><span class="line">81</span><br><span class="line">82</span><br><span class="line">83</span><br><span class="line">84</span><br><span class="line">85</span><br><span class="line">86</span><br><span class="line">87</span><br><span class="line">88</span><br><span class="line">89</span><br><span class="line">90</span><br><span class="line">91</span><br><span class="line">92</span><br><span class="line">93</span><br></pre></td><td class="code"><pre><span class="line"><span class="comment">/**</span></span><br><span class="line"><span class="comment"> * 视频播放显示界面 - 具体产品</span></span><br><span class="line"><span class="comment"> * 具体播放界面，包含显示菜单、播放列表、主窗口、控制条</span></span><br><span class="line"><span class="comment"> * 可能包含的显示模式，完整模式、精简模式、网络模式</span></span><br><span class="line"><span class="comment"> */</span></span><br><span class="line"><span class="meta">@Setter</span></span><br><span class="line"><span class="meta">@Getter</span></span><br><span class="line"><span class="keyword">public</span> <span class="class"><span class="keyword">class</span> <span class="title">TechWeb</span> </span>&#123;</span><br><span class="line">    <span class="keyword">private</span> String menu; <span class="comment">// 菜单</span></span><br><span class="line">    <span class="keyword">private</span> String list; <span class="comment">// 播放列表</span></span><br><span class="line">    <span class="keyword">private</span> String window; <span class="comment">// 主窗口</span></span><br><span class="line">    <span class="keyword">private</span> String control; <span class="comment">// 控制条</span></span><br><span class="line">&#125;</span><br><span class="line"></span><br><span class="line"><span class="comment">/**</span></span><br><span class="line"><span class="comment"> * 显示模式 - 抽象建造者</span></span><br><span class="line"><span class="comment"> */</span></span><br><span class="line"><span class="keyword">abstract</span> <span class="class"><span class="keyword">class</span> <span class="title">ShowPattern</span> </span>&#123;</span><br><span class="line">    <span class="keyword">protected</span> TechWeb techWeb = <span class="keyword">new</span> TechWeb();</span><br><span class="line"></span><br><span class="line">    <span class="function"><span class="keyword">public</span> <span class="keyword">abstract</span> <span class="keyword">void</span> <span class="title">buildMenu</span><span class="params">()</span></span>;</span><br><span class="line">    <span class="function"><span class="keyword">public</span> <span class="keyword">abstract</span> <span class="keyword">void</span> <span class="title">buildList</span><span class="params">()</span></span>;</span><br><span class="line">    <span class="function"><span class="keyword">public</span> <span class="keyword">abstract</span> <span class="keyword">void</span> <span class="title">buildWindow</span><span class="params">()</span></span>;</span><br><span class="line">    <span class="function"><span class="keyword">public</span> <span class="keyword">abstract</span> <span class="keyword">void</span> <span class="title">buildControl</span><span class="params">()</span></span>;</span><br><span class="line"></span><br><span class="line">    <span class="function"><span class="keyword">public</span> TechWeb <span class="title">construct</span><span class="params">()</span></span>&#123;</span><br><span class="line">        buildControl();</span><br><span class="line">        buildList();</span><br><span class="line">        buildMenu();</span><br><span class="line">        buildWindow();</span><br><span class="line">        <span class="keyword">return</span> techWeb;</span><br><span class="line">    &#125;</span><br><span class="line">&#125;</span><br><span class="line"></span><br><span class="line"><span class="comment">/**</span></span><br><span class="line"><span class="comment"> * 完整模式 - 具体建造者</span></span><br><span class="line"><span class="comment"> */</span></span><br><span class="line"><span class="class"><span class="keyword">class</span> <span class="title">FullPattern</span> <span class="keyword">extends</span> <span class="title">ShowPattern</span></span>&#123;</span><br><span class="line"></span><br><span class="line">    <span class="meta">@Override</span></span><br><span class="line">    <span class="function"><span class="keyword">public</span> <span class="keyword">void</span> <span class="title">buildMenu</span><span class="params">()</span> </span>&#123;</span><br><span class="line">        techWeb.setControl(<span class="string">"完整控制条"</span>);</span><br><span class="line">    &#125;</span><br><span class="line"></span><br><span class="line">    <span class="meta">@Override</span></span><br><span class="line">    <span class="function"><span class="keyword">public</span> <span class="keyword">void</span> <span class="title">buildList</span><span class="params">()</span> </span>&#123;</span><br><span class="line">        techWeb.setList(<span class="string">"显示50条"</span>);</span><br><span class="line">    &#125;</span><br><span class="line"></span><br><span class="line">    <span class="meta">@Override</span></span><br><span class="line">    <span class="function"><span class="keyword">public</span> <span class="keyword">void</span> <span class="title">buildWindow</span><span class="params">()</span> </span>&#123;</span><br><span class="line">        techWeb.setMenu(<span class="string">"菜单列表50条"</span>);</span><br><span class="line">    &#125;</span><br><span class="line"></span><br><span class="line">    <span class="meta">@Override</span></span><br><span class="line">    <span class="function"><span class="keyword">public</span> <span class="keyword">void</span> <span class="title">buildControl</span><span class="params">()</span> </span>&#123;</span><br><span class="line">        techWeb.setWindow(<span class="string">"带所有菜单的窗口"</span>);</span><br><span class="line">    &#125;</span><br><span class="line">&#125;</span><br><span class="line"></span><br><span class="line"><span class="comment">/**</span></span><br><span class="line"><span class="comment"> * 精简模式</span></span><br><span class="line"><span class="comment"> */</span></span><br><span class="line"><span class="class"><span class="keyword">class</span> <span class="title">SimpPattern</span> <span class="keyword">extends</span> <span class="title">ShowPattern</span></span>&#123;</span><br><span class="line"></span><br><span class="line">    <span class="meta">@Override</span></span><br><span class="line">    <span class="function"><span class="keyword">public</span> <span class="keyword">void</span> <span class="title">buildMenu</span><span class="params">()</span> </span>&#123;</span><br><span class="line">        techWeb.setControl(<span class="string">"完整的控制条"</span>);</span><br><span class="line">    &#125;</span><br><span class="line"></span><br><span class="line">    <span class="meta">@Override</span></span><br><span class="line">    <span class="function"><span class="keyword">public</span> <span class="keyword">void</span> <span class="title">buildList</span><span class="params">()</span> </span>&#123;</span><br><span class="line">        techWeb.setList(<span class="string">"不显示播放列表"</span>);</span><br><span class="line">    &#125;</span><br><span class="line"></span><br><span class="line">    <span class="meta">@Override</span></span><br><span class="line">    <span class="function"><span class="keyword">public</span> <span class="keyword">void</span> <span class="title">buildWindow</span><span class="params">()</span> </span>&#123;</span><br><span class="line">        techWeb.setMenu(<span class="string">"不显示菜单"</span>);</span><br><span class="line">    &#125;</span><br><span class="line"></span><br><span class="line">    <span class="meta">@Override</span></span><br><span class="line">    <span class="function"><span class="keyword">public</span> <span class="keyword">void</span> <span class="title">buildControl</span><span class="params">()</span> </span>&#123;</span><br><span class="line">        techWeb.setWindow(<span class="string">"不带菜单的窗口"</span>);</span><br><span class="line">    &#125;</span><br><span class="line">&#125;</span><br><span class="line"></span><br><span class="line"><span class="class"><span class="keyword">class</span> <span class="title">Client</span> </span>&#123;</span><br><span class="line">    <span class="function"><span class="keyword">public</span> <span class="keyword">static</span> <span class="keyword">void</span> <span class="title">main</span><span class="params">(String[] args)</span> </span>&#123;</span><br><span class="line">        ShowPattern simpPattern = <span class="keyword">new</span> SimpPattern();</span><br><span class="line">        TechWeb web = simpPattern.construct();</span><br><span class="line">        System.out.println(web.getMenu());</span><br><span class="line">    &#125;</span><br><span class="line">&#125;</span><br></pre></td></tr></table></figure>
+
+      
+    </div>
+    <footer class="article-footer">
+      <a data-url="http://yoursite.com/2019/07/05/读书笔记/《JavaDesignPatterns》/8.建造者模式/" data-id="cjxpj03cz00d1rgtw694iykr1" class="article-share-link">Share</a>
+      
+      
+  <ul class="article-tag-list"><li class="article-tag-list-item"><a class="article-tag-list-link" href="/tags/读书笔记/">读书笔记</a></li></ul>
+
+    </footer>
+  </div>
+  
+    
+<nav id="article-nav">
+  
+    <a href="/2019/11/30/读书笔记/《高性能MySQL》/0.目录/" id="article-nav-newer" class="article-nav-link-wrap">
+      <strong class="article-nav-caption">Newer</strong>
+      <div class="article-nav-title">
+        
+          《高性能MySQL》读书笔记 - 目录
+        
+      </div>
+    </a>
+  
+  
+    <a href="/2019/07/01/读书笔记/《高性能MySQL》/6.MySQL存储引擎/" id="article-nav-older" class="article-nav-link-wrap">
+      <strong class="article-nav-caption">Older</strong>
+      <div class="article-nav-title"></div>
+    </a>
+  
+</nav>
+
+  
+</article>
+
+</section>
+        
+          <aside id="sidebar">
+  
+    
+  <div class="widget-wrap">
+    <h3 class="widget-title">Categories</h3>
+    <div class="widget">
+      <ul class="category-list"><li class="category-list-item"><a class="category-list-link" href="/categories/Docker学习/">Docker学习</a></li><li class="category-list-item"><a class="category-list-link" href="/categories/Git命令学习/">Git命令学习</a></li><li class="category-list-item"><a class="category-list-link" href="/categories/JAVA-核心知识点整理/">JAVA 核心知识点整理</a></li><li class="category-list-item"><a class="category-list-link" href="/categories/Java/">Java</a></li><li class="category-list-item"><a class="category-list-link" href="/categories/Java并发编程与高并发解决方案/">Java并发编程与高并发解决方案</a></li><li class="category-list-item"><a class="category-list-link" href="/categories/Java并发编程的艺术/">Java并发编程的艺术</a></li><li class="category-list-item"><a class="category-list-link" href="/categories/Java成神之路/">Java成神之路</a><ul class="category-list-child"><li class="category-list-item"><a class="category-list-link" href="/categories/Java成神之路/SpringBoot/">SpringBoot</a></li><li class="category-list-item"><a class="category-list-link" href="/categories/Java成神之路/Study社区/">Study社区</a></li></ul></li><li class="category-list-item"><a class="category-list-link" href="/categories/Linux学习之路/">Linux学习之路</a></li><li class="category-list-item"><a class="category-list-link" href="/categories/MarkDown语法/">MarkDown语法</a></li><li class="category-list-item"><a class="category-list-link" href="/categories/React学习/">React学习</a></li><li class="category-list-item"><a class="category-list-link" href="/categories/SpringBoot-参考指南/">SpringBoot 参考指南</a></li><li class="category-list-item"><a class="category-list-link" href="/categories/工具函数/">工具函数</a></li><li class="category-list-item"><a class="category-list-link" href="/categories/设计模式/">设计模式</a></li><li class="category-list-item"><a class="category-list-link" href="/categories/高性能MySQL/">高性能MySQL</a></li></ul>
+    </div>
+  </div>
+
+
+  
+    
+  <div class="widget-wrap">
+    <h3 class="widget-title">Tags</h3>
+    <div class="widget">
+      <ul class="tag-list"><li class="tag-list-item"><a class="tag-list-link" href="/tags/Git/">Git</a></li><li class="tag-list-item"><a class="tag-list-link" href="/tags/Git-Bash/">Git Bash</a></li><li class="tag-list-item"><a class="tag-list-link" href="/tags/Linux/">Linux</a></li><li class="tag-list-item"><a class="tag-list-link" href="/tags/MQ/">MQ</a></li><li class="tag-list-item"><a class="tag-list-link" href="/tags/MySQL/">MySQL</a></li><li class="tag-list-item"><a class="tag-list-link" href="/tags/POI/">POI</a></li><li class="tag-list-item"><a class="tag-list-link" href="/tags/Spring-Cloud/">Spring Cloud</a></li><li class="tag-list-item"><a class="tag-list-link" href="/tags/Spring-Data/">Spring Data</a></li><li class="tag-list-item"><a class="tag-list-link" href="/tags/SpringBoot/">SpringBoot</a></li><li class="tag-list-item"><a class="tag-list-link" href="/tags/docker/">docker</a></li><li class="tag-list-item"><a class="tag-list-link" href="/tags/gradle/">gradle</a></li><li class="tag-list-item"><a class="tag-list-link" href="/tags/java/">java</a></li><li class="tag-list-item"><a class="tag-list-link" href="/tags/poi/">poi</a></li><li class="tag-list-item"><a class="tag-list-link" href="/tags/并发编程/">并发编程</a></li><li class="tag-list-item"><a class="tag-list-link" href="/tags/数据库/">数据库</a></li><li class="tag-list-item"><a class="tag-list-link" href="/tags/读书笔记/">读书笔记</a></li><li class="tag-list-item"><a class="tag-list-link" href="/tags/高并发/">高并发</a></li></ul>
+    </div>
+  </div>
+
+
+  
+    
+  <div class="widget-wrap">
+    <h3 class="widget-title">Tag Cloud</h3>
+    <div class="widget tagcloud">
+      <a href="/tags/Git/" style="font-size: 13.75px;">Git</a> <a href="/tags/Git-Bash/" style="font-size: 11.25px;">Git Bash</a> <a href="/tags/Linux/" style="font-size: 12.5px;">Linux</a> <a href="/tags/MQ/" style="font-size: 15px;">MQ</a> <a href="/tags/MySQL/" style="font-size: 17.5px;">MySQL</a> <a href="/tags/POI/" style="font-size: 16.25px;">POI</a> <a href="/tags/Spring-Cloud/" style="font-size: 10px;">Spring Cloud</a> <a href="/tags/Spring-Data/" style="font-size: 12.5px;">Spring Data</a> <a href="/tags/SpringBoot/" style="font-size: 15px;">SpringBoot</a> <a href="/tags/docker/" style="font-size: 10px;">docker</a> <a href="/tags/gradle/" style="font-size: 11.25px;">gradle</a> <a href="/tags/java/" style="font-size: 20px;">java</a> <a href="/tags/poi/" style="font-size: 10px;">poi</a> <a href="/tags/并发编程/" style="font-size: 12.5px;">并发编程</a> <a href="/tags/数据库/" style="font-size: 17.5px;">数据库</a> <a href="/tags/读书笔记/" style="font-size: 18.75px;">读书笔记</a> <a href="/tags/高并发/" style="font-size: 12.5px;">高并发</a>
+    </div>
+  </div>
+
+  
+    
+  <div class="widget-wrap">
+    <h3 class="widget-title">Archives</h3>
+    <div class="widget">
+      <ul class="archive-list"><li class="archive-list-item"><a class="archive-list-link" href="/archives/2019/12/">December 2019</a></li><li class="archive-list-item"><a class="archive-list-link" href="/archives/2019/11/">November 2019</a></li><li class="archive-list-item"><a class="archive-list-link" href="/archives/2019/07/">July 2019</a></li><li class="archive-list-item"><a class="archive-list-link" href="/archives/2019/06/">June 2019</a></li><li class="archive-list-item"><a class="archive-list-link" href="/archives/2019/05/">May 2019</a></li><li class="archive-list-item"><a class="archive-list-link" href="/archives/2018/11/">November 2018</a></li><li class="archive-list-item"><a class="archive-list-link" href="/archives/2018/10/">October 2018</a></li><li class="archive-list-item"><a class="archive-list-link" href="/archives/2018/09/">September 2018</a></li><li class="archive-list-item"><a class="archive-list-link" href="/archives/2017/05/">May 2017</a></li></ul>
+    </div>
+  </div>
+
+
+  
+    
+  <div class="widget-wrap">
+    <h3 class="widget-title">Recent Posts</h3>
+    <div class="widget">
+      <ul>
+        
+          <li>
+            <a href="/2019/12/30/blog/2019/">2019年目标</a>
+          </li>
+        
+          <li>
+            <a href="/2019/12/01/读书笔记/《Java并发编程的艺术》/0.0_目录/">《Java并发编程的艺术》读书笔记 - 目录</a>
+          </li>
+        
+          <li>
+            <a href="/2019/12/01/读书笔记/《Java核心知识点整理》/0.目录/">《JAVA 核心知识点整理》读书笔记 - 目录</a>
+          </li>
+        
+          <li>
+            <a href="/2019/11/30/读书笔记/《高性能MySQL》/0.目录/">《高性能MySQL》读书笔记 - 目录</a>
+          </li>
+        
+          <li>
+            <a href="/2019/07/05/读书笔记/《JavaDesignPatterns》/8.建造者模式/">《Java Design Patterns》第六章 建造者模式 - 复杂对象的组装与创建</a>
+          </li>
+        
+      </ul>
+    </div>
+  </div>
+
+  
+</aside>
+        
+      </div>
+      <footer id="footer">
+  
+  <div class="outer">
+    <div id="footer-info" class="inner">
+      &copy; 2019 koral<br>
+      Powered by <a href="http://hexo.io/" target="_blank">Hexo</a>
+    </div>
+  </div>
+</footer>
+    </div>
+    <nav id="mobile-nav">
+  
+    <a href="/" class="mobile-nav-link">Home</a>
+  
+    <a href="/archives" class="mobile-nav-link">Archives</a>
+  
+</nav>
+    
+
+<script src="//ajax.googleapis.com/ajax/libs/jquery/2.0.3/jquery.min.js"></script>
+
+
+  <link rel="stylesheet" href="/fancybox/jquery.fancybox.css">
+  <script src="/fancybox/jquery.fancybox.pack.js"></script>
+
+
+<script src="/js/script.js"></script>
+
+
+
+  </div>
+</body>
+</html>

@@ -1,0 +1,411 @@
+<!DOCTYPE html>
+<html>
+<head>
+  <meta charset="utf-8">
+  
+
+  
+  <title>Java 并发机制的底层实现原理 | 罗凯的博客</title>
+  <meta name="viewport" content="width=device-width, initial-scale=1, maximum-scale=1">
+  <meta name="description" content="第二章 Java 并发机制的底层实现原理Java 代码在编译之后会变成 Java 字节码，字节码被类加载器加载到 JVM 里，JVM 执行字节码，最终转化为汇编指令在 CPU 上执行。 Java 中所使用的并发机制依赖于 JVM 的实现和 CPU 的指令。 2.1 volatile 的应用volatile 是轻量级的 synchronized，它在多处理器开发中保证了共享变量的“可见性”。即当一个">
+<meta name="keywords" content="帅">
+<meta property="og:type" content="article">
+<meta property="og:title" content="Java 并发机制的底层实现原理">
+<meta property="og:url" content="http://yoursite.com/2019/06/04/读书笔记/《Java并发编程的艺术》/2.Java并发机制的底层实现原理/index.html">
+<meta property="og:site_name" content="罗凯的博客">
+<meta property="og:description" content="第二章 Java 并发机制的底层实现原理Java 代码在编译之后会变成 Java 字节码，字节码被类加载器加载到 JVM 里，JVM 执行字节码，最终转化为汇编指令在 CPU 上执行。 Java 中所使用的并发机制依赖于 JVM 的实现和 CPU 的指令。 2.1 volatile 的应用volatile 是轻量级的 synchronized，它在多处理器开发中保证了共享变量的“可见性”。即当一个">
+<meta property="og:locale" content="zh-Hans">
+<meta property="og:image" content="https://gitee.com/chenssy/blog-home/raw/master/image/sijava/201812081005.png">
+<meta property="og:updated_time" content="2019-07-01T02:49:01.435Z">
+<meta name="twitter:card" content="summary">
+<meta name="twitter:title" content="Java 并发机制的底层实现原理">
+<meta name="twitter:description" content="第二章 Java 并发机制的底层实现原理Java 代码在编译之后会变成 Java 字节码，字节码被类加载器加载到 JVM 里，JVM 执行字节码，最终转化为汇编指令在 CPU 上执行。 Java 中所使用的并发机制依赖于 JVM 的实现和 CPU 的指令。 2.1 volatile 的应用volatile 是轻量级的 synchronized，它在多处理器开发中保证了共享变量的“可见性”。即当一个">
+<meta name="twitter:image" content="https://gitee.com/chenssy/blog-home/raw/master/image/sijava/201812081005.png">
+  
+    <link rel="alternate" href="/atom.xml" title="罗凯的博客" type="application/atom+xml">
+  
+  
+    <link rel="icon" href="https://i.loli.net/2019/07/04/5d1db2fb9593c58427.gif">
+  
+  
+    <link href="//fonts.googleapis.com/css?family=Source+Code+Pro" rel="stylesheet" type="text/css">
+  
+  <link rel="stylesheet" href="/css/style.css">
+</head>
+
+<body>
+  <div id="container">
+    <div id="wrap">
+      <header id="header">
+  <div id="banner"></div>
+  <div id="header-outer" class="outer">
+    <div id="header-title" class="inner">
+      <h1 id="logo-wrap">
+        <a href="/" id="logo">罗凯的博客</a>
+      </h1>
+      
+        <h2 id="subtitle-wrap">
+          <a href="/" id="subtitle">一个大帅哥</a>
+        </h2>
+      
+    </div>
+    <div id="header-inner" class="inner">
+      <nav id="main-nav">
+        <a id="main-nav-toggle" class="nav-icon"></a>
+        
+          <a class="main-nav-link" href="/">Home</a>
+        
+          <a class="main-nav-link" href="/archives">Archives</a>
+        
+      </nav>
+      <nav id="sub-nav">
+        
+          <a id="nav-rss-link" class="nav-icon" href="/atom.xml" title="RSS Feed"></a>
+        
+        <a id="nav-search-btn" class="nav-icon" title="Search"></a>
+      </nav>
+      <div id="search-form-wrap">
+        <form action="//google.com/search" method="get" accept-charset="UTF-8" class="search-form"><input type="search" name="q" class="search-form-input" placeholder="Search"><button type="submit" class="search-form-submit">&#xF002;</button><input type="hidden" name="sitesearch" value="http://yoursite.com"></form>
+      </div>
+    </div>
+  </div>
+</header>
+      <div class="outer">
+        <section id="main"><article id="post-读书笔记/《Java并发编程的艺术》/2.Java并发机制的底层实现原理" class="article article-type-post" itemscope itemprop="blogPost">
+  <div class="article-meta">
+    <a href="/2019/06/04/读书笔记/《Java并发编程的艺术》/2.Java并发机制的底层实现原理/" class="article-date">
+  <time datetime="2019-06-03T16:00:01.000Z" itemprop="datePublished">2019-06-04</time>
+</a>
+    
+  </div>
+  <div class="article-inner">
+    
+    
+      <header class="article-header">
+        
+  
+    <h1 class="article-title" itemprop="name">
+      Java 并发机制的底层实现原理
+    </h1>
+  
+
+      </header>
+    
+    <div class="article-entry" itemprop="articleBody">
+      
+        <h1 id="第二章-Java-并发机制的底层实现原理"><a href="#第二章-Java-并发机制的底层实现原理" class="headerlink" title="第二章 Java 并发机制的底层实现原理"></a>第二章 Java 并发机制的底层实现原理</h1><p>Java 代码在编译之后会变成 Java 字节码，字节码被类加载器加载到 JVM 里，JVM 执行字节码，最终转化为汇编指令在 CPU 上执行。</p>
+<p>Java 中所使用的并发机制依赖于 JVM 的实现和 CPU 的指令。</p>
+<h2 id="2-1-volatile-的应用"><a href="#2-1-volatile-的应用" class="headerlink" title="2.1 volatile 的应用"></a>2.1 volatile 的应用</h2><p>volatile 是轻量级的 synchronized，它在多处理器开发中保证了共享变量的“可见性”。即当一个线程修改了一个共享变量时，另一个线程能够读到这个修改的值。</p>
+<p>volatile 的官方定义：Java 编程语言允许线程访问共享变量，为了确保共享变量能被准确和一致地更新，线程应该确保通过排他锁单独获得这个变量。</p>
+<p>volatile 实现相关的 CPU 术语：</p>
+<table>
+<thead>
+<tr>
+<th>术语</th>
+<th>英文</th>
+<th style="text-align:left">术语描述</th>
+</tr>
+</thead>
+<tbody>
+<tr>
+<td>内存屏障</td>
+<td>memory barriers</td>
+<td style="text-align:left">是一组处理器指令，用于实现对内存操作的顺序限制</td>
+</tr>
+<tr>
+<td>缓冲行</td>
+<td>cache line</td>
+<td style="text-align:left">CPU 高速缓存中可以分配的最小存储单位。处理器填写缓存行时会加载整个缓存行，现代CPU需要执行几百次CPU指令</td>
+</tr>
+<tr>
+<td>原子操作</td>
+<td>atomic operations</td>
+<td style="text-align:left">不可中断的一个或一系列操作</td>
+</tr>
+<tr>
+<td>缓存命中</td>
+<td>cache hit</td>
+<td style="text-align:left">如果进行高速缓存行中操作的内存位置仍然是下次处理器访问的地址时，处理器将从缓存中读取操作数，而不是从内存中读取</td>
+</tr>
+<tr>
+<td>写命中</td>
+<td>write hit</td>
+<td style="text-align:left">当处理器将操作数写回到一个内存缓存的区域时，它首先会检查这个缓存的内存地址是否在缓存行中，如果存在一个有效的缓存行，则处理器将这个操作数写回到缓存，而不是写回到内存</td>
+</tr>
+<tr>
+<td>写缺失</td>
+<td>write misses the cache</td>
+<td style="text-align:left">一个有效的缓存行被写入到不存在的内存区域</td>
+</tr>
+</tbody>
+</table>
+<p>volatile 修改的变量，在进行修改时，会引发两件事：</p>
+<ol>
+<li>通过 Lock 前缀指令，将当前处理缓存行的数据写回到系统内存</li>
+<li>写回内存的操作会使其他 CPU 里缓存了该内存地址的数据无效，当处理器对这个数据进行修改操作时，会重新从系统内存中把数据读到处理器缓存中。</li>
+</ol>
+<h2 id="2-2-synchronized-的实现原理与应用"><a href="#2-2-synchronized-的实现原理与应用" class="headerlink" title="2.2 synchronized 的实现原理与应用"></a>2.2 synchronized 的实现原理与应用</h2><p>synchronized 实现同步的基础：Java 中的每一个对象都可以作为锁。</p>
+<ul>
+<li>对于普通同步方法，锁是当前实例对象</li>
+<li>对于静态同步方法，锁是当前类的 Class 对象</li>
+<li>对于同步方法块，锁是 Synchronized 括号里配置的对象</li>
+</ul>
+<p>Synchronized 在 JVM 里的实现原理：JVM基于进入和退出 Monitor 对象来实现方法同步和代码块同步，但是两者的实现细节不一样。代码块同步是使用 monitorenter 和 monitorexit 指令实现的。</p>
+<p>monitorenter 指令是在编译后插入到同步代码块的开始位置，而 monitorexit 是插入到方法结束处和异常处，JVM保证每个 monitorenter 必须对应 monitorexit。线程执行到 monitorenter 指令时，会尝试获取monitor的所有权，即尝试获得对象的锁。</p>
+<h3 id="2-2-1-锁的升级与对比"><a href="#2-2-1-锁的升级与对比" class="headerlink" title="2.2.1 锁的升级与对比"></a>2.2.1 锁的升级与对比</h3><p>Java1.6 为了减少获得锁和释放锁带来的性能消耗，引入了“偏向锁”和“轻量级锁”。</p>
+<p>在1.6中，锁共有4种状态，级别从低到高依次是：无锁状态、偏向锁状态、轻量级锁状态和重量级锁状态。</p>
+<p>锁可以升级但是不能降级，这种策略的目的是为了提高获得锁和释放锁的效率。</p>
+<h4 id="1-偏向锁"><a href="#1-偏向锁" class="headerlink" title="1. 偏向锁"></a>1. 偏向锁</h4><p>大多数情况下，锁不仅不存在多线程竞争，而且总是由同一线程多次获得，为了让获得锁的代价更低而引入了偏向锁。</p>
+<p>当一个线程访问同步块并获得锁时，会在对象头和栈帧中的锁记录里存储锁偏向的线程ID，以后该线程进入和退出同步块时不需要进行CAS操作来加锁和解锁，只需要检查MarkWord 里是否存储着指向当前线程的偏向锁。</p>
+<p>即线程获取资源之后，会在资源上记录当前线程地址，并不会释放，当出现竞争时才会释放锁。</p>
+<blockquote>
+<p>-XX:-UseBiasedLocking=false 关闭偏向锁    </p>
+<blockquote>
+<p>-XX:BiasedLockingStartupDelay=0 关闭延迟(默认情况下，偏向锁在程序启动几秒后才会激活)</p>
+</blockquote>
+</blockquote>
+<h4 id="2-轻量级锁"><a href="#2-轻量级锁" class="headerlink" title="2.轻量级锁"></a>2.轻量级锁</h4><p>加锁：线程在执行同步块之前，JVM会将对象头中的MarkWord 复制到当前线程的锁记录中。然后线程尝试使用 CAS 将对象头中的 MarkWord 替换为指向锁记录的指针。如果成功，线程获得锁；失败，表示其他线程竞争锁，当前线程尝试使用 自旋(即当前线程不停地尝试请求资源，直到成功) 来获取锁。</p>
+<p>解锁：解锁时，使用 CAS 操作将 MarkWord 替换回对象头。成功，则表示没有竞争发生；失败，则表示锁存在竞争，此时锁会膨胀成重量级锁。</p>
+<p><img src="https://gitee.com/chenssy/blog-home/raw/master/image/sijava/201812081005.png" alt="争夺锁导致的锁膨胀"></p>
+<p>图中可以看出，自旋会消耗CPU，为了避免无用的自旋，一旦锁升级为重量级锁，就不会再降级为轻量级锁。重量级锁的所有线程在请求锁资源时，都会进入阻塞状态，只有当锁释放时，才会进行新一轮的夺锁之争。</p>
+<p>锁的优缺点对比：</p>
+<table>
+<thead>
+<tr>
+<th>锁</th>
+<th>优点</th>
+<th>缺点</th>
+<th>适用场景</th>
+</tr>
+</thead>
+<tbody>
+<tr>
+<td>偏向锁</td>
+<td>加锁解锁不需要额外消耗，和执行非同步方法相比，仅纳秒级差距</td>
+<td>如果线程间存在锁竞争，会带来锁撤销的消耗</td>
+<td>只有一个线程访问同步块的场景</td>
+</tr>
+<tr>
+<td>轻量级锁</td>
+<td>竞争的线程不会阻塞，提高了程序的响应速度</td>
+<td>如果始终得不到锁竞争，会使用自旋消耗CPU</td>
+<td>追求响应时间  同步块执行速度非常快</td>
+</tr>
+<tr>
+<td>重量级锁</td>
+<td>线程竞争不使用自旋，不会消耗CPU</td>
+<td>线程阻塞，响应时间缓慢</td>
+<td>追求吞吐量   同步块执行速度较长</td>
+</tr>
+</tbody>
+</table>
+<h2 id="2-3-原子操作的实现原理"><a href="#2-3-原子操作的实现原理" class="headerlink" title="2.3 原子操作的实现原理"></a>2.3 原子操作的实现原理</h2><p>原子（atomic）：“不能被进一步分隔的最小粒子”。</p>
+<p>原子操作（atomic operation）：“不可被中断的一个或一系列操作”。</p>
+<h3 id="原子操作的相关术语："><a href="#原子操作的相关术语：" class="headerlink" title="原子操作的相关术语："></a>原子操作的相关术语：</h3><table>
+<thead>
+<tr>
+<th>术语</th>
+<th>英文</th>
+<th>解释</th>
+</tr>
+</thead>
+<tbody>
+<tr>
+<td>缓存行</td>
+<td>cache line</td>
+<td>缓存的最小操作单位</td>
+</tr>
+<tr>
+<td>比较并交换</td>
+<td>Compare and Swap</td>
+<td>CAS，比较旧值与新值。当旧值发生改变之后才进行替换</td>
+</tr>
+<tr>
+<td>CPU流水线</td>
+<td>CPU pipeline</td>
+<td>在CPU内由5~6个不同功能的电路单元组成一条指令处理流水线，然后将一条x86指令分为5~6步后再由这些电路单元分别执行，这样就能在一个CPU时钟周期完成一条指令，从而提高CPU的运算速度</td>
+</tr>
+<tr>
+<td>内存顺序冲突</td>
+<td>Memory order violation</td>
+<td>内存顺序冲突一般由假共享引起，即多个CPU同时修改一个缓存行的不同部分，引起其中一个CPU操作无效，当出现该冲突时，CPU必须清空流水线</td>
+</tr>
+</tbody>
+</table>
+<h3 id="处理器如何实现原子操作："><a href="#处理器如何实现原子操作：" class="headerlink" title="处理器如何实现原子操作："></a>处理器如何实现原子操作：</h3><ol>
+<li>通过总线锁保证原子性：<ol>
+<li>即使用处理器提供 LOCK # 信号，当一个处理器在总线上输出此信号时，其他处理器的请求将被阻塞住，该处理器则独占内存。</li>
+<li>缺点：总线锁是把CPU和内存之间的通信锁住了，这使得锁定期内，其他处理器不能操作其他内存地址的数据，因此开销很大。</li>
+</ol>
+</li>
+<li>通过缓存锁定来保证原子性：<ol>
+<li>指内存区域如果被缓存在处理器的缓存行中，并且在 Lock 操作期间被锁定，那么当它执行锁操作回写到内存时，处理器直接修改内部的内存地址，并允许它的缓存一致性机制来保证操作的原子性。</li>
+<li>缓存一致性：该机制会阻止同时修改由两个以上处理器缓存的内存区域数据，当其他处理器回写已被锁定的缓存行的数据时，会使缓存行无效。</li>
+<li>不能使用缓存锁定的场景：a. 操作的数据跨缓存行时，b. 处理器不支持缓存锁定。这两种情况都被调用总线锁定。</li>
+</ol>
+</li>
+</ol>
+<h3 id="Java-如何实现原子操作："><a href="#Java-如何实现原子操作：" class="headerlink" title="Java 如何实现原子操作："></a>Java 如何实现原子操作：</h3><p>在 Java 中可以通过 <code>锁</code> 和 <code>循环CAS</code> 的方式来实现原子操作。</p>
+<p>从 Java 1.5 开始，JDK提供了一些原子包装类来支持原子操作。</p>
+<h3 id="CAS-实现原子操作的三大问题"><a href="#CAS-实现原子操作的三大问题" class="headerlink" title="CAS 实现原子操作的三大问题"></a>CAS 实现原子操作的三大问题</h3><ol>
+<li><code>ABA 问题</code>。<ol>
+<li>原因：因为CAS 在操作值时，先比较旧值是否发生了变化，如果发生变化，再去修改该值。问题则出现在，如果A = 1；A=2；A=1；此时CAS检查时，并未发现A的变化，但是实际上却变化了。</li>
+<li>解决思路：加上版本号即A1=1,A2=2,A3=1</li>
+<li>JDK 中提供了一个类 AtomicStampedReference，通过检查值和预期标记的方法来判断是否需要更新</li>
+</ol>
+</li>
+<li><code>循环时间长开销大</code> 。<ol>
+<li>原因：自旋CAS如果长时间不成功，会给CPU带来非常大的执行开销。</li>
+<li>解决方法：如果JVM能支持处理器提供的pause指令，则效率会有一定提升。pause指令能延迟流水线执行指令，避免在退出循环时因内存顺序冲突而引起CPU流水线被清空，从而提升CPU执行效率。</li>
+</ol>
+</li>
+<li>只能保证一个共享变量的原子操作。<ol>
+<li>原因：当对一个共享变量执行操作时，可以使用循环 CAS，但是对多个共享变量时，就无法保证操作的原子性，此时可以用锁。</li>
+<li>解决方法：将多个共享变量合为一个共享变量来操作，如 i=2,j=a =&gt; ij=2a</li>
+<li>JDK解决方法，提供了AtomicReference类来保证引用对象之间的原子性，即可以把多个变量放在一个对象中进行CAS操作。</li>
+</ol>
+</li>
+</ol>
+
+      
+    </div>
+    <footer class="article-footer">
+      <a data-url="http://yoursite.com/2019/06/04/读书笔记/《Java并发编程的艺术》/2.Java并发机制的底层实现原理/" data-id="cjxpj03d200d5rgtw9p43yeyh" class="article-share-link">Share</a>
+      
+      
+    </footer>
+  </div>
+  
+    
+<nav id="article-nav">
+  
+    <a href="/2019/06/05/读书笔记/《Java并发编程的艺术》/3.Java内存模型/" id="article-nav-newer" class="article-nav-link-wrap">
+      <strong class="article-nav-caption">Newer</strong>
+      <div class="article-nav-title">
+        
+          Java 内存模型
+        
+      </div>
+    </a>
+  
+  
+    <a href="/2019/06/03/读书笔记/《Java并发编程的艺术》/1.并发编程的挑战/" id="article-nav-older" class="article-nav-link-wrap">
+      <strong class="article-nav-caption">Older</strong>
+      <div class="article-nav-title">Java 并发编程的挑战</div>
+    </a>
+  
+</nav>
+
+  
+</article>
+
+</section>
+        
+          <aside id="sidebar">
+  
+    
+  <div class="widget-wrap">
+    <h3 class="widget-title">Categories</h3>
+    <div class="widget">
+      <ul class="category-list"><li class="category-list-item"><a class="category-list-link" href="/categories/Docker学习/">Docker学习</a></li><li class="category-list-item"><a class="category-list-link" href="/categories/Git命令学习/">Git命令学习</a></li><li class="category-list-item"><a class="category-list-link" href="/categories/JAVA-核心知识点整理/">JAVA 核心知识点整理</a></li><li class="category-list-item"><a class="category-list-link" href="/categories/Java/">Java</a></li><li class="category-list-item"><a class="category-list-link" href="/categories/Java并发编程与高并发解决方案/">Java并发编程与高并发解决方案</a></li><li class="category-list-item"><a class="category-list-link" href="/categories/Java并发编程的艺术/">Java并发编程的艺术</a></li><li class="category-list-item"><a class="category-list-link" href="/categories/Java成神之路/">Java成神之路</a><ul class="category-list-child"><li class="category-list-item"><a class="category-list-link" href="/categories/Java成神之路/SpringBoot/">SpringBoot</a></li><li class="category-list-item"><a class="category-list-link" href="/categories/Java成神之路/Study社区/">Study社区</a></li></ul></li><li class="category-list-item"><a class="category-list-link" href="/categories/Linux学习之路/">Linux学习之路</a></li><li class="category-list-item"><a class="category-list-link" href="/categories/MarkDown语法/">MarkDown语法</a></li><li class="category-list-item"><a class="category-list-link" href="/categories/React学习/">React学习</a></li><li class="category-list-item"><a class="category-list-link" href="/categories/SpringBoot-参考指南/">SpringBoot 参考指南</a></li><li class="category-list-item"><a class="category-list-link" href="/categories/工具函数/">工具函数</a></li><li class="category-list-item"><a class="category-list-link" href="/categories/设计模式/">设计模式</a></li><li class="category-list-item"><a class="category-list-link" href="/categories/高性能MySQL/">高性能MySQL</a></li></ul>
+    </div>
+  </div>
+
+
+  
+    
+  <div class="widget-wrap">
+    <h3 class="widget-title">Tags</h3>
+    <div class="widget">
+      <ul class="tag-list"><li class="tag-list-item"><a class="tag-list-link" href="/tags/Git/">Git</a></li><li class="tag-list-item"><a class="tag-list-link" href="/tags/Git-Bash/">Git Bash</a></li><li class="tag-list-item"><a class="tag-list-link" href="/tags/Linux/">Linux</a></li><li class="tag-list-item"><a class="tag-list-link" href="/tags/MQ/">MQ</a></li><li class="tag-list-item"><a class="tag-list-link" href="/tags/MySQL/">MySQL</a></li><li class="tag-list-item"><a class="tag-list-link" href="/tags/POI/">POI</a></li><li class="tag-list-item"><a class="tag-list-link" href="/tags/Spring-Cloud/">Spring Cloud</a></li><li class="tag-list-item"><a class="tag-list-link" href="/tags/Spring-Data/">Spring Data</a></li><li class="tag-list-item"><a class="tag-list-link" href="/tags/SpringBoot/">SpringBoot</a></li><li class="tag-list-item"><a class="tag-list-link" href="/tags/docker/">docker</a></li><li class="tag-list-item"><a class="tag-list-link" href="/tags/gradle/">gradle</a></li><li class="tag-list-item"><a class="tag-list-link" href="/tags/java/">java</a></li><li class="tag-list-item"><a class="tag-list-link" href="/tags/poi/">poi</a></li><li class="tag-list-item"><a class="tag-list-link" href="/tags/并发编程/">并发编程</a></li><li class="tag-list-item"><a class="tag-list-link" href="/tags/数据库/">数据库</a></li><li class="tag-list-item"><a class="tag-list-link" href="/tags/读书笔记/">读书笔记</a></li><li class="tag-list-item"><a class="tag-list-link" href="/tags/高并发/">高并发</a></li></ul>
+    </div>
+  </div>
+
+
+  
+    
+  <div class="widget-wrap">
+    <h3 class="widget-title">Tag Cloud</h3>
+    <div class="widget tagcloud">
+      <a href="/tags/Git/" style="font-size: 13.75px;">Git</a> <a href="/tags/Git-Bash/" style="font-size: 11.25px;">Git Bash</a> <a href="/tags/Linux/" style="font-size: 12.5px;">Linux</a> <a href="/tags/MQ/" style="font-size: 15px;">MQ</a> <a href="/tags/MySQL/" style="font-size: 17.5px;">MySQL</a> <a href="/tags/POI/" style="font-size: 16.25px;">POI</a> <a href="/tags/Spring-Cloud/" style="font-size: 10px;">Spring Cloud</a> <a href="/tags/Spring-Data/" style="font-size: 12.5px;">Spring Data</a> <a href="/tags/SpringBoot/" style="font-size: 15px;">SpringBoot</a> <a href="/tags/docker/" style="font-size: 10px;">docker</a> <a href="/tags/gradle/" style="font-size: 11.25px;">gradle</a> <a href="/tags/java/" style="font-size: 20px;">java</a> <a href="/tags/poi/" style="font-size: 10px;">poi</a> <a href="/tags/并发编程/" style="font-size: 12.5px;">并发编程</a> <a href="/tags/数据库/" style="font-size: 17.5px;">数据库</a> <a href="/tags/读书笔记/" style="font-size: 18.75px;">读书笔记</a> <a href="/tags/高并发/" style="font-size: 12.5px;">高并发</a>
+    </div>
+  </div>
+
+  
+    
+  <div class="widget-wrap">
+    <h3 class="widget-title">Archives</h3>
+    <div class="widget">
+      <ul class="archive-list"><li class="archive-list-item"><a class="archive-list-link" href="/archives/2019/12/">December 2019</a></li><li class="archive-list-item"><a class="archive-list-link" href="/archives/2019/11/">November 2019</a></li><li class="archive-list-item"><a class="archive-list-link" href="/archives/2019/07/">July 2019</a></li><li class="archive-list-item"><a class="archive-list-link" href="/archives/2019/06/">June 2019</a></li><li class="archive-list-item"><a class="archive-list-link" href="/archives/2019/05/">May 2019</a></li><li class="archive-list-item"><a class="archive-list-link" href="/archives/2018/11/">November 2018</a></li><li class="archive-list-item"><a class="archive-list-link" href="/archives/2018/10/">October 2018</a></li><li class="archive-list-item"><a class="archive-list-link" href="/archives/2018/09/">September 2018</a></li><li class="archive-list-item"><a class="archive-list-link" href="/archives/2017/05/">May 2017</a></li></ul>
+    </div>
+  </div>
+
+
+  
+    
+  <div class="widget-wrap">
+    <h3 class="widget-title">Recent Posts</h3>
+    <div class="widget">
+      <ul>
+        
+          <li>
+            <a href="/2019/12/30/blog/2019/">2019年目标</a>
+          </li>
+        
+          <li>
+            <a href="/2019/12/01/读书笔记/《Java并发编程的艺术》/0.0_目录/">《Java并发编程的艺术》读书笔记 - 目录</a>
+          </li>
+        
+          <li>
+            <a href="/2019/12/01/读书笔记/《Java核心知识点整理》/0.目录/">《JAVA 核心知识点整理》读书笔记 - 目录</a>
+          </li>
+        
+          <li>
+            <a href="/2019/11/30/读书笔记/《高性能MySQL》/0.目录/">《高性能MySQL》读书笔记 - 目录</a>
+          </li>
+        
+          <li>
+            <a href="/2019/07/05/读书笔记/《JavaDesignPatterns》/8.建造者模式/">《Java Design Patterns》第六章 建造者模式 - 复杂对象的组装与创建</a>
+          </li>
+        
+      </ul>
+    </div>
+  </div>
+
+  
+</aside>
+        
+      </div>
+      <footer id="footer">
+  
+  <div class="outer">
+    <div id="footer-info" class="inner">
+      &copy; 2019 koral<br>
+      Powered by <a href="http://hexo.io/" target="_blank">Hexo</a>
+    </div>
+  </div>
+</footer>
+    </div>
+    <nav id="mobile-nav">
+  
+    <a href="/" class="mobile-nav-link">Home</a>
+  
+    <a href="/archives" class="mobile-nav-link">Archives</a>
+  
+</nav>
+    
+
+<script src="//ajax.googleapis.com/ajax/libs/jquery/2.0.3/jquery.min.js"></script>
+
+
+  <link rel="stylesheet" href="/fancybox/jquery.fancybox.css">
+  <script src="/fancybox/jquery.fancybox.pack.js"></script>
+
+
+<script src="/js/script.js"></script>
+
+
+
+  </div>
+</body>
+</html>

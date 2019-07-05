@@ -1,0 +1,297 @@
+<!DOCTYPE html>
+<html>
+<head>
+  <meta charset="utf-8">
+  
+
+  
+  <title>Executor框架 | 罗凯的博客</title>
+  <meta name="viewport" content="width=device-width, initial-scale=1, maximum-scale=1">
+  <meta name="description" content="第十章 Executor 框架从 JDK 1.5 开始，Java 将工作单元与执行机制分离开来。 工作单元包括 Runnable 和 Callable，而执行机制由 Executor 框架提供。 10.1 Executor 框架介绍10.1.1 Executor 框架的两级调度模型上层：Java 多线程程序通常把应用分解为若干个任务，然后使用用户级的调度器（Executor 框架）将这些任务映射为">
+<meta name="keywords" content="帅">
+<meta property="og:type" content="article">
+<meta property="og:title" content="Executor框架">
+<meta property="og:url" content="http://yoursite.com/2019/06/13/读书笔记/《Java并发编程的艺术》/10.Executor框架/index.html">
+<meta property="og:site_name" content="罗凯的博客">
+<meta property="og:description" content="第十章 Executor 框架从 JDK 1.5 开始，Java 将工作单元与执行机制分离开来。 工作单元包括 Runnable 和 Callable，而执行机制由 Executor 框架提供。 10.1 Executor 框架介绍10.1.1 Executor 框架的两级调度模型上层：Java 多线程程序通常把应用分解为若干个任务，然后使用用户级的调度器（Executor 框架）将这些任务映射为">
+<meta property="og:locale" content="zh-Hans">
+<meta property="og:updated_time" content="2019-07-01T02:49:01.434Z">
+<meta name="twitter:card" content="summary">
+<meta name="twitter:title" content="Executor框架">
+<meta name="twitter:description" content="第十章 Executor 框架从 JDK 1.5 开始，Java 将工作单元与执行机制分离开来。 工作单元包括 Runnable 和 Callable，而执行机制由 Executor 框架提供。 10.1 Executor 框架介绍10.1.1 Executor 框架的两级调度模型上层：Java 多线程程序通常把应用分解为若干个任务，然后使用用户级的调度器（Executor 框架）将这些任务映射为">
+  
+    <link rel="alternate" href="/atom.xml" title="罗凯的博客" type="application/atom+xml">
+  
+  
+    <link rel="icon" href="https://i.loli.net/2019/07/04/5d1db2fb9593c58427.gif">
+  
+  
+    <link href="//fonts.googleapis.com/css?family=Source+Code+Pro" rel="stylesheet" type="text/css">
+  
+  <link rel="stylesheet" href="/css/style.css">
+</head>
+
+<body>
+  <div id="container">
+    <div id="wrap">
+      <header id="header">
+  <div id="banner"></div>
+  <div id="header-outer" class="outer">
+    <div id="header-title" class="inner">
+      <h1 id="logo-wrap">
+        <a href="/" id="logo">罗凯的博客</a>
+      </h1>
+      
+        <h2 id="subtitle-wrap">
+          <a href="/" id="subtitle">一个大帅哥</a>
+        </h2>
+      
+    </div>
+    <div id="header-inner" class="inner">
+      <nav id="main-nav">
+        <a id="main-nav-toggle" class="nav-icon"></a>
+        
+          <a class="main-nav-link" href="/">Home</a>
+        
+          <a class="main-nav-link" href="/archives">Archives</a>
+        
+      </nav>
+      <nav id="sub-nav">
+        
+          <a id="nav-rss-link" class="nav-icon" href="/atom.xml" title="RSS Feed"></a>
+        
+        <a id="nav-search-btn" class="nav-icon" title="Search"></a>
+      </nav>
+      <div id="search-form-wrap">
+        <form action="//google.com/search" method="get" accept-charset="UTF-8" class="search-form"><input type="search" name="q" class="search-form-input" placeholder="Search"><button type="submit" class="search-form-submit">&#xF002;</button><input type="hidden" name="sitesearch" value="http://yoursite.com"></form>
+      </div>
+    </div>
+  </div>
+</header>
+      <div class="outer">
+        <section id="main"><article id="post-读书笔记/《Java并发编程的艺术》/10.Executor框架" class="article article-type-post" itemscope itemprop="blogPost">
+  <div class="article-meta">
+    <a href="/2019/06/13/读书笔记/《Java并发编程的艺术》/10.Executor框架/" class="article-date">
+  <time datetime="2019-06-12T16:00:01.000Z" itemprop="datePublished">2019-06-13</time>
+</a>
+    
+  </div>
+  <div class="article-inner">
+    
+    
+      <header class="article-header">
+        
+  
+    <h1 class="article-title" itemprop="name">
+      Executor框架
+    </h1>
+  
+
+      </header>
+    
+    <div class="article-entry" itemprop="articleBody">
+      
+        <h1 id="第十章-Executor-框架"><a href="#第十章-Executor-框架" class="headerlink" title="第十章 Executor 框架"></a>第十章 Executor 框架</h1><p>从 JDK 1.5 开始，Java 将工作单元与执行机制分离开来。</p>
+<p>工作单元包括 Runnable 和 Callable，而执行机制由 Executor 框架提供。</p>
+<h2 id="10-1-Executor-框架介绍"><a href="#10-1-Executor-框架介绍" class="headerlink" title="10.1 Executor 框架介绍"></a>10.1 Executor 框架介绍</h2><h2 id="10-1-1-Executor-框架的两级调度模型"><a href="#10-1-1-Executor-框架的两级调度模型" class="headerlink" title="10.1.1 Executor 框架的两级调度模型"></a>10.1.1 Executor 框架的两级调度模型</h2><p>上层：Java 多线程程序通常把应用分解为若干个任务，然后使用用户级的调度器（Executor 框架）将这些任务映射为固定数量的线程。</p>
+<p>底层：操作系统内核将这些线程映射到硬件处理器上。</p>
+<h2 id="10-1-2-Executor-框架结构与成员"><a href="#10-1-2-Executor-框架结构与成员" class="headerlink" title="10.1.2 Executor 框架结构与成员"></a>10.1.2 Executor 框架结构与成员</h2><h4 id="1-Executor-框架的结构"><a href="#1-Executor-框架的结构" class="headerlink" title="1. Executor 框架的结构"></a>1. Executor 框架的结构</h4><p>Executor 框架主要由 3 部分组成：</p>
+<ul>
+<li>任务。包括被执行任务需要实现的接口：Runnable、Callable接口<ul>
+<li>Runnable 接口和 Callable 接口 都可以被 ThreadPoolExecutor 或 ScheduledThreadPoolExecutor 执行</li>
+</ul>
+</li>
+<li>任务的执行。包括任务执行机制的核心接口 Executor，以及继承自 Executor 的 ExecutorService 接口。<ul>
+<li>Executor ，是 Executor 框架的基础，将任务的提交与任务的执行分离开来</li>
+<li>ThreadPoolExecutor，是线程池的核心实现类，用来执行被提交的任务</li>
+<li>ScheduledThreadPoolExecutor，可以在给定的延迟后运行命令，或者定期执行命令，比 Timer 更灵活、强大。</li>
+</ul>
+</li>
+<li>异步计算的结果。包括接口 Future 和实现 Future 的 FutureTask 类<ul>
+<li>Future 接口和实现 Future 的 FutureTask 类，代表异步计算的结果。</li>
+</ul>
+</li>
+</ul>
+<p>主要流程为：</p>
+<ol>
+<li>主线程创建实现 Runnable、Callable 接口的任务对象</li>
+<li>Executors 将 Runnable 对象封装为 Callable 对象</li>
+<li>将 Runnable 对象交给 ExecutorService.execute(Runnable command) 执行，或者交给 ExecutorService.submit(Callable<t> task) 执行<ol>
+<li>如果执行 submit，则 ExecutorService 返回一个实现 Future 接口的对象。</li>
+<li>由于 FutureTask 实现了 Runnable，因此FutureTask 也可以直接交给 ExecutorService 执行</li>
+</ol>
+</t></li>
+<li>主线程执行 FutureTask.get() 方法等待任务执行完成；或者执行 FutureTask.cancel(boolean mayInterruptIfRunning) 来取消任务执行</li>
+</ol>
+<h4 id="2-Executor-框架的成员"><a href="#2-Executor-框架的成员" class="headerlink" title="2. Executor 框架的成员"></a>2. Executor 框架的成员</h4><ol>
+<li>ThreadPoolExecutor：通常由工厂类 Executors 创建，可创建以下 3 种类型的ThreadPoolExecutor<ol>
+<li>FixedThreadPool：创建使用固定线程数的ThreadPool，适用于需要限制当前线程数量的应用场景，适用于负载较重的服务器。</li>
+<li>SingleThreadExecutor：创建使用单个线程的 ThreadPool，适用于需要顺序执行各个任务；且在任意时间点，不会有多个线程是活动的应用场景</li>
+<li>CachedThreadPool：创建一个会根据需要创建新线程的 ThreadPool，是大小无界的线程池，适用于执行很多的短期异步任务的小程序，或者是负载较轻的服务器。</li>
+</ol>
+</li>
+<li>ScheduledThreadPoolExecutor：通常由工厂类 Executors 创建，可创建以下 2 种类型的 ScheduledThreadPoolExecutor<ol>
+<li>ScheduledThreadPoolExecutor，包含若干线程，适用于需要多个后台线程周期执行任务，同时需要限制后台线程数量的场景</li>
+<li>SingleThreadScheduledExecutor，只包含一个线程，适用于需要单个后台线程执行周期任务，同时需要保证顺序执行各个任务的应用场景</li>
+</ol>
+</li>
+<li>Future/FutureTask：表示异步计算的结果</li>
+<li>Runnable/Callable：被 ThreadPoolExecutor 执行的任务。<ol>
+<li>Runnable 不返回结果</li>
+<li>Callable 返回结果</li>
+</ol>
+</li>
+</ol>
+<h2 id="10-2-ThreadPoolExecutor-详解"><a href="#10-2-ThreadPoolExecutor-详解" class="headerlink" title="10.2 ThreadPoolExecutor 详解"></a>10.2 ThreadPoolExecutor 详解</h2><ul>
+<li><p>corePool：核心线程池的大小</p>
+</li>
+<li><p>maximumPool：最大线程池大小</p>
+</li>
+<li><p>BlockingQueue：阻塞队列，用来暂存任务的工作队列</p>
+</li>
+<li><p>RejectedExecutionHandler：拒绝策略，当 ThreadPoolExecutor 关闭或饱和时，将要调用的 Handler</p>
+</li>
+</ul>
+
+      
+    </div>
+    <footer class="article-footer">
+      <a data-url="http://yoursite.com/2019/06/13/读书笔记/《Java并发编程的艺术》/10.Executor框架/" data-id="cjxpj03a900alrgtwaaglra3b" class="article-share-link">Share</a>
+      
+      
+    </footer>
+  </div>
+  
+    
+<nav id="article-nav">
+  
+    <a href="/2019/06/14/读书笔记/《Java并发编程的艺术》/11.Java并发编程实践/" id="article-nav-newer" class="article-nav-link-wrap">
+      <strong class="article-nav-caption">Newer</strong>
+      <div class="article-nav-title">
+        
+          Java并发编程实践
+        
+      </div>
+    </a>
+  
+  
+    <a href="/2019/06/12/读书笔记/《Java并发编程的艺术》/9.Java中的线程池/" id="article-nav-older" class="article-nav-link-wrap">
+      <strong class="article-nav-caption">Older</strong>
+      <div class="article-nav-title">Java中的线程池</div>
+    </a>
+  
+</nav>
+
+  
+</article>
+
+</section>
+        
+          <aside id="sidebar">
+  
+    
+  <div class="widget-wrap">
+    <h3 class="widget-title">Categories</h3>
+    <div class="widget">
+      <ul class="category-list"><li class="category-list-item"><a class="category-list-link" href="/categories/Docker学习/">Docker学习</a></li><li class="category-list-item"><a class="category-list-link" href="/categories/Git命令学习/">Git命令学习</a></li><li class="category-list-item"><a class="category-list-link" href="/categories/JAVA-核心知识点整理/">JAVA 核心知识点整理</a></li><li class="category-list-item"><a class="category-list-link" href="/categories/Java/">Java</a></li><li class="category-list-item"><a class="category-list-link" href="/categories/Java并发编程与高并发解决方案/">Java并发编程与高并发解决方案</a></li><li class="category-list-item"><a class="category-list-link" href="/categories/Java并发编程的艺术/">Java并发编程的艺术</a></li><li class="category-list-item"><a class="category-list-link" href="/categories/Java成神之路/">Java成神之路</a><ul class="category-list-child"><li class="category-list-item"><a class="category-list-link" href="/categories/Java成神之路/SpringBoot/">SpringBoot</a></li><li class="category-list-item"><a class="category-list-link" href="/categories/Java成神之路/Study社区/">Study社区</a></li></ul></li><li class="category-list-item"><a class="category-list-link" href="/categories/Linux学习之路/">Linux学习之路</a></li><li class="category-list-item"><a class="category-list-link" href="/categories/MarkDown语法/">MarkDown语法</a></li><li class="category-list-item"><a class="category-list-link" href="/categories/React学习/">React学习</a></li><li class="category-list-item"><a class="category-list-link" href="/categories/SpringBoot-参考指南/">SpringBoot 参考指南</a></li><li class="category-list-item"><a class="category-list-link" href="/categories/工具函数/">工具函数</a></li><li class="category-list-item"><a class="category-list-link" href="/categories/设计模式/">设计模式</a></li><li class="category-list-item"><a class="category-list-link" href="/categories/高性能MySQL/">高性能MySQL</a></li></ul>
+    </div>
+  </div>
+
+
+  
+    
+  <div class="widget-wrap">
+    <h3 class="widget-title">Tags</h3>
+    <div class="widget">
+      <ul class="tag-list"><li class="tag-list-item"><a class="tag-list-link" href="/tags/Git/">Git</a></li><li class="tag-list-item"><a class="tag-list-link" href="/tags/Git-Bash/">Git Bash</a></li><li class="tag-list-item"><a class="tag-list-link" href="/tags/Linux/">Linux</a></li><li class="tag-list-item"><a class="tag-list-link" href="/tags/MQ/">MQ</a></li><li class="tag-list-item"><a class="tag-list-link" href="/tags/MySQL/">MySQL</a></li><li class="tag-list-item"><a class="tag-list-link" href="/tags/POI/">POI</a></li><li class="tag-list-item"><a class="tag-list-link" href="/tags/Spring-Cloud/">Spring Cloud</a></li><li class="tag-list-item"><a class="tag-list-link" href="/tags/Spring-Data/">Spring Data</a></li><li class="tag-list-item"><a class="tag-list-link" href="/tags/SpringBoot/">SpringBoot</a></li><li class="tag-list-item"><a class="tag-list-link" href="/tags/docker/">docker</a></li><li class="tag-list-item"><a class="tag-list-link" href="/tags/gradle/">gradle</a></li><li class="tag-list-item"><a class="tag-list-link" href="/tags/java/">java</a></li><li class="tag-list-item"><a class="tag-list-link" href="/tags/poi/">poi</a></li><li class="tag-list-item"><a class="tag-list-link" href="/tags/并发编程/">并发编程</a></li><li class="tag-list-item"><a class="tag-list-link" href="/tags/数据库/">数据库</a></li><li class="tag-list-item"><a class="tag-list-link" href="/tags/读书笔记/">读书笔记</a></li><li class="tag-list-item"><a class="tag-list-link" href="/tags/高并发/">高并发</a></li></ul>
+    </div>
+  </div>
+
+
+  
+    
+  <div class="widget-wrap">
+    <h3 class="widget-title">Tag Cloud</h3>
+    <div class="widget tagcloud">
+      <a href="/tags/Git/" style="font-size: 13.75px;">Git</a> <a href="/tags/Git-Bash/" style="font-size: 11.25px;">Git Bash</a> <a href="/tags/Linux/" style="font-size: 12.5px;">Linux</a> <a href="/tags/MQ/" style="font-size: 15px;">MQ</a> <a href="/tags/MySQL/" style="font-size: 17.5px;">MySQL</a> <a href="/tags/POI/" style="font-size: 16.25px;">POI</a> <a href="/tags/Spring-Cloud/" style="font-size: 10px;">Spring Cloud</a> <a href="/tags/Spring-Data/" style="font-size: 12.5px;">Spring Data</a> <a href="/tags/SpringBoot/" style="font-size: 15px;">SpringBoot</a> <a href="/tags/docker/" style="font-size: 10px;">docker</a> <a href="/tags/gradle/" style="font-size: 11.25px;">gradle</a> <a href="/tags/java/" style="font-size: 20px;">java</a> <a href="/tags/poi/" style="font-size: 10px;">poi</a> <a href="/tags/并发编程/" style="font-size: 12.5px;">并发编程</a> <a href="/tags/数据库/" style="font-size: 17.5px;">数据库</a> <a href="/tags/读书笔记/" style="font-size: 18.75px;">读书笔记</a> <a href="/tags/高并发/" style="font-size: 12.5px;">高并发</a>
+    </div>
+  </div>
+
+  
+    
+  <div class="widget-wrap">
+    <h3 class="widget-title">Archives</h3>
+    <div class="widget">
+      <ul class="archive-list"><li class="archive-list-item"><a class="archive-list-link" href="/archives/2019/12/">December 2019</a></li><li class="archive-list-item"><a class="archive-list-link" href="/archives/2019/11/">November 2019</a></li><li class="archive-list-item"><a class="archive-list-link" href="/archives/2019/07/">July 2019</a></li><li class="archive-list-item"><a class="archive-list-link" href="/archives/2019/06/">June 2019</a></li><li class="archive-list-item"><a class="archive-list-link" href="/archives/2019/05/">May 2019</a></li><li class="archive-list-item"><a class="archive-list-link" href="/archives/2018/11/">November 2018</a></li><li class="archive-list-item"><a class="archive-list-link" href="/archives/2018/10/">October 2018</a></li><li class="archive-list-item"><a class="archive-list-link" href="/archives/2018/09/">September 2018</a></li><li class="archive-list-item"><a class="archive-list-link" href="/archives/2017/05/">May 2017</a></li></ul>
+    </div>
+  </div>
+
+
+  
+    
+  <div class="widget-wrap">
+    <h3 class="widget-title">Recent Posts</h3>
+    <div class="widget">
+      <ul>
+        
+          <li>
+            <a href="/2019/12/30/blog/2019/">2019年目标</a>
+          </li>
+        
+          <li>
+            <a href="/2019/12/01/读书笔记/《Java并发编程的艺术》/0.0_目录/">《Java并发编程的艺术》读书笔记 - 目录</a>
+          </li>
+        
+          <li>
+            <a href="/2019/12/01/读书笔记/《Java核心知识点整理》/0.目录/">《JAVA 核心知识点整理》读书笔记 - 目录</a>
+          </li>
+        
+          <li>
+            <a href="/2019/11/30/读书笔记/《高性能MySQL》/0.目录/">《高性能MySQL》读书笔记 - 目录</a>
+          </li>
+        
+          <li>
+            <a href="/2019/07/05/读书笔记/《JavaDesignPatterns》/8.建造者模式/">《Java Design Patterns》第六章 建造者模式 - 复杂对象的组装与创建</a>
+          </li>
+        
+      </ul>
+    </div>
+  </div>
+
+  
+</aside>
+        
+      </div>
+      <footer id="footer">
+  
+  <div class="outer">
+    <div id="footer-info" class="inner">
+      &copy; 2019 koral<br>
+      Powered by <a href="http://hexo.io/" target="_blank">Hexo</a>
+    </div>
+  </div>
+</footer>
+    </div>
+    <nav id="mobile-nav">
+  
+    <a href="/" class="mobile-nav-link">Home</a>
+  
+    <a href="/archives" class="mobile-nav-link">Archives</a>
+  
+</nav>
+    
+
+<script src="//ajax.googleapis.com/ajax/libs/jquery/2.0.3/jquery.min.js"></script>
+
+
+  <link rel="stylesheet" href="/fancybox/jquery.fancybox.css">
+  <script src="/fancybox/jquery.fancybox.pack.js"></script>
+
+
+<script src="/js/script.js"></script>
+
+
+
+  </div>
+</body>
+</html>

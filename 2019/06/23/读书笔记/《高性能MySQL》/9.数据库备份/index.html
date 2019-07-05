@@ -1,0 +1,302 @@
+<!DOCTYPE html>
+<html>
+<head>
+  <meta charset="utf-8">
+  
+
+  
+  <title>《高性能MySQL》第九章 数据库备份与恢复 | 罗凯的博客</title>
+  <meta name="viewport" content="width=device-width, initial-scale=1, maximum-scale=1">
+  <meta name="description" content="第九章 数据库备份与恢复一、数据库备份1、数据库备份的划分 按照备份的结果分为：逻辑备份和物理备份 逻辑备份的结果为SQL 语句，适用于所有存储引擎 物理备份是对数据库目录的拷贝，对于内存表只备份结构   按照备份的数据分为：全量备份和增量备份 全量备份是对整个数据库的一个完整备份 增量备份是在上次全量或增量备份的基础上，对于更改数据进行的备份    2、使用 mysqldump 进行备份 常用语">
+<meta name="keywords" content="MySQL,数据库">
+<meta property="og:type" content="article">
+<meta property="og:title" content="《高性能MySQL》第九章 数据库备份与恢复">
+<meta property="og:url" content="http://yoursite.com/2019/06/23/读书笔记/《高性能MySQL》/9.数据库备份/index.html">
+<meta property="og:site_name" content="罗凯的博客">
+<meta property="og:description" content="第九章 数据库备份与恢复一、数据库备份1、数据库备份的划分 按照备份的结果分为：逻辑备份和物理备份 逻辑备份的结果为SQL 语句，适用于所有存储引擎 物理备份是对数据库目录的拷贝，对于内存表只备份结构   按照备份的数据分为：全量备份和增量备份 全量备份是对整个数据库的一个完整备份 增量备份是在上次全量或增量备份的基础上，对于更改数据进行的备份    2、使用 mysqldump 进行备份 常用语">
+<meta property="og:locale" content="zh-Hans">
+<meta property="og:updated_time" content="2019-07-01T02:49:01.470Z">
+<meta name="twitter:card" content="summary">
+<meta name="twitter:title" content="《高性能MySQL》第九章 数据库备份与恢复">
+<meta name="twitter:description" content="第九章 数据库备份与恢复一、数据库备份1、数据库备份的划分 按照备份的结果分为：逻辑备份和物理备份 逻辑备份的结果为SQL 语句，适用于所有存储引擎 物理备份是对数据库目录的拷贝，对于内存表只备份结构   按照备份的数据分为：全量备份和增量备份 全量备份是对整个数据库的一个完整备份 增量备份是在上次全量或增量备份的基础上，对于更改数据进行的备份    2、使用 mysqldump 进行备份 常用语">
+  
+    <link rel="alternate" href="/atom.xml" title="罗凯的博客" type="application/atom+xml">
+  
+  
+    <link rel="icon" href="https://i.loli.net/2019/07/04/5d1db2fb9593c58427.gif">
+  
+  
+    <link href="//fonts.googleapis.com/css?family=Source+Code+Pro" rel="stylesheet" type="text/css">
+  
+  <link rel="stylesheet" href="/css/style.css">
+</head>
+
+<body>
+  <div id="container">
+    <div id="wrap">
+      <header id="header">
+  <div id="banner"></div>
+  <div id="header-outer" class="outer">
+    <div id="header-title" class="inner">
+      <h1 id="logo-wrap">
+        <a href="/" id="logo">罗凯的博客</a>
+      </h1>
+      
+        <h2 id="subtitle-wrap">
+          <a href="/" id="subtitle">一个大帅哥</a>
+        </h2>
+      
+    </div>
+    <div id="header-inner" class="inner">
+      <nav id="main-nav">
+        <a id="main-nav-toggle" class="nav-icon"></a>
+        
+          <a class="main-nav-link" href="/">Home</a>
+        
+          <a class="main-nav-link" href="/archives">Archives</a>
+        
+      </nav>
+      <nav id="sub-nav">
+        
+          <a id="nav-rss-link" class="nav-icon" href="/atom.xml" title="RSS Feed"></a>
+        
+        <a id="nav-search-btn" class="nav-icon" title="Search"></a>
+      </nav>
+      <div id="search-form-wrap">
+        <form action="//google.com/search" method="get" accept-charset="UTF-8" class="search-form"><input type="search" name="q" class="search-form-input" placeholder="Search"><button type="submit" class="search-form-submit">&#xF002;</button><input type="hidden" name="sitesearch" value="http://yoursite.com"></form>
+      </div>
+    </div>
+  </div>
+</header>
+      <div class="outer">
+        <section id="main"><article id="post-读书笔记/《高性能MySQL》/9.数据库备份" class="article article-type-post" itemscope itemprop="blogPost">
+  <div class="article-meta">
+    <a href="/2019/06/23/读书笔记/《高性能MySQL》/9.数据库备份/" class="article-date">
+  <time datetime="2019-06-23T13:14:00.000Z" itemprop="datePublished">2019-06-23</time>
+</a>
+    
+  <div class="article-category">
+    <a class="article-category-link" href="/categories/高性能MySQL/">高性能MySQL</a>
+  </div>
+
+  </div>
+  <div class="article-inner">
+    
+    
+      <header class="article-header">
+        
+  
+    <h1 class="article-title" itemprop="name">
+      《高性能MySQL》第九章 数据库备份与恢复
+    </h1>
+  
+
+      </header>
+    
+    <div class="article-entry" itemprop="articleBody">
+      
+        <h1 id="第九章-数据库备份与恢复"><a href="#第九章-数据库备份与恢复" class="headerlink" title="第九章 数据库备份与恢复"></a>第九章 数据库备份与恢复</h1><h2 id="一、数据库备份"><a href="#一、数据库备份" class="headerlink" title="一、数据库备份"></a>一、数据库备份</h2><h3 id="1、数据库备份的划分"><a href="#1、数据库备份的划分" class="headerlink" title="1、数据库备份的划分"></a>1、数据库备份的划分</h3><ol>
+<li>按照备份的结果分为：逻辑备份和物理备份<ol>
+<li>逻辑备份的结果为SQL 语句，适用于所有存储引擎</li>
+<li>物理备份是对数据库目录的拷贝，对于内存表只备份结构</li>
+</ol>
+</li>
+<li>按照备份的数据分为：全量备份和增量备份<ol>
+<li>全量备份是对整个数据库的一个完整备份</li>
+<li>增量备份是在上次全量或增量备份的基础上，对于更改数据进行的备份</li>
+</ol>
+</li>
+</ol>
+<h3 id="2、使用-mysqldump-进行备份"><a href="#2、使用-mysqldump-进行备份" class="headerlink" title="2、使用 mysqldump 进行备份"></a>2、使用 mysqldump 进行备份</h3><blockquote>
+<p>常用语法：</p>
+<p>备份单数据库的表：mysqldump [OPTIONS] database [tables]</p>
+<p>备份多个数据库：mysqldup [OPTIONS] –databases [OPTIONS] DB1[DB2…]</p>
+<p>备份全部的数据库：mysqldump [OPTIONS] –all-databases [OPTIONS]</p>
+</blockquote>
+<blockquote>
+<p>常用参数：</p>
+<p>-u, –user=name</p>
+<p>-p, –password[=name]</p>
+<p>–single-transaction：在备份前开启一个事务，不能有 DDL 操作正在执行，常用于 InnoDB 存储引擎</p>
+<p>-l, –lock-tables：备份时，只能对数据库进行读操作，对当前备份的表进行锁定，因此并不能保证备份时所有表的全局一致性，只能保证单表的一致性，常用于 MySAM 存储引擎</p>
+<p>-x，–lock-all-tables：对所有的表同时锁定，可以解决-l 参数的问题</p>
+<p>–master-data=[1/2]：默认值为1，只记录 change-master 语句；当指定了 –master-data 参数，但是没有指定 –single-transaction 时，默认使用 –lock-all-tables</p>
+<p>-R，–routines：备份数据库中的存储过程</p>
+<p>–triggers：备份数据库中的触发器</p>
+<p>-E，–events：备份数据库中的调度事件</p>
+<p>–hex-blob：对数据库中的二进制等类型转换为十六进制来保存，可以解决某些文本不可见的问题</p>
+<p>–tab=path</p>
+<p>-w，–where=’过滤条件’：条件导出，但是只能用在单表导出</p>
+</blockquote>
+<blockquote>
+<p>备份数据库的账号需要具有以下权限：SELECT, RELOAD, LOCK  TABLES, REPLICATION CLIENT, SHOW VIEW, EVENT, PROCESS</p>
+</blockquote>
+<h3 id="3、备份实例"><a href="#3、备份实例" class="headerlink" title="3、备份实例"></a>3、备份实例</h3><h4 id="1-创建一个用于备份数据库的用户"><a href="#1-创建一个用于备份数据库的用户" class="headerlink" title="1. 创建一个用于备份数据库的用户"></a>1. 创建一个用于备份数据库的用户</h4><p>进入 MySQL 实例中，并执行语句，创建用户：</p>
+<figure class="highlight sh"><table><tr><td class="gutter"><pre><span class="line">1</span><br></pre></td><td class="code"><pre><span class="line">create user <span class="string">'backup'</span>@<span class="string">'localhost'</span> identified by <span class="string">'123456'</span>;</span><br></pre></td></tr></table></figure>
+<h4 id="2-为用户授予备份权限"><a href="#2-为用户授予备份权限" class="headerlink" title="2. 为用户授予备份权限"></a>2. 为用户授予备份权限</h4><figure class="highlight sh"><table><tr><td class="gutter"><pre><span class="line">1</span><br></pre></td><td class="code"><pre><span class="line">grant SELECT, RELOAD, LOCK  TABLES, REPLICATION CLIENT, SHOW VIEW, EVENT, PROCESS on *.* to <span class="string">'backup'</span>@<span class="string">'localhost'</span>;</span><br></pre></td></tr></table></figure>
+<h4 id="3-使用事务备份数据库"><a href="#3-使用事务备份数据库" class="headerlink" title="3. 使用事务备份数据库"></a>3. 使用事务备份数据库</h4><p>情况一：备份 mc_order 数据库中的全部表数据：</p>
+<figure class="highlight sh"><table><tr><td class="gutter"><pre><span class="line">1</span><br></pre></td><td class="code"><pre><span class="line">mysqldump -ubackup -p --master-data=2 --single-transaction --routines --triggers --events mc_order &gt; mc_order.sql</span><br></pre></td></tr></table></figure>
+<p>情况二：备份 mc-_order 数据库下的 order_master 表：</p>
+<figure class="highlight sh"><table><tr><td class="gutter"><pre><span class="line">1</span><br></pre></td><td class="code"><pre><span class="line">mysqldump -ubackup -p --master-data=2 --single-transaction --routines --triggers --events mc_order order_master &gt; order_master.sql</span><br></pre></td></tr></table></figure>
+<p>情况三：备份全部的数据库，将所有的数据库都保存在 mc.sql 下：</p>
+<figure class="highlight sh"><table><tr><td class="gutter"><pre><span class="line">1</span><br></pre></td><td class="code"><pre><span class="line">mysqldump -ubackup -p --master-data=1 --single-transaction --routines --triggers --events --all-databases &gt; mc.sql</span><br></pre></td></tr></table></figure>
+<p>情况四：备份 mc_order 数据库下的每个表，至指定的目录文件下，即 mc_order 下的每张表都是区分开的：</p>
+<p>注意，使用 –tab 命令需要用户具有 file 写文件的权限：</p>
+<figure class="highlight sh"><table><tr><td class="gutter"><pre><span class="line">1</span><br></pre></td><td class="code"><pre><span class="line">grant file to <span class="string">'backup'</span>@<span class="string">'localhost'</span>;</span><br></pre></td></tr></table></figure>
+<figure class="highlight sh"><table><tr><td class="gutter"><pre><span class="line">1</span><br></pre></td><td class="code"><pre><span class="line">mysqldump -ubackup -p --master-data=2 --single-transaction --routines --triggers --events --tab=<span class="string">"/data/db_backup/mc_order"</span> mc_order;</span><br></pre></td></tr></table></figure>
+<p>情况五：备份 mc_oder 下的 order_master 表中 id为1000-1050 的数据：</p>
+<figure class="highlight sh"><table><tr><td class="gutter"><pre><span class="line">1</span><br></pre></td><td class="code"><pre><span class="line">mysqldump -ubackup -p --master-data=2 --single-transaction --routines --<span class="built_in">where</span> <span class="string">"order_id&gt;1000 and order_id&lt;1050"</span> mc_order order_master &gt; order_master_1000.sql</span><br></pre></td></tr></table></figure>
+<h3 id="四、备份脚本"><a href="#四、备份脚本" class="headerlink" title="四、备份脚本"></a>四、备份脚本</h3><figure class="highlight sh"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br><span class="line">14</span><br><span class="line">15</span><br><span class="line">16</span><br><span class="line">17</span><br><span class="line">18</span><br><span class="line">19</span><br><span class="line">20</span><br><span class="line">21</span><br><span class="line">22</span><br><span class="line">23</span><br></pre></td><td class="code"><pre><span class="line"><span class="meta">#!/bin/bash</span></span><br><span class="line"><span class="comment">##########Basic paramters ######</span></span><br><span class="line">DAY=`date +%Y%m%d`</span><br><span class="line">Environment=$(/sbin/ifconifg | grep <span class="string">"inet addr"</span> | head -1 |grep -v <span class="string">"127.0.0.1"</span> | awk <span class="string">'&#123;print $2;&#125;'</span> | awk -F<span class="string">':'</span> <span class="string">'&#123;print $2;&#125;'</span>)</span><br><span class="line">USER=<span class="string">"backup"</span></span><br><span class="line">PASSWD=<span class="string">"123456"</span></span><br><span class="line">HostPort=<span class="string">"3306"</span></span><br><span class="line">MYSQLBASE=<span class="string">"/home/sql"</span></span><br><span class="line">DATADIR=<span class="string">"/data/db_backup/<span class="variable">$&#123;DAY&#125;</span>"</span></span><br><span class="line">MYSQL=`/usr/bin/whick mysql`</span><br><span class="line">mkdir -p <span class="variable">$&#123;DATADIR&#125;</span></span><br><span class="line"></span><br><span class="line"><span class="function"><span class="title">Dump</span></span>()&#123;</span><br><span class="line"> <span class="variable">$&#123;MYSQLDUMP&#125;</span> --master-data=2 --single-transaction --routines --triggers --events -u<span class="variable">$&#123;USER&#125;</span> -p<span class="variable">$&#123;PASSWD&#125;</span> -P<span class="variable">$&#123;HostPort&#125;</span> <span class="variable">$&#123;database&#125;</span> &gt; <span class="variable">$&#123;DATADIR&#125;</span>/<span class="variable">$&#123;Environment&#125;</span>-<span class="variable">$&#123;database&#125;</span>.sql</span><br><span class="line"> <span class="built_in">cd</span> <span class="variable">$&#123;DATADIR&#125;</span></span><br><span class="line"> gzip <span class="variable">$&#123;Environment&#125;</span>-<span class="variable">$&#123;database&#125;</span>.sql</span><br><span class="line">&#125;</span><br><span class="line"></span><br><span class="line"><span class="keyword">for</span> db <span class="keyword">in</span> `<span class="built_in">echo</span> <span class="string">"SELECT schema_name FROM information_schema.schemata where schema_name not in ('information_schema','sys','performance_schema')"</span> | <span class="variable">$&#123;MYSQL&#125;</span> -u<span class="variable">$&#123;USER&#125;</span> -p<span class="variable">$&#123;PASSWD&#125;</span> --skip-column-names`</span><br><span class="line"><span class="keyword">do</span></span><br><span class="line">  database=<span class="variable">$&#123;db&#125;</span></span><br><span class="line">  Dump</span><br><span class="line"><span class="keyword">done</span></span><br></pre></td></tr></table></figure>
+<h2 id="二、数据库恢复"><a href="#二、数据库恢复" class="headerlink" title="二、数据库恢复"></a>二、数据库恢复</h2><h3 id="1-使用-mysqldump-恢复语句"><a href="#1-使用-mysqldump-恢复语句" class="headerlink" title="1. 使用 mysqldump 恢复语句"></a>1. 使用 mysqldump 恢复语句</h3><p>数据的恢复是单线程进行的，因此数据量越大，执行效率可能越慢</p>
+<h3 id="2-如何进行指定时间点的恢复"><a href="#2-如何进行指定时间点的恢复" class="headerlink" title="2. 如何进行指定时间点的恢复"></a>2. 如何进行指定时间点的恢复</h3><ol>
+<li>先决条件<ol>
+<li>具有指定时间点前的一个全被</li>
+<li>具有自上次全备后到指定时间点的所有二进制日志</li>
+</ol>
+</li>
+</ol>
+<h3 id="3-实时二进制日志备份"><a href="#3-实时二进制日志备份" class="headerlink" title="3. 实时二进制日志备份"></a>3. 实时二进制日志备份</h3><h3 id="4-使用-xtrabackup-进行备份"><a href="#4-使用-xtrabackup-进行备份" class="headerlink" title="4. 使用 xtrabackup 进行备份"></a>4. 使用 xtrabackup 进行备份</h3><h3 id="5-使用-innobackupex-进行全备恢复"><a href="#5-使用-innobackupex-进行全备恢复" class="headerlink" title="5. 使用 innobackupex 进行全备恢复"></a>5. 使用 innobackupex 进行全备恢复</h3><h3 id="6-使用-xtrabackup-进行增量备份"><a href="#6-使用-xtrabackup-进行增量备份" class="headerlink" title="6. 使用 xtrabackup 进行增量备份"></a>6. 使用 xtrabackup 进行增量备份</h3><h2 id="三、备份计划"><a href="#三、备份计划" class="headerlink" title="三、备份计划"></a>三、备份计划</h2>
+      
+    </div>
+    <footer class="article-footer">
+      <a data-url="http://yoursite.com/2019/06/23/读书笔记/《高性能MySQL》/9.数据库备份/" data-id="cjxpj03c100c9rgtwnunyfak4" class="article-share-link">Share</a>
+      
+      
+  <ul class="article-tag-list"><li class="article-tag-list-item"><a class="article-tag-list-link" href="/tags/MySQL/">MySQL</a></li><li class="article-tag-list-item"><a class="article-tag-list-link" href="/tags/数据库/">数据库</a></li></ul>
+
+    </footer>
+  </div>
+  
+    
+<nav id="article-nav">
+  
+    <a href="/2019/06/23/读书笔记/《高性能MySQL》/10.MySQL架构拆分/" id="article-nav-newer" class="article-nav-link-wrap">
+      <strong class="article-nav-caption">Newer</strong>
+      <div class="article-nav-title">
+        
+          《高性能MySQL》第十章 MySQL 架构拆分
+        
+      </div>
+    </a>
+  
+  
+    <a href="/2019/06/21/读书笔记/《高性能MySQL》/8.MySQL慢查日志/" id="article-nav-older" class="article-nav-link-wrap">
+      <strong class="article-nav-caption">Older</strong>
+      <div class="article-nav-title">《高性能MySQL》第八章 MySQL 慢查询日志</div>
+    </a>
+  
+</nav>
+
+  
+</article>
+
+</section>
+        
+          <aside id="sidebar">
+  
+    
+  <div class="widget-wrap">
+    <h3 class="widget-title">Categories</h3>
+    <div class="widget">
+      <ul class="category-list"><li class="category-list-item"><a class="category-list-link" href="/categories/Docker学习/">Docker学习</a></li><li class="category-list-item"><a class="category-list-link" href="/categories/Git命令学习/">Git命令学习</a></li><li class="category-list-item"><a class="category-list-link" href="/categories/JAVA-核心知识点整理/">JAVA 核心知识点整理</a></li><li class="category-list-item"><a class="category-list-link" href="/categories/Java/">Java</a></li><li class="category-list-item"><a class="category-list-link" href="/categories/Java并发编程与高并发解决方案/">Java并发编程与高并发解决方案</a></li><li class="category-list-item"><a class="category-list-link" href="/categories/Java并发编程的艺术/">Java并发编程的艺术</a></li><li class="category-list-item"><a class="category-list-link" href="/categories/Java成神之路/">Java成神之路</a><ul class="category-list-child"><li class="category-list-item"><a class="category-list-link" href="/categories/Java成神之路/SpringBoot/">SpringBoot</a></li><li class="category-list-item"><a class="category-list-link" href="/categories/Java成神之路/Study社区/">Study社区</a></li></ul></li><li class="category-list-item"><a class="category-list-link" href="/categories/Linux学习之路/">Linux学习之路</a></li><li class="category-list-item"><a class="category-list-link" href="/categories/MarkDown语法/">MarkDown语法</a></li><li class="category-list-item"><a class="category-list-link" href="/categories/React学习/">React学习</a></li><li class="category-list-item"><a class="category-list-link" href="/categories/SpringBoot-参考指南/">SpringBoot 参考指南</a></li><li class="category-list-item"><a class="category-list-link" href="/categories/工具函数/">工具函数</a></li><li class="category-list-item"><a class="category-list-link" href="/categories/设计模式/">设计模式</a></li><li class="category-list-item"><a class="category-list-link" href="/categories/高性能MySQL/">高性能MySQL</a></li></ul>
+    </div>
+  </div>
+
+
+  
+    
+  <div class="widget-wrap">
+    <h3 class="widget-title">Tags</h3>
+    <div class="widget">
+      <ul class="tag-list"><li class="tag-list-item"><a class="tag-list-link" href="/tags/Git/">Git</a></li><li class="tag-list-item"><a class="tag-list-link" href="/tags/Git-Bash/">Git Bash</a></li><li class="tag-list-item"><a class="tag-list-link" href="/tags/Linux/">Linux</a></li><li class="tag-list-item"><a class="tag-list-link" href="/tags/MQ/">MQ</a></li><li class="tag-list-item"><a class="tag-list-link" href="/tags/MySQL/">MySQL</a></li><li class="tag-list-item"><a class="tag-list-link" href="/tags/POI/">POI</a></li><li class="tag-list-item"><a class="tag-list-link" href="/tags/Spring-Cloud/">Spring Cloud</a></li><li class="tag-list-item"><a class="tag-list-link" href="/tags/Spring-Data/">Spring Data</a></li><li class="tag-list-item"><a class="tag-list-link" href="/tags/SpringBoot/">SpringBoot</a></li><li class="tag-list-item"><a class="tag-list-link" href="/tags/docker/">docker</a></li><li class="tag-list-item"><a class="tag-list-link" href="/tags/gradle/">gradle</a></li><li class="tag-list-item"><a class="tag-list-link" href="/tags/java/">java</a></li><li class="tag-list-item"><a class="tag-list-link" href="/tags/poi/">poi</a></li><li class="tag-list-item"><a class="tag-list-link" href="/tags/并发编程/">并发编程</a></li><li class="tag-list-item"><a class="tag-list-link" href="/tags/数据库/">数据库</a></li><li class="tag-list-item"><a class="tag-list-link" href="/tags/读书笔记/">读书笔记</a></li><li class="tag-list-item"><a class="tag-list-link" href="/tags/高并发/">高并发</a></li></ul>
+    </div>
+  </div>
+
+
+  
+    
+  <div class="widget-wrap">
+    <h3 class="widget-title">Tag Cloud</h3>
+    <div class="widget tagcloud">
+      <a href="/tags/Git/" style="font-size: 13.75px;">Git</a> <a href="/tags/Git-Bash/" style="font-size: 11.25px;">Git Bash</a> <a href="/tags/Linux/" style="font-size: 12.5px;">Linux</a> <a href="/tags/MQ/" style="font-size: 15px;">MQ</a> <a href="/tags/MySQL/" style="font-size: 17.5px;">MySQL</a> <a href="/tags/POI/" style="font-size: 16.25px;">POI</a> <a href="/tags/Spring-Cloud/" style="font-size: 10px;">Spring Cloud</a> <a href="/tags/Spring-Data/" style="font-size: 12.5px;">Spring Data</a> <a href="/tags/SpringBoot/" style="font-size: 15px;">SpringBoot</a> <a href="/tags/docker/" style="font-size: 10px;">docker</a> <a href="/tags/gradle/" style="font-size: 11.25px;">gradle</a> <a href="/tags/java/" style="font-size: 20px;">java</a> <a href="/tags/poi/" style="font-size: 10px;">poi</a> <a href="/tags/并发编程/" style="font-size: 12.5px;">并发编程</a> <a href="/tags/数据库/" style="font-size: 17.5px;">数据库</a> <a href="/tags/读书笔记/" style="font-size: 18.75px;">读书笔记</a> <a href="/tags/高并发/" style="font-size: 12.5px;">高并发</a>
+    </div>
+  </div>
+
+  
+    
+  <div class="widget-wrap">
+    <h3 class="widget-title">Archives</h3>
+    <div class="widget">
+      <ul class="archive-list"><li class="archive-list-item"><a class="archive-list-link" href="/archives/2019/12/">December 2019</a></li><li class="archive-list-item"><a class="archive-list-link" href="/archives/2019/11/">November 2019</a></li><li class="archive-list-item"><a class="archive-list-link" href="/archives/2019/07/">July 2019</a></li><li class="archive-list-item"><a class="archive-list-link" href="/archives/2019/06/">June 2019</a></li><li class="archive-list-item"><a class="archive-list-link" href="/archives/2019/05/">May 2019</a></li><li class="archive-list-item"><a class="archive-list-link" href="/archives/2018/11/">November 2018</a></li><li class="archive-list-item"><a class="archive-list-link" href="/archives/2018/10/">October 2018</a></li><li class="archive-list-item"><a class="archive-list-link" href="/archives/2018/09/">September 2018</a></li><li class="archive-list-item"><a class="archive-list-link" href="/archives/2017/05/">May 2017</a></li></ul>
+    </div>
+  </div>
+
+
+  
+    
+  <div class="widget-wrap">
+    <h3 class="widget-title">Recent Posts</h3>
+    <div class="widget">
+      <ul>
+        
+          <li>
+            <a href="/2019/12/30/blog/2019/">2019年目标</a>
+          </li>
+        
+          <li>
+            <a href="/2019/12/01/读书笔记/《Java并发编程的艺术》/0.0_目录/">《Java并发编程的艺术》读书笔记 - 目录</a>
+          </li>
+        
+          <li>
+            <a href="/2019/12/01/读书笔记/《Java核心知识点整理》/0.目录/">《JAVA 核心知识点整理》读书笔记 - 目录</a>
+          </li>
+        
+          <li>
+            <a href="/2019/11/30/读书笔记/《高性能MySQL》/0.目录/">《高性能MySQL》读书笔记 - 目录</a>
+          </li>
+        
+          <li>
+            <a href="/2019/07/05/读书笔记/《JavaDesignPatterns》/8.建造者模式/">《Java Design Patterns》第六章 建造者模式 - 复杂对象的组装与创建</a>
+          </li>
+        
+      </ul>
+    </div>
+  </div>
+
+  
+</aside>
+        
+      </div>
+      <footer id="footer">
+  
+  <div class="outer">
+    <div id="footer-info" class="inner">
+      &copy; 2019 koral<br>
+      Powered by <a href="http://hexo.io/" target="_blank">Hexo</a>
+    </div>
+  </div>
+</footer>
+    </div>
+    <nav id="mobile-nav">
+  
+    <a href="/" class="mobile-nav-link">Home</a>
+  
+    <a href="/archives" class="mobile-nav-link">Archives</a>
+  
+</nav>
+    
+
+<script src="//ajax.googleapis.com/ajax/libs/jquery/2.0.3/jquery.min.js"></script>
+
+
+  <link rel="stylesheet" href="/fancybox/jquery.fancybox.css">
+  <script src="/fancybox/jquery.fancybox.pack.js"></script>
+
+
+<script src="/js/script.js"></script>
+
+
+
+  </div>
+</body>
+</html>

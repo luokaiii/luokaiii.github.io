@@ -1,0 +1,267 @@
+<!DOCTYPE html>
+<html>
+<head>
+  <meta charset="utf-8">
+  
+
+  
+  <title>SpringDataMongoDB(二) | 罗凯的博客</title>
+  <meta name="viewport" content="width=device-width, initial-scale=1, maximum-scale=1">
+  <meta name="description" content="Spring Data MongoDB （二） 查询创建查询（去重、区间、忽略大小写等）查询的构建机制，将截断前缀 find…By、 read…By、 query…By、 count…By、 get…By 等，从剩余部分开始解析，省略号中可以使用如：Distinct、Between、LessThan、GreaterThan、Like等表达式 1234567891011121314151617int">
+<meta name="keywords" content="Spring Data">
+<meta property="og:type" content="article">
+<meta property="og:title" content="SpringDataMongoDB(二)">
+<meta property="og:url" content="http://yoursite.com/2018/09/01/SpringData/Spring-Data-MongoDB（2）/index.html">
+<meta property="og:site_name" content="罗凯的博客">
+<meta property="og:description" content="Spring Data MongoDB （二） 查询创建查询（去重、区间、忽略大小写等）查询的构建机制，将截断前缀 find…By、 read…By、 query…By、 count…By、 get…By 等，从剩余部分开始解析，省略号中可以使用如：Distinct、Between、LessThan、GreaterThan、Like等表达式 1234567891011121314151617int">
+<meta property="og:locale" content="zh-Hans">
+<meta property="og:updated_time" content="2019-07-01T02:49:01.382Z">
+<meta name="twitter:card" content="summary">
+<meta name="twitter:title" content="SpringDataMongoDB(二)">
+<meta name="twitter:description" content="Spring Data MongoDB （二） 查询创建查询（去重、区间、忽略大小写等）查询的构建机制，将截断前缀 find…By、 read…By、 query…By、 count…By、 get…By 等，从剩余部分开始解析，省略号中可以使用如：Distinct、Between、LessThan、GreaterThan、Like等表达式 1234567891011121314151617int">
+  
+    <link rel="alternate" href="/atom.xml" title="罗凯的博客" type="application/atom+xml">
+  
+  
+    <link rel="icon" href="https://i.loli.net/2019/07/04/5d1db2fb9593c58427.gif">
+  
+  
+    <link href="//fonts.googleapis.com/css?family=Source+Code+Pro" rel="stylesheet" type="text/css">
+  
+  <link rel="stylesheet" href="/css/style.css">
+</head>
+
+<body>
+  <div id="container">
+    <div id="wrap">
+      <header id="header">
+  <div id="banner"></div>
+  <div id="header-outer" class="outer">
+    <div id="header-title" class="inner">
+      <h1 id="logo-wrap">
+        <a href="/" id="logo">罗凯的博客</a>
+      </h1>
+      
+        <h2 id="subtitle-wrap">
+          <a href="/" id="subtitle">一个大帅哥</a>
+        </h2>
+      
+    </div>
+    <div id="header-inner" class="inner">
+      <nav id="main-nav">
+        <a id="main-nav-toggle" class="nav-icon"></a>
+        
+          <a class="main-nav-link" href="/">Home</a>
+        
+          <a class="main-nav-link" href="/archives">Archives</a>
+        
+      </nav>
+      <nav id="sub-nav">
+        
+          <a id="nav-rss-link" class="nav-icon" href="/atom.xml" title="RSS Feed"></a>
+        
+        <a id="nav-search-btn" class="nav-icon" title="Search"></a>
+      </nav>
+      <div id="search-form-wrap">
+        <form action="//google.com/search" method="get" accept-charset="UTF-8" class="search-form"><input type="search" name="q" class="search-form-input" placeholder="Search"><button type="submit" class="search-form-submit">&#xF002;</button><input type="hidden" name="sitesearch" value="http://yoursite.com"></form>
+      </div>
+    </div>
+  </div>
+</header>
+      <div class="outer">
+        <section id="main"><article id="post-SpringData/Spring-Data-MongoDB（2）" class="article article-type-post" itemscope itemprop="blogPost">
+  <div class="article-meta">
+    <a href="/2018/09/01/SpringData/Spring-Data-MongoDB（2）/" class="article-date">
+  <time datetime="2018-09-01T06:46:03.000Z" itemprop="datePublished">2018-09-01</time>
+</a>
+    
+  <div class="article-category">
+    <a class="article-category-link" href="/categories/Java/">Java</a>
+  </div>
+
+  </div>
+  <div class="article-inner">
+    
+    
+      <header class="article-header">
+        
+  
+    <h1 class="article-title" itemprop="name">
+      SpringDataMongoDB(二)
+    </h1>
+  
+
+      </header>
+    
+    <div class="article-entry" itemprop="articleBody">
+      
+        <h1 id="Spring-Data-MongoDB-（二）-查询"><a href="#Spring-Data-MongoDB-（二）-查询" class="headerlink" title="Spring Data MongoDB （二） 查询"></a>Spring Data MongoDB （二） 查询</h1><h2 id="创建查询（去重、区间、忽略大小写等）"><a href="#创建查询（去重、区间、忽略大小写等）" class="headerlink" title="创建查询（去重、区间、忽略大小写等）"></a>创建查询（去重、区间、忽略大小写等）</h2><p>查询的构建机制，将截断前缀 find…By、 read…By、 query…By、 count…By、 get…By 等，从剩余部分开始解析，省略号中可以使用如：Distinct、Between、LessThan、GreaterThan、Like等表达式</p>
+<figure class="highlight java"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br><span class="line">14</span><br><span class="line">15</span><br><span class="line">16</span><br><span class="line">17</span><br></pre></td><td class="code"><pre><span class="line"><span class="class"><span class="keyword">interface</span> <span class="title">PersonRepository</span> <span class="keyword">extends</span> <span class="title">Repository</span>&lt;<span class="title">User</span>, <span class="title">Long</span>&gt; </span>&#123;</span><br><span class="line"></span><br><span class="line">  <span class="function">List&lt;Person&gt; <span class="title">findByEmailAddressAndLastname</span><span class="params">(EmailAddress emailAddress, String lastname)</span></span>;</span><br><span class="line"></span><br><span class="line">  <span class="comment">// 使用 Distinct 去重</span></span><br><span class="line">  <span class="function">List&lt;Person&gt; <span class="title">findDistinctPeopleByLastnameOrFirstname</span><span class="params">(String lastname, String firstname)</span></span>;</span><br><span class="line">  <span class="function">List&lt;Person&gt; <span class="title">findPeopleDistinctByLastnameOrFirstname</span><span class="params">(String lastname, String firstname)</span></span>;</span><br><span class="line"></span><br><span class="line">  <span class="comment">// 使用 IgnoreCase 忽略大小写查询</span></span><br><span class="line">  <span class="function">List&lt;Person&gt; <span class="title">findByLastnameIgnoreCase</span><span class="params">(String lastname)</span></span>;</span><br><span class="line">  <span class="comment">// 使用 AllIgnoreCase 全部忽略大小写</span></span><br><span class="line">  <span class="function">List&lt;Person&gt; <span class="title">findByLastnameAndFirstnameAllIgnoreCase</span><span class="params">(String lastname, String firstname)</span></span>;</span><br><span class="line"></span><br><span class="line">  <span class="comment">// 使用 OrderBy (Field) ASC/DESC 进行排序</span></span><br><span class="line">  <span class="function">List&lt;Person&gt; <span class="title">findByLastnameOrderByFirstnameAsc</span><span class="params">(String lastname)</span></span>;</span><br><span class="line">  <span class="function">List&lt;Person&gt; <span class="title">findByLastnameOrderByFirstnameDesc</span><span class="params">(String lastname)</span></span>;</span><br><span class="line">&#125;</span><br></pre></td></tr></table></figure>
+<h2 id="属性表达式（子属性查询）"><a href="#属性表达式（子属性查询）" class="headerlink" title="属性表达式（子属性查询）"></a>属性表达式（子属性查询）</h2><p>即一个被管理实体的属性，在查询时，会去查找该属性类的嵌套属性类。如：Person 有一个 Health 属性类，二Health 也有一个 HeartIm 属性类，则通过方法名查询为：</p>
+<figure class="highlight java"><table><tr><td class="gutter"><pre><span class="line">1</span><br></pre></td><td class="code"><pre><span class="line"><span class="function">List&lt;Person&gt; <span class="title">findByHealthHeartIm</span><span class="params">(HeartIm heartIm)</span></span>;    <span class="comment">// 相当于 &#123;health.heart:?0&#125;</span></span><br></pre></td></tr></table></figure>
+<p>其查询顺序为，先匹配 healthheartIm 属性是否存在，若否，匹配 healthHeart.Im ，最后才是 health.Heart.Im。再没有则接着向下拆分。为了解决模糊不清的含义，我们可以在方法名中使用 “_” 手动创建分割点。</p>
+<figure class="highlight java"><table><tr><td class="gutter"><pre><span class="line">1</span><br></pre></td><td class="code"><pre><span class="line"><span class="function">List&lt;Person&gt; <span class="title">findByHealth_HeartIm</span><span class="params">(HeartIm heartIm)</span></span>;</span><br></pre></td></tr></table></figure>
+<h2 id="特殊参数（分页、排序）"><a href="#特殊参数（分页、排序）" class="headerlink" title="特殊参数（分页、排序）"></a>特殊参数（分页、排序）</h2><p>除了在查询中定义处理方法参数之外，还有一些特殊的类型，如：Pageable 和 Sort，用于分页和排序:</p>
+<figure class="highlight java"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br></pre></td><td class="code"><pre><span class="line"><span class="comment">// Page 接口中返回了元素的总数、可分页数等，其实是通过底层触发 count 方法进行了总数查询</span></span><br><span class="line"><span class="function">Page&lt;User&gt; <span class="title">findByLastname</span><span class="params">(String lastname, Pageable pageable)</span></span>;</span><br><span class="line"></span><br><span class="line"><span class="comment">// Slice 仅仅知道是否有下一个可用的 Slice，在遍历大结果集时非常有效</span></span><br><span class="line"><span class="function">Slice&lt;User&gt; <span class="title">findByLastname</span><span class="params">(String lastname, Pageable pageable)</span></span>;</span><br><span class="line"></span><br><span class="line"><span class="function">List&lt;User&gt; <span class="title">findByLastname</span><span class="params">(String lastname, Sort sort)</span></span>;</span><br><span class="line"></span><br><span class="line"><span class="function">List&lt;User&gt; <span class="title">findByLastname</span><span class="params">(String lastname, Pageable pageable)</span></span>;</span><br></pre></td></tr></table></figure>
+<h2 id="限制查询结果（Top、First等）"><a href="#限制查询结果（Top、First等）" class="headerlink" title="限制查询结果（Top、First等）"></a>限制查询结果（Top、First等）</h2><p>查询方法的结果可以通过关键字：first、top 来限制，紧跟随的数值会限定长度，默认为1</p>
+<figure class="highlight java"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br></pre></td><td class="code"><pre><span class="line"><span class="function">User <span class="title">findFirstByOrderByLastnameAsc</span><span class="params">()</span></span>;</span><br><span class="line"></span><br><span class="line"><span class="function">User <span class="title">findTopByOrderByAgeDesc</span><span class="params">()</span></span>;</span><br><span class="line"></span><br><span class="line"><span class="function">Page&lt;User&gt; <span class="title">queryFirst10ByLastname</span><span class="params">(String lastname, Pageable pageable)</span></span>;</span><br><span class="line"></span><br><span class="line"><span class="function">Slice&lt;User&gt; <span class="title">findTop3ByLastname</span><span class="params">(String lastname, Pageable pageable)</span></span>;</span><br><span class="line"></span><br><span class="line"><span class="function">List&lt;User&gt; <span class="title">findFirst10ByLastname</span><span class="params">(String lastname, Sort sort)</span></span>;</span><br><span class="line"></span><br><span class="line"><span class="function">List&lt;User&gt; <span class="title">findTop10ByLastname</span><span class="params">(String lastname, Pageable pageable)</span></span>;</span><br></pre></td></tr></table></figure>
+<h2 id="查询结果流（Stream）"><a href="#查询结果流（Stream）" class="headerlink" title="查询结果流（Stream）"></a>查询结果流（Stream）</h2><p>查询的结果可以使用 java8 的 Stream<t> 来处理，这样可以使用 stream 的良好性能。</t></p>
+<figure class="highlight java"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br></pre></td><td class="code"><pre><span class="line"><span class="meta">@Query</span>(<span class="string">"select u from User u"</span>)</span><br><span class="line"><span class="function">Stream&lt;User&gt; <span class="title">findAllByCustomQueryAndStream</span><span class="params">()</span></span>;</span><br><span class="line"></span><br><span class="line"><span class="function">Stream&lt;User&gt; <span class="title">readAllByFirstnameNotNull</span><span class="params">()</span></span>;</span><br><span class="line"></span><br><span class="line"><span class="meta">@Query</span>(<span class="string">"select u from User u"</span>)</span><br><span class="line"><span class="function">Stream&lt;User&gt; <span class="title">streamAllPaged</span><span class="params">(Pageable pageable)</span></span>;</span><br></pre></td></tr></table></figure>
+<p>因为 Stream 使用了底层的资源，所以在使用之后必须关闭：</p>
+<figure class="highlight java"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br></pre></td><td class="code"><pre><span class="line"><span class="keyword">try</span> (Stream&lt;User&gt; stream = repository.findAllByCustomQueryAndStream()) &#123;  </span><br><span class="line">    stream.forEach(…);</span><br><span class="line">&#125;</span><br></pre></td></tr></table></figure>
+<p>而且，并不是所有的 Spring Data 模块都支持 Stream</p>
+<h2 id="异步查询结果"><a href="#异步查询结果" class="headerlink" title="异步查询结果"></a>异步查询结果</h2><p>Repository 的查询方法可以异步执行，这意味着该方法在调用时会立即返回，但是 <code>实际的查询要提交给 Spring 的任务TaskExecutor</code></p>
+<figure class="highlight java"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br><span class="line">14</span><br></pre></td><td class="code"><pre><span class="line"><span class="comment">/** Future 的常用方法： </span></span><br><span class="line"><span class="comment">isCancelled():boolean    </span></span><br><span class="line"><span class="comment">isDone():boolean    </span></span><br><span class="line"><span class="comment">get():V     </span></span><br><span class="line"><span class="comment">get(long timeout,<span class="doctag">@NotNull</span> TimeUnit unit):V</span></span><br><span class="line"><span class="comment">*/</span></span><br><span class="line"><span class="meta">@Async</span></span><br><span class="line"><span class="function">Future&lt;User&gt; <span class="title">findByFirstname</span><span class="params">(String firstname)</span></span>;     <span class="comment">// java.util.concurrent.Future          </span></span><br><span class="line"></span><br><span class="line"><span class="meta">@Async</span></span><br><span class="line"><span class="function">CompletableFuture&lt;User&gt; <span class="title">findOneByFirstname</span><span class="params">(String firstname)</span></span>;  <span class="comment">// Java 8 的 java.util.concurrent.CompletableFuture</span></span><br><span class="line"></span><br><span class="line"><span class="meta">@Async</span></span><br><span class="line"><span class="function">ListenableFuture&lt;User&gt; <span class="title">findOneByLastname</span><span class="params">(String lastname)</span></span>;  <span class="comment">// org.springframework.util.concurrent.ListenableFuture</span></span><br></pre></td></tr></table></figure>
+<h2 id="生成-Repository-实例"><a href="#生成-Repository-实例" class="headerlink" title="生成 Repository 实例"></a>生成 Repository 实例</h2><p>使用 xml 配置的方式 指定repositories 扫描的包路径：</p>
+<figure class="highlight java"><table><tr><td class="gutter"><pre><span class="line">1</span><br></pre></td><td class="code"><pre><span class="line">&lt;repositories base-<span class="keyword">package</span>=<span class="string">"com.acme.repositories"</span> /&gt;</span><br></pre></td></tr></table></figure>
+<p>使用注解的方式：</p>
+<figure class="highlight java"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br></pre></td><td class="code"><pre><span class="line"><span class="meta">@Configuration</span></span><br><span class="line"><span class="meta">@EnableJpaRepositories</span>(<span class="string">"com.acme.repositories"</span>)</span><br><span class="line"><span class="class"><span class="keyword">class</span> <span class="title">ApplicationConfiguration</span> </span>&#123;</span><br><span class="line">    <span class="meta">@Bean</span></span><br><span class="line">    <span class="function">EntityManagerFactory <span class="title">entityManagerFactory</span><span class="params">()</span> </span>&#123; <span class="comment">// … &#125;</span></span><br><span class="line">&#125;</span><br></pre></td></tr></table></figure>
+<blockquote>
+<p>以上是 Spring Data 的公共基础部分，再往下就是 MongoDBFactory 等的底层实现了。才疏学浅，看不下去啊。就到这里吧，第八章。</p>
+</blockquote>
+<p>文章总结于：<a href="https://docs.spring.io/spring-data/mongodb/docs/current/reference/html/#dependencies.spring-framework" target="_blank" rel="noopener">https://docs.spring.io/spring-data/mongodb/docs/current/reference/html/#dependencies.spring-framework</a></p>
+
+      
+    </div>
+    <footer class="article-footer">
+      <a data-url="http://yoursite.com/2018/09/01/SpringData/Spring-Data-MongoDB（2）/" data-id="cjxpj02u80039rgtwz56mwxzo" class="article-share-link">Share</a>
+      
+      
+  <ul class="article-tag-list"><li class="article-tag-list-item"><a class="article-tag-list-link" href="/tags/Spring-Data/">Spring Data</a></li></ul>
+
+    </footer>
+  </div>
+  
+    
+<nav id="article-nav">
+  
+    <a href="/2018/09/01/SpringData/Spring-Data-MongoDB（3）/" id="article-nav-newer" class="article-nav-link-wrap">
+      <strong class="article-nav-caption">Newer</strong>
+      <div class="article-nav-title">
+        
+          SpringDataMongoDB(三)
+        
+      </div>
+    </a>
+  
+  
+    <a href="/2018/09/01/SpringData/Spring-Data-MongoDB（1）/" id="article-nav-older" class="article-nav-link-wrap">
+      <strong class="article-nav-caption">Older</strong>
+      <div class="article-nav-title">SpringDataMongoDB(一)</div>
+    </a>
+  
+</nav>
+
+  
+</article>
+
+</section>
+        
+          <aside id="sidebar">
+  
+    
+  <div class="widget-wrap">
+    <h3 class="widget-title">Categories</h3>
+    <div class="widget">
+      <ul class="category-list"><li class="category-list-item"><a class="category-list-link" href="/categories/Docker学习/">Docker学习</a></li><li class="category-list-item"><a class="category-list-link" href="/categories/Git命令学习/">Git命令学习</a></li><li class="category-list-item"><a class="category-list-link" href="/categories/JAVA-核心知识点整理/">JAVA 核心知识点整理</a></li><li class="category-list-item"><a class="category-list-link" href="/categories/Java/">Java</a></li><li class="category-list-item"><a class="category-list-link" href="/categories/Java并发编程与高并发解决方案/">Java并发编程与高并发解决方案</a></li><li class="category-list-item"><a class="category-list-link" href="/categories/Java并发编程的艺术/">Java并发编程的艺术</a></li><li class="category-list-item"><a class="category-list-link" href="/categories/Java成神之路/">Java成神之路</a><ul class="category-list-child"><li class="category-list-item"><a class="category-list-link" href="/categories/Java成神之路/SpringBoot/">SpringBoot</a></li><li class="category-list-item"><a class="category-list-link" href="/categories/Java成神之路/Study社区/">Study社区</a></li></ul></li><li class="category-list-item"><a class="category-list-link" href="/categories/Linux学习之路/">Linux学习之路</a></li><li class="category-list-item"><a class="category-list-link" href="/categories/MarkDown语法/">MarkDown语法</a></li><li class="category-list-item"><a class="category-list-link" href="/categories/React学习/">React学习</a></li><li class="category-list-item"><a class="category-list-link" href="/categories/SpringBoot-参考指南/">SpringBoot 参考指南</a></li><li class="category-list-item"><a class="category-list-link" href="/categories/工具函数/">工具函数</a></li><li class="category-list-item"><a class="category-list-link" href="/categories/设计模式/">设计模式</a></li><li class="category-list-item"><a class="category-list-link" href="/categories/高性能MySQL/">高性能MySQL</a></li></ul>
+    </div>
+  </div>
+
+
+  
+    
+  <div class="widget-wrap">
+    <h3 class="widget-title">Tags</h3>
+    <div class="widget">
+      <ul class="tag-list"><li class="tag-list-item"><a class="tag-list-link" href="/tags/Git/">Git</a></li><li class="tag-list-item"><a class="tag-list-link" href="/tags/Git-Bash/">Git Bash</a></li><li class="tag-list-item"><a class="tag-list-link" href="/tags/Linux/">Linux</a></li><li class="tag-list-item"><a class="tag-list-link" href="/tags/MQ/">MQ</a></li><li class="tag-list-item"><a class="tag-list-link" href="/tags/MySQL/">MySQL</a></li><li class="tag-list-item"><a class="tag-list-link" href="/tags/POI/">POI</a></li><li class="tag-list-item"><a class="tag-list-link" href="/tags/Spring-Cloud/">Spring Cloud</a></li><li class="tag-list-item"><a class="tag-list-link" href="/tags/Spring-Data/">Spring Data</a></li><li class="tag-list-item"><a class="tag-list-link" href="/tags/SpringBoot/">SpringBoot</a></li><li class="tag-list-item"><a class="tag-list-link" href="/tags/docker/">docker</a></li><li class="tag-list-item"><a class="tag-list-link" href="/tags/gradle/">gradle</a></li><li class="tag-list-item"><a class="tag-list-link" href="/tags/java/">java</a></li><li class="tag-list-item"><a class="tag-list-link" href="/tags/poi/">poi</a></li><li class="tag-list-item"><a class="tag-list-link" href="/tags/并发编程/">并发编程</a></li><li class="tag-list-item"><a class="tag-list-link" href="/tags/数据库/">数据库</a></li><li class="tag-list-item"><a class="tag-list-link" href="/tags/读书笔记/">读书笔记</a></li><li class="tag-list-item"><a class="tag-list-link" href="/tags/高并发/">高并发</a></li></ul>
+    </div>
+  </div>
+
+
+  
+    
+  <div class="widget-wrap">
+    <h3 class="widget-title">Tag Cloud</h3>
+    <div class="widget tagcloud">
+      <a href="/tags/Git/" style="font-size: 13.75px;">Git</a> <a href="/tags/Git-Bash/" style="font-size: 11.25px;">Git Bash</a> <a href="/tags/Linux/" style="font-size: 12.5px;">Linux</a> <a href="/tags/MQ/" style="font-size: 15px;">MQ</a> <a href="/tags/MySQL/" style="font-size: 17.5px;">MySQL</a> <a href="/tags/POI/" style="font-size: 16.25px;">POI</a> <a href="/tags/Spring-Cloud/" style="font-size: 10px;">Spring Cloud</a> <a href="/tags/Spring-Data/" style="font-size: 12.5px;">Spring Data</a> <a href="/tags/SpringBoot/" style="font-size: 15px;">SpringBoot</a> <a href="/tags/docker/" style="font-size: 10px;">docker</a> <a href="/tags/gradle/" style="font-size: 11.25px;">gradle</a> <a href="/tags/java/" style="font-size: 20px;">java</a> <a href="/tags/poi/" style="font-size: 10px;">poi</a> <a href="/tags/并发编程/" style="font-size: 12.5px;">并发编程</a> <a href="/tags/数据库/" style="font-size: 17.5px;">数据库</a> <a href="/tags/读书笔记/" style="font-size: 18.75px;">读书笔记</a> <a href="/tags/高并发/" style="font-size: 12.5px;">高并发</a>
+    </div>
+  </div>
+
+  
+    
+  <div class="widget-wrap">
+    <h3 class="widget-title">Archives</h3>
+    <div class="widget">
+      <ul class="archive-list"><li class="archive-list-item"><a class="archive-list-link" href="/archives/2019/12/">December 2019</a></li><li class="archive-list-item"><a class="archive-list-link" href="/archives/2019/11/">November 2019</a></li><li class="archive-list-item"><a class="archive-list-link" href="/archives/2019/07/">July 2019</a></li><li class="archive-list-item"><a class="archive-list-link" href="/archives/2019/06/">June 2019</a></li><li class="archive-list-item"><a class="archive-list-link" href="/archives/2019/05/">May 2019</a></li><li class="archive-list-item"><a class="archive-list-link" href="/archives/2018/11/">November 2018</a></li><li class="archive-list-item"><a class="archive-list-link" href="/archives/2018/10/">October 2018</a></li><li class="archive-list-item"><a class="archive-list-link" href="/archives/2018/09/">September 2018</a></li><li class="archive-list-item"><a class="archive-list-link" href="/archives/2017/05/">May 2017</a></li></ul>
+    </div>
+  </div>
+
+
+  
+    
+  <div class="widget-wrap">
+    <h3 class="widget-title">Recent Posts</h3>
+    <div class="widget">
+      <ul>
+        
+          <li>
+            <a href="/2019/12/30/blog/2019/">2019年目标</a>
+          </li>
+        
+          <li>
+            <a href="/2019/12/01/读书笔记/《Java并发编程的艺术》/0.0_目录/">《Java并发编程的艺术》读书笔记 - 目录</a>
+          </li>
+        
+          <li>
+            <a href="/2019/12/01/读书笔记/《Java核心知识点整理》/0.目录/">《JAVA 核心知识点整理》读书笔记 - 目录</a>
+          </li>
+        
+          <li>
+            <a href="/2019/11/30/读书笔记/《高性能MySQL》/0.目录/">《高性能MySQL》读书笔记 - 目录</a>
+          </li>
+        
+          <li>
+            <a href="/2019/07/05/读书笔记/《JavaDesignPatterns》/8.建造者模式/">《Java Design Patterns》第六章 建造者模式 - 复杂对象的组装与创建</a>
+          </li>
+        
+      </ul>
+    </div>
+  </div>
+
+  
+</aside>
+        
+      </div>
+      <footer id="footer">
+  
+  <div class="outer">
+    <div id="footer-info" class="inner">
+      &copy; 2019 koral<br>
+      Powered by <a href="http://hexo.io/" target="_blank">Hexo</a>
+    </div>
+  </div>
+</footer>
+    </div>
+    <nav id="mobile-nav">
+  
+    <a href="/" class="mobile-nav-link">Home</a>
+  
+    <a href="/archives" class="mobile-nav-link">Archives</a>
+  
+</nav>
+    
+
+<script src="//ajax.googleapis.com/ajax/libs/jquery/2.0.3/jquery.min.js"></script>
+
+
+  <link rel="stylesheet" href="/fancybox/jquery.fancybox.css">
+  <script src="/fancybox/jquery.fancybox.pack.js"></script>
+
+
+<script src="/js/script.js"></script>
+
+
+
+  </div>
+</body>
+</html>

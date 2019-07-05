@@ -1,0 +1,262 @@
+<!DOCTYPE html>
+<html>
+<head>
+  <meta charset="utf-8">
+  
+
+  
+  <title>Java 并发编程的挑战 | 罗凯的博客</title>
+  <meta name="viewport" content="width=device-width, initial-scale=1, maximum-scale=1">
+  <meta name="description" content="第一章 Java 并发编程的挑战说明并发编程的世界中可能遇到的哪些问题，以及如何解决。 并发的目的是让程序运行得更快，但并不是更多的线程就能让程序最大限度地并发执行。在多线程情景下，面临诸多挑战，如上下文切换、死锁、受限于软硬件资源等问题。 1.1 上下文切换Cpu 通过为每个线程分配 cpu 时间片来实现多线程执行代码，因为时间片非常的短，所以cpu 需要通过不停地切换线程执行，让我们感觉多个线">
+<meta name="keywords" content="帅">
+<meta property="og:type" content="article">
+<meta property="og:title" content="Java 并发编程的挑战">
+<meta property="og:url" content="http://yoursite.com/2019/06/03/读书笔记/《Java并发编程的艺术》/1.并发编程的挑战/index.html">
+<meta property="og:site_name" content="罗凯的博客">
+<meta property="og:description" content="第一章 Java 并发编程的挑战说明并发编程的世界中可能遇到的哪些问题，以及如何解决。 并发的目的是让程序运行得更快，但并不是更多的线程就能让程序最大限度地并发执行。在多线程情景下，面临诸多挑战，如上下文切换、死锁、受限于软硬件资源等问题。 1.1 上下文切换Cpu 通过为每个线程分配 cpu 时间片来实现多线程执行代码，因为时间片非常的短，所以cpu 需要通过不停地切换线程执行，让我们感觉多个线">
+<meta property="og:locale" content="zh-Hans">
+<meta property="og:updated_time" content="2019-07-01T02:49:01.433Z">
+<meta name="twitter:card" content="summary">
+<meta name="twitter:title" content="Java 并发编程的挑战">
+<meta name="twitter:description" content="第一章 Java 并发编程的挑战说明并发编程的世界中可能遇到的哪些问题，以及如何解决。 并发的目的是让程序运行得更快，但并不是更多的线程就能让程序最大限度地并发执行。在多线程情景下，面临诸多挑战，如上下文切换、死锁、受限于软硬件资源等问题。 1.1 上下文切换Cpu 通过为每个线程分配 cpu 时间片来实现多线程执行代码，因为时间片非常的短，所以cpu 需要通过不停地切换线程执行，让我们感觉多个线">
+  
+    <link rel="alternate" href="/atom.xml" title="罗凯的博客" type="application/atom+xml">
+  
+  
+    <link rel="icon" href="https://i.loli.net/2019/07/04/5d1db2fb9593c58427.gif">
+  
+  
+    <link href="//fonts.googleapis.com/css?family=Source+Code+Pro" rel="stylesheet" type="text/css">
+  
+  <link rel="stylesheet" href="/css/style.css">
+</head>
+
+<body>
+  <div id="container">
+    <div id="wrap">
+      <header id="header">
+  <div id="banner"></div>
+  <div id="header-outer" class="outer">
+    <div id="header-title" class="inner">
+      <h1 id="logo-wrap">
+        <a href="/" id="logo">罗凯的博客</a>
+      </h1>
+      
+        <h2 id="subtitle-wrap">
+          <a href="/" id="subtitle">一个大帅哥</a>
+        </h2>
+      
+    </div>
+    <div id="header-inner" class="inner">
+      <nav id="main-nav">
+        <a id="main-nav-toggle" class="nav-icon"></a>
+        
+          <a class="main-nav-link" href="/">Home</a>
+        
+          <a class="main-nav-link" href="/archives">Archives</a>
+        
+      </nav>
+      <nav id="sub-nav">
+        
+          <a id="nav-rss-link" class="nav-icon" href="/atom.xml" title="RSS Feed"></a>
+        
+        <a id="nav-search-btn" class="nav-icon" title="Search"></a>
+      </nav>
+      <div id="search-form-wrap">
+        <form action="//google.com/search" method="get" accept-charset="UTF-8" class="search-form"><input type="search" name="q" class="search-form-input" placeholder="Search"><button type="submit" class="search-form-submit">&#xF002;</button><input type="hidden" name="sitesearch" value="http://yoursite.com"></form>
+      </div>
+    </div>
+  </div>
+</header>
+      <div class="outer">
+        <section id="main"><article id="post-读书笔记/《Java并发编程的艺术》/1.并发编程的挑战" class="article article-type-post" itemscope itemprop="blogPost">
+  <div class="article-meta">
+    <a href="/2019/06/03/读书笔记/《Java并发编程的艺术》/1.并发编程的挑战/" class="article-date">
+  <time datetime="2019-06-02T16:00:01.000Z" itemprop="datePublished">2019-06-03</time>
+</a>
+    
+  </div>
+  <div class="article-inner">
+    
+    
+      <header class="article-header">
+        
+  
+    <h1 class="article-title" itemprop="name">
+      Java 并发编程的挑战
+    </h1>
+  
+
+      </header>
+    
+    <div class="article-entry" itemprop="articleBody">
+      
+        <h1 id="第一章-Java-并发编程的挑战"><a href="#第一章-Java-并发编程的挑战" class="headerlink" title="第一章 Java 并发编程的挑战"></a>第一章 Java 并发编程的挑战</h1><p>说明并发编程的世界中可能遇到的哪些问题，以及如何解决。</p>
+<p>并发的目的是让程序运行得更快，但并不是更多的线程就能让程序最大限度地并发执行。在多线程情景下，面临诸多挑战，如上下文切换、死锁、受限于软硬件资源等问题。</p>
+<h2 id="1-1-上下文切换"><a href="#1-1-上下文切换" class="headerlink" title="1.1 上下文切换"></a>1.1 上下文切换</h2><p>Cpu 通过为每个线程分配 cpu 时间片来实现多线程执行代码，因为时间片非常的短，所以cpu 需要通过不停地切换线程执行，让我们感觉多个线程是在同时执行的。</p>
+<p>但是，在切换之前cpu会保存上一个任务的状态，以便下次切换回任务时，会加载任务的状态。</p>
+<p>所以任务从保存到再加载的过程就是一次上下文切换。</p>
+<blockquote>
+<p>很明显，当程序中的多个线程存在大量的上下文切换，程序执行的速度未必会比串行来得快。</p>
+</blockquote>
+<h3 id="1-1-1-减少上下文切换"><a href="#1-1-1-减少上下文切换" class="headerlink" title="1.1.1 减少上下文切换"></a>1.1.1 减少上下文切换</h3><ul>
+<li>无锁并发编程。多线程竞争锁时，会引起上下文切换，所以多线程处理数据时，可以通过将数据的ID 按照 Hash算法取模分段，不同线程处理不同段的数据的方式，避免使用锁。</li>
+<li>CAS 算法。Java 的 Atomic 包使用CAS 算法来更新数据，不需要加锁</li>
+<li>使用最少线程。避免创建不需要的线程，比如任务很少，但是创建了很多线程来处理，这样会造成大量线程都处于等待状态</li>
+<li>协程。在单线程里实现多任务的调度，并在单线程里维持多个任务间的切换。</li>
+</ul>
+<h2 id="1-2-死锁"><a href="#1-2-死锁" class="headerlink" title="1.2 死锁"></a>1.2 死锁</h2><p>死锁，即多个线程因某些问题无法释放锁，导致多个线程之间互相等待的场景。</p>
+<p>避免死锁的常见方法：</p>
+<ul>
+<li>避免一个线程同时获取多个锁</li>
+<li>避免一个线程在锁内同时占用多个资源，尽量保证每个锁只占用一个资源</li>
+<li>尝试使用定时锁，使用 lock.tryLock(timeout) 来替代使用内部锁机制</li>
+<li>对于数据库锁，加锁和解锁必须在一个数据库连接里，否则会出现解锁失败的情况。</li>
+</ul>
+<h2 id="1-3-资源限制的挑战"><a href="#1-3-资源限制的挑战" class="headerlink" title="1.3 资源限制的挑战"></a>1.3 资源限制的挑战</h2><p>资源限制是指程序受限于软硬件的条件，而不能达到预期的处理效果。主要包含有：带宽的上传/下载速度、硬盘读写速度、CPU处理速度。数据库连接数、socket连接数等。</p>
+<p>引发的问题：并发执行时，因为增加了上下文切换和资源调度时间的原因。程序运行时可能会更慢。</p>
+<p>解决方法：使用ODPS、Hadoop或者搭建服务器集群，不同机器处理不同的数据。可以通过 “数据ID%机器数”，计算出一个机器编号，然后由对应编号的机器处理这笔数据。</p>
+<p>在资源受限的情况下进行并发编程：需要根据不同的资源限制调整程序的并发度。</p>
+
+      
+    </div>
+    <footer class="article-footer">
+      <a data-url="http://yoursite.com/2019/06/03/读书笔记/《Java并发编程的艺术》/1.并发编程的挑战/" data-id="cjxpj03a600agrgtwvm2vx25b" class="article-share-link">Share</a>
+      
+      
+    </footer>
+  </div>
+  
+    
+<nav id="article-nav">
+  
+    <a href="/2019/06/04/读书笔记/《Java并发编程的艺术》/2.Java并发机制的底层实现原理/" id="article-nav-newer" class="article-nav-link-wrap">
+      <strong class="article-nav-caption">Newer</strong>
+      <div class="article-nav-title">
+        
+          Java 并发机制的底层实现原理
+        
+      </div>
+    </a>
+  
+  
+    <a href="/2019/05/06/读书笔记/《Java并发编程与高并发解决方案》/1.1_Java内存模型/" id="article-nav-older" class="article-nav-link-wrap">
+      <strong class="article-nav-caption">Older</strong>
+      <div class="article-nav-title">《Java并发编程与高并发解决方案》读书笔记 - Java内存模型</div>
+    </a>
+  
+</nav>
+
+  
+</article>
+
+</section>
+        
+          <aside id="sidebar">
+  
+    
+  <div class="widget-wrap">
+    <h3 class="widget-title">Categories</h3>
+    <div class="widget">
+      <ul class="category-list"><li class="category-list-item"><a class="category-list-link" href="/categories/Docker学习/">Docker学习</a></li><li class="category-list-item"><a class="category-list-link" href="/categories/Git命令学习/">Git命令学习</a></li><li class="category-list-item"><a class="category-list-link" href="/categories/JAVA-核心知识点整理/">JAVA 核心知识点整理</a></li><li class="category-list-item"><a class="category-list-link" href="/categories/Java/">Java</a></li><li class="category-list-item"><a class="category-list-link" href="/categories/Java并发编程与高并发解决方案/">Java并发编程与高并发解决方案</a></li><li class="category-list-item"><a class="category-list-link" href="/categories/Java并发编程的艺术/">Java并发编程的艺术</a></li><li class="category-list-item"><a class="category-list-link" href="/categories/Java成神之路/">Java成神之路</a><ul class="category-list-child"><li class="category-list-item"><a class="category-list-link" href="/categories/Java成神之路/SpringBoot/">SpringBoot</a></li><li class="category-list-item"><a class="category-list-link" href="/categories/Java成神之路/Study社区/">Study社区</a></li></ul></li><li class="category-list-item"><a class="category-list-link" href="/categories/Linux学习之路/">Linux学习之路</a></li><li class="category-list-item"><a class="category-list-link" href="/categories/MarkDown语法/">MarkDown语法</a></li><li class="category-list-item"><a class="category-list-link" href="/categories/React学习/">React学习</a></li><li class="category-list-item"><a class="category-list-link" href="/categories/SpringBoot-参考指南/">SpringBoot 参考指南</a></li><li class="category-list-item"><a class="category-list-link" href="/categories/工具函数/">工具函数</a></li><li class="category-list-item"><a class="category-list-link" href="/categories/设计模式/">设计模式</a></li><li class="category-list-item"><a class="category-list-link" href="/categories/高性能MySQL/">高性能MySQL</a></li></ul>
+    </div>
+  </div>
+
+
+  
+    
+  <div class="widget-wrap">
+    <h3 class="widget-title">Tags</h3>
+    <div class="widget">
+      <ul class="tag-list"><li class="tag-list-item"><a class="tag-list-link" href="/tags/Git/">Git</a></li><li class="tag-list-item"><a class="tag-list-link" href="/tags/Git-Bash/">Git Bash</a></li><li class="tag-list-item"><a class="tag-list-link" href="/tags/Linux/">Linux</a></li><li class="tag-list-item"><a class="tag-list-link" href="/tags/MQ/">MQ</a></li><li class="tag-list-item"><a class="tag-list-link" href="/tags/MySQL/">MySQL</a></li><li class="tag-list-item"><a class="tag-list-link" href="/tags/POI/">POI</a></li><li class="tag-list-item"><a class="tag-list-link" href="/tags/Spring-Cloud/">Spring Cloud</a></li><li class="tag-list-item"><a class="tag-list-link" href="/tags/Spring-Data/">Spring Data</a></li><li class="tag-list-item"><a class="tag-list-link" href="/tags/SpringBoot/">SpringBoot</a></li><li class="tag-list-item"><a class="tag-list-link" href="/tags/docker/">docker</a></li><li class="tag-list-item"><a class="tag-list-link" href="/tags/gradle/">gradle</a></li><li class="tag-list-item"><a class="tag-list-link" href="/tags/java/">java</a></li><li class="tag-list-item"><a class="tag-list-link" href="/tags/poi/">poi</a></li><li class="tag-list-item"><a class="tag-list-link" href="/tags/并发编程/">并发编程</a></li><li class="tag-list-item"><a class="tag-list-link" href="/tags/数据库/">数据库</a></li><li class="tag-list-item"><a class="tag-list-link" href="/tags/读书笔记/">读书笔记</a></li><li class="tag-list-item"><a class="tag-list-link" href="/tags/高并发/">高并发</a></li></ul>
+    </div>
+  </div>
+
+
+  
+    
+  <div class="widget-wrap">
+    <h3 class="widget-title">Tag Cloud</h3>
+    <div class="widget tagcloud">
+      <a href="/tags/Git/" style="font-size: 13.75px;">Git</a> <a href="/tags/Git-Bash/" style="font-size: 11.25px;">Git Bash</a> <a href="/tags/Linux/" style="font-size: 12.5px;">Linux</a> <a href="/tags/MQ/" style="font-size: 15px;">MQ</a> <a href="/tags/MySQL/" style="font-size: 17.5px;">MySQL</a> <a href="/tags/POI/" style="font-size: 16.25px;">POI</a> <a href="/tags/Spring-Cloud/" style="font-size: 10px;">Spring Cloud</a> <a href="/tags/Spring-Data/" style="font-size: 12.5px;">Spring Data</a> <a href="/tags/SpringBoot/" style="font-size: 15px;">SpringBoot</a> <a href="/tags/docker/" style="font-size: 10px;">docker</a> <a href="/tags/gradle/" style="font-size: 11.25px;">gradle</a> <a href="/tags/java/" style="font-size: 20px;">java</a> <a href="/tags/poi/" style="font-size: 10px;">poi</a> <a href="/tags/并发编程/" style="font-size: 12.5px;">并发编程</a> <a href="/tags/数据库/" style="font-size: 17.5px;">数据库</a> <a href="/tags/读书笔记/" style="font-size: 18.75px;">读书笔记</a> <a href="/tags/高并发/" style="font-size: 12.5px;">高并发</a>
+    </div>
+  </div>
+
+  
+    
+  <div class="widget-wrap">
+    <h3 class="widget-title">Archives</h3>
+    <div class="widget">
+      <ul class="archive-list"><li class="archive-list-item"><a class="archive-list-link" href="/archives/2019/12/">December 2019</a></li><li class="archive-list-item"><a class="archive-list-link" href="/archives/2019/11/">November 2019</a></li><li class="archive-list-item"><a class="archive-list-link" href="/archives/2019/07/">July 2019</a></li><li class="archive-list-item"><a class="archive-list-link" href="/archives/2019/06/">June 2019</a></li><li class="archive-list-item"><a class="archive-list-link" href="/archives/2019/05/">May 2019</a></li><li class="archive-list-item"><a class="archive-list-link" href="/archives/2018/11/">November 2018</a></li><li class="archive-list-item"><a class="archive-list-link" href="/archives/2018/10/">October 2018</a></li><li class="archive-list-item"><a class="archive-list-link" href="/archives/2018/09/">September 2018</a></li><li class="archive-list-item"><a class="archive-list-link" href="/archives/2017/05/">May 2017</a></li></ul>
+    </div>
+  </div>
+
+
+  
+    
+  <div class="widget-wrap">
+    <h3 class="widget-title">Recent Posts</h3>
+    <div class="widget">
+      <ul>
+        
+          <li>
+            <a href="/2019/12/30/blog/2019/">2019年目标</a>
+          </li>
+        
+          <li>
+            <a href="/2019/12/01/读书笔记/《Java并发编程的艺术》/0.0_目录/">《Java并发编程的艺术》读书笔记 - 目录</a>
+          </li>
+        
+          <li>
+            <a href="/2019/12/01/读书笔记/《Java核心知识点整理》/0.目录/">《JAVA 核心知识点整理》读书笔记 - 目录</a>
+          </li>
+        
+          <li>
+            <a href="/2019/11/30/读书笔记/《高性能MySQL》/0.目录/">《高性能MySQL》读书笔记 - 目录</a>
+          </li>
+        
+          <li>
+            <a href="/2019/07/05/读书笔记/《JavaDesignPatterns》/8.建造者模式/">《Java Design Patterns》第六章 建造者模式 - 复杂对象的组装与创建</a>
+          </li>
+        
+      </ul>
+    </div>
+  </div>
+
+  
+</aside>
+        
+      </div>
+      <footer id="footer">
+  
+  <div class="outer">
+    <div id="footer-info" class="inner">
+      &copy; 2019 koral<br>
+      Powered by <a href="http://hexo.io/" target="_blank">Hexo</a>
+    </div>
+  </div>
+</footer>
+    </div>
+    <nav id="mobile-nav">
+  
+    <a href="/" class="mobile-nav-link">Home</a>
+  
+    <a href="/archives" class="mobile-nav-link">Archives</a>
+  
+</nav>
+    
+
+<script src="//ajax.googleapis.com/ajax/libs/jquery/2.0.3/jquery.min.js"></script>
+
+
+  <link rel="stylesheet" href="/fancybox/jquery.fancybox.css">
+  <script src="/fancybox/jquery.fancybox.pack.js"></script>
+
+
+<script src="/js/script.js"></script>
+
+
+
+  </div>
+</body>
+</html>

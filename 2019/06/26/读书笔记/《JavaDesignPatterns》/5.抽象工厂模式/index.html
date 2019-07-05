@@ -1,0 +1,315 @@
+<!DOCTYPE html>
+<html>
+<head>
+  <meta charset="utf-8">
+  
+
+  
+  <title>《Java Design Patterns》第三章 抽象工厂模式 | 罗凯的博客</title>
+  <meta name="viewport" content="width=device-width, initial-scale=1, maximum-scale=1">
+  <meta name="description" content="第三章 抽象工厂模式在工厂方法模式中，通过引入工厂等级结构，解决了 简单工厂模式 中工厂类过于庞大，职责过重的问题。但是由于工厂方法模式中的每一个工厂只生产一类产品，导致系统中存在大量工厂类，增加系统开销。 因此我们需要将一些相关的产品组成一个“产品族”，由同一个工厂生产。 一、抽象工厂模式1.1 设计一款界面皮肤库设计一款界面皮肤库，可以通过菜单来选择皮肤，不同的皮肤将提供视觉效果不同的按钮、文">
+<meta name="keywords" content="读书笔记">
+<meta property="og:type" content="article">
+<meta property="og:title" content="《Java Design Patterns》第三章 抽象工厂模式">
+<meta property="og:url" content="http://yoursite.com/2019/06/26/读书笔记/《JavaDesignPatterns》/5.抽象工厂模式/index.html">
+<meta property="og:site_name" content="罗凯的博客">
+<meta property="og:description" content="第三章 抽象工厂模式在工厂方法模式中，通过引入工厂等级结构，解决了 简单工厂模式 中工厂类过于庞大，职责过重的问题。但是由于工厂方法模式中的每一个工厂只生产一类产品，导致系统中存在大量工厂类，增加系统开销。 因此我们需要将一些相关的产品组成一个“产品族”，由同一个工厂生产。 一、抽象工厂模式1.1 设计一款界面皮肤库设计一款界面皮肤库，可以通过菜单来选择皮肤，不同的皮肤将提供视觉效果不同的按钮、文">
+<meta property="og:locale" content="zh-Hans">
+<meta property="og:image" content="https://i.loli.net/2019/07/04/5d1d5ce8d1f3176430.jpg">
+<meta property="og:image" content="https://i.loli.net/2019/07/04/5d1d63c564e9523844.jpg">
+<meta property="og:updated_time" content="2019-07-05T03:01:38.904Z">
+<meta name="twitter:card" content="summary">
+<meta name="twitter:title" content="《Java Design Patterns》第三章 抽象工厂模式">
+<meta name="twitter:description" content="第三章 抽象工厂模式在工厂方法模式中，通过引入工厂等级结构，解决了 简单工厂模式 中工厂类过于庞大，职责过重的问题。但是由于工厂方法模式中的每一个工厂只生产一类产品，导致系统中存在大量工厂类，增加系统开销。 因此我们需要将一些相关的产品组成一个“产品族”，由同一个工厂生产。 一、抽象工厂模式1.1 设计一款界面皮肤库设计一款界面皮肤库，可以通过菜单来选择皮肤，不同的皮肤将提供视觉效果不同的按钮、文">
+<meta name="twitter:image" content="https://i.loli.net/2019/07/04/5d1d5ce8d1f3176430.jpg">
+  
+    <link rel="alternate" href="/atom.xml" title="罗凯的博客" type="application/atom+xml">
+  
+  
+    <link rel="icon" href="https://i.loli.net/2019/07/04/5d1db2fb9593c58427.gif">
+  
+  
+    <link href="//fonts.googleapis.com/css?family=Source+Code+Pro" rel="stylesheet" type="text/css">
+  
+  <link rel="stylesheet" href="/css/style.css">
+</head>
+
+<body>
+  <div id="container">
+    <div id="wrap">
+      <header id="header">
+  <div id="banner"></div>
+  <div id="header-outer" class="outer">
+    <div id="header-title" class="inner">
+      <h1 id="logo-wrap">
+        <a href="/" id="logo">罗凯的博客</a>
+      </h1>
+      
+        <h2 id="subtitle-wrap">
+          <a href="/" id="subtitle">一个大帅哥</a>
+        </h2>
+      
+    </div>
+    <div id="header-inner" class="inner">
+      <nav id="main-nav">
+        <a id="main-nav-toggle" class="nav-icon"></a>
+        
+          <a class="main-nav-link" href="/">Home</a>
+        
+          <a class="main-nav-link" href="/archives">Archives</a>
+        
+      </nav>
+      <nav id="sub-nav">
+        
+          <a id="nav-rss-link" class="nav-icon" href="/atom.xml" title="RSS Feed"></a>
+        
+        <a id="nav-search-btn" class="nav-icon" title="Search"></a>
+      </nav>
+      <div id="search-form-wrap">
+        <form action="//google.com/search" method="get" accept-charset="UTF-8" class="search-form"><input type="search" name="q" class="search-form-input" placeholder="Search"><button type="submit" class="search-form-submit">&#xF002;</button><input type="hidden" name="sitesearch" value="http://yoursite.com"></form>
+      </div>
+    </div>
+  </div>
+</header>
+      <div class="outer">
+        <section id="main"><article id="post-读书笔记/《JavaDesignPatterns》/5.抽象工厂模式" class="article article-type-post" itemscope itemprop="blogPost">
+  <div class="article-meta">
+    <a href="/2019/06/26/读书笔记/《JavaDesignPatterns》/5.抽象工厂模式/" class="article-date">
+  <time datetime="2019-06-26T09:11:00.000Z" itemprop="datePublished">2019-06-26</time>
+</a>
+    
+  <div class="article-category">
+    <a class="article-category-link" href="/categories/设计模式/">设计模式</a>
+  </div>
+
+  </div>
+  <div class="article-inner">
+    
+    
+      <header class="article-header">
+        
+  
+    <h1 class="article-title" itemprop="name">
+      《Java Design Patterns》第三章 抽象工厂模式
+    </h1>
+  
+
+      </header>
+    
+    <div class="article-entry" itemprop="articleBody">
+      
+        <h1 id="第三章-抽象工厂模式"><a href="#第三章-抽象工厂模式" class="headerlink" title="第三章 抽象工厂模式"></a>第三章 抽象工厂模式</h1><p>在工厂方法模式中，通过引入工厂等级结构，解决了 简单工厂模式 中工厂类过于庞大，职责过重的问题。但是由于工厂方法模式中的每一个工厂只生产一类产品，导致系统中存在大量工厂类，增加系统开销。</p>
+<p>因此我们需要将一些相关的产品组成一个“产品族”，由同一个工厂生产。</p>
+<h2 id="一、抽象工厂模式"><a href="#一、抽象工厂模式" class="headerlink" title="一、抽象工厂模式"></a>一、抽象工厂模式</h2><h3 id="1-1-设计一款界面皮肤库"><a href="#1-1-设计一款界面皮肤库" class="headerlink" title="1.1 设计一款界面皮肤库"></a>1.1 设计一款界面皮肤库</h3><p>设计一款界面皮肤库，可以通过菜单来选择皮肤，不同的皮肤将提供视觉效果不同的按钮、文本框、组合框等。</p>
+<p>按照之前的工厂方法模式设计，如下：</p>
+<p><img src="https://i.loli.net/2019/07/04/5d1d5ce8d1f3176430.jpg" alt="工厂方法模式.jpg"></p>
+<p>当我们需要增加 Winter风格 的按钮时，只需要继承抽象工厂并生产出对应的按钮即可。该系统具备良好的灵活性和可扩展性，开发可以在不修改现有代码的基础上增加新的皮肤。</p>
+<h3 id="1-2-缺陷与问题"><a href="#1-2-缺陷与问题" class="headerlink" title="1.2 缺陷与问题"></a>1.2 缺陷与问题</h3><p>该设计模式提供了大量的工厂来创建具体的界面组件，可以灵活的配置风格，但是存在以下问题：</p>
+<ol>
+<li>新增产品时，需要同时新增一个具体工厂类，类的个数成对增加，会增大系统的开销</li>
+<li>由于某一种风格的按钮、文本框、组合框通常都是一起使用的，但是因为其工厂方法分离，可能会导致使用时的选择失误</li>
+</ol>
+<h3 id="1-3-解决方案"><a href="#1-3-解决方案" class="headerlink" title="1.3 解决方案"></a>1.3 解决方案</h3><p>将一组产品类定义为一个“产品族”（如按钮、文本框、组合框统称为一个产品族），将之前一个产品对应一个具体工厂的模式改为-一个产品族对应一个产品工厂（如Spring风格工厂，能够生产Spring风格按钮、Spring风格文本框、Spring风格组合框）。</p>
+<h3 id="1-4-产品等级结构与产品族"><a href="#1-4-产品等级结构与产品族" class="headerlink" title="1.4 产品等级结构与产品族"></a>1.4 产品等级结构与产品族</h3><ol>
+<li>产品等级结构<ol>
+<li>在<code>1.3 解决方案</code> 中，抽象工厂与Spring风格工厂、Summer风格工厂之间的关系构成了一个产品等级结构</li>
+<li>抽象工厂类是父类，具体工厂类是子类</li>
+<li>产品等级扩展，只需要继续实现子类即可（如新增Winter风格工厂，用于生产Winter风格的按钮、文本框、组合框）</li>
+</ol>
+</li>
+<li>产品族：<ol>
+<li>即各个具体工厂生产的产品统称（如Spring风格工厂，能够生产Spring风格按钮、Spring风格文本框、Spring风格组合框）</li>
+</ol>
+</li>
+</ol>
+<p>当系统所提供的工厂生产的具体产品并不是一个简单的对象，而是位于多个不同产品等级结构、属于不同类型的具体产品时就可以使用抽象工厂模式。</p>
+<h2 id="二、抽象工厂模式"><a href="#二、抽象工厂模式" class="headerlink" title="二、抽象工厂模式"></a>二、抽象工厂模式</h2><h3 id="2-1-概述"><a href="#2-1-概述" class="headerlink" title="2.1 概述"></a>2.1 概述</h3><p>抽象工厂模式：提供一个创建一系列相关或互相依赖对象的接口，而无须指定它们具体的类。</p>
+<p>抽象工厂模式又称为 Kit模式，属于对象创建型模式。</p>
+<p>在抽象工厂模式中，每一个具体工厂都提供多个工厂方法，用于生产多种不同类型的产品。这些产品构成了一个产品族。</p>
+<p><img src="https://i.loli.net/2019/07/04/5d1d63c564e9523844.jpg" alt="抽象工厂模式"></p>
+<p>从图中可以看出，如果需要新增其他风格的按钮、文本框，只需要新增一个具体工厂，由该工厂的多个工厂方法产出具体的产品。</p>
+<p>同时，缺点也很明显，如果我们想新增图片类型产品，必须同时修改抽象工厂及其所有的具体工厂。</p>
+<h3 id="2-2-抽象工厂模式中的几个角色"><a href="#2-2-抽象工厂模式中的几个角色" class="headerlink" title="2.2 抽象工厂模式中的几个角色"></a>2.2 抽象工厂模式中的几个角色</h3><ol>
+<li>AbstractFactory - 抽象工厂<ol>
+<li>声明了一组用于创建一族产品的方法，每一个方法对应一种产品</li>
+</ol>
+</li>
+<li>ConcreteFactory - 具体工厂<ol>
+<li>实现了在抽象工厂中声明的创建产品的方法，生成一组具体产品，这些产品构成一个产品族</li>
+</ol>
+</li>
+<li>AbstractProduct - 抽象产品<ol>
+<li>每种产品的抽象对象</li>
+</ol>
+</li>
+<li>ConcreteProduct 具体产品<ol>
+<li>由具体工厂生产的具体产品对象</li>
+</ol>
+</li>
+</ol>
+<h3 id="2-3-具体实践"><a href="#2-3-具体实践" class="headerlink" title="2.3 具体实践"></a>2.3 具体实践</h3><figure class="highlight java"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br><span class="line">14</span><br><span class="line">15</span><br><span class="line">16</span><br><span class="line">17</span><br><span class="line">18</span><br><span class="line">19</span><br><span class="line">20</span><br><span class="line">21</span><br><span class="line">22</span><br><span class="line">23</span><br><span class="line">24</span><br><span class="line">25</span><br><span class="line">26</span><br><span class="line">27</span><br><span class="line">28</span><br><span class="line">29</span><br><span class="line">30</span><br><span class="line">31</span><br><span class="line">32</span><br><span class="line">33</span><br><span class="line">34</span><br><span class="line">35</span><br><span class="line">36</span><br><span class="line">37</span><br><span class="line">38</span><br><span class="line">39</span><br><span class="line">40</span><br><span class="line">41</span><br><span class="line">42</span><br><span class="line">43</span><br><span class="line">44</span><br><span class="line">45</span><br><span class="line">46</span><br><span class="line">47</span><br><span class="line">48</span><br><span class="line">49</span><br><span class="line">50</span><br><span class="line">51</span><br><span class="line">52</span><br><span class="line">53</span><br><span class="line">54</span><br><span class="line">55</span><br></pre></td><td class="code"><pre><span class="line"><span class="comment">/**</span></span><br><span class="line"><span class="comment"> * 手机游戏软件</span></span><br><span class="line"><span class="comment"> * 针对 Symbian、Android、WindowsPhone 等多个智能手机平台，</span></span><br><span class="line"><span class="comment"> * 提供不同的游戏操作控制和游戏界面控制</span></span><br><span class="line"><span class="comment"> */</span></span><br><span class="line"><span class="keyword">public</span> <span class="class"><span class="keyword">class</span> <span class="title">Gaming</span> </span>&#123;</span><br><span class="line">    <span class="comment">// 抽象产品类</span></span><br><span class="line">    <span class="class"><span class="keyword">interface</span> <span class="title">Operation</span></span>&#123;&#125;</span><br><span class="line">    <span class="comment">// 具体产品类</span></span><br><span class="line">    <span class="class"><span class="keyword">class</span> <span class="title">SymbianOperation</span> <span class="keyword">implements</span> <span class="title">Operation</span></span>&#123;&#125;</span><br><span class="line">    <span class="class"><span class="keyword">class</span> <span class="title">AndroidOperation</span> <span class="keyword">implements</span> <span class="title">Operation</span></span>&#123;&#125;</span><br><span class="line">    <span class="class"><span class="keyword">class</span> <span class="title">WindowsPhoneOperation</span> <span class="keyword">implements</span> <span class="title">Operation</span></span>&#123;&#125;</span><br><span class="line"></span><br><span class="line">    <span class="class"><span class="keyword">interface</span> <span class="title">HML</span></span>&#123;&#125;</span><br><span class="line">    <span class="class"><span class="keyword">class</span> <span class="title">SymbianHML</span> <span class="keyword">implements</span> <span class="title">HML</span></span>&#123;&#125;</span><br><span class="line">    <span class="class"><span class="keyword">class</span> <span class="title">AndroidHML</span> <span class="keyword">implements</span> <span class="title">HML</span></span>&#123;&#125;</span><br><span class="line">    <span class="class"><span class="keyword">class</span> <span class="title">WindowsPhoneHML</span> <span class="keyword">implements</span> <span class="title">HML</span></span>&#123;&#125;</span><br><span class="line">    </span><br><span class="line">    <span class="comment">// 抽象工厂类</span></span><br><span class="line">    <span class="class"><span class="keyword">interface</span> <span class="title">Factory</span></span>&#123;</span><br><span class="line">        <span class="function">Operation <span class="title">getOperation</span><span class="params">()</span></span>;</span><br><span class="line">        <span class="function">HML <span class="title">getHML</span><span class="params">()</span></span>;</span><br><span class="line">    &#125;</span><br><span class="line">    <span class="comment">// 具体工厂类</span></span><br><span class="line">    <span class="class"><span class="keyword">class</span> <span class="title">SymbianFactory</span> <span class="keyword">implements</span> <span class="title">Factory</span></span>&#123;</span><br><span class="line">        <span class="meta">@Override</span></span><br><span class="line">        <span class="function"><span class="keyword">public</span> Operation <span class="title">getOperation</span><span class="params">()</span> </span>&#123;</span><br><span class="line">            <span class="keyword">return</span> <span class="keyword">new</span> SymbianOperation();</span><br><span class="line">        &#125;</span><br><span class="line">        <span class="meta">@Override</span></span><br><span class="line">        <span class="function"><span class="keyword">public</span> HML <span class="title">getHML</span><span class="params">()</span> </span>&#123;</span><br><span class="line">            <span class="keyword">return</span> <span class="keyword">new</span> SymbianHML();</span><br><span class="line">        &#125;</span><br><span class="line">    &#125;</span><br><span class="line">    <span class="class"><span class="keyword">class</span> <span class="title">AndroidFactory</span> <span class="keyword">implements</span> <span class="title">Factory</span></span>&#123;</span><br><span class="line">        <span class="meta">@Override</span></span><br><span class="line">        <span class="function"><span class="keyword">public</span> Operation <span class="title">getOperation</span><span class="params">()</span> </span>&#123;</span><br><span class="line">            <span class="keyword">return</span> <span class="keyword">new</span> AndroidOperation();</span><br><span class="line">        &#125;</span><br><span class="line">        <span class="meta">@Override</span></span><br><span class="line">        <span class="function"><span class="keyword">public</span> HML <span class="title">getHML</span><span class="params">()</span> </span>&#123;</span><br><span class="line">            <span class="keyword">return</span> <span class="keyword">new</span> AndroidHML();</span><br><span class="line">        &#125;</span><br><span class="line">    &#125;</span><br><span class="line">    <span class="class"><span class="keyword">class</span> <span class="title">WindowsPhoneFactory</span> <span class="keyword">implements</span> <span class="title">Factory</span></span>&#123;</span><br><span class="line">        <span class="meta">@Override</span></span><br><span class="line">        <span class="function"><span class="keyword">public</span> Operation <span class="title">getOperation</span><span class="params">()</span> </span>&#123;</span><br><span class="line">            <span class="keyword">return</span> <span class="keyword">new</span> WindowsPhoneOperation();</span><br><span class="line">        &#125;</span><br><span class="line">        <span class="meta">@Override</span></span><br><span class="line">        <span class="function"><span class="keyword">public</span> HML <span class="title">getHML</span><span class="params">()</span> </span>&#123;</span><br><span class="line">            <span class="keyword">return</span> <span class="keyword">new</span> WindowsPhoneHML();</span><br><span class="line">        &#125;</span><br><span class="line">    &#125;</span><br><span class="line">&#125;</span><br></pre></td></tr></table></figure>
+<h2 id="三、“开闭原则”的倾斜性"><a href="#三、“开闭原则”的倾斜性" class="headerlink" title="三、“开闭原则”的倾斜性"></a>三、“开闭原则”的倾斜性</h2><p>在抽象工厂模式中，增加新的产品族很方便（如增加Winter类型的界面），但是增加新的产品等级结构很麻烦（如增加单选框类型的产品，需要修改抽象工厂及其所有的具体工厂），这种性质被称为“开闭原则”的倾斜性。</p>
+<p>“开闭原则”要求系统对扩展开发，对修改封闭，通过扩展达到增强其功能的目的，对于设计多个产品族与多个产品等级结构的系统，其功能增强包括两方面：</p>
+<ol>
+<li>增加产品族，很好地支持了“开闭原则”，只需新增具体产品和新增一个具体工厂即可</li>
+<li>增加产品等级结构：违背了“开闭原则”，因为需要修改所有的抽象工厂与具体工厂才能实现扩展</li>
+</ol>
+<h2 id="四、总结"><a href="#四、总结" class="headerlink" title="四、总结"></a>四、总结</h2><h3 id="优点"><a href="#优点" class="headerlink" title="优点"></a>优点</h3><ol>
+<li>抽象工厂模式隔离了具体类的生成，使客户不需要知道何时被创建</li>
+<li>当一个产品族中的多个对象被设计为一起工作时，它能够保证客户端始终只使用一个产品族对象</li>
+<li>增加新的产品族很方便，无须修改已有系统，符合“开闭原则”</li>
+</ol>
+<h3 id="缺点"><a href="#缺点" class="headerlink" title="缺点"></a>缺点</h3><ol>
+<li>增加新的产品等级结构时，违背了“开闭原则”</li>
+</ol>
+<h3 id="适用场景"><a href="#适用场景" class="headerlink" title="适用场景"></a>适用场景</h3><ol>
+<li>系统不依赖于产品类的具体创建、组合及表达的细节</li>
+<li>系统中有多于一个的产品族，且每次只使用其中某一个产品族</li>
+<li>同一个产品族的产品配合使用</li>
+<li>产品等级结构稳定，设计完成后，不再修改系统中新的产品等级结构</li>
+</ol>
+
+      
+    </div>
+    <footer class="article-footer">
+      <a data-url="http://yoursite.com/2019/06/26/读书笔记/《JavaDesignPatterns》/5.抽象工厂模式/" data-id="cjxpj039m009prgtwslp4c4xs" class="article-share-link">Share</a>
+      
+      
+  <ul class="article-tag-list"><li class="article-tag-list-item"><a class="article-tag-list-link" href="/tags/读书笔记/">读书笔记</a></li></ul>
+
+    </footer>
+  </div>
+  
+    
+<nav id="article-nav">
+  
+    <a href="/2019/06/27/读书笔记/《JavaDesignPatterns》/6.单例模式/" id="article-nav-newer" class="article-nav-link-wrap">
+      <strong class="article-nav-caption">Newer</strong>
+      <div class="article-nav-title">
+        
+          《Java Design Patterns》第四章 单例模式 - 确保对象的唯一性
+        
+      </div>
+    </a>
+  
+  
+    <a href="/2019/06/26/读书笔记/《JavaDesignPatterns》/3.简单工厂模式/" id="article-nav-older" class="article-nav-link-wrap">
+      <strong class="article-nav-caption">Older</strong>
+      <div class="article-nav-title">《Java Design Patterns》第一章 简单工厂模式</div>
+    </a>
+  
+</nav>
+
+  
+</article>
+
+</section>
+        
+          <aside id="sidebar">
+  
+    
+  <div class="widget-wrap">
+    <h3 class="widget-title">Categories</h3>
+    <div class="widget">
+      <ul class="category-list"><li class="category-list-item"><a class="category-list-link" href="/categories/Docker学习/">Docker学习</a></li><li class="category-list-item"><a class="category-list-link" href="/categories/Git命令学习/">Git命令学习</a></li><li class="category-list-item"><a class="category-list-link" href="/categories/JAVA-核心知识点整理/">JAVA 核心知识点整理</a></li><li class="category-list-item"><a class="category-list-link" href="/categories/Java/">Java</a></li><li class="category-list-item"><a class="category-list-link" href="/categories/Java并发编程与高并发解决方案/">Java并发编程与高并发解决方案</a></li><li class="category-list-item"><a class="category-list-link" href="/categories/Java并发编程的艺术/">Java并发编程的艺术</a></li><li class="category-list-item"><a class="category-list-link" href="/categories/Java成神之路/">Java成神之路</a><ul class="category-list-child"><li class="category-list-item"><a class="category-list-link" href="/categories/Java成神之路/SpringBoot/">SpringBoot</a></li><li class="category-list-item"><a class="category-list-link" href="/categories/Java成神之路/Study社区/">Study社区</a></li></ul></li><li class="category-list-item"><a class="category-list-link" href="/categories/Linux学习之路/">Linux学习之路</a></li><li class="category-list-item"><a class="category-list-link" href="/categories/MarkDown语法/">MarkDown语法</a></li><li class="category-list-item"><a class="category-list-link" href="/categories/React学习/">React学习</a></li><li class="category-list-item"><a class="category-list-link" href="/categories/SpringBoot-参考指南/">SpringBoot 参考指南</a></li><li class="category-list-item"><a class="category-list-link" href="/categories/工具函数/">工具函数</a></li><li class="category-list-item"><a class="category-list-link" href="/categories/设计模式/">设计模式</a></li><li class="category-list-item"><a class="category-list-link" href="/categories/高性能MySQL/">高性能MySQL</a></li></ul>
+    </div>
+  </div>
+
+
+  
+    
+  <div class="widget-wrap">
+    <h3 class="widget-title">Tags</h3>
+    <div class="widget">
+      <ul class="tag-list"><li class="tag-list-item"><a class="tag-list-link" href="/tags/Git/">Git</a></li><li class="tag-list-item"><a class="tag-list-link" href="/tags/Git-Bash/">Git Bash</a></li><li class="tag-list-item"><a class="tag-list-link" href="/tags/Linux/">Linux</a></li><li class="tag-list-item"><a class="tag-list-link" href="/tags/MQ/">MQ</a></li><li class="tag-list-item"><a class="tag-list-link" href="/tags/MySQL/">MySQL</a></li><li class="tag-list-item"><a class="tag-list-link" href="/tags/POI/">POI</a></li><li class="tag-list-item"><a class="tag-list-link" href="/tags/Spring-Cloud/">Spring Cloud</a></li><li class="tag-list-item"><a class="tag-list-link" href="/tags/Spring-Data/">Spring Data</a></li><li class="tag-list-item"><a class="tag-list-link" href="/tags/SpringBoot/">SpringBoot</a></li><li class="tag-list-item"><a class="tag-list-link" href="/tags/docker/">docker</a></li><li class="tag-list-item"><a class="tag-list-link" href="/tags/gradle/">gradle</a></li><li class="tag-list-item"><a class="tag-list-link" href="/tags/java/">java</a></li><li class="tag-list-item"><a class="tag-list-link" href="/tags/poi/">poi</a></li><li class="tag-list-item"><a class="tag-list-link" href="/tags/并发编程/">并发编程</a></li><li class="tag-list-item"><a class="tag-list-link" href="/tags/数据库/">数据库</a></li><li class="tag-list-item"><a class="tag-list-link" href="/tags/读书笔记/">读书笔记</a></li><li class="tag-list-item"><a class="tag-list-link" href="/tags/高并发/">高并发</a></li></ul>
+    </div>
+  </div>
+
+
+  
+    
+  <div class="widget-wrap">
+    <h3 class="widget-title">Tag Cloud</h3>
+    <div class="widget tagcloud">
+      <a href="/tags/Git/" style="font-size: 13.75px;">Git</a> <a href="/tags/Git-Bash/" style="font-size: 11.25px;">Git Bash</a> <a href="/tags/Linux/" style="font-size: 12.5px;">Linux</a> <a href="/tags/MQ/" style="font-size: 15px;">MQ</a> <a href="/tags/MySQL/" style="font-size: 17.5px;">MySQL</a> <a href="/tags/POI/" style="font-size: 16.25px;">POI</a> <a href="/tags/Spring-Cloud/" style="font-size: 10px;">Spring Cloud</a> <a href="/tags/Spring-Data/" style="font-size: 12.5px;">Spring Data</a> <a href="/tags/SpringBoot/" style="font-size: 15px;">SpringBoot</a> <a href="/tags/docker/" style="font-size: 10px;">docker</a> <a href="/tags/gradle/" style="font-size: 11.25px;">gradle</a> <a href="/tags/java/" style="font-size: 20px;">java</a> <a href="/tags/poi/" style="font-size: 10px;">poi</a> <a href="/tags/并发编程/" style="font-size: 12.5px;">并发编程</a> <a href="/tags/数据库/" style="font-size: 17.5px;">数据库</a> <a href="/tags/读书笔记/" style="font-size: 18.75px;">读书笔记</a> <a href="/tags/高并发/" style="font-size: 12.5px;">高并发</a>
+    </div>
+  </div>
+
+  
+    
+  <div class="widget-wrap">
+    <h3 class="widget-title">Archives</h3>
+    <div class="widget">
+      <ul class="archive-list"><li class="archive-list-item"><a class="archive-list-link" href="/archives/2019/12/">December 2019</a></li><li class="archive-list-item"><a class="archive-list-link" href="/archives/2019/11/">November 2019</a></li><li class="archive-list-item"><a class="archive-list-link" href="/archives/2019/07/">July 2019</a></li><li class="archive-list-item"><a class="archive-list-link" href="/archives/2019/06/">June 2019</a></li><li class="archive-list-item"><a class="archive-list-link" href="/archives/2019/05/">May 2019</a></li><li class="archive-list-item"><a class="archive-list-link" href="/archives/2018/11/">November 2018</a></li><li class="archive-list-item"><a class="archive-list-link" href="/archives/2018/10/">October 2018</a></li><li class="archive-list-item"><a class="archive-list-link" href="/archives/2018/09/">September 2018</a></li><li class="archive-list-item"><a class="archive-list-link" href="/archives/2017/05/">May 2017</a></li></ul>
+    </div>
+  </div>
+
+
+  
+    
+  <div class="widget-wrap">
+    <h3 class="widget-title">Recent Posts</h3>
+    <div class="widget">
+      <ul>
+        
+          <li>
+            <a href="/2019/12/30/blog/2019/">2019年目标</a>
+          </li>
+        
+          <li>
+            <a href="/2019/12/01/读书笔记/《Java并发编程的艺术》/0.0_目录/">《Java并发编程的艺术》读书笔记 - 目录</a>
+          </li>
+        
+          <li>
+            <a href="/2019/12/01/读书笔记/《Java核心知识点整理》/0.目录/">《JAVA 核心知识点整理》读书笔记 - 目录</a>
+          </li>
+        
+          <li>
+            <a href="/2019/11/30/读书笔记/《高性能MySQL》/0.目录/">《高性能MySQL》读书笔记 - 目录</a>
+          </li>
+        
+          <li>
+            <a href="/2019/07/05/读书笔记/《JavaDesignPatterns》/8.建造者模式/">《Java Design Patterns》第六章 建造者模式 - 复杂对象的组装与创建</a>
+          </li>
+        
+      </ul>
+    </div>
+  </div>
+
+  
+</aside>
+        
+      </div>
+      <footer id="footer">
+  
+  <div class="outer">
+    <div id="footer-info" class="inner">
+      &copy; 2019 koral<br>
+      Powered by <a href="http://hexo.io/" target="_blank">Hexo</a>
+    </div>
+  </div>
+</footer>
+    </div>
+    <nav id="mobile-nav">
+  
+    <a href="/" class="mobile-nav-link">Home</a>
+  
+    <a href="/archives" class="mobile-nav-link">Archives</a>
+  
+</nav>
+    
+
+<script src="//ajax.googleapis.com/ajax/libs/jquery/2.0.3/jquery.min.js"></script>
+
+
+  <link rel="stylesheet" href="/fancybox/jquery.fancybox.css">
+  <script src="/fancybox/jquery.fancybox.pack.js"></script>
+
+
+<script src="/js/script.js"></script>
+
+
+
+  </div>
+</body>
+</html>

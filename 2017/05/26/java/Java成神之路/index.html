@@ -1,0 +1,581 @@
+<!DOCTYPE html>
+<html>
+<head>
+  <meta charset="utf-8">
+  
+
+  
+  <title>Java成神之路 | 罗凯的博客</title>
+  <meta name="viewport" content="width=device-width, initial-scale=1, maximum-scale=1">
+  <meta name="description" content="Java成神(学习)之路一、基础篇JVM JVM内存结构 堆、栈、方法区、直接内存、堆和栈区别 Java内存模型 内存可见性、重排序、顺序一致性、volatile、锁、final  垃圾回收 内存分配策略、垃圾收集器（G1）、GC算法、GC参数、对象存活的判定 JVM参数及调优  Java对象模型 oop-klass、对象头 HotSpot 即时编译器、编译优化  类加载机制 classLoade">
+<meta name="keywords" content="帅">
+<meta property="og:type" content="article">
+<meta property="og:title" content="Java成神之路">
+<meta property="og:url" content="http://yoursite.com/2017/05/26/java/Java成神之路/index.html">
+<meta property="og:site_name" content="罗凯的博客">
+<meta property="og:description" content="Java成神(学习)之路一、基础篇JVM JVM内存结构 堆、栈、方法区、直接内存、堆和栈区别 Java内存模型 内存可见性、重排序、顺序一致性、volatile、锁、final  垃圾回收 内存分配策略、垃圾收集器（G1）、GC算法、GC参数、对象存活的判定 JVM参数及调优  Java对象模型 oop-klass、对象头 HotSpot 即时编译器、编译优化  类加载机制 classLoade">
+<meta property="og:locale" content="zh-Hans">
+<meta property="og:updated_time" content="2019-07-01T02:49:01.399Z">
+<meta name="twitter:card" content="summary">
+<meta name="twitter:title" content="Java成神之路">
+<meta name="twitter:description" content="Java成神(学习)之路一、基础篇JVM JVM内存结构 堆、栈、方法区、直接内存、堆和栈区别 Java内存模型 内存可见性、重排序、顺序一致性、volatile、锁、final  垃圾回收 内存分配策略、垃圾收集器（G1）、GC算法、GC参数、对象存活的判定 JVM参数及调优  Java对象模型 oop-klass、对象头 HotSpot 即时编译器、编译优化  类加载机制 classLoade">
+  
+    <link rel="alternate" href="/atom.xml" title="罗凯的博客" type="application/atom+xml">
+  
+  
+    <link rel="icon" href="https://i.loli.net/2019/07/04/5d1db2fb9593c58427.gif">
+  
+  
+    <link href="//fonts.googleapis.com/css?family=Source+Code+Pro" rel="stylesheet" type="text/css">
+  
+  <link rel="stylesheet" href="/css/style.css">
+</head>
+
+<body>
+  <div id="container">
+    <div id="wrap">
+      <header id="header">
+  <div id="banner"></div>
+  <div id="header-outer" class="outer">
+    <div id="header-title" class="inner">
+      <h1 id="logo-wrap">
+        <a href="/" id="logo">罗凯的博客</a>
+      </h1>
+      
+        <h2 id="subtitle-wrap">
+          <a href="/" id="subtitle">一个大帅哥</a>
+        </h2>
+      
+    </div>
+    <div id="header-inner" class="inner">
+      <nav id="main-nav">
+        <a id="main-nav-toggle" class="nav-icon"></a>
+        
+          <a class="main-nav-link" href="/">Home</a>
+        
+          <a class="main-nav-link" href="/archives">Archives</a>
+        
+      </nav>
+      <nav id="sub-nav">
+        
+          <a id="nav-rss-link" class="nav-icon" href="/atom.xml" title="RSS Feed"></a>
+        
+        <a id="nav-search-btn" class="nav-icon" title="Search"></a>
+      </nav>
+      <div id="search-form-wrap">
+        <form action="//google.com/search" method="get" accept-charset="UTF-8" class="search-form"><input type="search" name="q" class="search-form-input" placeholder="Search"><button type="submit" class="search-form-submit">&#xF002;</button><input type="hidden" name="sitesearch" value="http://yoursite.com"></form>
+      </div>
+    </div>
+  </div>
+</header>
+      <div class="outer">
+        <section id="main"><article id="post-java/Java成神之路" class="article article-type-post" itemscope itemprop="blogPost">
+  <div class="article-meta">
+    <a href="/2017/05/26/java/Java成神之路/" class="article-date">
+  <time datetime="2017-05-26T04:12:57.000Z" itemprop="datePublished">2017-05-26</time>
+</a>
+    
+  <div class="article-category">
+    <a class="article-category-link" href="/categories/Java成神之路/">Java成神之路</a>
+  </div>
+
+  </div>
+  <div class="article-inner">
+    
+    
+      <header class="article-header">
+        
+  
+    <h1 class="article-title" itemprop="name">
+      Java成神之路
+    </h1>
+  
+
+      </header>
+    
+    <div class="article-entry" itemprop="articleBody">
+      
+        <h1 id="Java成神-学习-之路"><a href="#Java成神-学习-之路" class="headerlink" title="Java成神(学习)之路"></a>Java成神(学习)之路</h1><h2 id="一、基础篇"><a href="#一、基础篇" class="headerlink" title="一、基础篇"></a>一、基础篇</h2><h3 id="JVM"><a href="#JVM" class="headerlink" title="JVM"></a>JVM</h3><ol>
+<li>JVM内存结构</li>
+<li>堆、栈、方法区、直接内存、堆和栈区别</li>
+<li>Java内存模型</li>
+<li>内存可见性、重排序、顺序一致性、volatile、锁、final</li>
+</ol>
+<h3 id="垃圾回收"><a href="#垃圾回收" class="headerlink" title="垃圾回收"></a>垃圾回收</h3><ol>
+<li>内存分配策略、垃圾收集器（G1）、GC算法、GC参数、对象存活的判定</li>
+<li>JVM参数及调优</li>
+</ol>
+<h3 id="Java对象模型"><a href="#Java对象模型" class="headerlink" title="Java对象模型"></a>Java对象模型</h3><ol>
+<li>oop-klass、对象头</li>
+<li>HotSpot</li>
+<li>即时编译器、编译优化</li>
+</ol>
+<h3 id="类加载机制"><a href="#类加载机制" class="headerlink" title="类加载机制"></a>类加载机制</h3><ol>
+<li>classLoader、类加载过程、双亲委派（破坏双亲委派）、模块化（jboss modules、osgi、jigsaw）</li>
+</ol>
+<h3 id="虚拟机性能监控与故障处理工具"><a href="#虚拟机性能监控与故障处理工具" class="headerlink" title="虚拟机性能监控与故障处理工具"></a>虚拟机性能监控与故障处理工具</h3><ol>
+<li>jps, jstack, jmap、jstat, jconsole, jinfo, jhat, javap, btrace、TProfiler</li>
+</ol>
+<h3 id="编译与反编译"><a href="#编译与反编译" class="headerlink" title="编译与反编译"></a>编译与反编译</h3><ol>
+<li>javac 、javap 、jad 、CRF</li>
+<li>Java基础知识</li>
+</ol>
+<h3 id="阅读源代码"><a href="#阅读源代码" class="headerlink" title="阅读源代码"></a>阅读源代码</h3><ol>
+<li>String、Integer、Long、Enum、BigDecimal、ThreadLocal、ClassLoader &amp; URLClassLoader、ArrayList &amp; LinkedList、 HashMap &amp; LinkedHashMap &amp; TreeMap &amp; CouncurrentHashMap、HashSet &amp; LinkedHashSet &amp; TreeSet</li>
+</ol>
+<h3 id="Java中各种变量类型"><a href="#Java中各种变量类型" class="headerlink" title="Java中各种变量类型"></a>Java中各种变量类型</h3><ol>
+<li>熟悉Java String的使用，熟悉String的各种函数</li>
+<li>JDK 6和JDK 7中substring的原理及区别、</li>
+<li>replaceFirst、replaceAll、replace区别、</li>
+<li>String对“+”的重载、</li>
+<li>String.valueOf和Integer.toString的区别、</li>
+<li>字符串的不可变性</li>
+<li>自动拆装箱</li>
+<li>Integer的缓存机制</li>
+</ol>
+<h3 id="熟悉Java中各种关键字"><a href="#熟悉Java中各种关键字" class="headerlink" title="熟悉Java中各种关键字"></a>熟悉Java中各种关键字</h3><ol>
+<li>transient、instanceof、volatile、synchronized、final、static、const原理及用法。</li>
+</ol>
+<h3 id="集合类"><a href="#集合类" class="headerlink" title="集合类"></a>集合类</h3><ol>
+<li>常用集合类的使用、ArrayList和LinkedList和Vector的区别 、SynchronizedList和Vector的区别、</li>
+<li>HashMap、HashTable、ConcurrentHashMap区别、Java 8中stream相关用法、apache集合处理工具类的使用、不同版本的JDK中HashMap的实现的区别以及原因</li>
+</ol>
+<h3 id="枚举"><a href="#枚举" class="headerlink" title="枚举"></a>枚举</h3><ol>
+<li>枚举的用法、枚举与单例、Enum类</li>
+</ol>
+<h3 id="Java-IO-amp-Java-NIO，并学会使用"><a href="#Java-IO-amp-Java-NIO，并学会使用" class="headerlink" title="Java IO&amp;Java NIO，并学会使用"></a>Java IO&amp;Java NIO，并学会使用</h3><ol>
+<li>bio、nio和aio的区别、三种IO的用法与原理、netty</li>
+</ol>
+<h3 id="Java反射与javassist"><a href="#Java反射与javassist" class="headerlink" title="Java反射与javassist"></a>Java反射与javassist</h3><ol>
+<li>反射与工厂模式、 java.lang.reflect.*</li>
+</ol>
+<h3 id="Java序列化"><a href="#Java序列化" class="headerlink" title="Java序列化"></a>Java序列化</h3><ol>
+<li>什么是序列化与反序列化、为什么序列化、序列化底层原理、序列化与单例模式、protobuf、为什么说序列化并不安全</li>
+</ol>
+<h3 id="注解"><a href="#注解" class="headerlink" title="注解"></a>注解</h3><ol>
+<li>元注解、自定义注解、Java中常用注解使用、注解与反射的结合</li>
+</ol>
+<h3 id="JMS"><a href="#JMS" class="headerlink" title="JMS"></a>JMS</h3><ol>
+<li>什么是Java消息服务、JMS消息传送模型</li>
+<li>JMX</li>
+<li>java.lang.management.<em>、 javax.management.</em></li>
+</ol>
+<h3 id="泛型"><a href="#泛型" class="headerlink" title="泛型"></a>泛型</h3><ol>
+<li>泛型与继承、类型擦除、泛型中K T V E ？ object等的含义、泛型各种用法</li>
+</ol>
+<h3 id="单元测试"><a href="#单元测试" class="headerlink" title="单元测试"></a>单元测试</h3><ol>
+<li>junit、mock、mockito、内存数据库（h2）</li>
+</ol>
+<h3 id="正则表达式"><a href="#正则表达式" class="headerlink" title="正则表达式"></a>正则表达式</h3><ol>
+<li>java.lang.util.regex.*</li>
+</ol>
+<h3 id="常用的Java工具库"><a href="#常用的Java工具库" class="headerlink" title="常用的Java工具库"></a>常用的Java工具库</h3><ol>
+<li>commons.lang, commons.*… guava-libraries netty</li>
+<li>什么是API&amp;SPI</li>
+</ol>
+<h3 id="异常"><a href="#异常" class="headerlink" title="异常"></a>异常</h3><ol>
+<li>异常类型、正确处理异常、自定义异常</li>
+</ol>
+<h3 id="时间处理"><a href="#时间处理" class="headerlink" title="时间处理"></a>时间处理</h3><ol>
+<li>时区、时令、Java中时间API</li>
+</ol>
+<h3 id="编码方式"><a href="#编码方式" class="headerlink" title="编码方式"></a>编码方式</h3><ol>
+<li>解决乱码问题、常用编码方式</li>
+</ol>
+<h3 id="语法糖"><a href="#语法糖" class="headerlink" title="语法糖"></a>语法糖</h3><ol>
+<li>Java中语法糖原理、解语法糖</li>
+</ol>
+<h3 id="Java并发编程"><a href="#Java并发编程" class="headerlink" title="Java并发编程"></a>Java并发编程</h3><ol>
+<li>什么是线程，与进程的区别</li>
+<li>阅读源代码，并学会使用</li>
+<li>Thread、Runnable、Callable、ReentrantLock、ReentrantReadWriteLock、Atomic*、Semaphore、CountDownLatch、、ConcurrentHashMap、Executors</li>
+</ol>
+<h3 id="线程池"><a href="#线程池" class="headerlink" title="线程池"></a>线程池</h3><ol>
+<li>自己设计线程池、submit() 和 execute()</li>
+</ol>
+<h3 id="线程安全"><a href="#线程安全" class="headerlink" title="线程安全"></a>线程安全</h3><ol>
+<li>死锁、死锁如何排查、Java线程调度、线程安全和内存模型的关系</li>
+<li>锁</li>
+<li>CAS、乐观锁与悲观锁、数据库相关锁机制、分布式锁、偏向锁、轻量级锁、重量级锁、monitor、锁优化、锁消除、锁粗化、自旋锁、可重入锁、阻塞锁、死锁</li>
+<li>死锁</li>
+<li>volatile</li>
+<li>happens-before、编译器指令重排和CPU指令重</li>
+<li>synchronized</li>
+<li>synchronized是如何实现的？synchronized和lock之间关系、不使用synchronized如何实现一个线程安全的单例</li>
+<li>sleep 和 wait</li>
+<li>wait 和 notify</li>
+<li>notify 和 notifyAll</li>
+<li>ThreadLocal</li>
+<li>写一个死锁的程序</li>
+<li>写代码来解决生产者消费者问题</li>
+<li>守护线程</li>
+<li>守护线程和非守护线程的区别以及用法 </li>
+</ol>
+<h2 id="二、-进阶篇"><a href="#二、-进阶篇" class="headerlink" title="二、 进阶篇"></a>二、 进阶篇</h2><h3 id="Java底层知识"><a href="#Java底层知识" class="headerlink" title="Java底层知识"></a>Java底层知识</h3><ol>
+<li>字节码、class文件格式</li>
+<li>CPU缓存，L1，L2，L3和伪共享</li>
+<li>尾递归</li>
+<li>位运算</li>
+<li>用位运算实现加、减、乘、除、取余</li>
+<li>设计模式</li>
+<li>了解23种设计模式</li>
+<li>会使用常用设计模式</li>
+<li>单例、策略、工厂、适配器、责任链。</li>
+<li>实现AOP</li>
+<li>实现IOC</li>
+<li>不用synchronized和lock，实现线程安全的单例模式</li>
+<li>nio和reactor设计模式</li>
+</ol>
+<h3 id="网络编程知识"><a href="#网络编程知识" class="headerlink" title="网络编程知识"></a>网络编程知识</h3><ol>
+<li>tcp、udp、http、https等常用协议</li>
+<li>三次握手与四次关闭、流量控制和拥塞控制、OSI七层模型、tcp粘包与拆包</li>
+<li>http/1.0 http/1.1 http/2之前的区别</li>
+<li>Java RMI，Socket，HttpClient</li>
+<li>cookie 与 session</li>
+<li>cookie被禁用，如何实现session</li>
+<li><p>用Java写一个简单的静态文件的HTTP服务器</p>
+</li>
+<li><p>实现客户端缓存功能，支持返回304 实现可并发下载一个文件 使用线程池处理客户端请求 使用nio处理客户端请求 支持简单的rewrite规则 上述功能在实现的时候需要满足“开闭原则”</p>
+</li>
+<li><p>了解nginx和apache服务器的特性并搭建一个对应的服务器</p>
+</li>
+<li>用Java实现FTP、SMTP协议</li>
+<li>进程间通讯的方式</li>
+<li>什么是CDN？如果实现？</li>
+<li>什么是DNS？</li>
+<li>反向代理</li>
+<li>框架知识</li>
+<li>Servlet线程安全问题</li>
+<li>Servlet中的filter和listener</li>
+<li>Hibernate的缓存机制</li>
+<li>Hiberate的懒加载</li>
+<li>Spring Bean的初始化</li>
+<li>Spring的AOP原理</li>
+<li>自己实现Spring的IOC</li>
+<li>Spring MVC</li>
+<li>Spring Boot2.0</li>
+<li>Spring Boot的starter原理，自己实现一个starter</li>
+<li>Spring Security</li>
+<li>应用服务器知识</li>
+<li>JBoss</li>
+<li>tomcat</li>
+<li>jetty</li>
+<li>Weblogic</li>
+<li>工具</li>
+<li>git &amp; svn</li>
+<li>maven &amp; gradle</li>
+</ol>
+<h2 id="三、-高级篇"><a href="#三、-高级篇" class="headerlink" title="三、 高级篇"></a>三、 高级篇</h2><h3 id="新技术"><a href="#新技术" class="headerlink" title="新技术"></a>新技术</h3><ol>
+<li>Java 8</li>
+<li>lambda表达式、Stream API、</li>
+<li>Java 9</li>
+<li>Jigsaw、Jshell、Reactive Streams</li>
+<li>Java 10</li>
+<li>局部变量类型推断、G1的并行Full GC、ThreadLocal握手机制</li>
+<li>Spring 5</li>
+</ol>
+<h3 id="响应式编程"><a href="#响应式编程" class="headerlink" title="响应式编程"></a>响应式编程</h3><ol>
+<li>Spring Boot 2.0</li>
+<li>性能优化</li>
+<li>使用单例、使用Future模式、使用线程池、选择就绪、减少上下文切换、减少锁粒度、数据压缩、结果缓存</li>
+</ol>
+<p>线上问题分析</p>
+<ol>
+<li>dump获取</li>
+<li>线程Dump、内存Dump、gc情况</li>
+<li>dump分析</li>
+<li>分析死锁、分析内存泄露</li>
+<li>自己编写各种outofmemory，stackoverflow程序</li>
+<li>HeapOutOfMemory、 Young OutOfMemory、MethodArea OutOfMemory、ConstantPool OutOfMemory、DirectMemory OutOfMemory、Stack OutOfMemory Stack OverFlow</li>
+<li>常见问题解决思路</li>
+<li>内存溢出、线程死锁、类加载冲突</li>
+<li>使用工具尝试解决以下问题，并写下总结</li>
+<li>当一个Java程序响应很慢时如何查找问题、</li>
+<li>当一个Java程序频繁FullGC时如何解决问题、</li>
+<li>如何查看垃圾回收日志、</li>
+<li>当一个Java应用发生OutOfMemory时该如何解决、</li>
+<li>如何判断是否出现死锁、</li>
+<li>如何判断是否存在内存泄露</li>
+<li>编译原理知识</li>
+<li>编译与反编译</li>
+<li>Java代码的编译与反编译</li>
+<li>Java的反编译工具</li>
+<li>词法分析，语法分析（LL算法，递归下降算法，LR算法），语义分析，运行时环境，中间代码，代码生成，代码优化</li>
+<li>操作系统知识</li>
+<li>Linux的常用命令</li>
+<li>进程同步</li>
+<li>缓冲区溢出</li>
+<li>分段和分页</li>
+<li>虚拟内存与主存</li>
+<li>数据库知识</li>
+<li>MySql 执行引擎</li>
+<li>MySQL 执行计划</li>
+<li>如何查看执行计划，如何根据执行计划进行SQL优化</li>
+</ol>
+<h3 id="SQL优化"><a href="#SQL优化" class="headerlink" title="SQL优化"></a>SQL优化</h3><ol>
+<li>事务</li>
+<li>事务的隔离级别、事务能不能实现锁的功能</li>
+<li>数据库锁</li>
+<li>行锁、表锁、使用数据库锁实现乐观锁、</li>
+<li>数据库主备搭建</li>
+<li>binlog</li>
+<li>内存数据库</li>
+<li>h2</li>
+<li>常用的nosql数据库</li>
+<li>redis、memcached</li>
+<li>分别使用数据库锁、NoSql实现分布式锁</li>
+<li>性能调优</li>
+<li>数据结构与算法知识</li>
+<li>简单的数据结构</li>
+<li>栈、队列、链表、数组、哈希表、</li>
+</ol>
+<h3 id="树"><a href="#树" class="headerlink" title="树"></a>树</h3><ol>
+<li>二叉树、字典树、平衡树、排序树、B树、B+树、R树、多路树、红黑树</li>
+<li>排序算法</li>
+<li>各种排序算法和时间复杂度</li>
+<li>深度优先和广度优先搜索</li>
+<li>全排列、贪心算法、KMP算法、hash算法、海量数据处理</li>
+</ol>
+<h3 id="大数据知识"><a href="#大数据知识" class="headerlink" title="大数据知识"></a>大数据知识</h3><ol>
+<li>Zookeeper</li>
+<li>基本概念、常见用法</li>
+<li>Solr，Lucene，ElasticSearch</li>
+<li>在linux上部署solr，solrcloud，，新增、删除、查询索引</li>
+<li>Storm，流式计算，了解Spark，S4</li>
+<li>在linux上部署storm，用zookeeper做协调，运行storm hello world，local和remote模式运行调试storm topology。</li>
+<li>Hadoop，离线计算</li>
+<li>HDFS、MapReduce</li>
+<li>分布式日志收集flume，kafka，logstash</li>
+<li>数据挖掘，mahout</li>
+</ol>
+<h3 id="网络安全知识"><a href="#网络安全知识" class="headerlink" title="网络安全知识"></a>网络安全知识</h3><ol>
+<li>什么是XSS</li>
+<li>XSS的防御</li>
+<li>什么是CSRF</li>
+<li>什么是注入攻击</li>
+<li>SQL注入、XML注入、CRLF注入</li>
+<li>什么是文件上传漏洞</li>
+<li>加密与解密</li>
+<li>MD5，SHA1、DES、AES、RSA、DSA</li>
+<li>什么是DOS攻击和DDOS攻击</li>
+<li>memcached为什么可以导致DDos攻击、什么是反射型DDoS</li>
+<li>SSL、TLS，HTTPS</li>
+<li>如何通过Hash碰撞进行DOS攻击</li>
+<li>用openssl签一个证书部署到apache或nginx</li>
+</ol>
+<h2 id="四、架构篇"><a href="#四、架构篇" class="headerlink" title="四、架构篇"></a>四、架构篇</h2><h3 id="分布式"><a href="#分布式" class="headerlink" title="分布式"></a>分布式</h3><ol>
+<li>数据一致性、服务治理、服务降级</li>
+<li>分布式事务</li>
+<li>2PC、3PC、CAP、BASE、</li>
+<li>可靠消息最终一致性、最大努力通知、TCC</li>
+<li>Dubbo</li>
+<li>服务注册、服务发现，服务治理</li>
+<li>分布式数据库</li>
+<li>怎样打造一个分布式数据库、什么时候需要分布式数据库、mycat、otter、HBase</li>
+<li>分布式文件系统</li>
+<li>mfs、fastdfs</li>
+<li>分布式缓存</li>
+<li>缓存一致性、缓存命中率、缓存冗余</li>
+<li>微服务</li>
+<li>SOA、康威定律</li>
+<li>ServiceMesh</li>
+<li>Docker &amp; Kubernets</li>
+<li>Spring Boot</li>
+<li>Spring Cloud</li>
+</ol>
+<h3 id="高并发"><a href="#高并发" class="headerlink" title="高并发"></a>高并发</h3><ol>
+<li>分库分表</li>
+<li>CDN技术</li>
+<li>消息队列</li>
+<li>ActiveMQ</li>
+</ol>
+<h3 id="监控"><a href="#监控" class="headerlink" title="监控"></a>监控</h3><ol>
+<li>监控什么</li>
+<li>CPU、内存、磁盘I/O、网络I/O等</li>
+<li>监控手段</li>
+<li>进程监控、语义监控、机器资源监控、数据波动</li>
+<li>监控数据采集</li>
+<li>日志、埋点</li>
+<li>Dapper</li>
+<li>负载均衡</li>
+<li>tomcat负载均衡、Nginx负载均衡</li>
+</ol>
+<h3 id="DNS"><a href="#DNS" class="headerlink" title="DNS"></a>DNS</h3><ol>
+<li>DNS原理、DNS的设计</li>
+<li>CDN</li>
+<li>数据一致性</li>
+</ol>
+<h2 id="五、-扩展篇"><a href="#五、-扩展篇" class="headerlink" title="五、 扩展篇"></a>五、 扩展篇</h2><h3 id="云计算"><a href="#云计算" class="headerlink" title="云计算"></a>云计算</h3><ol>
+<li>IaaS、SaaS、PaaS、虚拟化技术、openstack、Serverlsess</li>
+<li>搜索引擎</li>
+<li>Solr、Lucene、Nutch、Elasticsearch</li>
+<li>权限管理</li>
+<li>Shiro</li>
+<li>区块链</li>
+<li>哈希算法、Merkle树、公钥密码算法、共识算法、Raft协议、Paxos 算法与 Raft 算法、拜占庭问题与算法、消息认证码与数字签名</li>
+<li>比特币</li>
+<li>挖矿、共识机制、闪电网络、侧链、热点问题、分叉</li>
+<li>以太坊</li>
+<li>超级账本</li>
+<li>人工智能</li>
+<li>数学基础、机器学习、人工神经网络、深度学习、应用场景。</li>
+</ol>
+<h3 id="常用框架"><a href="#常用框架" class="headerlink" title="常用框架"></a>常用框架</h3><ol>
+<li>TensorFlow、DeepLearning4J</li>
+</ol>
+<h3 id="其他语言"><a href="#其他语言" class="headerlink" title="其他语言"></a>其他语言</h3><ol>
+<li>Groovy、Python、Go、NodeJs、Swift、Rust</li>
+</ol>
+<h2 id="六、-推荐书籍"><a href="#六、-推荐书籍" class="headerlink" title="六、 推荐书籍"></a>六、 推荐书籍</h2><ol>
+<li>《深入理解Java虚拟机》</li>
+<li>《Effective Java》</li>
+<li>《深入分析Java Web技术内幕》</li>
+<li>《大型网站技术架构》</li>
+<li>《代码整洁之道》</li>
+<li>《Head First设计模式》</li>
+<li>《maven实战》</li>
+<li>《区块链原理、设计与应用》</li>
+<li>《Java并发编程实战》</li>
+<li>《鸟哥的Linux私房菜》</li>
+<li>《从Paxos到Zookeeper》</li>
+<li>《架构即未来》</li>
+</ol>
+<p><a href="https://juejin.im/post/5ab46c9ef265da239b415ce1" target="_blank" rel="noopener">‘转载自掘金，Hollis_公众号Hollis’</a></p>
+
+      
+    </div>
+    <footer class="article-footer">
+      <a data-url="http://yoursite.com/2017/05/26/java/Java成神之路/" data-id="cjxpj03400088rgtwdiq7y61r" class="article-share-link">Share</a>
+      
+      
+    </footer>
+  </div>
+  
+    
+<nav id="article-nav">
+  
+    <a href="/2018/09/01/SpringBootWebsocket/SpringBoot消息机制(六)-Apollo介绍与整合/" id="article-nav-newer" class="article-nav-link-wrap">
+      <strong class="article-nav-caption">Newer</strong>
+      <div class="article-nav-title">
+        
+          SpringBoot消息机制(六)-Apollo介绍与整合
+        
+      </div>
+    </a>
+  
+  
+</nav>
+
+  
+</article>
+
+</section>
+        
+          <aside id="sidebar">
+  
+    
+  <div class="widget-wrap">
+    <h3 class="widget-title">Categories</h3>
+    <div class="widget">
+      <ul class="category-list"><li class="category-list-item"><a class="category-list-link" href="/categories/Docker学习/">Docker学习</a></li><li class="category-list-item"><a class="category-list-link" href="/categories/Git命令学习/">Git命令学习</a></li><li class="category-list-item"><a class="category-list-link" href="/categories/JAVA-核心知识点整理/">JAVA 核心知识点整理</a></li><li class="category-list-item"><a class="category-list-link" href="/categories/Java/">Java</a></li><li class="category-list-item"><a class="category-list-link" href="/categories/Java并发编程与高并发解决方案/">Java并发编程与高并发解决方案</a></li><li class="category-list-item"><a class="category-list-link" href="/categories/Java并发编程的艺术/">Java并发编程的艺术</a></li><li class="category-list-item"><a class="category-list-link" href="/categories/Java成神之路/">Java成神之路</a><ul class="category-list-child"><li class="category-list-item"><a class="category-list-link" href="/categories/Java成神之路/SpringBoot/">SpringBoot</a></li><li class="category-list-item"><a class="category-list-link" href="/categories/Java成神之路/Study社区/">Study社区</a></li></ul></li><li class="category-list-item"><a class="category-list-link" href="/categories/Linux学习之路/">Linux学习之路</a></li><li class="category-list-item"><a class="category-list-link" href="/categories/MarkDown语法/">MarkDown语法</a></li><li class="category-list-item"><a class="category-list-link" href="/categories/React学习/">React学习</a></li><li class="category-list-item"><a class="category-list-link" href="/categories/SpringBoot-参考指南/">SpringBoot 参考指南</a></li><li class="category-list-item"><a class="category-list-link" href="/categories/工具函数/">工具函数</a></li><li class="category-list-item"><a class="category-list-link" href="/categories/设计模式/">设计模式</a></li><li class="category-list-item"><a class="category-list-link" href="/categories/高性能MySQL/">高性能MySQL</a></li></ul>
+    </div>
+  </div>
+
+
+  
+    
+  <div class="widget-wrap">
+    <h3 class="widget-title">Tags</h3>
+    <div class="widget">
+      <ul class="tag-list"><li class="tag-list-item"><a class="tag-list-link" href="/tags/Git/">Git</a></li><li class="tag-list-item"><a class="tag-list-link" href="/tags/Git-Bash/">Git Bash</a></li><li class="tag-list-item"><a class="tag-list-link" href="/tags/Linux/">Linux</a></li><li class="tag-list-item"><a class="tag-list-link" href="/tags/MQ/">MQ</a></li><li class="tag-list-item"><a class="tag-list-link" href="/tags/MySQL/">MySQL</a></li><li class="tag-list-item"><a class="tag-list-link" href="/tags/POI/">POI</a></li><li class="tag-list-item"><a class="tag-list-link" href="/tags/Spring-Cloud/">Spring Cloud</a></li><li class="tag-list-item"><a class="tag-list-link" href="/tags/Spring-Data/">Spring Data</a></li><li class="tag-list-item"><a class="tag-list-link" href="/tags/SpringBoot/">SpringBoot</a></li><li class="tag-list-item"><a class="tag-list-link" href="/tags/docker/">docker</a></li><li class="tag-list-item"><a class="tag-list-link" href="/tags/gradle/">gradle</a></li><li class="tag-list-item"><a class="tag-list-link" href="/tags/java/">java</a></li><li class="tag-list-item"><a class="tag-list-link" href="/tags/poi/">poi</a></li><li class="tag-list-item"><a class="tag-list-link" href="/tags/并发编程/">并发编程</a></li><li class="tag-list-item"><a class="tag-list-link" href="/tags/数据库/">数据库</a></li><li class="tag-list-item"><a class="tag-list-link" href="/tags/读书笔记/">读书笔记</a></li><li class="tag-list-item"><a class="tag-list-link" href="/tags/高并发/">高并发</a></li></ul>
+    </div>
+  </div>
+
+
+  
+    
+  <div class="widget-wrap">
+    <h3 class="widget-title">Tag Cloud</h3>
+    <div class="widget tagcloud">
+      <a href="/tags/Git/" style="font-size: 13.75px;">Git</a> <a href="/tags/Git-Bash/" style="font-size: 11.25px;">Git Bash</a> <a href="/tags/Linux/" style="font-size: 12.5px;">Linux</a> <a href="/tags/MQ/" style="font-size: 15px;">MQ</a> <a href="/tags/MySQL/" style="font-size: 17.5px;">MySQL</a> <a href="/tags/POI/" style="font-size: 16.25px;">POI</a> <a href="/tags/Spring-Cloud/" style="font-size: 10px;">Spring Cloud</a> <a href="/tags/Spring-Data/" style="font-size: 12.5px;">Spring Data</a> <a href="/tags/SpringBoot/" style="font-size: 15px;">SpringBoot</a> <a href="/tags/docker/" style="font-size: 10px;">docker</a> <a href="/tags/gradle/" style="font-size: 11.25px;">gradle</a> <a href="/tags/java/" style="font-size: 20px;">java</a> <a href="/tags/poi/" style="font-size: 10px;">poi</a> <a href="/tags/并发编程/" style="font-size: 12.5px;">并发编程</a> <a href="/tags/数据库/" style="font-size: 17.5px;">数据库</a> <a href="/tags/读书笔记/" style="font-size: 18.75px;">读书笔记</a> <a href="/tags/高并发/" style="font-size: 12.5px;">高并发</a>
+    </div>
+  </div>
+
+  
+    
+  <div class="widget-wrap">
+    <h3 class="widget-title">Archives</h3>
+    <div class="widget">
+      <ul class="archive-list"><li class="archive-list-item"><a class="archive-list-link" href="/archives/2019/12/">December 2019</a></li><li class="archive-list-item"><a class="archive-list-link" href="/archives/2019/11/">November 2019</a></li><li class="archive-list-item"><a class="archive-list-link" href="/archives/2019/07/">July 2019</a></li><li class="archive-list-item"><a class="archive-list-link" href="/archives/2019/06/">June 2019</a></li><li class="archive-list-item"><a class="archive-list-link" href="/archives/2019/05/">May 2019</a></li><li class="archive-list-item"><a class="archive-list-link" href="/archives/2018/11/">November 2018</a></li><li class="archive-list-item"><a class="archive-list-link" href="/archives/2018/10/">October 2018</a></li><li class="archive-list-item"><a class="archive-list-link" href="/archives/2018/09/">September 2018</a></li><li class="archive-list-item"><a class="archive-list-link" href="/archives/2017/05/">May 2017</a></li></ul>
+    </div>
+  </div>
+
+
+  
+    
+  <div class="widget-wrap">
+    <h3 class="widget-title">Recent Posts</h3>
+    <div class="widget">
+      <ul>
+        
+          <li>
+            <a href="/2019/12/30/blog/2019/">2019年目标</a>
+          </li>
+        
+          <li>
+            <a href="/2019/12/01/读书笔记/《Java并发编程的艺术》/0.0_目录/">《Java并发编程的艺术》读书笔记 - 目录</a>
+          </li>
+        
+          <li>
+            <a href="/2019/12/01/读书笔记/《Java核心知识点整理》/0.目录/">《JAVA 核心知识点整理》读书笔记 - 目录</a>
+          </li>
+        
+          <li>
+            <a href="/2019/11/30/读书笔记/《高性能MySQL》/0.目录/">《高性能MySQL》读书笔记 - 目录</a>
+          </li>
+        
+          <li>
+            <a href="/2019/07/05/读书笔记/《JavaDesignPatterns》/8.建造者模式/">《Java Design Patterns》第六章 建造者模式 - 复杂对象的组装与创建</a>
+          </li>
+        
+      </ul>
+    </div>
+  </div>
+
+  
+</aside>
+        
+      </div>
+      <footer id="footer">
+  
+  <div class="outer">
+    <div id="footer-info" class="inner">
+      &copy; 2019 koral<br>
+      Powered by <a href="http://hexo.io/" target="_blank">Hexo</a>
+    </div>
+  </div>
+</footer>
+    </div>
+    <nav id="mobile-nav">
+  
+    <a href="/" class="mobile-nav-link">Home</a>
+  
+    <a href="/archives" class="mobile-nav-link">Archives</a>
+  
+</nav>
+    
+
+<script src="//ajax.googleapis.com/ajax/libs/jquery/2.0.3/jquery.min.js"></script>
+
+
+  <link rel="stylesheet" href="/fancybox/jquery.fancybox.css">
+  <script src="/fancybox/jquery.fancybox.pack.js"></script>
+
+
+<script src="/js/script.js"></script>
+
+
+
+  </div>
+</body>
+</html>

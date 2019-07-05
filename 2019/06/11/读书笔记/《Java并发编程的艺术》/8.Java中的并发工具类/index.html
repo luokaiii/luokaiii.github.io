@@ -1,0 +1,278 @@
+<!DOCTYPE html>
+<html>
+<head>
+  <meta charset="utf-8">
+  
+
+  
+  <title>Java 并发工具类 | 罗凯的博客</title>
+  <meta name="viewport" content="width=device-width, initial-scale=1, maximum-scale=1">
+  <meta name="description" content="第八章 Java 中的并发工具类8.1 CountDownLatch 等待多线程完成CountDownLatch 允许一个或多个线程等待其他线程完成操作。 CountDownLatch 在构造时接收 int 参数作为计数器，当线程执行到 countDown 是，计数器数值 N - 1 。可以是 1 个线程执行 N 个步骤，也可以是多个线程共同执行 N 个步骤。 await 方法会使线程进入等待状态">
+<meta name="keywords" content="帅">
+<meta property="og:type" content="article">
+<meta property="og:title" content="Java 并发工具类">
+<meta property="og:url" content="http://yoursite.com/2019/06/11/读书笔记/《Java并发编程的艺术》/8.Java中的并发工具类/index.html">
+<meta property="og:site_name" content="罗凯的博客">
+<meta property="og:description" content="第八章 Java 中的并发工具类8.1 CountDownLatch 等待多线程完成CountDownLatch 允许一个或多个线程等待其他线程完成操作。 CountDownLatch 在构造时接收 int 参数作为计数器，当线程执行到 countDown 是，计数器数值 N - 1 。可以是 1 个线程执行 N 个步骤，也可以是多个线程共同执行 N 个步骤。 await 方法会使线程进入等待状态">
+<meta property="og:locale" content="zh-Hans">
+<meta property="og:updated_time" content="2019-07-01T02:49:01.440Z">
+<meta name="twitter:card" content="summary">
+<meta name="twitter:title" content="Java 并发工具类">
+<meta name="twitter:description" content="第八章 Java 中的并发工具类8.1 CountDownLatch 等待多线程完成CountDownLatch 允许一个或多个线程等待其他线程完成操作。 CountDownLatch 在构造时接收 int 参数作为计数器，当线程执行到 countDown 是，计数器数值 N - 1 。可以是 1 个线程执行 N 个步骤，也可以是多个线程共同执行 N 个步骤。 await 方法会使线程进入等待状态">
+  
+    <link rel="alternate" href="/atom.xml" title="罗凯的博客" type="application/atom+xml">
+  
+  
+    <link rel="icon" href="https://i.loli.net/2019/07/04/5d1db2fb9593c58427.gif">
+  
+  
+    <link href="//fonts.googleapis.com/css?family=Source+Code+Pro" rel="stylesheet" type="text/css">
+  
+  <link rel="stylesheet" href="/css/style.css">
+</head>
+
+<body>
+  <div id="container">
+    <div id="wrap">
+      <header id="header">
+  <div id="banner"></div>
+  <div id="header-outer" class="outer">
+    <div id="header-title" class="inner">
+      <h1 id="logo-wrap">
+        <a href="/" id="logo">罗凯的博客</a>
+      </h1>
+      
+        <h2 id="subtitle-wrap">
+          <a href="/" id="subtitle">一个大帅哥</a>
+        </h2>
+      
+    </div>
+    <div id="header-inner" class="inner">
+      <nav id="main-nav">
+        <a id="main-nav-toggle" class="nav-icon"></a>
+        
+          <a class="main-nav-link" href="/">Home</a>
+        
+          <a class="main-nav-link" href="/archives">Archives</a>
+        
+      </nav>
+      <nav id="sub-nav">
+        
+          <a id="nav-rss-link" class="nav-icon" href="/atom.xml" title="RSS Feed"></a>
+        
+        <a id="nav-search-btn" class="nav-icon" title="Search"></a>
+      </nav>
+      <div id="search-form-wrap">
+        <form action="//google.com/search" method="get" accept-charset="UTF-8" class="search-form"><input type="search" name="q" class="search-form-input" placeholder="Search"><button type="submit" class="search-form-submit">&#xF002;</button><input type="hidden" name="sitesearch" value="http://yoursite.com"></form>
+      </div>
+    </div>
+  </div>
+</header>
+      <div class="outer">
+        <section id="main"><article id="post-读书笔记/《Java并发编程的艺术》/8.Java中的并发工具类" class="article article-type-post" itemscope itemprop="blogPost">
+  <div class="article-meta">
+    <a href="/2019/06/11/读书笔记/《Java并发编程的艺术》/8.Java中的并发工具类/" class="article-date">
+  <time datetime="2019-06-10T16:00:01.000Z" itemprop="datePublished">2019-06-11</time>
+</a>
+    
+  </div>
+  <div class="article-inner">
+    
+    
+      <header class="article-header">
+        
+  
+    <h1 class="article-title" itemprop="name">
+      Java 并发工具类
+    </h1>
+  
+
+      </header>
+    
+    <div class="article-entry" itemprop="articleBody">
+      
+        <h1 id="第八章-Java-中的并发工具类"><a href="#第八章-Java-中的并发工具类" class="headerlink" title="第八章 Java 中的并发工具类"></a>第八章 Java 中的并发工具类</h1><h2 id="8-1-CountDownLatch-等待多线程完成"><a href="#8-1-CountDownLatch-等待多线程完成" class="headerlink" title="8.1 CountDownLatch 等待多线程完成"></a>8.1 CountDownLatch 等待多线程完成</h2><p>CountDownLatch 允许一个或多个线程等待其他线程完成操作。</p>
+<p>CountDownLatch 在构造时接收 int 参数作为计数器，当线程执行到 countDown 是，计数器数值 N - 1 。可以是 1 个线程执行 N 个步骤，也可以是多个线程共同执行 N 个步骤。</p>
+<p>await 方法会使线程进入等待状态，如果线程执行过久，可以使用 await(long time,TimeUnit unit)，等待特定时间。</p>
+<h2 id="8-2-CyclicBarrier-同步屏障"><a href="#8-2-CyclicBarrier-同步屏障" class="headerlink" title="8.2 CyclicBarrier 同步屏障"></a>8.2 CyclicBarrier 同步屏障</h2><p>CyclicBarrier 意思为可循环使用的屏障，当一组达到一个屏障时被阻塞，知道最后一个线程到达屏障时，屏障才会打开，所有被屏障拦截的线程才会继续运行。</p>
+<p>CountDownLatch 的计数器只能使用一次</p>
+<h3 id="8-2-1-CyclicBarrier"><a href="#8-2-1-CyclicBarrier" class="headerlink" title="8.2.1 CyclicBarrier"></a>8.2.1 CyclicBarrier</h3><p>CyclicBarrier(int parties) 构造函数的参数表示需要屏障拦截的线程数量，线程调用 await 方法通知 CyclicBarrier 已到达屏障，然后线程被阻塞。</p>
+<ol>
+<li>如果 parties 参数为 3，但是只有两个线程执行 await 方法，那么这两个线程会一直阻塞</li>
+<li>构造函数：CyclicBarrier(int parties,Runnable barrierAction) ，会在线程到达屏障时，优先执行 barrierAction，方便处理更复杂的业务场景。</li>
+<li>getNumberWaiting ：获取 CyclicBarrier 阻塞的线程数量</li>
+<li>isBroken() ：用来了解阻塞的线程是否被中断</li>
+<li>reset() ：重置 CyclicBarrier 的计数器</li>
+</ol>
+<h2 id="8-3-Semaphore-控制并发线程数"><a href="#8-3-Semaphore-控制并发线程数" class="headerlink" title="8.3 Semaphore 控制并发线程数"></a>8.3 Semaphore 控制并发线程数</h2><p>Semaphore（信号量）用来控制同时访问特定资源的线程数量，通过协调各个线程，以保证合理使用公共资源。</p>
+<h3 id="1-应用场景"><a href="#1-应用场景" class="headerlink" title="1. 应用场景"></a>1. 应用场景</h3><p>Semaphore 可以用于流量控制，特别是公共资源有限的应用场景，如数据库连接等。比如几十条线程并发读取数据，但是数据库只支持10个连接数，此时就需要使用 Semaphore 做流量控制，否则会报错，无法获取数据库连接。</p>
+<p>Semaphore 的常用方法：</p>
+<ul>
+<li>acquire() ：获取一个许可证</li>
+<li>release() ：释放一个许可证</li>
+<li>tryAcquire：尝试获取许可证</li>
+<li>int availablePermits()：返回此信号量中当前可用的许可证数</li>
+<li>int getQueueLength()：返回正在等待获取许可证的线程数</li>
+<li>boolean hasQueuedThreads()：是否有线程正在等待获取许可证</li>
+<li>void reducePermits(int reduction)：减少reduction 个许可证（protected方法）</li>
+<li>Collection getQueuedThreads()：返回所有等待获取许可证的线程集合（protected方法）</li>
+</ul>
+<h2 id="8-4-Exchanger-线程间交换数据"><a href="#8-4-Exchanger-线程间交换数据" class="headerlink" title="8.4 Exchanger 线程间交换数据"></a>8.4 Exchanger 线程间交换数据</h2><p>Exchange（交换者）是一个用于线程间协作的工具类。</p>
+<p>Exchanger 用于进行线程间的数据交换。它提供一个同步点，在这个同步点，两个线程可以交换彼此的数据。</p>
+<p>当第一个线程先执行 exchange() 方法，它会一直等待第二个线程也执行 exchange 方法，当两个线程都到达同步点后，会将彼此线程生产出来的数据传递给对方。</p>
+<h3 id="应用场景："><a href="#应用场景：" class="headerlink" title="应用场景："></a>应用场景：</h3><ol>
+<li>Exchanger 可以用于遗传算法<ol>
+<li>如AB进行交配，当交换数据后使用交叉规则得出两个交配结果</li>
+</ol>
+</li>
+<li>Exchanger 可以用于校对工作<ol>
+<li>如A、B线程同时执行，结果是否相同</li>
+</ol>
+</li>
+</ol>
+<blockquote>
+<p>如果有一个线程一直未执行 exchange() ，则会一直等待。可以使用 exchange(V x,long timeout,TimeUnit unit) 设置最大等待时间。</p>
+</blockquote>
+
+      
+    </div>
+    <footer class="article-footer">
+      <a data-url="http://yoursite.com/2019/06/11/读书笔记/《Java并发编程的艺术》/8.Java中的并发工具类/" data-id="cjxpj03ai00awrgtw5plpqulp" class="article-share-link">Share</a>
+      
+      
+    </footer>
+  </div>
+  
+    
+<nav id="article-nav">
+  
+    <a href="/2019/06/12/读书笔记/《Java并发编程的艺术》/9.Java中的线程池/" id="article-nav-newer" class="article-nav-link-wrap">
+      <strong class="article-nav-caption">Newer</strong>
+      <div class="article-nav-title">
+        
+          Java中的线程池
+        
+      </div>
+    </a>
+  
+  
+    <a href="/2019/06/10/读书笔记/《Java并发编程的艺术》/7.Java中的13个原子操作类/" id="article-nav-older" class="article-nav-link-wrap">
+      <strong class="article-nav-caption">Older</strong>
+      <div class="article-nav-title">Java中的13个原子操作类</div>
+    </a>
+  
+</nav>
+
+  
+</article>
+
+</section>
+        
+          <aside id="sidebar">
+  
+    
+  <div class="widget-wrap">
+    <h3 class="widget-title">Categories</h3>
+    <div class="widget">
+      <ul class="category-list"><li class="category-list-item"><a class="category-list-link" href="/categories/Docker学习/">Docker学习</a></li><li class="category-list-item"><a class="category-list-link" href="/categories/Git命令学习/">Git命令学习</a></li><li class="category-list-item"><a class="category-list-link" href="/categories/JAVA-核心知识点整理/">JAVA 核心知识点整理</a></li><li class="category-list-item"><a class="category-list-link" href="/categories/Java/">Java</a></li><li class="category-list-item"><a class="category-list-link" href="/categories/Java并发编程与高并发解决方案/">Java并发编程与高并发解决方案</a></li><li class="category-list-item"><a class="category-list-link" href="/categories/Java并发编程的艺术/">Java并发编程的艺术</a></li><li class="category-list-item"><a class="category-list-link" href="/categories/Java成神之路/">Java成神之路</a><ul class="category-list-child"><li class="category-list-item"><a class="category-list-link" href="/categories/Java成神之路/SpringBoot/">SpringBoot</a></li><li class="category-list-item"><a class="category-list-link" href="/categories/Java成神之路/Study社区/">Study社区</a></li></ul></li><li class="category-list-item"><a class="category-list-link" href="/categories/Linux学习之路/">Linux学习之路</a></li><li class="category-list-item"><a class="category-list-link" href="/categories/MarkDown语法/">MarkDown语法</a></li><li class="category-list-item"><a class="category-list-link" href="/categories/React学习/">React学习</a></li><li class="category-list-item"><a class="category-list-link" href="/categories/SpringBoot-参考指南/">SpringBoot 参考指南</a></li><li class="category-list-item"><a class="category-list-link" href="/categories/工具函数/">工具函数</a></li><li class="category-list-item"><a class="category-list-link" href="/categories/设计模式/">设计模式</a></li><li class="category-list-item"><a class="category-list-link" href="/categories/高性能MySQL/">高性能MySQL</a></li></ul>
+    </div>
+  </div>
+
+
+  
+    
+  <div class="widget-wrap">
+    <h3 class="widget-title">Tags</h3>
+    <div class="widget">
+      <ul class="tag-list"><li class="tag-list-item"><a class="tag-list-link" href="/tags/Git/">Git</a></li><li class="tag-list-item"><a class="tag-list-link" href="/tags/Git-Bash/">Git Bash</a></li><li class="tag-list-item"><a class="tag-list-link" href="/tags/Linux/">Linux</a></li><li class="tag-list-item"><a class="tag-list-link" href="/tags/MQ/">MQ</a></li><li class="tag-list-item"><a class="tag-list-link" href="/tags/MySQL/">MySQL</a></li><li class="tag-list-item"><a class="tag-list-link" href="/tags/POI/">POI</a></li><li class="tag-list-item"><a class="tag-list-link" href="/tags/Spring-Cloud/">Spring Cloud</a></li><li class="tag-list-item"><a class="tag-list-link" href="/tags/Spring-Data/">Spring Data</a></li><li class="tag-list-item"><a class="tag-list-link" href="/tags/SpringBoot/">SpringBoot</a></li><li class="tag-list-item"><a class="tag-list-link" href="/tags/docker/">docker</a></li><li class="tag-list-item"><a class="tag-list-link" href="/tags/gradle/">gradle</a></li><li class="tag-list-item"><a class="tag-list-link" href="/tags/java/">java</a></li><li class="tag-list-item"><a class="tag-list-link" href="/tags/poi/">poi</a></li><li class="tag-list-item"><a class="tag-list-link" href="/tags/并发编程/">并发编程</a></li><li class="tag-list-item"><a class="tag-list-link" href="/tags/数据库/">数据库</a></li><li class="tag-list-item"><a class="tag-list-link" href="/tags/读书笔记/">读书笔记</a></li><li class="tag-list-item"><a class="tag-list-link" href="/tags/高并发/">高并发</a></li></ul>
+    </div>
+  </div>
+
+
+  
+    
+  <div class="widget-wrap">
+    <h3 class="widget-title">Tag Cloud</h3>
+    <div class="widget tagcloud">
+      <a href="/tags/Git/" style="font-size: 13.75px;">Git</a> <a href="/tags/Git-Bash/" style="font-size: 11.25px;">Git Bash</a> <a href="/tags/Linux/" style="font-size: 12.5px;">Linux</a> <a href="/tags/MQ/" style="font-size: 15px;">MQ</a> <a href="/tags/MySQL/" style="font-size: 17.5px;">MySQL</a> <a href="/tags/POI/" style="font-size: 16.25px;">POI</a> <a href="/tags/Spring-Cloud/" style="font-size: 10px;">Spring Cloud</a> <a href="/tags/Spring-Data/" style="font-size: 12.5px;">Spring Data</a> <a href="/tags/SpringBoot/" style="font-size: 15px;">SpringBoot</a> <a href="/tags/docker/" style="font-size: 10px;">docker</a> <a href="/tags/gradle/" style="font-size: 11.25px;">gradle</a> <a href="/tags/java/" style="font-size: 20px;">java</a> <a href="/tags/poi/" style="font-size: 10px;">poi</a> <a href="/tags/并发编程/" style="font-size: 12.5px;">并发编程</a> <a href="/tags/数据库/" style="font-size: 17.5px;">数据库</a> <a href="/tags/读书笔记/" style="font-size: 18.75px;">读书笔记</a> <a href="/tags/高并发/" style="font-size: 12.5px;">高并发</a>
+    </div>
+  </div>
+
+  
+    
+  <div class="widget-wrap">
+    <h3 class="widget-title">Archives</h3>
+    <div class="widget">
+      <ul class="archive-list"><li class="archive-list-item"><a class="archive-list-link" href="/archives/2019/12/">December 2019</a></li><li class="archive-list-item"><a class="archive-list-link" href="/archives/2019/11/">November 2019</a></li><li class="archive-list-item"><a class="archive-list-link" href="/archives/2019/07/">July 2019</a></li><li class="archive-list-item"><a class="archive-list-link" href="/archives/2019/06/">June 2019</a></li><li class="archive-list-item"><a class="archive-list-link" href="/archives/2019/05/">May 2019</a></li><li class="archive-list-item"><a class="archive-list-link" href="/archives/2018/11/">November 2018</a></li><li class="archive-list-item"><a class="archive-list-link" href="/archives/2018/10/">October 2018</a></li><li class="archive-list-item"><a class="archive-list-link" href="/archives/2018/09/">September 2018</a></li><li class="archive-list-item"><a class="archive-list-link" href="/archives/2017/05/">May 2017</a></li></ul>
+    </div>
+  </div>
+
+
+  
+    
+  <div class="widget-wrap">
+    <h3 class="widget-title">Recent Posts</h3>
+    <div class="widget">
+      <ul>
+        
+          <li>
+            <a href="/2019/12/30/blog/2019/">2019年目标</a>
+          </li>
+        
+          <li>
+            <a href="/2019/12/01/读书笔记/《Java并发编程的艺术》/0.0_目录/">《Java并发编程的艺术》读书笔记 - 目录</a>
+          </li>
+        
+          <li>
+            <a href="/2019/12/01/读书笔记/《Java核心知识点整理》/0.目录/">《JAVA 核心知识点整理》读书笔记 - 目录</a>
+          </li>
+        
+          <li>
+            <a href="/2019/11/30/读书笔记/《高性能MySQL》/0.目录/">《高性能MySQL》读书笔记 - 目录</a>
+          </li>
+        
+          <li>
+            <a href="/2019/07/05/读书笔记/《JavaDesignPatterns》/8.建造者模式/">《Java Design Patterns》第六章 建造者模式 - 复杂对象的组装与创建</a>
+          </li>
+        
+      </ul>
+    </div>
+  </div>
+
+  
+</aside>
+        
+      </div>
+      <footer id="footer">
+  
+  <div class="outer">
+    <div id="footer-info" class="inner">
+      &copy; 2019 koral<br>
+      Powered by <a href="http://hexo.io/" target="_blank">Hexo</a>
+    </div>
+  </div>
+</footer>
+    </div>
+    <nav id="mobile-nav">
+  
+    <a href="/" class="mobile-nav-link">Home</a>
+  
+    <a href="/archives" class="mobile-nav-link">Archives</a>
+  
+</nav>
+    
+
+<script src="//ajax.googleapis.com/ajax/libs/jquery/2.0.3/jquery.min.js"></script>
+
+
+  <link rel="stylesheet" href="/fancybox/jquery.fancybox.css">
+  <script src="/fancybox/jquery.fancybox.pack.js"></script>
+
+
+<script src="/js/script.js"></script>
+
+
+
+  </div>
+</body>
+</html>

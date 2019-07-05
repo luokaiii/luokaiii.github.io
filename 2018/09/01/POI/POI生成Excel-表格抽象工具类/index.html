@@ -1,0 +1,246 @@
+<!DOCTYPE html>
+<html>
+<head>
+  <meta charset="utf-8">
+  
+
+  
+  <title>POI生成Excel工具类 | 罗凯的博客</title>
+  <meta name="viewport" content="width=device-width, initial-scale=1, maximum-scale=1">
+  <meta name="description" content="POI生成Excel工具类该工具类中，包含：创建表格（带默认样式）、自定义样式（通过重写 setDefaultStyle和setFirstCellStyle）、合并单元格、宽度自适应等。 1234567891011121314151617181920212223242526272829303132333435363738394041424344454647484950515253545556575">
+<meta name="keywords" content="POI">
+<meta property="og:type" content="article">
+<meta property="og:title" content="POI生成Excel工具类">
+<meta property="og:url" content="http://yoursite.com/2018/09/01/POI/POI生成Excel-表格抽象工具类/index.html">
+<meta property="og:site_name" content="罗凯的博客">
+<meta property="og:description" content="POI生成Excel工具类该工具类中，包含：创建表格（带默认样式）、自定义样式（通过重写 setDefaultStyle和setFirstCellStyle）、合并单元格、宽度自适应等。 1234567891011121314151617181920212223242526272829303132333435363738394041424344454647484950515253545556575">
+<meta property="og:locale" content="zh-Hans">
+<meta property="og:updated_time" content="2019-07-01T02:49:01.352Z">
+<meta name="twitter:card" content="summary">
+<meta name="twitter:title" content="POI生成Excel工具类">
+<meta name="twitter:description" content="POI生成Excel工具类该工具类中，包含：创建表格（带默认样式）、自定义样式（通过重写 setDefaultStyle和setFirstCellStyle）、合并单元格、宽度自适应等。 1234567891011121314151617181920212223242526272829303132333435363738394041424344454647484950515253545556575">
+  
+    <link rel="alternate" href="/atom.xml" title="罗凯的博客" type="application/atom+xml">
+  
+  
+    <link rel="icon" href="https://i.loli.net/2019/07/04/5d1db2fb9593c58427.gif">
+  
+  
+    <link href="//fonts.googleapis.com/css?family=Source+Code+Pro" rel="stylesheet" type="text/css">
+  
+  <link rel="stylesheet" href="/css/style.css">
+</head>
+
+<body>
+  <div id="container">
+    <div id="wrap">
+      <header id="header">
+  <div id="banner"></div>
+  <div id="header-outer" class="outer">
+    <div id="header-title" class="inner">
+      <h1 id="logo-wrap">
+        <a href="/" id="logo">罗凯的博客</a>
+      </h1>
+      
+        <h2 id="subtitle-wrap">
+          <a href="/" id="subtitle">一个大帅哥</a>
+        </h2>
+      
+    </div>
+    <div id="header-inner" class="inner">
+      <nav id="main-nav">
+        <a id="main-nav-toggle" class="nav-icon"></a>
+        
+          <a class="main-nav-link" href="/">Home</a>
+        
+          <a class="main-nav-link" href="/archives">Archives</a>
+        
+      </nav>
+      <nav id="sub-nav">
+        
+          <a id="nav-rss-link" class="nav-icon" href="/atom.xml" title="RSS Feed"></a>
+        
+        <a id="nav-search-btn" class="nav-icon" title="Search"></a>
+      </nav>
+      <div id="search-form-wrap">
+        <form action="//google.com/search" method="get" accept-charset="UTF-8" class="search-form"><input type="search" name="q" class="search-form-input" placeholder="Search"><button type="submit" class="search-form-submit">&#xF002;</button><input type="hidden" name="sitesearch" value="http://yoursite.com"></form>
+      </div>
+    </div>
+  </div>
+</header>
+      <div class="outer">
+        <section id="main"><article id="post-POI/POI生成Excel-表格抽象工具类" class="article article-type-post" itemscope itemprop="blogPost">
+  <div class="article-meta">
+    <a href="/2018/09/01/POI/POI生成Excel-表格抽象工具类/" class="article-date">
+  <time datetime="2018-09-01T06:46:03.000Z" itemprop="datePublished">2018-09-01</time>
+</a>
+    
+  <div class="article-category">
+    <a class="article-category-link" href="/categories/Java/">Java</a>
+  </div>
+
+  </div>
+  <div class="article-inner">
+    
+    
+      <header class="article-header">
+        
+  
+    <h1 class="article-title" itemprop="name">
+      POI生成Excel工具类
+    </h1>
+  
+
+      </header>
+    
+    <div class="article-entry" itemprop="articleBody">
+      
+        <h1 id="POI生成Excel工具类"><a href="#POI生成Excel工具类" class="headerlink" title="POI生成Excel工具类"></a>POI生成Excel工具类</h1><p>该工具类中，包含：创建表格（带默认样式）、自定义样式（通过重写 setDefaultStyle和setFirstCellStyle）、合并单元格、宽度自适应等。</p>
+<figure class="highlight java"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br><span class="line">14</span><br><span class="line">15</span><br><span class="line">16</span><br><span class="line">17</span><br><span class="line">18</span><br><span class="line">19</span><br><span class="line">20</span><br><span class="line">21</span><br><span class="line">22</span><br><span class="line">23</span><br><span class="line">24</span><br><span class="line">25</span><br><span class="line">26</span><br><span class="line">27</span><br><span class="line">28</span><br><span class="line">29</span><br><span class="line">30</span><br><span class="line">31</span><br><span class="line">32</span><br><span class="line">33</span><br><span class="line">34</span><br><span class="line">35</span><br><span class="line">36</span><br><span class="line">37</span><br><span class="line">38</span><br><span class="line">39</span><br><span class="line">40</span><br><span class="line">41</span><br><span class="line">42</span><br><span class="line">43</span><br><span class="line">44</span><br><span class="line">45</span><br><span class="line">46</span><br><span class="line">47</span><br><span class="line">48</span><br><span class="line">49</span><br><span class="line">50</span><br><span class="line">51</span><br><span class="line">52</span><br><span class="line">53</span><br><span class="line">54</span><br><span class="line">55</span><br><span class="line">56</span><br><span class="line">57</span><br><span class="line">58</span><br><span class="line">59</span><br><span class="line">60</span><br><span class="line">61</span><br><span class="line">62</span><br><span class="line">63</span><br><span class="line">64</span><br><span class="line">65</span><br><span class="line">66</span><br><span class="line">67</span><br><span class="line">68</span><br><span class="line">69</span><br><span class="line">70</span><br><span class="line">71</span><br><span class="line">72</span><br><span class="line">73</span><br><span class="line">74</span><br><span class="line">75</span><br><span class="line">76</span><br><span class="line">77</span><br><span class="line">78</span><br><span class="line">79</span><br><span class="line">80</span><br><span class="line">81</span><br><span class="line">82</span><br><span class="line">83</span><br><span class="line">84</span><br><span class="line">85</span><br><span class="line">86</span><br><span class="line">87</span><br><span class="line">88</span><br><span class="line">89</span><br><span class="line">90</span><br><span class="line">91</span><br><span class="line">92</span><br><span class="line">93</span><br><span class="line">94</span><br><span class="line">95</span><br><span class="line">96</span><br><span class="line">97</span><br><span class="line">98</span><br><span class="line">99</span><br><span class="line">100</span><br><span class="line">101</span><br><span class="line">102</span><br><span class="line">103</span><br><span class="line">104</span><br><span class="line">105</span><br><span class="line">106</span><br><span class="line">107</span><br><span class="line">108</span><br><span class="line">109</span><br><span class="line">110</span><br><span class="line">111</span><br><span class="line">112</span><br><span class="line">113</span><br><span class="line">114</span><br><span class="line">115</span><br><span class="line">116</span><br><span class="line">117</span><br><span class="line">118</span><br><span class="line">119</span><br><span class="line">120</span><br><span class="line">121</span><br><span class="line">122</span><br><span class="line">123</span><br><span class="line">124</span><br><span class="line">125</span><br><span class="line">126</span><br><span class="line">127</span><br><span class="line">128</span><br><span class="line">129</span><br><span class="line">130</span><br><span class="line">131</span><br><span class="line">132</span><br><span class="line">133</span><br><span class="line">134</span><br><span class="line">135</span><br><span class="line">136</span><br><span class="line">137</span><br><span class="line">138</span><br><span class="line">139</span><br><span class="line">140</span><br><span class="line">141</span><br><span class="line">142</span><br><span class="line">143</span><br><span class="line">144</span><br><span class="line">145</span><br><span class="line">146</span><br><span class="line">147</span><br><span class="line">148</span><br><span class="line">149</span><br><span class="line">150</span><br><span class="line">151</span><br><span class="line">152</span><br><span class="line">153</span><br><span class="line">154</span><br><span class="line">155</span><br><span class="line">156</span><br><span class="line">157</span><br><span class="line">158</span><br><span class="line">159</span><br><span class="line">160</span><br><span class="line">161</span><br><span class="line">162</span><br><span class="line">163</span><br><span class="line">164</span><br><span class="line">165</span><br><span class="line">166</span><br><span class="line">167</span><br><span class="line">168</span><br><span class="line">169</span><br><span class="line">170</span><br><span class="line">171</span><br><span class="line">172</span><br><span class="line">173</span><br><span class="line">174</span><br><span class="line">175</span><br><span class="line">176</span><br><span class="line">177</span><br><span class="line">178</span><br><span class="line">179</span><br><span class="line">180</span><br><span class="line">181</span><br><span class="line">182</span><br><span class="line">183</span><br><span class="line">184</span><br><span class="line">185</span><br><span class="line">186</span><br><span class="line">187</span><br><span class="line">188</span><br><span class="line">189</span><br><span class="line">190</span><br><span class="line">191</span><br></pre></td><td class="code"><pre><span class="line"><span class="comment">/**</span></span><br><span class="line"><span class="comment"> * Excel操作工具类</span></span><br><span class="line"><span class="comment"> */</span></span><br><span class="line"><span class="keyword">public</span> <span class="class"><span class="keyword">class</span> <span class="title">ExcelTools</span> </span>&#123;</span><br><span class="line"></span><br><span class="line">    <span class="comment">/**</span></span><br><span class="line"><span class="comment">     * 默认的样式， 垂直水平居中、默认换行</span></span><br><span class="line"><span class="comment">     */</span></span><br><span class="line">    <span class="keyword">private</span> XSSFCellStyle defaultStyle;</span><br><span class="line"></span><br><span class="line">    <span class="comment">/**</span></span><br><span class="line"><span class="comment">     * 默认的行首样式</span></span><br><span class="line"><span class="comment">     */</span></span><br><span class="line">    <span class="keyword">private</span> XSSFCellStyle firstCellStyle;</span><br><span class="line"></span><br><span class="line">    <span class="keyword">private</span> <span class="keyword">static</span> SimpleDateFormat sdf = <span class="keyword">new</span> SimpleDateFormat(<span class="string">"yyyy.MM.dd hh:mm"</span>);</span><br><span class="line"></span><br><span class="line">    <span class="function"><span class="keyword">public</span> XSSFWorkbook <span class="title">createWorkbook</span><span class="params">()</span> </span>&#123;</span><br><span class="line">        XSSFWorkbook workbook = <span class="keyword">new</span> XSSFWorkbook();</span><br><span class="line"></span><br><span class="line">        XSSFFont defaultFont = workbook.createFont();</span><br><span class="line">        defaultFont.setColor(IndexedColors.BLACK.getIndex());</span><br><span class="line">        defaultFont.setFontHeight(<span class="number">11</span>);</span><br><span class="line">        defaultFont.setFontName(<span class="string">"微软雅黑 Light"</span>);</span><br><span class="line"></span><br><span class="line">        XSSFCellStyle defaultStyle = workbook.createCellStyle();</span><br><span class="line">        defaultStyle.setWrapText(<span class="keyword">true</span>);</span><br><span class="line">        defaultStyle.setAlignment(HorizontalAlignment.CENTER);</span><br><span class="line">        defaultStyle.setVerticalAlignment(VerticalAlignment.CENTER);</span><br><span class="line">        defaultStyle.setFont(defaultFont);</span><br><span class="line"></span><br><span class="line">        XSSFFont font = workbook.createFont();</span><br><span class="line">        font.setColor(IndexedColors.WHITE.getIndex());</span><br><span class="line">        font.setFontHeight(<span class="number">11</span>);</span><br><span class="line">        font.setFontName(<span class="string">"微软雅黑 Light"</span>);</span><br><span class="line"></span><br><span class="line">        XSSFCellStyle firstCellStyle = workbook.createCellStyle();</span><br><span class="line">        firstCellStyle.setAlignment(HorizontalAlignment.CENTER);</span><br><span class="line">        firstCellStyle.setVerticalAlignment(VerticalAlignment.CENTER);</span><br><span class="line">        firstCellStyle.setFillForegroundColor(IndexedColors.LIGHT_BLUE.getIndex());</span><br><span class="line">        firstCellStyle.setFillPattern(FillPatternType.SOLID_FOREGROUND);</span><br><span class="line">        firstCellStyle.setFont(font);</span><br><span class="line">        firstCellStyle.setBorderBottom(BorderStyle.THIN);</span><br><span class="line">        firstCellStyle.setBottomBorderColor(IndexedColors.LIGHT_BLUE.getIndex());</span><br><span class="line">        firstCellStyle.setLeftBorderColor(IndexedColors.LIGHT_BLUE.getIndex());</span><br><span class="line">        firstCellStyle.setRightBorderColor(IndexedColors.LIGHT_BLUE.getIndex());</span><br><span class="line"></span><br><span class="line">        setDefaultStyle(defaultStyle);</span><br><span class="line">        setFirstCellStyle(firstCellStyle);</span><br><span class="line"></span><br><span class="line">        <span class="keyword">return</span> workbook;</span><br><span class="line">    &#125;</span><br><span class="line"></span><br><span class="line">    <span class="comment">// 创建页</span></span><br><span class="line">    <span class="function"><span class="keyword">public</span> XSSFSheet <span class="title">createSheet</span><span class="params">(XSSFWorkbook workbook, String sheetName)</span> </span>&#123;</span><br><span class="line">        <span class="keyword">return</span> workbook.createSheet(sheetName);</span><br><span class="line">    &#125;</span><br><span class="line"></span><br><span class="line">    <span class="comment">/**</span></span><br><span class="line"><span class="comment">     * 创建表格</span></span><br><span class="line"><span class="comment">     *</span></span><br><span class="line"><span class="comment">     * <span class="doctag">@param</span> sheet           页 <span class="doctag">@NotNull</span></span></span><br><span class="line"><span class="comment">     * <span class="doctag">@param</span> titles          首行标题 <span class="doctag">@NotNull</span></span></span><br><span class="line"><span class="comment">     * <span class="doctag">@param</span> content         填充的内容 <span class="doctag">@NotNull</span></span></span><br><span class="line"><span class="comment">     * <span class="doctag">@param</span> rowNumber       开始的行号 <span class="doctag">@NotNull</span></span></span><br><span class="line"><span class="comment">     * <span class="doctag">@param</span> colNumber       开始的列号 <span class="doctag">@NotNull</span></span></span><br><span class="line"><span class="comment">     * <span class="doctag">@param</span> customRowHeight 自定义行高</span></span><br><span class="line"><span class="comment">     * <span class="doctag">@param</span> cellRangeList   需要合并的单元格</span></span><br><span class="line"><span class="comment">     * <span class="doctag">@param</span> customRowStyle  自定义样式,key 对应行，value 对应样式</span></span><br><span class="line"><span class="comment">     * <span class="doctag">@param</span> customColWidth  自定义宽度自适应</span></span><br><span class="line"><span class="comment">     */</span></span><br><span class="line">    <span class="meta">@SuppressWarnings</span>(<span class="string">"unchecked"</span>)</span><br><span class="line">    <span class="function"><span class="keyword">public</span> <span class="keyword">void</span> <span class="title">createTable</span><span class="params">(XSSFSheet sheet, String[] titles, Object[][] content,</span></span></span><br><span class="line"><span class="function"><span class="params">                            Integer rowNumber, Integer colNumber,</span></span></span><br><span class="line"><span class="function"><span class="params">                            <span class="keyword">boolean</span> customRowHeight,</span></span></span><br><span class="line"><span class="function"><span class="params">                            List&lt;CellRange&gt; cellRangeList,</span></span></span><br><span class="line"><span class="function"><span class="params">                            Map&lt;Integer, XSSFCellStyle&gt; customRowStyle,</span></span></span><br><span class="line"><span class="function"><span class="params">                            Map&lt;Integer, Integer&gt; customColWidth)</span> </span>&#123;</span><br><span class="line">        <span class="comment">// 首行填充</span></span><br><span class="line">        setFirstRow(sheet, titles, getFirstCellStyle(), rowNumber, colNumber);</span><br><span class="line">        rowNumber++;</span><br><span class="line">        <span class="comment">// 设置单元格宽度</span></span><br><span class="line">        autoWidth(sheet, titles, colNumber, customColWidth);</span><br><span class="line">        <span class="comment">// 填充数据</span></span><br><span class="line">        <span class="keyword">for</span> (<span class="keyword">int</span> i = <span class="number">0</span>; i &lt; content.length; i++) &#123;</span><br><span class="line">            Object[] rowContent = content[i];</span><br><span class="line">            XSSFRow row = sheet.getRow(rowNumber + i) == <span class="keyword">null</span> ? sheet.createRow(rowNumber + i) : sheet.getRow(rowNumber + i);</span><br><span class="line">            row.setHeight(customRowHeight ? (<span class="keyword">short</span>) <span class="number">800</span> : -<span class="number">1</span>);</span><br><span class="line">            XSSFCellStyle cellStyle = customRowStyle == <span class="keyword">null</span> || customRowStyle.get(rowNumber + i) == <span class="keyword">null</span> ?</span><br><span class="line">                    getDefaultStyle() : customRowStyle.get(rowNumber + i);</span><br><span class="line">            <span class="keyword">for</span> (<span class="keyword">int</span> j = <span class="number">0</span>; j &lt; rowContent.length; j++) &#123;</span><br><span class="line">                Object colContent = rowContent[j];</span><br><span class="line">                XSSFCell cell = row.createCell(colNumber + j);</span><br><span class="line">                <span class="comment">// 如果是基本数据类型，则转换为字符串填充; 日期转换输出; List转String输出</span></span><br><span class="line">                <span class="keyword">if</span> (colContent <span class="keyword">instanceof</span> Integer || colContent <span class="keyword">instanceof</span> Double</span><br><span class="line">                        || colContent <span class="keyword">instanceof</span> String || colContent <span class="keyword">instanceof</span> Float</span><br><span class="line">                        || colContent <span class="keyword">instanceof</span> Character || colContent <span class="keyword">instanceof</span> Byte</span><br><span class="line">                        || colContent <span class="keyword">instanceof</span> Short || colContent <span class="keyword">instanceof</span> Boolean</span><br><span class="line">                        || colContent <span class="keyword">instanceof</span> Long)</span><br><span class="line">                    cell.setCellValue(String.valueOf(colContent));</span><br><span class="line">                <span class="keyword">else</span> <span class="keyword">if</span> (colContent <span class="keyword">instanceof</span> Date)</span><br><span class="line">                    cell.setCellValue(sdf.format(colContent));</span><br><span class="line">                <span class="keyword">else</span> <span class="keyword">if</span> (colContent <span class="keyword">instanceof</span> Iterable)</span><br><span class="line">                    cell.setCellValue(<span class="keyword">new</span> XSSFRichTextString(String.join(<span class="string">" \n "</span>, (Iterable) colContent)));</span><br><span class="line">                <span class="keyword">else</span></span><br><span class="line">                    cell.setCellValue(<span class="string">" - "</span>);</span><br><span class="line">                <span class="comment">// 单元格样式</span></span><br><span class="line">                cell.setCellStyle(cellStyle);</span><br><span class="line">            &#125;</span><br><span class="line">        &#125;</span><br><span class="line"></span><br><span class="line">        <span class="comment">// 合并单元格</span></span><br><span class="line">        mergeRegion(sheet, cellRangeList);</span><br><span class="line">    &#125;</span><br><span class="line"></span><br><span class="line">    <span class="comment">/**</span></span><br><span class="line"><span class="comment">     * 合并单元格</span></span><br><span class="line"><span class="comment">     */</span></span><br><span class="line">    <span class="function"><span class="keyword">public</span> <span class="keyword">static</span> <span class="keyword">void</span> <span class="title">mergeRegion</span><span class="params">(XSSFSheet sheet, List&lt;CellRange&gt; cellRangeList)</span> </span>&#123;</span><br><span class="line">        <span class="keyword">if</span> (cellRangeList == <span class="keyword">null</span>) <span class="keyword">return</span>;</span><br><span class="line">        <span class="keyword">for</span> (CellRange cellRange : cellRangeList) &#123;</span><br><span class="line">            sheet.addMergedRegion(<span class="keyword">new</span> CellRangeAddress(cellRange.getFirstRow(), cellRange.getLastRow(), cellRange.getFirstCol(), cellRange.getLastCol()));</span><br><span class="line">        &#125;</span><br><span class="line">    &#125;</span><br><span class="line"></span><br><span class="line">    <span class="comment">/**</span></span><br><span class="line"><span class="comment">     * 无需定制样式和宽度的表格</span></span><br><span class="line"><span class="comment">     */</span></span><br><span class="line">    <span class="function"><span class="keyword">public</span> <span class="keyword">void</span> <span class="title">createTable</span><span class="params">(XSSFSheet sheet, String[] titles, Object[][] content,</span></span></span><br><span class="line"><span class="function"><span class="params">                            Integer rowNumber, Integer colNumber)</span> </span>&#123;</span><br><span class="line">        createTable(sheet, titles, content, rowNumber, colNumber, <span class="keyword">true</span>, <span class="keyword">null</span>, <span class="keyword">null</span>, <span class="keyword">null</span>);</span><br><span class="line">    &#125;</span><br><span class="line"></span><br><span class="line"></span><br><span class="line">    <span class="comment">/**</span></span><br><span class="line"><span class="comment">     * 填充首行数据</span></span><br><span class="line"><span class="comment">     * 默认按照标题的长度设置单元格宽度</span></span><br><span class="line"><span class="comment">     *</span></span><br><span class="line"><span class="comment">     * <span class="doctag">@param</span> sheet       页</span></span><br><span class="line"><span class="comment">     * <span class="doctag">@param</span> cellTitles  标题</span></span><br><span class="line"><span class="comment">     * <span class="doctag">@param</span> headerStyle 首行样式</span></span><br><span class="line"><span class="comment">     * <span class="doctag">@param</span> rowNum      起始行</span></span><br><span class="line"><span class="comment">     * <span class="doctag">@param</span> colNum      起始列</span></span><br><span class="line"><span class="comment">     */</span></span><br><span class="line">    <span class="function"><span class="keyword">public</span> <span class="keyword">static</span> <span class="keyword">void</span> <span class="title">setFirstRow</span><span class="params">(XSSFSheet sheet, String[] cellTitles, XSSFCellStyle headerStyle, <span class="keyword">int</span> rowNum, <span class="keyword">int</span> colNum)</span> </span>&#123;</span><br><span class="line">        <span class="keyword">final</span> XSSFRow row = sheet.getRow(rowNum) == <span class="keyword">null</span> ? sheet.createRow(rowNum) : sheet.getRow(rowNum);</span><br><span class="line">        row.setHeight((<span class="keyword">short</span>) <span class="number">800</span>);</span><br><span class="line"></span><br><span class="line">        <span class="keyword">for</span> (String cellName : cellTitles) &#123;</span><br><span class="line">            <span class="keyword">final</span> Cell cell = row.createCell(colNum++);</span><br><span class="line">            cell.setCellValue(cellName);</span><br><span class="line">            cell.setCellStyle(headerStyle);</span><br><span class="line">        &#125;</span><br><span class="line">    &#125;</span><br><span class="line"></span><br><span class="line">    <span class="comment">/**</span></span><br><span class="line"><span class="comment">     * 宽度自适应</span></span><br><span class="line"><span class="comment">     *</span></span><br><span class="line"><span class="comment">     * <span class="doctag">@param</span> sheet       页</span></span><br><span class="line"><span class="comment">     * <span class="doctag">@param</span> strings     行首</span></span><br><span class="line"><span class="comment">     * <span class="doctag">@param</span> colNumber   起始列</span></span><br><span class="line"><span class="comment">     * <span class="doctag">@param</span> customWidth 自定义宽度</span></span><br><span class="line"><span class="comment">     */</span></span><br><span class="line">    <span class="function"><span class="keyword">public</span> <span class="keyword">static</span> <span class="keyword">void</span> <span class="title">autoWidth</span><span class="params">(Sheet sheet, String[] strings, Integer colNumber, Map&lt;Integer, Integer&gt; customWidth)</span> </span>&#123;</span><br><span class="line">        <span class="keyword">for</span> (<span class="keyword">int</span> s = <span class="number">0</span>; s &lt; strings.length; s++) &#123;</span><br><span class="line">            <span class="keyword">int</span> col = colNumber + s;</span><br><span class="line">            <span class="keyword">if</span> (customWidth != <span class="keyword">null</span> &amp;&amp; customWidth.keySet().contains(col)) &#123;</span><br><span class="line">                sheet.setColumnWidth(col, customWidth.get(col));</span><br><span class="line">            &#125; <span class="keyword">else</span> &#123;</span><br><span class="line">                sheet.autoSizeColumn(col, <span class="keyword">true</span>);</span><br><span class="line">                sheet.setColumnWidth(col, sheet.getColumnWidth(col) * <span class="number">17</span> / <span class="number">10</span>);</span><br><span class="line">            &#125;</span><br><span class="line">        &#125;</span><br><span class="line">    &#125;</span><br><span class="line"></span><br><span class="line">    <span class="function"><span class="keyword">public</span> XSSFCellStyle <span class="title">getDefaultStyle</span><span class="params">()</span> </span>&#123;</span><br><span class="line">        <span class="keyword">return</span> defaultStyle;</span><br><span class="line">    &#125;</span><br><span class="line"></span><br><span class="line">    <span class="function"><span class="keyword">public</span> <span class="keyword">void</span> <span class="title">setDefaultStyle</span><span class="params">(XSSFCellStyle defaultStyle)</span> </span>&#123;</span><br><span class="line">        <span class="keyword">this</span>.defaultStyle = defaultStyle;</span><br><span class="line">    &#125;</span><br><span class="line"></span><br><span class="line">    <span class="function"><span class="keyword">public</span> XSSFCellStyle <span class="title">getFirstCellStyle</span><span class="params">()</span> </span>&#123;</span><br><span class="line">        <span class="keyword">return</span> firstCellStyle;</span><br><span class="line">    &#125;</span><br><span class="line"></span><br><span class="line">    <span class="function"><span class="keyword">public</span> <span class="keyword">void</span> <span class="title">setFirstCellStyle</span><span class="params">(XSSFCellStyle firstCellStyle)</span> </span>&#123;</span><br><span class="line">        <span class="keyword">this</span>.firstCellStyle = firstCellStyle;</span><br><span class="line">    &#125;</span><br><span class="line">&#125;</span><br></pre></td></tr></table></figure>
+<p>合并单元格的对象：</p>
+<figure class="highlight java"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br><span class="line">14</span><br><span class="line">15</span><br><span class="line">16</span><br><span class="line">17</span><br><span class="line">18</span><br><span class="line">19</span><br><span class="line">20</span><br><span class="line">21</span><br><span class="line">22</span><br></pre></td><td class="code"><pre><span class="line"><span class="comment">/**</span></span><br><span class="line"><span class="comment"> * 需要合并的单元格</span></span><br><span class="line"><span class="comment"> */</span></span><br><span class="line"><span class="meta">@Setter</span></span><br><span class="line"><span class="meta">@Getter</span></span><br><span class="line"><span class="keyword">public</span> <span class="class"><span class="keyword">class</span> <span class="title">CellRange</span> </span>&#123;</span><br><span class="line">    <span class="keyword">private</span> Integer firstRow;</span><br><span class="line">    <span class="keyword">private</span> Integer lastRow;</span><br><span class="line">    <span class="keyword">private</span> Integer firstCol;</span><br><span class="line">    <span class="keyword">private</span> Integer lastCol;</span><br><span class="line"></span><br><span class="line">    <span class="function"><span class="keyword">private</span> <span class="title">CellRange</span><span class="params">(Integer firstRow, Integer lastRow, Integer firstCol, Integer lastCol)</span> </span>&#123;</span><br><span class="line">        <span class="keyword">this</span>.firstRow = firstRow;</span><br><span class="line">        <span class="keyword">this</span>.lastRow = lastRow;</span><br><span class="line">        <span class="keyword">this</span>.firstCol = firstCol;</span><br><span class="line">        <span class="keyword">this</span>.lastCol = lastCol;</span><br><span class="line">    &#125;</span><br><span class="line"></span><br><span class="line">    <span class="function"><span class="keyword">public</span> <span class="keyword">static</span> CellRange <span class="title">build</span><span class="params">(Integer firstRow, Integer lastRow, Integer firstCol, Integer lastCol)</span> </span>&#123;</span><br><span class="line">        <span class="keyword">return</span> <span class="keyword">new</span> CellRange(firstRow, lastRow, firstCol, lastCol);</span><br><span class="line">    &#125;</span><br><span class="line">&#125;</span><br></pre></td></tr></table></figure>
+
+      
+    </div>
+    <footer class="article-footer">
+      <a data-url="http://yoursite.com/2018/09/01/POI/POI生成Excel-表格抽象工具类/" data-id="cjxpj0332007nrgtwbper3uf5" class="article-share-link">Share</a>
+      
+      
+  <ul class="article-tag-list"><li class="article-tag-list-item"><a class="article-tag-list-link" href="/tags/POI/">POI</a></li></ul>
+
+    </footer>
+  </div>
+  
+    
+<nav id="article-nav">
+  
+    <a href="/2018/09/01/POI/POI生成原生Excel-雷达图/" id="article-nav-newer" class="article-nav-link-wrap">
+      <strong class="article-nav-caption">Newer</strong>
+      <div class="article-nav-title">
+        
+          使用POI结合Excel的行列生成雷达图
+        
+      </div>
+    </a>
+  
+  
+    <a href="/2018/09/01/POI/POI生成Excel-图表生成/" id="article-nav-older" class="article-nav-link-wrap">
+      <strong class="article-nav-caption">Older</strong>
+      <div class="article-nav-title">POI+XChart图形报告</div>
+    </a>
+  
+</nav>
+
+  
+</article>
+
+</section>
+        
+          <aside id="sidebar">
+  
+    
+  <div class="widget-wrap">
+    <h3 class="widget-title">Categories</h3>
+    <div class="widget">
+      <ul class="category-list"><li class="category-list-item"><a class="category-list-link" href="/categories/Docker学习/">Docker学习</a></li><li class="category-list-item"><a class="category-list-link" href="/categories/Git命令学习/">Git命令学习</a></li><li class="category-list-item"><a class="category-list-link" href="/categories/JAVA-核心知识点整理/">JAVA 核心知识点整理</a></li><li class="category-list-item"><a class="category-list-link" href="/categories/Java/">Java</a></li><li class="category-list-item"><a class="category-list-link" href="/categories/Java并发编程与高并发解决方案/">Java并发编程与高并发解决方案</a></li><li class="category-list-item"><a class="category-list-link" href="/categories/Java并发编程的艺术/">Java并发编程的艺术</a></li><li class="category-list-item"><a class="category-list-link" href="/categories/Java成神之路/">Java成神之路</a><ul class="category-list-child"><li class="category-list-item"><a class="category-list-link" href="/categories/Java成神之路/SpringBoot/">SpringBoot</a></li><li class="category-list-item"><a class="category-list-link" href="/categories/Java成神之路/Study社区/">Study社区</a></li></ul></li><li class="category-list-item"><a class="category-list-link" href="/categories/Linux学习之路/">Linux学习之路</a></li><li class="category-list-item"><a class="category-list-link" href="/categories/MarkDown语法/">MarkDown语法</a></li><li class="category-list-item"><a class="category-list-link" href="/categories/React学习/">React学习</a></li><li class="category-list-item"><a class="category-list-link" href="/categories/SpringBoot-参考指南/">SpringBoot 参考指南</a></li><li class="category-list-item"><a class="category-list-link" href="/categories/工具函数/">工具函数</a></li><li class="category-list-item"><a class="category-list-link" href="/categories/设计模式/">设计模式</a></li><li class="category-list-item"><a class="category-list-link" href="/categories/高性能MySQL/">高性能MySQL</a></li></ul>
+    </div>
+  </div>
+
+
+  
+    
+  <div class="widget-wrap">
+    <h3 class="widget-title">Tags</h3>
+    <div class="widget">
+      <ul class="tag-list"><li class="tag-list-item"><a class="tag-list-link" href="/tags/Git/">Git</a></li><li class="tag-list-item"><a class="tag-list-link" href="/tags/Git-Bash/">Git Bash</a></li><li class="tag-list-item"><a class="tag-list-link" href="/tags/Linux/">Linux</a></li><li class="tag-list-item"><a class="tag-list-link" href="/tags/MQ/">MQ</a></li><li class="tag-list-item"><a class="tag-list-link" href="/tags/MySQL/">MySQL</a></li><li class="tag-list-item"><a class="tag-list-link" href="/tags/POI/">POI</a></li><li class="tag-list-item"><a class="tag-list-link" href="/tags/Spring-Cloud/">Spring Cloud</a></li><li class="tag-list-item"><a class="tag-list-link" href="/tags/Spring-Data/">Spring Data</a></li><li class="tag-list-item"><a class="tag-list-link" href="/tags/SpringBoot/">SpringBoot</a></li><li class="tag-list-item"><a class="tag-list-link" href="/tags/docker/">docker</a></li><li class="tag-list-item"><a class="tag-list-link" href="/tags/gradle/">gradle</a></li><li class="tag-list-item"><a class="tag-list-link" href="/tags/java/">java</a></li><li class="tag-list-item"><a class="tag-list-link" href="/tags/poi/">poi</a></li><li class="tag-list-item"><a class="tag-list-link" href="/tags/并发编程/">并发编程</a></li><li class="tag-list-item"><a class="tag-list-link" href="/tags/数据库/">数据库</a></li><li class="tag-list-item"><a class="tag-list-link" href="/tags/读书笔记/">读书笔记</a></li><li class="tag-list-item"><a class="tag-list-link" href="/tags/高并发/">高并发</a></li></ul>
+    </div>
+  </div>
+
+
+  
+    
+  <div class="widget-wrap">
+    <h3 class="widget-title">Tag Cloud</h3>
+    <div class="widget tagcloud">
+      <a href="/tags/Git/" style="font-size: 13.75px;">Git</a> <a href="/tags/Git-Bash/" style="font-size: 11.25px;">Git Bash</a> <a href="/tags/Linux/" style="font-size: 12.5px;">Linux</a> <a href="/tags/MQ/" style="font-size: 15px;">MQ</a> <a href="/tags/MySQL/" style="font-size: 17.5px;">MySQL</a> <a href="/tags/POI/" style="font-size: 16.25px;">POI</a> <a href="/tags/Spring-Cloud/" style="font-size: 10px;">Spring Cloud</a> <a href="/tags/Spring-Data/" style="font-size: 12.5px;">Spring Data</a> <a href="/tags/SpringBoot/" style="font-size: 15px;">SpringBoot</a> <a href="/tags/docker/" style="font-size: 10px;">docker</a> <a href="/tags/gradle/" style="font-size: 11.25px;">gradle</a> <a href="/tags/java/" style="font-size: 20px;">java</a> <a href="/tags/poi/" style="font-size: 10px;">poi</a> <a href="/tags/并发编程/" style="font-size: 12.5px;">并发编程</a> <a href="/tags/数据库/" style="font-size: 17.5px;">数据库</a> <a href="/tags/读书笔记/" style="font-size: 18.75px;">读书笔记</a> <a href="/tags/高并发/" style="font-size: 12.5px;">高并发</a>
+    </div>
+  </div>
+
+  
+    
+  <div class="widget-wrap">
+    <h3 class="widget-title">Archives</h3>
+    <div class="widget">
+      <ul class="archive-list"><li class="archive-list-item"><a class="archive-list-link" href="/archives/2019/12/">December 2019</a></li><li class="archive-list-item"><a class="archive-list-link" href="/archives/2019/11/">November 2019</a></li><li class="archive-list-item"><a class="archive-list-link" href="/archives/2019/07/">July 2019</a></li><li class="archive-list-item"><a class="archive-list-link" href="/archives/2019/06/">June 2019</a></li><li class="archive-list-item"><a class="archive-list-link" href="/archives/2019/05/">May 2019</a></li><li class="archive-list-item"><a class="archive-list-link" href="/archives/2018/11/">November 2018</a></li><li class="archive-list-item"><a class="archive-list-link" href="/archives/2018/10/">October 2018</a></li><li class="archive-list-item"><a class="archive-list-link" href="/archives/2018/09/">September 2018</a></li><li class="archive-list-item"><a class="archive-list-link" href="/archives/2017/05/">May 2017</a></li></ul>
+    </div>
+  </div>
+
+
+  
+    
+  <div class="widget-wrap">
+    <h3 class="widget-title">Recent Posts</h3>
+    <div class="widget">
+      <ul>
+        
+          <li>
+            <a href="/2019/12/30/blog/2019/">2019年目标</a>
+          </li>
+        
+          <li>
+            <a href="/2019/12/01/读书笔记/《Java并发编程的艺术》/0.0_目录/">《Java并发编程的艺术》读书笔记 - 目录</a>
+          </li>
+        
+          <li>
+            <a href="/2019/12/01/读书笔记/《Java核心知识点整理》/0.目录/">《JAVA 核心知识点整理》读书笔记 - 目录</a>
+          </li>
+        
+          <li>
+            <a href="/2019/11/30/读书笔记/《高性能MySQL》/0.目录/">《高性能MySQL》读书笔记 - 目录</a>
+          </li>
+        
+          <li>
+            <a href="/2019/07/05/读书笔记/《JavaDesignPatterns》/8.建造者模式/">《Java Design Patterns》第六章 建造者模式 - 复杂对象的组装与创建</a>
+          </li>
+        
+      </ul>
+    </div>
+  </div>
+
+  
+</aside>
+        
+      </div>
+      <footer id="footer">
+  
+  <div class="outer">
+    <div id="footer-info" class="inner">
+      &copy; 2019 koral<br>
+      Powered by <a href="http://hexo.io/" target="_blank">Hexo</a>
+    </div>
+  </div>
+</footer>
+    </div>
+    <nav id="mobile-nav">
+  
+    <a href="/" class="mobile-nav-link">Home</a>
+  
+    <a href="/archives" class="mobile-nav-link">Archives</a>
+  
+</nav>
+    
+
+<script src="//ajax.googleapis.com/ajax/libs/jquery/2.0.3/jquery.min.js"></script>
+
+
+  <link rel="stylesheet" href="/fancybox/jquery.fancybox.css">
+  <script src="/fancybox/jquery.fancybox.pack.js"></script>
+
+
+<script src="/js/script.js"></script>
+
+
+
+  </div>
+</body>
+</html>

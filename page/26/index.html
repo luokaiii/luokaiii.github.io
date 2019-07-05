@@ -1,0 +1,942 @@
+<!DOCTYPE html>
+<html>
+<head>
+  <meta charset="utf-8">
+  
+
+  
+  <title>罗凯的博客</title>
+  <meta name="viewport" content="width=device-width, initial-scale=1, maximum-scale=1">
+  <meta name="description" content="如果我16岁，我可以悄悄的说我好喜欢你，如果我26岁，我可以大声告诉你我很爱你，可惜我6岁，我什么都给不了你，我还要上小学。">
+<meta name="keywords" content="帅">
+<meta property="og:type" content="website">
+<meta property="og:title" content="罗凯的博客">
+<meta property="og:url" content="http://yoursite.com/page/26/index.html">
+<meta property="og:site_name" content="罗凯的博客">
+<meta property="og:description" content="如果我16岁，我可以悄悄的说我好喜欢你，如果我26岁，我可以大声告诉你我很爱你，可惜我6岁，我什么都给不了你，我还要上小学。">
+<meta property="og:locale" content="zh-Hans">
+<meta name="twitter:card" content="summary">
+<meta name="twitter:title" content="罗凯的博客">
+<meta name="twitter:description" content="如果我16岁，我可以悄悄的说我好喜欢你，如果我26岁，我可以大声告诉你我很爱你，可惜我6岁，我什么都给不了你，我还要上小学。">
+  
+    <link rel="alternate" href="/atom.xml" title="罗凯的博客" type="application/atom+xml">
+  
+  
+    <link rel="icon" href="https://i.loli.net/2019/07/04/5d1db2fb9593c58427.gif">
+  
+  
+    <link href="//fonts.googleapis.com/css?family=Source+Code+Pro" rel="stylesheet" type="text/css">
+  
+  <link rel="stylesheet" href="/css/style.css">
+</head>
+
+<body>
+  <div id="container">
+    <div id="wrap">
+      <header id="header">
+  <div id="banner"></div>
+  <div id="header-outer" class="outer">
+    <div id="header-title" class="inner">
+      <h1 id="logo-wrap">
+        <a href="/" id="logo">罗凯的博客</a>
+      </h1>
+      
+        <h2 id="subtitle-wrap">
+          <a href="/" id="subtitle">一个大帅哥</a>
+        </h2>
+      
+    </div>
+    <div id="header-inner" class="inner">
+      <nav id="main-nav">
+        <a id="main-nav-toggle" class="nav-icon"></a>
+        
+          <a class="main-nav-link" href="/">Home</a>
+        
+          <a class="main-nav-link" href="/archives">Archives</a>
+        
+      </nav>
+      <nav id="sub-nav">
+        
+          <a id="nav-rss-link" class="nav-icon" href="/atom.xml" title="RSS Feed"></a>
+        
+        <a id="nav-search-btn" class="nav-icon" title="Search"></a>
+      </nav>
+      <div id="search-form-wrap">
+        <form action="//google.com/search" method="get" accept-charset="UTF-8" class="search-form"><input type="search" name="q" class="search-form-input" placeholder="Search"><button type="submit" class="search-form-submit">&#xF002;</button><input type="hidden" name="sitesearch" value="http://yoursite.com"></form>
+      </div>
+    </div>
+  </div>
+</header>
+      <div class="outer">
+        <section id="main">
+  
+    <article id="post-React/3.ReduxThunk" class="article article-type-post" itemscope itemprop="blogPost">
+  <div class="article-meta">
+    <a href="/2018/10/01/React/3.ReduxThunk/" class="article-date">
+  <time datetime="2018-10-01T09:38:03.000Z" itemprop="datePublished">2018-10-01</time>
+</a>
+    
+  <div class="article-category">
+    <a class="article-category-link" href="/categories/React学习/">React学习</a>
+  </div>
+
+  </div>
+  <div class="article-inner">
+    
+    
+      <header class="article-header">
+        
+  
+    <h1 itemprop="name">
+      <a class="article-title" href="/2018/10/01/React/3.ReduxThunk/">ReduxThunk</a>
+    </h1>
+  
+
+      </header>
+    
+    <div class="article-entry" itemprop="articleBody">
+      
+        <h1 id="ReduxThunk"><a href="#ReduxThunk" class="headerlink" title="ReduxThunk"></a>ReduxThunk</h1><p>Redux Thunk 可以使 Redux 的 Action 不只是返回对象，也可以是一个函数。该函数在 Component 执行 dispatch(atcion) 时会自动执行。<br>使用原因：使用 Redux Thunk 替换在组件生命周期函数中，使用异步函数的问题。<br>解决因生命周期函数所需执行的内容过多问题。</p>
+<h2 id="Redux-Data-Flow"><a href="#Redux-Data-Flow" class="headerlink" title="Redux Data Flow"></a>Redux Data Flow</h2><p>Redux的数据流程图：</p>
+<p><img src="https://koral-home.oss-cn-beijing.aliyuncs.com/blog/ReduxDataFlow.jpg" alt="Redux Data Flow"></p>
+<h2 id="引入依赖"><a href="#引入依赖" class="headerlink" title="引入依赖"></a>引入依赖</h2><blockquote>
+<p>yarn add redux-thunk</p>
+</blockquote>
+<h2 id="Redux使用Redux-thunk中间件"><a href="#Redux使用Redux-thunk中间件" class="headerlink" title="Redux使用Redux-thunk中间件"></a>Redux使用Redux-thunk中间件</h2><p>在创建 Redux 的 Store 时，应用所需使用的中间件。<br><a href="https://github.com/reduxjs/redux-thunk#installation" target="_blank" rel="noopener">来源于github:redux-thunk</a></p>
+<figure class="highlight js"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br></pre></td><td class="code"><pre><span class="line"><span class="keyword">import</span> &#123; createStore, applyMiddleware &#125; <span class="keyword">from</span> <span class="string">'redux'</span>;</span><br><span class="line"><span class="keyword">import</span> thunk <span class="keyword">from</span> <span class="string">'redux-thunk'</span>;</span><br><span class="line"><span class="keyword">import</span> rootReducer <span class="keyword">from</span> <span class="string">'./reducers/index'</span>;</span><br><span class="line"></span><br><span class="line"><span class="comment">// Note: this API requires redux@&gt;=3.1.0</span></span><br><span class="line"><span class="keyword">const</span> store = createStore(</span><br><span class="line">  rootReducer,</span><br><span class="line">  applyMiddleware(thunk)</span><br><span class="line">);</span><br></pre></td></tr></table></figure>
+<p>如果需要使用多个中间件，这里使用 Redux-DevTools 和 Redux-Thunk 两个中间件做演示，请使用下面的方式：<br><a href="https://github.com/zalmoxisus/redux-devtools-extension#12-advanced-store-setup" target="_blank" rel="noopener">来源于github:redux-devtools-extension</a></p>
+<figure class="highlight js"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br><span class="line">14</span><br><span class="line">15</span><br><span class="line">16</span><br><span class="line">17</span><br><span class="line">18</span><br><span class="line">19</span><br><span class="line">20</span><br></pre></td><td class="code"><pre><span class="line"><span class="keyword">import</span> &#123; createStore, applyMiddleware, compose &#125; <span class="keyword">from</span> <span class="string">'redux'</span>;</span><br><span class="line"><span class="keyword">import</span> reducer <span class="keyword">from</span> <span class="string">'./reducer'</span>;</span><br><span class="line"><span class="keyword">import</span> thunk <span class="keyword">from</span> <span class="string">'redux-thunk'</span>;</span><br><span class="line"></span><br><span class="line"><span class="keyword">const</span> composeEnhancers =</span><br><span class="line">    <span class="keyword">typeof</span> <span class="built_in">window</span> === <span class="string">'object'</span> &amp;&amp;</span><br><span class="line">        <span class="built_in">window</span>.__REDUX_DEVTOOLS_EXTENSION_COMPOSE__ ?</span><br><span class="line">        <span class="built_in">window</span>.__REDUX_DEVTOOLS_EXTENSION_COMPOSE__(&#123;</span><br><span class="line">        &#125;) : compose;</span><br><span class="line"></span><br><span class="line"><span class="keyword">const</span> enhancer = composeEnhancers(</span><br><span class="line">    applyMiddleware(thunk), <span class="comment">// 如果有其他中间件，可以在这里引入</span></span><br><span class="line">);</span><br><span class="line"></span><br><span class="line"><span class="keyword">const</span> store = createStore(</span><br><span class="line">    reducer,</span><br><span class="line">    enhancer</span><br><span class="line">);</span><br><span class="line"></span><br><span class="line"><span class="keyword">export</span> <span class="keyword">default</span> store;</span><br></pre></td></tr></table></figure>
+      
+    </div>
+    <footer class="article-footer">
+      <a data-url="http://yoursite.com/2018/10/01/React/3.ReduxThunk/" data-id="cjxpj02sm001mrgtwbqlw4635" class="article-share-link">Share</a>
+      
+      
+  <ul class="article-tag-list"><li class="article-tag-list-item"><a class="article-tag-list-link" href="/tags/java/">java</a></li></ul>
+
+    </footer>
+  </div>
+  
+</article>
+
+
+  
+    <article id="post-React/1.基础语法" class="article article-type-post" itemscope itemprop="blogPost">
+  <div class="article-meta">
+    <a href="/2018/10/01/React/1.基础语法/" class="article-date">
+  <time datetime="2018-10-01T09:38:03.000Z" itemprop="datePublished">2018-10-01</time>
+</a>
+    
+  <div class="article-category">
+    <a class="article-category-link" href="/categories/React学习/">React学习</a>
+  </div>
+
+  </div>
+  <div class="article-inner">
+    
+    
+      <header class="article-header">
+        
+  
+    <h1 itemprop="name">
+      <a class="article-title" href="/2018/10/01/React/1.基础语法/">React入门</a>
+    </h1>
+  
+
+      </header>
+    
+    <div class="article-entry" itemprop="articleBody">
+      
+        <h1 id="React入门"><a href="#React入门" class="headerlink" title="React入门"></a>React入门</h1><p>父组件向子组件传值：父组件可以通过向子组件传递属性，子组件通过props拿到该属性。<br>子组件向父组件传值：父组件先 将操作元素的方法 传递给子组件，子组件通过props调用父组件的方法。</p>
+<p>单向数据流：子组件只能读取父组件传递的属性，不能修改父组件的属性。</p>
+<p>当组件的state或props发生改变时，render函数就会重新执行</p>
+<p>React对性能的提升：<br>    使用虚拟DOM的方式来渲染页面，当组件的state和props发生改变时，会重新调用一次组件的render方法，重新生成一次页面。如果是直接使用新的DOM替换旧的DOM，非常损耗性能。而使用虚拟DOM可以极大地提升性能。</p>
+<p>React的虚拟DOM的流程：</p>
+<pre><code>1. state 数据
+2. JSX 模板
+3. 数据 + 模板 生成虚拟DOM
+    1. `[&apos;div&apos;, {id :&apos;abc&apos;}, [&apos;span&apos;,{},&apos;hello&apos;]]`
+4. 使用虚拟DOM 生成真实的DOM
+    1. `&lt;div id=&apos;abc&apos;&gt;&lt;span&gt;hello&lt;/span&gt;&lt;/div&gt;`
+5. 数据(state、props)发生了改变
+6. 数据 + 模板 生成新的虚拟DOM
+    1. `[&apos;div&apos;, {id :&apos;abc&apos;}, [&apos;span&apos;,{},&apos;bye bye&apos;]]`
+7. 比较新的虚拟DOM 和原有的虚拟DOM，找出差异处
+    1. Diff 算法：
+    2. 将多个setState合为一个setState渲染
+    3. 逐层比较，类似于异或
+    4. 列表循环时，key值要保持稳定
+8. 使用新的虚拟DOM重新渲染差异处
+</code></pre><p>优点：</p>
+<pre><code>1. 极大地提升了性能
+    1. 将直接生成真实DOM，改为先生成虚拟DOM，再通过虚拟DOM生成真实DOM
+    2. 降低比较真实DOM的损耗，改为直接比较虚拟DOM
+    3. 从直接渲染新的真实DOM，改为先比较虚拟DOM
+    4. 使用虚拟DOM的差异重新渲染数据
+2. 使跨端应用得以实现（如React Native）
+    1. 在第三步生成虚拟DOM之后，可以通过虚拟DOM生成如Android、IOS可使用的组件
+</code></pre><h2 id="React生命周期函数"><a href="#React生命周期函数" class="headerlink" title="React生命周期函数"></a>React生命周期函数</h2><p>在某一时刻，自动执行的函数</p>
+<ol>
+<li>Initialization 初始化阶段<ol>
+<li>constructor</li>
+</ol>
+</li>
+<li>Mounting 挂载阶段<ol>
+<li>componentWillMount 组件被挂载前，自动执行</li>
+<li>render 组件挂载时，自动执行</li>
+<li>componentDidMount 组件挂载完成时，自动执行</li>
+</ol>
+</li>
+<li>Updation 数据更新阶段<ol>
+<li>props 属性更新<ol>
+<li>componentWillReceiveProps 子组件重新接受Props时，自动执行</li>
+<li>shouldComponentUpdate 重新渲染render前，自动执行，且影响render是否执行</li>
+<li>componentWillUpdate 组件将被更新前、shouldComponentUpdate后，自动执行</li>
+<li>render</li>
+<li>componentDidUpdate 组件更新之后，自动执行</li>
+</ol>
+</li>
+<li>states 状态更新<ol>
+<li>shouldComponentUpdate 重新渲染render前，自动执行，且影响render是否执行</li>
+<li>componentWillUpdate 组件将被更新前、shouldComponentUpdate后，自动执行</li>
+<li>render</li>
+<li>componentDidUpdate 组件更新之后，自动执行</li>
+</ol>
+</li>
+</ol>
+</li>
+<li>Unmounting 移除挂载阶段<ol>
+<li>componentWillUnmount 子组件将被移除前，自动执行</li>
+</ol>
+</li>
+</ol>
+<h2 id="Axios"><a href="#Axios" class="headerlink" title="Axios"></a>Axios</h2><p>新增依赖</p>
+<blockquote>
+<p>yarn add axios</p>
+</blockquote>
+<h3 id="Charles-Mock数据"><a href="#Charles-Mock数据" class="headerlink" title="Charles Mock数据"></a>Charles Mock数据</h3><p>使用Charles进行数据的Mock</p>
+<h2 id="Ant-Design"><a href="#Ant-Design" class="headerlink" title="Ant Design"></a>Ant Design</h2><p>使用 <code>Ant Design</code> 重构代码样式布局。</p>
+<blockquote>
+<p>yarn add antd // 新增ant design依赖</p>
+</blockquote>
+<h2 id="Redux"><a href="#Redux" class="headerlink" title="Redux"></a>Redux</h2><p>详见 ReduxFlow</p>
+<h2 id="组件"><a href="#组件" class="headerlink" title="组件"></a>组件</h2><p>普通组件、UI组件、容器组件、无状态组件</p>
+
+      
+    </div>
+    <footer class="article-footer">
+      <a data-url="http://yoursite.com/2018/10/01/React/1.基础语法/" data-id="cjxpj02sh001grgtwq6vzqqne" class="article-share-link">Share</a>
+      
+      
+  <ul class="article-tag-list"><li class="article-tag-list-item"><a class="article-tag-list-link" href="/tags/java/">java</a></li></ul>
+
+    </footer>
+  </div>
+  
+</article>
+
+
+  
+    <article id="post-SpringBoot/SpringBoot" class="article article-type-post" itemscope itemprop="blogPost">
+  <div class="article-meta">
+    <a href="/2018/09/30/SpringBoot/SpringBoot/" class="article-date">
+  <time datetime="2018-09-30T06:46:03.000Z" itemprop="datePublished">2018-09-30</time>
+</a>
+    
+  <div class="article-category">
+    <a class="article-category-link" href="/categories/Java成神之路/">Java成神之路</a>►<a class="article-category-link" href="/categories/Java成神之路/SpringBoot/">SpringBoot</a>
+  </div>
+
+  </div>
+  <div class="article-inner">
+    
+    
+      <header class="article-header">
+        
+  
+    <h1 itemprop="name">
+      <a class="article-title" href="/2018/09/30/SpringBoot/SpringBoot/">SpringBoot QA</a>
+    </h1>
+  
+
+      </header>
+    
+    <div class="article-entry" itemprop="articleBody">
+      
+        <h1 id="SpringBoot"><a href="#SpringBoot" class="headerlink" title="SpringBoot"></a>SpringBoot</h1><h2 id="1-RestController-和-Controller"><a href="#1-RestController-和-Controller" class="headerlink" title="1. @RestController 和 @Controller"></a>1. @RestController 和 @Controller</h2><figure class="highlight java"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br></pre></td><td class="code"><pre><span class="line"><span class="meta">@RestController</span> : 将所有返回的结果以字符串形式返回</span><br><span class="line"><span class="meta">@Controller</span> ：返回结果由视图解析器返回视图</span><br></pre></td></tr></table></figure>
+<h2 id="2-SpringBootApplication"><a href="#2-SpringBootApplication" class="headerlink" title="2. @SpringBootApplication"></a>2. @SpringBootApplication</h2><blockquote>
+<p>是SpringBoot的核心注解，目的是开启自动配置。</p>
+</blockquote>
+<p>关闭自动配置：@SpringBootApplication(exclude={DataSourceAutoConfiguration.class})</p>
+<p>运行原理：相当于是以下注解的集合：</p>
+<figure class="highlight java"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br></pre></td><td class="code"><pre><span class="line"><span class="meta">@Target</span>(Element.TYPE)</span><br><span class="line"><span class="meta">@Retention</span>(RetentionPolicy.RUNTIME)</span><br><span class="line"><span class="meta">@Documentd</span></span><br><span class="line"><span class="meta">@Inherited</span></span><br><span class="line"><span class="meta">@Import</span>(&#123;EnableAutoConfigurationImportSelector.class,AutoConfigurationPackages.Register.class&#125;)</span><br></pre></td></tr></table></figure>
+<h2 id="3-Thymeleaf模板引擎-同Freemarker"><a href="#3-Thymeleaf模板引擎-同Freemarker" class="headerlink" title="3. Thymeleaf模板引擎(同Freemarker)"></a>3. Thymeleaf模板引擎(同Freemarker)</h2><ol>
+<li>通过 <code>xmlns:th=http://www.thymeleaf.org</code> 命名空间，转换位动态视图；</li>
+<li>使用 <code>“@{}”</code> 方式引用web静态资源</li>
+<li>通过“${}”访问model中的属性，如：<span th:text="${singlePerson.name}"></span><br>注：需要处理的动态内容需要加上“th：”前缀</li>
+<li>迭代：使用“th：each”，如：th:each=”person:${person}”  其中person作为迭代元素使用</li>
+<li>数据判断： <code>th:if=&quot;${not #lists.isEmpty(people)}&quot;</code></li>
+<li>js中访问model  </li>
+</ol>
+<figure class="highlight javascript"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br></pre></td><td class="code"><pre><span class="line">&lt;script th:inline=<span class="string">"javascript"</span>&gt; </span><br><span class="line">    <span class="keyword">var</span> singlePerson=[[$&#123;singlePerson&#125;]]</span><br><span class="line">&lt;script&gt;</span><br></pre></td></tr></table></figure>
+<blockquote>
+<p>使用 <code>th:inline=&quot;javascript&quot;</code> 使js能够访问model<br>通过[[${}]]获取实际的值</p>
+</blockquote>
+<h2 id="4-注册Servlet、Filter、Listener"><a href="#4-注册Servlet、Filter、Listener" class="headerlink" title="4. 注册Servlet、Filter、Listener"></a>4. 注册Servlet、Filter、Listener</h2><p>Servlet:ServletRegistrationBean</p>
+<figure class="highlight java"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br></pre></td><td class="code"><pre><span class="line"><span class="meta">@Bean</span></span><br><span class="line"><span class="function"><span class="keyword">public</span> ServletRegistrationBean <span class="title">serbletRegistrationBean</span><span class="params">()</span></span>&#123;</span><br><span class="line">	<span class="comment">//直接注册servlet及其请求路径</span></span><br><span class="line">    <span class="keyword">return</span> <span class="keyword">new</span> ServletRegistrationBean(<span class="keyword">new</span> XXServlet(),<span class="string">"/xx/*"</span>);</span><br><span class="line">&#125;</span><br></pre></td></tr></table></figure>
+<p>Filter:FilterRegisterationBean</p>
+<figure class="highlight java"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br></pre></td><td class="code"><pre><span class="line"><span class="meta">@Bean</span></span><br><span class="line"><span class="function"><span class="keyword">public</span> FilterRegisterationBean <span class="title">filterRegisterationBean</span><span class="params">()</span></span>&#123;</span><br><span class="line">    <span class="comment">//设置过滤器</span></span><br><span class="line">    FilterRegisterationBean filterRegisterationBean = <span class="keyword">new</span> filterRegisterationBean.setFilter(<span class="keyword">new</span> YYFilter());</span><br><span class="line">    <span class="comment">//执行顺序  </span></span><br><span class="line">    filterRegisterationBean.setOrder(<span class="number">2</span>);</span><br><span class="line">    filterRegisterationBean.setName(<span class="string">"MyFilter"</span>);<span class="comment">//设置名称</span></span><br><span class="line">    filterRegisterationBean.setUrlPatterns(<span class="string">"/*"</span>);<span class="comment">//设置过滤路径</span></span><br><span class="line">    <span class="keyword">return</span> filterRegisterationBean;</span><br><span class="line">&#125;</span><br></pre></td></tr></table></figure>
+<p>Listener:ServletListenerRegisterationBean</p>
+<figure class="highlight java"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br></pre></td><td class="code"><pre><span class="line"><span class="meta">@Bean</span></span><br><span class="line"><span class="function"><span class="keyword">public</span> ServletListenerRegisterationBean&lt;ZZListener&gt; <span class="title">servletListenerRegisterationBean</span><span class="params">()</span></span>&#123;</span><br><span class="line">    <span class="keyword">return</span> <span class="keyword">new</span> ServletListenerRegisterationBean&lt;ZZListener&gt;(<span class="keyword">new</span> ZZListener);</span><br><span class="line">&#125;</span><br></pre></td></tr></table></figure>
+<h2 id="5-修改tomcat、jetty、undertow"><a href="#5-修改tomcat、jetty、undertow" class="headerlink" title="5.修改tomcat、jetty、undertow"></a>5.修改tomcat、jetty、undertow</h2><p>直接在pom文件中，修改依赖</p>
+<figure class="highlight"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br><span class="line">14</span><br><span class="line">15</span><br><span class="line">16</span><br><span class="line">17</span><br></pre></td><td class="code"><pre><span class="line">&lt;dependency&gt;</span><br><span class="line">  &lt;groupId&gt;org.springframework.boot&lt;/groupId&gt;</span><br><span class="line">    &lt;artifactId&gt;spring-boot-starter-web&lt;/artifactId&gt;</span><br><span class="line">     &lt;exclusions&gt;</span><br><span class="line">        &lt;exclusion&gt;</span><br><span class="line">          &lt;groupId&gt;org.springframework.boot&lt;/groupId&gt;</span><br><span class="line">            &lt;artifactId&gt;spring-boot-starter-tomcat&lt;/artifactId&gt; //将web对应的服务器修改为其它</span><br><span class="line">        &lt;/exclusion&gt;</span><br><span class="line">      &lt;/exclusions&gt;</span><br><span class="line">  &lt;version&gt;1.5.9.RELEASE&lt;/version&gt;</span><br><span class="line">&lt;/dependency&gt;</span><br><span class="line"></span><br><span class="line">&lt;dependency&gt;</span><br><span class="line">  &lt;groupId&gt;org.springframework.boot&lt;/groupId&gt;</span><br><span class="line">  &lt;artifactId&gt;spring-boot-starter-tomcat&lt;/artifactId&gt;</span><br><span class="line">  &lt;version&gt;1.5.9.RELEASE&lt;/version&gt;</span><br><span class="line">&lt;/dependency&gt;</span><br></pre></td></tr></table></figure>
+<h2 id="6-WebSocket"><a href="#6-WebSocket" class="headerlink" title="6. WebSocket"></a>6. WebSocket</h2><h3 id="1-websocket的配置"><a href="#1-websocket的配置" class="headerlink" title="1. websocket的配置"></a>1. websocket的配置</h3><ol>
+<li>使用@Configuration及@EnableWebSocketMessageBroker  来开启WebSocket支持</li>
+<li>继承AbstratWebSocketMessageBrokerConfigurer类<ol>
+<li>重写 <code>registerStomEndpoint(StomEndpointRegister)</code> 与 <code>configureMessageBroker(essageBrokerRegistry)</code> 方法</li>
+<li><code>Sregistry.addEndpoint(&quot;/endpointWisely&quot;).withSockJS()</code>;  即通过endpointWisely连接SockJs</li>
+<li>Mregistry.enableSimpleBroker(“/topic”);  配置一个topic消息代理</li>
+</ol>
+</li>
+</ol>
+<h3 id="2-wscontroller"><a href="#2-wscontroller" class="headerlink" title="2. wscontroller"></a>2. wscontroller</h3><p>@MessageMapping(“/welcome”) 同RequestMapping,映射地址</p>
+<p>@SendTo(“/topic/getResponse”) 当服务端有消息时，会对订阅了”/topic/getResponse”的客户端发送消息</p>
+<figure class="highlight java"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br></pre></td><td class="code"><pre><span class="line"><span class="function"><span class="keyword">public</span> WiselyResponse <span class="title">say</span><span class="params">(WiselyMessage message)</span> <span class="keyword">throws</span> Exception</span>&#123;</span><br><span class="line">    <span class="keyword">return</span> <span class="keyword">new</span> WiselyResponse(<span class="string">"Welcome "</span> +message.getName()+<span class="string">" ! "</span>);  返回发送的消息</span><br><span class="line">&#125;</span><br></pre></td></tr></table></figure>
+<h3 id="3-ws-html"><a href="#3-ws-html" class="headerlink" title="3. ws.html"></a>3. ws.html</h3><figure class="highlight javascript"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br></pre></td><td class="code"><pre><span class="line"><span class="comment">//连接并订阅</span></span><br><span class="line"><span class="keyword">var</span> socket = <span class="keyword">new</span> SockJS(<span class="string">'/endpointWisely'</span>);  <span class="comment">//连接名称为“。。。”的endpoint</span></span><br><span class="line"><span class="keyword">var</span> stompClient = Stomp.over(socket);     <span class="comment">//使用stomp子协议</span></span><br><span class="line">    stompClient.connect(&#123;&#125;,<span class="function"><span class="keyword">function</span>(<span class="params">name</span>)</span>&#123;</span><br><span class="line">        stompClient.subscribe(<span class="string">'topic/getResponse'</span>,<span class="function"><span class="keyword">function</span>(<span class="params">response</span>)</span>&#123;<span class="comment">//订阅</span></span><br><span class="line">        show();<span class="comment">//自定义的展示方法</span></span><br><span class="line">    &#125;)</span><br><span class="line">&#125;)</span><br><span class="line">stompClient.send(<span class="string">"/welcome"</span>,&#123;&#125;,<span class="built_in">JSON</span>.stringify(&#123;<span class="string">'name'</span>:name&#125;));<span class="comment">//发送消息</span></span><br></pre></td></tr></table></figure>
+<h2 id="7-Spring-Data-JPA"><a href="#7-Spring-Data-JPA" class="headerlink" title="7.Spring Data JPA"></a>7.Spring Data JPA</h2><h3 id="1-EnableJpaRepositories"><a href="#1-EnableJpaRepositories" class="headerlink" title="1. @EnableJpaRepositories"></a>1. @EnableJpaRepositories</h3><pre><code>使用@EnableJpaRepositories(&quot;com.wisely.repos&quot;)来开启Spring Data JPA支持 其中的value参数用来扫描数据访问层所在包下的数据访问的接口定义
+</code></pre><h3 id="2-定义查询方法"><a href="#2-定义查询方法" class="headerlink" title="2. 定义查询方法"></a>2. 定义查询方法</h3><blockquote>
+<p><code>常规查询</code> ：find、read、readBy、query、queryBy、get、getBy<br><code>查询关键字</code> ：And(和)、Or(或)、Is = Equals(等)、Between(位于之间)、LessThan(小于)、LessThanEqual(小于等于)<br>GreaterThan(大于)、GreaterThanEqual(大于等于)、After(日期大于)、Before(日期之前)<br>IsNull、IsNotNull = NotNull、Like、Not Like、Starting With(前面加%)<br>EndingWith(后面加%)、Containing(前后都加%)、OrderBy(排序)、Not、In<br>NotIn、True、False、IgnoreCase<br><code>限制查询结果</code> ：Top、First<br><code>@NamedQuery</code> : 一个名称映射一个查询语句<br>    eg:    @NamedQuery(name = “Person.findByName”,query = “select p from Person p where p.name=?1”)<br>        写在实体类名上<br>@Query查询<br>    直接在@Query的value中书写sql语句，参数可以使用索引(“?1”)或者命名(“:name”)<br>更新查询：使用@Modifying 和 @Query 来组合更新查询</p>
+</blockquote>
+<h3 id="3-排序与分页"><a href="#3-排序与分页" class="headerlink" title="3. 排序与分页"></a>3. 排序与分页</h3><pre><code>Sort排序对象：     List&lt;Person&gt; findByName(String name,Sort sort);
+Pageable对象：    List&lt;Person&gt; findByName(String name,Pageable pageable);
+使用：    List&lt;Person&gt; persons = personRepository.findByName(&quot;xx&quot;,new Sort(Direction.ASC,&quot;age&quot;));
+        List&lt;Person&gt; persons = personRepository.findByName(&quot;xx&quot;,new Pageable(0,10));
+</code></pre><h3 id="4-repository默认的方法："><a href="#4-repository默认的方法：" class="headerlink" title="4. repository默认的方法："></a>4. repository默认的方法：</h3><pre><code>save()    保存；        
+findAll()    查询所有；        
+findAll(new Sort(Sort.Direction.ASC,&quot;age&quot;))        排序查询所有；
+findAll(new PageRequest(0,10))        分页查询；
+findAll(new PageRequest(1,2,new Sort(Sort.Direction.DESC,&quot;age&quot;)))    分页排序
+</code></pre><h2 id="8-SpringBoot的注解式事务-Transactional"><a href="#8-SpringBoot的注解式事务-Transactional" class="headerlink" title="8.SpringBoot的注解式事务  @Transactional"></a>8.SpringBoot的注解式事务  @Transactional</h2><pre><code>属性：
+    1.propagation 定义事务的生命周期
+        REQUIRED             如果没有事务则新建
+        REQUIRED_NEW        始终开启新事务
+        SUPPORTS            有就用，没有就不用
+        NESTED                类似于REQUIRED_NEW，但是不支持jps与hibernate
+        NOT_SUPPORTS        不在事务中执行
+        NEVER                强制不在事务中执行，有事务则抛出异常
+        MANDATORY            强制在事务中执行，没有则抛出异常
+    2.isolation  事务的隔离机制，决定了事务的完整性
+        READ_UNCOMMITED      读不提交(脏读、幻读、不可重复读)
+        READ_COMMITED        读提交(不可重复读和幻读)，解决脏读
+        REPEATABLE_READ        A读取某条数据时，B不许修改(幻读)
+        SERIALIZABLE        序列化
+    3.timeout    事务过期时间
+    4.readOnly    指当前事务是否是只读事务
+    5.rollbackFor    指定哪个异常会回滚
+    6.noRollBackFor    指定哪个异常不会回滚
+</code></pre><p>1.@GetMapping注解：相当于 @RequestMapping(Method=RequestMethod.GET)<br>    该注解将HTTP GET映射到特定的方法上<br>2.@RequestParam注解：将Request参数绑定到处理函数的参数中<br>    如：public String getUserId(@RequestParam(“id”) int id); 这样就可以将localhost:8080/?id=123中的id参数赋给方法中的id<br>3.@JsonIgnoreProperties(ignoreUnknown = true)<br>    将这个注解卸载类上之后，就会忽略类中不存在的字段<br>    使用@JsonIgnoreProperties({“internalId”,”secretKey”})指定的字段不会被序列化和反序列化<br>4.数据校验<br>    1.在实体类的属性前添加如：@NotEmpty、@Min(value=18,message=”未成年禁止入内”)等<br>    2.在Controller层的方法，要校验的参数上添加@Valid注解<br>        如果需要返回错误信息，则需要传入BindingResult对象，用于获取校验失败情况下的反馈信息<br>5.ModelMapper对象<br>    一个从对象到对象的框架，能将javaBean对象从一种表现形式转化为另一种表现形式，采用“约定”来配置<br>    eg:        Person person = modelMapper.map(personDTO,Person.class);            //将PersonDTO的对象，转换成Person对象<br>            Person personInDB = personService.getById(userId,PersonDTO.getId())    //在service层对userid和person.id做了处理，从数据库取出person.id对应的Person，userid则是权限判断<br>            return modelMapper.map(personService.save(userId,person),PersonDTO.class);    //再将保存返回的person转为personDTO<br>6.@PathVariable注解<br>    可以绑定占位符传过来的值到方法的参数上<br>7.@RequestMapping的变形<br>    @GetMapping、@PostMapping、@PutMapping、@DeleteMapping<br>8.@RequestParam和@PathVariable的区别<br>    1.@RequestParam和@PathVariable都是从request中接收请求的，都可以接收参数<br>    2.@RequestParam  支持defaultValue（默认值）、name、value、required参数<br>    3.@PathVariable  能够识别URL里面的一个模板 eg:@RequestMapping(“/hello/{id}”)<br>    4.@PathParam     同@PathVariable，但是属于JBoss的<br>    5.@QueryParam     同@RequestParam,属于JAX-RS<br>    6.@ResponseBody  服务器返回的时候以一种什么样的方式进行返回<br>    7.@RequestBody<br>9.@Documentd注解<br>    映射实体类与MongoDB文件<br>10.http状态码<br>    1XX 临时响应，并需要请求者继续执行操作的状态代码<br>    2XX 请求成功<br>    3XX 重定向代码<br>    4XX 表示请求出错<br>    5XX 服务器内部错误<br>11.自定义注解<br>    @Retention注解<br>        定义被它所注解的注解保留多久，一共有三种策略：<br>            public enum RetentionPolicy{<br>                SOURCE,CLASS,RUNTIME<br>            }<br>        1.SOURCE  被编译器忽略<br>        2.CLASS  注解会被保留在Class文件中，但在运行时并不会被vm保留(默认)<br>        3.RUNTIME  保留至运行时，可以通过反射去获取注解信息。<br>    @Target注解<br>        说明该注解可以被声明在哪些元素之前<br>            public enum ElementType{<br>                TYPE,FIELD,METHOD,PARAMETER,CONSTRUCTOR,LOCAL_VARIABLE,<br>                ANNOTATION_TYPE,PACKAGE,TYPE_PARAMETER,TYPE_USE<br>            }<br>        1.TYPE  类之前<br>        2.FIELD  类的字段前<br>        3.METHOD  类的方法前<br>        4.PARAMETER  方法参数前<br>        5.CONSTRUCTOR  构造方法前<br>        6.LOCAL_VARIABLE  局部变量之前<br>        7.ANNOTATION_TYPE  注解类型之前<br>        8.PACKAGE  包名前<br>12.Spring框架下的AOP Annotation<br>    1.切入点语法：<br>        execution(public <em> </em> (..))<br>        execution(<em> set</em> (..))<br>        execution(<em> com.xyz.servie.AccountService.</em> (..))<br>        execution(<em> com.xyz.service.</em>.<em> (..))<br>        within(com.xyz.service.</em>)    //service包中<br>        within(com.xyz.service..*)    //service或其子包<br>    2.声明通知<br>        1.@Before 前置通知<br>        2.@AfterReturning  后置通知<br>        3.AfterThrowing  异常通知，在一个方法抛出异常后执行<br>        4.@After  最终通知，必会执行的<br>        5.@Around  环绕通知，在方法执行前及执行后，常用于线程安全的情况下，共享数据<br>13.Spring Security<br>    1.安全处理方法：<br>        1.access(String)                Spring EL表达式结果为true时可访问<br>        2.anonymouns()                    匿名可访问<br>        3.denyAll()                        用户不能访问<br>        4.fullyAuthenticated()            用户完全认证可访问(非remeber me)<br>        5.hasAnyAuthority(String..)        如果用户有参数，则其中任一权限可访问<br>        6.hasAnyRole(String..)                    如果用户有参数，则其中任一角色可访问<br>        7.hasAuthority(String)            如果用户有参数，则其权限可访问<br>        8.hasRole(String)                若用户由参数中的角色可访问<br>        9.permitAll()                    用户可任意访问<br>        10.rememberMe()                    允许通过remember-me登陆的用户访问<br>        11.authenticated()                用户登陆后可访问<br>14.JMS<br>    1.安装ActiveMQ<br>    2.在application.properties中配置ActiveMQ的消息代理地址<br>        spring.activemq.broker-url=tcp://localhost:61616<br>    3.定义发送端<br>        需要实现MessageCreator接口，并重写其createMessage方法<br>        eg:     class Msg implements MessageCreator{<br>                    @override<br>                    public Message createMessage() throws JMSException{<br>                        return session.createTextMessage(“发送了消息”);<br>                    }<br>                }<br>    4.定义发送及目的地<br>        1.使用CommandLineRunner接口，用于程序启动后执行的代码，通过重写其run方法执行<br>        2.注入Springboot提供的JmsTemplate的Bean<br>        3.通过JmsTemplate的send方法向 “my-destination” 目的地发送Msg 的消息<br>        eg:        class Ch934Application implements CommandLineRunner{<br>                    @AutoWired<br>                    JmsTemplate jmsTemplate;</p>
+<pre><code>            @Override
+            public void run(String... args) throws Exception{
+                jmsTemplate.send(&quot;my-destination”,new Msg());
+            }
+        }
+4.定义消息监听
+    使用@JmsListener注解，来简化JMS开发。只需要在这个注解的属性destination指定要监听的目的地，即可接收该目的地发送的消息。
+eg:        class Receiver{
+            @JmsListener(destination = &quot;my-destination”)
+            public void receiveMessage(String message){
+                sout(&quot;收到：&quot;+message+&quot;，消息&quot;)
+            }
+        }
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+#SpringBoot的配置文件.properties
+</code></pre><h1 id="Logging"><a href="#Logging" class="headerlink" title="Logging"></a>Logging</h1><pre><code>logging.config=classpath:logback-spring.xml
+</code></pre><h1 id="Mysql-Configuration"><a href="#Mysql-Configuration" class="headerlink" title="Mysql Configuration"></a>Mysql Configuration</h1><pre><code>spring.datasource.url=jdbc:mysql://localhost:3306/pgc                          #数据库地址
+spring.datasource.username=root                                                #账号
+spring.datasource.password=password                                            #密码
+</code></pre><h1 id="Keep-the-connection-alive-if-idle-for-a-long-time-needed-in-production"><a href="#Keep-the-connection-alive-if-idle-for-a-long-time-needed-in-production" class="headerlink" title="Keep the connection alive if idle for a long time (needed in production)"></a>Keep the connection alive if idle for a long time (needed in production)</h1><pre><code>spring.datasource.testWhileIdle=true                                        #指定连接是否被空闲来连接回收器检验
+spring.datasource.validationQuery=SELECT 1                                    #验证从连接池取出的连接
+</code></pre><h1 id="Show-or-not-log-for-each-sql-query"><a href="#Show-or-not-log-for-each-sql-query" class="headerlink" title="Show or not log for each sql query"></a>Show or not log for each sql query</h1><pre><code>spring.jpa.show-sql=true                                                    #运行时输出sql语句
+</code></pre><h1 id="Hibernate-ddl-auto-save-save-drop-update"><a href="#Hibernate-ddl-auto-save-save-drop-update" class="headerlink" title="Hibernate ddl auto (save, save-drop, update)"></a>Hibernate ddl auto (save, save-drop, update)</h1><pre><code>spring.jpa.hibernate.ddl-auto=update                                        #hibernate数据定义的规则，更新
+</code></pre><h1 id="Set-to-true-if-we-need-to-populate-the-database-using-‘data-sql’"><a href="#Set-to-true-if-we-need-to-populate-the-database-using-‘data-sql’" class="headerlink" title="Set to true if we need to populate the database using ‘data.sql’."></a>Set to true if we need to populate the database using ‘data.sql’.</h1><pre><code>spring.datasource.initialize=false                                            #指定初始化数据源，是否用data.sql来初始化，默认: true
+</code></pre><h1 id="Naming-strategy"><a href="#Naming-strategy" class="headerlink" title="Naming strategy"></a>Naming strategy</h1><pre><code>spring.jpa.hibernate.naming-strategy=org.hibernate.cfg.ImprovedNamingStrategy    #指定命名策略
+</code></pre><h1 id="The-SQL-dialect-makes-Hibernate-generate-better-SQL-for-the-chosen-database"><a href="#The-SQL-dialect-makes-Hibernate-generate-better-SQL-for-the-chosen-database" class="headerlink" title="The SQL dialect makes Hibernate generate better SQL for the chosen database"></a>The SQL dialect makes Hibernate generate better SQL for the chosen database</h1><pre><code>spring.jpa.properties.hibernate.dialect=org.hibernate.dialect.MySQL5Dialect    #hibernate方言
+</code></pre><h1 id="Mongodb-Configuration"><a href="#Mongodb-Configuration" class="headerlink" title="Mongodb Configuration"></a>Mongodb Configuration</h1><pre><code>spring.data.mongodb.uri=mongodb://localhost:27000/pgc                        #mongodb的uri
+</code></pre><h1 id="OSS-Configuration"><a href="#OSS-Configuration" class="headerlink" title="OSS Configuration"></a>OSS Configuration</h1><pre><code>oss.endpoint=oss-cn-shanghai.aliyuncs.com                                    #oss阿里云的相关配置
+oss.access.key.id=LTAIxYKpaBqbAIK3
+oss.access.key.secret=WuTDXWS8PBqSdqMuMxrPfT5ryYmmd0
+oss.bucket.name=new-pgc
+spring.http.multipart.maxFileSize=100MB
+spring.http.multipart.maxRequestSize=100MB
+</code></pre><h1 id="SSO-Configuration"><a href="#SSO-Configuration" class="headerlink" title="SSO Configuration"></a>SSO Configuration</h1><pre><code>security.enabled=true
+</code></pre><p>#默认callback<br>    security.defaultCallback=/</p>
+<p>#sso验证token地址<br>    security.ssoServerValidate=<a href="http://106.15.179.107:7127/api/c/sso/validate-token" target="_blank" rel="noopener">http://106.15.179.107:7127/api/c/sso/validate-token</a></p>
+<p>#如果本地应用没有登陆就去验证<br>    security.ssoServerAuth=<a href="http://106.15.179.107:7127/api/c/sso/auth" target="_blank" rel="noopener">http://106.15.179.107:7127/api/c/sso/auth</a></p>
+<p>#本地应用密码<br>    security.ssoKey=574163310</p>
+<p>#本地应用地址, should be defined by the same field under each app</p>
+<h1 id="security-appHost-http-localhost-8000"><a href="#security-appHost-http-localhost-8000" class="headerlink" title="security.appHost=http://localhost:8000"></a>security.appHost=<a href="http://localhost:8000" target="_blank" rel="noopener">http://localhost:8000</a></h1><p>#gizp<br>    spring.resources.chain.gzipped=true</p>
+<p>注：<br>1.Java Web获取IP，及ip所在地址<br>    在请求头getHeader()中，”x-forwarded-for”、”Proxy-Client-IP”、”WL-Proxy-Client-IP”<br>    请求地址:getRemoteAddr();<br>2.请求参数与路径变量<br>    1.请求参数<br>        采用key = value形式，并用 “&amp;” 分隔<br>            eg:localhost:8080/user?name=spring&amp;pwd=123<br>        在传统的servlet中，可以通过HttpServletRequest的getParameter()方法取值<br>        在SpringMVC中则提供了一个注解”@RequestParam”来注释方法参数<br>    2.路径参数<br>        类似请求参数，但是没有key部分，只是一个值<br>            eg:localhost:8080/user/spring<br>        为了使用路径变量，首先需要在@RequestMapping注解的值属性中添加一个变量，该变量必须放在花括号之间<br>            eg:@RequestMapping(value=”/user/{pwd}”)<br>        使用时，在方法签名中加上@PathVariable注解<br>            eg:public String test(@PathVariable(name=”pwd”) string password)<br>3.lambda表达式<br>    1.用lambda实现Runnable<br>        new Thread( () -&gt; sout(“Lambda expression rocks！！”) ).start();<br>        等价于：<br>        new Thread(<br>            new Runnable(){<br>                @Override<br>                public void run(){<br>                    sout(“Lambda expression rocks！！”) ;<br>                }<br>            }<br>        ).start();<br>    2.对列表进行迭代<br>        list.forEach( n -&gt; sout(n) );<br>        如果输出和参数相同，则可以省略参数<br>        list.forEach( System.out::println() );<br>    3.函数式接口Predicate<br>        可以向API添加逻辑，用更少的代码支持更多的动态行为。<br>        eg:    public void filter(String name,Predicate condition){<br>                if(condition.test(name)){<br>                    sout(name+” “);<br>                }<br>            }<br>        那么在调用时，我们就可以通过predicate来进行判断<br>        eg:<br>            List languages = Arrays.asList(“Java”, “Scala”, “C++”, “Haskell”, “Lisp”);<br>            filter(langugages,str -&gt; str.startWith(“J”));<br>    4.Map和Reduce(是Stream的方法)<br>        1.map允许你将对象进行转换，将列表中的每个元素转换为修改之后的值。<br>        eg:    List costBeforeTax = Arrays.asList(100, 200, 300, 400, 500);<br>            costBeforeTax.stream().map( (cost)-&gt;cost+.12<em>cost )<br>                                        .forEach(System.out::println);<br>        2.reduce可以对所有值进行合并，比较类似SQL中的sum()、avg()、count()等<br>        eg:对修改后的数据进行计算，接收多个值，返回一个值<br>            costBeforeTax.stream().map( (cost)-&gt;cost+.12</em>cost )<br>                                        .reduce( (sum,cost)-&gt; sum+cost).get();<br>    5.filter过滤<br>        使用lambda表达式和流API过滤大规模数据集合，流提供了一个filter()方法，接受一个Predicate对象，即可以传入一个lambda表达式作为过滤逻辑<br>        eg:    List<string> filtered = strList.stream().filter( x-&gt; x.length()&gt;10).collect(Collectors.toList);<br>            得到的结果为：过滤后的strList，长度都是大于10的<br>    6.distinct()去重<br>        numbers.stream().distinct().collect(Collectors.toList);<br>    7.集合的最大值、最小值、总和及平均值<br>        IntStream、LongStream和DoubleStream等流的类中，有个方法叫做summaryStatistics()，可以返回IntSummaryStatistics、LongSummaryStatistics或者DoubleSummaryStatistic<br>        eg:    IntSumnumberList stats = numberList.stream().mapToInt((x)-&gt;x).summaryStatistics()<br>            stats存在    getMax、getMin、getSum、getAverage、getCount方法<br>    8.Lambda表达式与匿名类<br>        this关键字：<br>            匿名类的this关键字指向匿名类<br>            lambda表达式的this关键字指向包围lambda表达式的类<br>        编译方式：<br>            java编译器将lambda表达式编译成类的私有方法，使用java7的invokedynamic字节码指令来动态绑定这个方法。<br>    9.限制：<br>        1.lambda表达式只能引用final或final局部变量，即在lambda内部不能修改定义在域外的变量。<br>    10.避免Null<br>        当出现多层嵌套时，调用其中的方法可能会抛出NullPointException异常,所以我们可以通过Optional类型来预防null检查<br>        eg:new Outer().getNested().getInner().getFoo()中可能会出现Null异常<br>            修改过后：<br>            Optional.of(new Outer())<br>                    .map(Outer::getNested)<br>                    .map(Nested::getInner)<br>                    .map(Inner::getFoo)<br>                    .ifPresent(System.out::println);<br>    11.Optional类<br>        是一个可以为null的容器对象，如果值存在则isPresent()方法返回true，调用get()方法会返回该对象。<br>        Optional是个容器，它可以保存类型T的值，或者仅仅保存null。<br>        Optional类的引入很好的解决空指针异常。<br>4.Git使用规范流程<br>    1.新建分支<br>        每次开发新功能，都应该新建一个单独的分支</string></p>
+<pre><code>    #获取主分支最新代码
+        git checkout master    
+        git pull
+    #新建一个开发分支
+        git checkout -b myfeature
+2.提交分支commit
+    分支修改后，就可以提交commit了
+        git add -all            #all表示保存所有变化，也是默认的
+        git status                #查看发生变动的文件
+        git commit --verbose    #verbose参数，会列出diff的结果
+3.撰写提交信息
+    提交commit时，必须给出完整的提交信息
+     eg：第一行是不超过50字的提要
+         空一行
+         *罗列出改动原因、主要变动、需要注意的问题（可多行）
+         空一行
+         提供对应的网址
+4.与主干同步
+    git fetch master
+5.合并commit
+    分支开发完成后，可能有一堆commit，但是合并到主干时，最好只有一个commit，清晰易管理
+        git rebase -i origin/master        #i参数表示互动，此时会打开一个互动界面
+    可用的命令：
+        1.pick        #正常选中
+        2.reword    #选中，并且修改提交信息
+        3.edit        #钻中，rebase时会暂停，允许你修改这个commit
+        4.squash    #选张，会将当前commit与上一个commit合并
+        5.fixup        #与squash相同，但不会保存当前commit的提交信息
+        6.exec        #执行其他shell命令
+    其中，squash和fixup可以用来合并commit
+    另外，PonyFoo提出另一种合并commit的简洁方法，就是先撤销过去5个commit，再建一个新的
+        git reset HEAD~5
+        git add
+        git commit -am &quot;Here&apos;s the bug fix that closes #28&quot;
+        git push --force
+6.推送到远程仓库
+    合并commit之后，就可以推送当前分支到远程仓库了
+        git push --force origin myfeature
+    &quot;--force&quot;表示强行推送，因为rebase以后，分支历史改变了，跟远程分支不一定兼容，可能需要强行推送
+7.发出Pull Request
+    提交到远程仓库以后，就可以发出Pull Request到master分支，然后请求别人进行代码review，确认可以合并到master
+</code></pre><p>4.2    Git分支管理策略<br>    Vincent Driessen提出了一个分支管理的策略，使得版本库的演进保持简洁，主干清晰。<br>    1.主分支Master<br>        代码库有且仅有的一个主分支，提供给用户使用的正式版本，都在此分支上发布<br>    2.开发分支Develop<br>        这个分支可以用来生成代码的最新隔夜版本(nightly)，如果想正式对外发布，就在Master分支上，对Develop分支进行合并(merge)<br>        git merge –no-ff develop<br>    3.临时性分支<br>        1.feature     功能分支<br>        2.release    预发布分支<br>        3.fixbug    修补bug分支<br>        这三种分支都属于临时性需要，使用完以后，应该删除，代码库的常设分支只有Master和Develop</p>
+<ol start="5">
+<li>组合(Composition)与聚合(Aggregation)的区别<br>1.Composition 表示的是’Part-od’的关系<br>  比如：引擎Engine是汽车Car的一部分，脱离了汽车的引擎毫无作用，没有实在的意义<br>2.而Aggregation表示的是’Has-a’的关系<br>  比如：Person有一个Address，但是Address的存在不依赖于Person，即地址本身就有其独立存在的意义，不受人的约束。<br>3.就强弱关系而言：<br>  Composition应该更强一些<br>6.交并补<br>1.List集合的交并补<br>  list1.addAll(list2);    //并集<br>  list1.retainAll(list2);    //交集,返回Boolean<br>  list1.removeAll(list2);    //差集<br>  list2.removeAll(list1);<br>  list1.addAll(list2);    //无重复并集<br>7.SpringMVC迁移至SpringBoot</li>
+</ol>
+<p>8.lucene和solr<br>    1.lucene<br>        lucene是一个开放源代码的 全文检索 引擎工具包,并不是一个完整的全文检索引擎，而是一个全文检索引擎的架构，提供了完整的查询引擎和索引引擎，部分文本引擎。目的在于为软件开发人员提供一个简单易用的工具包，以方便的在目标系统中实现全文检索的功能，或者以此为基础建立起完整的全文检索引擎。</p>
+<pre><code>2.solr
+    是一个高性能，给予lucene的全文搜索服务器。同时对其进行了拓展，提供了比Lucene更为丰富的查询语言，同时实现了可配置、可拓展并对查询性能进行了优化，并且提供了一个完整的功能管理界面，是一款非常优秀的全文搜索引擎。它对外提供类似于WebService的API接口。用户可以通过http请求，向搜索引擎服务器提交一定格式的XML文件，生成索引；也可以通过Http Solr Get操作提出查找请求，并得到XML格式的返回结果、
+
+3.Solr和Lucene的区别
+    1.搜索服务器：
+        lucene本质上是搜索库，不是独立的应用程序
+    2.企业级
+        lucene专注于搜索底层的建设，而Solr专注于企业应用。
+    3.管理
+        lucene不负责支撑搜索服务所必须的管理
+    一句话总结：Solr是Lucene面向企业搜索应用的扩展
+</code></pre><p>9.Gradle<br>    1.简介：<br>        是一个基于JVM的构建工具</p>
+<p>10.Nginx<br>    1.反向代理-解决前端跨域问题<br>        跨域-浏览器为了安全问题而限制了跨域访问，如果a，b页面的协议、域名、端口、子域名不同，所进行的访问行动都是跨域的。<br>        由配置来完成：<br>            1.让nginx监听localhost的80端口，网站A与网站B的访问都是经过localhost的80端口进行访问。<br>            2.配置一个特殊的’/api’目录的访问，并且对url执行了重写<br>                rewrite ^/api/(.*)$/$1 break;<br>            代表重写拦截进来的请求，并且只能对域名后边以’/api’开头的起作用，break表示匹配一个之后停止匹配</p>
+<p>11.详解SpringData<br>    1.概念<br>        Spring Data的目的是为了简化构建基于Spring框架应用的数据访问技术，包括非关系型数据库、Map-Reduce框架、云数据服务等等；另外也包含对关系数据库的访问支持。<br>    2.Spring Data的子项目：<br>        1.Commons    提供共享的基础框架，适合各个子项目使用，支持跨数据库持久化<br>        2.Hadoop    基于Spring的Hadoop作业配置和一个POJO编程模型的MapReduce作业<br>            MapReduce是一种编程模型，用于大规模数据集(大于1TB)的并行运算<br>        3.Key-value 集成了Redis和Riak，提供多个常用场景下的简单封装<br>        4.Document  集成文档数据库，CouchDB和MongoDB并提供基本的配置映射和资料库的支持<br>        5.Graph        集成Neo4j提供强大的基于POJO的编程模型<br>        6.Graph Roo AddOn - Rooney support for Neo4j<br>        7.JDBC Extensions    支持Oracle RAD、高级队列和高级数据类型<br>        8.JPA         简化创建JPA数据访问层和跨存储的持久层功能<br>        9.Mapping     基于Grails的提供对象映射框架，支持不同的数据库<br>        10.Examples    示例程序、文档和图数据库<br>        11.Guidance 高级文档<br>    3.Repository<br>        1.如果dao接口继承了Repository，则该接口会被IOC容器识别为一个Repository Bean注入到IOC容器中，进而可以再该接口中定义满足一定规则的接口<br>            或者通过一个朱姐@RepositoryDefination注解来替代Repository接口<br>        2.在Repository接口中声明方法<br>            1.查询方法以 find|read|get开头<br>            2.设计条件查询，条件的属性需要定义关键字连接<br>            3.条件的属性以字母大写<br>            4.支持属性的级联查询，若当前类由符合条件的属性，则优先使用，则不使用级联属性<br>        3.通过自定义的JPQL完成update和delete操作<br>            注意：JPQL不支持Insert操作<br>            在@Query注解中编写JPQL语句，单必须使用@Modify进行修饰，以通知SpringData，这是一个Update或者delete<br>            因为update和delete需要使用事务，而默认情况下springdata的每个方法上都有一个只读事务，不能完成修改操作<br>            因此需要使用@Modify修饰</p>
+<p>23种设计模式:<br>    1.装饰者模式<br>        允许向一个现有的对象添加新的功能，同时又不改变其结构。装饰者可以在所委托被装饰者的行为之前或者之后加上自己的行为，以达到特定的目的。<br>        参考：<a href="https://blog.csdn.net/wwh578867817/article/details/51480441" target="_blank" rel="noopener">https://blog.csdn.net/wwh578867817/article/details/51480441</a><br>        eg：<br>            假设我们去咖啡店点了一杯咖啡，可以加奶加糖，咖啡、奶、糖各有不同的价格。<br>                此时咖啡就是我们的组件，奶和糖就是我们的装饰者<br>        实现细节：<br>            Component 抽象构件角色：真实对象和装饰对象有相同的接口。这样，客户端对象就能够以与真实对象相同的方式同装饰对象交互<br>            ConcreteComponent具体构件角色（真实对象）：io流中的FileInputStream、　　　　FileOutputStream<br>            Decorator 装饰对象：持有一个抽象构件的引用。装饰对象接受所有客户端的请求，并把这些请求转发给真实的对象。这样，就能在真实对象调用前后增加新的功能。<br>            ConcreteDecorator具体装饰角色：负责给构件对象增加新的责任。</p>
+<p>OAuth 2.0 关于授权的开放网络标准<br>    1.几个专用名词<br>        Third-party application:    第三方应用程序，又称“客户端”(client)<br>        HTTP service:                HTTP服务提供商<br>        Resource Owner：            资源所有者，即“用户”(user)<br>        User Agent:                    用户代理，即浏览器<br>        Authorization server：        认证服务器，即服务提供商专门用来处理认证的服务器<br>        Resource server:            资源服务器，即服务提供商存放用户生成的资源的服务器。与认证服务器可以是同一台，也可以不是<br>    2.OAuth的思路<br>        OAuth在客户端与服务提供商之间，设置了一个授权层，客户端不能直接登录“服务提供商”，只能登录授权层，以此将用户与客户端区分开来。“客户端”登录授权层所用的令牌（token），与用户的密码不同。用户可以在登录的时候，指定授权层令牌的权限范围和有效期。<br>        “客户端”登录授权层以后，“服务提供商”根据令牌的权限范围和有效期，向“客户端”开放用户存储的资料</p>
+<pre><code>                ----    (A)Authorization Request---&gt;       |Resource|
+                &lt;---    (B)Authorization Grant    ----    | Owner  |
+
+      +------+    ----    (c)Authorization Grant    ---&gt;    |Authorization|
+      |Client|  &lt;---    (D)Access Token            ----    |    Server    |
+      +------+                
+                ----    (E)Access Token            ---&gt;    |Resource  |
+                &lt;---    (F)Protected Resrouce    ----    |    Server |
+    解析：
+        （A）用户打开客户端以后，客户端要求用户给予授权
+        （B）用户同意给予客户端授权
+        （C）客户端使用上一步获得的授权，向认证服务器申请令牌
+        （D）认证服务器对客户端进行认证以后，确认无误，同意发放令牌
+        （E）客户端使用令牌，向资源服务器申请获取资源
+        （F）资源服务器确认令牌无误，同意向客户端开发资源
+3.其中B步骤的客户端授权模式
+    1.授权码模式（authorization code）
+
+    2.简化模式（implicit）
+
+    3.密码模式（resource owner password credentials）
+
+    4.客户端模式（client credentials）
+
+    具体参数查看：http://www.ruanyifeng.com/blog/2014/05/oauth_2_0.html
+4.更新令牌
+    如果用户访问的时候，客户端的“访问令牌”已经过期，则需要使用“更新令牌”申请一个新的访问令牌。
+    客户端发出更新令牌的HTTP请求，包含以下参数：
+        granttype：表示使用的授权模式，此处的值固定为&quot;refreshtoken&quot;，必选项。
+        refresh_token：表示早前收到的更新令牌，必选项。
+        scope：表示申请的授权范围，不可以超出上一次申请的范围，如果省略该参数，则表示与上一次一致。
+    eg： 
+        POST /token HTTP/1.1
+         Host: server.example.com
+         Authorization: Basic czZCaGRSa3F0MzpnWDFmQmF0M2JW
+         Content-Type: application/x-www-form-urlencoded
+         grant_type=refresh_token&amp;refresh_token=tGzv3JOkF0XG5Qx2TlKWIA
+</code></pre><p>Swagger<br>    1.概念：<br>        Swagger是一个规范和完整的框架，用于生成、描述、调用和可视化RESTful风格的Web服务。总体目标是使客户端和文件系统作为服务器以同样的速度来更新。文件的方法，参数和模型紧密集成到服务器端的代码，允许API来始终保持同步<br>    2.SpringBoot集成Swagger<br>        1.添加maven依赖，在pom文件中添加：<br>            springfox-swagger2<br>        2.添加swagger配置文件，如下：<br>            @Configuration<br>            @EnableSwagger2<br>            public class SwaggerConfiguration {<br>                @Bean<br>                public Docket api() {<br>                    return new Docket(DocumentationType.SWAGGER_2)<br>                            .ignoredParameterTypes(HttpSession.class)<br>                            .apiInfo(apiInfo())<br>                            .select()            //选择那些路径和api会生成document<br>                            .apis(RequestHandlerSelectors.any())    //对所有api进行监控<br>                            .paths(PathSelectors.any())        //对所有路径进行监控<br>                            .build();<br>                }</p>
+<pre><code>            private ApiInfo apiInfo() {
+                return new ApiInfoBuilder()
+                        .title(&quot;pgc接口调用说明&quot;)
+                        .description(&quot;该文档仅供内部人员使用.&quot;)
+                        .termsOfServiceUrl(&quot;http://xxxx&quot;)
+                        .version(&quot;1.0&quot;)
+                        .build();
+            }
+        }
+    3.此时访问项目下的api-docs，能返回json形式的界面
+3.添加SwaggerUI
+    springfox-swagger-ui
+    生成一个可读性良好的API页面。
+    此时可以访问项目下的swagger-ui.html
+4.Swagger对RESTful风格的api支持的比较好。
+</code></pre><p>SpringBoot拦截器之WebMvcConfigurerAdapter</p>
+<pre><code>1.几个比较常见的：
+    /* 这里配置视图解析器 */
+    void configureViewResolvers(ViewResolverRegistry registry);
+
+    /* 配置内容裁决的一些选项*/
+    void configureContentNegotiation(ContentNegotiationConfigurer configurer);
+
+    /* 视图跳转控制器 */
+    void addViewControllers(ViewControllerRegistry registry);
+
+    /* 静态资源处理 */
+    void addResourceHandlers(ResourceHandlerRegistry registry);
+
+    /* 默认静态资源处理器 */
+    void configureDefaultServletHandling(DefaultServletHandlerConfigurer configurer);
+具体方法查看：https://blog.csdn.net/wujiaqi0921/article/details/78324722
+</code></pre><p>SpringBoot 序列化器注解使用方法<br>    1.@JsonIgnoreProperties<br>        类注解，作用是json序列化时将java bean中的一些属性忽略掉，序列化和反序列化都受影响<br>    2.@JsonIgnore<br>        属性或方法注解（最好在属性上），作用同JsonIgnoreProperties<br>    3.@JsonFormat<br>        属性或方法注解（最好在属性上），可以方便的把Date类型直接转化为我们想要的模式，例如@JsonFormat(pattern=”yyyy-MM-dd HH-mm-ss”)<br>    4.@JsonSerialize<br>        用于属性或getter方法上，用于在序列化时嵌入我们自定义的代码<br>    5.@JsonDeserialize<br>        用于属性或getter方法上，用于在反序列化时可以嵌入我们自定义的代码</p>
+<p>SpringBoot 使用 JavaMailSender发送邮件<br>—–.SpringBoot<br>        添加依赖<br>        <dependency><br>            <groupid>org.springframework.boot</groupid><br>            <artifactid>spring-boot-starter-mail</artifactid><br>        </dependency><br>    2.配置属性<br>        spring.mail.host=smtp.qq.com<br>        spring.mail.username=用户名<br>        spring.mail.password=密码<br>        spring.mail.properties.mail.smtp.auth=true<br>        spring.mail.properties.mail.smtp.starttls.enable=true<br>        spring.mail.properties.mail.smtp.starttls.required=true<br>    3.测试<br>        @Autowired<br>        private JavaMailSender mailSender;</p>
+<pre><code>SimpleMailMessage message = new SimpleMailMessage();
+message.setFrom(&quot;1153693791@qq.com&quot;);
+message.setTo(&quot;1153693791@qq.com&quot;);
+message.setSubject(&quot;主题：&quot;+title);
+message.setText(content);
+mailSender.send(message);
+</code></pre><p>Spring JPA 开启审计功能：<br>    JPA Audit:<br>        在Spring jpa中，支持在字段或者方法上进行注解@CreateDate,@CreatedBy,@LastModifiedDate,@LastModifiedBy<br>    使用：<br>        1.申明实体类，需要在类上添加注解@EntityListeners(AuditingEntityListener.class)，<br>            @Entity<br>            @Table(name = “store_source_bind”)<br>            @EntityListeners(AuditingEntityListener.class)<br>            public class StoreSourceBind {</p>
+<pre><code>2.在需要的字段上加上@CreateDate,@CreatedBy,@LastModifiedDate,@LastModifiedBy
+@Column(name = &quot;create_time&quot;)
+@CreatedDate
+private Date createTime;
+
+3.继承AuditorAware&lt;T&gt;来指定返回的创建信息:
+    @Component(&quot;auditorAware&quot;)
+    public class SpringSecurityAuditorAware implements AuditorAware&lt;String&gt; {
+
+        private HttpSession session;
+
+        @Override
+        public String getCurrentAuditor() {
+            return Utils.getUserIdFromSession(session);
+        }
+    }
+4.在application启动类中加上注解EnableJpaAuditing或者EnableMongoAuditing（MongoDB的审计），
+
+@EnableJpaAuditing
+@EnableMongoAuditing(auditorAwareRef = &quot;auditorAware&quot;)//开启审计功能
+public class WalletApplication {
+    public static void main(String[] args) {
+        new SpringApplicationBuilder(WalletApplication.class).web(true).run(args);
+    }
+}
+</code></pre><p>SpringBoot 定时任务：</p>
+<pre><code>1.开启定时任务的配置
+  在启动文件上，添加注解 @EnableScheduling
+2.创建定时任务
+  在需要定时执行的文件上方添加注解：
+      @Scheduled(fixedRate = 5000)
+3. @Scheduled 详解：
+    1.fixedRate = 5000 ：上次开始执行时间点之后5秒执行
+    2.initialDelay = 1000 , fixedRate = 5000 
+        第一次延迟 1 秒后执行，之后按照 5 秒的规则执行
+    3.cron = &quot;*/5 ***&quot;) :
+        通过 cron 表达式定义规则
+</code></pre>
+      
+    </div>
+    <footer class="article-footer">
+      <a data-url="http://yoursite.com/2018/09/30/SpringBoot/SpringBoot/" data-id="cjxpj03cx00d0rgtw2gewyk1s" class="article-share-link">Share</a>
+      
+      
+  <ul class="article-tag-list"><li class="article-tag-list-item"><a class="article-tag-list-link" href="/tags/SpringBoot/">SpringBoot</a></li><li class="article-tag-list-item"><a class="article-tag-list-link" href="/tags/java/">java</a></li></ul>
+
+    </footer>
+  </div>
+  
+</article>
+
+
+  
+    <article id="post-SpringBoot/OSS-阿里云文件上传" class="article article-type-post" itemscope itemprop="blogPost">
+  <div class="article-meta">
+    <a href="/2018/09/30/SpringBoot/OSS-阿里云文件上传/" class="article-date">
+  <time datetime="2018-09-30T06:46:03.000Z" itemprop="datePublished">2018-09-30</time>
+</a>
+    
+  <div class="article-category">
+    <a class="article-category-link" href="/categories/Java成神之路/">Java成神之路</a>►<a class="article-category-link" href="/categories/Java成神之路/SpringBoot/">SpringBoot</a>
+  </div>
+
+  </div>
+  <div class="article-inner">
+    
+    
+      <header class="article-header">
+        
+  
+    <h1 itemprop="name">
+      <a class="article-title" href="/2018/09/30/SpringBoot/OSS-阿里云文件上传/">基于阿里云OSS的文件上传服务</a>
+    </h1>
+  
+
+      </header>
+    
+    <div class="article-entry" itemprop="articleBody">
+      
+        <h1 id="基于阿里云OSS的文件上传服务"><a href="#基于阿里云OSS的文件上传服务" class="headerlink" title="基于阿里云OSS的文件上传服务"></a>基于阿里云OSS的文件上传服务</h1><h2 id="1-阿里云-OSS-服务介绍"><a href="#1-阿里云-OSS-服务介绍" class="headerlink" title="1.阿里云 OSS 服务介绍"></a>1.阿里云 OSS 服务介绍</h2><pre><code>OSS(Object Storage Service) 即对象存储服务，在 OSS 中每个文件都有一个 Key，通过这个 Key 来指向不同的文件对象。      
+
+如果你提交的key为&quot;/attachment/2016/123.txt&quot;，那么在web管理平台上你可以看到上述以&quot;/&quot;分开的文件夹形式，即 OSS 中的 Key 就是&quot;/attachement/2016/123.txt&quot;
+</code></pre><h2 id="2-Java-SDK"><a href="#2-Java-SDK" class="headerlink" title="2.Java SDK"></a>2.Java SDK</h2><blockquote>
+<p>aliyun-sdk-oss</p>
+</blockquote>
+<h2 id="3-如何使用-OSS"><a href="#3-如何使用-OSS" class="headerlink" title="3.如何使用 OSS"></a>3.如何使用 OSS</h2><pre><code>阿里云OSS方服务，通过自身提供的Client来实现上传和下载。所以在使用OSS服务上传文件时，需要创建三个类： Client类 、 Config类 和 上传类。
+</code></pre><h2 id="4-构建-OSS-Client-类"><a href="#4-构建-OSS-Client-类" class="headerlink" title="4.构建 OSS Client 类"></a>4.构建 OSS Client 类</h2><blockquote>
+<p>获得 OSS 连接的工具类</p>
+</blockquote>
+<pre><code>@Component
+public class DefaultOssClient{
+
+    @Value(&quot;${oss.endpoint})
+    String ENDPOINT;
+
+    @Value(&quot;${oss.access.key.id}&quot;)
+    String ACCESS_KEY_ID;
+
+    @Value(&quot;${oss.access.key.secret}&quot;)
+    String ACCESS_KEY_SECRET;
+
+    @Value(&quot;${oss.bucket.name}&quot;)
+    String BUCKET_NAME;
+
+    private static OSSClient client = new OSSClient(ENDPOINT,ACCESS_KEY_ID,ACCESS_KEY_SECRETT,DefaultConfig.getDefaultConfig());
+
+    static OSSClient getConnection(){
+        if(client == null){
+            client = new OSSClient(ENDPOINT,ACCESS_KEY_ID,ACCESS_KEY_SECRET,DefaultConfig.getDefaultConfig());
+        }
+        return client;
+    }
+
+    static void shutdownOSSClient(){
+        client.shutdown();
+        client = null;
+    }
+}
+</code></pre><blockquote>
+<p>创建一个保存 OSS 地址的文件类，这个文件用户返回给界面</p>
+</blockquote>
+<pre><code>public class OSSFile{
+    String fileId;
+    String ossUrl;
+    String fielname;
+    double sizeKb;
+
+    /* getter and setter*/
+}
+</code></pre><blockquote>
+<p>构建 OSS Config 类，用于指定文件上传的配置</p>
+</blockquote>
+<pre><code>static final ClientConfiguration conf = new ClientCOnfiguration();
+
+public class DefaultConfig{
+    private DefaultConfig(){
+        conf.setMaxConnections(100);
+        conf.setConnectionTimeout(5000);
+        conf.setMaxErrorRetry(3);
+        conf.setSocketTimeout(2000);
+    }
+
+    static ClientConfiguration getDefaultConfig(){
+        return conf;
+    }
+}
+</code></pre><blockquote>
+<p>构建 OSS 文件上传类</p>
+</blockquote>
+<pre><code>public class OSSUpload{
+
+    static String put1(File file){
+        String return_key = null;
+        try{
+            OSSClient client = DefaultOssClient.getConnection();
+            if(file !=null){
+                String fileName = file.getName();
+                String timeStamp = Date2Str.getCurrentTimeStamp();
+                String timeDate = Date2Str.getCurrentDate5();
+                String key = Constant.bashFilePath + timeDate + timeStamp +&quot;/&quot; +fileName;
+
+                client.putObject(new PutObjectRequest(Constant.bucketName,key,file));
+
+                return_key = key;
+            }
+            DefaultOssClient.shutdownOSSClient();
+        }catch(ClientException e){
+            return null;
+        }
+        return return_key;
+    }
+
+    static String put2(InputStream in,String filename){
+        String return_key = null;
+        try{
+            OSSClient client = DefaultOssClient.getConnection();
+            if(in != null){
+                String fileName = filename;
+                try{
+                    fileName = new String(filename.getBytes(&quot;ISO-8859-1&quot;),&quot;UTF-8&quot;);
+                }catch(UnsupportedEncodingException e){
+                    e.printStackTrace();
+                }
+                String timeStamp = System.getCurrentTimeStamp();
+                String timeDate = Date2Str.getCurrentDate5();
+                String key = Constant.bashFilePath + timeDate + timeStamp + &quot;/&quot; + fileName;
+
+                client.put(new PutObjectRequest(Constant.bucketName,key,in));
+
+                return_key = key;
+            }
+
+            DefaultOssClient.shutdownOSSClient();
+        }catch(ClientException e){
+            return null;
+        }
+
+        return return_key;
+    }
+}
+</code></pre><blockquote>
+<p>上传测试</p>
+</blockquote>
+<pre><code>public class FileUpload{
+    public static void main(String[] args){
+        try{
+            uploadOSS();
+        }catch(IOException e){
+            e.printStackTrace();
+        }
+    }
+
+    public static void uploadOSS() throws ClientProtocolExcetion{
+        HttpPost httpPost = new HttpPost(&quot;http://127.0.0.1:7001/test/autonavi/shanghai/api/attachment/oss/);
+        httpPost.addHeader(&quot;key&quot;,&quot;123&quot;);
+        httpPost.addHeader(&quot;user&quot;,&quot;123&quot;);
+        httpPost.addHeader(&quot;method&quot;,&quot;123&quot;);
+        httpPost.addHeader(&quot;filename&quot;,new String(&quot;黄山［哈哈］.jpg&quot;.getBytes(&quot;UTF-8&quot;),&quot;ISO-8859-1&quot;));
+        httpPost.addHeader(&quot;type&quot;,&quot;01&quot;);
+
+        FileEntity reqEntity = new FileEntity(new File(&quot;/Users/123/Pictures/Huangshan.jpg&quot;));
+
+        httpPost.setEntity(reqEntity);
+
+        HttpClient client = new DefaultHttpClient();
+        HttpResponse response = client.execute(httpPost);
+
+        System.out.println(response);
+    }
+}
+</code></pre>
+      
+    </div>
+    <footer class="article-footer">
+      <a data-url="http://yoursite.com/2018/09/30/SpringBoot/OSS-阿里云文件上传/" data-id="cjxpj02t30024rgtw7mahodf4" class="article-share-link">Share</a>
+      
+      
+  <ul class="article-tag-list"><li class="article-tag-list-item"><a class="article-tag-list-link" href="/tags/SpringBoot/">SpringBoot</a></li><li class="article-tag-list-item"><a class="article-tag-list-link" href="/tags/java/">java</a></li></ul>
+
+    </footer>
+  </div>
+  
+</article>
+
+
+  
+    <article id="post-java/Java中使用Properties" class="article article-type-post" itemscope itemprop="blogPost">
+  <div class="article-meta">
+    <a href="/2018/09/30/java/Java中使用Properties/" class="article-date">
+  <time datetime="2018-09-30T06:46:03.000Z" itemprop="datePublished">2018-09-30</time>
+</a>
+    
+  <div class="article-category">
+    <a class="article-category-link" href="/categories/Java成神之路/">Java成神之路</a>
+  </div>
+
+  </div>
+  <div class="article-inner">
+    
+    
+      <header class="article-header">
+        
+  
+    <h1 itemprop="name">
+      <a class="article-title" href="/2018/09/30/java/Java中使用Properties/">读取 Properties 文件的几种方式</a>
+    </h1>
+  
+
+      </header>
+    
+    <div class="article-entry" itemprop="articleBody">
+      
+        <h1 id="读取Properties文件的几种方式"><a href="#读取Properties文件的几种方式" class="headerlink" title="读取Properties文件的几种方式"></a>读取Properties文件的几种方式</h1><p><img src="https://upload-images.jianshu.io/upload_images/13603359-9bc057f7c3fab711.png?imageMogr2/auto-orient/strip%7CimageView2/2/w/1240" alt="读取Properties文件的几种方式"></p>
+        
+          <p class="article-more-link">
+            <a href="/2018/09/30/java/Java中使用Properties/#more">Read More</a>
+          </p>
+        
+      
+    </div>
+    <footer class="article-footer">
+      <a data-url="http://yoursite.com/2018/09/30/java/Java中使用Properties/" data-id="cjxpj02vj004srgtw97ri42ii" class="article-share-link">Share</a>
+      
+      
+  <ul class="article-tag-list"><li class="article-tag-list-item"><a class="article-tag-list-link" href="/tags/SpringBoot/">SpringBoot</a></li><li class="article-tag-list-item"><a class="article-tag-list-link" href="/tags/java/">java</a></li></ul>
+
+    </footer>
+  </div>
+  
+</article>
+
+
+  
+
+
+  <nav id="page-nav">
+    
+    <a class="extend prev" rel="prev" href="/page/25/">&laquo; Prev</a><a class="page-number" href="/">1</a><span class="space">&hellip;</span><a class="page-number" href="/page/24/">24</a><a class="page-number" href="/page/25/">25</a><span class="page-number current">26</span><a class="page-number" href="/page/27/">27</a><a class="page-number" href="/page/28/">28</a><span class="space">&hellip;</span><a class="page-number" href="/page/33/">33</a><a class="extend next" rel="next" href="/page/27/">Next &raquo;</a>
+  </nav>
+
+</section>
+        
+          <aside id="sidebar">
+  
+    
+  <div class="widget-wrap">
+    <h3 class="widget-title">Categories</h3>
+    <div class="widget">
+      <ul class="category-list"><li class="category-list-item"><a class="category-list-link" href="/categories/Docker学习/">Docker学习</a></li><li class="category-list-item"><a class="category-list-link" href="/categories/Git命令学习/">Git命令学习</a></li><li class="category-list-item"><a class="category-list-link" href="/categories/JAVA-核心知识点整理/">JAVA 核心知识点整理</a></li><li class="category-list-item"><a class="category-list-link" href="/categories/Java/">Java</a></li><li class="category-list-item"><a class="category-list-link" href="/categories/Java并发编程与高并发解决方案/">Java并发编程与高并发解决方案</a></li><li class="category-list-item"><a class="category-list-link" href="/categories/Java并发编程的艺术/">Java并发编程的艺术</a></li><li class="category-list-item"><a class="category-list-link" href="/categories/Java成神之路/">Java成神之路</a><ul class="category-list-child"><li class="category-list-item"><a class="category-list-link" href="/categories/Java成神之路/SpringBoot/">SpringBoot</a></li><li class="category-list-item"><a class="category-list-link" href="/categories/Java成神之路/Study社区/">Study社区</a></li></ul></li><li class="category-list-item"><a class="category-list-link" href="/categories/Linux学习之路/">Linux学习之路</a></li><li class="category-list-item"><a class="category-list-link" href="/categories/MarkDown语法/">MarkDown语法</a></li><li class="category-list-item"><a class="category-list-link" href="/categories/React学习/">React学习</a></li><li class="category-list-item"><a class="category-list-link" href="/categories/SpringBoot-参考指南/">SpringBoot 参考指南</a></li><li class="category-list-item"><a class="category-list-link" href="/categories/工具函数/">工具函数</a></li><li class="category-list-item"><a class="category-list-link" href="/categories/设计模式/">设计模式</a></li><li class="category-list-item"><a class="category-list-link" href="/categories/高性能MySQL/">高性能MySQL</a></li></ul>
+    </div>
+  </div>
+
+
+  
+    
+  <div class="widget-wrap">
+    <h3 class="widget-title">Tags</h3>
+    <div class="widget">
+      <ul class="tag-list"><li class="tag-list-item"><a class="tag-list-link" href="/tags/Git/">Git</a></li><li class="tag-list-item"><a class="tag-list-link" href="/tags/Git-Bash/">Git Bash</a></li><li class="tag-list-item"><a class="tag-list-link" href="/tags/Linux/">Linux</a></li><li class="tag-list-item"><a class="tag-list-link" href="/tags/MQ/">MQ</a></li><li class="tag-list-item"><a class="tag-list-link" href="/tags/MySQL/">MySQL</a></li><li class="tag-list-item"><a class="tag-list-link" href="/tags/POI/">POI</a></li><li class="tag-list-item"><a class="tag-list-link" href="/tags/Spring-Cloud/">Spring Cloud</a></li><li class="tag-list-item"><a class="tag-list-link" href="/tags/Spring-Data/">Spring Data</a></li><li class="tag-list-item"><a class="tag-list-link" href="/tags/SpringBoot/">SpringBoot</a></li><li class="tag-list-item"><a class="tag-list-link" href="/tags/docker/">docker</a></li><li class="tag-list-item"><a class="tag-list-link" href="/tags/gradle/">gradle</a></li><li class="tag-list-item"><a class="tag-list-link" href="/tags/java/">java</a></li><li class="tag-list-item"><a class="tag-list-link" href="/tags/poi/">poi</a></li><li class="tag-list-item"><a class="tag-list-link" href="/tags/并发编程/">并发编程</a></li><li class="tag-list-item"><a class="tag-list-link" href="/tags/数据库/">数据库</a></li><li class="tag-list-item"><a class="tag-list-link" href="/tags/读书笔记/">读书笔记</a></li><li class="tag-list-item"><a class="tag-list-link" href="/tags/高并发/">高并发</a></li></ul>
+    </div>
+  </div>
+
+
+  
+    
+  <div class="widget-wrap">
+    <h3 class="widget-title">Tag Cloud</h3>
+    <div class="widget tagcloud">
+      <a href="/tags/Git/" style="font-size: 13.75px;">Git</a> <a href="/tags/Git-Bash/" style="font-size: 11.25px;">Git Bash</a> <a href="/tags/Linux/" style="font-size: 12.5px;">Linux</a> <a href="/tags/MQ/" style="font-size: 15px;">MQ</a> <a href="/tags/MySQL/" style="font-size: 17.5px;">MySQL</a> <a href="/tags/POI/" style="font-size: 16.25px;">POI</a> <a href="/tags/Spring-Cloud/" style="font-size: 10px;">Spring Cloud</a> <a href="/tags/Spring-Data/" style="font-size: 12.5px;">Spring Data</a> <a href="/tags/SpringBoot/" style="font-size: 15px;">SpringBoot</a> <a href="/tags/docker/" style="font-size: 10px;">docker</a> <a href="/tags/gradle/" style="font-size: 11.25px;">gradle</a> <a href="/tags/java/" style="font-size: 20px;">java</a> <a href="/tags/poi/" style="font-size: 10px;">poi</a> <a href="/tags/并发编程/" style="font-size: 12.5px;">并发编程</a> <a href="/tags/数据库/" style="font-size: 17.5px;">数据库</a> <a href="/tags/读书笔记/" style="font-size: 18.75px;">读书笔记</a> <a href="/tags/高并发/" style="font-size: 12.5px;">高并发</a>
+    </div>
+  </div>
+
+  
+    
+  <div class="widget-wrap">
+    <h3 class="widget-title">Archives</h3>
+    <div class="widget">
+      <ul class="archive-list"><li class="archive-list-item"><a class="archive-list-link" href="/archives/2019/12/">December 2019</a></li><li class="archive-list-item"><a class="archive-list-link" href="/archives/2019/11/">November 2019</a></li><li class="archive-list-item"><a class="archive-list-link" href="/archives/2019/07/">July 2019</a></li><li class="archive-list-item"><a class="archive-list-link" href="/archives/2019/06/">June 2019</a></li><li class="archive-list-item"><a class="archive-list-link" href="/archives/2019/05/">May 2019</a></li><li class="archive-list-item"><a class="archive-list-link" href="/archives/2018/11/">November 2018</a></li><li class="archive-list-item"><a class="archive-list-link" href="/archives/2018/10/">October 2018</a></li><li class="archive-list-item"><a class="archive-list-link" href="/archives/2018/09/">September 2018</a></li><li class="archive-list-item"><a class="archive-list-link" href="/archives/2017/05/">May 2017</a></li></ul>
+    </div>
+  </div>
+
+
+  
+    
+  <div class="widget-wrap">
+    <h3 class="widget-title">Recent Posts</h3>
+    <div class="widget">
+      <ul>
+        
+          <li>
+            <a href="/2019/12/30/blog/2019/">2019年目标</a>
+          </li>
+        
+          <li>
+            <a href="/2019/12/01/读书笔记/《Java并发编程的艺术》/0.0_目录/">《Java并发编程的艺术》读书笔记 - 目录</a>
+          </li>
+        
+          <li>
+            <a href="/2019/12/01/读书笔记/《Java核心知识点整理》/0.目录/">《JAVA 核心知识点整理》读书笔记 - 目录</a>
+          </li>
+        
+          <li>
+            <a href="/2019/11/30/读书笔记/《高性能MySQL》/0.目录/">《高性能MySQL》读书笔记 - 目录</a>
+          </li>
+        
+          <li>
+            <a href="/2019/07/05/读书笔记/《JavaDesignPatterns》/8.建造者模式/">《Java Design Patterns》第六章 建造者模式 - 复杂对象的组装与创建</a>
+          </li>
+        
+      </ul>
+    </div>
+  </div>
+
+  
+</aside>
+        
+      </div>
+      <footer id="footer">
+  
+  <div class="outer">
+    <div id="footer-info" class="inner">
+      &copy; 2019 koral<br>
+      Powered by <a href="http://hexo.io/" target="_blank">Hexo</a>
+    </div>
+  </div>
+</footer>
+    </div>
+    <nav id="mobile-nav">
+  
+    <a href="/" class="mobile-nav-link">Home</a>
+  
+    <a href="/archives" class="mobile-nav-link">Archives</a>
+  
+</nav>
+    
+
+<script src="//ajax.googleapis.com/ajax/libs/jquery/2.0.3/jquery.min.js"></script>
+
+
+  <link rel="stylesheet" href="/fancybox/jquery.fancybox.css">
+  <script src="/fancybox/jquery.fancybox.pack.js"></script>
+
+
+<script src="/js/script.js"></script>
+
+
+
+  </div>
+</body>
+</html>

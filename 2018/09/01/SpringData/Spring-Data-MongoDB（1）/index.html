@@ -1,0 +1,298 @@
+<!DOCTYPE html>
+<html>
+<head>
+  <meta charset="utf-8">
+  
+
+  
+  <title>SpringDataMongoDB(一) | 罗凯的博客</title>
+  <meta name="viewport" content="width=device-width, initial-scale=1, maximum-scale=1">
+  <meta name="description" content="前言Spring DataSpring MongoDB 与Spring Framewrok 提供的 JDBC 十分相似，在熟悉本篇文章之前，需要先熟悉 MongoDB 和Spring 的概念 Spring Data 使用了 Spring 框架的核心功能，包括：  IOC容器 (IOC container) 类型转换系统 (type conversion system) EL表达式 (express">
+<meta name="keywords" content="Spring Data">
+<meta property="og:type" content="article">
+<meta property="og:title" content="SpringDataMongoDB(一)">
+<meta property="og:url" content="http://yoursite.com/2018/09/01/SpringData/Spring-Data-MongoDB（1）/index.html">
+<meta property="og:site_name" content="罗凯的博客">
+<meta property="og:description" content="前言Spring DataSpring MongoDB 与Spring Framewrok 提供的 JDBC 十分相似，在熟悉本篇文章之前，需要先熟悉 MongoDB 和Spring 的概念 Spring Data 使用了 Spring 框架的核心功能，包括：  IOC容器 (IOC container) 类型转换系统 (type conversion system) EL表达式 (express">
+<meta property="og:locale" content="zh-Hans">
+<meta property="og:updated_time" content="2019-07-01T02:49:01.381Z">
+<meta name="twitter:card" content="summary">
+<meta name="twitter:title" content="SpringDataMongoDB(一)">
+<meta name="twitter:description" content="前言Spring DataSpring MongoDB 与Spring Framewrok 提供的 JDBC 十分相似，在熟悉本篇文章之前，需要先熟悉 MongoDB 和Spring 的概念 Spring Data 使用了 Spring 框架的核心功能，包括：  IOC容器 (IOC container) 类型转换系统 (type conversion system) EL表达式 (express">
+  
+    <link rel="alternate" href="/atom.xml" title="罗凯的博客" type="application/atom+xml">
+  
+  
+    <link rel="icon" href="https://i.loli.net/2019/07/04/5d1db2fb9593c58427.gif">
+  
+  
+    <link href="//fonts.googleapis.com/css?family=Source+Code+Pro" rel="stylesheet" type="text/css">
+  
+  <link rel="stylesheet" href="/css/style.css">
+</head>
+
+<body>
+  <div id="container">
+    <div id="wrap">
+      <header id="header">
+  <div id="banner"></div>
+  <div id="header-outer" class="outer">
+    <div id="header-title" class="inner">
+      <h1 id="logo-wrap">
+        <a href="/" id="logo">罗凯的博客</a>
+      </h1>
+      
+        <h2 id="subtitle-wrap">
+          <a href="/" id="subtitle">一个大帅哥</a>
+        </h2>
+      
+    </div>
+    <div id="header-inner" class="inner">
+      <nav id="main-nav">
+        <a id="main-nav-toggle" class="nav-icon"></a>
+        
+          <a class="main-nav-link" href="/">Home</a>
+        
+          <a class="main-nav-link" href="/archives">Archives</a>
+        
+      </nav>
+      <nav id="sub-nav">
+        
+          <a id="nav-rss-link" class="nav-icon" href="/atom.xml" title="RSS Feed"></a>
+        
+        <a id="nav-search-btn" class="nav-icon" title="Search"></a>
+      </nav>
+      <div id="search-form-wrap">
+        <form action="//google.com/search" method="get" accept-charset="UTF-8" class="search-form"><input type="search" name="q" class="search-form-input" placeholder="Search"><button type="submit" class="search-form-submit">&#xF002;</button><input type="hidden" name="sitesearch" value="http://yoursite.com"></form>
+      </div>
+    </div>
+  </div>
+</header>
+      <div class="outer">
+        <section id="main"><article id="post-SpringData/Spring-Data-MongoDB（1）" class="article article-type-post" itemscope itemprop="blogPost">
+  <div class="article-meta">
+    <a href="/2018/09/01/SpringData/Spring-Data-MongoDB（1）/" class="article-date">
+  <time datetime="2018-09-01T06:46:03.000Z" itemprop="datePublished">2018-09-01</time>
+</a>
+    
+  <div class="article-category">
+    <a class="article-category-link" href="/categories/Java/">Java</a>
+  </div>
+
+  </div>
+  <div class="article-inner">
+    
+    
+      <header class="article-header">
+        
+  
+    <h1 class="article-title" itemprop="name">
+      SpringDataMongoDB(一)
+    </h1>
+  
+
+      </header>
+    
+    <div class="article-entry" itemprop="articleBody">
+      
+        <h1 id="前言"><a href="#前言" class="headerlink" title="前言"></a>前言</h1><h2 id="Spring-Data"><a href="#Spring-Data" class="headerlink" title="Spring Data"></a>Spring Data</h2><p>Spring MongoDB 与Spring Framewrok 提供的 JDBC 十分相似，在熟悉本篇文章之前，需要先熟悉 MongoDB 和Spring 的概念</p>
+<p>Spring Data 使用了 Spring 框架的核心功能，包括：</p>
+<ul>
+<li>IOC容器 (IOC container)</li>
+<li>类型转换系统 (type conversion system)</li>
+<li>EL表达式 (expression language)</li>
+<li>JMX集成</li>
+<li>Dao异常层次结构</li>
+</ul>
+<h2 id="MongoDB"><a href="#MongoDB" class="headerlink" title="MongoDB"></a>MongoDB</h2><p>MongoDB作为一种 NOSQL 工具，非 RDMBS 设计范式，官方文档：<a href="https://docs.mongodb.com/manual/reference/operator/query/in/index.html" target="_blank" rel="noopener">https://docs.mongodb.com/manual/reference/operator/query/in/index.html</a></p>
+<p>RDMBS设计范式：<a href="http://blog.51cto.com/echoroot/1953996" target="_blank" rel="noopener">http://blog.51cto.com/echoroot/1953996</a></p>
+<h2 id="Spring-Data-MongoDB-2-0"><a href="#Spring-Data-MongoDB-2-0" class="headerlink" title="Spring Data MongoDB 2.0"></a>Spring Data MongoDB 2.0</h2><ul>
+<li>升级至 java8</li>
+<li>使用 Document API，而非 DBObject</li>
+<li>支持聚合结果流 Stream</li>
+<li>Kotlin 扩展</li>
+<li>支持隔离 Update 操作</li>
+<li>使用 Spring 的 @NonNullApi 和 @Nullable 保证 Null 安全</li>
+</ul>
+<h2 id="Spring-Data-MongoDB-支持的注解"><a href="#Spring-Data-MongoDB-支持的注解" class="headerlink" title="Spring Data MongoDB 支持的注解"></a>Spring Data MongoDB 支持的注解</h2><figure class="highlight java"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br></pre></td><td class="code"><pre><span class="line"><span class="meta">@Document</span>   : 文档标识，将 java 类与 Collection 文档对应</span><br><span class="line"><span class="meta">@Id</span>         : 文档的唯一标识，在 mongodb 中为 ObjectID，生成规则：时间戳+机器标识+进程ID+自增计数器(确保同一时间内ID不会冲突)</span><br><span class="line"><span class="meta">@Field</span>      : 属性注解</span><br><span class="line"><span class="meta">@Indexed</span>    : 索引</span><br><span class="line"><span class="meta">@CompoundIndex</span>  : 混合索引</span><br><span class="line"><span class="meta">@GeoSpatialIndexed</span>  : 声明该字段为地理信息的索引</span><br><span class="line"><span class="meta">@Transient</span>  : 映射忽略的字段 (即不会保存到 mongodb)</span><br><span class="line"><span class="meta">@Query</span>      ：查询</span><br></pre></td></tr></table></figure>
+<h2 id="依赖"><a href="#依赖" class="headerlink" title="依赖"></a>依赖</h2><p>在使用 SpringDataMongoDB 之前，需要先声明对 SpringData 模块的依赖关系。</p>
+<p>既然 SpringData 存储库抽象中的中央接口是 Repository 。 该接口的子类 CrudRepository 实现了实体类的 CRUD 功能，如果需要的话，也可以通过继承该接口来拓展 ：<br><figure class="highlight java"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br><span class="line">14</span><br><span class="line">15</span><br><span class="line">16</span><br><span class="line">17</span><br></pre></td><td class="code"><pre><span class="line"><span class="keyword">public</span> <span class="class"><span class="keyword">interface</span> <span class="title">CrudRepository</span>&lt;<span class="title">T</span>, <span class="title">ID</span> <span class="keyword">extends</span> <span class="title">Serializable</span>&gt;</span></span><br><span class="line"><span class="class">  <span class="keyword">extends</span> <span class="title">Repository</span>&lt;<span class="title">T</span>, <span class="title">ID</span>&gt; </span>&#123;</span><br><span class="line"></span><br><span class="line">  &lt;S extends T&gt; <span class="function">S <span class="title">save</span><span class="params">(S entity)</span></span>;      </span><br><span class="line"></span><br><span class="line">  <span class="function">Optional&lt;T&gt; <span class="title">findById</span><span class="params">(ID primaryKey)</span></span>; </span><br><span class="line"></span><br><span class="line">  <span class="function">Iterable&lt;T&gt; <span class="title">findAll</span><span class="params">()</span></span>;               </span><br><span class="line"></span><br><span class="line">  <span class="function"><span class="keyword">long</span> <span class="title">count</span><span class="params">()</span></span>;                        </span><br><span class="line"></span><br><span class="line">  <span class="function"><span class="keyword">void</span> <span class="title">delete</span><span class="params">(T entity)</span></span>;               </span><br><span class="line"></span><br><span class="line">  <span class="function"><span class="keyword">boolean</span> <span class="title">existsById</span><span class="params">(ID primaryKey)</span></span>;   </span><br><span class="line"></span><br><span class="line">  <span class="comment">// … more functionality omitted.</span></span><br><span class="line">&#125;</span><br></pre></td></tr></table></figure></p>
+<blockquote>
+<p>除了 CrudRepository 之外，还有 JpaRepository 和 MongoRepository。在 CrudRepository 中，有许多抽象方法添加了额外的方法来简化对实体的分页访问。</p>
+</blockquote>
+<figure class="highlight java"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br></pre></td><td class="code"><pre><span class="line"><span class="comment">/**</span></span><br><span class="line"><span class="comment">* PagingAndSortingRepository 方法提供了分页和排序的功能</span></span><br><span class="line"><span class="comment">*/</span></span><br><span class="line"><span class="keyword">public</span> <span class="class"><span class="keyword">interface</span> <span class="title">PagingAndSortingRepository</span>&lt;<span class="title">T</span>, <span class="title">ID</span> <span class="keyword">extends</span> <span class="title">Serializable</span>&gt;</span></span><br><span class="line"><span class="class">  <span class="keyword">extends</span> <span class="title">CrudRepository</span>&lt;<span class="title">T</span>, <span class="title">ID</span>&gt; </span>&#123;</span><br><span class="line"></span><br><span class="line">  <span class="function">Iterable&lt;T&gt; <span class="title">findAll</span><span class="params">(Sort sort)</span></span>;</span><br><span class="line"></span><br><span class="line">  <span class="function">Page&lt;T&gt; <span class="title">findAll</span><span class="params">(Pageable pageable)</span></span>;</span><br><span class="line">&#125;</span><br></pre></td></tr></table></figure>
+<blockquote>
+<p>还有包含：删除查询、计数、查询等相关接口</p>
+</blockquote>
+<h2 id="定义自己的-Repository"><a href="#定义自己的-Repository" class="headerlink" title="定义自己的 Repository"></a>定义自己的 Repository</h2><p>声明扩展 Repository 或者其子接口之一的接口，并嵌入需要处理的对象和 ID 类型：<br><figure class="highlight java"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br></pre></td><td class="code"><pre><span class="line"><span class="class"><span class="keyword">interface</span> <span class="title">UserRepository</span> <span class="keyword">extends</span> <span class="title">MongoRepository</span>&lt;<span class="title">User</span>,<span class="title">String</span>&gt;</span>&#123;  <span class="comment">// UserRepository 默认继承了父类的 CRUD 方法</span></span><br><span class="line">    <span class="function">List&lt;User&gt; <span class="title">findByName</span><span class="params">(String name)</span></span>; <span class="comment">// 扩展的查询方法</span></span><br><span class="line">&#125;</span><br></pre></td></tr></table></figure></p>
+<h2 id="repository-方法的-Null-处理"><a href="#repository-方法的-Null-处理" class="headerlink" title="repository 方法的 Null 处理"></a>repository 方法的 Null 处理</h2><p>从 Spring Data 2.0 开始，返回单个聚合实例的 Repository 的 CRUD 方法 可以使用 Java8 中的Optional 来只是可能缺少的值，支持返回一下的包装类型：</p>
+<ul>
+<li>com.google.common.base.Optional</li>
+<li>scala.Option</li>
+<li>io.vavr.control.Option</li>
+<li>javaslang.control.Option (不推荐)</li>
+</ul>
+<p>或者，不使用包装类型，直接返回查询结果为 Null。 使用 Optional 的好处在于保证了方法返回的对象永远不会为 Null，而是相应的 空表示。</p>
+<h2 id="多-Spring-Data-模块的-Repository"><a href="#多-Spring-Data-模块的-Repository" class="headerlink" title="多 Spring Data 模块的 Repository"></a>多 Spring Data 模块的 Repository</h2><figure class="highlight java"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br></pre></td><td class="code"><pre><span class="line"><span class="class"><span class="keyword">interface</span> <span class="title">MyRepository</span> <span class="keyword">extends</span> <span class="title">JpaRepository</span>&lt;<span class="title">User</span>, <span class="title">Long</span>&gt; </span>&#123; &#125;</span><br><span class="line"></span><br><span class="line"><span class="meta">@NoRepositoryBean</span></span><br><span class="line"><span class="class"><span class="keyword">interface</span> <span class="title">MyBaseRepository</span>&lt;<span class="title">T</span>, <span class="title">ID</span> <span class="keyword">extends</span> <span class="title">Serializable</span>&gt; <span class="keyword">extends</span> <span class="title">JpaRepository</span>&lt;<span class="title">T</span>, <span class="title">ID</span>&gt; </span>&#123;</span><br><span class="line">  …</span><br><span class="line">&#125;</span><br><span class="line"></span><br><span class="line"><span class="class"><span class="keyword">interface</span> <span class="title">UserRepository</span> <span class="keyword">extends</span> <span class="title">MyBaseRepository</span>&lt;<span class="title">User</span>, <span class="title">Long</span>&gt; </span>&#123; <span class="comment">// MyRepository 与 MyBaseRepository 都继承了 JpaRepository ，所以它们是有效的子类</span></span><br><span class="line">  …</span><br><span class="line">&#125;</span><br></pre></td></tr></table></figure>
+<figure class="highlight java"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br></pre></td><td class="code"><pre><span class="line"><span class="class"><span class="keyword">interface</span> <span class="title">AmbiguousRepository</span> <span class="keyword">extends</span> <span class="title">Repository</span>&lt;<span class="title">User</span>, <span class="title">Long</span>&gt; </span>&#123;</span><br><span class="line"> …</span><br><span class="line">&#125;</span><br><span class="line"></span><br><span class="line"><span class="meta">@NoRepositoryBean</span></span><br><span class="line"><span class="class"><span class="keyword">interface</span> <span class="title">MyBaseRepository</span>&lt;<span class="title">T</span>, <span class="title">ID</span> <span class="keyword">extends</span> <span class="title">Serializable</span>&gt; <span class="keyword">extends</span> <span class="title">CrudRepository</span>&lt;<span class="title">T</span>, <span class="title">ID</span>&gt; </span>&#123;</span><br><span class="line">  …</span><br><span class="line">&#125;</span><br><span class="line"></span><br><span class="line"><span class="class"><span class="keyword">interface</span> <span class="title">AmbiguousUserRepository</span> <span class="keyword">extends</span> <span class="title">MyBaseRepository</span>&lt;<span class="title">User</span>, <span class="title">Long</span>&gt; </span>&#123;</span><br><span class="line">    <span class="comment">// 而且多个 SpringData 模块导致无法区分这些 Repository 应该绑定到哪个特定的 仓库</span></span><br><span class="line">  …</span><br><span class="line">&#125;</span><br></pre></td></tr></table></figure>
+<h2 id="定义查询方法"><a href="#定义查询方法" class="headerlink" title="定义查询方法"></a>定义查询方法</h2><blockquote>
+<p>仓库代理有两种方式导出指定的查询。</p>
+<ul>
+<li>从名字直接导出查询 ： 类似 findByName(String name);</li>
+<li>手工定义的查询 : 类似 @query(“{ name : ?0}”)</li>
+</ul>
+</blockquote>
+<blockquote>
+<p>查询定义策略：<br>    通过 xml 文件中的 query-lookup-strategy 参数或者 Enable 注解中的 queryLookupStrategy 参数。</p>
+<ul>
+<li>CREATE 尝试从方法名中构造指定仓库的查询方法</li>
+<li>USE_DECLARED_QUERY 尝试找到声明的查询，若无则抛出异常</li>
+<li>CREATE_IF_NOT_FOUND 先查找声明的查询，如不能找到，将生成一个基于命名的查询（默认查询策略，一般不用变）</li>
+</ul>
+</blockquote>
+<p>文章总结于：<a href="https://docs.spring.io/spring-data/mongodb/docs/current/reference/html/#dependencies.spring-framework" target="_blank" rel="noopener">https://docs.spring.io/spring-data/mongodb/docs/current/reference/html/#dependencies.spring-framework</a></p>
+
+      
+    </div>
+    <footer class="article-footer">
+      <a data-url="http://yoursite.com/2018/09/01/SpringData/Spring-Data-MongoDB（1）/" data-id="cjxpj02u60037rgtww8sptsrq" class="article-share-link">Share</a>
+      
+      
+  <ul class="article-tag-list"><li class="article-tag-list-item"><a class="article-tag-list-link" href="/tags/Spring-Data/">Spring Data</a></li></ul>
+
+    </footer>
+  </div>
+  
+    
+<nav id="article-nav">
+  
+    <a href="/2018/09/01/SpringData/Spring-Data-MongoDB（2）/" id="article-nav-newer" class="article-nav-link-wrap">
+      <strong class="article-nav-caption">Newer</strong>
+      <div class="article-nav-title">
+        
+          SpringDataMongoDB(二)
+        
+      </div>
+    </a>
+  
+  
+    <a href="/2018/09/01/SpringCloud/全链路监控/" id="article-nav-older" class="article-nav-link-wrap">
+      <strong class="article-nav-caption">Older</strong>
+      <div class="article-nav-title">待学习</div>
+    </a>
+  
+</nav>
+
+  
+</article>
+
+</section>
+        
+          <aside id="sidebar">
+  
+    
+  <div class="widget-wrap">
+    <h3 class="widget-title">Categories</h3>
+    <div class="widget">
+      <ul class="category-list"><li class="category-list-item"><a class="category-list-link" href="/categories/Docker学习/">Docker学习</a></li><li class="category-list-item"><a class="category-list-link" href="/categories/Git命令学习/">Git命令学习</a></li><li class="category-list-item"><a class="category-list-link" href="/categories/JAVA-核心知识点整理/">JAVA 核心知识点整理</a></li><li class="category-list-item"><a class="category-list-link" href="/categories/Java/">Java</a></li><li class="category-list-item"><a class="category-list-link" href="/categories/Java并发编程与高并发解决方案/">Java并发编程与高并发解决方案</a></li><li class="category-list-item"><a class="category-list-link" href="/categories/Java并发编程的艺术/">Java并发编程的艺术</a></li><li class="category-list-item"><a class="category-list-link" href="/categories/Java成神之路/">Java成神之路</a><ul class="category-list-child"><li class="category-list-item"><a class="category-list-link" href="/categories/Java成神之路/SpringBoot/">SpringBoot</a></li><li class="category-list-item"><a class="category-list-link" href="/categories/Java成神之路/Study社区/">Study社区</a></li></ul></li><li class="category-list-item"><a class="category-list-link" href="/categories/Linux学习之路/">Linux学习之路</a></li><li class="category-list-item"><a class="category-list-link" href="/categories/MarkDown语法/">MarkDown语法</a></li><li class="category-list-item"><a class="category-list-link" href="/categories/React学习/">React学习</a></li><li class="category-list-item"><a class="category-list-link" href="/categories/SpringBoot-参考指南/">SpringBoot 参考指南</a></li><li class="category-list-item"><a class="category-list-link" href="/categories/工具函数/">工具函数</a></li><li class="category-list-item"><a class="category-list-link" href="/categories/设计模式/">设计模式</a></li><li class="category-list-item"><a class="category-list-link" href="/categories/高性能MySQL/">高性能MySQL</a></li></ul>
+    </div>
+  </div>
+
+
+  
+    
+  <div class="widget-wrap">
+    <h3 class="widget-title">Tags</h3>
+    <div class="widget">
+      <ul class="tag-list"><li class="tag-list-item"><a class="tag-list-link" href="/tags/Git/">Git</a></li><li class="tag-list-item"><a class="tag-list-link" href="/tags/Git-Bash/">Git Bash</a></li><li class="tag-list-item"><a class="tag-list-link" href="/tags/Linux/">Linux</a></li><li class="tag-list-item"><a class="tag-list-link" href="/tags/MQ/">MQ</a></li><li class="tag-list-item"><a class="tag-list-link" href="/tags/MySQL/">MySQL</a></li><li class="tag-list-item"><a class="tag-list-link" href="/tags/POI/">POI</a></li><li class="tag-list-item"><a class="tag-list-link" href="/tags/Spring-Cloud/">Spring Cloud</a></li><li class="tag-list-item"><a class="tag-list-link" href="/tags/Spring-Data/">Spring Data</a></li><li class="tag-list-item"><a class="tag-list-link" href="/tags/SpringBoot/">SpringBoot</a></li><li class="tag-list-item"><a class="tag-list-link" href="/tags/docker/">docker</a></li><li class="tag-list-item"><a class="tag-list-link" href="/tags/gradle/">gradle</a></li><li class="tag-list-item"><a class="tag-list-link" href="/tags/java/">java</a></li><li class="tag-list-item"><a class="tag-list-link" href="/tags/poi/">poi</a></li><li class="tag-list-item"><a class="tag-list-link" href="/tags/并发编程/">并发编程</a></li><li class="tag-list-item"><a class="tag-list-link" href="/tags/数据库/">数据库</a></li><li class="tag-list-item"><a class="tag-list-link" href="/tags/读书笔记/">读书笔记</a></li><li class="tag-list-item"><a class="tag-list-link" href="/tags/高并发/">高并发</a></li></ul>
+    </div>
+  </div>
+
+
+  
+    
+  <div class="widget-wrap">
+    <h3 class="widget-title">Tag Cloud</h3>
+    <div class="widget tagcloud">
+      <a href="/tags/Git/" style="font-size: 13.75px;">Git</a> <a href="/tags/Git-Bash/" style="font-size: 11.25px;">Git Bash</a> <a href="/tags/Linux/" style="font-size: 12.5px;">Linux</a> <a href="/tags/MQ/" style="font-size: 15px;">MQ</a> <a href="/tags/MySQL/" style="font-size: 17.5px;">MySQL</a> <a href="/tags/POI/" style="font-size: 16.25px;">POI</a> <a href="/tags/Spring-Cloud/" style="font-size: 10px;">Spring Cloud</a> <a href="/tags/Spring-Data/" style="font-size: 12.5px;">Spring Data</a> <a href="/tags/SpringBoot/" style="font-size: 15px;">SpringBoot</a> <a href="/tags/docker/" style="font-size: 10px;">docker</a> <a href="/tags/gradle/" style="font-size: 11.25px;">gradle</a> <a href="/tags/java/" style="font-size: 20px;">java</a> <a href="/tags/poi/" style="font-size: 10px;">poi</a> <a href="/tags/并发编程/" style="font-size: 12.5px;">并发编程</a> <a href="/tags/数据库/" style="font-size: 17.5px;">数据库</a> <a href="/tags/读书笔记/" style="font-size: 18.75px;">读书笔记</a> <a href="/tags/高并发/" style="font-size: 12.5px;">高并发</a>
+    </div>
+  </div>
+
+  
+    
+  <div class="widget-wrap">
+    <h3 class="widget-title">Archives</h3>
+    <div class="widget">
+      <ul class="archive-list"><li class="archive-list-item"><a class="archive-list-link" href="/archives/2019/12/">December 2019</a></li><li class="archive-list-item"><a class="archive-list-link" href="/archives/2019/11/">November 2019</a></li><li class="archive-list-item"><a class="archive-list-link" href="/archives/2019/07/">July 2019</a></li><li class="archive-list-item"><a class="archive-list-link" href="/archives/2019/06/">June 2019</a></li><li class="archive-list-item"><a class="archive-list-link" href="/archives/2019/05/">May 2019</a></li><li class="archive-list-item"><a class="archive-list-link" href="/archives/2018/11/">November 2018</a></li><li class="archive-list-item"><a class="archive-list-link" href="/archives/2018/10/">October 2018</a></li><li class="archive-list-item"><a class="archive-list-link" href="/archives/2018/09/">September 2018</a></li><li class="archive-list-item"><a class="archive-list-link" href="/archives/2017/05/">May 2017</a></li></ul>
+    </div>
+  </div>
+
+
+  
+    
+  <div class="widget-wrap">
+    <h3 class="widget-title">Recent Posts</h3>
+    <div class="widget">
+      <ul>
+        
+          <li>
+            <a href="/2019/12/30/blog/2019/">2019年目标</a>
+          </li>
+        
+          <li>
+            <a href="/2019/12/01/读书笔记/《Java并发编程的艺术》/0.0_目录/">《Java并发编程的艺术》读书笔记 - 目录</a>
+          </li>
+        
+          <li>
+            <a href="/2019/12/01/读书笔记/《Java核心知识点整理》/0.目录/">《JAVA 核心知识点整理》读书笔记 - 目录</a>
+          </li>
+        
+          <li>
+            <a href="/2019/11/30/读书笔记/《高性能MySQL》/0.目录/">《高性能MySQL》读书笔记 - 目录</a>
+          </li>
+        
+          <li>
+            <a href="/2019/07/05/读书笔记/《JavaDesignPatterns》/8.建造者模式/">《Java Design Patterns》第六章 建造者模式 - 复杂对象的组装与创建</a>
+          </li>
+        
+      </ul>
+    </div>
+  </div>
+
+  
+</aside>
+        
+      </div>
+      <footer id="footer">
+  
+  <div class="outer">
+    <div id="footer-info" class="inner">
+      &copy; 2019 koral<br>
+      Powered by <a href="http://hexo.io/" target="_blank">Hexo</a>
+    </div>
+  </div>
+</footer>
+    </div>
+    <nav id="mobile-nav">
+  
+    <a href="/" class="mobile-nav-link">Home</a>
+  
+    <a href="/archives" class="mobile-nav-link">Archives</a>
+  
+</nav>
+    
+
+<script src="//ajax.googleapis.com/ajax/libs/jquery/2.0.3/jquery.min.js"></script>
+
+
+  <link rel="stylesheet" href="/fancybox/jquery.fancybox.css">
+  <script src="/fancybox/jquery.fancybox.pack.js"></script>
+
+
+<script src="/js/script.js"></script>
+
+
+
+  </div>
+</body>
+</html>

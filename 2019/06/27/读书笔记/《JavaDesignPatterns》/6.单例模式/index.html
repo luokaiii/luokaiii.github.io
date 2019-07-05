@@ -1,0 +1,303 @@
+<!DOCTYPE html>
+<html>
+<head>
+  <meta charset="utf-8">
+  
+
+  
+  <title>《Java Design Patterns》第四章 单例模式 - 确保对象的唯一性 | 罗凯的博客</title>
+  <meta name="viewport" content="width=device-width, initial-scale=1, maximum-scale=1">
+  <meta name="description" content="第四章 单例模式 - 确保对象的唯一性单例模式用于确保对象的唯一性，为了确保系统中某一个类只有一个唯一实例，当这个唯一实例创建后，无法再创建一个同类型的其他对象。 一、概述单例模式：确保一个类只有一个实例，而且自行实例化并向整个系统提供这个实例，这个类称为单例类，它提供全局访问的方法。属于对象创建型模式。 1.2 单例模式中的角色 Singleton - 单例角色 在单例类内容实现只生成一个实例，">
+<meta name="keywords" content="读书笔记">
+<meta property="og:type" content="article">
+<meta property="og:title" content="《Java Design Patterns》第四章 单例模式 - 确保对象的唯一性">
+<meta property="og:url" content="http://yoursite.com/2019/06/27/读书笔记/《JavaDesignPatterns》/6.单例模式/index.html">
+<meta property="og:site_name" content="罗凯的博客">
+<meta property="og:description" content="第四章 单例模式 - 确保对象的唯一性单例模式用于确保对象的唯一性，为了确保系统中某一个类只有一个唯一实例，当这个唯一实例创建后，无法再创建一个同类型的其他对象。 一、概述单例模式：确保一个类只有一个实例，而且自行实例化并向整个系统提供这个实例，这个类称为单例类，它提供全局访问的方法。属于对象创建型模式。 1.2 单例模式中的角色 Singleton - 单例角色 在单例类内容实现只生成一个实例，">
+<meta property="og:locale" content="zh-Hans">
+<meta property="og:image" content="https://i.loli.net/2019/07/04/5d1da0231e7a752730.png">
+<meta property="og:image" content="https://i.loli.net/2019/07/04/5d1da0b319cb857695.png">
+<meta property="og:updated_time" content="2019-07-05T03:01:35.900Z">
+<meta name="twitter:card" content="summary">
+<meta name="twitter:title" content="《Java Design Patterns》第四章 单例模式 - 确保对象的唯一性">
+<meta name="twitter:description" content="第四章 单例模式 - 确保对象的唯一性单例模式用于确保对象的唯一性，为了确保系统中某一个类只有一个唯一实例，当这个唯一实例创建后，无法再创建一个同类型的其他对象。 一、概述单例模式：确保一个类只有一个实例，而且自行实例化并向整个系统提供这个实例，这个类称为单例类，它提供全局访问的方法。属于对象创建型模式。 1.2 单例模式中的角色 Singleton - 单例角色 在单例类内容实现只生成一个实例，">
+<meta name="twitter:image" content="https://i.loli.net/2019/07/04/5d1da0231e7a752730.png">
+  
+    <link rel="alternate" href="/atom.xml" title="罗凯的博客" type="application/atom+xml">
+  
+  
+    <link rel="icon" href="https://i.loli.net/2019/07/04/5d1db2fb9593c58427.gif">
+  
+  
+    <link href="//fonts.googleapis.com/css?family=Source+Code+Pro" rel="stylesheet" type="text/css">
+  
+  <link rel="stylesheet" href="/css/style.css">
+</head>
+
+<body>
+  <div id="container">
+    <div id="wrap">
+      <header id="header">
+  <div id="banner"></div>
+  <div id="header-outer" class="outer">
+    <div id="header-title" class="inner">
+      <h1 id="logo-wrap">
+        <a href="/" id="logo">罗凯的博客</a>
+      </h1>
+      
+        <h2 id="subtitle-wrap">
+          <a href="/" id="subtitle">一个大帅哥</a>
+        </h2>
+      
+    </div>
+    <div id="header-inner" class="inner">
+      <nav id="main-nav">
+        <a id="main-nav-toggle" class="nav-icon"></a>
+        
+          <a class="main-nav-link" href="/">Home</a>
+        
+          <a class="main-nav-link" href="/archives">Archives</a>
+        
+      </nav>
+      <nav id="sub-nav">
+        
+          <a id="nav-rss-link" class="nav-icon" href="/atom.xml" title="RSS Feed"></a>
+        
+        <a id="nav-search-btn" class="nav-icon" title="Search"></a>
+      </nav>
+      <div id="search-form-wrap">
+        <form action="//google.com/search" method="get" accept-charset="UTF-8" class="search-form"><input type="search" name="q" class="search-form-input" placeholder="Search"><button type="submit" class="search-form-submit">&#xF002;</button><input type="hidden" name="sitesearch" value="http://yoursite.com"></form>
+      </div>
+    </div>
+  </div>
+</header>
+      <div class="outer">
+        <section id="main"><article id="post-读书笔记/《JavaDesignPatterns》/6.单例模式" class="article article-type-post" itemscope itemprop="blogPost">
+  <div class="article-meta">
+    <a href="/2019/06/27/读书笔记/《JavaDesignPatterns》/6.单例模式/" class="article-date">
+  <time datetime="2019-06-27T09:11:00.000Z" itemprop="datePublished">2019-06-27</time>
+</a>
+    
+  <div class="article-category">
+    <a class="article-category-link" href="/categories/设计模式/">设计模式</a>
+  </div>
+
+  </div>
+  <div class="article-inner">
+    
+    
+      <header class="article-header">
+        
+  
+    <h1 class="article-title" itemprop="name">
+      《Java Design Patterns》第四章 单例模式 - 确保对象的唯一性
+    </h1>
+  
+
+      </header>
+    
+    <div class="article-entry" itemprop="articleBody">
+      
+        <h1 id="第四章-单例模式-确保对象的唯一性"><a href="#第四章-单例模式-确保对象的唯一性" class="headerlink" title="第四章 单例模式 - 确保对象的唯一性"></a>第四章 单例模式 - 确保对象的唯一性</h1><p>单例模式用于确保对象的唯一性，为了确保系统中某一个类只有一个唯一实例，当这个唯一实例创建后，无法再创建一个同类型的其他对象。</p>
+<h2 id="一、概述"><a href="#一、概述" class="headerlink" title="一、概述"></a>一、概述</h2><p>单例模式：确保一个类只有一个实例，而且自行实例化并向整个系统提供这个实例，这个类称为单例类，它提供全局访问的方法。属于对象创建型模式。</p>
+<h3 id="1-2-单例模式中的角色"><a href="#1-2-单例模式中的角色" class="headerlink" title="1.2 单例模式中的角色"></a>1.2 单例模式中的角色</h3><ul>
+<li>Singleton - 单例角色<ul>
+<li>在单例类内容实现只生成一个实例，同时提供一个静态工厂方法用于获取该唯一实例</li>
+<li>为了防止外部实例化，将其构造函数设计为私有</li>
+<li>单例类内部顶一个Singleton类型的静态对象，作为外部共享的唯一实例</li>
+</ul>
+</li>
+</ul>
+<h2 id="二、懒汉模式与饿汉模式"><a href="#二、懒汉模式与饿汉模式" class="headerlink" title="二、懒汉模式与饿汉模式"></a>二、懒汉模式与饿汉模式</h2><h3 id="2-1-饿汉式单例类-线程安全"><a href="#2-1-饿汉式单例类-线程安全" class="headerlink" title="2.1 饿汉式单例类 - 线程安全"></a>2.1 饿汉式单例类 - 线程安全</h3><p><img src="https://i.loli.net/2019/07/04/5d1da0231e7a752730.png" alt="懒汉单例模式"></p>
+<figure class="highlight java"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br></pre></td><td class="code"><pre><span class="line"><span class="class"><span class="keyword">class</span> <span class="title">EagerSingleton</span></span>&#123;</span><br><span class="line">    <span class="keyword">private</span> <span class="keyword">static</span> <span class="keyword">final</span> EagerSingleton instance = <span class="keyword">new</span> EagerSingleton();</span><br><span class="line">    <span class="function"><span class="keyword">private</span> <span class="title">EagerSingleton</span><span class="params">()</span></span>&#123;&#125;</span><br><span class="line">    <span class="function"><span class="keyword">public</span> <span class="keyword">static</span> EagerSingleton <span class="title">getInstance</span><span class="params">()</span></span>&#123;</span><br><span class="line">        <span class="keyword">return</span> instance;</span><br><span class="line">    &#125;</span><br><span class="line">&#125;</span><br></pre></td></tr></table></figure>
+<p>饿汉模式实现起来最为简单，在类加载时，静态变量 instance 就会被初始化，此时类的私有构造函数会被调用，单例类的唯一实例将被创建。</p>
+<h3 id="2-2-懒汉式单例类（一）-线程安全"><a href="#2-2-懒汉式单例类（一）-线程安全" class="headerlink" title="2.2 懒汉式单例类（一） - 线程安全"></a>2.2 懒汉式单例类（一） - 线程安全</h3><p><img src="https://i.loli.net/2019/07/04/5d1da0b319cb857695.png" alt="懒汉单例模式"></p>
+<p>懒汉模式能将类进行 延迟加载，即在需要使用时再加载实例，为了避免多线程调用 getInstance() 时实例化多个 LazySingleton，这里使用 synchronized 关键字进行加锁。</p>
+<figure class="highlight java"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br></pre></td><td class="code"><pre><span class="line"><span class="class"><span class="keyword">class</span> <span class="title">LazySingleton</span></span>&#123;</span><br><span class="line">    <span class="keyword">private</span> <span class="keyword">static</span> LazySingleton instance = <span class="keyword">null</span>;</span><br><span class="line">    <span class="function"><span class="keyword">private</span> <span class="title">LazySingleton</span><span class="params">()</span></span>&#123;&#125;</span><br><span class="line">    <span class="function"><span class="keyword">synchronized</span> <span class="keyword">public</span> <span class="keyword">static</span> LazySingleton <span class="title">getInstance</span><span class="params">()</span></span>&#123;</span><br><span class="line">        <span class="keyword">if</span>(instance == <span class="keyword">null</span>)</span><br><span class="line">            instance = <span class="keyword">new</span> LazySingleton();</span><br><span class="line">        <span class="keyword">return</span> instance;</span><br><span class="line">    &#125;</span><br><span class="line">&#125;</span><br></pre></td></tr></table></figure>
+<h3 id="2-3-懒汉式单例类（二）-线程不安全"><a href="#2-3-懒汉式单例类（二）-线程不安全" class="headerlink" title="2.3 懒汉式单例类（二） - 线程不安全"></a>2.3 懒汉式单例类（二） - 线程不安全</h3><p>虽然 synchronized 关键字进行了线程锁定，但是每次调用 getInstance() 方法时都会进行加锁操作，在多线程高并发场景下，会导致系统性能大大降低。</p>
+<p>事实上，只需要在 new L:azySingleton() 时进行加锁即可，即第一次实例化实例时加锁。</p>
+<figure class="highlight java"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br></pre></td><td class="code"><pre><span class="line"><span class="function"><span class="keyword">public</span> <span class="keyword">static</span> LazySingleton <span class="title">getInstance</span><span class="params">()</span></span>&#123;</span><br><span class="line">    <span class="keyword">if</span>(instance == <span class="keyword">null</span>)&#123;</span><br><span class="line">        <span class="keyword">synchronized</span>(LazySingleton.class)&#123;</span><br><span class="line">            instance = <span class="keyword">new</span> LazySingleton();</span><br><span class="line">        &#125;</span><br><span class="line">    &#125;</span><br><span class="line">    <span class="keyword">return</span> instance;</span><br><span class="line">&#125;</span><br></pre></td></tr></table></figure>
+<h3 id="2-4-懒汉模式单例类（三-DoubleCheck）-线程不安全"><a href="#2-4-懒汉模式单例类（三-DoubleCheck）-线程不安全" class="headerlink" title="2.4 懒汉模式单例类（三 DoubleCheck） - 线程不安全"></a>2.4 懒汉模式单例类（三 DoubleCheck） - 线程不安全</h3><p>如果当两个线程同时进行了 if 条件之中，当线程A完成实例化之后，线程B继续执行，依旧会进行一次实例化。违背了单例模式的设计思想。</p>
+<p>双重检测机制：因此我们需要在 synchronized 中在进行一次判断</p>
+<figure class="highlight java"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br></pre></td><td class="code"><pre><span class="line"><span class="function"><span class="keyword">public</span> <span class="keyword">static</span> LazySingleton <span class="title">getInstance</span><span class="params">()</span></span>&#123;</span><br><span class="line">    <span class="keyword">if</span>(instance == <span class="keyword">null</span>)&#123;</span><br><span class="line">        <span class="keyword">synchronized</span>(LazySingleton.class)&#123;</span><br><span class="line">            <span class="keyword">if</span>(instance == <span class="keyword">null</span>)&#123;</span><br><span class="line">                instance = <span class="keyword">new</span> LazySingleton();</span><br><span class="line">            &#125;</span><br><span class="line">        &#125;</span><br><span class="line">    &#125;</span><br><span class="line">    <span class="keyword">return</span> instance;</span><br><span class="line">&#125;</span><br></pre></td></tr></table></figure>
+<h3 id="2-5-懒汉模式单例类（四-volatile-DoubleCheck）-线程安全"><a href="#2-5-懒汉模式单例类（四-volatile-DoubleCheck）-线程安全" class="headerlink" title="2.5 懒汉模式单例类（四 volatile+DoubleCheck） - 线程安全"></a>2.5 懒汉模式单例类（四 volatile+DoubleCheck） - 线程安全</h3><p>上述代码看起来可能没什么问题，但是</p>
+<p>instance = new LazySingleton() 在内存中的指令顺序应该为：</p>
+<ol>
+<li>instance 分配内存地址</li>
+<li>实例化 LazySingleton</li>
+<li>将实例化地址指向instance</li>
+</ol>
+<p>因为 JVM 的指令重排和优化，可能会导致以上执行顺序与所想像的不一致。最终导致单例出现问题，因此我们在静态实例 instance 前，加上 volatile 关键词，避免 instance 的实例化发生指令重排。</p>
+<blockquote>
+<p>因此<code>完整的懒汉模式</code>如下：</p>
+</blockquote>
+<figure class="highlight java"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br><span class="line">14</span><br><span class="line">15</span><br><span class="line">16</span><br><span class="line">17</span><br><span class="line">18</span><br><span class="line">19</span><br><span class="line">20</span><br></pre></td><td class="code"><pre><span class="line"><span class="class"><span class="keyword">class</span> <span class="title">LazySingleton</span></span>&#123;</span><br><span class="line">    <span class="comment">// 使用volatile 修改时静态实例，避免指令重排序</span></span><br><span class="line">    <span class="keyword">private</span> <span class="keyword">volatile</span> <span class="keyword">static</span> LazySignleton instance = <span class="keyword">null</span>;</span><br><span class="line">    <span class="comment">// 构造方法私有化，防止外部实例</span></span><br><span class="line">    <span class="function"><span class="keyword">private</span> <span class="title">LazySingleton</span><span class="params">()</span></span>&#123;&#125;</span><br><span class="line">    <span class="comment">// 静态工厂类，用于返回唯一实例，且使用延迟加载技术</span></span><br><span class="line">    <span class="function"><span class="keyword">public</span> <span class="keyword">static</span> LazySingleton <span class="title">getInstance</span><span class="params">()</span></span>&#123;</span><br><span class="line">        <span class="comment">// 第一重检查，只有当instance 为空时才进行实例化</span></span><br><span class="line">        <span class="keyword">if</span>(instance == <span class="keyword">null</span>)&#123;</span><br><span class="line">            <span class="comment">// 实例化时对当前类进行加锁，避免多线程同时实例化</span></span><br><span class="line">            <span class="keyword">synchronized</span>(LazySingleton.class)&#123;</span><br><span class="line">                <span class="comment">// 第二重检查，避免当前线程通过第一重检查后其他线程已实例化过</span></span><br><span class="line">                <span class="keyword">if</span>(instance == <span class="keyword">null</span>)&#123;</span><br><span class="line">                    instance = <span class="keyword">new</span> LazySingleton();</span><br><span class="line">                &#125;</span><br><span class="line">            &#125;</span><br><span class="line">        &#125;</span><br><span class="line">        <span class="keyword">return</span> instance;</span><br><span class="line">    &#125;</span><br><span class="line">&#125;</span><br></pre></td></tr></table></figure>
+<blockquote>
+<p>缺点也很明显：1. volatile 关键词虽然能保证实例避免重排，但是只在1.5以上的版本才能生效 2. volatile关键词会屏蔽 JVM 的一些代码优化，可能导致系统运行效率降低</p>
+</blockquote>
+<h2 id="三、一种更好的单例实现方法"><a href="#三、一种更好的单例实现方法" class="headerlink" title="三、一种更好的单例实现方法"></a>三、一种更好的单例实现方法</h2><h2 id="3-1-懒汉模式与饿汉模式的缺点"><a href="#3-1-懒汉模式与饿汉模式的缺点" class="headerlink" title="3.1 懒汉模式与饿汉模式的缺点"></a>3.1 懒汉模式与饿汉模式的缺点</h2><p>饿汉模式：不能实现延迟加载，不管实例是否使用都将占据内存</p>
+<p>饿汉模式：繁琐的线程安全控制，且性能会受到一定影响</p>
+<h2 id="3-2-静态内部类单例-IoDH-线程安全"><a href="#3-2-静态内部类单例-IoDH-线程安全" class="headerlink" title="3.2 静态内部类单例 - IoDH - 线程安全"></a>3.2 静态内部类单例 - IoDH - 线程安全</h2><figure class="highlight java"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br></pre></td><td class="code"><pre><span class="line"><span class="class"><span class="keyword">class</span> <span class="title">Signleton</span></span>&#123;</span><br><span class="line">    <span class="function"><span class="keyword">private</span> <span class="title">Singleton</span><span class="params">()</span></span>&#123;&#125;</span><br><span class="line">    <span class="comment">// 静态内部类只有在第一次调用时才会进行加载</span></span><br><span class="line">    <span class="keyword">private</span> <span class="keyword">static</span> <span class="class"><span class="keyword">class</span> <span class="title">HolderClass</span></span>&#123;</span><br><span class="line">        <span class="comment">// 因为instance 不是Singleton的成员变量，所以不会在Singleton加载时实例化</span></span><br><span class="line">        <span class="keyword">private</span> <span class="keyword">final</span> <span class="keyword">static</span> Singleton instance = <span class="keyword">new</span> Singleton();</span><br><span class="line">    &#125;</span><br><span class="line">    <span class="comment">// 通过JVM特性来保证线程安全性，确保成员变量只能初始化一次</span></span><br><span class="line">    <span class="function"><span class="keyword">public</span> <span class="keyword">static</span> Singleton <span class="title">getInstance</span><span class="params">()</span></span>&#123;</span><br><span class="line">        <span class="keyword">return</span> HolderClass.instance;</span><br><span class="line">    &#125;</span><br><span class="line">&#125;</span><br></pre></td></tr></table></figure>
+<p>Initialization Demand Holder 技术，在单例类内部增加一个静态内部类，在该内部类中创建单例对象，再将单例对象通过 getInstance() 方法返回给外部使用。</p>
+<blockquote>
+<p>但是IoDH依赖于JVM的特性，并不适用于所有语言。但是IoDH既可以实现延迟加载，又可以保证线程安全，又不影响性能，不失为一种最好的Java语言单例模式。</p>
+</blockquote>
+<h2 id="四、总结"><a href="#四、总结" class="headerlink" title="四、总结"></a>四、总结</h2><h3 id="优点"><a href="#优点" class="headerlink" title="优点"></a>优点</h3><ol>
+<li>单例模式提供了对唯一实例的受控访问。因为单例类封装了它的唯一实例，严格控制客户如何访问</li>
+<li>节约系统资源。因为内存中只存在一个对象，无需频繁的创建、销毁对象</li>
+<li>允许可变数目的实例。可以通过变种，让getInstance返回至多几个实例</li>
+</ol>
+<h3 id="缺点"><a href="#缺点" class="headerlink" title="缺点"></a>缺点</h3><ol>
+<li>由于单例类没有抽象层，很难进行扩展</li>
+<li>单例类职责过重，违背了“单一职责原则”。因为单例类即是工厂角色，提供工厂方法，又是产品角色，包含一些业务方法。将产品的创建和产品的功能融合到了一起</li>
+<li>许多面向对象语言（如Java、C#）的自动垃圾回收技术，如果实例化的共享变量长时间不被使用。GC 会自动销毁并回收资源，导致单例对象状态的丢失。</li>
+</ol>
+<h3 id="适用场景"><a href="#适用场景" class="headerlink" title="适用场景"></a>适用场景</h3><ol>
+<li>系统只需要一个实例对象。如资源消耗过大的对象、资源管理器等只能实例一次的对象</li>
+<li>客户调用类的单个实例只允许使用一个公共访问点，不能通过其他途径访问该实例。</li>
+</ol>
+
+      
+    </div>
+    <footer class="article-footer">
+      <a data-url="http://yoursite.com/2019/06/27/读书笔记/《JavaDesignPatterns》/6.单例模式/" data-id="cjxpj039t009yrgtw4adeog4j" class="article-share-link">Share</a>
+      
+      
+  <ul class="article-tag-list"><li class="article-tag-list-item"><a class="article-tag-list-link" href="/tags/读书笔记/">读书笔记</a></li></ul>
+
+    </footer>
+  </div>
+  
+    
+<nav id="article-nav">
+  
+    <a href="/2019/06/27/读书笔记/《JavaDesignPatterns》/7.原型模式/" id="article-nav-newer" class="article-nav-link-wrap">
+      <strong class="article-nav-caption">Newer</strong>
+      <div class="article-nav-title">
+        
+          《Java Design Patterns》第五章 原型模式 - 对象的克隆
+        
+      </div>
+    </a>
+  
+  
+    <a href="/2019/06/26/读书笔记/《JavaDesignPatterns》/5.抽象工厂模式/" id="article-nav-older" class="article-nav-link-wrap">
+      <strong class="article-nav-caption">Older</strong>
+      <div class="article-nav-title">《Java Design Patterns》第三章 抽象工厂模式</div>
+    </a>
+  
+</nav>
+
+  
+</article>
+
+</section>
+        
+          <aside id="sidebar">
+  
+    
+  <div class="widget-wrap">
+    <h3 class="widget-title">Categories</h3>
+    <div class="widget">
+      <ul class="category-list"><li class="category-list-item"><a class="category-list-link" href="/categories/Docker学习/">Docker学习</a></li><li class="category-list-item"><a class="category-list-link" href="/categories/Git命令学习/">Git命令学习</a></li><li class="category-list-item"><a class="category-list-link" href="/categories/JAVA-核心知识点整理/">JAVA 核心知识点整理</a></li><li class="category-list-item"><a class="category-list-link" href="/categories/Java/">Java</a></li><li class="category-list-item"><a class="category-list-link" href="/categories/Java并发编程与高并发解决方案/">Java并发编程与高并发解决方案</a></li><li class="category-list-item"><a class="category-list-link" href="/categories/Java并发编程的艺术/">Java并发编程的艺术</a></li><li class="category-list-item"><a class="category-list-link" href="/categories/Java成神之路/">Java成神之路</a><ul class="category-list-child"><li class="category-list-item"><a class="category-list-link" href="/categories/Java成神之路/SpringBoot/">SpringBoot</a></li><li class="category-list-item"><a class="category-list-link" href="/categories/Java成神之路/Study社区/">Study社区</a></li></ul></li><li class="category-list-item"><a class="category-list-link" href="/categories/Linux学习之路/">Linux学习之路</a></li><li class="category-list-item"><a class="category-list-link" href="/categories/MarkDown语法/">MarkDown语法</a></li><li class="category-list-item"><a class="category-list-link" href="/categories/React学习/">React学习</a></li><li class="category-list-item"><a class="category-list-link" href="/categories/SpringBoot-参考指南/">SpringBoot 参考指南</a></li><li class="category-list-item"><a class="category-list-link" href="/categories/工具函数/">工具函数</a></li><li class="category-list-item"><a class="category-list-link" href="/categories/设计模式/">设计模式</a></li><li class="category-list-item"><a class="category-list-link" href="/categories/高性能MySQL/">高性能MySQL</a></li></ul>
+    </div>
+  </div>
+
+
+  
+    
+  <div class="widget-wrap">
+    <h3 class="widget-title">Tags</h3>
+    <div class="widget">
+      <ul class="tag-list"><li class="tag-list-item"><a class="tag-list-link" href="/tags/Git/">Git</a></li><li class="tag-list-item"><a class="tag-list-link" href="/tags/Git-Bash/">Git Bash</a></li><li class="tag-list-item"><a class="tag-list-link" href="/tags/Linux/">Linux</a></li><li class="tag-list-item"><a class="tag-list-link" href="/tags/MQ/">MQ</a></li><li class="tag-list-item"><a class="tag-list-link" href="/tags/MySQL/">MySQL</a></li><li class="tag-list-item"><a class="tag-list-link" href="/tags/POI/">POI</a></li><li class="tag-list-item"><a class="tag-list-link" href="/tags/Spring-Cloud/">Spring Cloud</a></li><li class="tag-list-item"><a class="tag-list-link" href="/tags/Spring-Data/">Spring Data</a></li><li class="tag-list-item"><a class="tag-list-link" href="/tags/SpringBoot/">SpringBoot</a></li><li class="tag-list-item"><a class="tag-list-link" href="/tags/docker/">docker</a></li><li class="tag-list-item"><a class="tag-list-link" href="/tags/gradle/">gradle</a></li><li class="tag-list-item"><a class="tag-list-link" href="/tags/java/">java</a></li><li class="tag-list-item"><a class="tag-list-link" href="/tags/poi/">poi</a></li><li class="tag-list-item"><a class="tag-list-link" href="/tags/并发编程/">并发编程</a></li><li class="tag-list-item"><a class="tag-list-link" href="/tags/数据库/">数据库</a></li><li class="tag-list-item"><a class="tag-list-link" href="/tags/读书笔记/">读书笔记</a></li><li class="tag-list-item"><a class="tag-list-link" href="/tags/高并发/">高并发</a></li></ul>
+    </div>
+  </div>
+
+
+  
+    
+  <div class="widget-wrap">
+    <h3 class="widget-title">Tag Cloud</h3>
+    <div class="widget tagcloud">
+      <a href="/tags/Git/" style="font-size: 13.75px;">Git</a> <a href="/tags/Git-Bash/" style="font-size: 11.25px;">Git Bash</a> <a href="/tags/Linux/" style="font-size: 12.5px;">Linux</a> <a href="/tags/MQ/" style="font-size: 15px;">MQ</a> <a href="/tags/MySQL/" style="font-size: 17.5px;">MySQL</a> <a href="/tags/POI/" style="font-size: 16.25px;">POI</a> <a href="/tags/Spring-Cloud/" style="font-size: 10px;">Spring Cloud</a> <a href="/tags/Spring-Data/" style="font-size: 12.5px;">Spring Data</a> <a href="/tags/SpringBoot/" style="font-size: 15px;">SpringBoot</a> <a href="/tags/docker/" style="font-size: 10px;">docker</a> <a href="/tags/gradle/" style="font-size: 11.25px;">gradle</a> <a href="/tags/java/" style="font-size: 20px;">java</a> <a href="/tags/poi/" style="font-size: 10px;">poi</a> <a href="/tags/并发编程/" style="font-size: 12.5px;">并发编程</a> <a href="/tags/数据库/" style="font-size: 17.5px;">数据库</a> <a href="/tags/读书笔记/" style="font-size: 18.75px;">读书笔记</a> <a href="/tags/高并发/" style="font-size: 12.5px;">高并发</a>
+    </div>
+  </div>
+
+  
+    
+  <div class="widget-wrap">
+    <h3 class="widget-title">Archives</h3>
+    <div class="widget">
+      <ul class="archive-list"><li class="archive-list-item"><a class="archive-list-link" href="/archives/2019/12/">December 2019</a></li><li class="archive-list-item"><a class="archive-list-link" href="/archives/2019/11/">November 2019</a></li><li class="archive-list-item"><a class="archive-list-link" href="/archives/2019/07/">July 2019</a></li><li class="archive-list-item"><a class="archive-list-link" href="/archives/2019/06/">June 2019</a></li><li class="archive-list-item"><a class="archive-list-link" href="/archives/2019/05/">May 2019</a></li><li class="archive-list-item"><a class="archive-list-link" href="/archives/2018/11/">November 2018</a></li><li class="archive-list-item"><a class="archive-list-link" href="/archives/2018/10/">October 2018</a></li><li class="archive-list-item"><a class="archive-list-link" href="/archives/2018/09/">September 2018</a></li><li class="archive-list-item"><a class="archive-list-link" href="/archives/2017/05/">May 2017</a></li></ul>
+    </div>
+  </div>
+
+
+  
+    
+  <div class="widget-wrap">
+    <h3 class="widget-title">Recent Posts</h3>
+    <div class="widget">
+      <ul>
+        
+          <li>
+            <a href="/2019/12/30/blog/2019/">2019年目标</a>
+          </li>
+        
+          <li>
+            <a href="/2019/12/01/读书笔记/《Java并发编程的艺术》/0.0_目录/">《Java并发编程的艺术》读书笔记 - 目录</a>
+          </li>
+        
+          <li>
+            <a href="/2019/12/01/读书笔记/《Java核心知识点整理》/0.目录/">《JAVA 核心知识点整理》读书笔记 - 目录</a>
+          </li>
+        
+          <li>
+            <a href="/2019/11/30/读书笔记/《高性能MySQL》/0.目录/">《高性能MySQL》读书笔记 - 目录</a>
+          </li>
+        
+          <li>
+            <a href="/2019/07/05/读书笔记/《JavaDesignPatterns》/8.建造者模式/">《Java Design Patterns》第六章 建造者模式 - 复杂对象的组装与创建</a>
+          </li>
+        
+      </ul>
+    </div>
+  </div>
+
+  
+</aside>
+        
+      </div>
+      <footer id="footer">
+  
+  <div class="outer">
+    <div id="footer-info" class="inner">
+      &copy; 2019 koral<br>
+      Powered by <a href="http://hexo.io/" target="_blank">Hexo</a>
+    </div>
+  </div>
+</footer>
+    </div>
+    <nav id="mobile-nav">
+  
+    <a href="/" class="mobile-nav-link">Home</a>
+  
+    <a href="/archives" class="mobile-nav-link">Archives</a>
+  
+</nav>
+    
+
+<script src="//ajax.googleapis.com/ajax/libs/jquery/2.0.3/jquery.min.js"></script>
+
+
+  <link rel="stylesheet" href="/fancybox/jquery.fancybox.css">
+  <script src="/fancybox/jquery.fancybox.pack.js"></script>
+
+
+<script src="/js/script.js"></script>
+
+
+
+  </div>
+</body>
+</html>

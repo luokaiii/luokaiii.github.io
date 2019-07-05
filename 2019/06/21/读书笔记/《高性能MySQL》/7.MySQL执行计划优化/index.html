@@ -1,0 +1,347 @@
+<!DOCTYPE html>
+<html>
+<head>
+  <meta charset="utf-8">
+  
+
+  
+  <title>《高性能MySQL》第七章 MySQL 执行计划优化 | 罗凯的博客</title>
+  <meta name="viewport" content="width=device-width, initial-scale=1, maximum-scale=1">
+  <meta name="description" content="第七章 MySQL 执行计划优化通过 EXPLAIN 对 SQL 语句的执行计划进行分析，以此来判断一条 SQL 的执行效率，并作出对应的优化调整。 EXPLAIN 能够分析 select update insert replace delete 这些SQL。 一、执行计划分析 SQL 如何使用索引 并不是某一列上存在索引，sql 在执行时就必定会使用该索引。   联接查询的执行顺序 查询扫描的数">
+<meta name="keywords" content="MySQL,数据库">
+<meta property="og:type" content="article">
+<meta property="og:title" content="《高性能MySQL》第七章 MySQL 执行计划优化">
+<meta property="og:url" content="http://yoursite.com/2019/06/21/读书笔记/《高性能MySQL》/7.MySQL执行计划优化/index.html">
+<meta property="og:site_name" content="罗凯的博客">
+<meta property="og:description" content="第七章 MySQL 执行计划优化通过 EXPLAIN 对 SQL 语句的执行计划进行分析，以此来判断一条 SQL 的执行效率，并作出对应的优化调整。 EXPLAIN 能够分析 select update insert replace delete 这些SQL。 一、执行计划分析 SQL 如何使用索引 并不是某一列上存在索引，sql 在执行时就必定会使用该索引。   联接查询的执行顺序 查询扫描的数">
+<meta property="og:locale" content="zh-Hans">
+<meta property="og:updated_time" content="2019-07-01T02:49:01.469Z">
+<meta name="twitter:card" content="summary">
+<meta name="twitter:title" content="《高性能MySQL》第七章 MySQL 执行计划优化">
+<meta name="twitter:description" content="第七章 MySQL 执行计划优化通过 EXPLAIN 对 SQL 语句的执行计划进行分析，以此来判断一条 SQL 的执行效率，并作出对应的优化调整。 EXPLAIN 能够分析 select update insert replace delete 这些SQL。 一、执行计划分析 SQL 如何使用索引 并不是某一列上存在索引，sql 在执行时就必定会使用该索引。   联接查询的执行顺序 查询扫描的数">
+  
+    <link rel="alternate" href="/atom.xml" title="罗凯的博客" type="application/atom+xml">
+  
+  
+    <link rel="icon" href="https://i.loli.net/2019/07/04/5d1db2fb9593c58427.gif">
+  
+  
+    <link href="//fonts.googleapis.com/css?family=Source+Code+Pro" rel="stylesheet" type="text/css">
+  
+  <link rel="stylesheet" href="/css/style.css">
+</head>
+
+<body>
+  <div id="container">
+    <div id="wrap">
+      <header id="header">
+  <div id="banner"></div>
+  <div id="header-outer" class="outer">
+    <div id="header-title" class="inner">
+      <h1 id="logo-wrap">
+        <a href="/" id="logo">罗凯的博客</a>
+      </h1>
+      
+        <h2 id="subtitle-wrap">
+          <a href="/" id="subtitle">一个大帅哥</a>
+        </h2>
+      
+    </div>
+    <div id="header-inner" class="inner">
+      <nav id="main-nav">
+        <a id="main-nav-toggle" class="nav-icon"></a>
+        
+          <a class="main-nav-link" href="/">Home</a>
+        
+          <a class="main-nav-link" href="/archives">Archives</a>
+        
+      </nav>
+      <nav id="sub-nav">
+        
+          <a id="nav-rss-link" class="nav-icon" href="/atom.xml" title="RSS Feed"></a>
+        
+        <a id="nav-search-btn" class="nav-icon" title="Search"></a>
+      </nav>
+      <div id="search-form-wrap">
+        <form action="//google.com/search" method="get" accept-charset="UTF-8" class="search-form"><input type="search" name="q" class="search-form-input" placeholder="Search"><button type="submit" class="search-form-submit">&#xF002;</button><input type="hidden" name="sitesearch" value="http://yoursite.com"></form>
+      </div>
+    </div>
+  </div>
+</header>
+      <div class="outer">
+        <section id="main"><article id="post-读书笔记/《高性能MySQL》/7.MySQL执行计划优化" class="article article-type-post" itemscope itemprop="blogPost">
+  <div class="article-meta">
+    <a href="/2019/06/21/读书笔记/《高性能MySQL》/7.MySQL执行计划优化/" class="article-date">
+  <time datetime="2019-06-21T12:00:00.000Z" itemprop="datePublished">2019-06-21</time>
+</a>
+    
+  <div class="article-category">
+    <a class="article-category-link" href="/categories/高性能MySQL/">高性能MySQL</a>
+  </div>
+
+  </div>
+  <div class="article-inner">
+    
+    
+      <header class="article-header">
+        
+  
+    <h1 class="article-title" itemprop="name">
+      《高性能MySQL》第七章 MySQL 执行计划优化
+    </h1>
+  
+
+      </header>
+    
+    <div class="article-entry" itemprop="articleBody">
+      
+        <h1 id="第七章-MySQL-执行计划优化"><a href="#第七章-MySQL-执行计划优化" class="headerlink" title="第七章 MySQL 执行计划优化"></a>第七章 MySQL 执行计划优化</h1><p>通过 EXPLAIN 对 SQL 语句的执行计划进行分析，以此来判断一条 SQL 的执行效率，并作出对应的优化调整。</p>
+<p>EXPLAIN 能够分析 <code>select</code> <code>update</code> <code>insert</code> <code>replace</code> <code>delete</code> 这些SQL。</p>
+<h2 id="一、执行计划分析"><a href="#一、执行计划分析" class="headerlink" title="一、执行计划分析"></a>一、执行计划分析</h2><ol>
+<li>SQL 如何使用索引<ol>
+<li>并不是某一列上存在索引，sql 在执行时就必定会使用该索引。</li>
+</ol>
+</li>
+<li>联接查询的执行顺序</li>
+<li>查询扫描的数据行数</li>
+</ol>
+<h2 id="二、执行计划中的内容"><a href="#二、执行计划中的内容" class="headerlink" title="二、执行计划中的内容"></a>二、执行计划中的内容</h2><p>以下面的查询SQL 为例，解释执行计划中输出内容的含义</p>
+<figure class="highlight sql"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br></pre></td><td class="code"><pre><span class="line"><span class="keyword">EXPLAIN</span></span><br><span class="line"><span class="keyword">SELECT</span> customer_id,title,<span class="keyword">content</span> </span><br><span class="line"><span class="keyword">FROM</span> <span class="string">`product_comment`</span></span><br><span class="line"><span class="keyword">WHERE</span> audit_status = <span class="number">1</span></span><br><span class="line"><span class="keyword">AND</span> product_id = <span class="number">199726</span></span><br><span class="line"><span class="keyword">LIMIT</span> <span class="number">0</span>,<span class="number">5</span></span><br></pre></td></tr></table></figure>
+<ul>
+<li>id: 1<ul>
+<li>ID 列中的数据为一组数字，表示执行 SELECT 语句的顺序</li>
+<li>ID 值相同时，执行顺序由上至下</li>
+<li>ID 值越大优先级越高，执行越靠前</li>
+</ul>
+</li>
+<li>select_type: SIMPLE<ul>
+<li>SIMPLE：不包含子查询或是 UNION 操作的查询</li>
+<li>PRIMARY：查询中如果包含任何子查询，那么最外层的查询则被标记为 PRIMARY</li>
+<li>SUBQUERY：SELECT 列表中的子查询</li>
+<li>DEPENDENT SUBQUERY：依赖外部结果的子查询</li>
+<li>UNION：Union操作的第二个或是之后的查询的值为 union</li>
+<li>DEPENDENT UNION：当 UNION 作为子查询时，第二或是第二个后的查询的 select_type 值</li>
+<li>UNION RESULT：UNION 产生的结果集</li>
+<li>DERIVED：出现在 FROM 子句中的子查询</li>
+</ul>
+</li>
+<li>table: product_comment<ul>
+<li>输出数据行所在的表的名称</li>
+<li>&lt;unionM,N&gt;由ID 为 M，N 查询union 产生的结果集</li>
+<li><derivedn>/<subqueryn> 由 ID 为N 的查询结果的结果集</subqueryn></derivedn></li>
+</ul>
+</li>
+<li>partition: NULL<ul>
+<li>对于分区表，显示查询的分区ID</li>
+<li>对于非分区表，显示为 NULL</li>
+</ul>
+</li>
+<li>type: ALL<ul>
+<li>以下类型的性能从高到低依次排列</li>
+<li>system：这是 const 联接类型的一个特例，当查询的表只有一行时使用</li>
+<li>const：表中有且只有一个匹配的行时使用，如对主键或是唯一索引的查询，这是效率最高的联接方式</li>
+<li>eq_ref：唯一索引或是主键索引查找，对于每个索引键，表中只有一条记录与之匹配</li>
+<li>ref：非唯一索引查找，返回匹配某个单独值的所有行</li>
+<li>ref_or_null：类似于 ref 类型的查询，但是附加了对 NULL 值列的查询</li>
+<li>index_merge：该联接类型表示使用了索引合并优化方法</li>
+<li>range：索引范围扫描，常见于 between、&gt;、&lt; 这样的查询条件</li>
+<li>index：FULL index Scan 全索引扫描，同ALL 的区别是，遍历的是索引树</li>
+<li>ALL：FULL Table Scan 全表扫描，这是效率最差的联接方式</li>
+</ul>
+</li>
+<li>possible_keys: NULL <ul>
+<li>指出 MySQL 能使用哪些索引来优化查询，基于查询所使用到的列和过滤条件来判断的</li>
+<li>查询列所涉及到的列上的索引都会被列出，但不一定会被使用</li>
+</ul>
+</li>
+<li>key: NULL<ul>
+<li>查询优化器优化查询实际所使用的索引</li>
+<li>如果没有可用的索引，则显示为 NULL</li>
+<li>如果查询使用了覆盖索引，则该索引仅出现在 Key 列中</li>
+</ul>
+</li>
+<li>key_len: NULL<ul>
+<li>表示索引字段的最大可能长度</li>
+<li>ken_len的长度由字段定义计算而来，并非数据的实际长度</li>
+</ul>
+</li>
+<li>ref: NULL<ul>
+<li>表示那些列或常量被用于查找索引列上的值</li>
+</ul>
+</li>
+<li>rows: 9400<ul>
+<li>表示 MySQL 通过索引统计信息，估算的所需读取的行数</li>
+<li>Rows 值的大小是个统计抽样结果，并不十分准确</li>
+</ul>
+</li>
+<li>filtered: 1.00<ul>
+<li>表示返回结果的行数占需读取行数的百分比</li>
+<li>Filtered 列的值越大越好，越大表示过滤的比例越高，最大100%</li>
+<li>Filtered 列的值依赖统计信息，并不十分准确</li>
+</ul>
+</li>
+<li>Extra: Using where<ul>
+<li>Distinct：优化 distinct 操作，在找到第一匹配的元素后即停止找同样值的动作</li>
+<li>Not exists：使用 not exists 来优化操作</li>
+<li>Using filesort：使用额外操作进行排序，通常会出现在 order  by 或 group by 查询中</li>
+<li>Using index：使用了覆盖索引进行查询</li>
+<li>Using teporary：MySQL 需要使用临时表来处理查询，常见于排序、子查询和分组查询</li>
+<li>Using where：需要在 MySQL 服务器层使用 WHERE 条件来过滤数据</li>
+<li>select tables optimized away：直接通过索引来获取数据，不用访问表</li>
+</ul>
+</li>
+</ul>
+<p>通过上面的查询语句，以及索引的设计规范，应该在 where 语句查询的部分设置索引，这里使用联合索引。</p>
+<figure class="highlight sql"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br></pre></td><td class="code"><pre><span class="line"><span class="comment">-- 查询表中，audit_status和product_id 的区分度，应该将区分度高的列放在联合索引的左侧</span></span><br><span class="line"><span class="keyword">SELECT</span> <span class="keyword">COUNT</span>(<span class="keyword">DISTINCT</span> audit_status)/<span class="keyword">COUNT</span>(*) <span class="keyword">AS</span> audit_rate,</span><br><span class="line"><span class="keyword">COUNT</span>(<span class="keyword">DISTINCT</span> product_id)/<span class="keyword">COUNT</span>(*) <span class="keyword">AS</span> product_rate</span><br><span class="line"><span class="keyword">FROM</span> product_comment;</span><br></pre></td></tr></table></figure>
+<p>假设 product_rate = 0.8 ，audit_rate = 0.2，则联合索引应该设计为：</p>
+<figure class="highlight sql"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br></pre></td><td class="code"><pre><span class="line"><span class="keyword">CREATE</span> <span class="keyword">INDEX</span> idx_productID_auditStatus</span><br><span class="line"><span class="keyword">ON</span> product_comment(product_id,audit_status);</span><br></pre></td></tr></table></figure>
+<h2 id="执行计划的限制"><a href="#执行计划的限制" class="headerlink" title="执行计划的限制"></a>执行计划的限制</h2><ol>
+<li>无法展示存储过程、触发器、UDF 对查询的影响</li>
+<li>无法使用 EXPLAIN 对存储过程进行分析</li>
+<li>早期版本的MySQL 只支持对 SELECT 语句进行分析</li>
+</ol>
+
+      
+    </div>
+    <footer class="article-footer">
+      <a data-url="http://yoursite.com/2019/06/21/读书笔记/《高性能MySQL》/7.MySQL执行计划优化/" data-id="cjxpj03bz00c6rgtwq0ny3l7g" class="article-share-link">Share</a>
+      
+      
+  <ul class="article-tag-list"><li class="article-tag-list-item"><a class="article-tag-list-link" href="/tags/MySQL/">MySQL</a></li><li class="article-tag-list-item"><a class="article-tag-list-link" href="/tags/数据库/">数据库</a></li></ul>
+
+    </footer>
+  </div>
+  
+    
+<nav id="article-nav">
+  
+    <a href="/2019/06/21/读书笔记/《高性能MySQL》/8.MySQL慢查日志/" id="article-nav-newer" class="article-nav-link-wrap">
+      <strong class="article-nav-caption">Newer</strong>
+      <div class="article-nav-title">
+        
+          《高性能MySQL》第八章 MySQL 慢查询日志
+        
+      </div>
+    </a>
+  
+  
+    <a href="/2019/06/21/读书笔记/《高性能MySQL》/5.设计数据库分区表/" id="article-nav-older" class="article-nav-link-wrap">
+      <strong class="article-nav-caption">Older</strong>
+      <div class="article-nav-title">《高性能MySQL》第五章 设计数据库分区表</div>
+    </a>
+  
+</nav>
+
+  
+</article>
+
+</section>
+        
+          <aside id="sidebar">
+  
+    
+  <div class="widget-wrap">
+    <h3 class="widget-title">Categories</h3>
+    <div class="widget">
+      <ul class="category-list"><li class="category-list-item"><a class="category-list-link" href="/categories/Docker学习/">Docker学习</a></li><li class="category-list-item"><a class="category-list-link" href="/categories/Git命令学习/">Git命令学习</a></li><li class="category-list-item"><a class="category-list-link" href="/categories/JAVA-核心知识点整理/">JAVA 核心知识点整理</a></li><li class="category-list-item"><a class="category-list-link" href="/categories/Java/">Java</a></li><li class="category-list-item"><a class="category-list-link" href="/categories/Java并发编程与高并发解决方案/">Java并发编程与高并发解决方案</a></li><li class="category-list-item"><a class="category-list-link" href="/categories/Java并发编程的艺术/">Java并发编程的艺术</a></li><li class="category-list-item"><a class="category-list-link" href="/categories/Java成神之路/">Java成神之路</a><ul class="category-list-child"><li class="category-list-item"><a class="category-list-link" href="/categories/Java成神之路/SpringBoot/">SpringBoot</a></li><li class="category-list-item"><a class="category-list-link" href="/categories/Java成神之路/Study社区/">Study社区</a></li></ul></li><li class="category-list-item"><a class="category-list-link" href="/categories/Linux学习之路/">Linux学习之路</a></li><li class="category-list-item"><a class="category-list-link" href="/categories/MarkDown语法/">MarkDown语法</a></li><li class="category-list-item"><a class="category-list-link" href="/categories/React学习/">React学习</a></li><li class="category-list-item"><a class="category-list-link" href="/categories/SpringBoot-参考指南/">SpringBoot 参考指南</a></li><li class="category-list-item"><a class="category-list-link" href="/categories/工具函数/">工具函数</a></li><li class="category-list-item"><a class="category-list-link" href="/categories/设计模式/">设计模式</a></li><li class="category-list-item"><a class="category-list-link" href="/categories/高性能MySQL/">高性能MySQL</a></li></ul>
+    </div>
+  </div>
+
+
+  
+    
+  <div class="widget-wrap">
+    <h3 class="widget-title">Tags</h3>
+    <div class="widget">
+      <ul class="tag-list"><li class="tag-list-item"><a class="tag-list-link" href="/tags/Git/">Git</a></li><li class="tag-list-item"><a class="tag-list-link" href="/tags/Git-Bash/">Git Bash</a></li><li class="tag-list-item"><a class="tag-list-link" href="/tags/Linux/">Linux</a></li><li class="tag-list-item"><a class="tag-list-link" href="/tags/MQ/">MQ</a></li><li class="tag-list-item"><a class="tag-list-link" href="/tags/MySQL/">MySQL</a></li><li class="tag-list-item"><a class="tag-list-link" href="/tags/POI/">POI</a></li><li class="tag-list-item"><a class="tag-list-link" href="/tags/Spring-Cloud/">Spring Cloud</a></li><li class="tag-list-item"><a class="tag-list-link" href="/tags/Spring-Data/">Spring Data</a></li><li class="tag-list-item"><a class="tag-list-link" href="/tags/SpringBoot/">SpringBoot</a></li><li class="tag-list-item"><a class="tag-list-link" href="/tags/docker/">docker</a></li><li class="tag-list-item"><a class="tag-list-link" href="/tags/gradle/">gradle</a></li><li class="tag-list-item"><a class="tag-list-link" href="/tags/java/">java</a></li><li class="tag-list-item"><a class="tag-list-link" href="/tags/poi/">poi</a></li><li class="tag-list-item"><a class="tag-list-link" href="/tags/并发编程/">并发编程</a></li><li class="tag-list-item"><a class="tag-list-link" href="/tags/数据库/">数据库</a></li><li class="tag-list-item"><a class="tag-list-link" href="/tags/读书笔记/">读书笔记</a></li><li class="tag-list-item"><a class="tag-list-link" href="/tags/高并发/">高并发</a></li></ul>
+    </div>
+  </div>
+
+
+  
+    
+  <div class="widget-wrap">
+    <h3 class="widget-title">Tag Cloud</h3>
+    <div class="widget tagcloud">
+      <a href="/tags/Git/" style="font-size: 13.75px;">Git</a> <a href="/tags/Git-Bash/" style="font-size: 11.25px;">Git Bash</a> <a href="/tags/Linux/" style="font-size: 12.5px;">Linux</a> <a href="/tags/MQ/" style="font-size: 15px;">MQ</a> <a href="/tags/MySQL/" style="font-size: 17.5px;">MySQL</a> <a href="/tags/POI/" style="font-size: 16.25px;">POI</a> <a href="/tags/Spring-Cloud/" style="font-size: 10px;">Spring Cloud</a> <a href="/tags/Spring-Data/" style="font-size: 12.5px;">Spring Data</a> <a href="/tags/SpringBoot/" style="font-size: 15px;">SpringBoot</a> <a href="/tags/docker/" style="font-size: 10px;">docker</a> <a href="/tags/gradle/" style="font-size: 11.25px;">gradle</a> <a href="/tags/java/" style="font-size: 20px;">java</a> <a href="/tags/poi/" style="font-size: 10px;">poi</a> <a href="/tags/并发编程/" style="font-size: 12.5px;">并发编程</a> <a href="/tags/数据库/" style="font-size: 17.5px;">数据库</a> <a href="/tags/读书笔记/" style="font-size: 18.75px;">读书笔记</a> <a href="/tags/高并发/" style="font-size: 12.5px;">高并发</a>
+    </div>
+  </div>
+
+  
+    
+  <div class="widget-wrap">
+    <h3 class="widget-title">Archives</h3>
+    <div class="widget">
+      <ul class="archive-list"><li class="archive-list-item"><a class="archive-list-link" href="/archives/2019/12/">December 2019</a></li><li class="archive-list-item"><a class="archive-list-link" href="/archives/2019/11/">November 2019</a></li><li class="archive-list-item"><a class="archive-list-link" href="/archives/2019/07/">July 2019</a></li><li class="archive-list-item"><a class="archive-list-link" href="/archives/2019/06/">June 2019</a></li><li class="archive-list-item"><a class="archive-list-link" href="/archives/2019/05/">May 2019</a></li><li class="archive-list-item"><a class="archive-list-link" href="/archives/2018/11/">November 2018</a></li><li class="archive-list-item"><a class="archive-list-link" href="/archives/2018/10/">October 2018</a></li><li class="archive-list-item"><a class="archive-list-link" href="/archives/2018/09/">September 2018</a></li><li class="archive-list-item"><a class="archive-list-link" href="/archives/2017/05/">May 2017</a></li></ul>
+    </div>
+  </div>
+
+
+  
+    
+  <div class="widget-wrap">
+    <h3 class="widget-title">Recent Posts</h3>
+    <div class="widget">
+      <ul>
+        
+          <li>
+            <a href="/2019/12/30/blog/2019/">2019年目标</a>
+          </li>
+        
+          <li>
+            <a href="/2019/12/01/读书笔记/《Java并发编程的艺术》/0.0_目录/">《Java并发编程的艺术》读书笔记 - 目录</a>
+          </li>
+        
+          <li>
+            <a href="/2019/12/01/读书笔记/《Java核心知识点整理》/0.目录/">《JAVA 核心知识点整理》读书笔记 - 目录</a>
+          </li>
+        
+          <li>
+            <a href="/2019/11/30/读书笔记/《高性能MySQL》/0.目录/">《高性能MySQL》读书笔记 - 目录</a>
+          </li>
+        
+          <li>
+            <a href="/2019/07/05/读书笔记/《JavaDesignPatterns》/8.建造者模式/">《Java Design Patterns》第六章 建造者模式 - 复杂对象的组装与创建</a>
+          </li>
+        
+      </ul>
+    </div>
+  </div>
+
+  
+</aside>
+        
+      </div>
+      <footer id="footer">
+  
+  <div class="outer">
+    <div id="footer-info" class="inner">
+      &copy; 2019 koral<br>
+      Powered by <a href="http://hexo.io/" target="_blank">Hexo</a>
+    </div>
+  </div>
+</footer>
+    </div>
+    <nav id="mobile-nav">
+  
+    <a href="/" class="mobile-nav-link">Home</a>
+  
+    <a href="/archives" class="mobile-nav-link">Archives</a>
+  
+</nav>
+    
+
+<script src="//ajax.googleapis.com/ajax/libs/jquery/2.0.3/jquery.min.js"></script>
+
+
+  <link rel="stylesheet" href="/fancybox/jquery.fancybox.css">
+  <script src="/fancybox/jquery.fancybox.pack.js"></script>
+
+
+<script src="/js/script.js"></script>
+
+
+
+  </div>
+</body>
+</html>
