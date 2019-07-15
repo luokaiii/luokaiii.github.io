@@ -29,7 +29,7 @@ Spring Data 使用了 Spring 框">
     </style>
 
     <script src="/libs/jquery/jquery-2.2.0.min.js"></script>
-</head>
+<link rel="stylesheet" href="/css/prism-tomorrow.css" type="text/css"></head>
 
 
 <body>
@@ -437,17 +437,57 @@ Spring Data 使用了 Spring 框">
 <li>支持隔离 Update 操作</li>
 <li>使用 Spring 的 @NonNullApi 和 @Nullable 保证 Null 安全</li>
 </ul>
-<h2 id="Spring-Data-MongoDB-支持的注解"><a href="#Spring-Data-MongoDB-支持的注解" class="headerlink" title="Spring Data MongoDB 支持的注解"></a>Spring Data MongoDB 支持的注解</h2><figure class="highlight java"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br></pre></td><td class="code"><pre><span class="line"><span class="meta">@Document</span>   : 文档标识，将 java 类与 Collection 文档对应</span><br><span class="line"><span class="meta">@Id</span>         : 文档的唯一标识，在 mongodb 中为 ObjectID，生成规则：时间戳+机器标识+进程ID+自增计数器(确保同一时间内ID不会冲突)</span><br><span class="line"><span class="meta">@Field</span>      : 属性注解</span><br><span class="line"><span class="meta">@Indexed</span>    : 索引</span><br><span class="line"><span class="meta">@CompoundIndex</span>  : 混合索引</span><br><span class="line"><span class="meta">@GeoSpatialIndexed</span>  : 声明该字段为地理信息的索引</span><br><span class="line"><span class="meta">@Transient</span>  : 映射忽略的字段 (即不会保存到 mongodb)</span><br><span class="line"><span class="meta">@Query</span>      ：查询</span><br></pre></td></tr></table></figure>
+<h2 id="Spring-Data-MongoDB-支持的注解"><a href="#Spring-Data-MongoDB-支持的注解" class="headerlink" title="Spring Data MongoDB 支持的注解"></a>Spring Data MongoDB 支持的注解</h2><pre class=" language-java"><code class="language-java"><span class="token annotation punctuation">@Document</span>   <span class="token operator">:</span> 文档标识，将 java 类与 Collection 文档对应
+<span class="token annotation punctuation">@Id</span>         <span class="token operator">:</span> 文档的唯一标识，在 mongodb 中为 ObjectID，生成规则：时间戳<span class="token operator">+</span>机器标识<span class="token operator">+</span>进程ID<span class="token operator">+</span>自增计数器<span class="token punctuation">(</span>确保同一时间内ID不会冲突<span class="token punctuation">)</span>
+<span class="token annotation punctuation">@Field</span>      <span class="token operator">:</span> 属性注解
+<span class="token annotation punctuation">@Indexed</span>    <span class="token operator">:</span> 索引
+<span class="token annotation punctuation">@CompoundIndex</span>  <span class="token operator">:</span> 混合索引
+<span class="token annotation punctuation">@GeoSpatialIndexed</span>  <span class="token operator">:</span> 声明该字段为地理信息的索引
+<span class="token annotation punctuation">@Transient</span>  <span class="token operator">:</span> 映射忽略的字段 <span class="token punctuation">(</span>即不会保存到 mongodb<span class="token punctuation">)</span>
+<span class="token annotation punctuation">@Query</span>      ：查询
+</code></pre>
 <h2 id="依赖"><a href="#依赖" class="headerlink" title="依赖"></a>依赖</h2><p>在使用 SpringDataMongoDB 之前，需要先声明对 SpringData 模块的依赖关系。</p>
-<p>既然 SpringData 存储库抽象中的中央接口是 Repository 。 该接口的子类 CrudRepository 实现了实体类的 CRUD 功能，如果需要的话，也可以通过继承该接口来拓展 ：<br><figure class="highlight java"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br><span class="line">14</span><br><span class="line">15</span><br><span class="line">16</span><br><span class="line">17</span><br></pre></td><td class="code"><pre><span class="line"><span class="keyword">public</span> <span class="class"><span class="keyword">interface</span> <span class="title">CrudRepository</span>&lt;<span class="title">T</span>, <span class="title">ID</span> <span class="keyword">extends</span> <span class="title">Serializable</span>&gt;</span></span><br><span class="line"><span class="class">  <span class="keyword">extends</span> <span class="title">Repository</span>&lt;<span class="title">T</span>, <span class="title">ID</span>&gt; </span>&#123;</span><br><span class="line"></span><br><span class="line">  &lt;S extends T&gt; <span class="function">S <span class="title">save</span><span class="params">(S entity)</span></span>;      </span><br><span class="line"></span><br><span class="line">  <span class="function">Optional&lt;T&gt; <span class="title">findById</span><span class="params">(ID primaryKey)</span></span>; </span><br><span class="line"></span><br><span class="line">  <span class="function">Iterable&lt;T&gt; <span class="title">findAll</span><span class="params">()</span></span>;               </span><br><span class="line"></span><br><span class="line">  <span class="function"><span class="keyword">long</span> <span class="title">count</span><span class="params">()</span></span>;                        </span><br><span class="line"></span><br><span class="line">  <span class="function"><span class="keyword">void</span> <span class="title">delete</span><span class="params">(T entity)</span></span>;               </span><br><span class="line"></span><br><span class="line">  <span class="function"><span class="keyword">boolean</span> <span class="title">existsById</span><span class="params">(ID primaryKey)</span></span>;   </span><br><span class="line"></span><br><span class="line">  <span class="comment">// … more functionality omitted.</span></span><br><span class="line">&#125;</span><br></pre></td></tr></table></figure></p>
+<p>既然 SpringData 存储库抽象中的中央接口是 Repository 。 该接口的子类 CrudRepository 实现了实体类的 CRUD 功能，如果需要的话，也可以通过继承该接口来拓展 ：</p>
+<pre class=" language-java"><code class="language-java"><span class="token keyword">public</span> <span class="token keyword">interface</span> <span class="token class-name">CrudRepository</span><span class="token operator">&lt;</span>T<span class="token punctuation">,</span> ID <span class="token keyword">extends</span> <span class="token class-name">Serializable</span><span class="token operator">></span>
+  <span class="token keyword">extends</span> <span class="token class-name">Repository</span><span class="token operator">&lt;</span>T<span class="token punctuation">,</span> ID<span class="token operator">></span> <span class="token punctuation">{</span>
+
+  <span class="token operator">&lt;</span>S <span class="token keyword">extends</span> <span class="token class-name">T</span><span class="token operator">></span> S <span class="token function">save</span><span class="token punctuation">(</span>S entity<span class="token punctuation">)</span><span class="token punctuation">;</span>      
+
+  Optional<span class="token operator">&lt;</span>T<span class="token operator">></span> <span class="token function">findById</span><span class="token punctuation">(</span>ID primaryKey<span class="token punctuation">)</span><span class="token punctuation">;</span> 
+
+  Iterable<span class="token operator">&lt;</span>T<span class="token operator">></span> <span class="token function">findAll</span><span class="token punctuation">(</span><span class="token punctuation">)</span><span class="token punctuation">;</span>               
+
+  <span class="token keyword">long</span> <span class="token function">count</span><span class="token punctuation">(</span><span class="token punctuation">)</span><span class="token punctuation">;</span>                        
+
+  <span class="token keyword">void</span> <span class="token function">delete</span><span class="token punctuation">(</span>T entity<span class="token punctuation">)</span><span class="token punctuation">;</span>               
+
+  <span class="token keyword">boolean</span> <span class="token function">existsById</span><span class="token punctuation">(</span>ID primaryKey<span class="token punctuation">)</span><span class="token punctuation">;</span>   
+
+  <span class="token comment" spellcheck="true">// … more functionality omitted.</span>
+<span class="token punctuation">}</span>
+</code></pre>
 <blockquote>
 <p>除了 CrudRepository 之外，还有 JpaRepository 和 MongoRepository。在 CrudRepository 中，有许多抽象方法添加了额外的方法来简化对实体的分页访问。</p>
 </blockquote>
-<figure class="highlight java"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br></pre></td><td class="code"><pre><span class="line"><span class="comment">/**</span></span><br><span class="line"><span class="comment">* PagingAndSortingRepository 方法提供了分页和排序的功能</span></span><br><span class="line"><span class="comment">*/</span></span><br><span class="line"><span class="keyword">public</span> <span class="class"><span class="keyword">interface</span> <span class="title">PagingAndSortingRepository</span>&lt;<span class="title">T</span>, <span class="title">ID</span> <span class="keyword">extends</span> <span class="title">Serializable</span>&gt;</span></span><br><span class="line"><span class="class">  <span class="keyword">extends</span> <span class="title">CrudRepository</span>&lt;<span class="title">T</span>, <span class="title">ID</span>&gt; </span>&#123;</span><br><span class="line"></span><br><span class="line">  <span class="function">Iterable&lt;T&gt; <span class="title">findAll</span><span class="params">(Sort sort)</span></span>;</span><br><span class="line"></span><br><span class="line">  <span class="function">Page&lt;T&gt; <span class="title">findAll</span><span class="params">(Pageable pageable)</span></span>;</span><br><span class="line">&#125;</span><br></pre></td></tr></table></figure>
+<pre class=" language-java"><code class="language-java"><span class="token comment" spellcheck="true">/**
+* PagingAndSortingRepository 方法提供了分页和排序的功能
+*/</span>
+<span class="token keyword">public</span> <span class="token keyword">interface</span> <span class="token class-name">PagingAndSortingRepository</span><span class="token operator">&lt;</span>T<span class="token punctuation">,</span> ID <span class="token keyword">extends</span> <span class="token class-name">Serializable</span><span class="token operator">></span>
+  <span class="token keyword">extends</span> <span class="token class-name">CrudRepository</span><span class="token operator">&lt;</span>T<span class="token punctuation">,</span> ID<span class="token operator">></span> <span class="token punctuation">{</span>
+
+  Iterable<span class="token operator">&lt;</span>T<span class="token operator">></span> <span class="token function">findAll</span><span class="token punctuation">(</span>Sort sort<span class="token punctuation">)</span><span class="token punctuation">;</span>
+
+  Page<span class="token operator">&lt;</span>T<span class="token operator">></span> <span class="token function">findAll</span><span class="token punctuation">(</span>Pageable pageable<span class="token punctuation">)</span><span class="token punctuation">;</span>
+<span class="token punctuation">}</span>
+</code></pre>
 <blockquote>
 <p>还有包含：删除查询、计数、查询等相关接口</p>
 </blockquote>
-<h2 id="定义自己的-Repository"><a href="#定义自己的-Repository" class="headerlink" title="定义自己的 Repository"></a>定义自己的 Repository</h2><p>声明扩展 Repository 或者其子接口之一的接口，并嵌入需要处理的对象和 ID 类型：<br><figure class="highlight java"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br></pre></td><td class="code"><pre><span class="line"><span class="class"><span class="keyword">interface</span> <span class="title">UserRepository</span> <span class="keyword">extends</span> <span class="title">MongoRepository</span>&lt;<span class="title">User</span>,<span class="title">String</span>&gt;</span>&#123;  <span class="comment">// UserRepository 默认继承了父类的 CRUD 方法</span></span><br><span class="line">    <span class="function">List&lt;User&gt; <span class="title">findByName</span><span class="params">(String name)</span></span>; <span class="comment">// 扩展的查询方法</span></span><br><span class="line">&#125;</span><br></pre></td></tr></table></figure></p>
+<h2 id="定义自己的-Repository"><a href="#定义自己的-Repository" class="headerlink" title="定义自己的 Repository"></a>定义自己的 Repository</h2><p>声明扩展 Repository 或者其子接口之一的接口，并嵌入需要处理的对象和 ID 类型：</p>
+<pre class=" language-java"><code class="language-java"><span class="token keyword">interface</span> <span class="token class-name">UserRepository</span> <span class="token keyword">extends</span> <span class="token class-name">MongoRepository</span><span class="token operator">&lt;</span>User<span class="token punctuation">,</span>String<span class="token operator">></span><span class="token punctuation">{</span>  <span class="token comment" spellcheck="true">// UserRepository 默认继承了父类的 CRUD 方法</span>
+    List<span class="token operator">&lt;</span>User<span class="token operator">></span> <span class="token function">findByName</span><span class="token punctuation">(</span>String name<span class="token punctuation">)</span><span class="token punctuation">;</span> <span class="token comment" spellcheck="true">// 扩展的查询方法</span>
+<span class="token punctuation">}</span>
+</code></pre>
 <h2 id="repository-方法的-Null-处理"><a href="#repository-方法的-Null-处理" class="headerlink" title="repository 方法的 Null 处理"></a>repository 方法的 Null 处理</h2><p>从 Spring Data 2.0 开始，返回单个聚合实例的 Repository 的 CRUD 方法 可以使用 Java8 中的Optional 来只是可能缺少的值，支持返回一下的包装类型：</p>
 <ul>
 <li>com.google.common.base.Optional</li>
@@ -456,8 +496,31 @@ Spring Data 使用了 Spring 框">
 <li>javaslang.control.Option (不推荐)</li>
 </ul>
 <p>或者，不使用包装类型，直接返回查询结果为 Null。 使用 Optional 的好处在于保证了方法返回的对象永远不会为 Null，而是相应的 空表示。</p>
-<h2 id="多-Spring-Data-模块的-Repository"><a href="#多-Spring-Data-模块的-Repository" class="headerlink" title="多 Spring Data 模块的 Repository"></a>多 Spring Data 模块的 Repository</h2><figure class="highlight java"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br></pre></td><td class="code"><pre><span class="line"><span class="class"><span class="keyword">interface</span> <span class="title">MyRepository</span> <span class="keyword">extends</span> <span class="title">JpaRepository</span>&lt;<span class="title">User</span>, <span class="title">Long</span>&gt; </span>&#123; &#125;</span><br><span class="line"></span><br><span class="line"><span class="meta">@NoRepositoryBean</span></span><br><span class="line"><span class="class"><span class="keyword">interface</span> <span class="title">MyBaseRepository</span>&lt;<span class="title">T</span>, <span class="title">ID</span> <span class="keyword">extends</span> <span class="title">Serializable</span>&gt; <span class="keyword">extends</span> <span class="title">JpaRepository</span>&lt;<span class="title">T</span>, <span class="title">ID</span>&gt; </span>&#123;</span><br><span class="line">  …</span><br><span class="line">&#125;</span><br><span class="line"></span><br><span class="line"><span class="class"><span class="keyword">interface</span> <span class="title">UserRepository</span> <span class="keyword">extends</span> <span class="title">MyBaseRepository</span>&lt;<span class="title">User</span>, <span class="title">Long</span>&gt; </span>&#123; <span class="comment">// MyRepository 与 MyBaseRepository 都继承了 JpaRepository ，所以它们是有效的子类</span></span><br><span class="line">  …</span><br><span class="line">&#125;</span><br></pre></td></tr></table></figure>
-<figure class="highlight java"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br></pre></td><td class="code"><pre><span class="line"><span class="class"><span class="keyword">interface</span> <span class="title">AmbiguousRepository</span> <span class="keyword">extends</span> <span class="title">Repository</span>&lt;<span class="title">User</span>, <span class="title">Long</span>&gt; </span>&#123;</span><br><span class="line"> …</span><br><span class="line">&#125;</span><br><span class="line"></span><br><span class="line"><span class="meta">@NoRepositoryBean</span></span><br><span class="line"><span class="class"><span class="keyword">interface</span> <span class="title">MyBaseRepository</span>&lt;<span class="title">T</span>, <span class="title">ID</span> <span class="keyword">extends</span> <span class="title">Serializable</span>&gt; <span class="keyword">extends</span> <span class="title">CrudRepository</span>&lt;<span class="title">T</span>, <span class="title">ID</span>&gt; </span>&#123;</span><br><span class="line">  …</span><br><span class="line">&#125;</span><br><span class="line"></span><br><span class="line"><span class="class"><span class="keyword">interface</span> <span class="title">AmbiguousUserRepository</span> <span class="keyword">extends</span> <span class="title">MyBaseRepository</span>&lt;<span class="title">User</span>, <span class="title">Long</span>&gt; </span>&#123;</span><br><span class="line">    <span class="comment">// 而且多个 SpringData 模块导致无法区分这些 Repository 应该绑定到哪个特定的 仓库</span></span><br><span class="line">  …</span><br><span class="line">&#125;</span><br></pre></td></tr></table></figure>
+<h2 id="多-Spring-Data-模块的-Repository"><a href="#多-Spring-Data-模块的-Repository" class="headerlink" title="多 Spring Data 模块的 Repository"></a>多 Spring Data 模块的 Repository</h2><pre class=" language-java"><code class="language-java"><span class="token keyword">interface</span> <span class="token class-name">MyRepository</span> <span class="token keyword">extends</span> <span class="token class-name">JpaRepository</span><span class="token operator">&lt;</span>User<span class="token punctuation">,</span> Long<span class="token operator">></span> <span class="token punctuation">{</span> <span class="token punctuation">}</span>
+
+<span class="token annotation punctuation">@NoRepositoryBean</span>
+<span class="token keyword">interface</span> <span class="token class-name">MyBaseRepository</span><span class="token operator">&lt;</span>T<span class="token punctuation">,</span> ID <span class="token keyword">extends</span> <span class="token class-name">Serializable</span><span class="token operator">></span> <span class="token keyword">extends</span> <span class="token class-name">JpaRepository</span><span class="token operator">&lt;</span>T<span class="token punctuation">,</span> ID<span class="token operator">></span> <span class="token punctuation">{</span>
+  …
+<span class="token punctuation">}</span>
+
+<span class="token keyword">interface</span> <span class="token class-name">UserRepository</span> <span class="token keyword">extends</span> <span class="token class-name">MyBaseRepository</span><span class="token operator">&lt;</span>User<span class="token punctuation">,</span> Long<span class="token operator">></span> <span class="token punctuation">{</span> <span class="token comment" spellcheck="true">// MyRepository 与 MyBaseRepository 都继承了 JpaRepository ，所以它们是有效的子类</span>
+  …
+<span class="token punctuation">}</span>
+</code></pre>
+<pre class=" language-java"><code class="language-java"><span class="token keyword">interface</span> <span class="token class-name">AmbiguousRepository</span> <span class="token keyword">extends</span> <span class="token class-name">Repository</span><span class="token operator">&lt;</span>User<span class="token punctuation">,</span> Long<span class="token operator">></span> <span class="token punctuation">{</span>
+ …
+<span class="token punctuation">}</span>
+
+<span class="token annotation punctuation">@NoRepositoryBean</span>
+<span class="token keyword">interface</span> <span class="token class-name">MyBaseRepository</span><span class="token operator">&lt;</span>T<span class="token punctuation">,</span> ID <span class="token keyword">extends</span> <span class="token class-name">Serializable</span><span class="token operator">></span> <span class="token keyword">extends</span> <span class="token class-name">CrudRepository</span><span class="token operator">&lt;</span>T<span class="token punctuation">,</span> ID<span class="token operator">></span> <span class="token punctuation">{</span>
+  …
+<span class="token punctuation">}</span>
+
+<span class="token keyword">interface</span> <span class="token class-name">AmbiguousUserRepository</span> <span class="token keyword">extends</span> <span class="token class-name">MyBaseRepository</span><span class="token operator">&lt;</span>User<span class="token punctuation">,</span> Long<span class="token operator">></span> <span class="token punctuation">{</span>
+    <span class="token comment" spellcheck="true">// 而且多个 SpringData 模块导致无法区分这些 Repository 应该绑定到哪个特定的 仓库</span>
+  …
+<span class="token punctuation">}</span>
+</code></pre>
 <h2 id="定义查询方法"><a href="#定义查询方法" class="headerlink" title="定义查询方法"></a>定义查询方法</h2><blockquote>
 <p>仓库代理有两种方式导出指定的查询。</p>
 <ul>
@@ -678,22 +741,22 @@ Spring Data 使用了 Spring 框">
             <div class="article-badge left-badge text-color">
                 <i class="fa fa-chevron-left"></i>&nbsp;Previous</div>
             <div class="card">
-                <a href="/2018/09/01/POI/poi操作word生成textbox/">
+                <a href="/2018/09/01/SpringData/Spring-Data-MongoDB（3）/">
                     <div class="card-image">
                         
                         
-                        <img src="/medias/featureimages/6.jpg" class="responsive-img" alt="poi����word����textbox">
+                        <img src="/medias/featureimages/21.jpg" class="responsive-img" alt="SpringDataMongoDB(三)">
                         
-                        <span class="card-title">poi����word����textbox</span>
+                        <span class="card-title">SpringDataMongoDB(三)</span>
                     </div>
                 </a>
                 <div class="card-content article-content">
                     <div class="summary block-with-text">
                         
-                            123public static void main(String[] args) throws Exception &#123;?
-XWPFDocument document = new XWPFDocument();
+                            Spring Data MongoDB （三） 自定义converterpackage com.pgc.diagnose.config;
 
-XWPFPara
+import com.mongodb.MongoClient;
+import org.springf
                         
                     </div>
                     <div class="publish-info">
@@ -715,8 +778,8 @@ XWPFPara
                 
                 <div class="card-action article-tags">
                     
-                    <a href="/tags/POI/" target="_blank">
-                        <span class="chip bg-color">POI</span>
+                    <a href="/tags/Spring-Data/" target="_blank">
+                        <span class="chip bg-color">Spring Data</span>
                     </a>
                     
                 </div>
@@ -730,19 +793,20 @@ XWPFPara
                 Next&nbsp;<i class="fa fa-chevron-right"></i>
             </div>
             <div class="card">
-                <a href="/2018/09/01/SpringData/Spring-Data-MongoDB（3）/">
+                <a href="/2018/09/01/SpringBootWebsocket/SpringBoot消息机制(三)-搭建Websocket+Stomp服务/">
                     <div class="card-image">
                         
                         
-                        <img src="/medias/featureimages/21.jpg" class="responsive-img" alt="SpringDataMongoDB(三)">
+                        <img src="/medias/featureimages/19.jpg" class="responsive-img" alt="SpringBoot消息机制(三)-搭建Websocket+Stomp服务">
                         
-                        <span class="card-title">SpringDataMongoDB(三)</span>
+                        <span class="card-title">SpringBoot消息机制(三)-搭建Websocket+Stomp服务</span>
                     </div>
                 </a>
                 <div class="card-content article-content">
                     <div class="summary block-with-text">
                         
-                            Spring Data MongoDB （三） 自定义converter123456789101112131415161718192021222324252627282930313233343536373839404142package c
+                            #SpringBoot消息机制(三)-搭建Websocket+Stomp服务
+
                         
                     </div>
                     <div class="publish-info">
@@ -764,8 +828,8 @@ XWPFPara
                 
                 <div class="card-action article-tags">
                     
-                    <a href="/tags/Spring-Data/" target="_blank">
-                        <span class="chip bg-color">Spring Data</span>
+                    <a href="/tags/MQ/" target="_blank">
+                        <span class="chip bg-color">MQ</span>
                     </a>
                     
                 </div>
@@ -917,6 +981,10 @@ XWPFPara
     </a>
 
 
+
+    <a href="/atom.xml" class="tooltipped" target="_blank" data-tooltip="RSS 订阅" data-position="top" data-delay="50">
+        <i class="fa fa-rss"></i>
+    </a>
 </div>
     </div>
 </footer>

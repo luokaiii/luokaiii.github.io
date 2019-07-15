@@ -14,7 +14,8 @@
 
 解决方法：进入项目目录，输入：
 
-1git config --global credential.helper store
+git config --global credential.helper store
+
 
 再重新pull一次，输">
     <meta http-equiv="X-UA-Compatible" content="IE=edge">
@@ -39,7 +40,7 @@
     </style>
 
     <script src="/libs/jquery/jquery-2.2.0.min.js"></script>
-</head>
+<link rel="stylesheet" href="/css/prism-tomorrow.css" type="text/css"></head>
 
 
 <body>
@@ -437,7 +438,8 @@
 </li>
 <li><p>解决方法：进入项目目录，输入：</p>
 </li>
-<li><figure class="highlight shell"><table><tr><td class="gutter"><pre><span class="line">1</span><br></pre></td><td class="code"><pre><span class="line">git config --global credential.helper store</span><br></pre></td></tr></table></figure>
+<li><pre class=" language-shell"><code class="language-shell">git config --global credential.helper store
+</code></pre>
 </li>
 <li><p>再重新pull一次，输入密码之后，以后就不用输入密码了</p>
 </li>
@@ -455,7 +457,8 @@
 </li>
 <li><p>但是我们需要后台执行 ，用到 nohup</p>
 </li>
-<li><figure class="highlight shell"><table><tr><td class="gutter"><pre><span class="line">1</span><br></pre></td><td class="code"><pre><span class="line">nohup /usr/local/node/bin/node /www/im/chat.js &gt;&gt; /usr/local/node/output.log 2&gt;&amp;1 &amp;</span><br></pre></td></tr></table></figure>
+<li><pre class=" language-shell"><code class="language-shell">nohup /usr/local/node/bin/node /www/im/chat.js >> /usr/local/node/output.log 2>&1 &
+</code></pre>
 </li>
 <li><p>第二种，是将 jar包注册为服务，通过service stop等方法启动停止</p>
 </li>
@@ -467,22 +470,40 @@
 </li>
 <li><p>安装yarn，注意，17.0以上的ubuntu需要先卸载cmdtest</p>
 <ol>
-<li><figure class="highlight java"><table><tr><td class="gutter"><pre><span class="line">1</span><br></pre></td><td class="code"><pre><span class="line">sudo apt remove cmdtest</span><br></pre></td></tr></table></figure>
+<li><pre class=" language-java"><code class="language-java">sudo apt remove cmdtest
+</code></pre>
 </li>
-<li><figure class="highlight java"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br></pre></td><td class="code"><pre><span class="line">curl -sS https:<span class="comment">//dl.yarnpkg.com/debian/pubkey.gpg | sudo apt-key add -</span></span><br><span class="line">echo <span class="string">"deb https://dl.yarnpkg.com/debian/ stable main"</span> | sudo tee /etc/apt/sources.list.d/yarn.list</span><br><span class="line">sudo apt-get update &amp;&amp; sudo apt-get install yarn</span><br></pre></td></tr></table></figure>
+<li><pre class=" language-java"><code class="language-java">curl <span class="token operator">-</span>sS https<span class="token operator">:</span><span class="token operator">/</span><span class="token operator">/</span>dl<span class="token punctuation">.</span>yarnpkg<span class="token punctuation">.</span>com<span class="token operator">/</span>debian<span class="token operator">/</span>pubkey<span class="token punctuation">.</span>gpg <span class="token operator">|</span> sudo apt<span class="token operator">-</span>key add <span class="token operator">-</span>
+echo <span class="token string">"deb https://dl.yarnpkg.com/debian/ stable main"</span> <span class="token operator">|</span> sudo tee <span class="token operator">/</span>etc<span class="token operator">/</span>apt<span class="token operator">/</span>sources<span class="token punctuation">.</span>list<span class="token punctuation">.</span>d<span class="token operator">/</span>yarn<span class="token punctuation">.</span>list
+sudo apt<span class="token operator">-</span>get update <span class="token operator">&amp;&amp;</span> sudo apt<span class="token operator">-</span>get install yarn
+</code></pre>
 </li>
 </ol>
 </li>
 </ol>
 </li>
 </ol>
-<p>重启：<br><figure class="highlight java"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br></pre></td><td class="code"><pre><span class="line">#!/bin/bash</span><br><span class="line">ps -ef | grep <span class="string">"/opt/hifox/PGC/teacherApp/teacherapp-0.0.1-SNAPSHOT.jar"</span> | grep -v grep | awk <span class="string">'&#123;print $2&#125;'</span> | xargs kill -<span class="number">15</span></span><br><span class="line"></span><br><span class="line">pid=`ps -ef | grep <span class="string">"/opt/hifox/PGC/teacherApp/teacherapp-0.0.1-SNAPSHOT.jar"</span> | grep -v grep | awk <span class="string">'&#123;print $2&#125;'</span>` </span><br><span class="line"><span class="keyword">while</span>( ! test -z $pid)</span><br><span class="line"><span class="keyword">do</span></span><br><span class="line"> sleep <span class="number">1</span></span><br><span class="line"> pid=`ps -ef | grep <span class="string">"/opt/hifox/PGC/teacherApp/teacherapp-0.0.1-SNAPSHOT.jar"</span> | grep -v grep | awk <span class="string">'&#123;print $2&#125;'</span>`</span><br><span class="line">echo -n <span class="string">"*"</span> </span><br><span class="line"></span><br><span class="line">done</span><br><span class="line"></span><br><span class="line">nohup java -jar teacherapp-<span class="number">0.0</span>.1-SNAPSHOT.jar &gt;/dev/<span class="keyword">null</span> <span class="number">2</span>&gt;&amp;<span class="number">1</span> &amp;</span><br></pre></td></tr></table></figure></p>
+<p>重启：</p>
+<pre class=" language-java"><code class="language-java">#<span class="token operator">!</span><span class="token operator">/</span>bin<span class="token operator">/</span>bash
+ps <span class="token operator">-</span>ef <span class="token operator">|</span> grep <span class="token string">"/opt/hifox/PGC/teacherApp/teacherapp-0.0.1-SNAPSHOT.jar"</span> <span class="token operator">|</span> grep <span class="token operator">-</span>v grep <span class="token operator">|</span> awk <span class="token string">'{print $2}'</span> <span class="token operator">|</span> xargs kill <span class="token operator">-</span><span class="token number">15</span>
+
+pid<span class="token operator">=</span>`ps <span class="token operator">-</span>ef <span class="token operator">|</span> grep <span class="token string">"/opt/hifox/PGC/teacherApp/teacherapp-0.0.1-SNAPSHOT.jar"</span> <span class="token operator">|</span> grep <span class="token operator">-</span>v grep <span class="token operator">|</span> awk <span class="token string">'{print $2}'</span>` 
+<span class="token keyword">while</span><span class="token punctuation">(</span> <span class="token operator">!</span> test <span class="token operator">-</span>z $pid<span class="token punctuation">)</span>
+<span class="token keyword">do</span>
+ sleep <span class="token number">1</span>
+ pid<span class="token operator">=</span>`ps <span class="token operator">-</span>ef <span class="token operator">|</span> grep <span class="token string">"/opt/hifox/PGC/teacherApp/teacherapp-0.0.1-SNAPSHOT.jar"</span> <span class="token operator">|</span> grep <span class="token operator">-</span>v grep <span class="token operator">|</span> awk <span class="token string">'{print $2}'</span>`
+echo <span class="token operator">-</span>n <span class="token string">"*"</span> 
+
+done
+
+nohup java <span class="token operator">-</span>jar teacherapp<span class="token operator">-</span><span class="token number">0.0</span><span class="token punctuation">.</span><span class="token number">1</span><span class="token operator">-</span>SNAPSHOT<span class="token punctuation">.</span>jar <span class="token operator">></span><span class="token operator">/</span>dev<span class="token operator">/</span>null <span class="token number">2</span><span class="token operator">></span><span class="token operator">&amp;</span><span class="token number">1</span> <span class="token operator">&amp;</span>
+</code></pre>
 <p>以外部配置文件启动jar<br>   加载properties优先级：</p>
-<pre><code>1. jar包同级目录下，config目录下的application.properties
-      jar包同级目录下的application.properties
-           3. 最后才是jar内的application.properties
-           依旧是 java -jar app.jar，默认按照上面的加载优先级加载。
-           也可以手动指定 java -jar app.jar -Dspring.config.location=application.properties
+<pre><code>        1. jar包同级目录下，config目录下的application.properties
+              jar包同级目录下的application.properties
+                   3. 最后才是jar内的application.properties
+                   依旧是 java -jar app.jar，默认按照上面的加载优先级加载。
+                   也可以手动指定 java -jar app.jar -Dspring.config.location=application.properties
 </code></pre><p>注意：cas和common需要是同一个数据库</p>
 <p>通过maven的默认仓库位置在 /root/.m2 ，这个文件夹可能被隐藏了</p>
 <p>查找方式为：find / .m2 ，表示查找”/“目录下的 .m2 文件或文件夹</p>
@@ -691,31 +712,33 @@
             <div class="article-badge left-badge text-color">
                 <i class="fa fa-chevron-left"></i>&nbsp;Previous</div>
             <div class="card">
-                <a href="/2018/09/08/Linux/开发环境的初始化/">
+                <a href="/2018/09/28/Git/Git命令/">
                     <div class="card-image">
                         
                         
-                        <img src="/medias/featureimages/1.jpg" class="responsive-img" alt="Linux学习之路(一)">
+                        <img src="/medias/featureimages/22.jpg" class="responsive-img" alt="Git常见命令">
                         
-                        <span class="card-title">Linux学习之路(一)</span>
+                        <span class="card-title">Git常见命令</span>
                     </div>
                 </a>
                 <div class="card-content article-content">
                     <div class="summary block-with-text">
                         
-                            在Linux环境下初始化Java开发环境(Ubuntu16.0)一、安装 JDK1234安装 OpenJdk ：sudo apt-get update     //更新软件包列表sudo apt-get install openjdk-8-
+                            1. 初始化仓库git init
+2. 添加文件至仓库git add .   // 点表示所有，也可以将点换成指定的文件名
+3. 本地仓库关联远程仓库git remote add origin gitee.com/luo-qiang/kor
                         
                     </div>
                     <div class="publish-info">
                         <span class="publish-date">
-                            <i class="fa fa-clock-o fa-fw icon-date"></i>2018-09-08
+                            <i class="fa fa-clock-o fa-fw icon-date"></i>2018-09-28
                         </span>
                         <span class="publish-author">
                             
                             <i class="fa fa-bookmark fa-fw icon-category"></i>
                             
-                            <a href="/categories/Linux学习之路/" class="post-category" target="_blank">
-                                    Linux学习之路
+                            <a href="/categories/Git命令学习/" class="post-category" target="_blank">
+                                    Git命令学习
                                 </a>
                             
                             
@@ -725,8 +748,8 @@
                 
                 <div class="card-action article-tags">
                     
-                    <a href="/tags/Linux/" target="_blank">
-                        <span class="chip bg-color">Linux</span>
+                    <a href="/tags/Git/" target="_blank">
+                        <span class="chip bg-color">Git</span>
                     </a>
                     
                 </div>
@@ -932,6 +955,10 @@
     </a>
 
 
+
+    <a href="/atom.xml" class="tooltipped" target="_blank" data-tooltip="RSS 订阅" data-position="top" data-delay="50">
+        <i class="fa fa-rss"></i>
+    </a>
 </div>
     </div>
 </footer>

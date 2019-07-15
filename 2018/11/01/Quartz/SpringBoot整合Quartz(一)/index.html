@@ -29,7 +29,7 @@ Quartz 作为一款由 Java 编写的开源作业调度框架,官网传送门。
     </style>
 
     <script src="/libs/jquery/jquery-2.2.0.min.js"></script>
-</head>
+<link rel="stylesheet" href="/css/prism-tomorrow.css" type="text/css"></head>
 
 
 <body>
@@ -424,13 +424,93 @@ Quartz 作为一款由 Java 编写的开源作业调度框架,官网传送门。
 <a id="more"></a>
 <h2 id="引入依赖"><a href="#引入依赖" class="headerlink" title="引入依赖"></a>引入依赖</h2><p>因为我们使用的是 <code>SpringBoot</code> 和 <code>Quartz</code> 整合。</p>
 <p>如果没有使用 <code>spring-boot-gradle-plugin</code> 指定SpringBoot的版本，则需要在下面的依赖汇中加入版本号。</p>
-<figure class="highlight java"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br></pre></td><td class="code"><pre><span class="line"><span class="comment">// Gradle 方式</span></span><br><span class="line">compile(<span class="string">'org.springframework.boot:spring-boot-starter-quartz'</span>)</span><br></pre></td></tr></table></figure>
-<figure class="highlight"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br></pre></td><td class="code"><pre><span class="line"><span class="comment">// Maven 方式</span></span><br><span class="line">&lt;dependency&gt;</span><br><span class="line">    &lt;groupId&gt;org.springframework.boot&lt;/groupId&gt;</span><br><span class="line">    &lt;artifactId&gt;spring-boot-starter-quartz&lt;/artifactId&gt;</span><br><span class="line">&lt;/dependency&gt;</span><br></pre></td></tr></table></figure>
+<pre class=" language-java"><code class="language-java"><span class="token comment" spellcheck="true">// Gradle 方式</span>
+<span class="token function">compile</span><span class="token punctuation">(</span><span class="token string">'org.springframework.boot:spring-boot-starter-quartz'</span><span class="token punctuation">)</span>
+</code></pre>
+<pre class=" language-java"><code class="language-java"><span class="token comment" spellcheck="true">// Maven 方式</span>
+<span class="token operator">&lt;</span>dependency<span class="token operator">></span>
+    <span class="token operator">&lt;</span>groupId<span class="token operator">></span>org<span class="token punctuation">.</span>springframework<span class="token punctuation">.</span>boot<span class="token operator">&lt;</span><span class="token operator">/</span>groupId<span class="token operator">></span>
+    <span class="token operator">&lt;</span>artifactId<span class="token operator">></span>spring<span class="token operator">-</span>boot<span class="token operator">-</span>starter<span class="token operator">-</span>quartz<span class="token operator">&lt;</span><span class="token operator">/</span>artifactId<span class="token operator">></span>
+<span class="token operator">&lt;</span><span class="token operator">/</span>dependency<span class="token operator">></span>
+</code></pre>
 <h2 id="配置文件-Quartz-properties"><a href="#配置文件-Quartz-properties" class="headerlink" title="配置文件-Quartz.properties"></a>配置文件-Quartz.properties</h2><p>通过配置文件 quartz.properties，初始化 Quartz 的一些配置.</p>
-<figure class="highlight plain"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br></pre></td><td class="code"><pre><span class="line">// ThreadPool 实现的类名</span><br><span class="line">org.quartz.threadPool.class：org.quartz.simpl.SimpleThreadPool</span><br><span class="line">// 线程数量</span><br><span class="line">org.quartz.threadPool.threadCount ： 10</span><br><span class="line">// 线程优先级</span><br><span class="line">// threadPriority 属性的最大值是常量 java.lang.Thread.MAX_PRIORITY，等于10。最小值为常量 java.lang.Thread.MIN_PRIORITY，为1</span><br><span class="line">org.quartz.threadPool.threadPriority ： 5</span><br><span class="line">// 自创建父线程</span><br><span class="line">//org.quartz.threadPool.threadsInheritContextClassLoaderOfInitializingThread： true</span><br></pre></td></tr></table></figure>
-<h2 id="配置Config"><a href="#配置Config" class="headerlink" title="配置Config"></a>配置Config</h2><figure class="highlight java"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br><span class="line">14</span><br><span class="line">15</span><br><span class="line">16</span><br><span class="line">17</span><br><span class="line">18</span><br><span class="line">19</span><br><span class="line">20</span><br><span class="line">21</span><br><span class="line">22</span><br><span class="line">23</span><br><span class="line">24</span><br><span class="line">25</span><br><span class="line">26</span><br><span class="line">27</span><br><span class="line">28</span><br><span class="line">29</span><br><span class="line">30</span><br><span class="line">31</span><br><span class="line">32</span><br><span class="line">33</span><br><span class="line">34</span><br><span class="line">35</span><br><span class="line">36</span><br><span class="line">37</span><br><span class="line">38</span><br><span class="line">39</span><br><span class="line">40</span><br><span class="line">41</span><br><span class="line">42</span><br><span class="line">43</span><br><span class="line">44</span><br><span class="line">45</span><br><span class="line">46</span><br><span class="line">47</span><br><span class="line">48</span><br><span class="line">49</span><br><span class="line">50</span><br><span class="line">51</span><br><span class="line">52</span><br><span class="line">53</span><br></pre></td><td class="code"><pre><span class="line"><span class="keyword">import</span> org.quartz.Scheduler;</span><br><span class="line"><span class="keyword">import</span> org.quartz.ee.servlet.QuartzInitializerListener;</span><br><span class="line"><span class="keyword">import</span> org.springframework.beans.factory.annotation.Autowired;</span><br><span class="line"><span class="keyword">import</span> org.springframework.beans.factory.config.PropertiesFactoryBean;</span><br><span class="line"><span class="keyword">import</span> org.springframework.context.annotation.Bean;</span><br><span class="line"><span class="keyword">import</span> org.springframework.context.annotation.Configuration;</span><br><span class="line"><span class="keyword">import</span> org.springframework.core.io.ClassPathResource;</span><br><span class="line"><span class="keyword">import</span> org.springframework.scheduling.annotation.EnableScheduling;</span><br><span class="line"><span class="keyword">import</span> org.springframework.scheduling.quartz.SchedulerFactoryBean;</span><br><span class="line"></span><br><span class="line"><span class="keyword">import</span> java.io.IOException;</span><br><span class="line"><span class="keyword">import</span> java.util.Properties;</span><br><span class="line"></span><br><span class="line"><span class="comment">/**</span></span><br><span class="line"><span class="comment"> * <span class="doctag">@description</span>:</span></span><br><span class="line"><span class="comment"> * <span class="doctag">@date</span>: 2018-11-05 17:27</span></span><br><span class="line"><span class="comment"> */</span></span><br><span class="line"><span class="meta">@Configuration</span></span><br><span class="line"><span class="meta">@EnableScheduling</span></span><br><span class="line"><span class="keyword">public</span> <span class="class"><span class="keyword">class</span> <span class="title">SchedulerConfig</span> </span>&#123;</span><br><span class="line"></span><br><span class="line">    <span class="meta">@Bean</span>(name = <span class="string">"SchedulerFactory"</span>)</span><br><span class="line">    <span class="function"><span class="keyword">public</span> SchedulerFactoryBean <span class="title">schedulerFactoryBean</span><span class="params">()</span> <span class="keyword">throws</span> IOException </span>&#123;</span><br><span class="line">        SchedulerFactoryBean factory = <span class="keyword">new</span> SchedulerFactoryBean();</span><br><span class="line">        factory.setQuartzProperties(quartzProperties());</span><br><span class="line">        <span class="keyword">return</span> factory;</span><br><span class="line">    &#125;</span><br><span class="line"></span><br><span class="line">    <span class="meta">@Bean</span></span><br><span class="line">    <span class="function"><span class="keyword">public</span> Properties <span class="title">quartzProperties</span><span class="params">()</span> <span class="keyword">throws</span> IOException </span>&#123;</span><br><span class="line">        PropertiesFactoryBean propertiesFactoryBean = <span class="keyword">new</span> PropertiesFactoryBean();</span><br><span class="line">        propertiesFactoryBean.setLocation(<span class="keyword">new</span> ClassPathResource(<span class="string">"/quartz.properties"</span>));</span><br><span class="line">        <span class="comment">//在quartz.properties中的属性被读取并注入后再初始化对象</span></span><br><span class="line">        propertiesFactoryBean.afterPropertiesSet();</span><br><span class="line">        <span class="keyword">return</span> propertiesFactoryBean.getObject();</span><br><span class="line">    &#125;</span><br><span class="line"></span><br><span class="line">    <span class="comment">/**</span></span><br><span class="line"><span class="comment">     * quartz初始化监听器</span></span><br><span class="line"><span class="comment">     */</span></span><br><span class="line">    <span class="meta">@Bean</span></span><br><span class="line">    <span class="function"><span class="keyword">public</span> QuartzInitializerListener <span class="title">executorListener</span><span class="params">()</span> </span>&#123;</span><br><span class="line">        <span class="keyword">return</span> <span class="keyword">new</span> QuartzInitializerListener();</span><br><span class="line">    &#125;</span><br><span class="line"></span><br><span class="line">    <span class="comment">/**</span></span><br><span class="line"><span class="comment">     * 通过SchedulerFactoryBean获取Scheduler的实例</span></span><br><span class="line"><span class="comment">     */</span></span><br><span class="line">    <span class="meta">@Bean</span>(name = <span class="string">"Scheduler"</span>)</span><br><span class="line">    <span class="function"><span class="keyword">public</span> Scheduler <span class="title">scheduler</span><span class="params">()</span> <span class="keyword">throws</span> IOException </span>&#123;</span><br><span class="line">        <span class="keyword">return</span> schedulerFactoryBean().getScheduler();</span><br><span class="line">    &#125;</span><br><span class="line">&#125;</span><br></pre></td></tr></table></figure>
+<pre class=" language-properties"><code class="language-properties"><span class="token attr-name">//</span> <span class="token attr-value">ThreadPool 实现的类名</span>
+org.quartz.threadPool.class：org.quartz.simpl.SimpleThreadPool
+<span class="token attr-name">//</span> <span class="token attr-value">线程数量</span>
+<span class="token attr-name">org.quartz.threadPool.threadCount</span> <span class="token attr-value">： 10</span>
+<span class="token attr-name">//</span> <span class="token attr-value">线程优先级</span>
+<span class="token attr-name">//</span> <span class="token attr-value">threadPriority 属性的最大值是常量 java.lang.Thread.MAX_PRIORITY，等于10。最小值为常量 java.lang.Thread.MIN_PRIORITY，为1</span>
+<span class="token attr-name">org.quartz.threadPool.threadPriority</span> <span class="token attr-value">： 5</span>
+<span class="token attr-name">//</span> <span class="token attr-value">自创建父线程</span>
+<span class="token attr-name">//org.quartz.threadPool.threadsInheritContextClassLoaderOfInitializingThread：</span> <span class="token attr-value">true</span>
+</code></pre>
+<h2 id="配置Config"><a href="#配置Config" class="headerlink" title="配置Config"></a>配置Config</h2><pre class=" language-java"><code class="language-java"><span class="token keyword">import</span> org<span class="token punctuation">.</span>quartz<span class="token punctuation">.</span>Scheduler<span class="token punctuation">;</span>
+<span class="token keyword">import</span> org<span class="token punctuation">.</span>quartz<span class="token punctuation">.</span>ee<span class="token punctuation">.</span>servlet<span class="token punctuation">.</span>QuartzInitializerListener<span class="token punctuation">;</span>
+<span class="token keyword">import</span> org<span class="token punctuation">.</span>springframework<span class="token punctuation">.</span>beans<span class="token punctuation">.</span>factory<span class="token punctuation">.</span>annotation<span class="token punctuation">.</span>Autowired<span class="token punctuation">;</span>
+<span class="token keyword">import</span> org<span class="token punctuation">.</span>springframework<span class="token punctuation">.</span>beans<span class="token punctuation">.</span>factory<span class="token punctuation">.</span>config<span class="token punctuation">.</span>PropertiesFactoryBean<span class="token punctuation">;</span>
+<span class="token keyword">import</span> org<span class="token punctuation">.</span>springframework<span class="token punctuation">.</span>context<span class="token punctuation">.</span>annotation<span class="token punctuation">.</span>Bean<span class="token punctuation">;</span>
+<span class="token keyword">import</span> org<span class="token punctuation">.</span>springframework<span class="token punctuation">.</span>context<span class="token punctuation">.</span>annotation<span class="token punctuation">.</span>Configuration<span class="token punctuation">;</span>
+<span class="token keyword">import</span> org<span class="token punctuation">.</span>springframework<span class="token punctuation">.</span>core<span class="token punctuation">.</span>io<span class="token punctuation">.</span>ClassPathResource<span class="token punctuation">;</span>
+<span class="token keyword">import</span> org<span class="token punctuation">.</span>springframework<span class="token punctuation">.</span>scheduling<span class="token punctuation">.</span>annotation<span class="token punctuation">.</span>EnableScheduling<span class="token punctuation">;</span>
+<span class="token keyword">import</span> org<span class="token punctuation">.</span>springframework<span class="token punctuation">.</span>scheduling<span class="token punctuation">.</span>quartz<span class="token punctuation">.</span>SchedulerFactoryBean<span class="token punctuation">;</span>
+
+<span class="token keyword">import</span> java<span class="token punctuation">.</span>io<span class="token punctuation">.</span>IOException<span class="token punctuation">;</span>
+<span class="token keyword">import</span> java<span class="token punctuation">.</span>util<span class="token punctuation">.</span>Properties<span class="token punctuation">;</span>
+
+<span class="token comment" spellcheck="true">/**
+ * @description:
+ * @date: 2018-11-05 17:27
+ */</span>
+<span class="token annotation punctuation">@Configuration</span>
+<span class="token annotation punctuation">@EnableScheduling</span>
+<span class="token keyword">public</span> <span class="token keyword">class</span> <span class="token class-name">SchedulerConfig</span> <span class="token punctuation">{</span>
+
+    <span class="token annotation punctuation">@Bean</span><span class="token punctuation">(</span>name <span class="token operator">=</span> <span class="token string">"SchedulerFactory"</span><span class="token punctuation">)</span>
+    <span class="token keyword">public</span> SchedulerFactoryBean <span class="token function">schedulerFactoryBean</span><span class="token punctuation">(</span><span class="token punctuation">)</span> <span class="token keyword">throws</span> IOException <span class="token punctuation">{</span>
+        SchedulerFactoryBean factory <span class="token operator">=</span> <span class="token keyword">new</span> <span class="token class-name">SchedulerFactoryBean</span><span class="token punctuation">(</span><span class="token punctuation">)</span><span class="token punctuation">;</span>
+        factory<span class="token punctuation">.</span><span class="token function">setQuartzProperties</span><span class="token punctuation">(</span><span class="token function">quartzProperties</span><span class="token punctuation">(</span><span class="token punctuation">)</span><span class="token punctuation">)</span><span class="token punctuation">;</span>
+        <span class="token keyword">return</span> factory<span class="token punctuation">;</span>
+    <span class="token punctuation">}</span>
+
+    <span class="token annotation punctuation">@Bean</span>
+    <span class="token keyword">public</span> Properties <span class="token function">quartzProperties</span><span class="token punctuation">(</span><span class="token punctuation">)</span> <span class="token keyword">throws</span> IOException <span class="token punctuation">{</span>
+        PropertiesFactoryBean propertiesFactoryBean <span class="token operator">=</span> <span class="token keyword">new</span> <span class="token class-name">PropertiesFactoryBean</span><span class="token punctuation">(</span><span class="token punctuation">)</span><span class="token punctuation">;</span>
+        propertiesFactoryBean<span class="token punctuation">.</span><span class="token function">setLocation</span><span class="token punctuation">(</span><span class="token keyword">new</span> <span class="token class-name">ClassPathResource</span><span class="token punctuation">(</span><span class="token string">"/quartz.properties"</span><span class="token punctuation">)</span><span class="token punctuation">)</span><span class="token punctuation">;</span>
+        <span class="token comment" spellcheck="true">//在quartz.properties中的属性被读取并注入后再初始化对象</span>
+        propertiesFactoryBean<span class="token punctuation">.</span><span class="token function">afterPropertiesSet</span><span class="token punctuation">(</span><span class="token punctuation">)</span><span class="token punctuation">;</span>
+        <span class="token keyword">return</span> propertiesFactoryBean<span class="token punctuation">.</span><span class="token function">getObject</span><span class="token punctuation">(</span><span class="token punctuation">)</span><span class="token punctuation">;</span>
+    <span class="token punctuation">}</span>
+
+    <span class="token comment" spellcheck="true">/**
+     * quartz初始化监听器
+     */</span>
+    <span class="token annotation punctuation">@Bean</span>
+    <span class="token keyword">public</span> QuartzInitializerListener <span class="token function">executorListener</span><span class="token punctuation">(</span><span class="token punctuation">)</span> <span class="token punctuation">{</span>
+        <span class="token keyword">return</span> <span class="token keyword">new</span> <span class="token class-name">QuartzInitializerListener</span><span class="token punctuation">(</span><span class="token punctuation">)</span><span class="token punctuation">;</span>
+    <span class="token punctuation">}</span>
+
+    <span class="token comment" spellcheck="true">/**
+     * 通过SchedulerFactoryBean获取Scheduler的实例
+     */</span>
+    <span class="token annotation punctuation">@Bean</span><span class="token punctuation">(</span>name <span class="token operator">=</span> <span class="token string">"Scheduler"</span><span class="token punctuation">)</span>
+    <span class="token keyword">public</span> Scheduler <span class="token function">scheduler</span><span class="token punctuation">(</span><span class="token punctuation">)</span> <span class="token keyword">throws</span> IOException <span class="token punctuation">{</span>
+        <span class="token keyword">return</span> <span class="token function">schedulerFactoryBean</span><span class="token punctuation">(</span><span class="token punctuation">)</span><span class="token punctuation">.</span><span class="token function">getScheduler</span><span class="token punctuation">(</span><span class="token punctuation">)</span><span class="token punctuation">;</span>
+    <span class="token punctuation">}</span>
+<span class="token punctuation">}</span>
+
+</code></pre>
 <h2 id="常用属性与方法"><a href="#常用属性与方法" class="headerlink" title="常用属性与方法"></a>常用属性与方法</h2><h3 id="1-Job类"><a href="#1-Job类" class="headerlink" title="1.Job类"></a>1.Job类</h3><p>继承 <code>Job</code> 类，表明子类是一个任务（<code>Job 的子类必须存在一个无参构造。</code>）。实现 <code>execute(JobExecutionContext context)</code> 方法，来定义任务的执行内容。</p>
-<figure class="highlight java"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br></pre></td><td class="code"><pre><span class="line"><span class="comment">/**</span></span><br><span class="line"><span class="comment"> * 例子：定义一个执行输出语句的任务</span></span><br><span class="line"><span class="comment"> * <span class="doctag">@date</span>: 2018-11-05 17:31</span></span><br><span class="line"><span class="comment"> */</span></span><br><span class="line"><span class="keyword">public</span> <span class="class"><span class="keyword">class</span> <span class="title">HelloJob</span> <span class="keyword">implements</span> <span class="title">Job</span> </span>&#123;</span><br><span class="line">    <span class="meta">@Override</span></span><br><span class="line">    <span class="function"><span class="keyword">public</span> <span class="keyword">void</span> <span class="title">execute</span><span class="params">(JobExecutionContext context)</span> <span class="keyword">throws</span> JobExecutionException </span>&#123;</span><br><span class="line">        System.out.println(<span class="string">"Hello执行："</span> + LocalDateTime.now());</span><br><span class="line">    &#125;</span><br><span class="line">&#125;</span><br></pre></td></tr></table></figure>
+<pre class=" language-java"><code class="language-java"><span class="token comment" spellcheck="true">/**
+ * 例子：定义一个执行输出语句的任务
+ * @date: 2018-11-05 17:31
+ */</span>
+<span class="token keyword">public</span> <span class="token keyword">class</span> <span class="token class-name">HelloJob</span> <span class="token keyword">implements</span> <span class="token class-name">Job</span> <span class="token punctuation">{</span>
+    <span class="token annotation punctuation">@Override</span>
+    <span class="token keyword">public</span> <span class="token keyword">void</span> <span class="token function">execute</span><span class="token punctuation">(</span>JobExecutionContext context<span class="token punctuation">)</span> <span class="token keyword">throws</span> JobExecutionException <span class="token punctuation">{</span>
+        System<span class="token punctuation">.</span>out<span class="token punctuation">.</span><span class="token function">println</span><span class="token punctuation">(</span><span class="token string">"Hello执行："</span> <span class="token operator">+</span> LocalDateTime<span class="token punctuation">.</span><span class="token function">now</span><span class="token punctuation">(</span><span class="token punctuation">)</span><span class="token punctuation">)</span><span class="token punctuation">;</span>
+    <span class="token punctuation">}</span>
+<span class="token punctuation">}</span>
+</code></pre>
 <h3 id="2-JobDetails接口"><a href="#2-JobDetails接口" class="headerlink" title="2.JobDetails接口"></a>2.JobDetails接口</h3><p>Job 在执行时，通过 JobDetails 反射出具体的执行对象。包含了 Job 在执行时的具体属性。</p>
 <p>JobDetailImpl 实现 JobDetails，定义所有的属性，包括以下几个：</p>
 <table>
@@ -475,7 +555,21 @@ Quartz 作为一款由 Java 编写的开源作业调度框架,官网传送门。
 </tr>
 </tbody>
 </table>
-<figure class="highlight java"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br><span class="line">14</span><br></pre></td><td class="code"><pre><span class="line"><span class="comment">/**</span></span><br><span class="line"><span class="comment"> * 通过 JobBuilder 获得一个 JobDetails 对象</span></span><br><span class="line"><span class="comment"> */</span></span><br><span class="line"><span class="function"><span class="keyword">public</span> JobDetail <span class="title">getJobDetail</span><span class="params">(String jobClassName, String jobGroupName)</span></span>&#123;</span><br><span class="line">    <span class="keyword">return</span> JobBuilder.newJob(getClass(jobClassName).getClass()).withIdentity(jobClassName, jobGroupName).build();</span><br><span class="line">&#125;</span><br><span class="line"></span><br><span class="line"><span class="comment">/**</span></span><br><span class="line"><span class="comment"> * 通过class 实例对象</span></span><br><span class="line"><span class="comment"> */</span></span><br><span class="line"><span class="function"><span class="keyword">private</span> <span class="keyword">static</span> BaseJob <span class="title">getClass</span><span class="params">(String classname)</span> <span class="keyword">throws</span> Exception </span>&#123;</span><br><span class="line">        Class&lt;?&gt; class1 = Class.forName(classname);</span><br><span class="line">        <span class="keyword">return</span> (BaseJob) class1.newInstance();</span><br><span class="line">    &#125;</span><br></pre></td></tr></table></figure>
+<pre class=" language-java"><code class="language-java"><span class="token comment" spellcheck="true">/**
+ * 通过 JobBuilder 获得一个 JobDetails 对象
+ */</span>
+<span class="token keyword">public</span> JobDetail <span class="token function">getJobDetail</span><span class="token punctuation">(</span>String jobClassName<span class="token punctuation">,</span> String jobGroupName<span class="token punctuation">)</span><span class="token punctuation">{</span>
+    <span class="token keyword">return</span> JobBuilder<span class="token punctuation">.</span><span class="token function">newJob</span><span class="token punctuation">(</span><span class="token function">getClass</span><span class="token punctuation">(</span>jobClassName<span class="token punctuation">)</span><span class="token punctuation">.</span><span class="token function">getClass</span><span class="token punctuation">(</span><span class="token punctuation">)</span><span class="token punctuation">)</span><span class="token punctuation">.</span><span class="token function">withIdentity</span><span class="token punctuation">(</span>jobClassName<span class="token punctuation">,</span> jobGroupName<span class="token punctuation">)</span><span class="token punctuation">.</span><span class="token function">build</span><span class="token punctuation">(</span><span class="token punctuation">)</span><span class="token punctuation">;</span>
+<span class="token punctuation">}</span>
+
+<span class="token comment" spellcheck="true">/**
+ * 通过class 实例对象
+ */</span>
+<span class="token keyword">private</span> <span class="token keyword">static</span> BaseJob <span class="token function">getClass</span><span class="token punctuation">(</span>String classname<span class="token punctuation">)</span> <span class="token keyword">throws</span> Exception <span class="token punctuation">{</span>
+        Class<span class="token operator">&lt;</span><span class="token operator">?</span><span class="token operator">></span> class1 <span class="token operator">=</span> Class<span class="token punctuation">.</span><span class="token function">forName</span><span class="token punctuation">(</span>classname<span class="token punctuation">)</span><span class="token punctuation">;</span>
+        <span class="token keyword">return</span> <span class="token punctuation">(</span>BaseJob<span class="token punctuation">)</span> class1<span class="token punctuation">.</span><span class="token function">newInstance</span><span class="token punctuation">(</span><span class="token punctuation">)</span><span class="token punctuation">;</span>
+    <span class="token punctuation">}</span>
+</code></pre>
 <h3 id="3-Trigger"><a href="#3-Trigger" class="headerlink" title="3.Trigger"></a>3.Trigger</h3><p>触发器类，包含着 Job 的触发执行时间规则。</p>
 <table>
 <thead>
@@ -495,7 +589,19 @@ Quartz 作为一款由 Java 编写的开源作业调度框架,官网传送门。
 </tr>
 </tbody>
 </table>
-<figure class="highlight java"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br></pre></td><td class="code"><pre><span class="line"><span class="comment">/**</span></span><br><span class="line"><span class="comment"> * 创建一个 Trigger 触发器</span></span><br><span class="line"><span class="comment"> */</span></span><br><span class="line"><span class="function"><span class="keyword">public</span> Trigger <span class="title">getTrigger</span><span class="params">(String jobClassName, String jobGroupName, String cronExpression)</span></span>&#123;</span><br><span class="line">    <span class="comment">//表达式调度构建器(即任务执行的时间)</span></span><br><span class="line">    CronScheduleBuilder scheduleBuilder = CronScheduleBuilder.cronSchedule(cronExpression);</span><br><span class="line"></span><br><span class="line">        <span class="comment">//按新的cronExpression表达式构建一个新的trigger</span></span><br><span class="line">    CronTrigger trigger = TriggerBuilder.newTrigger().withIdentity(jobClassName, jobGroupName)</span><br><span class="line">            .withSchedule(scheduleBuilder).build();</span><br><span class="line">    <span class="keyword">return</span> trigger;</span><br><span class="line">&#125;</span><br></pre></td></tr></table></figure>
+<pre class=" language-java"><code class="language-java"><span class="token comment" spellcheck="true">/**
+ * 创建一个 Trigger 触发器
+ */</span>
+<span class="token keyword">public</span> Trigger <span class="token function">getTrigger</span><span class="token punctuation">(</span>String jobClassName<span class="token punctuation">,</span> String jobGroupName<span class="token punctuation">,</span> String cronExpression<span class="token punctuation">)</span><span class="token punctuation">{</span>
+    <span class="token comment" spellcheck="true">//表达式调度构建器(即任务执行的时间)</span>
+    CronScheduleBuilder scheduleBuilder <span class="token operator">=</span> CronScheduleBuilder<span class="token punctuation">.</span><span class="token function">cronSchedule</span><span class="token punctuation">(</span>cronExpression<span class="token punctuation">)</span><span class="token punctuation">;</span>
+
+        <span class="token comment" spellcheck="true">//按新的cronExpression表达式构建一个新的trigger</span>
+    CronTrigger trigger <span class="token operator">=</span> TriggerBuilder<span class="token punctuation">.</span><span class="token function">newTrigger</span><span class="token punctuation">(</span><span class="token punctuation">)</span><span class="token punctuation">.</span><span class="token function">withIdentity</span><span class="token punctuation">(</span>jobClassName<span class="token punctuation">,</span> jobGroupName<span class="token punctuation">)</span>
+            <span class="token punctuation">.</span><span class="token function">withSchedule</span><span class="token punctuation">(</span>scheduleBuilder<span class="token punctuation">)</span><span class="token punctuation">.</span><span class="token function">build</span><span class="token punctuation">(</span><span class="token punctuation">)</span><span class="token punctuation">;</span>
+    <span class="token keyword">return</span> trigger<span class="token punctuation">;</span>
+<span class="token punctuation">}</span>
+</code></pre>
 <h3 id="4-JobStore"><a href="#4-JobStore" class="headerlink" title="4.JobStore"></a>4.JobStore</h3><p>存储Job和运行期间的状态。<br>默认使用的是 <code>RAMJobStore</code> ,使用内存来配置、构造和运行，但是当程序停止或者重启后，任务就会丢失。<br>后面我们会通过修改 JobStore 来使，Job和Trigger持久化到数据库中。也会更利于我们使用集群</p>
 <h3 id="5-Scheduler"><a href="#5-Scheduler" class="headerlink" title="5.Scheduler"></a>5.Scheduler</h3><p>调度器，是 Quartz 调用执行 Job，以及设置 trigger 的主要接口。</p>
 <table>
@@ -544,7 +650,38 @@ Quartz 作为一款由 Java 编写的开源作业调度框架,官网传送门。
 </tr>
 </tbody>
 </table>
-<h2 id="测试"><a href="#测试" class="headerlink" title="测试"></a>测试</h2><figure class="highlight java"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br><span class="line">14</span><br><span class="line">15</span><br><span class="line">16</span><br><span class="line">17</span><br><span class="line">18</span><br><span class="line">19</span><br><span class="line">20</span><br><span class="line">21</span><br><span class="line">22</span><br><span class="line">23</span><br><span class="line">24</span><br><span class="line">25</span><br><span class="line">26</span><br><span class="line">27</span><br><span class="line">28</span><br><span class="line">29</span><br><span class="line">30</span><br></pre></td><td class="code"><pre><span class="line"><span class="meta">@Test</span></span><br><span class="line"><span class="function"><span class="keyword">public</span> <span class="keyword">void</span> <span class="title">quartzTest</span><span class="params">()</span> <span class="keyword">throws</span> SchedulerException</span>&#123;</span><br><span class="line">    <span class="comment">// 1. 创建工厂类 SchedulerFactory</span></span><br><span class="line">    SchedulerFactory factory = <span class="keyword">new</span> StdSchedulerFactory();</span><br><span class="line">    <span class="comment">// 2. 通过 getScheduler() 方法获得 Scheduler 实例</span></span><br><span class="line">    Scheduler scheduler = factory.getScheduler();</span><br><span class="line"></span><br><span class="line">    <span class="comment">// 3. 使用上文定义的 HelloJob</span></span><br><span class="line">    JobDetail jobDetail = JobBuilder.newJob(HelloJob.class)</span><br><span class="line">            <span class="comment">//job 的name和group</span></span><br><span class="line">            .withIdentity(<span class="string">"jobName"</span>, <span class="string">"jobGroup"</span>)</span><br><span class="line">            .build();</span><br><span class="line"></span><br><span class="line">    <span class="comment">//3秒后启动任务</span></span><br><span class="line">    Date statTime = <span class="keyword">new</span> Date(System.currentTimeMillis() + <span class="number">3000</span>);</span><br><span class="line"></span><br><span class="line">    <span class="comment">// 4. 启动 Scheduler</span></span><br><span class="line">    scheduler.start();</span><br><span class="line"></span><br><span class="line">    <span class="comment">// 5. 创建Trigger</span></span><br><span class="line">    <span class="comment">//使用SimpleScheduleBuilder或者CronScheduleBuilder</span></span><br><span class="line">    Trigger trigger = TriggerBuilder.newTrigger()</span><br><span class="line">            .withIdentity(<span class="string">"jobTriggerName"</span>, <span class="string">"jobTriggerGroup"</span>)</span><br><span class="line">            .withSchedule(CronScheduleBuilder.cronSchedule(<span class="string">"0/2 * * * * ?"</span>)) <span class="comment">//两秒执行一次</span></span><br><span class="line">            .build();</span><br><span class="line"></span><br><span class="line">    <span class="comment">// 6. 注册任务和定时器</span></span><br><span class="line">    scheduler.scheduleJob(jobDetail, trigger);</span><br><span class="line"></span><br><span class="line">&#125;</span><br></pre></td></tr></table></figure>
+<h2 id="测试"><a href="#测试" class="headerlink" title="测试"></a>测试</h2><pre class=" language-java"><code class="language-java"><span class="token annotation punctuation">@Test</span>
+<span class="token keyword">public</span> <span class="token keyword">void</span> <span class="token function">quartzTest</span><span class="token punctuation">(</span><span class="token punctuation">)</span> <span class="token keyword">throws</span> SchedulerException<span class="token punctuation">{</span>
+    <span class="token comment" spellcheck="true">// 1. 创建工厂类 SchedulerFactory</span>
+    SchedulerFactory factory <span class="token operator">=</span> <span class="token keyword">new</span> <span class="token class-name">StdSchedulerFactory</span><span class="token punctuation">(</span><span class="token punctuation">)</span><span class="token punctuation">;</span>
+    <span class="token comment" spellcheck="true">// 2. 通过 getScheduler() 方法获得 Scheduler 实例</span>
+    Scheduler scheduler <span class="token operator">=</span> factory<span class="token punctuation">.</span><span class="token function">getScheduler</span><span class="token punctuation">(</span><span class="token punctuation">)</span><span class="token punctuation">;</span>
+
+    <span class="token comment" spellcheck="true">// 3. 使用上文定义的 HelloJob</span>
+    JobDetail jobDetail <span class="token operator">=</span> JobBuilder<span class="token punctuation">.</span><span class="token function">newJob</span><span class="token punctuation">(</span>HelloJob<span class="token punctuation">.</span><span class="token keyword">class</span><span class="token punctuation">)</span>
+            <span class="token comment" spellcheck="true">//job 的name和group</span>
+            <span class="token punctuation">.</span><span class="token function">withIdentity</span><span class="token punctuation">(</span><span class="token string">"jobName"</span><span class="token punctuation">,</span> <span class="token string">"jobGroup"</span><span class="token punctuation">)</span>
+            <span class="token punctuation">.</span><span class="token function">build</span><span class="token punctuation">(</span><span class="token punctuation">)</span><span class="token punctuation">;</span>
+
+    <span class="token comment" spellcheck="true">//3秒后启动任务</span>
+    Date statTime <span class="token operator">=</span> <span class="token keyword">new</span> <span class="token class-name">Date</span><span class="token punctuation">(</span>System<span class="token punctuation">.</span><span class="token function">currentTimeMillis</span><span class="token punctuation">(</span><span class="token punctuation">)</span> <span class="token operator">+</span> <span class="token number">3000</span><span class="token punctuation">)</span><span class="token punctuation">;</span>
+
+    <span class="token comment" spellcheck="true">// 4. 启动 Scheduler</span>
+    scheduler<span class="token punctuation">.</span><span class="token function">start</span><span class="token punctuation">(</span><span class="token punctuation">)</span><span class="token punctuation">;</span>
+
+    <span class="token comment" spellcheck="true">// 5. 创建Trigger</span>
+    <span class="token comment" spellcheck="true">//使用SimpleScheduleBuilder或者CronScheduleBuilder</span>
+    Trigger trigger <span class="token operator">=</span> TriggerBuilder<span class="token punctuation">.</span><span class="token function">newTrigger</span><span class="token punctuation">(</span><span class="token punctuation">)</span>
+            <span class="token punctuation">.</span><span class="token function">withIdentity</span><span class="token punctuation">(</span><span class="token string">"jobTriggerName"</span><span class="token punctuation">,</span> <span class="token string">"jobTriggerGroup"</span><span class="token punctuation">)</span>
+            <span class="token punctuation">.</span><span class="token function">withSchedule</span><span class="token punctuation">(</span>CronScheduleBuilder<span class="token punctuation">.</span><span class="token function">cronSchedule</span><span class="token punctuation">(</span><span class="token string">"0/2 * * * * ?"</span><span class="token punctuation">)</span><span class="token punctuation">)</span> <span class="token comment" spellcheck="true">//两秒执行一次</span>
+            <span class="token punctuation">.</span><span class="token function">build</span><span class="token punctuation">(</span><span class="token punctuation">)</span><span class="token punctuation">;</span>
+
+    <span class="token comment" spellcheck="true">// 6. 注册任务和定时器</span>
+    scheduler<span class="token punctuation">.</span><span class="token function">scheduleJob</span><span class="token punctuation">(</span>jobDetail<span class="token punctuation">,</span> trigger<span class="token punctuation">)</span><span class="token punctuation">;</span>
+
+<span class="token punctuation">}</span>
+</code></pre>
+
             </div>
             <hr/>
 
@@ -748,25 +885,24 @@ Quartz 作为一款由 Java 编写的开源作业调度框架,官网传送门。
             <div class="article-badge left-badge text-color">
                 <i class="fa fa-chevron-left"></i>&nbsp;Previous</div>
             <div class="card">
-                <a href="/2018/11/02/Quartz/SpringBoot整合Quartz(二)/">
+                <a href="/2018/11/01/SpringSecurity/SpringBoot整合SpringSecurity(三.2)/">
                     <div class="card-image">
                         
                         
-                        <img src="/medias/featureimages/18.jpg" class="responsive-img" alt="SpringBoot整合Quartz(二)-整合MySQL数据源">
+                        <img src="/medias/featureimages/0.jpg" class="responsive-img" alt="SpringBoot整合SpringSecurity(三)-动态验证权限">
                         
-                        <span class="card-title">SpringBoot整合Quartz(二)-整合MySQL数据源</span>
+                        <span class="card-title">SpringBoot整合SpringSecurity(三)-动态验证权限</span>
                     </div>
                 </a>
                 <div class="card-content article-content">
                     <div class="summary block-with-text">
                         
-                            SpringBoot整合Quartz(二)-持久化到MySQL计划：(从Quartz的属性、方法、配置文件、配置类、持久化、集群等几个方面，写一些心得)
-在上一篇 SpringBoot整合Quartz(一)-简单介绍Demo 中，简单介绍了
+                            SpringBoot整合SpringSecurity(三)-动态更新用户的权限用户权限的加载是在 调用了 UserDetailsService.loadUserByUsername(String username) 后构建出的 UserDe
                         
                     </div>
                     <div class="publish-info">
                         <span class="publish-date">
-                            <i class="fa fa-clock-o fa-fw icon-date"></i>2018-11-02
+                            <i class="fa fa-clock-o fa-fw icon-date"></i>2018-11-01
                         </span>
                         <span class="publish-author">
                             
@@ -794,22 +930,19 @@ Quartz 作为一款由 Java 编写的开源作业调度框架,官网传送门。
                 Next&nbsp;<i class="fa fa-chevron-right"></i>
             </div>
             <div class="card">
-                <a href="/2018/11/01/SpringSecurity/SpringBoot整合SpringSecurity(二)/">
+                <a href="/2018/11/01/SpringSecurity/SpringBoot整合SpringSecurity(四)/">
                     <div class="card-image">
                         
                         
-                        <img src="/medias/featureimages/14.jpg" class="responsive-img" alt="SpringBoot整合SpringSecurity(二)-使用数据库进行验证">
+                        <img src="/medias/featureimages/22.jpg" class="responsive-img" alt="SpringBoot整合SpringSecurity(四)-整合CAS">
                         
-                        <span class="card-title">SpringBoot整合SpringSecurity(二)-使用数据库进行验证</span>
+                        <span class="card-title">SpringBoot整合SpringSecurity(四)-整合CAS</span>
                     </div>
                 </a>
                 <div class="card-content article-content">
                     <div class="summary block-with-text">
                         
-                            SpringBoot整合SpringSecurity(二)-使用数据库进行验证本文使用的是 SpringBoot + SpringSecurity，做一个 Web端的权限验证框架。大致分为以下几个部分：
-
-初始化Security框架
-使用数
+                            SpringBoot整合SpringSecurity(四)-整合CAS
                         
                     </div>
                     <div class="publish-info">
@@ -980,6 +1113,10 @@ Quartz 作为一款由 Java 编写的开源作业调度框架,官网传送门。
     </a>
 
 
+
+    <a href="/atom.xml" class="tooltipped" target="_blank" data-tooltip="RSS 订阅" data-position="top" data-delay="50">
+        <i class="fa fa-rss"></i>
+    </a>
 </div>
     </div>
 </footer>

@@ -29,7 +29,7 @@ EXPLAIN 能够分析 select update insert replace del">
     </style>
 
     <script src="/libs/jquery/jquery-2.2.0.min.js"></script>
-</head>
+<link rel="stylesheet" href="/css/prism-tomorrow.css" type="text/css"></head>
 
 
 <body>
@@ -433,7 +433,13 @@ EXPLAIN 能够分析 select update insert replace del">
 <li>查询扫描的数据行数</li>
 </ol>
 <h2 id="二、执行计划中的内容"><a href="#二、执行计划中的内容" class="headerlink" title="二、执行计划中的内容"></a>二、执行计划中的内容</h2><p>以下面的查询SQL 为例，解释执行计划中输出内容的含义</p>
-<figure class="highlight sql"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br></pre></td><td class="code"><pre><span class="line"><span class="keyword">EXPLAIN</span></span><br><span class="line"><span class="keyword">SELECT</span> customer_id,title,<span class="keyword">content</span> </span><br><span class="line"><span class="keyword">FROM</span> <span class="string">`product_comment`</span></span><br><span class="line"><span class="keyword">WHERE</span> audit_status = <span class="number">1</span></span><br><span class="line"><span class="keyword">AND</span> product_id = <span class="number">199726</span></span><br><span class="line"><span class="keyword">LIMIT</span> <span class="number">0</span>,<span class="number">5</span></span><br></pre></td></tr></table></figure>
+<pre class=" language-sql"><code class="language-sql"><span class="token keyword">EXPLAIN</span>
+<span class="token keyword">SELECT</span> customer_id<span class="token punctuation">,</span>title<span class="token punctuation">,</span>content 
+<span class="token keyword">FROM</span> <span class="token punctuation">`</span>product_comment<span class="token punctuation">`</span>
+<span class="token keyword">WHERE</span> audit_status <span class="token operator">=</span> <span class="token number">1</span>
+<span class="token operator">AND</span> product_id <span class="token operator">=</span> <span class="token number">199726</span>
+<span class="token keyword">LIMIT</span> <span class="token number">0</span><span class="token punctuation">,</span><span class="token number">5</span>
+</code></pre>
 <ul>
 <li>id: 1<ul>
 <li>ID 列中的数据为一组数字，表示执行 SELECT 语句的顺序</li>
@@ -519,9 +525,15 @@ EXPLAIN 能够分析 select update insert replace del">
 </li>
 </ul>
 <p>通过上面的查询语句，以及索引的设计规范，应该在 where 语句查询的部分设置索引，这里使用联合索引。</p>
-<figure class="highlight sql"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br></pre></td><td class="code"><pre><span class="line"><span class="comment">-- 查询表中，audit_status和product_id 的区分度，应该将区分度高的列放在联合索引的左侧</span></span><br><span class="line"><span class="keyword">SELECT</span> <span class="keyword">COUNT</span>(<span class="keyword">DISTINCT</span> audit_status)/<span class="keyword">COUNT</span>(*) <span class="keyword">AS</span> audit_rate,</span><br><span class="line"><span class="keyword">COUNT</span>(<span class="keyword">DISTINCT</span> product_id)/<span class="keyword">COUNT</span>(*) <span class="keyword">AS</span> product_rate</span><br><span class="line"><span class="keyword">FROM</span> product_comment;</span><br></pre></td></tr></table></figure>
+<pre class=" language-SQL"><code class="language-SQL">-- 查询表中，audit_status和product_id 的区分度，应该将区分度高的列放在联合索引的左侧
+SELECT COUNT(DISTINCT audit_status)/COUNT(*) AS audit_rate,
+COUNT(DISTINCT product_id)/COUNT(*) AS product_rate
+FROM product_comment;
+</code></pre>
 <p>假设 product_rate = 0.8 ，audit_rate = 0.2，则联合索引应该设计为：</p>
-<figure class="highlight sql"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br></pre></td><td class="code"><pre><span class="line"><span class="keyword">CREATE</span> <span class="keyword">INDEX</span> idx_productID_auditStatus</span><br><span class="line"><span class="keyword">ON</span> product_comment(product_id,audit_status);</span><br></pre></td></tr></table></figure>
+<pre class=" language-sql"><code class="language-sql"><span class="token keyword">CREATE</span> <span class="token keyword">INDEX</span> idx_productID_auditStatus
+<span class="token keyword">ON</span> product_comment<span class="token punctuation">(</span>product_id<span class="token punctuation">,</span>audit_status<span class="token punctuation">)</span><span class="token punctuation">;</span>
+</code></pre>
 <h2 id="执行计划的限制"><a href="#执行计划的限制" class="headerlink" title="执行计划的限制"></a>执行计划的限制</h2><ol>
 <li>无法展示存储过程、触发器、UDF 对查询的影响</li>
 <li>无法使用 EXPLAIN 对存储过程进行分析</li>
@@ -980,6 +992,10 @@ set global show_query_log_f
     </a>
 
 
+
+    <a href="/atom.xml" class="tooltipped" target="_blank" data-tooltip="RSS 订阅" data-position="top" data-delay="50">
+        <i class="fa fa-rss"></i>
+    </a>
 </div>
     </div>
 </footer>

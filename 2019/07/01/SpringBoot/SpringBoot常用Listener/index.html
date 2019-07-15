@@ -6,7 +6,8 @@
     <meta charset="utf-8">
     <meta name="keywords" content="帅">
     <meta name="description" content="SpringBoot 的几种常见监听器例如：在Web项目启动时，需要执行一段代码，该写在哪里呢？解决方法：注册监听器监听 ServletContext 创建的钩子函数，并重写自己的实现
-1. 创建Listener12345678910111">
+1. 创建Listener@WebListener
+p">
     <meta http-equiv="X-UA-Compatible" content="IE=edge">
     <meta name="viewport" content="width=device-width, initial-scale=1.0, user-scalable=no">
     <meta name="renderer" content="webkit|ie-stand|ie-comp">
@@ -29,7 +30,7 @@
     </style>
 
     <script src="/libs/jquery/jquery-2.2.0.min.js"></script>
-</head>
+<link rel="stylesheet" href="/css/prism-tomorrow.css" type="text/css"></head>
 
 
 <body>
@@ -406,11 +407,31 @@
         <div class="card-content article-card-content">
             <div id="articleContent">
                 <h1 id="SpringBoot-的几种常见监听器"><a href="#SpringBoot-的几种常见监听器" class="headerlink" title="SpringBoot 的几种常见监听器"></a>SpringBoot 的几种常见监听器</h1><p>例如：在Web项目启动时，需要执行一段代码，该写在哪里呢？<br>解决方法：注册监听器监听 ServletContext 创建的钩子函数，并重写自己的实现</p>
-<h2 id="1-创建Listener"><a href="#1-创建Listener" class="headerlink" title="1. 创建Listener"></a>1. 创建Listener</h2><figure class="highlight java"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br></pre></td><td class="code"><pre><span class="line"><span class="meta">@WebListener</span></span><br><span class="line"><span class="keyword">public</span> <span class="class"><span class="keyword">class</span> <span class="title">InitDemo</span> <span class="keyword">implements</span> <span class="title">ServletContextListener</span> </span>&#123;</span><br><span class="line"></span><br><span class="line">    <span class="meta">@Override</span></span><br><span class="line">    <span class="function"><span class="keyword">public</span> <span class="keyword">void</span> <span class="title">contextInitialized</span><span class="params">(ServletContextEvent sce)</span> </span>&#123;</span><br><span class="line">        System.out.println(<span class="string">"Web Initialized!"</span>);</span><br><span class="line">    &#125;</span><br><span class="line"></span><br><span class="line">    <span class="meta">@Override</span></span><br><span class="line">    <span class="function"><span class="keyword">public</span> <span class="keyword">void</span> <span class="title">contextDestroyed</span><span class="params">(ServletContextEvent sce)</span> </span>&#123;</span><br><span class="line">        System.out.println(<span class="string">"Web Destroyed!"</span>);</span><br><span class="line">    &#125;</span><br><span class="line">&#125;</span><br></pre></td></tr></table></figure>
+<h2 id="1-创建Listener"><a href="#1-创建Listener" class="headerlink" title="1. 创建Listener"></a>1. 创建Listener</h2><pre class=" language-java"><code class="language-java"><span class="token annotation punctuation">@WebListener</span>
+<span class="token keyword">public</span> <span class="token keyword">class</span> <span class="token class-name">InitDemo</span> <span class="token keyword">implements</span> <span class="token class-name">ServletContextListener</span> <span class="token punctuation">{</span>
+
+    <span class="token annotation punctuation">@Override</span>
+    <span class="token keyword">public</span> <span class="token keyword">void</span> <span class="token function">contextInitialized</span><span class="token punctuation">(</span>ServletContextEvent sce<span class="token punctuation">)</span> <span class="token punctuation">{</span>
+        System<span class="token punctuation">.</span>out<span class="token punctuation">.</span><span class="token function">println</span><span class="token punctuation">(</span><span class="token string">"Web Initialized!"</span><span class="token punctuation">)</span><span class="token punctuation">;</span>
+    <span class="token punctuation">}</span>
+
+    <span class="token annotation punctuation">@Override</span>
+    <span class="token keyword">public</span> <span class="token keyword">void</span> <span class="token function">contextDestroyed</span><span class="token punctuation">(</span>ServletContextEvent sce<span class="token punctuation">)</span> <span class="token punctuation">{</span>
+        System<span class="token punctuation">.</span>out<span class="token punctuation">.</span><span class="token function">println</span><span class="token punctuation">(</span><span class="token string">"Web Destroyed!"</span><span class="token punctuation">)</span><span class="token punctuation">;</span>
+    <span class="token punctuation">}</span>
+<span class="token punctuation">}</span>
+</code></pre>
 <blockquote>
 <p>使用 @WebListener 注册声明类为监听器</p>
 </blockquote>
-<h2 id="2-添加-servlet-扫描"><a href="#2-添加-servlet-扫描" class="headerlink" title="2. 添加 servlet 扫描"></a>2. 添加 servlet 扫描</h2><figure class="highlight java"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br></pre></td><td class="code"><pre><span class="line"><span class="meta">@SpringBootApplication</span></span><br><span class="line"><span class="meta">@ServletComponentScan</span>(basePackages = <span class="string">"com.test.*"</span>)</span><br><span class="line"><span class="keyword">public</span> <span class="class"><span class="keyword">class</span> <span class="title">App</span> </span>&#123;</span><br><span class="line">    <span class="function"><span class="keyword">public</span> <span class="keyword">static</span> <span class="keyword">void</span> <span class="title">main</span><span class="params">(String[] args)</span></span>&#123;</span><br><span class="line">        SpringApplication.run(App.class,args);</span><br><span class="line">    &#125;</span><br><span class="line">&#125;</span><br></pre></td></tr></table></figure>
+<h2 id="2-添加-servlet-扫描"><a href="#2-添加-servlet-扫描" class="headerlink" title="2. 添加 servlet 扫描"></a>2. 添加 servlet 扫描</h2><pre class=" language-java"><code class="language-java"><span class="token annotation punctuation">@SpringBootApplication</span>
+<span class="token annotation punctuation">@ServletComponentScan</span><span class="token punctuation">(</span>basePackages <span class="token operator">=</span> <span class="token string">"com.test.*"</span><span class="token punctuation">)</span>
+<span class="token keyword">public</span> <span class="token keyword">class</span> <span class="token class-name">App</span> <span class="token punctuation">{</span>
+    <span class="token keyword">public</span> <span class="token keyword">static</span> <span class="token keyword">void</span> <span class="token function">main</span><span class="token punctuation">(</span>String<span class="token punctuation">[</span><span class="token punctuation">]</span> args<span class="token punctuation">)</span><span class="token punctuation">{</span>
+        SpringApplication<span class="token punctuation">.</span><span class="token function">run</span><span class="token punctuation">(</span>App<span class="token punctuation">.</span><span class="token keyword">class</span><span class="token punctuation">,</span>args<span class="token punctuation">)</span><span class="token punctuation">;</span>
+    <span class="token punctuation">}</span>
+<span class="token punctuation">}</span>
+</code></pre>
 <h2 id="3-测试"><a href="#3-测试" class="headerlink" title="3. 测试"></a>3. 测试</h2><p>启动项目，可在堆栈信息中找到对应的输出</p>
 <h2 id="4-常见监听器接口"><a href="#4-常见监听器接口" class="headerlink" title="4. 常见监听器接口"></a>4. 常见监听器接口</h2><ol>
 <li>ServletContextListener - 监听 ServletContext 对象的创建及销毁<ol>
@@ -686,20 +707,20 @@ Mysql Configurationspring.datasource.
                 Next&nbsp;<i class="fa fa-chevron-right"></i>
             </div>
             <div class="card">
-                <a href="/2019/06/27/读书笔记/《JavaDesignPatterns》/6.单例模式/">
+                <a href="/2019/06/27/读书笔记/《JavaDesignPatterns》/7.原型模式/">
                     <div class="card-image">
                         
                         
-                        <img src="/medias/featureimages/9.jpg" class="responsive-img" alt="《Java Design Patterns》第四章 单例模式 - 确保对象的唯一性">
+                        <img src="/medias/featureimages/0.jpg" class="responsive-img" alt="《Java Design Patterns》第五章 原型模式 - 对象的克隆">
                         
-                        <span class="card-title">《Java Design Patterns》第四章 单例模式 - 确保对象的唯一性</span>
+                        <span class="card-title">《Java Design Patterns》第五章 原型模式 - 对象的克隆</span>
                     </div>
                 </a>
                 <div class="card-content article-content">
                     <div class="summary block-with-text">
                         
-                            第四章 单例模式 - 确保对象的唯一性单例模式用于确保对象的唯一性，为了确保系统中某一个类只有一个唯一实例，当这个唯一实例创建后，无法再创建一个同类型的其他对象。
-一、概述单例模式：确保一个类只有一个实例，而且自行实例化并向整个系统提供这个
+                            第五章 原型模式 - 对象的克隆原型模式：使用原型实例指定创建对象的种类，并且通过拷贝这些原型创建新的对象。属于一种对象创建型模式。
+一、概述1.1 原理原型模式的工作原理很简单：将一个原型对象传给那个要发动创建的对象，这个要发动创建的对象
                         
                     </div>
                     <div class="publish-info">
@@ -874,6 +895,10 @@ Mysql Configurationspring.datasource.
     </a>
 
 
+
+    <a href="/atom.xml" class="tooltipped" target="_blank" data-tooltip="RSS 订阅" data-position="top" data-delay="50">
+        <i class="fa fa-rss"></i>
+    </a>
 </div>
     </div>
 </footer>

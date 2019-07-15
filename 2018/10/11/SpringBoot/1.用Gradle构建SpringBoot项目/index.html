@@ -32,7 +32,7 @@
     </style>
 
     <script src="/libs/jquery/jquery-2.2.0.min.js"></script>
-</head>
+<link rel="stylesheet" href="/css/prism-tomorrow.css" type="text/css"></head>
 
 
 <body>
@@ -441,23 +441,82 @@
 <li>根目录下存在 <code>build.gradle</code> 文件，即证明项目创建成功</li>
 <li>使用 Gradle Wrapper，能够不安装 Gradle 也能运行 gradle。(如果你是使用IDEA创建的项目，应该会默认使用 Gradle Wrapper)</li>
 </ol>
-<h2 id="二、添加-SpringBoot-依赖"><a href="#二、添加-SpringBoot-依赖" class="headerlink" title="二、添加 SpringBoot 依赖"></a>二、添加 SpringBoot 依赖</h2><h3 id="1-在-build-gradle-中配置-SpringBoot-插件"><a href="#1-在-build-gradle-中配置-SpringBoot-插件" class="headerlink" title="1. 在 build.gradle 中配置 SpringBoot 插件:"></a>1. 在 <code>build.gradle</code> 中配置 SpringBoot 插件:</h3><figure class="highlight java"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br><span class="line">14</span><br><span class="line">15</span><br><span class="line">16</span><br><span class="line">17</span><br><span class="line">18</span><br><span class="line">19</span><br><span class="line">20</span><br><span class="line">21</span><br><span class="line">22</span><br><span class="line">23</span><br><span class="line">24</span><br><span class="line">25</span><br><span class="line">26</span><br><span class="line">27</span><br><span class="line">28</span><br><span class="line">29</span><br><span class="line">30</span><br><span class="line">31</span><br><span class="line">32</span><br><span class="line">33</span><br><span class="line">34</span><br><span class="line">35</span><br><span class="line">36</span><br><span class="line">37</span><br></pre></td><td class="code"><pre><span class="line">buildscript &#123;</span><br><span class="line">    ext &#123;</span><br><span class="line">        <span class="comment">// 指定 SpringBoot 的版本</span></span><br><span class="line">        springBootVersion = <span class="string">'2.0.5.RELEASE'</span></span><br><span class="line">    &#125;</span><br><span class="line">    repositories &#123;</span><br><span class="line">        mavenCentral()</span><br><span class="line">    &#125;</span><br><span class="line">    dependencies &#123;</span><br><span class="line">        <span class="comment">// SpringBoot的默认版本</span></span><br><span class="line">        classpath(<span class="string">"org.springframework.boot:spring-boot-gradle-plugin:$&#123;springBootVersion&#125;"</span>)</span><br><span class="line">    &#125;</span><br><span class="line">&#125;</span><br><span class="line"></span><br><span class="line">apply plugin: <span class="string">'java'</span></span><br><span class="line">apply plugin: <span class="string">'eclipse'</span></span><br><span class="line">apply plugin: <span class="string">'org.springframework.boot'</span></span><br><span class="line">apply plugin: <span class="string">'io.spring.dependency-management'</span></span><br><span class="line"></span><br><span class="line">group = <span class="string">'com.example'</span></span><br><span class="line">version = <span class="string">'0.0.1-SNAPSHOT'</span></span><br><span class="line">sourceCompatibility = <span class="number">1.8</span></span><br><span class="line">targetCompatibility = <span class="number">1.8</span></span><br><span class="line"></span><br><span class="line">repositories &#123;</span><br><span class="line">    mavenCentral()</span><br><span class="line">&#125;</span><br><span class="line"></span><br><span class="line"></span><br><span class="line">dependencies &#123;</span><br><span class="line">    <span class="comment">// SpringBoot依赖</span></span><br><span class="line">    implementation(<span class="string">'org.springframework.boot:spring-boot-starter'</span>)</span><br><span class="line">    <span class="comment">// Web依赖</span></span><br><span class="line">    compile(<span class="string">"org.springframework.boot:spring-boot-starter-web"</span>)</span><br><span class="line">    <span class="comment">// 测试依赖</span></span><br><span class="line">    testImplementation(<span class="string">'org.springframework.boot:spring-boot-starter-test'</span>)</span><br><span class="line">&#125;</span><br></pre></td></tr></table></figure>
+<h2 id="二、添加-SpringBoot-依赖"><a href="#二、添加-SpringBoot-依赖" class="headerlink" title="二、添加 SpringBoot 依赖"></a>二、添加 SpringBoot 依赖</h2><h3 id="1-在-build-gradle-中配置-SpringBoot-插件"><a href="#1-在-build-gradle-中配置-SpringBoot-插件" class="headerlink" title="1. 在 build.gradle 中配置 SpringBoot 插件:"></a>1. 在 <code>build.gradle</code> 中配置 SpringBoot 插件:</h3><pre class=" language-java"><code class="language-java">buildscript <span class="token punctuation">{</span>
+    ext <span class="token punctuation">{</span>
+        <span class="token comment" spellcheck="true">// 指定 SpringBoot 的版本</span>
+        springBootVersion <span class="token operator">=</span> <span class="token string">'2.0.5.RELEASE'</span>
+    <span class="token punctuation">}</span>
+    repositories <span class="token punctuation">{</span>
+        <span class="token function">mavenCentral</span><span class="token punctuation">(</span><span class="token punctuation">)</span>
+    <span class="token punctuation">}</span>
+    dependencies <span class="token punctuation">{</span>
+        <span class="token comment" spellcheck="true">// SpringBoot的默认版本</span>
+        <span class="token function">classpath</span><span class="token punctuation">(</span><span class="token string">"org.springframework.boot:spring-boot-gradle-plugin:${springBootVersion}"</span><span class="token punctuation">)</span>
+    <span class="token punctuation">}</span>
+<span class="token punctuation">}</span>
+
+apply plugin<span class="token operator">:</span> <span class="token string">'java'</span>
+apply plugin<span class="token operator">:</span> <span class="token string">'eclipse'</span>
+apply plugin<span class="token operator">:</span> <span class="token string">'org.springframework.boot'</span>
+apply plugin<span class="token operator">:</span> <span class="token string">'io.spring.dependency-management'</span>
+
+group <span class="token operator">=</span> <span class="token string">'com.example'</span>
+version <span class="token operator">=</span> <span class="token string">'0.0.1-SNAPSHOT'</span>
+sourceCompatibility <span class="token operator">=</span> <span class="token number">1.8</span>
+targetCompatibility <span class="token operator">=</span> <span class="token number">1.8</span>
+
+repositories <span class="token punctuation">{</span>
+    <span class="token function">mavenCentral</span><span class="token punctuation">(</span><span class="token punctuation">)</span>
+<span class="token punctuation">}</span>
+
+
+dependencies <span class="token punctuation">{</span>
+    <span class="token comment" spellcheck="true">// SpringBoot依赖</span>
+    <span class="token function">implementation</span><span class="token punctuation">(</span><span class="token string">'org.springframework.boot:spring-boot-starter'</span><span class="token punctuation">)</span>
+    <span class="token comment" spellcheck="true">// Web依赖</span>
+    <span class="token function">compile</span><span class="token punctuation">(</span><span class="token string">"org.springframework.boot:spring-boot-starter-web"</span><span class="token punctuation">)</span>
+    <span class="token comment" spellcheck="true">// 测试依赖</span>
+    <span class="token function">testImplementation</span><span class="token punctuation">(</span><span class="token string">'org.springframework.boot:spring-boot-starter-test'</span><span class="token punctuation">)</span>
+<span class="token punctuation">}</span>
+</code></pre>
 <h3 id="2-创建启动文件-Run-java"><a href="#2-创建启动文件-Run-java" class="headerlink" title="2. 创建启动文件 Run.java"></a>2. 创建启动文件 <code>Run.java</code></h3><p>该类是 SpringBoot 程序的入口。</p>
-<figure class="highlight java"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br></pre></td><td class="code"><pre><span class="line"><span class="meta">@SpringBootApplication</span></span><br><span class="line"><span class="keyword">public</span> <span class="class"><span class="keyword">class</span> <span class="title">Run</span></span>&#123;</span><br><span class="line">    <span class="function"><span class="keyword">public</span> <span class="keyword">static</span> <span class="keyword">void</span> <span class="title">main</span><span class="params">(String[] args)</span></span>&#123;</span><br><span class="line">        SpringApplication.run(Application.java);</span><br><span class="line">    &#125;</span><br><span class="line">&#125;</span><br></pre></td></tr></table></figure>
-<h3 id="3-创建Controller接口"><a href="#3-创建Controller接口" class="headerlink" title="3. 创建Controller接口"></a>3. 创建Controller接口</h3><figure class="highlight java"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br></pre></td><td class="code"><pre><span class="line"><span class="meta">@RestController</span></span><br><span class="line"><span class="keyword">public</span> <span class="class"><span class="keyword">class</span> <span class="title">HelloController</span> </span>&#123;</span><br><span class="line"></span><br><span class="line">    <span class="meta">@GetMapping</span>(<span class="string">"/"</span>)</span><br><span class="line">    <span class="function"><span class="keyword">public</span> String <span class="title">hello</span><span class="params">()</span></span>&#123;</span><br><span class="line">        <span class="keyword">return</span> <span class="string">"Hello [Spring Boot + Docker] World! "</span>;</span><br><span class="line">    &#125;</span><br><span class="line">&#125;</span><br></pre></td></tr></table></figure>
-<h3 id="4-启动测试"><a href="#4-启动测试" class="headerlink" title="4. 启动测试"></a>4. 启动测试</h3><figure class="highlight java"><table><tr><td class="gutter"><pre><span class="line">1</span><br></pre></td><td class="code"><pre><span class="line">./gradlew bootRun</span><br></pre></td></tr></table></figure>
+<pre class=" language-java"><code class="language-java"><span class="token annotation punctuation">@SpringBootApplication</span>
+<span class="token keyword">public</span> <span class="token keyword">class</span> <span class="token class-name">Run</span><span class="token punctuation">{</span>
+    <span class="token keyword">public</span> <span class="token keyword">static</span> <span class="token keyword">void</span> <span class="token function">main</span><span class="token punctuation">(</span>String<span class="token punctuation">[</span><span class="token punctuation">]</span> args<span class="token punctuation">)</span><span class="token punctuation">{</span>
+        SpringApplication<span class="token punctuation">.</span><span class="token function">run</span><span class="token punctuation">(</span>Application<span class="token punctuation">.</span>java<span class="token punctuation">)</span><span class="token punctuation">;</span>
+    <span class="token punctuation">}</span>
+<span class="token punctuation">}</span>
+</code></pre>
+<h3 id="3-创建Controller接口"><a href="#3-创建Controller接口" class="headerlink" title="3. 创建Controller接口"></a>3. 创建Controller接口</h3><pre class=" language-java"><code class="language-java"><span class="token annotation punctuation">@RestController</span>
+<span class="token keyword">public</span> <span class="token keyword">class</span> <span class="token class-name">HelloController</span> <span class="token punctuation">{</span>
+
+    <span class="token annotation punctuation">@GetMapping</span><span class="token punctuation">(</span><span class="token string">"/"</span><span class="token punctuation">)</span>
+    <span class="token keyword">public</span> String <span class="token function">hello</span><span class="token punctuation">(</span><span class="token punctuation">)</span><span class="token punctuation">{</span>
+        <span class="token keyword">return</span> <span class="token string">"Hello [Spring Boot + Docker] World! "</span><span class="token punctuation">;</span>
+    <span class="token punctuation">}</span>
+<span class="token punctuation">}</span>
+</code></pre>
+<h3 id="4-启动测试"><a href="#4-启动测试" class="headerlink" title="4. 启动测试"></a>4. 启动测试</h3><pre class=" language-java"><code class="language-java"><span class="token punctuation">.</span>/gradlew bootRun
+</code></pre>
 <p>使用浏览器或者 Postman 打开 <code>localhost:8080</code>，即可看到 <code>Hello World页面</code> 了。</p>
 <h2 id="三、生成IDE工程文件"><a href="#三、生成IDE工程文件" class="headerlink" title="三、生成IDE工程文件"></a>三、生成IDE工程文件</h2><p>我们可以通过 Gradle 的 <code>IDE插件</code> 一键式的生成 IDE 工程文件，然后在 IDE 中直接打开这样的工程文件。这样，所有人都能够使用相同的 IDE 配置。</p>
 <p>在 <code>build.gradle</code> 中配置：</p>
-<figure class="highlight java"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br></pre></td><td class="code"><pre><span class="line">apply plugin: <span class="string">'idea'</span></span><br><span class="line">apply plugin: <span class="string">'eclipse'</span></span><br></pre></td></tr></table></figure>
+<pre class=" language-java"><code class="language-java">apply plugin<span class="token operator">:</span> <span class="token string">'idea'</span>
+apply plugin<span class="token operator">:</span> <span class="token string">'eclipse'</span>
+</code></pre>
 <p>然后执行：</p>
-<figure class="highlight java"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br></pre></td><td class="code"><pre><span class="line">./gradlew idea</span><br><span class="line">./gradlew eclipse</span><br></pre></td></tr></table></figure>
+<pre class=" language-java"><code class="language-java"><span class="token punctuation">.</span>/gradlew idea
+<span class="token punctuation">.</span>/gradlew eclipse
+</code></pre>
 <p>此时会分别生成后缀为 ipr 的 <code>IDEA 工程文件</code>，和 <code>.project工程文件</code>，分别对应着 IDEA 工程和 Eclipse 工程。</p>
 <pre><code>请注意，所有IDE工程文件都不应该提交到代码库，对于Git来说应该将这些文件注册到.gitignore文件中。各个开发者拿到代码后需要各自运行./graldlw idea或./gradlew eclipse命令以生成本地工程文件。
 </code></pre><h2 id="四、调试模式"><a href="#四、调试模式" class="headerlink" title="四、调试模式"></a>四、调试模式</h2><p>第一种方式,直接运行命令：</p>
-<figure class="highlight java"><table><tr><td class="gutter"><pre><span class="line">1</span><br></pre></td><td class="code"><pre><span class="line">./gradlew bootRun --debug-jvm</span><br></pre></td></tr></table></figure>
+<pre class=" language-java"><code class="language-java"><span class="token punctuation">.</span>/gradlew bootRun <span class="token operator">--</span>debug<span class="token operator">-</span>jvm
+</code></pre>
 <p>第二种方式，在 build.gradle 中添加：</p>
-<figure class="highlight java"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br></pre></td><td class="code"><pre><span class="line">apply plugin: <span class="string">'application'</span></span><br><span class="line">applicationDefaultJvmArgs = [<span class="string">"-agentlib:jdwp=transport=dt_socket,server=y,suspend=n,address=5005"</span>]</span><br></pre></td></tr></table></figure>
+<pre class=" language-java"><code class="language-java">apply plugin<span class="token operator">:</span> <span class="token string">'application'</span>
+applicationDefaultJvmArgs <span class="token operator">=</span> <span class="token punctuation">[</span><span class="token string">"-agentlib:jdwp=transport=dt_socket,server=y,suspend=n,address=5005"</span><span class="token punctuation">]</span>
+</code></pre>
 <p>然后运行 <code>./gradlew bootRun</code></p>
 <p>这两种方式都会使程序监听 5005端口。但是第一种方式会暂停以等待调试客户端的连接，然后启动 SpringBoot；而第二种方式程序不会暂停，而是直接启动整个程序。</p>
 <h2 id="五、自动化测试"><a href="#五、自动化测试" class="headerlink" title="五、自动化测试"></a>五、自动化测试</h2><p>技浅，不太明白。等我开始写测试了之后再看。</p>
@@ -674,56 +733,6 @@
             <div class="article-badge left-badge text-color">
                 <i class="fa fa-chevron-left"></i>&nbsp;Previous</div>
             <div class="card">
-                <a href="/2018/10/22/SpringBoot/SpringBoot参考指南/">
-                    <div class="card-image">
-                        
-                        
-                        <img src="/medias/featureimages/6.jpg" class="responsive-img" alt="SpringBoot 参考指南">
-                        
-                        <span class="card-title">SpringBoot 参考指南</span>
-                    </div>
-                </a>
-                <div class="card-content article-content">
-                    <div class="summary block-with-text">
-                        
-                            SpringBoot 参考指南我会从 SpringBoot 的安装、构建、配置、启动运行等方面简单的介绍 SpringBoot 的技术点。
-构建系统：Maven｜Gradle｜Ant｜Starters最佳实践：代码结构｜@Configura
-                        
-                    </div>
-                    <div class="publish-info">
-                        <span class="publish-date">
-                            <i class="fa fa-clock-o fa-fw icon-date"></i>2018-10-22
-                        </span>
-                        <span class="publish-author">
-                            
-                            <i class="fa fa-bookmark fa-fw icon-category"></i>
-                            
-                            <a href="/categories/SpringBoot-参考指南/" class="post-category" target="_blank">
-                                    SpringBoot 参考指南
-                                </a>
-                            
-                            
-                        </span>
-                    </div>
-                </div>
-                
-                <div class="card-action article-tags">
-                    
-                    <a href="/tags/SpringBoot/" target="_blank">
-                        <span class="chip bg-color">SpringBoot</span>
-                    </a>
-                    
-                </div>
-                
-            </div>
-        </div>
-        
-        
-        <div class="article col s12 m6" data-aos="fade-up">
-            <div class="article-badge right-badge text-color">
-                Next&nbsp;<i class="fa fa-chevron-right"></i>
-            </div>
-            <div class="card">
                 <a href="/2018/10/11/SpringBoot/2.SpringBoot的三种启动方式/">
                     <div class="card-image">
                         
@@ -736,13 +745,16 @@
                 <div class="card-content article-content">
                     <div class="summary block-with-text">
                         
-                            SpringBoot的三种启动方式一、Main方法12345678910111213141516/** * @SpringBootApplication SpringBoot的组合注解，标注为SpringBoot的应用 *  scanBas
+                            SpringBoot的三种启动方式一、Main方法/**
+ * @SpringBootApplication SpringBoot的组合注解，标注为SpringBoot的应用
+ *  scanBasePackages  扫描的包
+ * @E
                         
                     </div>
                     <div class="publish-info">
-                            <span class="publish-date">
-                                <i class="fa fa-clock-o fa-fw icon-date"></i>2018-10-11
-                            </span>
+                        <span class="publish-date">
+                            <i class="fa fa-clock-o fa-fw icon-date"></i>2018-10-11
+                        </span>
                         <span class="publish-author">
                             
                             <i class="fa fa-bookmark fa-fw icon-category"></i>
@@ -774,6 +786,47 @@
                         <span class="chip bg-color">gradle</span>
                     </a>
                     
+                </div>
+                
+            </div>
+        </div>
+        
+        
+        <div class="article col s12 m6" data-aos="fade-up">
+            <div class="article-badge right-badge text-color">
+                Next&nbsp;<i class="fa fa-chevron-right"></i>
+            </div>
+            <div class="card">
+                <a href="/2018/10/11/java/MockMvc测试/">
+                    <div class="card-image">
+                        
+                        
+                        <img src="/medias/featureimages/7.jpg" class="responsive-img" alt="SpringMVC测试框架">
+                        
+                        <span class="card-title">SpringMVC测试框架</span>
+                    </div>
+                </a>
+                <div class="card-content article-content">
+                    <div class="summary block-with-text">
+                        
+                            SpringMVC测试框架基于RESTful风格的SpringMVC的测试，我们可以测试完整的Spring MVC流程，即从URL请求到控制器处理，再到视图渲染都可以测试。快速入门-这个方法中包含了大多数的常见情况：    @RunWith
+                        
+                    </div>
+                    <div class="publish-info">
+                            <span class="publish-date">
+                                <i class="fa fa-clock-o fa-fw icon-date"></i>2018-10-11
+                            </span>
+                        <span class="publish-author">
+                            
+                            <i class="fa fa-bookmark fa-fw icon-category"></i>
+                            
+                            <a href="/categories/Java成神之路/" class="post-category" target="_blank">
+                                    Java成神之路
+                                </a>
+                            
+                            
+                        </span>
+                    </div>
                 </div>
                 
             </div>
@@ -923,6 +976,10 @@
     </a>
 
 
+
+    <a href="/atom.xml" class="tooltipped" target="_blank" data-tooltip="RSS 订阅" data-position="top" data-delay="50">
+        <i class="fa fa-rss"></i>
+    </a>
 </div>
     </div>
 </footer>

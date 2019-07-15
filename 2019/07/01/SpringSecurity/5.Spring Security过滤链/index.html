@@ -30,7 +30,7 @@ addFilterBefore(Filter filter,Class&amp;lt;? extends Filter&amp;gt; beforeFilter
     </style>
 
     <script src="/libs/jquery/jquery-2.2.0.min.js"></script>
-</head>
+<link rel="stylesheet" href="/css/prism-tomorrow.css" type="text/css"></head>
 
 
 <body>
@@ -412,9 +412,42 @@ addFilterBefore(Filter filter,Class&amp;lt;? extends Filter&amp;gt; beforeFilter
 <li>addFilterAfter(Filter filter,Class&lt;? extends Filter&gt; afterFilter) 在afterFilter 之后添加 filter</li>
 <li>addFilterAt(Filter filter,Class&lt;? extends Filter&gt; atFilter) 在 atFilter 相同位置添加 filter，但不会覆盖它</li>
 </ul>
-<figure class="highlight java"><table><tr><td class="gutter"><pre><span class="line">1</span><br></pre></td><td class="code"><pre><span class="line"><span class="comment">// todo 测试doFilter的执行顺序</span></span><br></pre></td></tr></table></figure>
+<pre class=" language-java"><code class="language-java"><span class="token comment" spellcheck="true">// todo 测试doFilter的执行顺序</span>
+</code></pre>
 <p>例如：配置自定义 Filter 在 SpringSecurity 过滤链中的位置：<br>自定义 <code>Filter</code> 建议继承 <code>GenericFilterBean</code></p>
-<figure class="highlight java"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br><span class="line">14</span><br><span class="line">15</span><br><span class="line">16</span><br><span class="line">17</span><br><span class="line">18</span><br><span class="line">19</span><br><span class="line">20</span><br><span class="line">21</span><br><span class="line">22</span><br><span class="line">23</span><br><span class="line">24</span><br><span class="line">25</span><br><span class="line">26</span><br><span class="line">27</span><br><span class="line">28</span><br><span class="line">29</span><br><span class="line">30</span><br><span class="line">31</span><br><span class="line">32</span><br></pre></td><td class="code"><pre><span class="line"><span class="comment">// 自定义 Filter 过滤器</span></span><br><span class="line"><span class="keyword">public</span> <span class="class"><span class="keyword">class</span> <span class="title">BeforeLoginFilter</span> <span class="keyword">extends</span> <span class="title">GenericFilterBean</span></span>&#123;</span><br><span class="line"></span><br><span class="line">    <span class="meta">@Override</span></span><br><span class="line">    <span class="function"><span class="keyword">public</span> <span class="keyword">void</span> <span class="title">doFilter</span><span class="params">(ServletRequest servletRequest,ServletRespone servletRespone,FilterChain chain)</span></span>&#123;</span><br><span class="line">        System.out.println(<span class="string">"This is a filter before UsernamePasswordAuthenticationFilter."</span>);</span><br><span class="line">        <span class="comment">// 继续调用 Filter 链</span></span><br><span class="line">        filterChain.doFilter(servletRequest, servletResponse);</span><br><span class="line">    &#125;</span><br><span class="line">&#125;</span><br><span class="line"></span><br><span class="line"><span class="comment">// 向 HttpSecurity 添加过滤器</span></span><br><span class="line"><span class="function"><span class="keyword">protected</span> <span class="keyword">void</span> <span class="title">configure</span><span class="params">(HttpSecurity http)</span> <span class="keyword">throws</span> Exception</span>&#123;</span><br><span class="line">    http</span><br><span class="line">        .authorizeRequests()</span><br><span class="line">        .antMatchers(<span class="string">"/"</span>).permitAll()   <span class="comment">// "/" 路径下都可以访问</span></span><br><span class="line">        .antMatchers(<span class="string">"/user/**"</span>).hasRole(<span class="string">"USER"</span>)    <span class="comment">// "user"路径下的文件需要 "user"权限</span></span><br><span class="line">        .and()</span><br><span class="line">            .formLogin()</span><br><span class="line">            .loginPage(<span class="string">"/login"</span>)    <span class="comment">// 指定登录页面</span></span><br><span class="line">            .defaultSuccessUrl(<span class="string">"/user"</span>) <span class="comment">// 登录成功后的默认页面</span></span><br><span class="line">        .and()</span><br><span class="line">            .logout()</span><br><span class="line">            .logoutUrl(<span class="string">"/logout"</span>)   <span class="comment">// 指定退出路径</span></span><br><span class="line">            .logoutSuccessUrl(<span class="string">"/login"</span>);    <span class="comment">// 退出成功后的默认页面</span></span><br><span class="line"></span><br><span class="line">    <span class="comment">// 在 UsernamePasswordAuthenticationFilter 前添加 BeforeLoginFilter</span></span><br><span class="line">    http.addFilterBefore(<span class="keyword">new</span> BeforeLoginFilter(),UsernamePasswordAuthenticationFilter.class);</span><br><span class="line"></span><br><span class="line">    <span class="comment">// 在 CrsfFilter 后添加 AfterCrsfFilter</span></span><br><span class="line">    http.addFilterAfter(<span class="keyword">new</span> AfterCsrfFilter(),CsrfFilter.class);</span><br><span class="line">&#125;</span><br></pre></td></tr></table></figure>
+<pre class=" language-java"><code class="language-java"><span class="token comment" spellcheck="true">// 自定义 Filter 过滤器</span>
+<span class="token keyword">public</span> <span class="token keyword">class</span> <span class="token class-name">BeforeLoginFilter</span> <span class="token keyword">extends</span> <span class="token class-name">GenericFilterBean</span><span class="token punctuation">{</span>
+
+    <span class="token annotation punctuation">@Override</span>
+    <span class="token keyword">public</span> <span class="token keyword">void</span> <span class="token function">doFilter</span><span class="token punctuation">(</span>ServletRequest servletRequest<span class="token punctuation">,</span>ServletRespone servletRespone<span class="token punctuation">,</span>FilterChain chain<span class="token punctuation">)</span><span class="token punctuation">{</span>
+        System<span class="token punctuation">.</span>out<span class="token punctuation">.</span><span class="token function">println</span><span class="token punctuation">(</span><span class="token string">"This is a filter before UsernamePasswordAuthenticationFilter."</span><span class="token punctuation">)</span><span class="token punctuation">;</span>
+        <span class="token comment" spellcheck="true">// 继续调用 Filter 链</span>
+        filterChain<span class="token punctuation">.</span><span class="token function">doFilter</span><span class="token punctuation">(</span>servletRequest<span class="token punctuation">,</span> servletResponse<span class="token punctuation">)</span><span class="token punctuation">;</span>
+    <span class="token punctuation">}</span>
+<span class="token punctuation">}</span>
+
+<span class="token comment" spellcheck="true">// 向 HttpSecurity 添加过滤器</span>
+<span class="token keyword">protected</span> <span class="token keyword">void</span> <span class="token function">configure</span><span class="token punctuation">(</span>HttpSecurity http<span class="token punctuation">)</span> <span class="token keyword">throws</span> Exception<span class="token punctuation">{</span>
+    http
+        <span class="token punctuation">.</span><span class="token function">authorizeRequests</span><span class="token punctuation">(</span><span class="token punctuation">)</span>
+        <span class="token punctuation">.</span><span class="token function">antMatchers</span><span class="token punctuation">(</span><span class="token string">"/"</span><span class="token punctuation">)</span><span class="token punctuation">.</span><span class="token function">permitAll</span><span class="token punctuation">(</span><span class="token punctuation">)</span>   <span class="token comment" spellcheck="true">// "/" 路径下都可以访问</span>
+        <span class="token punctuation">.</span><span class="token function">antMatchers</span><span class="token punctuation">(</span><span class="token string">"/user/**"</span><span class="token punctuation">)</span><span class="token punctuation">.</span><span class="token function">hasRole</span><span class="token punctuation">(</span><span class="token string">"USER"</span><span class="token punctuation">)</span>    <span class="token comment" spellcheck="true">// "user"路径下的文件需要 "user"权限</span>
+        <span class="token punctuation">.</span><span class="token function">and</span><span class="token punctuation">(</span><span class="token punctuation">)</span>
+            <span class="token punctuation">.</span><span class="token function">formLogin</span><span class="token punctuation">(</span><span class="token punctuation">)</span>
+            <span class="token punctuation">.</span><span class="token function">loginPage</span><span class="token punctuation">(</span><span class="token string">"/login"</span><span class="token punctuation">)</span>    <span class="token comment" spellcheck="true">// 指定登录页面</span>
+            <span class="token punctuation">.</span><span class="token function">defaultSuccessUrl</span><span class="token punctuation">(</span><span class="token string">"/user"</span><span class="token punctuation">)</span> <span class="token comment" spellcheck="true">// 登录成功后的默认页面</span>
+        <span class="token punctuation">.</span><span class="token function">and</span><span class="token punctuation">(</span><span class="token punctuation">)</span>
+            <span class="token punctuation">.</span><span class="token function">logout</span><span class="token punctuation">(</span><span class="token punctuation">)</span>
+            <span class="token punctuation">.</span><span class="token function">logoutUrl</span><span class="token punctuation">(</span><span class="token string">"/logout"</span><span class="token punctuation">)</span>   <span class="token comment" spellcheck="true">// 指定退出路径</span>
+            <span class="token punctuation">.</span><span class="token function">logoutSuccessUrl</span><span class="token punctuation">(</span><span class="token string">"/login"</span><span class="token punctuation">)</span><span class="token punctuation">;</span>    <span class="token comment" spellcheck="true">// 退出成功后的默认页面</span>
+
+    <span class="token comment" spellcheck="true">// 在 UsernamePasswordAuthenticationFilter 前添加 BeforeLoginFilter</span>
+    http<span class="token punctuation">.</span><span class="token function">addFilterBefore</span><span class="token punctuation">(</span><span class="token keyword">new</span> <span class="token class-name">BeforeLoginFilter</span><span class="token punctuation">(</span><span class="token punctuation">)</span><span class="token punctuation">,</span>UsernamePasswordAuthenticationFilter<span class="token punctuation">.</span><span class="token keyword">class</span><span class="token punctuation">)</span><span class="token punctuation">;</span>
+
+    <span class="token comment" spellcheck="true">// 在 CrsfFilter 后添加 AfterCrsfFilter</span>
+    http<span class="token punctuation">.</span><span class="token function">addFilterAfter</span><span class="token punctuation">(</span><span class="token keyword">new</span> <span class="token class-name">AfterCsrfFilter</span><span class="token punctuation">(</span><span class="token punctuation">)</span><span class="token punctuation">,</span>CsrfFilter<span class="token punctuation">.</span><span class="token keyword">class</span><span class="token punctuation">)</span><span class="token punctuation">;</span>
+<span class="token punctuation">}</span>
+</code></pre>
 <h2 id="Spring-Security-默认的过滤链"><a href="#Spring-Security-默认的过滤链" class="headerlink" title="Spring Security 默认的过滤链"></a>Spring Security 默认的过滤链</h2><table>
 <thead>
 <tr>
@@ -726,7 +759,7 @@ addFilterBefore(Filter filter,Class&amp;lt;? extends Filter&amp;gt; beforeFilter
             <div class="article-badge left-badge text-color">
                 <i class="fa fa-chevron-left"></i>&nbsp;Previous</div>
             <div class="card">
-                <a href="/2019/07/01/SpringSecurity/6.SpringSecurity技术图谱/">
+                <a href="/2019/07/01/SpringSecurity/7.Spring+Cloud+Security/">
                     <div class="card-image">
                         
                         
@@ -738,8 +771,7 @@ addFilterBefore(Filter filter,Class&amp;lt;? extends Filter&amp;gt; beforeFilter
                 <div class="card-content article-content">
                     <div class="summary block-with-text">
                         
-                            Spring Security 技术图谱
-
+                            Spring Security + Oauth2 + Spring CloudSpring Security：http://docs.spring.io/spring-security/site/docs/4.2.2.RELEASE/ref
                         
                     </div>
                     <div class="publish-info">
@@ -764,7 +796,7 @@ addFilterBefore(Filter filter,Class&amp;lt;? extends Filter&amp;gt; beforeFilter
                 Next&nbsp;<i class="fa fa-chevron-right"></i>
             </div>
             <div class="card">
-                <a href="/2019/07/01/SpringSecurity/3.使用数据库进行验证/">
+                <a href="/2019/07/01/SpringSecurity/6.SpringSecurity技术图谱/">
                     <div class="card-image">
                         
                         
@@ -776,9 +808,8 @@ addFilterBefore(Filter filter,Class&amp;lt;? extends Filter&amp;gt; beforeFilter
                 <div class="card-content article-content">
                     <div class="summary block-with-text">
                         
-                            kaishi导入security-login-db创建数据库 any执行 user.sql启动项目
-Spring Security 校验登录流程
-解释AbstractAuthenticationProcessingFilter 抽象类123
+                            Spring Security 技术图谱
+
                         
                     </div>
                     <div class="publish-info">
@@ -941,6 +972,10 @@ Spring Security 校验登录流程
     </a>
 
 
+
+    <a href="/atom.xml" class="tooltipped" target="_blank" data-tooltip="RSS 订阅" data-position="top" data-delay="50">
+        <i class="fa fa-rss"></i>
+    </a>
 </div>
     </div>
 </footer>

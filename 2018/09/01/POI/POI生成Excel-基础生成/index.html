@@ -5,7 +5,9 @@
 <head>
     <meta charset="utf-8">
     <meta name="keywords" content="使用POI导出Excel, 帅">
-    <meta name="description" content="使用POI导出Excel一、引入POI4.0的包12345678910&amp;lt;dependency&amp;gt;    &amp;lt;groupId&amp;gt;org.apache.poi&amp;lt;/groupId&amp;gt;    &amp;lt;artifactId">
+    <meta name="description" content="使用POI导出Excel一、引入POI4.0的包&amp;lt;dependency&gt;
+    &amp;lt;groupId&gt;org.apache.poi&amp;lt;/groupId&gt;
+    &amp;lt;artifactId&gt;poi&amp;lt;/artifactI">
     <meta http-equiv="X-UA-Compatible" content="IE=edge">
     <meta name="viewport" content="width=device-width, initial-scale=1.0, user-scalable=no">
     <meta name="renderer" content="webkit|ie-stand|ie-comp">
@@ -28,7 +30,7 @@
     </style>
 
     <script src="/libs/jquery/jquery-2.2.0.min.js"></script>
-</head>
+<link rel="stylesheet" href="/css/prism-tomorrow.css" type="text/css"></head>
 
 
 <body>
@@ -417,15 +419,81 @@
         <hr class="clearfix">
         <div class="card-content article-card-content">
             <div id="articleContent">
-                <h1 id="使用POI导出Excel"><a href="#使用POI导出Excel" class="headerlink" title="使用POI导出Excel"></a>使用POI导出Excel</h1><h2 id="一、引入POI4-0的包"><a href="#一、引入POI4-0的包" class="headerlink" title="一、引入POI4.0的包"></a>一、引入POI4.0的包</h2><figure class="highlight xml"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br></pre></td><td class="code"><pre><span class="line"><span class="tag">&lt;<span class="name">dependency</span>&gt;</span></span><br><span class="line">    <span class="tag">&lt;<span class="name">groupId</span>&gt;</span>org.apache.poi<span class="tag">&lt;/<span class="name">groupId</span>&gt;</span></span><br><span class="line">    <span class="tag">&lt;<span class="name">artifactId</span>&gt;</span>poi<span class="tag">&lt;/<span class="name">artifactId</span>&gt;</span></span><br><span class="line">    <span class="tag">&lt;<span class="name">version</span>&gt;</span>4.0.1<span class="tag">&lt;/<span class="name">version</span>&gt;</span></span><br><span class="line"><span class="tag">&lt;/<span class="name">dependency</span>&gt;</span></span><br><span class="line"><span class="tag">&lt;<span class="name">dependency</span>&gt;</span></span><br><span class="line">    <span class="tag">&lt;<span class="name">groupId</span>&gt;</span>org.apache.poi<span class="tag">&lt;/<span class="name">groupId</span>&gt;</span></span><br><span class="line">    <span class="tag">&lt;<span class="name">artifactId</span>&gt;</span>poi-ooxml<span class="tag">&lt;/<span class="name">artifactId</span>&gt;</span></span><br><span class="line">    <span class="tag">&lt;<span class="name">version</span>&gt;</span>4.0.1<span class="tag">&lt;/<span class="name">version</span>&gt;</span></span><br><span class="line"><span class="tag">&lt;/<span class="name">dependency</span>&gt;</span></span><br></pre></td></tr></table></figure>
-<h2 id="二、普通的Excel生成"><a href="#二、普通的Excel生成" class="headerlink" title="二、普通的Excel生成"></a>二、普通的Excel生成</h2><figure class="highlight java"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br><span class="line">14</span><br><span class="line">15</span><br></pre></td><td class="code"><pre><span class="line"><span class="meta">@Test</span></span><br><span class="line"><span class="function"><span class="keyword">public</span> <span class="keyword">void</span> <span class="title">generate</span><span class="params">()</span> </span>&#123;</span><br><span class="line">    String filePath = <span class="string">"C:\\Users\\user\\Desktop\\first.xlsx"</span>;</span><br><span class="line">     <span class="keyword">try</span>(XSSFWorkbook workbook = <span class="keyword">new</span> XSSFWorkbook();</span><br><span class="line">            FileOutputStream outputStream = <span class="keyword">new</span> FileOutputStream(filePath))&#123;</span><br><span class="line">        <span class="comment">// 创建一个 10*5 的表格</span></span><br><span class="line">        <span class="keyword">for</span> (<span class="keyword">int</span> i = <span class="number">0</span>; i &lt; <span class="number">10</span>; i++) &#123;</span><br><span class="line">            XSSFRow row = sheet.createRow(i);</span><br><span class="line">            <span class="keyword">for</span> (<span class="keyword">int</span> j = <span class="number">0</span>; j &lt; <span class="number">5</span>; j++) &#123;</span><br><span class="line">                XSSFCell cell = row.createCell(j);</span><br><span class="line">                cell.setCellValue(String.format(<span class="string">"第%s行，第%s列"</span>, i + <span class="number">1</span>, j + <span class="number">1</span>));</span><br><span class="line">            &#125;</span><br><span class="line">        &#125;</span><br><span class="line">     &#125;</span><br><span class="line">&#125;</span><br></pre></td></tr></table></figure>
+                <h1 id="使用POI导出Excel"><a href="#使用POI导出Excel" class="headerlink" title="使用POI导出Excel"></a>使用POI导出Excel</h1><h2 id="一、引入POI4-0的包"><a href="#一、引入POI4-0的包" class="headerlink" title="一、引入POI4.0的包"></a>一、引入POI4.0的包</h2><pre class=" language-xml"><code class="language-xml"><span class="token tag"><span class="token tag"><span class="token punctuation">&lt;</span>dependency</span><span class="token punctuation">></span></span>
+    <span class="token tag"><span class="token tag"><span class="token punctuation">&lt;</span>groupId</span><span class="token punctuation">></span></span>org.apache.poi<span class="token tag"><span class="token tag"><span class="token punctuation">&lt;/</span>groupId</span><span class="token punctuation">></span></span>
+    <span class="token tag"><span class="token tag"><span class="token punctuation">&lt;</span>artifactId</span><span class="token punctuation">></span></span>poi<span class="token tag"><span class="token tag"><span class="token punctuation">&lt;/</span>artifactId</span><span class="token punctuation">></span></span>
+    <span class="token tag"><span class="token tag"><span class="token punctuation">&lt;</span>version</span><span class="token punctuation">></span></span>4.0.1<span class="token tag"><span class="token tag"><span class="token punctuation">&lt;/</span>version</span><span class="token punctuation">></span></span>
+<span class="token tag"><span class="token tag"><span class="token punctuation">&lt;/</span>dependency</span><span class="token punctuation">></span></span>
+<span class="token tag"><span class="token tag"><span class="token punctuation">&lt;</span>dependency</span><span class="token punctuation">></span></span>
+    <span class="token tag"><span class="token tag"><span class="token punctuation">&lt;</span>groupId</span><span class="token punctuation">></span></span>org.apache.poi<span class="token tag"><span class="token tag"><span class="token punctuation">&lt;/</span>groupId</span><span class="token punctuation">></span></span>
+    <span class="token tag"><span class="token tag"><span class="token punctuation">&lt;</span>artifactId</span><span class="token punctuation">></span></span>poi-ooxml<span class="token tag"><span class="token tag"><span class="token punctuation">&lt;/</span>artifactId</span><span class="token punctuation">></span></span>
+    <span class="token tag"><span class="token tag"><span class="token punctuation">&lt;</span>version</span><span class="token punctuation">></span></span>4.0.1<span class="token tag"><span class="token tag"><span class="token punctuation">&lt;/</span>version</span><span class="token punctuation">></span></span>
+<span class="token tag"><span class="token tag"><span class="token punctuation">&lt;/</span>dependency</span><span class="token punctuation">></span></span>
+</code></pre>
+<h2 id="二、普通的Excel生成"><a href="#二、普通的Excel生成" class="headerlink" title="二、普通的Excel生成"></a>二、普通的Excel生成</h2><pre class=" language-java"><code class="language-java"><span class="token annotation punctuation">@Test</span>
+<span class="token keyword">public</span> <span class="token keyword">void</span> <span class="token function">generate</span><span class="token punctuation">(</span><span class="token punctuation">)</span> <span class="token punctuation">{</span>
+    String filePath <span class="token operator">=</span> <span class="token string">"C:\\Users\\user\\Desktop\\first.xlsx"</span><span class="token punctuation">;</span>
+     <span class="token keyword">try</span><span class="token punctuation">(</span>XSSFWorkbook workbook <span class="token operator">=</span> <span class="token keyword">new</span> <span class="token class-name">XSSFWorkbook</span><span class="token punctuation">(</span><span class="token punctuation">)</span><span class="token punctuation">;</span>
+            FileOutputStream outputStream <span class="token operator">=</span> <span class="token keyword">new</span> <span class="token class-name">FileOutputStream</span><span class="token punctuation">(</span>filePath<span class="token punctuation">)</span><span class="token punctuation">)</span><span class="token punctuation">{</span>
+        <span class="token comment" spellcheck="true">// 创建一个 10*5 的表格</span>
+        <span class="token keyword">for</span> <span class="token punctuation">(</span><span class="token keyword">int</span> i <span class="token operator">=</span> <span class="token number">0</span><span class="token punctuation">;</span> i <span class="token operator">&lt;</span> <span class="token number">10</span><span class="token punctuation">;</span> i<span class="token operator">++</span><span class="token punctuation">)</span> <span class="token punctuation">{</span>
+            XSSFRow row <span class="token operator">=</span> sheet<span class="token punctuation">.</span><span class="token function">createRow</span><span class="token punctuation">(</span>i<span class="token punctuation">)</span><span class="token punctuation">;</span>
+            <span class="token keyword">for</span> <span class="token punctuation">(</span><span class="token keyword">int</span> j <span class="token operator">=</span> <span class="token number">0</span><span class="token punctuation">;</span> j <span class="token operator">&lt;</span> <span class="token number">5</span><span class="token punctuation">;</span> j<span class="token operator">++</span><span class="token punctuation">)</span> <span class="token punctuation">{</span>
+                XSSFCell cell <span class="token operator">=</span> row<span class="token punctuation">.</span><span class="token function">createCell</span><span class="token punctuation">(</span>j<span class="token punctuation">)</span><span class="token punctuation">;</span>
+                cell<span class="token punctuation">.</span><span class="token function">setCellValue</span><span class="token punctuation">(</span>String<span class="token punctuation">.</span><span class="token function">format</span><span class="token punctuation">(</span><span class="token string">"第%s行，第%s列"</span><span class="token punctuation">,</span> i <span class="token operator">+</span> <span class="token number">1</span><span class="token punctuation">,</span> j <span class="token operator">+</span> <span class="token number">1</span><span class="token punctuation">)</span><span class="token punctuation">)</span><span class="token punctuation">;</span>
+            <span class="token punctuation">}</span>
+        <span class="token punctuation">}</span>
+     <span class="token punctuation">}</span>
+<span class="token punctuation">}</span>
+</code></pre>
 <p>结果如下：</p>
 <p><img src="https://images.gitee.com/uploads/images/2019/0121/161334_ee08a1e8_1872936.png" alt="正常导出的Excel"></p>
 <blockquote>
 <p> 这里返回的结果可能挤在一起了，这是因为我们没有设置单元格的宽高。</p>
 </blockquote>
 <h2 id="三、加上行首、样式"><a href="#三、加上行首、样式" class="headerlink" title="三、加上行首、样式"></a>三、加上行首、样式</h2><p>我们先取首行，填充行首，并为其设置样式（如居中、加粗等）。</p>
-<figure class="highlight java"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br><span class="line">14</span><br><span class="line">15</span><br><span class="line">16</span><br><span class="line">17</span><br><span class="line">18</span><br><span class="line">19</span><br><span class="line">20</span><br><span class="line">21</span><br><span class="line">22</span><br><span class="line">23</span><br><span class="line">24</span><br><span class="line">25</span><br><span class="line">26</span><br><span class="line">27</span><br><span class="line">28</span><br><span class="line">29</span><br><span class="line">30</span><br><span class="line">31</span><br><span class="line">32</span><br><span class="line">33</span><br><span class="line">34</span><br><span class="line">35</span><br><span class="line">36</span><br><span class="line">37</span><br><span class="line">38</span><br><span class="line">39</span><br><span class="line">40</span><br><span class="line">41</span><br></pre></td><td class="code"><pre><span class="line"><span class="meta">@Test</span></span><br><span class="line"><span class="function"><span class="keyword">public</span> <span class="keyword">void</span> <span class="title">generate</span><span class="params">()</span> <span class="keyword">throws</span> IOException </span>&#123;</span><br><span class="line">    String filePath = <span class="string">"C:\\Users\\user\\Desktop\\first.xlsx"</span>;</span><br><span class="line">    <span class="keyword">try</span>(XSSFWorkbook workbook = <span class="keyword">new</span> XSSFWorkbook();</span><br><span class="line">        FileOutputStream outputStream = <span class="keyword">new</span> FileOutputStream(filePath))&#123;</span><br><span class="line">        XSSFSheet sheet = workbook.createSheet(<span class="string">"普通表"</span>);</span><br><span class="line"></span><br><span class="line">		<span class="comment">// 自定义样式：居中、蓝色、加粗</span></span><br><span class="line">        <span class="keyword">final</span> XSSFFont font = workbook.createFont();</span><br><span class="line">        font.setBold(<span class="keyword">true</span>);</span><br><span class="line">        font.setColor(IndexedColors.BLUE.getIndex());</span><br><span class="line">        XSSFCellStyle cellStyle = workbook.createCellStyle();</span><br><span class="line">        cellStyle.setFont(font);</span><br><span class="line">        cellStyle.setAlignment(HorizontalAlignment.CENTER);</span><br><span class="line"></span><br><span class="line">		<span class="comment">// 设置首行</span></span><br><span class="line">        String[] titles = <span class="keyword">new</span> String[]&#123;<span class="string">"行首1"</span>,<span class="string">"行首2"</span>,<span class="string">"行首3"</span>,<span class="string">"行首4"</span>,<span class="string">"行首5"</span>&#125;;</span><br><span class="line">        XSSFRow first = sheet.createRow(<span class="number">0</span>);</span><br><span class="line">        <span class="keyword">for</span> (<span class="keyword">int</span> i = <span class="number">0</span>; i &lt; titles.length; i++) &#123;</span><br><span class="line">            XSSFCell cell = first.createCell(i);</span><br><span class="line">            cell.setCellValue(titles[i]);</span><br><span class="line">            cell.setCellStyle(cellStyle);</span><br><span class="line">        &#125;</span><br><span class="line"></span><br><span class="line">		<span class="comment">// 填充数据</span></span><br><span class="line">        <span class="keyword">for</span> (<span class="keyword">int</span> i = <span class="number">1</span>; i &lt; <span class="number">10</span>; i++) &#123;</span><br><span class="line">            XSSFRow row = sheet.createRow(i);</span><br><span class="line">            <span class="keyword">for</span> (<span class="keyword">int</span> j = <span class="number">0</span>; j &lt; <span class="number">5</span>; j++) &#123;</span><br><span class="line">                XSSFCell cell = row.createCell(j);</span><br><span class="line">                cell.setCellValue(String.format(<span class="string">"第%s行，第%s列"</span>, i + <span class="number">1</span>, j + <span class="number">1</span>));</span><br><span class="line">            &#125;</span><br><span class="line">        &#125;</span><br><span class="line">        </span><br><span class="line">        <span class="comment">// 设置宽度自适应</span></span><br><span class="line">        <span class="keyword">for</span> (<span class="keyword">int</span> o = <span class="number">0</span>; o &lt; <span class="number">5</span>; o++) &#123;</span><br><span class="line">           sheet.autoSizeColumn(o, <span class="keyword">true</span>);</span><br><span class="line">           sheet.setColumnWidth(o, sheet.getColumnWidth(o) * <span class="number">17</span> / <span class="number">10</span>);</span><br><span class="line">        &#125;</span><br><span class="line">        workbook.write(outputStream);</span><br><span class="line">    &#125;</span><br><span class="line">&#125;</span><br></pre></td></tr></table></figure>
+<pre class=" language-java"><code class="language-java"><span class="token annotation punctuation">@Test</span>
+<span class="token keyword">public</span> <span class="token keyword">void</span> <span class="token function">generate</span><span class="token punctuation">(</span><span class="token punctuation">)</span> <span class="token keyword">throws</span> IOException <span class="token punctuation">{</span>
+    String filePath <span class="token operator">=</span> <span class="token string">"C:\\Users\\user\\Desktop\\first.xlsx"</span><span class="token punctuation">;</span>
+    <span class="token keyword">try</span><span class="token punctuation">(</span>XSSFWorkbook workbook <span class="token operator">=</span> <span class="token keyword">new</span> <span class="token class-name">XSSFWorkbook</span><span class="token punctuation">(</span><span class="token punctuation">)</span><span class="token punctuation">;</span>
+        FileOutputStream outputStream <span class="token operator">=</span> <span class="token keyword">new</span> <span class="token class-name">FileOutputStream</span><span class="token punctuation">(</span>filePath<span class="token punctuation">)</span><span class="token punctuation">)</span><span class="token punctuation">{</span>
+        XSSFSheet sheet <span class="token operator">=</span> workbook<span class="token punctuation">.</span><span class="token function">createSheet</span><span class="token punctuation">(</span><span class="token string">"普通表"</span><span class="token punctuation">)</span><span class="token punctuation">;</span>
+
+        <span class="token comment" spellcheck="true">// 自定义样式：居中、蓝色、加粗</span>
+        <span class="token keyword">final</span> XSSFFont font <span class="token operator">=</span> workbook<span class="token punctuation">.</span><span class="token function">createFont</span><span class="token punctuation">(</span><span class="token punctuation">)</span><span class="token punctuation">;</span>
+        font<span class="token punctuation">.</span><span class="token function">setBold</span><span class="token punctuation">(</span><span class="token boolean">true</span><span class="token punctuation">)</span><span class="token punctuation">;</span>
+        font<span class="token punctuation">.</span><span class="token function">setColor</span><span class="token punctuation">(</span>IndexedColors<span class="token punctuation">.</span>BLUE<span class="token punctuation">.</span><span class="token function">getIndex</span><span class="token punctuation">(</span><span class="token punctuation">)</span><span class="token punctuation">)</span><span class="token punctuation">;</span>
+        XSSFCellStyle cellStyle <span class="token operator">=</span> workbook<span class="token punctuation">.</span><span class="token function">createCellStyle</span><span class="token punctuation">(</span><span class="token punctuation">)</span><span class="token punctuation">;</span>
+        cellStyle<span class="token punctuation">.</span><span class="token function">setFont</span><span class="token punctuation">(</span>font<span class="token punctuation">)</span><span class="token punctuation">;</span>
+        cellStyle<span class="token punctuation">.</span><span class="token function">setAlignment</span><span class="token punctuation">(</span>HorizontalAlignment<span class="token punctuation">.</span>CENTER<span class="token punctuation">)</span><span class="token punctuation">;</span>
+
+        <span class="token comment" spellcheck="true">// 设置首行</span>
+        String<span class="token punctuation">[</span><span class="token punctuation">]</span> titles <span class="token operator">=</span> <span class="token keyword">new</span> <span class="token class-name">String</span><span class="token punctuation">[</span><span class="token punctuation">]</span><span class="token punctuation">{</span><span class="token string">"行首1"</span><span class="token punctuation">,</span><span class="token string">"行首2"</span><span class="token punctuation">,</span><span class="token string">"行首3"</span><span class="token punctuation">,</span><span class="token string">"行首4"</span><span class="token punctuation">,</span><span class="token string">"行首5"</span><span class="token punctuation">}</span><span class="token punctuation">;</span>
+        XSSFRow first <span class="token operator">=</span> sheet<span class="token punctuation">.</span><span class="token function">createRow</span><span class="token punctuation">(</span><span class="token number">0</span><span class="token punctuation">)</span><span class="token punctuation">;</span>
+        <span class="token keyword">for</span> <span class="token punctuation">(</span><span class="token keyword">int</span> i <span class="token operator">=</span> <span class="token number">0</span><span class="token punctuation">;</span> i <span class="token operator">&lt;</span> titles<span class="token punctuation">.</span>length<span class="token punctuation">;</span> i<span class="token operator">++</span><span class="token punctuation">)</span> <span class="token punctuation">{</span>
+            XSSFCell cell <span class="token operator">=</span> first<span class="token punctuation">.</span><span class="token function">createCell</span><span class="token punctuation">(</span>i<span class="token punctuation">)</span><span class="token punctuation">;</span>
+            cell<span class="token punctuation">.</span><span class="token function">setCellValue</span><span class="token punctuation">(</span>titles<span class="token punctuation">[</span>i<span class="token punctuation">]</span><span class="token punctuation">)</span><span class="token punctuation">;</span>
+            cell<span class="token punctuation">.</span><span class="token function">setCellStyle</span><span class="token punctuation">(</span>cellStyle<span class="token punctuation">)</span><span class="token punctuation">;</span>
+        <span class="token punctuation">}</span>
+
+        <span class="token comment" spellcheck="true">// 填充数据</span>
+        <span class="token keyword">for</span> <span class="token punctuation">(</span><span class="token keyword">int</span> i <span class="token operator">=</span> <span class="token number">1</span><span class="token punctuation">;</span> i <span class="token operator">&lt;</span> <span class="token number">10</span><span class="token punctuation">;</span> i<span class="token operator">++</span><span class="token punctuation">)</span> <span class="token punctuation">{</span>
+            XSSFRow row <span class="token operator">=</span> sheet<span class="token punctuation">.</span><span class="token function">createRow</span><span class="token punctuation">(</span>i<span class="token punctuation">)</span><span class="token punctuation">;</span>
+            <span class="token keyword">for</span> <span class="token punctuation">(</span><span class="token keyword">int</span> j <span class="token operator">=</span> <span class="token number">0</span><span class="token punctuation">;</span> j <span class="token operator">&lt;</span> <span class="token number">5</span><span class="token punctuation">;</span> j<span class="token operator">++</span><span class="token punctuation">)</span> <span class="token punctuation">{</span>
+                XSSFCell cell <span class="token operator">=</span> row<span class="token punctuation">.</span><span class="token function">createCell</span><span class="token punctuation">(</span>j<span class="token punctuation">)</span><span class="token punctuation">;</span>
+                cell<span class="token punctuation">.</span><span class="token function">setCellValue</span><span class="token punctuation">(</span>String<span class="token punctuation">.</span><span class="token function">format</span><span class="token punctuation">(</span><span class="token string">"第%s行，第%s列"</span><span class="token punctuation">,</span> i <span class="token operator">+</span> <span class="token number">1</span><span class="token punctuation">,</span> j <span class="token operator">+</span> <span class="token number">1</span><span class="token punctuation">)</span><span class="token punctuation">)</span><span class="token punctuation">;</span>
+            <span class="token punctuation">}</span>
+        <span class="token punctuation">}</span>
+
+        <span class="token comment" spellcheck="true">// 设置宽度自适应</span>
+        <span class="token keyword">for</span> <span class="token punctuation">(</span><span class="token keyword">int</span> o <span class="token operator">=</span> <span class="token number">0</span><span class="token punctuation">;</span> o <span class="token operator">&lt;</span> <span class="token number">5</span><span class="token punctuation">;</span> o<span class="token operator">++</span><span class="token punctuation">)</span> <span class="token punctuation">{</span>
+           sheet<span class="token punctuation">.</span><span class="token function">autoSizeColumn</span><span class="token punctuation">(</span>o<span class="token punctuation">,</span> <span class="token boolean">true</span><span class="token punctuation">)</span><span class="token punctuation">;</span>
+           sheet<span class="token punctuation">.</span><span class="token function">setColumnWidth</span><span class="token punctuation">(</span>o<span class="token punctuation">,</span> sheet<span class="token punctuation">.</span><span class="token function">getColumnWidth</span><span class="token punctuation">(</span>o<span class="token punctuation">)</span> <span class="token operator">*</span> <span class="token number">17</span> <span class="token operator">/</span> <span class="token number">10</span><span class="token punctuation">)</span><span class="token punctuation">;</span>
+        <span class="token punctuation">}</span>
+        workbook<span class="token punctuation">.</span><span class="token function">write</span><span class="token punctuation">(</span>outputStream<span class="token punctuation">)</span><span class="token punctuation">;</span>
+    <span class="token punctuation">}</span>
+<span class="token punctuation">}</span>
+</code></pre>
 <p>效果如下：</p>
 <p><img src="https://images.gitee.com/uploads/images/2019/0121/174309_564e9d53_1872936.png" alt="带样式的Excel"></p>
 <p>具体单元格的样式，我们可以在 <code>cellStyle</code> 中设置，如果需要多种样式组合的话，可以通过 <code>XSSFWorkbook</code> 创建多个，在指定位置进行设置。</p>
@@ -637,20 +705,20 @@
             <div class="article-badge left-badge text-color">
                 <i class="fa fa-chevron-left"></i>&nbsp;Previous</div>
             <div class="card">
-                <a href="/2018/09/01/POI/POI生成原生Excel-散点图/">
+                <a href="/2018/09/01/SpringCloud/全链路监控/">
                     <div class="card-image">
                         
                         
-                        <img src="/medias/featureimages/19.jpg" class="responsive-img" alt="使用POI结合Excel的行列生成原生散点图(XY图)">
+                        <img src="/medias/featureimages/7.jpg" class="responsive-img" alt="待学习">
                         
-                        <span class="card-title">使用POI结合Excel的行列生成原生散点图(XY图)</span>
+                        <span class="card-title">待学习</span>
                     </div>
                 </a>
                 <div class="card-content article-content">
                     <div class="summary block-with-text">
                         
-                            使用POI结合Excel的行列生成原生散点图(XY图)一、先放最后输出的结果图：
-二、代码123456789101112131415161718192021222324252627282930313233343536373839404142
+                            待学习博客全链路监控
+
                         
                     </div>
                     <div class="publish-info">
@@ -670,14 +738,6 @@
                     </div>
                 </div>
                 
-                <div class="card-action article-tags">
-                    
-                    <a href="/tags/POI/" target="_blank">
-                        <span class="chip bg-color">POI</span>
-                    </a>
-                    
-                </div>
-                
             </div>
         </div>
         
@@ -687,20 +747,19 @@
                 Next&nbsp;<i class="fa fa-chevron-right"></i>
             </div>
             <div class="card">
-                <a href="/2018/09/01/SpringBootWebsocket/SpringBoot消息机制(一)-WebSocket介绍/">
+                <a href="/2018/09/01/SpringData/Spring-Data-MongoDB（2）/">
                     <div class="card-image">
                         
                         
-                        <img src="/medias/featureimages/21.jpg" class="responsive-img" alt="SpringBoot消息机制(一)-WebSocket介绍">
+                        <img src="/medias/featureimages/2.jpg" class="responsive-img" alt="SpringDataMongoDB(二)">
                         
-                        <span class="card-title">SpringBoot消息机制(一)-WebSocket介绍</span>
+                        <span class="card-title">SpringDataMongoDB(二)</span>
                     </div>
                 </a>
                 <div class="card-content article-content">
                     <div class="summary block-with-text">
                         
-                            #SpringBoot消息机制(一)-WebSocket介绍https://my.oschina.net/genghz/blog/1796965
-
+                            Spring Data MongoDB （二） 查询创建查询（去重、区间、忽略大小写等）查询的构建机制，将截断前缀 find…By、 read…By、 query…By、 count…By、 get…By 等，从剩余部分开始解析，省略号中可
                         
                     </div>
                     <div class="publish-info">
@@ -722,8 +781,8 @@
                 
                 <div class="card-action article-tags">
                     
-                    <a href="/tags/MQ/" target="_blank">
-                        <span class="chip bg-color">MQ</span>
+                    <a href="/tags/Spring-Data/" target="_blank">
+                        <span class="chip bg-color">Spring Data</span>
                     </a>
                     
                 </div>
@@ -875,6 +934,10 @@
     </a>
 
 
+
+    <a href="/atom.xml" class="tooltipped" target="_blank" data-tooltip="RSS 订阅" data-position="top" data-delay="50">
+        <i class="fa fa-rss"></i>
+    </a>
 </div>
     </div>
 </footer>

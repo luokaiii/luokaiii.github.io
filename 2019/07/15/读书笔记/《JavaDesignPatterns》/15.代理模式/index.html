@@ -30,7 +30,7 @@
     </style>
 
     <script src="/libs/jquery/jquery-2.2.0.min.js"></script>
-</head>
+<link rel="stylesheet" href="/css/prism-tomorrow.css" type="text/css"></head>
 
 
 <body>
@@ -445,7 +445,29 @@
 </ol>
 </li>
 </ol>
-<h3 id="1-4-代理模式的核心-代理主题角色-Proxy"><a href="#1-4-代理模式的核心-代理主题角色-Proxy" class="headerlink" title="1.4 代理模式的核心 - 代理主题角色 Proxy"></a>1.4 代理模式的核心 - 代理主题角色 Proxy</h3><figure class="highlight java"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br><span class="line">14</span><br><span class="line">15</span><br><span class="line">16</span><br><span class="line">17</span><br><span class="line">18</span><br><span class="line">19</span><br><span class="line">20</span><br><span class="line">21</span><br><span class="line">22</span><br></pre></td><td class="code"><pre><span class="line"><span class="class"><span class="keyword">class</span> <span class="title">Proxy</span> <span class="keyword">implements</span> <span class="title">Subject</span> </span>&#123;</span><br><span class="line">    <span class="comment">// 维护一个对真实主题对象的引用</span></span><br><span class="line">    <span class="keyword">private</span> RealSubject subject = <span class="keyword">new</span> RealSubject(); </span><br><span class="line">    </span><br><span class="line">    <span class="function"><span class="keyword">public</span> <span class="keyword">void</span> <span class="title">preRequest</span><span class="params">()</span></span>&#123;</span><br><span class="line">        <span class="comment">// ...</span></span><br><span class="line">    &#125;</span><br><span class="line">    </span><br><span class="line">    <span class="comment">/**</span></span><br><span class="line"><span class="comment">     * 实现Subject声明的抽象方法，调用真实主题角色的操作，并进行扩展</span></span><br><span class="line"><span class="comment">     */</span></span><br><span class="line">    <span class="meta">@Override</span></span><br><span class="line">    <span class="function"><span class="keyword">public</span> <span class="keyword">void</span> <span class="title">request</span><span class="params">()</span></span>&#123;</span><br><span class="line">        preRequest();</span><br><span class="line">        subject.request();</span><br><span class="line">        postRequest();</span><br><span class="line">    &#125;</span><br><span class="line">    </span><br><span class="line">    <span class="function"><span class="keyword">public</span> <span class="keyword">void</span> <span class="title">postRequest</span><span class="params">()</span></span>&#123;</span><br><span class="line">        <span class="comment">// ...</span></span><br><span class="line">    &#125;</span><br><span class="line">&#125;</span><br></pre></td></tr></table></figure>
+<h3 id="1-4-代理模式的核心-代理主题角色-Proxy"><a href="#1-4-代理模式的核心-代理主题角色-Proxy" class="headerlink" title="1.4 代理模式的核心 - 代理主题角色 Proxy"></a>1.4 代理模式的核心 - 代理主题角色 Proxy</h3><pre class=" language-java"><code class="language-java"><span class="token keyword">class</span> <span class="token class-name">Proxy</span> <span class="token keyword">implements</span> <span class="token class-name">Subject</span> <span class="token punctuation">{</span>
+    <span class="token comment" spellcheck="true">// 维护一个对真实主题对象的引用</span>
+    <span class="token keyword">private</span> RealSubject subject <span class="token operator">=</span> <span class="token keyword">new</span> <span class="token class-name">RealSubject</span><span class="token punctuation">(</span><span class="token punctuation">)</span><span class="token punctuation">;</span> 
+
+    <span class="token keyword">public</span> <span class="token keyword">void</span> <span class="token function">preRequest</span><span class="token punctuation">(</span><span class="token punctuation">)</span><span class="token punctuation">{</span>
+        <span class="token comment" spellcheck="true">// ...</span>
+    <span class="token punctuation">}</span>
+
+    <span class="token comment" spellcheck="true">/**
+     * 实现Subject声明的抽象方法，调用真实主题角色的操作，并进行扩展
+     */</span>
+    <span class="token annotation punctuation">@Override</span>
+    <span class="token keyword">public</span> <span class="token keyword">void</span> <span class="token function">request</span><span class="token punctuation">(</span><span class="token punctuation">)</span><span class="token punctuation">{</span>
+        <span class="token function">preRequest</span><span class="token punctuation">(</span><span class="token punctuation">)</span><span class="token punctuation">;</span>
+        subject<span class="token punctuation">.</span><span class="token function">request</span><span class="token punctuation">(</span><span class="token punctuation">)</span><span class="token punctuation">;</span>
+        <span class="token function">postRequest</span><span class="token punctuation">(</span><span class="token punctuation">)</span><span class="token punctuation">;</span>
+    <span class="token punctuation">}</span>
+
+    <span class="token keyword">public</span> <span class="token keyword">void</span> <span class="token function">postRequest</span><span class="token punctuation">(</span><span class="token punctuation">)</span><span class="token punctuation">{</span>
+        <span class="token comment" spellcheck="true">// ...</span>
+    <span class="token punctuation">}</span>
+<span class="token punctuation">}</span>
+</code></pre>
 <h2 id="二、几种常用的代理模式"><a href="#二、几种常用的代理模式" class="headerlink" title="二、几种常用的代理模式"></a>二、几种常用的代理模式</h2><ol>
 <li>远程代理 - Remote Proxy<ol>
 <li>为一个位于不同的地址空间的对象提供一个本地的代理对象</li>
@@ -474,7 +496,84 @@
 </ol>
 </li>
 </ol>
-<h2 id="三、完整实现"><a href="#三、完整实现" class="headerlink" title="三、完整实现"></a>三、完整实现</h2><figure class="highlight java"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br><span class="line">14</span><br><span class="line">15</span><br><span class="line">16</span><br><span class="line">17</span><br><span class="line">18</span><br><span class="line">19</span><br><span class="line">20</span><br><span class="line">21</span><br><span class="line">22</span><br><span class="line">23</span><br><span class="line">24</span><br><span class="line">25</span><br><span class="line">26</span><br><span class="line">27</span><br><span class="line">28</span><br><span class="line">29</span><br><span class="line">30</span><br><span class="line">31</span><br><span class="line">32</span><br><span class="line">33</span><br><span class="line">34</span><br><span class="line">35</span><br><span class="line">36</span><br><span class="line">37</span><br><span class="line">38</span><br><span class="line">39</span><br><span class="line">40</span><br><span class="line">41</span><br><span class="line">42</span><br><span class="line">43</span><br><span class="line">44</span><br><span class="line">45</span><br><span class="line">46</span><br><span class="line">47</span><br><span class="line">48</span><br><span class="line">49</span><br><span class="line">50</span><br><span class="line">51</span><br><span class="line">52</span><br><span class="line">53</span><br><span class="line">54</span><br><span class="line">55</span><br><span class="line">56</span><br><span class="line">57</span><br><span class="line">58</span><br><span class="line">59</span><br><span class="line">60</span><br><span class="line">61</span><br><span class="line">62</span><br><span class="line">63</span><br><span class="line">64</span><br><span class="line">65</span><br><span class="line">66</span><br><span class="line">67</span><br><span class="line">68</span><br><span class="line">69</span><br><span class="line">70</span><br><span class="line">71</span><br><span class="line">72</span><br><span class="line">73</span><br><span class="line">74</span><br><span class="line">75</span><br><span class="line">76</span><br><span class="line">77</span><br></pre></td><td class="code"><pre><span class="line"><span class="comment">/**</span></span><br><span class="line"><span class="comment"> * 代理模式</span></span><br><span class="line"><span class="comment"> */</span></span><br><span class="line"><span class="comment">// 数据库验证类 - 业务类</span></span><br><span class="line"><span class="class"><span class="keyword">class</span> <span class="title">AccessValidator</span> </span>&#123;</span><br><span class="line">    <span class="function"><span class="keyword">public</span> Boolean <span class="title">validate</span><span class="params">(String userId)</span> </span>&#123;</span><br><span class="line">        System.out.println(<span class="string">"在数据库中验证用户:"</span> + userId + <span class="string">"，是否是合法用户？"</span>);</span><br><span class="line">        <span class="keyword">if</span> (userId.contains(<span class="string">"aa"</span>)) &#123;</span><br><span class="line">            System.out.println(<span class="string">"验证通过！"</span>);</span><br><span class="line">            <span class="keyword">return</span> <span class="keyword">true</span>;</span><br><span class="line">        &#125; <span class="keyword">else</span> &#123;</span><br><span class="line">            System.out.println(<span class="string">"验证失败！"</span>);</span><br><span class="line">            <span class="keyword">return</span> <span class="keyword">false</span>;</span><br><span class="line">        &#125;</span><br><span class="line">    &#125;</span><br><span class="line">&#125;</span><br><span class="line"></span><br><span class="line"><span class="comment">// 日志记录类 - 业务类</span></span><br><span class="line"><span class="class"><span class="keyword">class</span> <span class="title">Logger</span> </span>&#123;</span><br><span class="line">    <span class="function"><span class="keyword">public</span> <span class="keyword">void</span> <span class="title">log</span><span class="params">(String userId)</span> </span>&#123;</span><br><span class="line">        System.out.println(<span class="string">"记录用户 "</span> + userId + <span class="string">" 登录日志"</span>);</span><br><span class="line">    &#125;</span><br><span class="line">&#125;</span><br><span class="line"></span><br><span class="line"><span class="comment">// 抽象查询类 - 抽象主题角色</span></span><br><span class="line"><span class="class"><span class="keyword">interface</span> <span class="title">Searcher</span> </span>&#123;</span><br><span class="line">    <span class="function">String <span class="title">doSearch</span><span class="params">(String userId, String keyword)</span></span>;</span><br><span class="line">&#125;</span><br><span class="line"></span><br><span class="line"><span class="comment">// 具体查询类 - 真实主题角色</span></span><br><span class="line"><span class="class"><span class="keyword">class</span> <span class="title">RealSearcher</span> <span class="keyword">implements</span> <span class="title">Searcher</span> </span>&#123;</span><br><span class="line">    <span class="meta">@Override</span></span><br><span class="line">    <span class="function"><span class="keyword">public</span> String <span class="title">doSearch</span><span class="params">(String userId, String keyword)</span> </span>&#123;</span><br><span class="line">        System.out.println(<span class="string">"用户 "</span> + userId + <span class="string">" 使用关键词 "</span> + keyword + <span class="string">" 进行查询"</span>);</span><br><span class="line">        <span class="keyword">return</span> <span class="string">"查询到的具体内容"</span>;</span><br><span class="line">    &#125;</span><br><span class="line">&#125;</span><br><span class="line"></span><br><span class="line"><span class="comment">// 代理查询类 - 代理主题角色，维持对业务类、真实主题角色对象的引用</span></span><br><span class="line"><span class="class"><span class="keyword">class</span> <span class="title">ProxySearcher</span> <span class="keyword">implements</span> <span class="title">Searcher</span> </span>&#123;</span><br><span class="line">    <span class="comment">// 维持一个对真实主题的引用</span></span><br><span class="line">    <span class="keyword">private</span> RealSearcher searcher = <span class="keyword">new</span> RealSearcher();</span><br><span class="line"></span><br><span class="line">    <span class="comment">// 业务类</span></span><br><span class="line">    <span class="keyword">private</span> AccessValidator validator = <span class="keyword">new</span> AccessValidator();</span><br><span class="line">    <span class="keyword">private</span> Logger logger = <span class="keyword">new</span> Logger();</span><br><span class="line"></span><br><span class="line">    <span class="meta">@Override</span></span><br><span class="line">    <span class="function"><span class="keyword">public</span> String <span class="title">doSearch</span><span class="params">(String userId, String keyword)</span> </span>&#123;</span><br><span class="line">        <span class="comment">// 如果身份验证成功，则继续执行</span></span><br><span class="line">        <span class="keyword">if</span> (<span class="keyword">this</span>.validate(userId)) &#123;</span><br><span class="line">            <span class="comment">// 调用真实主题对象的查询方法</span></span><br><span class="line">            <span class="keyword">final</span> String result = searcher.doSearch(userId, keyword);</span><br><span class="line">            <span class="comment">// 记录查询日志</span></span><br><span class="line">            <span class="keyword">this</span>.logger(userId);</span><br><span class="line">            <span class="comment">// 返回查询结果</span></span><br><span class="line">            <span class="keyword">return</span> result;</span><br><span class="line">        &#125;</span><br><span class="line">        <span class="keyword">return</span> <span class="keyword">null</span>;</span><br><span class="line">    &#125;</span><br><span class="line"></span><br><span class="line">    <span class="function"><span class="keyword">public</span> <span class="keyword">boolean</span> <span class="title">validate</span><span class="params">(String userId)</span> </span>&#123;</span><br><span class="line">        <span class="keyword">return</span> validator.validate(userId);</span><br><span class="line">    &#125;</span><br><span class="line"></span><br><span class="line">    <span class="function"><span class="keyword">public</span> <span class="keyword">void</span> <span class="title">logger</span><span class="params">(String userId)</span> </span>&#123;</span><br><span class="line">        logger.log(userId);</span><br><span class="line">    &#125;</span><br><span class="line">&#125;</span><br><span class="line"></span><br><span class="line"><span class="keyword">public</span> <span class="class"><span class="keyword">class</span> <span class="title">ProxyPattern</span> </span>&#123;</span><br><span class="line">    <span class="function"><span class="keyword">public</span> <span class="keyword">static</span> <span class="keyword">void</span> <span class="title">main</span><span class="params">(String[] args)</span> </span>&#123;</span><br><span class="line">        <span class="keyword">final</span> ProxySearcher searcher = <span class="keyword">new</span> ProxySearcher();</span><br><span class="line">        <span class="keyword">final</span> String search = searcher.doSearch(<span class="string">"aa张三"</span>, <span class="string">"男士内衣"</span>);</span><br><span class="line">        System.out.println(<span class="string">"查询结果："</span>+search);</span><br><span class="line">    &#125;</span><br><span class="line">&#125;</span><br></pre></td></tr></table></figure>
+<h2 id="三、完整实现"><a href="#三、完整实现" class="headerlink" title="三、完整实现"></a>三、完整实现</h2><pre class=" language-java"><code class="language-java"><span class="token comment" spellcheck="true">/**
+ * 代理模式
+ */</span>
+<span class="token comment" spellcheck="true">// 数据库验证类 - 业务类</span>
+<span class="token keyword">class</span> <span class="token class-name">AccessValidator</span> <span class="token punctuation">{</span>
+    <span class="token keyword">public</span> Boolean <span class="token function">validate</span><span class="token punctuation">(</span>String userId<span class="token punctuation">)</span> <span class="token punctuation">{</span>
+        System<span class="token punctuation">.</span>out<span class="token punctuation">.</span><span class="token function">println</span><span class="token punctuation">(</span><span class="token string">"在数据库中验证用户:"</span> <span class="token operator">+</span> userId <span class="token operator">+</span> <span class="token string">"，是否是合法用户？"</span><span class="token punctuation">)</span><span class="token punctuation">;</span>
+        <span class="token keyword">if</span> <span class="token punctuation">(</span>userId<span class="token punctuation">.</span><span class="token function">contains</span><span class="token punctuation">(</span><span class="token string">"aa"</span><span class="token punctuation">)</span><span class="token punctuation">)</span> <span class="token punctuation">{</span>
+            System<span class="token punctuation">.</span>out<span class="token punctuation">.</span><span class="token function">println</span><span class="token punctuation">(</span><span class="token string">"验证通过！"</span><span class="token punctuation">)</span><span class="token punctuation">;</span>
+            <span class="token keyword">return</span> <span class="token boolean">true</span><span class="token punctuation">;</span>
+        <span class="token punctuation">}</span> <span class="token keyword">else</span> <span class="token punctuation">{</span>
+            System<span class="token punctuation">.</span>out<span class="token punctuation">.</span><span class="token function">println</span><span class="token punctuation">(</span><span class="token string">"验证失败！"</span><span class="token punctuation">)</span><span class="token punctuation">;</span>
+            <span class="token keyword">return</span> <span class="token boolean">false</span><span class="token punctuation">;</span>
+        <span class="token punctuation">}</span>
+    <span class="token punctuation">}</span>
+<span class="token punctuation">}</span>
+
+<span class="token comment" spellcheck="true">// 日志记录类 - 业务类</span>
+<span class="token keyword">class</span> <span class="token class-name">Logger</span> <span class="token punctuation">{</span>
+    <span class="token keyword">public</span> <span class="token keyword">void</span> <span class="token function">log</span><span class="token punctuation">(</span>String userId<span class="token punctuation">)</span> <span class="token punctuation">{</span>
+        System<span class="token punctuation">.</span>out<span class="token punctuation">.</span><span class="token function">println</span><span class="token punctuation">(</span><span class="token string">"记录用户 "</span> <span class="token operator">+</span> userId <span class="token operator">+</span> <span class="token string">" 登录日志"</span><span class="token punctuation">)</span><span class="token punctuation">;</span>
+    <span class="token punctuation">}</span>
+<span class="token punctuation">}</span>
+
+<span class="token comment" spellcheck="true">// 抽象查询类 - 抽象主题角色</span>
+<span class="token keyword">interface</span> <span class="token class-name">Searcher</span> <span class="token punctuation">{</span>
+    String <span class="token function">doSearch</span><span class="token punctuation">(</span>String userId<span class="token punctuation">,</span> String keyword<span class="token punctuation">)</span><span class="token punctuation">;</span>
+<span class="token punctuation">}</span>
+
+<span class="token comment" spellcheck="true">// 具体查询类 - 真实主题角色</span>
+<span class="token keyword">class</span> <span class="token class-name">RealSearcher</span> <span class="token keyword">implements</span> <span class="token class-name">Searcher</span> <span class="token punctuation">{</span>
+    <span class="token annotation punctuation">@Override</span>
+    <span class="token keyword">public</span> String <span class="token function">doSearch</span><span class="token punctuation">(</span>String userId<span class="token punctuation">,</span> String keyword<span class="token punctuation">)</span> <span class="token punctuation">{</span>
+        System<span class="token punctuation">.</span>out<span class="token punctuation">.</span><span class="token function">println</span><span class="token punctuation">(</span><span class="token string">"用户 "</span> <span class="token operator">+</span> userId <span class="token operator">+</span> <span class="token string">" 使用关键词 "</span> <span class="token operator">+</span> keyword <span class="token operator">+</span> <span class="token string">" 进行查询"</span><span class="token punctuation">)</span><span class="token punctuation">;</span>
+        <span class="token keyword">return</span> <span class="token string">"查询到的具体内容"</span><span class="token punctuation">;</span>
+    <span class="token punctuation">}</span>
+<span class="token punctuation">}</span>
+
+<span class="token comment" spellcheck="true">// 代理查询类 - 代理主题角色，维持对业务类、真实主题角色对象的引用</span>
+<span class="token keyword">class</span> <span class="token class-name">ProxySearcher</span> <span class="token keyword">implements</span> <span class="token class-name">Searcher</span> <span class="token punctuation">{</span>
+    <span class="token comment" spellcheck="true">// 维持一个对真实主题的引用</span>
+    <span class="token keyword">private</span> RealSearcher searcher <span class="token operator">=</span> <span class="token keyword">new</span> <span class="token class-name">RealSearcher</span><span class="token punctuation">(</span><span class="token punctuation">)</span><span class="token punctuation">;</span>
+
+    <span class="token comment" spellcheck="true">// 业务类</span>
+    <span class="token keyword">private</span> AccessValidator validator <span class="token operator">=</span> <span class="token keyword">new</span> <span class="token class-name">AccessValidator</span><span class="token punctuation">(</span><span class="token punctuation">)</span><span class="token punctuation">;</span>
+    <span class="token keyword">private</span> Logger logger <span class="token operator">=</span> <span class="token keyword">new</span> <span class="token class-name">Logger</span><span class="token punctuation">(</span><span class="token punctuation">)</span><span class="token punctuation">;</span>
+
+    <span class="token annotation punctuation">@Override</span>
+    <span class="token keyword">public</span> String <span class="token function">doSearch</span><span class="token punctuation">(</span>String userId<span class="token punctuation">,</span> String keyword<span class="token punctuation">)</span> <span class="token punctuation">{</span>
+        <span class="token comment" spellcheck="true">// 如果身份验证成功，则继续执行</span>
+        <span class="token keyword">if</span> <span class="token punctuation">(</span><span class="token keyword">this</span><span class="token punctuation">.</span><span class="token function">validate</span><span class="token punctuation">(</span>userId<span class="token punctuation">)</span><span class="token punctuation">)</span> <span class="token punctuation">{</span>
+            <span class="token comment" spellcheck="true">// 调用真实主题对象的查询方法</span>
+            <span class="token keyword">final</span> String result <span class="token operator">=</span> searcher<span class="token punctuation">.</span><span class="token function">doSearch</span><span class="token punctuation">(</span>userId<span class="token punctuation">,</span> keyword<span class="token punctuation">)</span><span class="token punctuation">;</span>
+            <span class="token comment" spellcheck="true">// 记录查询日志</span>
+            <span class="token keyword">this</span><span class="token punctuation">.</span><span class="token function">logger</span><span class="token punctuation">(</span>userId<span class="token punctuation">)</span><span class="token punctuation">;</span>
+            <span class="token comment" spellcheck="true">// 返回查询结果</span>
+            <span class="token keyword">return</span> result<span class="token punctuation">;</span>
+        <span class="token punctuation">}</span>
+        <span class="token keyword">return</span> null<span class="token punctuation">;</span>
+    <span class="token punctuation">}</span>
+
+    <span class="token keyword">public</span> <span class="token keyword">boolean</span> <span class="token function">validate</span><span class="token punctuation">(</span>String userId<span class="token punctuation">)</span> <span class="token punctuation">{</span>
+        <span class="token keyword">return</span> validator<span class="token punctuation">.</span><span class="token function">validate</span><span class="token punctuation">(</span>userId<span class="token punctuation">)</span><span class="token punctuation">;</span>
+    <span class="token punctuation">}</span>
+
+    <span class="token keyword">public</span> <span class="token keyword">void</span> <span class="token function">logger</span><span class="token punctuation">(</span>String userId<span class="token punctuation">)</span> <span class="token punctuation">{</span>
+        logger<span class="token punctuation">.</span><span class="token function">log</span><span class="token punctuation">(</span>userId<span class="token punctuation">)</span><span class="token punctuation">;</span>
+    <span class="token punctuation">}</span>
+<span class="token punctuation">}</span>
+
+<span class="token keyword">public</span> <span class="token keyword">class</span> <span class="token class-name">ProxyPattern</span> <span class="token punctuation">{</span>
+    <span class="token keyword">public</span> <span class="token keyword">static</span> <span class="token keyword">void</span> <span class="token function">main</span><span class="token punctuation">(</span>String<span class="token punctuation">[</span><span class="token punctuation">]</span> args<span class="token punctuation">)</span> <span class="token punctuation">{</span>
+        <span class="token keyword">final</span> ProxySearcher searcher <span class="token operator">=</span> <span class="token keyword">new</span> <span class="token class-name">ProxySearcher</span><span class="token punctuation">(</span><span class="token punctuation">)</span><span class="token punctuation">;</span>
+        <span class="token keyword">final</span> String search <span class="token operator">=</span> searcher<span class="token punctuation">.</span><span class="token function">doSearch</span><span class="token punctuation">(</span><span class="token string">"aa张三"</span><span class="token punctuation">,</span> <span class="token string">"男士内衣"</span><span class="token punctuation">)</span><span class="token punctuation">;</span>
+        System<span class="token punctuation">.</span>out<span class="token punctuation">.</span><span class="token function">println</span><span class="token punctuation">(</span><span class="token string">"查询结果："</span><span class="token operator">+</span>search<span class="token punctuation">)</span><span class="token punctuation">;</span>
+    <span class="token punctuation">}</span>
+<span class="token punctuation">}</span>
+</code></pre>
 <p>执行结果如下：</p>
 <p><img src="https://i.loli.net/2019/07/12/5d284f8188eaa42868.png" alt="执行结果"></p>
 <h2 id="四、总结"><a href="#四、总结" class="headerlink" title="四、总结"></a>四、总结</h2><h3 id="优点"><a href="#优点" class="headerlink" title="优点"></a>优点</h3><p>代理模式各类型的共同优点：</p>
@@ -772,7 +871,14 @@
                 <div class="card-content article-content">
                     <div class="summary block-with-text">
                         
-                            123456789101112131415161718192021222324252627282930313233343536373839404142434445464748495051/** * 验证回文字符串 * 给定一个字符串，验证它
+                            /**
+ * 验证回文字符串
+ * 给定一个字符串，验证它是否是回文串，只考虑字母和数字字符，可以忽略字母的大小写。
+ * &lt;p>
+ * 说明：本题中，我们将空字符串定义为有效的回文串。
+ * &lt;p>
+ * 示例 1:
+ * &
                         
                     </div>
                     <div class="publish-info">
@@ -935,6 +1041,10 @@
     </a>
 
 
+
+    <a href="/atom.xml" class="tooltipped" target="_blank" data-tooltip="RSS 订阅" data-position="top" data-delay="50">
+        <i class="fa fa-rss"></i>
+    </a>
 </div>
     </div>
 </footer>

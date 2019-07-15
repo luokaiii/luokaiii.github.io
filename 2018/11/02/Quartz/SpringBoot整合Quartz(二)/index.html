@@ -29,7 +29,7 @@
     </style>
 
     <script src="/libs/jquery/jquery-2.2.0.min.js"></script>
-</head>
+<link rel="stylesheet" href="/css/prism-tomorrow.css" type="text/css"></head>
 
 
 <body>
@@ -424,10 +424,301 @@
 <p><img src="https://upload-images.jianshu.io/upload_images/13603359-55f97ba1d65bc00f.png" alt="Quartz"></p>
 <a id="more"></a>
 <h2 id="1-修改quartz-properties配置文件"><a href="#1-修改quartz-properties配置文件" class="headerlink" title="1.修改quartz.properties配置文件"></a>1.修改quartz.properties配置文件</h2><p>主要是将存储方式从 <code>RAMJobStore</code> 改为 <code>JobStoreTX</code>。<br>从名称能看出，默认的 <code>RAMJobStore</code> 是存储在内存中的，当项目异常重启后，任务就随内存消失了。</p>
-<figure class="highlight plain"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br><span class="line">14</span><br><span class="line">15</span><br><span class="line">16</span><br><span class="line">17</span><br><span class="line">18</span><br><span class="line">19</span><br><span class="line">20</span><br><span class="line">21</span><br><span class="line">22</span><br><span class="line">23</span><br><span class="line">24</span><br><span class="line">25</span><br><span class="line">26</span><br><span class="line">27</span><br><span class="line">28</span><br><span class="line">29</span><br><span class="line">30</span><br><span class="line">31</span><br><span class="line">32</span><br><span class="line">33</span><br><span class="line">34</span><br><span class="line">35</span><br><span class="line">36</span><br><span class="line">37</span><br><span class="line">38</span><br><span class="line">39</span><br><span class="line">40</span><br></pre></td><td class="code"><pre><span class="line"># 固定前缀org.quartz</span><br><span class="line"># 主要分为scheduler、threadPool、jobStore、plugin等部分</span><br><span class="line">#</span><br><span class="line">#</span><br><span class="line">org.quartz.scheduler.instanceName = DefaultQuartzScheduler</span><br><span class="line">org.quartz.scheduler.rmi.export = false</span><br><span class="line">org.quartz.scheduler.rmi.proxy = false</span><br><span class="line">org.quartz.scheduler.wrapJobExecutionInUserTransaction = false</span><br><span class="line"></span><br><span class="line"># 实例化ThreadPool时，使用的线程类为SimpleThreadPool</span><br><span class="line">org.quartz.threadPool.class = org.quartz.simpl.SimpleThreadPool</span><br><span class="line"></span><br><span class="line"># threadCount和threadPriority将以setter的形式注入ThreadPool实例</span><br><span class="line"># 并发个数</span><br><span class="line">org.quartz.threadPool.threadCount = 5</span><br><span class="line"># 优先级</span><br><span class="line">org.quartz.threadPool.threadPriority = 5</span><br><span class="line">org.quartz.threadPool.threadsInheritContextClassLoaderOfInitializingThread = true</span><br><span class="line"></span><br><span class="line">org.quartz.jobStore.misfireThreshold = 5000</span><br><span class="line"></span><br><span class="line"># 默认存储在内存中</span><br><span class="line">#org.quartz.jobStore.class = org.quartz.simpl.RAMJobStore</span><br><span class="line"></span><br><span class="line">#持久化</span><br><span class="line">org.quartz.jobStore.class = org.quartz.impl.jdbcjobstore.JobStoreTX</span><br><span class="line"></span><br><span class="line">org.quartz.jobStore.tablePrefix = QRTZ_</span><br><span class="line"></span><br><span class="line">org.quartz.jobStore.dataSource = qzDS</span><br><span class="line"></span><br><span class="line">org.quartz.dataSource.qzDS.driver = com.mysql.jdbc.Driver</span><br><span class="line"></span><br><span class="line">org.quartz.dataSource.qzDS.URL = jdbc:mysql://localhost:3306/study?useUnicode=true&amp;characterEncoding=UTF-8</span><br><span class="line"></span><br><span class="line">org.quartz.dataSource.qzDS.user = root</span><br><span class="line"></span><br><span class="line">org.quartz.dataSource.qzDS.password = password</span><br><span class="line"></span><br><span class="line">org.quartz.dataSource.qzDS.maxConnections = 10</span><br></pre></td></tr></table></figure>
-<h2 id="2-导入数据库表"><a href="#2-导入数据库表" class="headerlink" title="2.导入数据库表"></a>2.导入数据库表</h2><figure class="highlight plain"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br><span class="line">14</span><br><span class="line">15</span><br><span class="line">16</span><br><span class="line">17</span><br><span class="line">18</span><br><span class="line">19</span><br><span class="line">20</span><br><span class="line">21</span><br><span class="line">22</span><br><span class="line">23</span><br><span class="line">24</span><br><span class="line">25</span><br><span class="line">26</span><br><span class="line">27</span><br><span class="line">28</span><br><span class="line">29</span><br><span class="line">30</span><br><span class="line">31</span><br><span class="line">32</span><br><span class="line">33</span><br><span class="line">34</span><br><span class="line">35</span><br><span class="line">36</span><br><span class="line">37</span><br><span class="line">38</span><br><span class="line">39</span><br><span class="line">40</span><br><span class="line">41</span><br><span class="line">42</span><br><span class="line">43</span><br><span class="line">44</span><br><span class="line">45</span><br><span class="line">46</span><br><span class="line">47</span><br><span class="line">48</span><br><span class="line">49</span><br><span class="line">50</span><br><span class="line">51</span><br><span class="line">52</span><br><span class="line">53</span><br><span class="line">54</span><br><span class="line">55</span><br><span class="line">56</span><br><span class="line">57</span><br><span class="line">58</span><br><span class="line">59</span><br><span class="line">60</span><br><span class="line">61</span><br><span class="line">62</span><br><span class="line">63</span><br><span class="line">64</span><br><span class="line">65</span><br><span class="line">66</span><br><span class="line">67</span><br><span class="line">68</span><br><span class="line">69</span><br><span class="line">70</span><br><span class="line">71</span><br><span class="line">72</span><br><span class="line">73</span><br><span class="line">74</span><br><span class="line">75</span><br><span class="line">76</span><br><span class="line">77</span><br><span class="line">78</span><br><span class="line">79</span><br><span class="line">80</span><br><span class="line">81</span><br><span class="line">82</span><br><span class="line">83</span><br><span class="line">84</span><br><span class="line">85</span><br><span class="line">86</span><br><span class="line">87</span><br><span class="line">88</span><br><span class="line">89</span><br><span class="line">90</span><br><span class="line">91</span><br><span class="line">92</span><br><span class="line">93</span><br><span class="line">94</span><br><span class="line">95</span><br><span class="line">96</span><br><span class="line">97</span><br><span class="line">98</span><br><span class="line">99</span><br><span class="line">100</span><br><span class="line">101</span><br><span class="line">102</span><br><span class="line">103</span><br><span class="line">104</span><br><span class="line">105</span><br><span class="line">106</span><br><span class="line">107</span><br><span class="line">108</span><br><span class="line">109</span><br><span class="line">110</span><br><span class="line">111</span><br><span class="line">112</span><br><span class="line">113</span><br><span class="line">114</span><br><span class="line">115</span><br><span class="line">116</span><br><span class="line">117</span><br><span class="line">118</span><br><span class="line">119</span><br><span class="line">120</span><br><span class="line">121</span><br><span class="line">122</span><br><span class="line">123</span><br><span class="line">124</span><br><span class="line">125</span><br><span class="line">126</span><br><span class="line">127</span><br><span class="line">128</span><br><span class="line">129</span><br><span class="line">130</span><br><span class="line">131</span><br><span class="line">132</span><br><span class="line">133</span><br><span class="line">134</span><br><span class="line">135</span><br><span class="line">136</span><br><span class="line">137</span><br><span class="line">138</span><br><span class="line">139</span><br><span class="line">140</span><br><span class="line">141</span><br><span class="line">142</span><br><span class="line">143</span><br><span class="line">144</span><br><span class="line">145</span><br><span class="line">146</span><br><span class="line">147</span><br><span class="line">148</span><br><span class="line">149</span><br><span class="line">150</span><br><span class="line">151</span><br><span class="line">152</span><br><span class="line">153</span><br><span class="line">154</span><br><span class="line">155</span><br><span class="line">156</span><br><span class="line">157</span><br><span class="line">158</span><br><span class="line">159</span><br><span class="line">160</span><br><span class="line">161</span><br><span class="line">162</span><br><span class="line">163</span><br><span class="line">164</span><br><span class="line">165</span><br><span class="line">166</span><br><span class="line">167</span><br><span class="line">168</span><br><span class="line">169</span><br><span class="line">170</span><br><span class="line">171</span><br><span class="line">172</span><br><span class="line">173</span><br><span class="line">174</span><br><span class="line">175</span><br><span class="line">176</span><br><span class="line">177</span><br><span class="line">178</span><br><span class="line">179</span><br></pre></td><td class="code"><pre><span class="line">#  </span><br><span class="line"># In your Quartz properties file, you&apos;ll need to set</span><br><span class="line"># org.quartz.jobStore.driverDelegateClass = org.quartz.impl.jdbcjobstore.StdJDBCDelegate  </span><br><span class="line">#  </span><br><span class="line">#  </span><br><span class="line"># By: Ron Cordell - roncordell  </span><br><span class="line">#  I didn&apos;t see this anywhere, so I thought I&apos;d post it here. This is the script from Quartz to create the tables in a MySQL database, modified to use INNODB instead of MYISAM.  </span><br><span class="line">  </span><br><span class="line">DROP TABLE IF EXISTS QRTZ_FIRED_TRIGGERS;  </span><br><span class="line">DROP TABLE IF EXISTS QRTZ_PAUSED_TRIGGER_GRPS;  </span><br><span class="line">DROP TABLE IF EXISTS QRTZ_SCHEDULER_STATE;  </span><br><span class="line">DROP TABLE IF EXISTS QRTZ_LOCKS;  </span><br><span class="line">DROP TABLE IF EXISTS QRTZ_SIMPLE_TRIGGERS;  </span><br><span class="line">DROP TABLE IF EXISTS QRTZ_SIMPROP_TRIGGERS;  </span><br><span class="line">DROP TABLE IF EXISTS QRTZ_CRON_TRIGGERS;  </span><br><span class="line">DROP TABLE IF EXISTS QRTZ_BLOB_TRIGGERS;  </span><br><span class="line">DROP TABLE IF EXISTS QRTZ_TRIGGERS;  </span><br><span class="line">DROP TABLE IF EXISTS QRTZ_JOB_DETAILS;  </span><br><span class="line">DROP TABLE IF EXISTS QRTZ_CALENDARS;  </span><br><span class="line">  </span><br><span class="line">CREATE TABLE QRTZ_JOB_DETAILS(  </span><br><span class="line">SCHED_NAME VARCHAR(120) NOT NULL,  </span><br><span class="line">JOB_NAME VARCHAR(200) NOT NULL,  </span><br><span class="line">JOB_GROUP VARCHAR(200) NOT NULL,  </span><br><span class="line">DESCRIPTION VARCHAR(250) NULL,  </span><br><span class="line">JOB_CLASS_NAME VARCHAR(250) NOT NULL,  </span><br><span class="line">IS_DURABLE VARCHAR(1) NOT NULL,  </span><br><span class="line">IS_NONCONCURRENT VARCHAR(1) NOT NULL,  </span><br><span class="line">IS_UPDATE_DATA VARCHAR(1) NOT NULL,  </span><br><span class="line">REQUESTS_RECOVERY VARCHAR(1) NOT NULL,  </span><br><span class="line">JOB_DATA BLOB NULL,  </span><br><span class="line">PRIMARY KEY (SCHED_NAME,JOB_NAME,JOB_GROUP))  </span><br><span class="line">ENGINE=InnoDB;  </span><br><span class="line">  </span><br><span class="line">CREATE TABLE QRTZ_TRIGGERS (  </span><br><span class="line">SCHED_NAME VARCHAR(120) NOT NULL,  </span><br><span class="line">TRIGGER_NAME VARCHAR(200) NOT NULL,  </span><br><span class="line">TRIGGER_GROUP VARCHAR(200) NOT NULL,  </span><br><span class="line">JOB_NAME VARCHAR(200) NOT NULL,  </span><br><span class="line">JOB_GROUP VARCHAR(200) NOT NULL,  </span><br><span class="line">DESCRIPTION VARCHAR(250) NULL,  </span><br><span class="line">NEXT_FIRE_TIME BIGINT(13) NULL,  </span><br><span class="line">PREV_FIRE_TIME BIGINT(13) NULL,  </span><br><span class="line">PRIORITY INTEGER NULL,  </span><br><span class="line">TRIGGER_STATE VARCHAR(16) NOT NULL,  </span><br><span class="line">TRIGGER_TYPE VARCHAR(8) NOT NULL,  </span><br><span class="line">START_TIME BIGINT(13) NOT NULL,  </span><br><span class="line">END_TIME BIGINT(13) NULL,  </span><br><span class="line">CALENDAR_NAME VARCHAR(200) NULL,  </span><br><span class="line">MISFIRE_INSTR SMALLINT(2) NULL,  </span><br><span class="line">JOB_DATA BLOB NULL,  </span><br><span class="line">PRIMARY KEY (SCHED_NAME,TRIGGER_NAME,TRIGGER_GROUP),  </span><br><span class="line">FOREIGN KEY (SCHED_NAME,JOB_NAME,JOB_GROUP)  </span><br><span class="line">REFERENCES QRTZ_JOB_DETAILS(SCHED_NAME,JOB_NAME,JOB_GROUP))  </span><br><span class="line">ENGINE=InnoDB;  </span><br><span class="line">  </span><br><span class="line">CREATE TABLE QRTZ_SIMPLE_TRIGGERS (  </span><br><span class="line">SCHED_NAME VARCHAR(120) NOT NULL,  </span><br><span class="line">TRIGGER_NAME VARCHAR(200) NOT NULL,  </span><br><span class="line">TRIGGER_GROUP VARCHAR(200) NOT NULL,  </span><br><span class="line">REPEAT_COUNT BIGINT(7) NOT NULL,  </span><br><span class="line">REPEAT_INTERVAL BIGINT(12) NOT NULL,  </span><br><span class="line">TIMES_TRIGGERED BIGINT(10) NOT NULL,  </span><br><span class="line">PRIMARY KEY (SCHED_NAME,TRIGGER_NAME,TRIGGER_GROUP),  </span><br><span class="line">FOREIGN KEY (SCHED_NAME,TRIGGER_NAME,TRIGGER_GROUP)  </span><br><span class="line">REFERENCES QRTZ_TRIGGERS(SCHED_NAME,TRIGGER_NAME,TRIGGER_GROUP))  </span><br><span class="line">ENGINE=InnoDB;  </span><br><span class="line">  </span><br><span class="line">CREATE TABLE QRTZ_CRON_TRIGGERS (  </span><br><span class="line">SCHED_NAME VARCHAR(120) NOT NULL,  </span><br><span class="line">TRIGGER_NAME VARCHAR(200) NOT NULL,  </span><br><span class="line">TRIGGER_GROUP VARCHAR(200) NOT NULL,  </span><br><span class="line">CRON_EXPRESSION VARCHAR(120) NOT NULL,  </span><br><span class="line">TIME_ZONE_ID VARCHAR(80),  </span><br><span class="line">PRIMARY KEY (SCHED_NAME,TRIGGER_NAME,TRIGGER_GROUP),  </span><br><span class="line">FOREIGN KEY (SCHED_NAME,TRIGGER_NAME,TRIGGER_GROUP)  </span><br><span class="line">REFERENCES QRTZ_TRIGGERS(SCHED_NAME,TRIGGER_NAME,TRIGGER_GROUP))  </span><br><span class="line">ENGINE=InnoDB;  </span><br><span class="line">  </span><br><span class="line">CREATE TABLE QRTZ_SIMPROP_TRIGGERS  </span><br><span class="line">  (</span><br><span class="line">    SCHED_NAME VARCHAR(120) NOT NULL,  </span><br><span class="line">    TRIGGER_NAME VARCHAR(200) NOT NULL,  </span><br><span class="line">    TRIGGER_GROUP VARCHAR(200) NOT NULL,  </span><br><span class="line">    STR_PROP_1 VARCHAR(512) NULL,  </span><br><span class="line">    STR_PROP_2 VARCHAR(512) NULL,  </span><br><span class="line">    STR_PROP_3 VARCHAR(512) NULL,  </span><br><span class="line">    INT_PROP_1 INT NULL,  </span><br><span class="line">    INT_PROP_2 INT NULL,  </span><br><span class="line">    LONG_PROP_1 BIGINT NULL,  </span><br><span class="line">    LONG_PROP_2 BIGINT NULL,  </span><br><span class="line">    DEC_PROP_1 NUMERIC(13,4) NULL,  </span><br><span class="line">    DEC_PROP_2 NUMERIC(13,4) NULL,  </span><br><span class="line">    BOOL_PROP_1 VARCHAR(1) NULL,  </span><br><span class="line">    BOOL_PROP_2 VARCHAR(1) NULL,  </span><br><span class="line">    PRIMARY KEY (SCHED_NAME,TRIGGER_NAME,TRIGGER_GROUP),  </span><br><span class="line">    FOREIGN KEY (SCHED_NAME,TRIGGER_NAME,TRIGGER_GROUP)   </span><br><span class="line">    REFERENCES QRTZ_TRIGGERS(SCHED_NAME,TRIGGER_NAME,TRIGGER_GROUP))  </span><br><span class="line">ENGINE=InnoDB;  </span><br><span class="line">  </span><br><span class="line">CREATE TABLE QRTZ_BLOB_TRIGGERS (  </span><br><span class="line">SCHED_NAME VARCHAR(120) NOT NULL,  </span><br><span class="line">TRIGGER_NAME VARCHAR(200) NOT NULL,  </span><br><span class="line">TRIGGER_GROUP VARCHAR(200) NOT NULL,  </span><br><span class="line">BLOB_DATA BLOB NULL,  </span><br><span class="line">PRIMARY KEY (SCHED_NAME,TRIGGER_NAME,TRIGGER_GROUP),  </span><br><span class="line">INDEX (SCHED_NAME,TRIGGER_NAME, TRIGGER_GROUP),  </span><br><span class="line">FOREIGN KEY (SCHED_NAME,TRIGGER_NAME,TRIGGER_GROUP)  </span><br><span class="line">REFERENCES QRTZ_TRIGGERS(SCHED_NAME,TRIGGER_NAME,TRIGGER_GROUP))  </span><br><span class="line">ENGINE=InnoDB;  </span><br><span class="line">  </span><br><span class="line">CREATE TABLE QRTZ_CALENDARS (  </span><br><span class="line">SCHED_NAME VARCHAR(120) NOT NULL,  </span><br><span class="line">CALENDAR_NAME VARCHAR(200) NOT NULL,  </span><br><span class="line">CALENDAR BLOB NOT NULL,  </span><br><span class="line">PRIMARY KEY (SCHED_NAME,CALENDAR_NAME))  </span><br><span class="line">ENGINE=InnoDB;  </span><br><span class="line">  </span><br><span class="line">CREATE TABLE QRTZ_PAUSED_TRIGGER_GRPS (  </span><br><span class="line">SCHED_NAME VARCHAR(120) NOT NULL,  </span><br><span class="line">TRIGGER_GROUP VARCHAR(200) NOT NULL,  </span><br><span class="line">PRIMARY KEY (SCHED_NAME,TRIGGER_GROUP))  </span><br><span class="line">ENGINE=InnoDB;  </span><br><span class="line">  </span><br><span class="line">CREATE TABLE QRTZ_FIRED_TRIGGERS (  </span><br><span class="line">SCHED_NAME VARCHAR(120) NOT NULL,  </span><br><span class="line">ENTRY_ID VARCHAR(95) NOT NULL,  </span><br><span class="line">TRIGGER_NAME VARCHAR(200) NOT NULL,  </span><br><span class="line">TRIGGER_GROUP VARCHAR(200) NOT NULL,  </span><br><span class="line">INSTANCE_NAME VARCHAR(200) NOT NULL,  </span><br><span class="line">FIRED_TIME BIGINT(13) NOT NULL,  </span><br><span class="line">SCHED_TIME BIGINT(13) NOT NULL,  </span><br><span class="line">PRIORITY INTEGER NOT NULL,  </span><br><span class="line">STATE VARCHAR(16) NOT NULL,  </span><br><span class="line">JOB_NAME VARCHAR(200) NULL,  </span><br><span class="line">JOB_GROUP VARCHAR(200) NULL,  </span><br><span class="line">IS_NONCONCURRENT VARCHAR(1) NULL,  </span><br><span class="line">REQUESTS_RECOVERY VARCHAR(1) NULL,  </span><br><span class="line">PRIMARY KEY (SCHED_NAME,ENTRY_ID))  </span><br><span class="line">ENGINE=InnoDB;  </span><br><span class="line">  </span><br><span class="line">CREATE TABLE QRTZ_SCHEDULER_STATE (  </span><br><span class="line">SCHED_NAME VARCHAR(120) NOT NULL,  </span><br><span class="line">INSTANCE_NAME VARCHAR(200) NOT NULL,  </span><br><span class="line">LAST_CHECKIN_TIME BIGINT(13) NOT NULL,  </span><br><span class="line">CHECKIN_INTERVAL BIGINT(13) NOT NULL,  </span><br><span class="line">PRIMARY KEY (SCHED_NAME,INSTANCE_NAME))  </span><br><span class="line">ENGINE=InnoDB;  </span><br><span class="line">  </span><br><span class="line">CREATE TABLE QRTZ_LOCKS (  </span><br><span class="line">SCHED_NAME VARCHAR(120) NOT NULL,  </span><br><span class="line">LOCK_NAME VARCHAR(40) NOT NULL,  </span><br><span class="line">PRIMARY KEY (SCHED_NAME,LOCK_NAME))  </span><br><span class="line">ENGINE=InnoDB;  </span><br><span class="line">  </span><br><span class="line">CREATE INDEX IDX_QRTZ_J_REQ_RECOVERY ON QRTZ_JOB_DETAILS(SCHED_NAME,REQUESTS_RECOVERY);  </span><br><span class="line">CREATE INDEX IDX_QRTZ_J_GRP ON QRTZ_JOB_DETAILS(SCHED_NAME,JOB_GROUP);  </span><br><span class="line">  </span><br><span class="line">CREATE INDEX IDX_QRTZ_T_J ON QRTZ_TRIGGERS(SCHED_NAME,JOB_NAME,JOB_GROUP);  </span><br><span class="line">CREATE INDEX IDX_QRTZ_T_JG ON QRTZ_TRIGGERS(SCHED_NAME,JOB_GROUP);  </span><br><span class="line">CREATE INDEX IDX_QRTZ_T_C ON QRTZ_TRIGGERS(SCHED_NAME,CALENDAR_NAME);  </span><br><span class="line">CREATE INDEX IDX_QRTZ_T_G ON QRTZ_TRIGGERS(SCHED_NAME,TRIGGER_GROUP);  </span><br><span class="line">CREATE INDEX IDX_QRTZ_T_STATE ON QRTZ_TRIGGERS(SCHED_NAME,TRIGGER_STATE);  </span><br><span class="line">CREATE INDEX IDX_QRTZ_T_N_STATE ON QRTZ_TRIGGERS(SCHED_NAME,TRIGGER_NAME,TRIGGER_GROUP,TRIGGER_STATE);  </span><br><span class="line">CREATE INDEX IDX_QRTZ_T_N_G_STATE ON QRTZ_TRIGGERS(SCHED_NAME,TRIGGER_GROUP,TRIGGER_STATE);  </span><br><span class="line">CREATE INDEX IDX_QRTZ_T_NEXT_FIRE_TIME ON QRTZ_TRIGGERS(SCHED_NAME,NEXT_FIRE_TIME);  </span><br><span class="line">CREATE INDEX IDX_QRTZ_T_NFT_ST ON QRTZ_TRIGGERS(SCHED_NAME,TRIGGER_STATE,NEXT_FIRE_TIME);  </span><br><span class="line">CREATE INDEX IDX_QRTZ_T_NFT_MISFIRE ON QRTZ_TRIGGERS(SCHED_NAME,MISFIRE_INSTR,NEXT_FIRE_TIME);  </span><br><span class="line">CREATE INDEX IDX_QRTZ_T_NFT_ST_MISFIRE ON QRTZ_TRIGGERS(SCHED_NAME,MISFIRE_INSTR,NEXT_FIRE_TIME,TRIGGER_STATE);  </span><br><span class="line">CREATE INDEX IDX_QRTZ_T_NFT_ST_MISFIRE_GRP ON QRTZ_TRIGGERS(SCHED_NAME,MISFIRE_INSTR,NEXT_FIRE_TIME,TRIGGER_GROUP,TRIGGER_STATE);  </span><br><span class="line">  </span><br><span class="line">CREATE INDEX IDX_QRTZ_FT_TRIG_INST_NAME ON QRTZ_FIRED_TRIGGERS(SCHED_NAME,INSTANCE_NAME);  </span><br><span class="line">CREATE INDEX IDX_QRTZ_FT_INST_JOB_REQ_RCVRY ON QRTZ_FIRED_TRIGGERS(SCHED_NAME,INSTANCE_NAME,REQUESTS_RECOVERY);  </span><br><span class="line">CREATE INDEX IDX_QRTZ_FT_J_G ON QRTZ_FIRED_TRIGGERS(SCHED_NAME,JOB_NAME,JOB_GROUP);  </span><br><span class="line">CREATE INDEX IDX_QRTZ_FT_JG ON QRTZ_FIRED_TRIGGERS(SCHED_NAME,JOB_GROUP);  </span><br><span class="line">CREATE INDEX IDX_QRTZ_FT_T_G ON QRTZ_FIRED_TRIGGERS(SCHED_NAME,TRIGGER_NAME,TRIGGER_GROUP);  </span><br><span class="line">CREATE INDEX IDX_QRTZ_FT_TG ON QRTZ_FIRED_TRIGGERS(SCHED_NAME,TRIGGER_GROUP);  </span><br><span class="line">  </span><br><span class="line">commit;</span><br></pre></td></tr></table></figure>
-<h2 id="3-QuartzConfig"><a href="#3-QuartzConfig" class="headerlink" title="3.QuartzConfig"></a>3.QuartzConfig</h2><figure class="highlight java"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br><span class="line">14</span><br><span class="line">15</span><br><span class="line">16</span><br><span class="line">17</span><br><span class="line">18</span><br><span class="line">19</span><br><span class="line">20</span><br><span class="line">21</span><br><span class="line">22</span><br><span class="line">23</span><br><span class="line">24</span><br><span class="line">25</span><br><span class="line">26</span><br><span class="line">27</span><br><span class="line">28</span><br><span class="line">29</span><br><span class="line">30</span><br><span class="line">31</span><br><span class="line">32</span><br><span class="line">33</span><br><span class="line">34</span><br><span class="line">35</span><br><span class="line">36</span><br></pre></td><td class="code"><pre><span class="line"><span class="meta">@Configuration</span></span><br><span class="line"><span class="meta">@EnableScheduling</span></span><br><span class="line"><span class="keyword">public</span> <span class="class"><span class="keyword">class</span> <span class="title">SchedulerConfig</span> </span>&#123;</span><br><span class="line"></span><br><span class="line">    <span class="meta">@Bean</span>(name = <span class="string">"SchedulerFactory"</span>)</span><br><span class="line">    <span class="function"><span class="keyword">public</span> SchedulerFactoryBean <span class="title">schedulerFactoryBean</span><span class="params">()</span> <span class="keyword">throws</span> IOException </span>&#123;</span><br><span class="line">        SchedulerFactoryBean factory = <span class="keyword">new</span> SchedulerFactoryBean();</span><br><span class="line">        factory.setQuartzProperties(quartzProperties());</span><br><span class="line">        <span class="keyword">return</span> factory;</span><br><span class="line">    &#125;</span><br><span class="line"></span><br><span class="line">    <span class="meta">@Bean</span></span><br><span class="line">    <span class="function"><span class="keyword">public</span> Properties <span class="title">quartzProperties</span><span class="params">()</span> <span class="keyword">throws</span> IOException </span>&#123;</span><br><span class="line">        PropertiesFactoryBean propertiesFactoryBean = <span class="keyword">new</span> PropertiesFactoryBean();</span><br><span class="line">        propertiesFactoryBean.setLocation(<span class="keyword">new</span> ClassPathResource(<span class="string">"/quartz.properties"</span>));</span><br><span class="line">        <span class="comment">//在quartz.properties中的属性被读取并注入后再初始化对象</span></span><br><span class="line">        propertiesFactoryBean.afterPropertiesSet();</span><br><span class="line">        <span class="keyword">return</span> propertiesFactoryBean.getObject();</span><br><span class="line">    &#125;</span><br><span class="line"></span><br><span class="line">    <span class="comment">/**</span></span><br><span class="line"><span class="comment">     * quartz初始化监听器</span></span><br><span class="line"><span class="comment">     */</span></span><br><span class="line">    <span class="meta">@Bean</span></span><br><span class="line">    <span class="function"><span class="keyword">public</span> QuartzInitializerListener <span class="title">executorListener</span><span class="params">()</span> </span>&#123;</span><br><span class="line">        <span class="keyword">return</span> <span class="keyword">new</span> QuartzInitializerListener();</span><br><span class="line">    &#125;</span><br><span class="line"></span><br><span class="line">    <span class="comment">/**</span></span><br><span class="line"><span class="comment">     * 通过SchedulerFactoryBean获取Scheduler的实例</span></span><br><span class="line"><span class="comment">     */</span></span><br><span class="line">    <span class="meta">@Bean</span>(name = <span class="string">"Scheduler"</span>)</span><br><span class="line">    <span class="function"><span class="keyword">public</span> Scheduler <span class="title">scheduler</span><span class="params">()</span> <span class="keyword">throws</span> IOException </span>&#123;</span><br><span class="line">        <span class="keyword">return</span> schedulerFactoryBean().getScheduler();</span><br><span class="line">    &#125;</span><br><span class="line">&#125;</span><br></pre></td></tr></table></figure>
-<h2 id="4-执行测试"><a href="#4-执行测试" class="headerlink" title="4.执行测试"></a>4.执行测试</h2><figure class="highlight java"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br><span class="line">14</span><br><span class="line">15</span><br><span class="line">16</span><br><span class="line">17</span><br><span class="line">18</span><br><span class="line">19</span><br><span class="line">20</span><br><span class="line">21</span><br><span class="line">22</span><br><span class="line">23</span><br><span class="line">24</span><br><span class="line">25</span><br><span class="line">26</span><br><span class="line">27</span><br><span class="line">28</span><br><span class="line">29</span><br><span class="line">30</span><br><span class="line">31</span><br><span class="line">32</span><br><span class="line">33</span><br><span class="line">34</span><br><span class="line">35</span><br></pre></td><td class="code"><pre><span class="line"><span class="meta">@SpringBootTest</span></span><br><span class="line"><span class="meta">@RunWith</span>(SpringRunner.class)</span><br><span class="line"><span class="keyword">public</span> <span class="class"><span class="keyword">class</span> <span class="title">QuartzServiceTest</span> </span>&#123;</span><br><span class="line"></span><br><span class="line">    <span class="meta">@Test</span></span><br><span class="line">    <span class="function"><span class="keyword">public</span> <span class="keyword">void</span> <span class="title">test</span><span class="params">()</span> <span class="keyword">throws</span> SchedulerException </span>&#123;</span><br><span class="line">        <span class="comment">// 1. 创建工厂类 SchedulerFactory</span></span><br><span class="line">        SchedulerFactory factory = <span class="keyword">new</span> StdSchedulerFactory();</span><br><span class="line">        <span class="comment">// 2. 通过 getScheduler() 方法获得 Scheduler 实例</span></span><br><span class="line">        Scheduler scheduler = factory.getScheduler();</span><br><span class="line"></span><br><span class="line">        <span class="comment">// 3. 使用上文定义的 HelloJob</span></span><br><span class="line">        JobDetail jobDetail = JobBuilder.newJob(HelloJob.class)</span><br><span class="line">                <span class="comment">//job 的name和group</span></span><br><span class="line">                .withIdentity(<span class="string">"jobName"</span>, <span class="string">"jobGroup"</span>)</span><br><span class="line">                .build();</span><br><span class="line"></span><br><span class="line">        <span class="comment">//3秒后启动任务</span></span><br><span class="line">        Date statTime = <span class="keyword">new</span> Date(System.currentTimeMillis() + <span class="number">3000</span>);</span><br><span class="line"></span><br><span class="line">        <span class="comment">// 4. 启动 Scheduler</span></span><br><span class="line">        scheduler.start();</span><br><span class="line"></span><br><span class="line">        <span class="comment">// 5. 创建Trigger</span></span><br><span class="line">        <span class="comment">//使用SimpleScheduleBuilder或者CronScheduleBuilder</span></span><br><span class="line">        Trigger trigger = TriggerBuilder.newTrigger()</span><br><span class="line">                .withIdentity(<span class="string">"jobTriggerName"</span>, <span class="string">"jobTriggerGroup"</span>)</span><br><span class="line">                .withSchedule(CronScheduleBuilder.cronSchedule(<span class="string">"0/2 * * * * ?"</span>)) <span class="comment">//两秒执行一次</span></span><br><span class="line">                .build();</span><br><span class="line"></span><br><span class="line">        <span class="comment">// 6. 注册任务和定时器</span></span><br><span class="line">        scheduler.scheduleJob(jobDetail, trigger);</span><br><span class="line"></span><br><span class="line">    &#125;</span><br><span class="line">&#125;</span><br></pre></td></tr></table></figure>
+<pre class=" language-properties"><code class="language-properties"><span class="token comment" spellcheck="true"># 固定前缀org.quartz</span>
+<span class="token comment" spellcheck="true"># 主要分为scheduler、threadPool、jobStore、plugin等部分</span>
+<span class="token comment" spellcheck="true">#</span>
+<span class="token comment" spellcheck="true">#</span>
+<span class="token attr-name">org.quartz.scheduler.instanceName</span> <span class="token punctuation">=</span> <span class="token attr-value">DefaultQuartzScheduler</span>
+<span class="token attr-name">org.quartz.scheduler.rmi.export</span> <span class="token punctuation">=</span> <span class="token attr-value">false</span>
+<span class="token attr-name">org.quartz.scheduler.rmi.proxy</span> <span class="token punctuation">=</span> <span class="token attr-value">false</span>
+<span class="token attr-name">org.quartz.scheduler.wrapJobExecutionInUserTransaction</span> <span class="token punctuation">=</span> <span class="token attr-value">false</span>
+
+<span class="token comment" spellcheck="true"># 实例化ThreadPool时，使用的线程类为SimpleThreadPool</span>
+<span class="token attr-name">org.quartz.threadPool.class</span> <span class="token punctuation">=</span> <span class="token attr-value">org.quartz.simpl.SimpleThreadPool</span>
+
+<span class="token comment" spellcheck="true"># threadCount和threadPriority将以setter的形式注入ThreadPool实例</span>
+<span class="token comment" spellcheck="true"># 并发个数</span>
+<span class="token attr-name">org.quartz.threadPool.threadCount</span> <span class="token punctuation">=</span> <span class="token attr-value">5</span>
+<span class="token comment" spellcheck="true"># 优先级</span>
+<span class="token attr-name">org.quartz.threadPool.threadPriority</span> <span class="token punctuation">=</span> <span class="token attr-value">5</span>
+<span class="token attr-name">org.quartz.threadPool.threadsInheritContextClassLoaderOfInitializingThread</span> <span class="token punctuation">=</span> <span class="token attr-value">true</span>
+
+<span class="token attr-name">org.quartz.jobStore.misfireThreshold</span> <span class="token punctuation">=</span> <span class="token attr-value">5000</span>
+
+<span class="token comment" spellcheck="true"># 默认存储在内存中</span>
+<span class="token comment" spellcheck="true">#org.quartz.jobStore.class = org.quartz.simpl.RAMJobStore</span>
+
+<span class="token comment" spellcheck="true">#持久化</span>
+<span class="token attr-name">org.quartz.jobStore.class</span> <span class="token punctuation">=</span> <span class="token attr-value">org.quartz.impl.jdbcjobstore.JobStoreTX</span>
+
+<span class="token attr-name">org.quartz.jobStore.tablePrefix</span> <span class="token punctuation">=</span> <span class="token attr-value">QRTZ_</span>
+
+<span class="token attr-name">org.quartz.jobStore.dataSource</span> <span class="token punctuation">=</span> <span class="token attr-value">qzDS</span>
+
+<span class="token attr-name">org.quartz.dataSource.qzDS.driver</span> <span class="token punctuation">=</span> <span class="token attr-value">com.mysql.jdbc.Driver</span>
+
+<span class="token attr-name">org.quartz.dataSource.qzDS.URL</span> <span class="token punctuation">=</span> <span class="token attr-value">jdbc:mysql://localhost:3306/study?useUnicode=true&amp;characterEncoding=UTF-8</span>
+
+<span class="token attr-name">org.quartz.dataSource.qzDS.user</span> <span class="token punctuation">=</span> <span class="token attr-value">root</span>
+
+<span class="token attr-name">org.quartz.dataSource.qzDS.password</span> <span class="token punctuation">=</span> <span class="token attr-value">password</span>
+
+<span class="token attr-name">org.quartz.dataSource.qzDS.maxConnections</span> <span class="token punctuation">=</span> <span class="token attr-value">10</span>
+</code></pre>
+<h2 id="2-导入数据库表"><a href="#2-导入数据库表" class="headerlink" title="2.导入数据库表"></a>2.导入数据库表</h2><pre class=" language-MySQL"><code class="language-MySQL">#  
+# In your Quartz properties file, you'll need to set
+# org.quartz.jobStore.driverDelegateClass = org.quartz.impl.jdbcjobstore.StdJDBCDelegate  
+#  
+#  
+# By: Ron Cordell - roncordell  
+#  I didn't see this anywhere, so I thought I'd post it here. This is the script from Quartz to create the tables in a MySQL database, modified to use INNODB instead of MYISAM.  
+
+DROP TABLE IF EXISTS QRTZ_FIRED_TRIGGERS;  
+DROP TABLE IF EXISTS QRTZ_PAUSED_TRIGGER_GRPS;  
+DROP TABLE IF EXISTS QRTZ_SCHEDULER_STATE;  
+DROP TABLE IF EXISTS QRTZ_LOCKS;  
+DROP TABLE IF EXISTS QRTZ_SIMPLE_TRIGGERS;  
+DROP TABLE IF EXISTS QRTZ_SIMPROP_TRIGGERS;  
+DROP TABLE IF EXISTS QRTZ_CRON_TRIGGERS;  
+DROP TABLE IF EXISTS QRTZ_BLOB_TRIGGERS;  
+DROP TABLE IF EXISTS QRTZ_TRIGGERS;  
+DROP TABLE IF EXISTS QRTZ_JOB_DETAILS;  
+DROP TABLE IF EXISTS QRTZ_CALENDARS;  
+
+CREATE TABLE QRTZ_JOB_DETAILS(  
+SCHED_NAME VARCHAR(120) NOT NULL,  
+JOB_NAME VARCHAR(200) NOT NULL,  
+JOB_GROUP VARCHAR(200) NOT NULL,  
+DESCRIPTION VARCHAR(250) NULL,  
+JOB_CLASS_NAME VARCHAR(250) NOT NULL,  
+IS_DURABLE VARCHAR(1) NOT NULL,  
+IS_NONCONCURRENT VARCHAR(1) NOT NULL,  
+IS_UPDATE_DATA VARCHAR(1) NOT NULL,  
+REQUESTS_RECOVERY VARCHAR(1) NOT NULL,  
+JOB_DATA BLOB NULL,  
+PRIMARY KEY (SCHED_NAME,JOB_NAME,JOB_GROUP))  
+ENGINE=InnoDB;  
+
+CREATE TABLE QRTZ_TRIGGERS (  
+SCHED_NAME VARCHAR(120) NOT NULL,  
+TRIGGER_NAME VARCHAR(200) NOT NULL,  
+TRIGGER_GROUP VARCHAR(200) NOT NULL,  
+JOB_NAME VARCHAR(200) NOT NULL,  
+JOB_GROUP VARCHAR(200) NOT NULL,  
+DESCRIPTION VARCHAR(250) NULL,  
+NEXT_FIRE_TIME BIGINT(13) NULL,  
+PREV_FIRE_TIME BIGINT(13) NULL,  
+PRIORITY INTEGER NULL,  
+TRIGGER_STATE VARCHAR(16) NOT NULL,  
+TRIGGER_TYPE VARCHAR(8) NOT NULL,  
+START_TIME BIGINT(13) NOT NULL,  
+END_TIME BIGINT(13) NULL,  
+CALENDAR_NAME VARCHAR(200) NULL,  
+MISFIRE_INSTR SMALLINT(2) NULL,  
+JOB_DATA BLOB NULL,  
+PRIMARY KEY (SCHED_NAME,TRIGGER_NAME,TRIGGER_GROUP),  
+FOREIGN KEY (SCHED_NAME,JOB_NAME,JOB_GROUP)  
+REFERENCES QRTZ_JOB_DETAILS(SCHED_NAME,JOB_NAME,JOB_GROUP))  
+ENGINE=InnoDB;  
+
+CREATE TABLE QRTZ_SIMPLE_TRIGGERS (  
+SCHED_NAME VARCHAR(120) NOT NULL,  
+TRIGGER_NAME VARCHAR(200) NOT NULL,  
+TRIGGER_GROUP VARCHAR(200) NOT NULL,  
+REPEAT_COUNT BIGINT(7) NOT NULL,  
+REPEAT_INTERVAL BIGINT(12) NOT NULL,  
+TIMES_TRIGGERED BIGINT(10) NOT NULL,  
+PRIMARY KEY (SCHED_NAME,TRIGGER_NAME,TRIGGER_GROUP),  
+FOREIGN KEY (SCHED_NAME,TRIGGER_NAME,TRIGGER_GROUP)  
+REFERENCES QRTZ_TRIGGERS(SCHED_NAME,TRIGGER_NAME,TRIGGER_GROUP))  
+ENGINE=InnoDB;  
+
+CREATE TABLE QRTZ_CRON_TRIGGERS (  
+SCHED_NAME VARCHAR(120) NOT NULL,  
+TRIGGER_NAME VARCHAR(200) NOT NULL,  
+TRIGGER_GROUP VARCHAR(200) NOT NULL,  
+CRON_EXPRESSION VARCHAR(120) NOT NULL,  
+TIME_ZONE_ID VARCHAR(80),  
+PRIMARY KEY (SCHED_NAME,TRIGGER_NAME,TRIGGER_GROUP),  
+FOREIGN KEY (SCHED_NAME,TRIGGER_NAME,TRIGGER_GROUP)  
+REFERENCES QRTZ_TRIGGERS(SCHED_NAME,TRIGGER_NAME,TRIGGER_GROUP))  
+ENGINE=InnoDB;  
+
+CREATE TABLE QRTZ_SIMPROP_TRIGGERS  
+  (
+    SCHED_NAME VARCHAR(120) NOT NULL,  
+    TRIGGER_NAME VARCHAR(200) NOT NULL,  
+    TRIGGER_GROUP VARCHAR(200) NOT NULL,  
+    STR_PROP_1 VARCHAR(512) NULL,  
+    STR_PROP_2 VARCHAR(512) NULL,  
+    STR_PROP_3 VARCHAR(512) NULL,  
+    INT_PROP_1 INT NULL,  
+    INT_PROP_2 INT NULL,  
+    LONG_PROP_1 BIGINT NULL,  
+    LONG_PROP_2 BIGINT NULL,  
+    DEC_PROP_1 NUMERIC(13,4) NULL,  
+    DEC_PROP_2 NUMERIC(13,4) NULL,  
+    BOOL_PROP_1 VARCHAR(1) NULL,  
+    BOOL_PROP_2 VARCHAR(1) NULL,  
+    PRIMARY KEY (SCHED_NAME,TRIGGER_NAME,TRIGGER_GROUP),  
+    FOREIGN KEY (SCHED_NAME,TRIGGER_NAME,TRIGGER_GROUP)   
+    REFERENCES QRTZ_TRIGGERS(SCHED_NAME,TRIGGER_NAME,TRIGGER_GROUP))  
+ENGINE=InnoDB;  
+
+CREATE TABLE QRTZ_BLOB_TRIGGERS (  
+SCHED_NAME VARCHAR(120) NOT NULL,  
+TRIGGER_NAME VARCHAR(200) NOT NULL,  
+TRIGGER_GROUP VARCHAR(200) NOT NULL,  
+BLOB_DATA BLOB NULL,  
+PRIMARY KEY (SCHED_NAME,TRIGGER_NAME,TRIGGER_GROUP),  
+INDEX (SCHED_NAME,TRIGGER_NAME, TRIGGER_GROUP),  
+FOREIGN KEY (SCHED_NAME,TRIGGER_NAME,TRIGGER_GROUP)  
+REFERENCES QRTZ_TRIGGERS(SCHED_NAME,TRIGGER_NAME,TRIGGER_GROUP))  
+ENGINE=InnoDB;  
+
+CREATE TABLE QRTZ_CALENDARS (  
+SCHED_NAME VARCHAR(120) NOT NULL,  
+CALENDAR_NAME VARCHAR(200) NOT NULL,  
+CALENDAR BLOB NOT NULL,  
+PRIMARY KEY (SCHED_NAME,CALENDAR_NAME))  
+ENGINE=InnoDB;  
+
+CREATE TABLE QRTZ_PAUSED_TRIGGER_GRPS (  
+SCHED_NAME VARCHAR(120) NOT NULL,  
+TRIGGER_GROUP VARCHAR(200) NOT NULL,  
+PRIMARY KEY (SCHED_NAME,TRIGGER_GROUP))  
+ENGINE=InnoDB;  
+
+CREATE TABLE QRTZ_FIRED_TRIGGERS (  
+SCHED_NAME VARCHAR(120) NOT NULL,  
+ENTRY_ID VARCHAR(95) NOT NULL,  
+TRIGGER_NAME VARCHAR(200) NOT NULL,  
+TRIGGER_GROUP VARCHAR(200) NOT NULL,  
+INSTANCE_NAME VARCHAR(200) NOT NULL,  
+FIRED_TIME BIGINT(13) NOT NULL,  
+SCHED_TIME BIGINT(13) NOT NULL,  
+PRIORITY INTEGER NOT NULL,  
+STATE VARCHAR(16) NOT NULL,  
+JOB_NAME VARCHAR(200) NULL,  
+JOB_GROUP VARCHAR(200) NULL,  
+IS_NONCONCURRENT VARCHAR(1) NULL,  
+REQUESTS_RECOVERY VARCHAR(1) NULL,  
+PRIMARY KEY (SCHED_NAME,ENTRY_ID))  
+ENGINE=InnoDB;  
+
+CREATE TABLE QRTZ_SCHEDULER_STATE (  
+SCHED_NAME VARCHAR(120) NOT NULL,  
+INSTANCE_NAME VARCHAR(200) NOT NULL,  
+LAST_CHECKIN_TIME BIGINT(13) NOT NULL,  
+CHECKIN_INTERVAL BIGINT(13) NOT NULL,  
+PRIMARY KEY (SCHED_NAME,INSTANCE_NAME))  
+ENGINE=InnoDB;  
+
+CREATE TABLE QRTZ_LOCKS (  
+SCHED_NAME VARCHAR(120) NOT NULL,  
+LOCK_NAME VARCHAR(40) NOT NULL,  
+PRIMARY KEY (SCHED_NAME,LOCK_NAME))  
+ENGINE=InnoDB;  
+
+CREATE INDEX IDX_QRTZ_J_REQ_RECOVERY ON QRTZ_JOB_DETAILS(SCHED_NAME,REQUESTS_RECOVERY);  
+CREATE INDEX IDX_QRTZ_J_GRP ON QRTZ_JOB_DETAILS(SCHED_NAME,JOB_GROUP);  
+
+CREATE INDEX IDX_QRTZ_T_J ON QRTZ_TRIGGERS(SCHED_NAME,JOB_NAME,JOB_GROUP);  
+CREATE INDEX IDX_QRTZ_T_JG ON QRTZ_TRIGGERS(SCHED_NAME,JOB_GROUP);  
+CREATE INDEX IDX_QRTZ_T_C ON QRTZ_TRIGGERS(SCHED_NAME,CALENDAR_NAME);  
+CREATE INDEX IDX_QRTZ_T_G ON QRTZ_TRIGGERS(SCHED_NAME,TRIGGER_GROUP);  
+CREATE INDEX IDX_QRTZ_T_STATE ON QRTZ_TRIGGERS(SCHED_NAME,TRIGGER_STATE);  
+CREATE INDEX IDX_QRTZ_T_N_STATE ON QRTZ_TRIGGERS(SCHED_NAME,TRIGGER_NAME,TRIGGER_GROUP,TRIGGER_STATE);  
+CREATE INDEX IDX_QRTZ_T_N_G_STATE ON QRTZ_TRIGGERS(SCHED_NAME,TRIGGER_GROUP,TRIGGER_STATE);  
+CREATE INDEX IDX_QRTZ_T_NEXT_FIRE_TIME ON QRTZ_TRIGGERS(SCHED_NAME,NEXT_FIRE_TIME);  
+CREATE INDEX IDX_QRTZ_T_NFT_ST ON QRTZ_TRIGGERS(SCHED_NAME,TRIGGER_STATE,NEXT_FIRE_TIME);  
+CREATE INDEX IDX_QRTZ_T_NFT_MISFIRE ON QRTZ_TRIGGERS(SCHED_NAME,MISFIRE_INSTR,NEXT_FIRE_TIME);  
+CREATE INDEX IDX_QRTZ_T_NFT_ST_MISFIRE ON QRTZ_TRIGGERS(SCHED_NAME,MISFIRE_INSTR,NEXT_FIRE_TIME,TRIGGER_STATE);  
+CREATE INDEX IDX_QRTZ_T_NFT_ST_MISFIRE_GRP ON QRTZ_TRIGGERS(SCHED_NAME,MISFIRE_INSTR,NEXT_FIRE_TIME,TRIGGER_GROUP,TRIGGER_STATE);  
+
+CREATE INDEX IDX_QRTZ_FT_TRIG_INST_NAME ON QRTZ_FIRED_TRIGGERS(SCHED_NAME,INSTANCE_NAME);  
+CREATE INDEX IDX_QRTZ_FT_INST_JOB_REQ_RCVRY ON QRTZ_FIRED_TRIGGERS(SCHED_NAME,INSTANCE_NAME,REQUESTS_RECOVERY);  
+CREATE INDEX IDX_QRTZ_FT_J_G ON QRTZ_FIRED_TRIGGERS(SCHED_NAME,JOB_NAME,JOB_GROUP);  
+CREATE INDEX IDX_QRTZ_FT_JG ON QRTZ_FIRED_TRIGGERS(SCHED_NAME,JOB_GROUP);  
+CREATE INDEX IDX_QRTZ_FT_T_G ON QRTZ_FIRED_TRIGGERS(SCHED_NAME,TRIGGER_NAME,TRIGGER_GROUP);  
+CREATE INDEX IDX_QRTZ_FT_TG ON QRTZ_FIRED_TRIGGERS(SCHED_NAME,TRIGGER_GROUP);  
+
+commit;
+</code></pre>
+<h2 id="3-QuartzConfig"><a href="#3-QuartzConfig" class="headerlink" title="3.QuartzConfig"></a>3.QuartzConfig</h2><pre class=" language-java"><code class="language-java"><span class="token annotation punctuation">@Configuration</span>
+<span class="token annotation punctuation">@EnableScheduling</span>
+<span class="token keyword">public</span> <span class="token keyword">class</span> <span class="token class-name">SchedulerConfig</span> <span class="token punctuation">{</span>
+
+    <span class="token annotation punctuation">@Bean</span><span class="token punctuation">(</span>name <span class="token operator">=</span> <span class="token string">"SchedulerFactory"</span><span class="token punctuation">)</span>
+    <span class="token keyword">public</span> SchedulerFactoryBean <span class="token function">schedulerFactoryBean</span><span class="token punctuation">(</span><span class="token punctuation">)</span> <span class="token keyword">throws</span> IOException <span class="token punctuation">{</span>
+        SchedulerFactoryBean factory <span class="token operator">=</span> <span class="token keyword">new</span> <span class="token class-name">SchedulerFactoryBean</span><span class="token punctuation">(</span><span class="token punctuation">)</span><span class="token punctuation">;</span>
+        factory<span class="token punctuation">.</span><span class="token function">setQuartzProperties</span><span class="token punctuation">(</span><span class="token function">quartzProperties</span><span class="token punctuation">(</span><span class="token punctuation">)</span><span class="token punctuation">)</span><span class="token punctuation">;</span>
+        <span class="token keyword">return</span> factory<span class="token punctuation">;</span>
+    <span class="token punctuation">}</span>
+
+    <span class="token annotation punctuation">@Bean</span>
+    <span class="token keyword">public</span> Properties <span class="token function">quartzProperties</span><span class="token punctuation">(</span><span class="token punctuation">)</span> <span class="token keyword">throws</span> IOException <span class="token punctuation">{</span>
+        PropertiesFactoryBean propertiesFactoryBean <span class="token operator">=</span> <span class="token keyword">new</span> <span class="token class-name">PropertiesFactoryBean</span><span class="token punctuation">(</span><span class="token punctuation">)</span><span class="token punctuation">;</span>
+        propertiesFactoryBean<span class="token punctuation">.</span><span class="token function">setLocation</span><span class="token punctuation">(</span><span class="token keyword">new</span> <span class="token class-name">ClassPathResource</span><span class="token punctuation">(</span><span class="token string">"/quartz.properties"</span><span class="token punctuation">)</span><span class="token punctuation">)</span><span class="token punctuation">;</span>
+        <span class="token comment" spellcheck="true">//在quartz.properties中的属性被读取并注入后再初始化对象</span>
+        propertiesFactoryBean<span class="token punctuation">.</span><span class="token function">afterPropertiesSet</span><span class="token punctuation">(</span><span class="token punctuation">)</span><span class="token punctuation">;</span>
+        <span class="token keyword">return</span> propertiesFactoryBean<span class="token punctuation">.</span><span class="token function">getObject</span><span class="token punctuation">(</span><span class="token punctuation">)</span><span class="token punctuation">;</span>
+    <span class="token punctuation">}</span>
+
+    <span class="token comment" spellcheck="true">/**
+     * quartz初始化监听器
+     */</span>
+    <span class="token annotation punctuation">@Bean</span>
+    <span class="token keyword">public</span> QuartzInitializerListener <span class="token function">executorListener</span><span class="token punctuation">(</span><span class="token punctuation">)</span> <span class="token punctuation">{</span>
+        <span class="token keyword">return</span> <span class="token keyword">new</span> <span class="token class-name">QuartzInitializerListener</span><span class="token punctuation">(</span><span class="token punctuation">)</span><span class="token punctuation">;</span>
+    <span class="token punctuation">}</span>
+
+    <span class="token comment" spellcheck="true">/**
+     * 通过SchedulerFactoryBean获取Scheduler的实例
+     */</span>
+    <span class="token annotation punctuation">@Bean</span><span class="token punctuation">(</span>name <span class="token operator">=</span> <span class="token string">"Scheduler"</span><span class="token punctuation">)</span>
+    <span class="token keyword">public</span> Scheduler <span class="token function">scheduler</span><span class="token punctuation">(</span><span class="token punctuation">)</span> <span class="token keyword">throws</span> IOException <span class="token punctuation">{</span>
+        <span class="token keyword">return</span> <span class="token function">schedulerFactoryBean</span><span class="token punctuation">(</span><span class="token punctuation">)</span><span class="token punctuation">.</span><span class="token function">getScheduler</span><span class="token punctuation">(</span><span class="token punctuation">)</span><span class="token punctuation">;</span>
+    <span class="token punctuation">}</span>
+<span class="token punctuation">}</span>
+
+</code></pre>
+<h2 id="4-执行测试"><a href="#4-执行测试" class="headerlink" title="4.执行测试"></a>4.执行测试</h2><pre class=" language-java"><code class="language-java"><span class="token annotation punctuation">@SpringBootTest</span>
+<span class="token annotation punctuation">@RunWith</span><span class="token punctuation">(</span>SpringRunner<span class="token punctuation">.</span><span class="token keyword">class</span><span class="token punctuation">)</span>
+<span class="token keyword">public</span> <span class="token keyword">class</span> <span class="token class-name">QuartzServiceTest</span> <span class="token punctuation">{</span>
+
+    <span class="token annotation punctuation">@Test</span>
+    <span class="token keyword">public</span> <span class="token keyword">void</span> <span class="token function">test</span><span class="token punctuation">(</span><span class="token punctuation">)</span> <span class="token keyword">throws</span> SchedulerException <span class="token punctuation">{</span>
+        <span class="token comment" spellcheck="true">// 1. 创建工厂类 SchedulerFactory</span>
+        SchedulerFactory factory <span class="token operator">=</span> <span class="token keyword">new</span> <span class="token class-name">StdSchedulerFactory</span><span class="token punctuation">(</span><span class="token punctuation">)</span><span class="token punctuation">;</span>
+        <span class="token comment" spellcheck="true">// 2. 通过 getScheduler() 方法获得 Scheduler 实例</span>
+        Scheduler scheduler <span class="token operator">=</span> factory<span class="token punctuation">.</span><span class="token function">getScheduler</span><span class="token punctuation">(</span><span class="token punctuation">)</span><span class="token punctuation">;</span>
+
+        <span class="token comment" spellcheck="true">// 3. 使用上文定义的 HelloJob</span>
+        JobDetail jobDetail <span class="token operator">=</span> JobBuilder<span class="token punctuation">.</span><span class="token function">newJob</span><span class="token punctuation">(</span>HelloJob<span class="token punctuation">.</span><span class="token keyword">class</span><span class="token punctuation">)</span>
+                <span class="token comment" spellcheck="true">//job 的name和group</span>
+                <span class="token punctuation">.</span><span class="token function">withIdentity</span><span class="token punctuation">(</span><span class="token string">"jobName"</span><span class="token punctuation">,</span> <span class="token string">"jobGroup"</span><span class="token punctuation">)</span>
+                <span class="token punctuation">.</span><span class="token function">build</span><span class="token punctuation">(</span><span class="token punctuation">)</span><span class="token punctuation">;</span>
+
+        <span class="token comment" spellcheck="true">//3秒后启动任务</span>
+        Date statTime <span class="token operator">=</span> <span class="token keyword">new</span> <span class="token class-name">Date</span><span class="token punctuation">(</span>System<span class="token punctuation">.</span><span class="token function">currentTimeMillis</span><span class="token punctuation">(</span><span class="token punctuation">)</span> <span class="token operator">+</span> <span class="token number">3000</span><span class="token punctuation">)</span><span class="token punctuation">;</span>
+
+        <span class="token comment" spellcheck="true">// 4. 启动 Scheduler</span>
+        scheduler<span class="token punctuation">.</span><span class="token function">start</span><span class="token punctuation">(</span><span class="token punctuation">)</span><span class="token punctuation">;</span>
+
+        <span class="token comment" spellcheck="true">// 5. 创建Trigger</span>
+        <span class="token comment" spellcheck="true">//使用SimpleScheduleBuilder或者CronScheduleBuilder</span>
+        Trigger trigger <span class="token operator">=</span> TriggerBuilder<span class="token punctuation">.</span><span class="token function">newTrigger</span><span class="token punctuation">(</span><span class="token punctuation">)</span>
+                <span class="token punctuation">.</span><span class="token function">withIdentity</span><span class="token punctuation">(</span><span class="token string">"jobTriggerName"</span><span class="token punctuation">,</span> <span class="token string">"jobTriggerGroup"</span><span class="token punctuation">)</span>
+                <span class="token punctuation">.</span><span class="token function">withSchedule</span><span class="token punctuation">(</span>CronScheduleBuilder<span class="token punctuation">.</span><span class="token function">cronSchedule</span><span class="token punctuation">(</span><span class="token string">"0/2 * * * * ?"</span><span class="token punctuation">)</span><span class="token punctuation">)</span> <span class="token comment" spellcheck="true">//两秒执行一次</span>
+                <span class="token punctuation">.</span><span class="token function">build</span><span class="token punctuation">(</span><span class="token punctuation">)</span><span class="token punctuation">;</span>
+
+        <span class="token comment" spellcheck="true">// 6. 注册任务和定时器</span>
+        scheduler<span class="token punctuation">.</span><span class="token function">scheduleJob</span><span class="token punctuation">(</span>jobDetail<span class="token punctuation">,</span> trigger<span class="token punctuation">)</span><span class="token punctuation">;</span>
+
+    <span class="token punctuation">}</span>
+<span class="token punctuation">}</span>
+</code></pre>
 <p>打开数据库，我们能看到触发器Trigger、任务Job等。<br><img src="https://upload-images.jianshu.io/upload_images/13603359-db046f08f7a9ff75.png" alt="测试"></p>
 
             </div>
@@ -680,20 +971,19 @@
                 Next&nbsp;<i class="fa fa-chevron-right"></i>
             </div>
             <div class="card">
-                <a href="/2018/11/01/Quartz/SpringBoot整合Quartz(一)/">
+                <a href="/2018/11/01/SpringSecurity/SpringBoot整合SpringSecurity(三.2)/">
                     <div class="card-image">
                         
                         
-                        <img src="/medias/featureimages/20.jpg" class="responsive-img" alt="SpringBoot整合Quartz(一)-简单介绍Demo">
+                        <img src="/medias/featureimages/0.jpg" class="responsive-img" alt="SpringBoot整合SpringSecurity(三)-动态验证权限">
                         
-                        <span class="card-title">SpringBoot整合Quartz(一)-简单介绍Demo</span>
+                        <span class="card-title">SpringBoot整合SpringSecurity(三)-动态验证权限</span>
                     </div>
                 </a>
                 <div class="card-content article-content">
                     <div class="summary block-with-text">
                         
-                            SpringBoot整合Quartz(一)-简单介绍Demo计划：(从Quartz的属性、方法、配置文件、配置类、持久化、集群等几个方面，写一些心得)
-Quartz 作为一款由 Java 编写的开源作业调度框架,官网传送门。与我而言，作用是
+                            SpringBoot整合SpringSecurity(三)-动态更新用户的权限用户权限的加载是在 调用了 UserDetailsService.loadUserByUsername(String username) 后构建出的 UserDe
                         
                     </div>
                     <div class="publish-info">
@@ -864,6 +1154,10 @@ Quartz 作为一款由 Java 编写的开源作业调度框架,官网传送门。
     </a>
 
 
+
+    <a href="/atom.xml" class="tooltipped" target="_blank" data-tooltip="RSS 订阅" data-position="top" data-delay="50">
+        <i class="fa fa-rss"></i>
+    </a>
 </div>
     </div>
 </footer>

@@ -34,7 +34,7 @@ Windows 10 64位：Pro，Enterprise或Education
     </style>
 
     <script src="/libs/jquery/jquery-2.2.0.min.js"></script>
-</head>
+<link rel="stylesheet" href="/css/prism-tomorrow.css" type="text/css"></head>
 
 
 <body>
@@ -435,7 +435,9 @@ Windows 10 64位：Pro，Enterprise或Education
 <li>在 <code>Windows 功能</code> 中开启 <code>Hyper-V</code> 功能</li>
 <li><a href="https://www.docker.com/products/docker-desktop" target="_blank" rel="noopener">下载 Docker</a>，双击运行即可</li>
 </ol>
-<h2 id="坑："><a href="#坑：" class="headerlink" title="坑："></a>坑：</h2><h3 id="1-安装完-Dokcer-之后，提示未找到-CA"><a href="#1-安装完-Dokcer-之后，提示未找到-CA" class="headerlink" title="1. 安装完 Dokcer 之后，提示未找到 CA"></a>1. 安装完 Dokcer 之后，提示未找到 CA</h3><figure class="highlight shell"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br></pre></td><td class="code"><pre><span class="line">C:\Users\user&gt;docker</span><br><span class="line">could not read CA certificate "C:\\Users\\user\\.docker\\machine\\machines\\default\\ca.pem": open C:\Users\user\.docker\machine\machines\default\ca.pem: The system cannot find the path specified.</span><br></pre></td></tr></table></figure>
+<h2 id="坑："><a href="#坑：" class="headerlink" title="坑："></a>坑：</h2><h3 id="1-安装完-Dokcer-之后，提示未找到-CA"><a href="#1-安装完-Dokcer-之后，提示未找到-CA" class="headerlink" title="1. 安装完 Dokcer 之后，提示未找到 CA"></a>1. 安装完 Dokcer 之后，提示未找到 CA</h3><pre class=" language-shell"><code class="language-shell">C:\Users\user>docker
+could not read CA certificate "C:\\Users\\user\\.docker\\machine\\machines\\default\\ca.pem": open C:\Users\user\.docker\machine\machines\default\ca.pem: The system cannot find the path specified.
+</code></pre>
 <p><code>原因</code> ：当从 Docker Toolbox 升级到 Docker for Windows 之后，卸载 Docker Toolbox 时，不会删除用户的 env变量。</p>
 <p><code>解决方法</code> ：</p>
 <ol>
@@ -454,7 +456,12 @@ Windows 10 64位：Pro，Enterprise或Education
 </li>
 <li>从命令提示符或者 PowerShell 中删除 Docker_*:</li>
 </ol>
-<figure class="highlight shell"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br></pre></td><td class="code"><pre><span class="line">[Environment]::SetEnvironmentVariable("DOCKER_CERT_PATH", $null, "User")</span><br><span class="line">[Environment]::SetEnvironmentVariable("DOCKER_HOST", $null, "User")</span><br><span class="line">[Environment]::SetEnvironmentVariable("DOCKER_MACHINE_NAME", $null, "User")</span><br><span class="line">[Environment]::SetEnvironmentVariable("DOCKER_TLS_VERIFY", $null, "User")</span><br><span class="line">[Environment]::SetEnvironmentVariable("DOCKER_TOOLBOX_INSTALL_PATH", $null, "User")</span><br></pre></td></tr></table></figure>
+<pre class=" language-shell"><code class="language-shell">[Environment]::SetEnvironmentVariable("DOCKER_CERT_PATH", $null, "User")
+[Environment]::SetEnvironmentVariable("DOCKER_HOST", $null, "User")
+[Environment]::SetEnvironmentVariable("DOCKER_MACHINE_NAME", $null, "User")
+[Environment]::SetEnvironmentVariable("DOCKER_TLS_VERIFY", $null, "User")
+[Environment]::SetEnvironmentVariable("DOCKER_TOOLBOX_INSTALL_PATH", $null, "User")
+</code></pre>
 <ol start="5">
 <li>重新启动 PowerShell，测试 Docker 命令。(如有必要，也可以重启)</li>
 </ol>
@@ -665,19 +672,20 @@ Windows 10 64位：Pro，Enterprise或Education
             <div class="article-badge left-badge text-color">
                 <i class="fa fa-chevron-left"></i>&nbsp;Previous</div>
             <div class="card">
-                <a href="/2018/10/11/java/MockMvc测试/">
+                <a href="/2018/10/11/docker/2.SpringBoot+docker/">
                     <div class="card-image">
                         
                         
-                        <img src="/medias/featureimages/7.jpg" class="responsive-img" alt="SpringMVC测试框架">
+                        <img src="/medias/featureimages/14.jpg" class="responsive-img" alt="SpringBoot+Docker+Jenkis+Git持续化集成(二)：SpringBoot集成Docker">
                         
-                        <span class="card-title">SpringMVC测试框架</span>
+                        <span class="card-title">SpringBoot+Docker+Jenkis+Git持续化集成(二)：SpringBoot集成Docker</span>
                     </div>
                 </a>
                 <div class="card-content article-content">
                     <div class="summary block-with-text">
                         
-                            SpringMVC测试框架基于RESTful风格的SpringMVC的测试，我们可以测试完整的Spring MVC流程，即从URL请求到控制器处理，再到视图渲染都可以测试。快速入门-这个方法中包含了大多数的常见情况：123456789101
+                            将 SpringBoot 项目部署到 Docker 下这里我们不使用 IDE 的集成化环境，更便于理解。
+一、新建一个 SpringBoot 项目创建 SpringBoot 项目的方式有很多，比如 Spring Initializr 网站。
                         
                     </div>
                     <div class="publish-info">
@@ -688,8 +696,8 @@ Windows 10 64位：Pro，Enterprise或Education
                             
                             <i class="fa fa-bookmark fa-fw icon-category"></i>
                             
-                            <a href="/categories/Java成神之路/" class="post-category" target="_blank">
-                                    Java成神之路
+                            <a href="/categories/Docker学习/" class="post-category" target="_blank">
+                                    Docker学习
                                 </a>
                             
                             
@@ -706,20 +714,21 @@ Windows 10 64位：Pro，Enterprise或Education
                 Next&nbsp;<i class="fa fa-chevron-right"></i>
             </div>
             <div class="card">
-                <a href="/2018/10/11/docker/常用命令/">
+                <a href="/2018/10/11/java/GC算法/">
                     <div class="card-image">
                         
                         
-                        <img src="/medias/featureimages/14.jpg" class="responsive-img" alt="SpringBoot+Docker+Jenkis+Git持续化集成(二)：SpringBoot集成Docker">
+                        <img src="/medias/featureimages/14.jpg" class="responsive-img" alt="GC算法、垃圾收集器">
                         
-                        <span class="card-title">SpringBoot+Docker+Jenkis+Git持续化集成(二)：SpringBoot集成Docker</span>
+                        <span class="card-title">GC算法、垃圾收集器</span>
                     </div>
                 </a>
                 <div class="card-content article-content">
                     <div class="summary block-with-text">
                         
-                            进入docker container使用场景：例如当我们初始化一个 Jenkins的Docker Container 时，第一次需要我们去某目录下查看初始化的密码。
-使用命令： docker exec -it container_id /b
+                            GC算法、垃圾收集器在 Java 中有两个最基本的回收算法：复制算法和标记清理算法
+复制算法两个区域A和B，初始对象在A，继续存活的对象被转移到B。为新生代最常用的算法
+标记清理算法一块区域，标记可达对象(可达性分析)，然后回收不可达对象。
                         
                     </div>
                     <div class="publish-info">
@@ -730,8 +739,8 @@ Windows 10 64位：Pro，Enterprise或Education
                             
                             <i class="fa fa-bookmark fa-fw icon-category"></i>
                             
-                            <a href="/categories/Docker学习/" class="post-category" target="_blank">
-                                    Docker学习
+                            <a href="/categories/Java成神之路/" class="post-category" target="_blank">
+                                    Java成神之路
                                 </a>
                             
                             
@@ -886,6 +895,10 @@ Windows 10 64位：Pro，Enterprise或Education
     </a>
 
 
+
+    <a href="/atom.xml" class="tooltipped" target="_blank" data-tooltip="RSS 订阅" data-position="top" data-delay="50">
+        <i class="fa fa-rss"></i>
+    </a>
 </div>
     </div>
 </footer>

@@ -5,7 +5,11 @@
 <head>
     <meta charset="utf-8">
     <meta name="keywords" content="帅">
-    <meta name="description" content="密码加密在 WebSecurityConfig 中的登录校验，添加密码加密1234567891011121314151617/** * 添加 UserDetailsService ，实现自定义登录校验 */@Overrideprotecte">
+    <meta name="description" content="密码加密在 WebSecurityConfig 中的登录校验，添加密码加密/**
+ * 添加 UserDetailsService ，实现自定义登录校验
+ */
+@Override
+protected void configure(Auth">
     <meta http-equiv="X-UA-Compatible" content="IE=edge">
     <meta name="viewport" content="width=device-width, initial-scale=1.0, user-scalable=no">
     <meta name="renderer" content="webkit|ie-stand|ie-comp">
@@ -28,7 +32,7 @@
     </style>
 
     <script src="/libs/jquery/jquery-2.2.0.min.js"></script>
-</head>
+<link rel="stylesheet" href="/css/prism-tomorrow.css" type="text/css"></head>
 
 
 <body>
@@ -404,10 +408,36 @@
         <hr class="clearfix">
         <div class="card-content article-card-content">
             <div id="articleContent">
-                <h1 id="密码加密"><a href="#密码加密" class="headerlink" title="密码加密"></a>密码加密</h1><h2 id="在-WebSecurityConfig-中的登录校验，添加密码加密"><a href="#在-WebSecurityConfig-中的登录校验，添加密码加密" class="headerlink" title="在 WebSecurityConfig 中的登录校验，添加密码加密"></a>在 WebSecurityConfig 中的登录校验，添加密码加密</h2><figure class="highlight java"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br><span class="line">14</span><br><span class="line">15</span><br><span class="line">16</span><br><span class="line">17</span><br></pre></td><td class="code"><pre><span class="line"><span class="comment">/**</span></span><br><span class="line"><span class="comment"> * 添加 UserDetailsService ，实现自定义登录校验</span></span><br><span class="line"><span class="comment"> */</span></span><br><span class="line"><span class="meta">@Override</span></span><br><span class="line"><span class="function"><span class="keyword">protected</span> <span class="keyword">void</span> <span class="title">configure</span><span class="params">(AuthenticationManagerBuilder builder)</span> <span class="keyword">throws</span> Exception</span>&#123;</span><br><span class="line">    builder</span><br><span class="line">        .userDetailsService(anyUserDetailsService)</span><br><span class="line">        .passwordEncoder(passwordEncoder());</span><br><span class="line">&#125;</span><br><span class="line"></span><br><span class="line"><span class="comment">/**</span></span><br><span class="line"><span class="comment"> * 密码加密</span></span><br><span class="line"><span class="comment"> */</span></span><br><span class="line"><span class="meta">@Bean</span></span><br><span class="line"><span class="function"><span class="keyword">public</span> BCryptPasswordEncoder <span class="title">passwordEncoder</span><span class="params">()</span></span>&#123;</span><br><span class="line">    <span class="keyword">return</span> <span class="keyword">new</span> BCryptPasswordEncoder();</span><br><span class="line">&#125;</span><br></pre></td></tr></table></figure>
+                <h1 id="密码加密"><a href="#密码加密" class="headerlink" title="密码加密"></a>密码加密</h1><h2 id="在-WebSecurityConfig-中的登录校验，添加密码加密"><a href="#在-WebSecurityConfig-中的登录校验，添加密码加密" class="headerlink" title="在 WebSecurityConfig 中的登录校验，添加密码加密"></a>在 WebSecurityConfig 中的登录校验，添加密码加密</h2><pre class=" language-java"><code class="language-java"><span class="token comment" spellcheck="true">/**
+ * 添加 UserDetailsService ，实现自定义登录校验
+ */</span>
+<span class="token annotation punctuation">@Override</span>
+<span class="token keyword">protected</span> <span class="token keyword">void</span> <span class="token function">configure</span><span class="token punctuation">(</span>AuthenticationManagerBuilder builder<span class="token punctuation">)</span> <span class="token keyword">throws</span> Exception<span class="token punctuation">{</span>
+    builder
+        <span class="token punctuation">.</span><span class="token function">userDetailsService</span><span class="token punctuation">(</span>anyUserDetailsService<span class="token punctuation">)</span>
+        <span class="token punctuation">.</span><span class="token function">passwordEncoder</span><span class="token punctuation">(</span><span class="token function">passwordEncoder</span><span class="token punctuation">(</span><span class="token punctuation">)</span><span class="token punctuation">)</span><span class="token punctuation">;</span>
+<span class="token punctuation">}</span>
+
+<span class="token comment" spellcheck="true">/**
+ * 密码加密
+ */</span>
+<span class="token annotation punctuation">@Bean</span>
+<span class="token keyword">public</span> BCryptPasswordEncoder <span class="token function">passwordEncoder</span><span class="token punctuation">(</span><span class="token punctuation">)</span><span class="token punctuation">{</span>
+    <span class="token keyword">return</span> <span class="token keyword">new</span> <span class="token class-name">BCryptPasswordEncoder</span><span class="token punctuation">(</span><span class="token punctuation">)</span><span class="token punctuation">;</span>
+<span class="token punctuation">}</span>
+</code></pre>
 <p>在登录时用到了 <code>DaoAuthenticationProvider</code>,它有一个方法 <code>#additionalAuthenticationChecks(UserDetails userDetails,UsernamePasswordAuthenticationToken authentication)</code>，此方法用来校验从数据库取得的用户信息和用户输入的信息是否匹配.</p>
 <p>在注册时，也需要对用户密码进行加密。即在 post:register() 方法中，将密码使用 BCrptPasswordEncoder进行加密。</p>
-<figure class="highlight java"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br></pre></td><td class="code"><pre><span class="line"><span class="comment">/**</span></span><br><span class="line"><span class="comment"> * 加密密码</span></span><br><span class="line"><span class="comment"> */</span></span><br><span class="line"><span class="function"><span class="keyword">private</span> <span class="keyword">void</span> <span class="title">encryptPassword</span><span class="params">(UserEntity userEntity)</span></span>&#123;</span><br><span class="line">    String password = userEntity.getPassword();</span><br><span class="line">    password = <span class="keyword">new</span> BCryptPasswordEncoder().encode(password);</span><br><span class="line">    userEntity.setPassword(password);</span><br><span class="line">&#125;</span><br></pre></td></tr></table></figure>
+<pre class=" language-java"><code class="language-java"><span class="token comment" spellcheck="true">/**
+ * 加密密码
+ */</span>
+<span class="token keyword">private</span> <span class="token keyword">void</span> <span class="token function">encryptPassword</span><span class="token punctuation">(</span>UserEntity userEntity<span class="token punctuation">)</span><span class="token punctuation">{</span>
+    String password <span class="token operator">=</span> userEntity<span class="token punctuation">.</span><span class="token function">getPassword</span><span class="token punctuation">(</span><span class="token punctuation">)</span><span class="token punctuation">;</span>
+    password <span class="token operator">=</span> <span class="token keyword">new</span> <span class="token class-name">BCryptPasswordEncoder</span><span class="token punctuation">(</span><span class="token punctuation">)</span><span class="token punctuation">.</span><span class="token function">encode</span><span class="token punctuation">(</span>password<span class="token punctuation">)</span><span class="token punctuation">;</span>
+    userEntity<span class="token punctuation">.</span><span class="token function">setPassword</span><span class="token punctuation">(</span>password<span class="token punctuation">)</span><span class="token punctuation">;</span>
+<span class="token punctuation">}</span>
+</code></pre>
+
             </div>
             <hr/>
 
@@ -625,7 +655,7 @@
                         
                             kaishi导入security-login-db创建数据库 any执行 user.sql启动项目
 Spring Security 校验登录流程
-解释AbstractAuthenticationProcessingFilter 抽象类123
+解释AbstractAuthenticationProcessingFilter 抽象类/**
                         
                     </div>
                     <div class="publish-info">
@@ -825,6 +855,10 @@ Spring Security 校验登录流程
     </a>
 
 
+
+    <a href="/atom.xml" class="tooltipped" target="_blank" data-tooltip="RSS 订阅" data-position="top" data-delay="50">
+        <i class="fa fa-rss"></i>
+    </a>
 </div>
     </div>
 </footer>

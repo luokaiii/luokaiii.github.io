@@ -28,7 +28,7 @@
     </style>
 
     <script src="/libs/jquery/jquery-2.2.0.min.js"></script>
-</head>
+<link rel="stylesheet" href="/css/prism-tomorrow.css" type="text/css"></head>
 
 
 <body>
@@ -422,17 +422,33 @@
         <div class="card-content article-card-content">
             <div id="articleContent">
                 <h1 id="同时使用多个Git源（Github-Gitee-Gitlab等）"><a href="#同时使用多个Git源（Github-Gitee-Gitlab等）" class="headerlink" title="同时使用多个Git源（Github,Gitee,Gitlab等）"></a>同时使用多个Git源（Github,Gitee,Gitlab等）</h1><p>在很多情况下，我们在同一台PC上可能需要关联多个 <code>Git 源</code>。比如公司的项目放在 <code>gitee</code> 上，但是个人有很多学习的小项目都放在 <code>github</code> 上，此时就需要有能连接多个 <code>ssh</code> 的需求。</p>
-<h2 id="第一步：为每个-git-在线服务生成一对公私钥"><a href="#第一步：为每个-git-在线服务生成一对公私钥" class="headerlink" title="第一步：为每个 git 在线服务生成一对公私钥"></a>第一步：为每个 git 在线服务生成一对公私钥</h2><figure class="highlight plain"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br></pre></td><td class="code"><pre><span class="line">$ ssh-keygen -t rsa -C &quot;yourEmail@email.com&quot;</span><br><span class="line"></span><br><span class="line">Enter file in which to save the key (/c/Users/user/.ssh/id_rsa): /c/User/user/.ssh/id_rsa_github</span><br></pre></td></tr></table></figure>
+<h2 id="第一步：为每个-git-在线服务生成一对公私钥"><a href="#第一步：为每个-git-在线服务生成一对公私钥" class="headerlink" title="第一步：为每个 git 在线服务生成一对公私钥"></a>第一步：为每个 git 在线服务生成一对公私钥</h2><pre class=" language-node"><code class="language-node">$ ssh-keygen -t rsa -C "yourEmail@email.com"
+
+Enter file in which to save the key (/c/Users/user/.ssh/id_rsa): /c/User/user/.ssh/id_rsa_github
+</code></pre>
 <p>我们以 id_rsa_github 为生成的公私钥文件命名，并指定文件的存储路径为 “/c/User/user/.ssh/“ 下</p>
 <p><img src="https://upload-images.jianshu.io/upload_images/13603359-accb6aef01836f8e.png?imageMogr2/auto-orient/strip%7CimageView2/2/w/1240" alt="生成的公私钥"></p>
 <p>如果你需要多个服务，则依次 <code>重复第一步</code> 即可。<br><code>注意每一对公私钥的命名不能重复。</code></p>
-<h2 id="第二步：在-c-User-user-ssh-下创建-config-文件，并填入刚刚的公私钥名"><a href="#第二步：在-c-User-user-ssh-下创建-config-文件，并填入刚刚的公私钥名" class="headerlink" title="第二步：在 /c/User/user/.ssh/ 下创建 config 文件，并填入刚刚的公私钥名"></a>第二步：在 /c/User/user/.ssh/ 下创建 config 文件，并填入刚刚的公私钥名</h2><figure class="highlight groovy"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br></pre></td><td class="code"><pre><span class="line">Host gitee.com</span><br><span class="line">  Hostname gitee.com</span><br><span class="line">  PreferredAuthentications publickey</span><br><span class="line">  IdentityFile <span class="regexp">~/.ssh/</span>id_rsa_gitee</span><br><span class="line">  User koral</span><br><span class="line"></span><br><span class="line">Host github.com</span><br><span class="line">  Hostname github.com</span><br><span class="line">  PreferredAuthentications publickey</span><br><span class="line">  IdentityFile <span class="regexp">~/.ssh/</span>id_rsa_github</span><br><span class="line">  User koral</span><br></pre></td></tr></table></figure>
+<h2 id="第二步：在-c-User-user-ssh-下创建-config-文件，并填入刚刚的公私钥名"><a href="#第二步：在-c-User-user-ssh-下创建-config-文件，并填入刚刚的公私钥名" class="headerlink" title="第二步：在 /c/User/user/.ssh/ 下创建 config 文件，并填入刚刚的公私钥名"></a>第二步：在 /c/User/user/.ssh/ 下创建 config 文件，并填入刚刚的公私钥名</h2><pre class=" language-groovy"><code class="language-groovy">Host gitee<span class="token operator">.</span>com
+  Hostname gitee<span class="token operator">.</span>com
+  PreferredAuthentications publickey
+  IdentityFile <span class="token operator">~</span><span class="token string">/.ssh/</span>id_rsa_gitee
+  User koral
+
+Host github<span class="token operator">.</span>com
+  Hostname github<span class="token operator">.</span>com
+  PreferredAuthentications publickey
+  IdentityFile <span class="token operator">~</span><span class="token string">/.ssh/</span>id_rsa_github
+  User koral
+</code></pre>
 <p>这一步表示，在git发起 ssh 链接时，对应着哪一个 ssh 私钥。这里我只以 码云( <code>gitee@OSC</code> )和 <code>github</code> 为例。</p>
 <p>不要问我 <code>~/.ssh/</code> 前面的 <code>~</code> 表示什么意思。我也不会告诉你，它表示当前PC用户的根目录的。至于你想设置为全局的，我也不知道。</p>
 <h2 id="第三步：将生成的公钥添加至各自的-SSH-中"><a href="#第三步：将生成的公钥添加至各自的-SSH-中" class="headerlink" title="第三步：将生成的公钥添加至各自的 SSH 中"></a>第三步：将生成的公钥添加至各自的 SSH 中</h2><p>这里以 Github 为例，其他几个网站类似：</p>
 <h3 id="在-SSH-keys-中”New-SSH-key”"><a href="#在-SSH-keys-中”New-SSH-key”" class="headerlink" title="在 SSH keys 中”New SSH key”"></a>在 SSH keys 中”New SSH key”</h3><p><img src="https://upload-images.jianshu.io/upload_images/13603359-c8f3bdda9deef6da.png?imageMogr2/auto-orient/strip%7CimageView2/2/w/1240" alt="找到github的ssh"></p>
 <h3 id="写入生成的SSH"><a href="#写入生成的SSH" class="headerlink" title="写入生成的SSH"></a>写入生成的SSH</h3><p>找到第一步中生成的SSH公钥(以”.pub”结尾的)，并填入，Title随便写<br><img src="https://upload-images.jianshu.io/upload_images/13603359-1381194685beccaa.png?imageMogr2/auto-orient/strip%7CimageView2/2/w/1240" alt="image.png"></p>
-<h2 id="第四步：测试"><a href="#第四步：测试" class="headerlink" title="第四步：测试"></a>第四步：测试</h2><figure class="highlight shell"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br></pre></td><td class="code"><pre><span class="line">ssh -T git@github.com</span><br><span class="line">ssh -T git@gitee.com</span><br></pre></td></tr></table></figure>
+<h2 id="第四步：测试"><a href="#第四步：测试" class="headerlink" title="第四步：测试"></a>第四步：测试</h2><pre class=" language-shell"><code class="language-shell">ssh -T git@github.com
+ssh -T git@gitee.com
+</code></pre>
 <p>如果提示了什么不得了的东西，请先删除 “/c/User/user/.ssh/“ 目录下的 “known_hosts”，并重新执行测试。它会重新生成一个。<br>当出现 <code>Hi koral! You&#39;ve successfully authenticated, but GitHub does not provide shell access.</code> 时，恭喜你，连接成功。</p>
 
             </div>
@@ -638,19 +654,25 @@
             <div class="article-badge left-badge text-color">
                 <i class="fa fa-chevron-left"></i>&nbsp;Previous</div>
             <div class="card">
-                <a href="/2018/09/29/java/模拟Ping获取IP响应时间/">
+                <a href="/2018/09/29/java/POI操作EXCEl/">
                     <div class="card-image">
                         
                         
-                        <img src="/medias/featureimages/16.jpg" class="responsive-img" alt="模拟Ping">
+                        <img src="/medias/featureimages/15.jpg" class="responsive-img" alt="通过 POI 将数据库中的数据上传至 OSS 对象存储">
                         
-                        <span class="card-title">模拟Ping</span>
+                        <span class="card-title">通过 POI 将数据库中的数据上传至 OSS 对象存储</span>
                     </div>
                 </a>
                 <div class="card-content article-content">
                     <div class="summary block-with-text">
                         
-                            123456789101112131415161718192021222324252627282930313233343536373839404142434445import java.io.BufferedReader;import ja
+                            通过 POI 将数据库中的数据上传至 OSS 对象存储我爱你，第一句是假的，第二句也是假的。
+
+
+
+表格的具体样式可以参考 第三章
+我们以 aliyun 的 OSS 为例上传 上传方法
+一、准备工作第一步：引入 Apache POI 的依赖
                         
                     </div>
                     <div class="publish-info">
@@ -661,8 +683,8 @@
                             
                             <i class="fa fa-bookmark fa-fw icon-category"></i>
                             
-                            <a href="/categories/工具函数/" class="post-category" target="_blank">
-                                    工具函数
+                            <a href="/categories/Java成神之路/" class="post-category" target="_blank">
+                                    Java成神之路
                                 </a>
                             
                             
@@ -676,6 +698,10 @@
                         <span class="chip bg-color">java</span>
                     </a>
                     
+                    <a href="/tags/poi/" target="_blank">
+                        <span class="chip bg-color">poi</span>
+                    </a>
+                    
                 </div>
                 
             </div>
@@ -687,21 +713,20 @@
                 Next&nbsp;<i class="fa fa-chevron-right"></i>
             </div>
             <div class="card">
-                <a href="/2018/09/28/Git/Git命令/">
+                <a href="/2018/09/28/Git/Git分支管理策略/">
                     <div class="card-image">
                         
                         
-                        <img src="/medias/featureimages/22.jpg" class="responsive-img" alt="Git常见命令">
+                        <img src="/medias/featureimages/7.jpg" class="responsive-img" alt="Git分支管理策略">
                         
-                        <span class="card-title">Git常见命令</span>
+                        <span class="card-title">Git分支管理策略</span>
                     </div>
                 </a>
                 <div class="card-content article-content">
                     <div class="summary block-with-text">
                         
-                            1. 初始化仓库git init
-2. 添加文件至仓库git add .   // 点表示所有，也可以将点换成指定的文件名
-3. 本地仓库关联远程仓库git remote add origin gitee.com/luo-qiang/kor
+                            一、使用分支管理的原因为了使版本库的演进保持简洁，各分支井井有条二、主分支 Master提供给用户使用的正式版本，都在该分支上发布，也是 Git 的默认分支
+三、开发分支 Develop日常开发使用，在开发完成之后，用于合并到 Master
                         
                     </div>
                     <div class="publish-info">
@@ -876,6 +901,10 @@
     </a>
 
 
+
+    <a href="/atom.xml" class="tooltipped" target="_blank" data-tooltip="RSS 订阅" data-position="top" data-delay="50">
+        <i class="fa fa-rss"></i>
+    </a>
 </div>
     </div>
 </footer>

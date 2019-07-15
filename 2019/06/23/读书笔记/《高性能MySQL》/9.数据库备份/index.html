@@ -34,7 +34,7 @@
     </style>
 
     <script src="/libs/jquery/jquery-2.2.0.min.js"></script>
-</head>
+<link rel="stylesheet" href="/css/prism-tomorrow.css" type="text/css"></head>
 
 
 <body>
@@ -464,21 +464,52 @@
 <p>备份数据库的账号需要具有以下权限：SELECT, RELOAD, LOCK  TABLES, REPLICATION CLIENT, SHOW VIEW, EVENT, PROCESS</p>
 </blockquote>
 <h3 id="3、备份实例"><a href="#3、备份实例" class="headerlink" title="3、备份实例"></a>3、备份实例</h3><h4 id="1-创建一个用于备份数据库的用户"><a href="#1-创建一个用于备份数据库的用户" class="headerlink" title="1. 创建一个用于备份数据库的用户"></a>1. 创建一个用于备份数据库的用户</h4><p>进入 MySQL 实例中，并执行语句，创建用户：</p>
-<figure class="highlight sh"><table><tr><td class="gutter"><pre><span class="line">1</span><br></pre></td><td class="code"><pre><span class="line">create user <span class="string">'backup'</span>@<span class="string">'localhost'</span> identified by <span class="string">'123456'</span>;</span><br></pre></td></tr></table></figure>
-<h4 id="2-为用户授予备份权限"><a href="#2-为用户授予备份权限" class="headerlink" title="2. 为用户授予备份权限"></a>2. 为用户授予备份权限</h4><figure class="highlight sh"><table><tr><td class="gutter"><pre><span class="line">1</span><br></pre></td><td class="code"><pre><span class="line">grant SELECT, RELOAD, LOCK  TABLES, REPLICATION CLIENT, SHOW VIEW, EVENT, PROCESS on *.* to <span class="string">'backup'</span>@<span class="string">'localhost'</span>;</span><br></pre></td></tr></table></figure>
+<pre class=" language-sh"><code class="language-sh">create user 'backup'@'localhost' identified by '123456';
+</code></pre>
+<h4 id="2-为用户授予备份权限"><a href="#2-为用户授予备份权限" class="headerlink" title="2. 为用户授予备份权限"></a>2. 为用户授予备份权限</h4><pre class=" language-sh"><code class="language-sh">grant SELECT, RELOAD, LOCK  TABLES, REPLICATION CLIENT, SHOW VIEW, EVENT, PROCESS on *.* to 'backup'@'localhost';
+</code></pre>
 <h4 id="3-使用事务备份数据库"><a href="#3-使用事务备份数据库" class="headerlink" title="3. 使用事务备份数据库"></a>3. 使用事务备份数据库</h4><p>情况一：备份 mc_order 数据库中的全部表数据：</p>
-<figure class="highlight sh"><table><tr><td class="gutter"><pre><span class="line">1</span><br></pre></td><td class="code"><pre><span class="line">mysqldump -ubackup -p --master-data=2 --single-transaction --routines --triggers --events mc_order &gt; mc_order.sql</span><br></pre></td></tr></table></figure>
+<pre class=" language-sh"><code class="language-sh">mysqldump -ubackup -p --master-data=2 --single-transaction --routines --triggers --events mc_order > mc_order.sql
+</code></pre>
 <p>情况二：备份 mc-_order 数据库下的 order_master 表：</p>
-<figure class="highlight sh"><table><tr><td class="gutter"><pre><span class="line">1</span><br></pre></td><td class="code"><pre><span class="line">mysqldump -ubackup -p --master-data=2 --single-transaction --routines --triggers --events mc_order order_master &gt; order_master.sql</span><br></pre></td></tr></table></figure>
+<pre class=" language-sh"><code class="language-sh">mysqldump -ubackup -p --master-data=2 --single-transaction --routines --triggers --events mc_order order_master > order_master.sql
+</code></pre>
 <p>情况三：备份全部的数据库，将所有的数据库都保存在 mc.sql 下：</p>
-<figure class="highlight sh"><table><tr><td class="gutter"><pre><span class="line">1</span><br></pre></td><td class="code"><pre><span class="line">mysqldump -ubackup -p --master-data=1 --single-transaction --routines --triggers --events --all-databases &gt; mc.sql</span><br></pre></td></tr></table></figure>
+<pre class=" language-sh"><code class="language-sh">mysqldump -ubackup -p --master-data=1 --single-transaction --routines --triggers --events --all-databases > mc.sql
+</code></pre>
 <p>情况四：备份 mc_order 数据库下的每个表，至指定的目录文件下，即 mc_order 下的每张表都是区分开的：</p>
 <p>注意，使用 –tab 命令需要用户具有 file 写文件的权限：</p>
-<figure class="highlight sh"><table><tr><td class="gutter"><pre><span class="line">1</span><br></pre></td><td class="code"><pre><span class="line">grant file to <span class="string">'backup'</span>@<span class="string">'localhost'</span>;</span><br></pre></td></tr></table></figure>
-<figure class="highlight sh"><table><tr><td class="gutter"><pre><span class="line">1</span><br></pre></td><td class="code"><pre><span class="line">mysqldump -ubackup -p --master-data=2 --single-transaction --routines --triggers --events --tab=<span class="string">"/data/db_backup/mc_order"</span> mc_order;</span><br></pre></td></tr></table></figure>
+<pre class=" language-sh"><code class="language-sh">grant file to 'backup'@'localhost';
+</code></pre>
+<pre class=" language-sh"><code class="language-sh">mysqldump -ubackup -p --master-data=2 --single-transaction --routines --triggers --events --tab="/data/db_backup/mc_order" mc_order;
+</code></pre>
 <p>情况五：备份 mc_oder 下的 order_master 表中 id为1000-1050 的数据：</p>
-<figure class="highlight sh"><table><tr><td class="gutter"><pre><span class="line">1</span><br></pre></td><td class="code"><pre><span class="line">mysqldump -ubackup -p --master-data=2 --single-transaction --routines --<span class="built_in">where</span> <span class="string">"order_id&gt;1000 and order_id&lt;1050"</span> mc_order order_master &gt; order_master_1000.sql</span><br></pre></td></tr></table></figure>
-<h3 id="四、备份脚本"><a href="#四、备份脚本" class="headerlink" title="四、备份脚本"></a>四、备份脚本</h3><figure class="highlight sh"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br><span class="line">14</span><br><span class="line">15</span><br><span class="line">16</span><br><span class="line">17</span><br><span class="line">18</span><br><span class="line">19</span><br><span class="line">20</span><br><span class="line">21</span><br><span class="line">22</span><br><span class="line">23</span><br></pre></td><td class="code"><pre><span class="line"><span class="meta">#!/bin/bash</span></span><br><span class="line"><span class="comment">##########Basic paramters ######</span></span><br><span class="line">DAY=`date +%Y%m%d`</span><br><span class="line">Environment=$(/sbin/ifconifg | grep <span class="string">"inet addr"</span> | head -1 |grep -v <span class="string">"127.0.0.1"</span> | awk <span class="string">'&#123;print $2;&#125;'</span> | awk -F<span class="string">':'</span> <span class="string">'&#123;print $2;&#125;'</span>)</span><br><span class="line">USER=<span class="string">"backup"</span></span><br><span class="line">PASSWD=<span class="string">"123456"</span></span><br><span class="line">HostPort=<span class="string">"3306"</span></span><br><span class="line">MYSQLBASE=<span class="string">"/home/sql"</span></span><br><span class="line">DATADIR=<span class="string">"/data/db_backup/<span class="variable">$&#123;DAY&#125;</span>"</span></span><br><span class="line">MYSQL=`/usr/bin/whick mysql`</span><br><span class="line">mkdir -p <span class="variable">$&#123;DATADIR&#125;</span></span><br><span class="line"></span><br><span class="line"><span class="function"><span class="title">Dump</span></span>()&#123;</span><br><span class="line"> <span class="variable">$&#123;MYSQLDUMP&#125;</span> --master-data=2 --single-transaction --routines --triggers --events -u<span class="variable">$&#123;USER&#125;</span> -p<span class="variable">$&#123;PASSWD&#125;</span> -P<span class="variable">$&#123;HostPort&#125;</span> <span class="variable">$&#123;database&#125;</span> &gt; <span class="variable">$&#123;DATADIR&#125;</span>/<span class="variable">$&#123;Environment&#125;</span>-<span class="variable">$&#123;database&#125;</span>.sql</span><br><span class="line"> <span class="built_in">cd</span> <span class="variable">$&#123;DATADIR&#125;</span></span><br><span class="line"> gzip <span class="variable">$&#123;Environment&#125;</span>-<span class="variable">$&#123;database&#125;</span>.sql</span><br><span class="line">&#125;</span><br><span class="line"></span><br><span class="line"><span class="keyword">for</span> db <span class="keyword">in</span> `<span class="built_in">echo</span> <span class="string">"SELECT schema_name FROM information_schema.schemata where schema_name not in ('information_schema','sys','performance_schema')"</span> | <span class="variable">$&#123;MYSQL&#125;</span> -u<span class="variable">$&#123;USER&#125;</span> -p<span class="variable">$&#123;PASSWD&#125;</span> --skip-column-names`</span><br><span class="line"><span class="keyword">do</span></span><br><span class="line">  database=<span class="variable">$&#123;db&#125;</span></span><br><span class="line">  Dump</span><br><span class="line"><span class="keyword">done</span></span><br></pre></td></tr></table></figure>
+<pre class=" language-sh"><code class="language-sh">mysqldump -ubackup -p --master-data=2 --single-transaction --routines --where "order_id>1000 and order_id<1050" mc_order order_master > order_master_1000.sql
+</code></pre>
+<h3 id="四、备份脚本"><a href="#四、备份脚本" class="headerlink" title="四、备份脚本"></a>四、备份脚本</h3><pre class=" language-sh"><code class="language-sh">#!/bin/bash
+##########Basic paramters ######
+DAY=`date +%Y%m%d`
+Environment=$(/sbin/ifconifg | grep "inet addr" | head -1 |grep -v "127.0.0.1" | awk '{print $2;}' | awk -F':' '{print $2;}')
+USER="backup"
+PASSWD="123456"
+HostPort="3306"
+MYSQLBASE="/home/sql"
+DATADIR="/data/db_backup/${DAY}"
+MYSQL=`/usr/bin/whick mysql`
+mkdir -p ${DATADIR}
+
+Dump(){
+ ${MYSQLDUMP} --master-data=2 --single-transaction --routines --triggers --events -u${USER} -p${PASSWD} -P${HostPort} ${database} > ${DATADIR}/${Environment}-${database}.sql
+ cd ${DATADIR}
+ gzip ${Environment}-${database}.sql
+}
+
+for db in `echo "SELECT schema_name FROM information_schema.schemata where schema_name not in ('information_schema','sys','performance_schema')" | ${MYSQL} -u${USER} -p${PASSWD} --skip-column-names`
+do
+  database=${db}
+  Dump
+done
+</code></pre>
 <h2 id="二、数据库恢复"><a href="#二、数据库恢复" class="headerlink" title="二、数据库恢复"></a>二、数据库恢复</h2><h3 id="1-使用-mysqldump-恢复语句"><a href="#1-使用-mysqldump-恢复语句" class="headerlink" title="1. 使用 mysqldump 恢复语句"></a>1. 使用 mysqldump 恢复语句</h3><p>数据的恢复是单线程进行的，因此数据量越大，执行效率可能越慢</p>
 <h3 id="2-如何进行指定时间点的恢复"><a href="#2-如何进行指定时间点的恢复" class="headerlink" title="2. 如何进行指定时间点的恢复"></a>2. 如何进行指定时间点的恢复</h3><ol>
 <li>先决条件<ol>
@@ -691,63 +722,6 @@
             <div class="article-badge left-badge text-color">
                 <i class="fa fa-chevron-left"></i>&nbsp;Previous</div>
             <div class="card">
-                <a href="/2019/06/24/读书笔记/《JavaDesignPatterns》/0.目录/">
-                    <div class="card-image">
-                        
-                        
-                        <img src="/medias/featureimages/15.jpg" class="responsive-img" alt="《Java Design Patterns》读书笔记 - 目录">
-                        
-                        <span class="card-title">《Java Design Patterns》读书笔记 - 目录</span>
-                    </div>
-                </a>
-                <div class="card-content article-content">
-                    <div class="summary block-with-text">
-                        
-                            《Java Design Patterns》读书笔记 - 目录
-
-
-设计原则
-简单工厂模式/静态工厂模式
-工厂方法模式/虚拟构造模式/多态工厂模式
-抽象工厂模式/Kit模式
-单例模式 - 懒汉模式/饿汉模式/IoDH
-原型模式 - 浅克隆与
-                        
-                    </div>
-                    <div class="publish-info">
-                        <span class="publish-date">
-                            <i class="fa fa-clock-o fa-fw icon-date"></i>2019-06-24
-                        </span>
-                        <span class="publish-author">
-                            
-                            <i class="fa fa-bookmark fa-fw icon-category"></i>
-                            
-                            <a href="/categories/设计模式/" class="post-category" target="_blank">
-                                    设计模式
-                                </a>
-                            
-                            
-                        </span>
-                    </div>
-                </div>
-                
-                <div class="card-action article-tags">
-                    
-                    <a href="/tags/读书笔记/" target="_blank">
-                        <span class="chip bg-color">读书笔记</span>
-                    </a>
-                    
-                </div>
-                
-            </div>
-        </div>
-        
-        
-        <div class="article col s12 m6" data-aos="fade-up">
-            <div class="article-badge right-badge text-color">
-                Next&nbsp;<i class="fa fa-chevron-right"></i>
-            </div>
-            <div class="card">
                 <a href="/2019/06/23/读书笔记/《高性能MySQL》/10.MySQL架构拆分/">
                     <div class="card-image">
                         
@@ -765,8 +739,63 @@
                         
                     </div>
                     <div class="publish-info">
+                        <span class="publish-date">
+                            <i class="fa fa-clock-o fa-fw icon-date"></i>2019-06-23
+                        </span>
+                        <span class="publish-author">
+                            
+                            <i class="fa fa-bookmark fa-fw icon-category"></i>
+                            
+                            <a href="/categories/高性能MySQL/" class="post-category" target="_blank">
+                                    高性能MySQL
+                                </a>
+                            
+                            
+                        </span>
+                    </div>
+                </div>
+                
+                <div class="card-action article-tags">
+                    
+                    <a href="/tags/MySQL/" target="_blank">
+                        <span class="chip bg-color">MySQL</span>
+                    </a>
+                    
+                    <a href="/tags/数据库/" target="_blank">
+                        <span class="chip bg-color">数据库</span>
+                    </a>
+                    
+                </div>
+                
+            </div>
+        </div>
+        
+        
+        <div class="article col s12 m6" data-aos="fade-up">
+            <div class="article-badge right-badge text-color">
+                Next&nbsp;<i class="fa fa-chevron-right"></i>
+            </div>
+            <div class="card">
+                <a href="/2019/06/21/读书笔记/《高性能MySQL》/8.MySQL慢查日志/">
+                    <div class="card-image">
+                        
+                        
+                        <img src="/medias/featureimages/17.jpg" class="responsive-img" alt="《高性能MySQL》第八章 MySQL 慢查询日志">
+                        
+                        <span class="card-title">《高性能MySQL》第八章 MySQL 慢查询日志</span>
+                    </div>
+                </a>
+                <div class="card-content article-content">
+                    <div class="summary block-with-text">
+                        
+                            第八章 MySQL 慢查询日志在业务中，无法保证对程序中的每一条SQL 都进行优化，那么就需要对某一些指定条件的 sql 进行优化。
+一、捕获有问题的SQL启用 mysql 慢查询日志
+set global show_query_log_f
+                        
+                    </div>
+                    <div class="publish-info">
                             <span class="publish-date">
-                                <i class="fa fa-clock-o fa-fw icon-date"></i>2019-06-23
+                                <i class="fa fa-clock-o fa-fw icon-date"></i>2019-06-21
                             </span>
                         <span class="publish-author">
                             
@@ -940,6 +969,10 @@
     </a>
 
 
+
+    <a href="/atom.xml" class="tooltipped" target="_blank" data-tooltip="RSS 订阅" data-position="top" data-delay="50">
+        <i class="fa fa-rss"></i>
+    </a>
 </div>
     </div>
 </footer>

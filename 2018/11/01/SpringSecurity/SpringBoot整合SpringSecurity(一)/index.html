@@ -31,7 +31,7 @@
     </style>
 
     <script src="/libs/jquery/jquery-2.2.0.min.js"></script>
-</head>
+<link rel="stylesheet" href="/css/prism-tomorrow.css" type="text/css"></head>
 
 
 <body>
@@ -433,14 +433,54 @@
 <h2 id="一、引入依赖"><a href="#一、引入依赖" class="headerlink" title="一、引入依赖"></a>一、引入依赖</h2><p>新建一个 SpringBoot 项目，引入依赖的方式有很多种：</p>
 <h3 id="1-通过IDE来初始化"><a href="#1-通过IDE来初始化" class="headerlink" title="1.通过IDE来初始化"></a>1.通过IDE来初始化</h3><p><img src="https://upload-images.jianshu.io/upload_images/13603359-9e0376a4368e75e5.png?imageMogr2/auto-orient/strip%7CimageView2/2/w/1240" alt="1.通过IDE来初始化"></p>
 <h3 id="2-在构建工具中引入依赖"><a href="#2-在构建工具中引入依赖" class="headerlink" title="2.在构建工具中引入依赖"></a>2.在构建工具中引入依赖</h3><p>如果是已经创建好的项目，想重新引入依赖，可以在 <code>POM.xml</code> 或者 <code>build.gradle</code> 中加入以下几个依赖，使用starter的好处是可以快速集成spring框架：</p>
-<figure class="highlight gradle"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br></pre></td><td class="code"><pre><span class="line">implementation(<span class="string">'org.springframework.boot:spring-boot-starter-security'</span>)</span><br><span class="line">runtimeOnly(<span class="string">'mysql:mysql-connector-java'</span>)</span><br><span class="line">implementation(<span class="string">'org.springframework.boot:spring-boot-starter-data-mongodb'</span>)</span><br><span class="line">implementation(<span class="string">'org.springframework.boot:spring-boot-starter-web'</span>)</span><br><span class="line">testImplementation(<span class="string">'org.springframework.boot:spring-boot-starter-test'</span>)</span><br><span class="line">testImplementation(<span class="string">'org.springframework.security:spring-security-test'</span>)</span><br></pre></td></tr></table></figure>
+<pre class=" language-gradle"><code class="language-gradle">implementation('org.springframework.boot:spring-boot-starter-security')
+runtimeOnly('mysql:mysql-connector-java')
+implementation('org.springframework.boot:spring-boot-starter-data-mongodb')
+implementation('org.springframework.boot:spring-boot-starter-web')
+testImplementation('org.springframework.boot:spring-boot-starter-test')
+testImplementation('org.springframework.security:spring-security-test')
+</code></pre>
 <p>注：因为我们后面需要使用 <code>MySQL</code> 或者 <code>MongoDB</code> 作为数据源，所以这里先引入这两个依赖</p>
 <p>这时我们直接请求 <code>localhost:8080</code>，会被 security 以未登录身份强制跳转至默认的登录页面:</p>
 <p><img src="http://koral-home.oss-cn-beijing.aliyuncs.com/18-11-20/72708746.jpg" alt="Please login"></p>
 <h2 id="二、添加登录账号"><a href="#二、添加登录账号" class="headerlink" title="二、添加登录账号"></a>二、添加登录账号</h2><h3 id="1-HelloController"><a href="#1-HelloController" class="headerlink" title="1.HelloController"></a>1.HelloController</h3><p>随便写一个控制器，用于测试登录之后的请求是否通过了。</p>
-<figure class="highlight java"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br></pre></td><td class="code"><pre><span class="line"><span class="meta">@RestController</span></span><br><span class="line"><span class="meta">@RequestMapping</span>(<span class="string">"/hello"</span>)</span><br><span class="line"><span class="keyword">public</span> <span class="class"><span class="keyword">class</span> <span class="title">HelloController</span> </span>&#123;</span><br><span class="line">    <span class="meta">@GetMapping</span></span><br><span class="line">    <span class="function"><span class="keyword">public</span> String <span class="title">hello</span><span class="params">()</span></span>&#123;</span><br><span class="line">        <span class="keyword">return</span> <span class="string">"Hello SpringSecurity !"</span>;</span><br><span class="line">    &#125;</span><br><span class="line">&#125;</span><br></pre></td></tr></table></figure>
+<pre class=" language-java"><code class="language-java"><span class="token annotation punctuation">@RestController</span>
+<span class="token annotation punctuation">@RequestMapping</span><span class="token punctuation">(</span><span class="token string">"/hello"</span><span class="token punctuation">)</span>
+<span class="token keyword">public</span> <span class="token keyword">class</span> <span class="token class-name">HelloController</span> <span class="token punctuation">{</span>
+    <span class="token annotation punctuation">@GetMapping</span>
+    <span class="token keyword">public</span> String <span class="token function">hello</span><span class="token punctuation">(</span><span class="token punctuation">)</span><span class="token punctuation">{</span>
+        <span class="token keyword">return</span> <span class="token string">"Hello SpringSecurity !"</span><span class="token punctuation">;</span>
+    <span class="token punctuation">}</span>
+<span class="token punctuation">}</span>
+</code></pre>
 <h3 id="2-SecurityConfiguration"><a href="#2-SecurityConfiguration" class="headerlink" title="2.SecurityConfiguration"></a>2.SecurityConfiguration</h3><p>创建 <code>SecurityConfiguration</code> 安全配置类，在其中添加默认的登录用户。</p>
-<figure class="highlight java"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br><span class="line">14</span><br><span class="line">15</span><br><span class="line">16</span><br><span class="line">17</span><br><span class="line">18</span><br><span class="line">19</span><br><span class="line">20</span><br><span class="line">21</span><br><span class="line">22</span><br><span class="line">23</span><br><span class="line">24</span><br><span class="line">25</span><br><span class="line">26</span><br></pre></td><td class="code"><pre><span class="line"><span class="meta">@Configuration</span></span><br><span class="line"><span class="meta">@EnableWebSecurity</span></span><br><span class="line"><span class="keyword">public</span> <span class="class"><span class="keyword">class</span> <span class="title">SecurityConfiguration</span> <span class="keyword">extends</span> <span class="title">WebSecurityConfigurerAdapter</span> </span>&#123;</span><br><span class="line"></span><br><span class="line">    <span class="meta">@Override</span></span><br><span class="line">    <span class="function"><span class="keyword">protected</span> <span class="keyword">void</span> <span class="title">configure</span><span class="params">(AuthenticationManagerBuilder auth)</span> <span class="keyword">throws</span> Exception </span>&#123;</span><br><span class="line">        <span class="comment">// 在内存中认证，后面也是通过这里指定数据库验证的</span></span><br><span class="line">        auth.inMemoryAuthentication()</span><br><span class="line">                <span class="comment">// 加密方式</span></span><br><span class="line">                .passwordEncoder(passwordEncoder())</span><br><span class="line">                <span class="comment">// 用户名密码</span></span><br><span class="line">                .withUser(<span class="string">"username"</span>).password(<span class="string">"password"</span>)</span><br><span class="line">                <span class="comment">// 权限</span></span><br><span class="line">                .roles(<span class="string">"USER"</span>);</span><br><span class="line">    &#125;</span><br><span class="line"></span><br><span class="line">    <span class="comment">/**</span></span><br><span class="line"><span class="comment">     * 不加密的 密码加密方式</span></span><br><span class="line"><span class="comment">     * 如果不指定密码加密方式，会抛出异常如下：</span></span><br><span class="line"><span class="comment">     *  There is no PasswordEncoder mapped for the id “null”</span></span><br><span class="line"><span class="comment">     */</span></span><br><span class="line">    <span class="meta">@Bean</span></span><br><span class="line">    <span class="function"><span class="keyword">public</span> NoOpPasswordEncoder <span class="title">passwordEncoder</span><span class="params">()</span></span>&#123;</span><br><span class="line">        <span class="keyword">return</span> (NoOpPasswordEncoder) NoOpPasswordEncoder.getInstance();</span><br><span class="line">    &#125;</span><br><span class="line">&#125;</span><br></pre></td></tr></table></figure>
+<pre class=" language-java"><code class="language-java"><span class="token annotation punctuation">@Configuration</span>
+<span class="token annotation punctuation">@EnableWebSecurity</span>
+<span class="token keyword">public</span> <span class="token keyword">class</span> <span class="token class-name">SecurityConfiguration</span> <span class="token keyword">extends</span> <span class="token class-name">WebSecurityConfigurerAdapter</span> <span class="token punctuation">{</span>
+
+    <span class="token annotation punctuation">@Override</span>
+    <span class="token keyword">protected</span> <span class="token keyword">void</span> <span class="token function">configure</span><span class="token punctuation">(</span>AuthenticationManagerBuilder auth<span class="token punctuation">)</span> <span class="token keyword">throws</span> Exception <span class="token punctuation">{</span>
+        <span class="token comment" spellcheck="true">// 在内存中认证，后面也是通过这里指定数据库验证的</span>
+        auth<span class="token punctuation">.</span><span class="token function">inMemoryAuthentication</span><span class="token punctuation">(</span><span class="token punctuation">)</span>
+                <span class="token comment" spellcheck="true">// 加密方式</span>
+                <span class="token punctuation">.</span><span class="token function">passwordEncoder</span><span class="token punctuation">(</span><span class="token function">passwordEncoder</span><span class="token punctuation">(</span><span class="token punctuation">)</span><span class="token punctuation">)</span>
+                <span class="token comment" spellcheck="true">// 用户名密码</span>
+                <span class="token punctuation">.</span><span class="token function">withUser</span><span class="token punctuation">(</span><span class="token string">"username"</span><span class="token punctuation">)</span><span class="token punctuation">.</span><span class="token function">password</span><span class="token punctuation">(</span><span class="token string">"password"</span><span class="token punctuation">)</span>
+                <span class="token comment" spellcheck="true">// 权限</span>
+                <span class="token punctuation">.</span><span class="token function">roles</span><span class="token punctuation">(</span><span class="token string">"USER"</span><span class="token punctuation">)</span><span class="token punctuation">;</span>
+    <span class="token punctuation">}</span>
+
+    <span class="token comment" spellcheck="true">/**
+     * 不加密的 密码加密方式
+     * 如果不指定密码加密方式，会抛出异常如下：
+     *  There is no PasswordEncoder mapped for the id “null”
+     */</span>
+    <span class="token annotation punctuation">@Bean</span>
+    <span class="token keyword">public</span> NoOpPasswordEncoder <span class="token function">passwordEncoder</span><span class="token punctuation">(</span><span class="token punctuation">)</span><span class="token punctuation">{</span>
+        <span class="token keyword">return</span> <span class="token punctuation">(</span>NoOpPasswordEncoder<span class="token punctuation">)</span> NoOpPasswordEncoder<span class="token punctuation">.</span><span class="token function">getInstance</span><span class="token punctuation">(</span><span class="token punctuation">)</span><span class="token punctuation">;</span>
+    <span class="token punctuation">}</span>
+<span class="token punctuation">}</span>
+</code></pre>
 <p>重新访问 <code>localhost:8080/hello</code>，输入我们设置的账号密码，即可看到内容 <code>hello world</code>。</p>
 
             </div>
@@ -646,19 +686,22 @@
             <div class="article-badge left-badge text-color">
                 <i class="fa fa-chevron-left"></i>&nbsp;Previous</div>
             <div class="card">
-                <a href="/2018/11/01/SpringSecurity/SpringBoot整合SpringSecurity(四)/">
+                <a href="/2018/11/01/SpringSecurity/SpringBoot整合SpringSecurity(三)/">
                     <div class="card-image">
                         
                         
-                        <img src="/medias/featureimages/22.jpg" class="responsive-img" alt="SpringBoot整合SpringSecurity(四)-整合CAS">
+                        <img src="/medias/featureimages/0.jpg" class="responsive-img" alt="SpringBoot整合SpringSecurity(三)-动态验证权限">
                         
-                        <span class="card-title">SpringBoot整合SpringSecurity(四)-整合CAS</span>
+                        <span class="card-title">SpringBoot整合SpringSecurity(三)-动态验证权限</span>
                     </div>
                 </a>
                 <div class="card-content article-content">
                     <div class="summary block-with-text">
                         
-                            SpringBoot整合SpringSecurity(四)-整合CAS
+                            SpringBoot整合SpringSecurity(三)-动态验证权限用户 - 角色 - 权限关系
+
+其中roles、permission可以理解为1对多的关系，具体实现我就不写在这里了。
+注入用户权限在登录时，通过实现 UserDeta
                         
                     </div>
                     <div class="publish-info">
@@ -691,19 +734,22 @@
                 Next&nbsp;<i class="fa fa-chevron-right"></i>
             </div>
             <div class="card">
-                <a href="/2018/11/01/SpringSecurity/SpringBoot整合SpringSecurity(三.2)/">
+                <a href="/2018/11/01/SpringSecurity/SpringBoot整合SpringSecurity(二)/">
                     <div class="card-image">
                         
                         
-                        <img src="/medias/featureimages/0.jpg" class="responsive-img" alt="SpringBoot整合SpringSecurity(三)-动态验证权限">
+                        <img src="/medias/featureimages/14.jpg" class="responsive-img" alt="SpringBoot整合SpringSecurity(二)-使用数据库进行验证">
                         
-                        <span class="card-title">SpringBoot整合SpringSecurity(三)-动态验证权限</span>
+                        <span class="card-title">SpringBoot整合SpringSecurity(二)-使用数据库进行验证</span>
                     </div>
                 </a>
                 <div class="card-content article-content">
                     <div class="summary block-with-text">
                         
-                            SpringBoot整合SpringSecurity(三)-动态更新用户的权限用户权限的加载是在 调用了 UserDetailsService.loadUserByUsername(String username) 后构建出的 UserDe
+                            SpringBoot整合SpringSecurity(二)-使用数据库进行验证本文使用的是 SpringBoot + SpringSecurity，做一个 Web端的权限验证框架。大致分为以下几个部分：
+
+初始化Security框架
+使用数
                         
                     </div>
                     <div class="publish-info">
@@ -874,6 +920,10 @@
     </a>
 
 
+
+    <a href="/atom.xml" class="tooltipped" target="_blank" data-tooltip="RSS 订阅" data-position="top" data-delay="50">
+        <i class="fa fa-rss"></i>
+    </a>
 </div>
     </div>
 </footer>

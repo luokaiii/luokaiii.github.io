@@ -7,7 +7,8 @@
     <meta name="keywords" content="读取 Properties 文件的几种方式, 帅">
     <meta name="description" content="读取Properties文件的几种方式
 
-读取 Properties 文件1.在xml 配置文件中使用”${}”123&amp;lt;bean id=&#34;xxx&#34; class=&#34;com.javadoop.Xxx&#34;&amp;gt;     &amp;lt;proper">
+读取 Properties 文件1.在xml 配置文件中使用”${}”&amp;lt;bean id=&#34;xxx&#34; class=&#34;com.javadoop.Xxx&#34;&gt;
+     &amp;lt;property na">
     <meta http-equiv="X-UA-Compatible" content="IE=edge">
     <meta name="viewport" content="width=device-width, initial-scale=1.0, user-scalable=no">
     <meta name="renderer" content="webkit|ie-stand|ie-comp">
@@ -30,7 +31,7 @@
     </style>
 
     <script src="/libs/jquery/jquery-2.2.0.min.js"></script>
-</head>
+<link rel="stylesheet" href="/css/prism-tomorrow.css" type="text/css"></head>
 
 
 <body>
@@ -425,28 +426,67 @@
             <div id="articleContent">
                 <h1 id="读取Properties文件的几种方式"><a href="#读取Properties文件的几种方式" class="headerlink" title="读取Properties文件的几种方式"></a>读取Properties文件的几种方式</h1><p><img src="https://upload-images.jianshu.io/upload_images/13603359-9bc057f7c3fab711.png?imageMogr2/auto-orient/strip%7CimageView2/2/w/1240" alt="读取Properties文件的几种方式"></p>
 <a id="more"></a>
-<h2 id="读取-Properties-文件"><a href="#读取-Properties-文件" class="headerlink" title="读取 Properties 文件"></a>读取 Properties 文件</h2><h3 id="1-在xml-配置文件中使用”-”"><a href="#1-在xml-配置文件中使用”-”" class="headerlink" title="1.在xml 配置文件中使用”${}”"></a>1.在xml 配置文件中使用”${}”</h3><figure class="highlight"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br></pre></td><td class="code"><pre><span class="line">&lt;bean id=<span class="string">"xxx"</span> <span class="class"><span class="keyword">class</span></span>=<span class="string">"com.javadoop.Xxx"</span>&gt;</span><br><span class="line">     &lt;property name=<span class="string">"url"</span> value=<span class="string">"$&#123;javadoop.jdbc.url&#125;"</span> /&gt;</span><br><span class="line">&lt;/bean&gt;</span><br></pre></td></tr></table></figure>
-<h3 id="2-通过-Value注解注入"><a href="#2-通过-Value注解注入" class="headerlink" title="2. 通过@Value注解注入"></a>2. 通过@Value注解注入</h3><figure class="highlight java"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br></pre></td><td class="code"><pre><span class="line"><span class="meta">@Value</span>(<span class="string">"$&#123;javadoop.jdbc.url&#125;"</span>)</span><br><span class="line"><span class="keyword">private</span> String url;</span><br></pre></td></tr></table></figure>
+<h2 id="读取-Properties-文件"><a href="#读取-Properties-文件" class="headerlink" title="读取 Properties 文件"></a>读取 Properties 文件</h2><h3 id="1-在xml-配置文件中使用”-”"><a href="#1-在xml-配置文件中使用”-”" class="headerlink" title="1.在xml 配置文件中使用”${}”"></a>1.在xml 配置文件中使用”${}”</h3><pre class=" language-java"><code class="language-java"><span class="token operator">&lt;</span>bean id<span class="token operator">=</span><span class="token string">"xxx"</span> <span class="token keyword">class</span><span class="token operator">=</span><span class="token string">"com.javadoop.Xxx"</span><span class="token operator">></span>
+     <span class="token operator">&lt;</span>property name<span class="token operator">=</span><span class="token string">"url"</span> value<span class="token operator">=</span><span class="token string">"${javadoop.jdbc.url}"</span> <span class="token operator">/</span><span class="token operator">></span>
+<span class="token operator">&lt;</span><span class="token operator">/</span>bean<span class="token operator">></span>
+</code></pre>
+<h3 id="2-通过-Value注解注入"><a href="#2-通过-Value注解注入" class="headerlink" title="2. 通过@Value注解注入"></a>2. 通过@Value注解注入</h3><pre class=" language-java"><code class="language-java"><span class="token annotation punctuation">@Value</span><span class="token punctuation">(</span><span class="token string">"${javadoop.jdbc.url}"</span><span class="token punctuation">)</span>
+<span class="token keyword">private</span> String url<span class="token punctuation">;</span>
+</code></pre>
 <h3 id="3-通过Environment获取"><a href="#3-通过Environment获取" class="headerlink" title="3.通过Environment获取"></a>3.通过Environment获取</h3><p>注意：只有使用注解 @PropertySource 的时候才可以使用，否则会 null ; 如果是 SpringBoot 的application.properties 注册 的，也可以</p>
-<figure class="highlight java"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br></pre></td><td class="code"><pre><span class="line"><span class="meta">@Autowired</span></span><br><span class="line"><span class="keyword">private</span> Environment env;</span><br><span class="line"></span><br><span class="line"><span class="function"><span class="keyword">public</span> String <span class="title">getUrl</span><span class="params">()</span> </span>&#123;</span><br><span class="line">   <span class="keyword">return</span> env.getProperty(<span class="string">"javadoop.jdbc.url"</span>);</span><br><span class="line">&#125;</span><br></pre></td></tr></table></figure>
-<h2 id="Properties的使用"><a href="#Properties的使用" class="headerlink" title="Properties的使用"></a>Properties的使用</h2><h3 id="1-通过XML配置"><a href="#1-通过XML配置" class="headerlink" title="1.通过XML配置"></a>1.通过XML配置</h3><figure class="highlight java"><table><tr><td class="gutter"><pre><span class="line">1</span><br></pre></td><td class="code"><pre><span class="line">&lt;context:property-placeholder location=<span class="string">"classpath:sys.properties"</span> /&gt;</span><br></pre></td></tr></table></figure>
-<h3 id="2-通过-PropertySource配置"><a href="#2-通过-PropertySource配置" class="headerlink" title="2.通过@PropertySource配置"></a>2.通过@PropertySource配置</h3><figure class="highlight java"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br></pre></td><td class="code"><pre><span class="line"><span class="meta">@PropertySource</span>(<span class="string">"classpath:sys.properties"</span>)</span><br><span class="line"><span class="meta">@Configuration</span></span><br><span class="line"><span class="keyword">public</span> <span class="class"><span class="keyword">class</span> <span class="title">JavaDoopConfig</span> </span>&#123;</span><br><span class="line"></span><br><span class="line">&#125;</span><br></pre></td></tr></table></figure>
-<h3 id="3-PropertyPlaceholderConfigurer-Spring3-1之前"><a href="#3-PropertyPlaceholderConfigurer-Spring3-1之前" class="headerlink" title="3.PropertyPlaceholderConfigurer(Spring3.1之前)"></a>3.PropertyPlaceholderConfigurer(Spring3.1之前)</h3><figure class="highlight java"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br></pre></td><td class="code"><pre><span class="line"><span class="meta">@Bean</span></span><br><span class="line"><span class="function"><span class="keyword">public</span> PropertySourcesPlaceholderConfigurer <span class="title">properties</span><span class="params">()</span> </span>&#123;</span><br><span class="line">   PropertySourcesPlaceholderConfigurer pspc = <span class="keyword">new</span> PropertySourcesPlaceholderConfigurer();</span><br><span class="line">   Resource[] resources = <span class="keyword">new</span> ClassPathResource[]&#123;<span class="keyword">new</span> ClassPathResource(<span class="string">"sys.properties"</span>)&#125;;</span><br><span class="line">   pspc.setLocations(resources);</span><br><span class="line">   pspc.setIgnoreUnresolvablePlaceholders(<span class="keyword">true</span>);</span><br><span class="line">   <span class="keyword">return</span> pspc;</span><br><span class="line">&#125;</span><br></pre></td></tr></table></figure>
+<pre class=" language-java"><code class="language-java"><span class="token annotation punctuation">@Autowired</span>
+<span class="token keyword">private</span> Environment env<span class="token punctuation">;</span>
+
+<span class="token keyword">public</span> String <span class="token function">getUrl</span><span class="token punctuation">(</span><span class="token punctuation">)</span> <span class="token punctuation">{</span>
+   <span class="token keyword">return</span> env<span class="token punctuation">.</span><span class="token function">getProperty</span><span class="token punctuation">(</span><span class="token string">"javadoop.jdbc.url"</span><span class="token punctuation">)</span><span class="token punctuation">;</span>
+<span class="token punctuation">}</span>
+</code></pre>
+<h2 id="Properties的使用"><a href="#Properties的使用" class="headerlink" title="Properties的使用"></a>Properties的使用</h2><h3 id="1-通过XML配置"><a href="#1-通过XML配置" class="headerlink" title="1.通过XML配置"></a>1.通过XML配置</h3><pre class=" language-java"><code class="language-java"><span class="token operator">&lt;</span>context<span class="token operator">:</span>property<span class="token operator">-</span>placeholder location<span class="token operator">=</span><span class="token string">"classpath:sys.properties"</span> <span class="token operator">/</span><span class="token operator">></span>
+</code></pre>
+<h3 id="2-通过-PropertySource配置"><a href="#2-通过-PropertySource配置" class="headerlink" title="2.通过@PropertySource配置"></a>2.通过@PropertySource配置</h3><pre class=" language-java"><code class="language-java"><span class="token annotation punctuation">@PropertySource</span><span class="token punctuation">(</span><span class="token string">"classpath:sys.properties"</span><span class="token punctuation">)</span>
+<span class="token annotation punctuation">@Configuration</span>
+<span class="token keyword">public</span> <span class="token keyword">class</span> <span class="token class-name">JavaDoopConfig</span> <span class="token punctuation">{</span>
+
+<span class="token punctuation">}</span>
+</code></pre>
+<h3 id="3-PropertyPlaceholderConfigurer-Spring3-1之前"><a href="#3-PropertyPlaceholderConfigurer-Spring3-1之前" class="headerlink" title="3.PropertyPlaceholderConfigurer(Spring3.1之前)"></a>3.PropertyPlaceholderConfigurer(Spring3.1之前)</h3><pre class=" language-java"><code class="language-java"><span class="token annotation punctuation">@Bean</span>
+<span class="token keyword">public</span> PropertySourcesPlaceholderConfigurer <span class="token function">properties</span><span class="token punctuation">(</span><span class="token punctuation">)</span> <span class="token punctuation">{</span>
+   PropertySourcesPlaceholderConfigurer pspc <span class="token operator">=</span> <span class="token keyword">new</span> <span class="token class-name">PropertySourcesPlaceholderConfigurer</span><span class="token punctuation">(</span><span class="token punctuation">)</span><span class="token punctuation">;</span>
+   Resource<span class="token punctuation">[</span><span class="token punctuation">]</span> resources <span class="token operator">=</span> <span class="token keyword">new</span> <span class="token class-name">ClassPathResource</span><span class="token punctuation">[</span><span class="token punctuation">]</span><span class="token punctuation">{</span><span class="token keyword">new</span> <span class="token class-name">ClassPathResource</span><span class="token punctuation">(</span><span class="token string">"sys.properties"</span><span class="token punctuation">)</span><span class="token punctuation">}</span><span class="token punctuation">;</span>
+   pspc<span class="token punctuation">.</span><span class="token function">setLocations</span><span class="token punctuation">(</span>resources<span class="token punctuation">)</span><span class="token punctuation">;</span>
+   pspc<span class="token punctuation">.</span><span class="token function">setIgnoreUnresolvablePlaceholders</span><span class="token punctuation">(</span><span class="token boolean">true</span><span class="token punctuation">)</span><span class="token punctuation">;</span>
+   <span class="token keyword">return</span> pspc<span class="token punctuation">;</span>
+<span class="token punctuation">}</span>
+</code></pre>
 <h2 id="Spring-Boot"><a href="#Spring-Boot" class="headerlink" title="Spring Boot"></a>Spring Boot</h2><p>我们先去生成一个 SpringBoot 项目，不会的可以使用 <code>SpringBoot</code> 的 <a href="start.spring.io">在线生成服务</a>,直接下载到本地即可。</p>
 <p>在生成的项目中，默认包含一个 application.properties 的配置文件，只需配置，SpringBoot 会帮我们注册。</p>
 <p>如果需要换配置文件，则在启动时指定即可：</p>
-<figure class="highlight java"><table><tr><td class="gutter"><pre><span class="line">1</span><br></pre></td><td class="code"><pre><span class="line">java -Dspring.config.location=classpath:sys.properties -jar app.jar</span><br></pre></td></tr></table></figure>
+<pre class=" language-java"><code class="language-java">java <span class="token operator">-</span>Dspring<span class="token punctuation">.</span>config<span class="token punctuation">.</span>location<span class="token operator">=</span>classpath<span class="token operator">:</span>sys<span class="token punctuation">.</span>properties <span class="token operator">-</span>jar app<span class="token punctuation">.</span>jar
+</code></pre>
 <h3 id="application-env-properties"><a href="#application-env-properties" class="headerlink" title="application-{env}.properties"></a>application-{env}.properties</h3><p>在 application.properties 的基础上，我们还需要新建 application-dev.properties 和application-prd.properties，用于配置环境相关的信息，然后启动的时候指定环境：</p>
-<figure class="highlight java"><table><tr><td class="gutter"><pre><span class="line">1</span><br></pre></td><td class="code"><pre><span class="line">java -Dspring.profiles.active=prd -jar app.jar</span><br></pre></td></tr></table></figure>
+<pre class=" language-java"><code class="language-java">java <span class="token operator">-</span>Dspring<span class="token punctuation">.</span>profiles<span class="token punctuation">.</span>active<span class="token operator">=</span>prd <span class="token operator">-</span>jar app<span class="token punctuation">.</span>jar
+</code></pre>
 <p>如果 application.properties 和 application-prd.properties 有key冲突，application-prd.properties 的优先级较高。</p>
 <h3 id="ConfigurationProperties"><a href="#ConfigurationProperties" class="headerlink" title="@ConfigurationProperties"></a>@ConfigurationProperties</h3><p>这个注解是 SpringBoot 才有的,我们在 <code>application.properties</code> 中加入</p>
-<figure class="highlight java"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br></pre></td><td class="code"><pre><span class="line">javadoop.database.url=jdbc:mysql:</span><br><span class="line">javadoop.database.username=admin</span><br><span class="line">javadoop.database.password=admin123456</span><br></pre></td></tr></table></figure>
+<pre class=" language-java"><code class="language-java">javadoop<span class="token punctuation">.</span>database<span class="token punctuation">.</span>url<span class="token operator">=</span>jdbc<span class="token operator">:</span>mysql<span class="token operator">:</span>
+javadoop<span class="token punctuation">.</span>database<span class="token punctuation">.</span>username<span class="token operator">=</span>admin
+javadoop<span class="token punctuation">.</span>database<span class="token punctuation">.</span>password<span class="token operator">=</span>admin123456
+</code></pre>
 <p>java文件</p>
-<figure class="highlight java"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br></pre></td><td class="code"><pre><span class="line"><span class="meta">@Configuration</span></span><br><span class="line"><span class="meta">@ConfigurationProperties</span>(prefix = <span class="string">"javadoop.database"</span>)</span><br><span class="line"><span class="keyword">public</span> <span class="class"><span class="keyword">class</span> <span class="title">DataBase</span> </span>&#123;</span><br><span class="line">   String url;</span><br><span class="line">   String username;</span><br><span class="line">   String password;</span><br><span class="line">   <span class="comment">// getters and setters</span></span><br><span class="line">&#125;</span><br></pre></td></tr></table></figure>
+<pre class=" language-java"><code class="language-java"><span class="token annotation punctuation">@Configuration</span>
+<span class="token annotation punctuation">@ConfigurationProperties</span><span class="token punctuation">(</span>prefix <span class="token operator">=</span> <span class="token string">"javadoop.database"</span><span class="token punctuation">)</span>
+<span class="token keyword">public</span> <span class="token keyword">class</span> <span class="token class-name">DataBase</span> <span class="token punctuation">{</span>
+   String url<span class="token punctuation">;</span>
+   String username<span class="token punctuation">;</span>
+   String password<span class="token punctuation">;</span>
+   <span class="token comment" spellcheck="true">// getters and setters</span>
+<span class="token punctuation">}</span>
+</code></pre>
 <p>这样，就在 Spring 的容器中自动注册了一个类型为 DataBase 的 bean 了，而且属性都已经 set 好了</p>
 <p>属性配置的覆盖顺序：<br>启动参数 &gt; application-{env}.properties &gt; application.properties</p>
 <p>使用启动参数动态设置属性：</p>
-<figure class="highlight java"><table><tr><td class="gutter"><pre><span class="line">1</span><br></pre></td><td class="code"><pre><span class="line">java -Djavadoop.database.password=admin4321 -jar app.jar</span><br></pre></td></tr></table></figure>
+<pre class=" language-java"><code class="language-java">java <span class="token operator">-</span>Djavadoop<span class="token punctuation">.</span>database<span class="token punctuation">.</span>password<span class="token operator">=</span>admin4321 <span class="token operator">-</span>jar app<span class="token punctuation">.</span>jar
+</code></pre>
 
             </div>
             <hr/>
@@ -651,20 +691,21 @@
             <div class="article-badge left-badge text-color">
                 <i class="fa fa-chevron-left"></i>&nbsp;Previous</div>
             <div class="card">
-                <a href="/2018/09/30/SpringBoot/SpringBoot/">
+                <a href="/2018/09/30/SpringBoot/OSS-阿里云文件上传/">
                     <div class="card-image">
                         
                         
-                        <img src="/medias/featureimages/17.jpg" class="responsive-img" alt="SpringBoot QA">
+                        <img src="/medias/featureimages/18.jpg" class="responsive-img" alt="基于阿里云OSS的文件上传服务">
                         
-                        <span class="card-title">SpringBoot QA</span>
+                        <span class="card-title">基于阿里云OSS的文件上传服务</span>
                     </div>
                 </a>
                 <div class="card-content article-content">
                     <div class="summary block-with-text">
                         
-                            SpringBoot1. @RestController 和 @Controller12@RestController : 将所有返回的结果以字符串形式返回@Controller ：返回结果由视图解析器返回视图
-2. @SpringBoot
+                            基于阿里云OSS的文件上传服务1.阿里云 OSS 服务介绍OSS(Object Storage Service) 即对象存储服务，在 OSS 中每个文件都有一个 Key，通过这个 Key 来指向不同的文件对象。      
+
+如果你提交的k
                         
                     </div>
                     <div class="publish-info">
@@ -709,21 +750,22 @@
                 Next&nbsp;<i class="fa fa-chevron-right"></i>
             </div>
             <div class="card">
-                <a href="/2018/09/30/SpringBoot/OSS-阿里云文件上传/">
+                <a href="/2018/09/30/SpringBoot/SpringBoot/">
                     <div class="card-image">
                         
                         
-                        <img src="/medias/featureimages/18.jpg" class="responsive-img" alt="基于阿里云OSS的文件上传服务">
+                        <img src="/medias/featureimages/17.jpg" class="responsive-img" alt="SpringBoot QA">
                         
-                        <span class="card-title">基于阿里云OSS的文件上传服务</span>
+                        <span class="card-title">SpringBoot QA</span>
                     </div>
                 </a>
                 <div class="card-content article-content">
                     <div class="summary block-with-text">
                         
-                            基于阿里云OSS的文件上传服务1.阿里云 OSS 服务介绍OSS(Object Storage Service) 即对象存储服务，在 OSS 中每个文件都有一个 Key，通过这个 Key 来指向不同的文件对象。      
+                            SpringBoot1. @RestController 和 @Controller@RestController : 将所有返回的结果以字符串形式返回
+@Controller ：返回结果由视图解析器返回视图
 
-如果你提交的k
+2. @SpringBoot
                         
                     </div>
                     <div class="publish-info">
@@ -906,6 +948,10 @@
     </a>
 
 
+
+    <a href="/atom.xml" class="tooltipped" target="_blank" data-tooltip="RSS 订阅" data-position="top" data-delay="50">
+        <i class="fa fa-rss"></i>
+    </a>
 </div>
     </div>
 </footer>

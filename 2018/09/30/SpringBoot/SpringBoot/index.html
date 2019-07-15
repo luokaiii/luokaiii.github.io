@@ -5,7 +5,9 @@
 <head>
     <meta charset="utf-8">
     <meta name="keywords" content="SpringBoot QA, 帅">
-    <meta name="description" content="SpringBoot1. @RestController 和 @Controller12@RestController : 将所有返回的结果以字符串形式返回@Controller ：返回结果由视图解析器返回视图
+    <meta name="description" content="SpringBoot1. @RestController 和 @Controller@RestController : 将所有返回的结果以字符串形式返回
+@Controller ：返回结果由视图解析器返回视图
+
 2. @SpringBoot">
     <meta http-equiv="X-UA-Compatible" content="IE=edge">
     <meta name="viewport" content="width=device-width, initial-scale=1.0, user-scalable=no">
@@ -29,7 +31,7 @@
     </style>
 
     <script src="/libs/jquery/jquery-2.2.0.min.js"></script>
-</head>
+<link rel="stylesheet" href="/css/prism-tomorrow.css" type="text/css"></head>
 
 
 <body>
@@ -426,13 +428,20 @@
         <hr class="clearfix">
         <div class="card-content article-card-content">
             <div id="articleContent">
-                <h1 id="SpringBoot"><a href="#SpringBoot" class="headerlink" title="SpringBoot"></a>SpringBoot</h1><h2 id="1-RestController-和-Controller"><a href="#1-RestController-和-Controller" class="headerlink" title="1. @RestController 和 @Controller"></a>1. @RestController 和 @Controller</h2><figure class="highlight java"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br></pre></td><td class="code"><pre><span class="line"><span class="meta">@RestController</span> : 将所有返回的结果以字符串形式返回</span><br><span class="line"><span class="meta">@Controller</span> ：返回结果由视图解析器返回视图</span><br></pre></td></tr></table></figure>
+                <h1 id="SpringBoot"><a href="#SpringBoot" class="headerlink" title="SpringBoot"></a>SpringBoot</h1><h2 id="1-RestController-和-Controller"><a href="#1-RestController-和-Controller" class="headerlink" title="1. @RestController 和 @Controller"></a>1. @RestController 和 @Controller</h2><pre class=" language-java"><code class="language-java"><span class="token annotation punctuation">@RestController</span> <span class="token operator">:</span> 将所有返回的结果以字符串形式返回
+<span class="token annotation punctuation">@Controller</span> ：返回结果由视图解析器返回视图
+</code></pre>
 <h2 id="2-SpringBootApplication"><a href="#2-SpringBootApplication" class="headerlink" title="2. @SpringBootApplication"></a>2. @SpringBootApplication</h2><blockquote>
 <p>是SpringBoot的核心注解，目的是开启自动配置。</p>
 </blockquote>
 <p>关闭自动配置：@SpringBootApplication(exclude={DataSourceAutoConfiguration.class})</p>
 <p>运行原理：相当于是以下注解的集合：</p>
-<figure class="highlight java"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br></pre></td><td class="code"><pre><span class="line"><span class="meta">@Target</span>(Element.TYPE)</span><br><span class="line"><span class="meta">@Retention</span>(RetentionPolicy.RUNTIME)</span><br><span class="line"><span class="meta">@Documentd</span></span><br><span class="line"><span class="meta">@Inherited</span></span><br><span class="line"><span class="meta">@Import</span>(&#123;EnableAutoConfigurationImportSelector.class,AutoConfigurationPackages.Register.class&#125;)</span><br></pre></td></tr></table></figure>
+<pre class=" language-java"><code class="language-java"><span class="token annotation punctuation">@Target</span><span class="token punctuation">(</span>Element<span class="token punctuation">.</span>TYPE<span class="token punctuation">)</span>
+<span class="token annotation punctuation">@Retention</span><span class="token punctuation">(</span>RetentionPolicy<span class="token punctuation">.</span>RUNTIME<span class="token punctuation">)</span>
+<span class="token annotation punctuation">@Documentd</span>
+<span class="token annotation punctuation">@Inherited</span>
+<span class="token annotation punctuation">@Import</span><span class="token punctuation">(</span><span class="token punctuation">{</span>EnableAutoConfigurationImportSelector<span class="token punctuation">.</span><span class="token keyword">class</span><span class="token punctuation">,</span>AutoConfigurationPackages<span class="token punctuation">.</span>Register<span class="token punctuation">.</span><span class="token keyword">class</span><span class="token punctuation">}</span><span class="token punctuation">)</span>
+</code></pre>
 <h2 id="3-Thymeleaf模板引擎-同Freemarker"><a href="#3-Thymeleaf模板引擎-同Freemarker" class="headerlink" title="3. Thymeleaf模板引擎(同Freemarker)"></a>3. Thymeleaf模板引擎(同Freemarker)</h2><ol>
 <li>通过 <code>xmlns:th=http://www.thymeleaf.org</code> 命名空间，转换位动态视图；</li>
 <li>使用 <code>“@{}”</code> 方式引用web静态资源</li>
@@ -441,18 +450,57 @@
 <li>数据判断： <code>th:if=&quot;${not #lists.isEmpty(people)}&quot;</code></li>
 <li>js中访问model  </li>
 </ol>
-<figure class="highlight javascript"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br></pre></td><td class="code"><pre><span class="line">&lt;script th:inline=<span class="string">"javascript"</span>&gt; </span><br><span class="line">    <span class="keyword">var</span> singlePerson=[[$&#123;singlePerson&#125;]]</span><br><span class="line">&lt;script&gt;</span><br></pre></td></tr></table></figure>
+<pre class=" language-javascript"><code class="language-javascript"><span class="token operator">&lt;</span>script th<span class="token punctuation">:</span>inline<span class="token operator">=</span><span class="token string">"javascript"</span><span class="token operator">></span> 
+    <span class="token keyword">var</span> singlePerson<span class="token operator">=</span><span class="token punctuation">[</span><span class="token punctuation">[</span>$<span class="token punctuation">{</span>singlePerson<span class="token punctuation">}</span><span class="token punctuation">]</span><span class="token punctuation">]</span>
+<span class="token operator">&lt;</span>script<span class="token operator">></span>
+</code></pre>
 <blockquote>
 <p>使用 <code>th:inline=&quot;javascript&quot;</code> 使js能够访问model<br>通过[[${}]]获取实际的值</p>
 </blockquote>
 <h2 id="4-注册Servlet、Filter、Listener"><a href="#4-注册Servlet、Filter、Listener" class="headerlink" title="4. 注册Servlet、Filter、Listener"></a>4. 注册Servlet、Filter、Listener</h2><p>Servlet:ServletRegistrationBean</p>
-<figure class="highlight java"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br></pre></td><td class="code"><pre><span class="line"><span class="meta">@Bean</span></span><br><span class="line"><span class="function"><span class="keyword">public</span> ServletRegistrationBean <span class="title">serbletRegistrationBean</span><span class="params">()</span></span>&#123;</span><br><span class="line">	<span class="comment">//直接注册servlet及其请求路径</span></span><br><span class="line">    <span class="keyword">return</span> <span class="keyword">new</span> ServletRegistrationBean(<span class="keyword">new</span> XXServlet(),<span class="string">"/xx/*"</span>);</span><br><span class="line">&#125;</span><br></pre></td></tr></table></figure>
+<pre class=" language-java"><code class="language-java"><span class="token annotation punctuation">@Bean</span>
+<span class="token keyword">public</span> ServletRegistrationBean <span class="token function">serbletRegistrationBean</span><span class="token punctuation">(</span><span class="token punctuation">)</span><span class="token punctuation">{</span>
+    <span class="token comment" spellcheck="true">//直接注册servlet及其请求路径</span>
+    <span class="token keyword">return</span> <span class="token keyword">new</span> <span class="token class-name">ServletRegistrationBean</span><span class="token punctuation">(</span><span class="token keyword">new</span> <span class="token class-name">XXServlet</span><span class="token punctuation">(</span><span class="token punctuation">)</span><span class="token punctuation">,</span><span class="token string">"/xx/*"</span><span class="token punctuation">)</span><span class="token punctuation">;</span>
+<span class="token punctuation">}</span>
+</code></pre>
 <p>Filter:FilterRegisterationBean</p>
-<figure class="highlight java"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br></pre></td><td class="code"><pre><span class="line"><span class="meta">@Bean</span></span><br><span class="line"><span class="function"><span class="keyword">public</span> FilterRegisterationBean <span class="title">filterRegisterationBean</span><span class="params">()</span></span>&#123;</span><br><span class="line">    <span class="comment">//设置过滤器</span></span><br><span class="line">    FilterRegisterationBean filterRegisterationBean = <span class="keyword">new</span> filterRegisterationBean.setFilter(<span class="keyword">new</span> YYFilter());</span><br><span class="line">    <span class="comment">//执行顺序  </span></span><br><span class="line">    filterRegisterationBean.setOrder(<span class="number">2</span>);</span><br><span class="line">    filterRegisterationBean.setName(<span class="string">"MyFilter"</span>);<span class="comment">//设置名称</span></span><br><span class="line">    filterRegisterationBean.setUrlPatterns(<span class="string">"/*"</span>);<span class="comment">//设置过滤路径</span></span><br><span class="line">    <span class="keyword">return</span> filterRegisterationBean;</span><br><span class="line">&#125;</span><br></pre></td></tr></table></figure>
+<pre class=" language-java"><code class="language-java"><span class="token annotation punctuation">@Bean</span>
+<span class="token keyword">public</span> FilterRegisterationBean <span class="token function">filterRegisterationBean</span><span class="token punctuation">(</span><span class="token punctuation">)</span><span class="token punctuation">{</span>
+    <span class="token comment" spellcheck="true">//设置过滤器</span>
+    FilterRegisterationBean filterRegisterationBean <span class="token operator">=</span> <span class="token keyword">new</span> <span class="token class-name">filterRegisterationBean<span class="token punctuation">.</span>setFilter</span><span class="token punctuation">(</span><span class="token keyword">new</span> <span class="token class-name">YYFilter</span><span class="token punctuation">(</span><span class="token punctuation">)</span><span class="token punctuation">)</span><span class="token punctuation">;</span>
+    <span class="token comment" spellcheck="true">//执行顺序  </span>
+    filterRegisterationBean<span class="token punctuation">.</span><span class="token function">setOrder</span><span class="token punctuation">(</span><span class="token number">2</span><span class="token punctuation">)</span><span class="token punctuation">;</span>
+    filterRegisterationBean<span class="token punctuation">.</span><span class="token function">setName</span><span class="token punctuation">(</span><span class="token string">"MyFilter"</span><span class="token punctuation">)</span><span class="token punctuation">;</span><span class="token comment" spellcheck="true">//设置名称</span>
+    filterRegisterationBean<span class="token punctuation">.</span><span class="token function">setUrlPatterns</span><span class="token punctuation">(</span><span class="token string">"/*"</span><span class="token punctuation">)</span><span class="token punctuation">;</span><span class="token comment" spellcheck="true">//设置过滤路径</span>
+    <span class="token keyword">return</span> filterRegisterationBean<span class="token punctuation">;</span>
+<span class="token punctuation">}</span>
+</code></pre>
 <p>Listener:ServletListenerRegisterationBean</p>
-<figure class="highlight java"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br></pre></td><td class="code"><pre><span class="line"><span class="meta">@Bean</span></span><br><span class="line"><span class="function"><span class="keyword">public</span> ServletListenerRegisterationBean&lt;ZZListener&gt; <span class="title">servletListenerRegisterationBean</span><span class="params">()</span></span>&#123;</span><br><span class="line">    <span class="keyword">return</span> <span class="keyword">new</span> ServletListenerRegisterationBean&lt;ZZListener&gt;(<span class="keyword">new</span> ZZListener);</span><br><span class="line">&#125;</span><br></pre></td></tr></table></figure>
+<pre class=" language-java"><code class="language-java"><span class="token annotation punctuation">@Bean</span>
+<span class="token keyword">public</span> ServletListenerRegisterationBean<span class="token operator">&lt;</span>ZZListener<span class="token operator">></span> <span class="token function">servletListenerRegisterationBean</span><span class="token punctuation">(</span><span class="token punctuation">)</span><span class="token punctuation">{</span>
+    <span class="token keyword">return</span> <span class="token keyword">new</span> <span class="token class-name">ServletListenerRegisterationBean</span><span class="token operator">&lt;</span>ZZListener<span class="token operator">></span><span class="token punctuation">(</span><span class="token keyword">new</span> <span class="token class-name">ZZListener</span><span class="token punctuation">)</span><span class="token punctuation">;</span>
+<span class="token punctuation">}</span>
+</code></pre>
 <h2 id="5-修改tomcat、jetty、undertow"><a href="#5-修改tomcat、jetty、undertow" class="headerlink" title="5.修改tomcat、jetty、undertow"></a>5.修改tomcat、jetty、undertow</h2><p>直接在pom文件中，修改依赖</p>
-<figure class="highlight"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br><span class="line">14</span><br><span class="line">15</span><br><span class="line">16</span><br><span class="line">17</span><br></pre></td><td class="code"><pre><span class="line">&lt;dependency&gt;</span><br><span class="line">  &lt;groupId&gt;org.springframework.boot&lt;/groupId&gt;</span><br><span class="line">    &lt;artifactId&gt;spring-boot-starter-web&lt;/artifactId&gt;</span><br><span class="line">     &lt;exclusions&gt;</span><br><span class="line">        &lt;exclusion&gt;</span><br><span class="line">          &lt;groupId&gt;org.springframework.boot&lt;/groupId&gt;</span><br><span class="line">            &lt;artifactId&gt;spring-boot-starter-tomcat&lt;/artifactId&gt; //将web对应的服务器修改为其它</span><br><span class="line">        &lt;/exclusion&gt;</span><br><span class="line">      &lt;/exclusions&gt;</span><br><span class="line">  &lt;version&gt;1.5.9.RELEASE&lt;/version&gt;</span><br><span class="line">&lt;/dependency&gt;</span><br><span class="line"></span><br><span class="line">&lt;dependency&gt;</span><br><span class="line">  &lt;groupId&gt;org.springframework.boot&lt;/groupId&gt;</span><br><span class="line">  &lt;artifactId&gt;spring-boot-starter-tomcat&lt;/artifactId&gt;</span><br><span class="line">  &lt;version&gt;1.5.9.RELEASE&lt;/version&gt;</span><br><span class="line">&lt;/dependency&gt;</span><br></pre></td></tr></table></figure>
+<pre class=" language-java"><code class="language-java"><span class="token operator">&lt;</span>dependency<span class="token operator">></span>
+  <span class="token operator">&lt;</span>groupId<span class="token operator">></span>org<span class="token punctuation">.</span>springframework<span class="token punctuation">.</span>boot<span class="token operator">&lt;</span><span class="token operator">/</span>groupId<span class="token operator">></span>
+    <span class="token operator">&lt;</span>artifactId<span class="token operator">></span>spring<span class="token operator">-</span>boot<span class="token operator">-</span>starter<span class="token operator">-</span>web<span class="token operator">&lt;</span><span class="token operator">/</span>artifactId<span class="token operator">></span>
+     <span class="token operator">&lt;</span>exclusions<span class="token operator">></span>
+        <span class="token operator">&lt;</span>exclusion<span class="token operator">></span>
+          <span class="token operator">&lt;</span>groupId<span class="token operator">></span>org<span class="token punctuation">.</span>springframework<span class="token punctuation">.</span>boot<span class="token operator">&lt;</span><span class="token operator">/</span>groupId<span class="token operator">></span>
+            <span class="token operator">&lt;</span>artifactId<span class="token operator">></span>spring<span class="token operator">-</span>boot<span class="token operator">-</span>starter<span class="token operator">-</span>tomcat<span class="token operator">&lt;</span><span class="token operator">/</span>artifactId<span class="token operator">></span> <span class="token comment" spellcheck="true">//将web对应的服务器修改为其它</span>
+        <span class="token operator">&lt;</span><span class="token operator">/</span>exclusion<span class="token operator">></span>
+      <span class="token operator">&lt;</span><span class="token operator">/</span>exclusions<span class="token operator">></span>
+  <span class="token operator">&lt;</span>version<span class="token operator">></span><span class="token number">1.5</span><span class="token punctuation">.</span><span class="token number">9</span><span class="token punctuation">.</span>RELEASE<span class="token operator">&lt;</span><span class="token operator">/</span>version<span class="token operator">></span>
+<span class="token operator">&lt;</span><span class="token operator">/</span>dependency<span class="token operator">></span>
+
+<span class="token operator">&lt;</span>dependency<span class="token operator">></span>
+  <span class="token operator">&lt;</span>groupId<span class="token operator">></span>org<span class="token punctuation">.</span>springframework<span class="token punctuation">.</span>boot<span class="token operator">&lt;</span><span class="token operator">/</span>groupId<span class="token operator">></span>
+  <span class="token operator">&lt;</span>artifactId<span class="token operator">></span>spring<span class="token operator">-</span>boot<span class="token operator">-</span>starter<span class="token operator">-</span>tomcat<span class="token operator">&lt;</span><span class="token operator">/</span>artifactId<span class="token operator">></span>
+  <span class="token operator">&lt;</span>version<span class="token operator">></span><span class="token number">1.5</span><span class="token punctuation">.</span><span class="token number">9</span><span class="token punctuation">.</span>RELEASE<span class="token operator">&lt;</span><span class="token operator">/</span>version<span class="token operator">></span>
+<span class="token operator">&lt;</span><span class="token operator">/</span>dependency<span class="token operator">></span>
+</code></pre>
 <h2 id="6-WebSocket"><a href="#6-WebSocket" class="headerlink" title="6. WebSocket"></a>6. WebSocket</h2><h3 id="1-websocket的配置"><a href="#1-websocket的配置" class="headerlink" title="1. websocket的配置"></a>1. websocket的配置</h3><ol>
 <li>使用@Configuration及@EnableWebSocketMessageBroker  来开启WebSocket支持</li>
 <li>继承AbstratWebSocketMessageBrokerConfigurer类<ol>
@@ -464,8 +512,20 @@
 </ol>
 <h3 id="2-wscontroller"><a href="#2-wscontroller" class="headerlink" title="2. wscontroller"></a>2. wscontroller</h3><p>@MessageMapping(“/welcome”) 同RequestMapping,映射地址</p>
 <p>@SendTo(“/topic/getResponse”) 当服务端有消息时，会对订阅了”/topic/getResponse”的客户端发送消息</p>
-<figure class="highlight java"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br></pre></td><td class="code"><pre><span class="line"><span class="function"><span class="keyword">public</span> WiselyResponse <span class="title">say</span><span class="params">(WiselyMessage message)</span> <span class="keyword">throws</span> Exception</span>&#123;</span><br><span class="line">    <span class="keyword">return</span> <span class="keyword">new</span> WiselyResponse(<span class="string">"Welcome "</span> +message.getName()+<span class="string">" ! "</span>);  返回发送的消息</span><br><span class="line">&#125;</span><br></pre></td></tr></table></figure>
-<h3 id="3-ws-html"><a href="#3-ws-html" class="headerlink" title="3. ws.html"></a>3. ws.html</h3><figure class="highlight javascript"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br></pre></td><td class="code"><pre><span class="line"><span class="comment">//连接并订阅</span></span><br><span class="line"><span class="keyword">var</span> socket = <span class="keyword">new</span> SockJS(<span class="string">'/endpointWisely'</span>);  <span class="comment">//连接名称为“。。。”的endpoint</span></span><br><span class="line"><span class="keyword">var</span> stompClient = Stomp.over(socket);     <span class="comment">//使用stomp子协议</span></span><br><span class="line">    stompClient.connect(&#123;&#125;,<span class="function"><span class="keyword">function</span>(<span class="params">name</span>)</span>&#123;</span><br><span class="line">        stompClient.subscribe(<span class="string">'topic/getResponse'</span>,<span class="function"><span class="keyword">function</span>(<span class="params">response</span>)</span>&#123;<span class="comment">//订阅</span></span><br><span class="line">        show();<span class="comment">//自定义的展示方法</span></span><br><span class="line">    &#125;)</span><br><span class="line">&#125;)</span><br><span class="line">stompClient.send(<span class="string">"/welcome"</span>,&#123;&#125;,<span class="built_in">JSON</span>.stringify(&#123;<span class="string">'name'</span>:name&#125;));<span class="comment">//发送消息</span></span><br></pre></td></tr></table></figure>
+<pre class=" language-java"><code class="language-java"><span class="token keyword">public</span> WiselyResponse <span class="token function">say</span><span class="token punctuation">(</span>WiselyMessage message<span class="token punctuation">)</span> <span class="token keyword">throws</span> Exception<span class="token punctuation">{</span>
+    <span class="token keyword">return</span> <span class="token keyword">new</span> <span class="token class-name">WiselyResponse</span><span class="token punctuation">(</span><span class="token string">"Welcome "</span> <span class="token operator">+</span>message<span class="token punctuation">.</span><span class="token function">getName</span><span class="token punctuation">(</span><span class="token punctuation">)</span><span class="token operator">+</span><span class="token string">" ! "</span><span class="token punctuation">)</span><span class="token punctuation">;</span>  返回发送的消息
+<span class="token punctuation">}</span>
+</code></pre>
+<h3 id="3-ws-html"><a href="#3-ws-html" class="headerlink" title="3. ws.html"></a>3. ws.html</h3><pre class=" language-javascript"><code class="language-javascript"><span class="token comment" spellcheck="true">//连接并订阅</span>
+<span class="token keyword">var</span> socket <span class="token operator">=</span> <span class="token keyword">new</span> <span class="token class-name">SockJS</span><span class="token punctuation">(</span><span class="token string">'/endpointWisely'</span><span class="token punctuation">)</span><span class="token punctuation">;</span>  <span class="token comment" spellcheck="true">//连接名称为“。。。”的endpoint</span>
+<span class="token keyword">var</span> stompClient <span class="token operator">=</span> Stomp<span class="token punctuation">.</span><span class="token function">over</span><span class="token punctuation">(</span>socket<span class="token punctuation">)</span><span class="token punctuation">;</span>     <span class="token comment" spellcheck="true">//使用stomp子协议</span>
+    stompClient<span class="token punctuation">.</span><span class="token function">connect</span><span class="token punctuation">(</span><span class="token punctuation">{</span><span class="token punctuation">}</span><span class="token punctuation">,</span><span class="token keyword">function</span><span class="token punctuation">(</span>name<span class="token punctuation">)</span><span class="token punctuation">{</span>
+        stompClient<span class="token punctuation">.</span><span class="token function">subscribe</span><span class="token punctuation">(</span><span class="token string">'topic/getResponse'</span><span class="token punctuation">,</span><span class="token keyword">function</span><span class="token punctuation">(</span>response<span class="token punctuation">)</span><span class="token punctuation">{</span><span class="token comment" spellcheck="true">//订阅</span>
+        <span class="token function">show</span><span class="token punctuation">(</span><span class="token punctuation">)</span><span class="token punctuation">;</span><span class="token comment" spellcheck="true">//自定义的展示方法</span>
+    <span class="token punctuation">}</span><span class="token punctuation">)</span>
+<span class="token punctuation">}</span><span class="token punctuation">)</span>
+stompClient<span class="token punctuation">.</span><span class="token function">send</span><span class="token punctuation">(</span><span class="token string">"/welcome"</span><span class="token punctuation">,</span><span class="token punctuation">{</span><span class="token punctuation">}</span><span class="token punctuation">,</span>JSON<span class="token punctuation">.</span><span class="token function">stringify</span><span class="token punctuation">(</span><span class="token punctuation">{</span><span class="token string">'name'</span><span class="token punctuation">:</span>name<span class="token punctuation">}</span><span class="token punctuation">)</span><span class="token punctuation">)</span><span class="token punctuation">;</span><span class="token comment" spellcheck="true">//发送消息</span>
+</code></pre>
 <h2 id="7-Spring-Data-JPA"><a href="#7-Spring-Data-JPA" class="headerlink" title="7.Spring Data JPA"></a>7.Spring Data JPA</h2><h3 id="1-EnableJpaRepositories"><a href="#1-EnableJpaRepositories" class="headerlink" title="1. @EnableJpaRepositories"></a>1. @EnableJpaRepositories</h3><pre><code>使用@EnableJpaRepositories(&quot;com.wisely.repos&quot;)来开启Spring Data JPA支持 其中的value参数用来扫描数据访问层所在包下的数据访问的接口定义
 </code></pre><h3 id="2-定义查询方法"><a href="#2-定义查询方法" class="headerlink" title="2. 定义查询方法"></a>2. 定义查询方法</h3><blockquote>
 <p><code>常规查询</code> ：find、read、readBy、query、queryBy、get、getBy<br><code>查询关键字</code> ：And(和)、Or(或)、Is = Equals(等)、Between(位于之间)、LessThan(小于)、LessThanEqual(小于等于)<br>GreaterThan(大于)、GreaterThanEqual(大于等于)、After(日期大于)、Before(日期之前)<br>IsNull、IsNotNull = NotNull、Like、Not Like、Starting With(前面加%)<br>EndingWith(后面加%)、Containing(前后都加%)、OrderBy(排序)、Not、In<br>NotIn、True、False、IgnoreCase<br><code>限制查询结果</code> ：Top、First<br><code>@NamedQuery</code> : 一个名称映射一个查询语句<br>    eg:    @NamedQuery(name = “Person.findByName”,query = “select p from Person p where p.name=?1”)<br>        写在实体类名上<br>@Query查询<br>    直接在@Query的value中书写sql语句，参数可以使用索引(“?1”)或者命名(“:name”)<br>更新查询：使用@Modifying 和 @Query 来组合更新查询</p>
@@ -498,19 +558,19 @@ findAll(new PageRequest(1,2,new Sort(Sort.Direction.DESC,&quot;age&quot;)))    �
     5.rollbackFor    指定哪个异常会回滚
     6.noRollBackFor    指定哪个异常不会回滚
 </code></pre><p>1.@GetMapping注解：相当于 @RequestMapping(Method=RequestMethod.GET)<br>    该注解将HTTP GET映射到特定的方法上<br>2.@RequestParam注解：将Request参数绑定到处理函数的参数中<br>    如：public String getUserId(@RequestParam(“id”) int id); 这样就可以将localhost:8080/?id=123中的id参数赋给方法中的id<br>3.@JsonIgnoreProperties(ignoreUnknown = true)<br>    将这个注解卸载类上之后，就会忽略类中不存在的字段<br>    使用@JsonIgnoreProperties({“internalId”,”secretKey”})指定的字段不会被序列化和反序列化<br>4.数据校验<br>    1.在实体类的属性前添加如：@NotEmpty、@Min(value=18,message=”未成年禁止入内”)等<br>    2.在Controller层的方法，要校验的参数上添加@Valid注解<br>        如果需要返回错误信息，则需要传入BindingResult对象，用于获取校验失败情况下的反馈信息<br>5.ModelMapper对象<br>    一个从对象到对象的框架，能将javaBean对象从一种表现形式转化为另一种表现形式，采用“约定”来配置<br>    eg:        Person person = modelMapper.map(personDTO,Person.class);            //将PersonDTO的对象，转换成Person对象<br>            Person personInDB = personService.getById(userId,PersonDTO.getId())    //在service层对userid和person.id做了处理，从数据库取出person.id对应的Person，userid则是权限判断<br>            return modelMapper.map(personService.save(userId,person),PersonDTO.class);    //再将保存返回的person转为personDTO<br>6.@PathVariable注解<br>    可以绑定占位符传过来的值到方法的参数上<br>7.@RequestMapping的变形<br>    @GetMapping、@PostMapping、@PutMapping、@DeleteMapping<br>8.@RequestParam和@PathVariable的区别<br>    1.@RequestParam和@PathVariable都是从request中接收请求的，都可以接收参数<br>    2.@RequestParam  支持defaultValue（默认值）、name、value、required参数<br>    3.@PathVariable  能够识别URL里面的一个模板 eg:@RequestMapping(“/hello/{id}”)<br>    4.@PathParam     同@PathVariable，但是属于JBoss的<br>    5.@QueryParam     同@RequestParam,属于JAX-RS<br>    6.@ResponseBody  服务器返回的时候以一种什么样的方式进行返回<br>    7.@RequestBody<br>9.@Documentd注解<br>    映射实体类与MongoDB文件<br>10.http状态码<br>    1XX 临时响应，并需要请求者继续执行操作的状态代码<br>    2XX 请求成功<br>    3XX 重定向代码<br>    4XX 表示请求出错<br>    5XX 服务器内部错误<br>11.自定义注解<br>    @Retention注解<br>        定义被它所注解的注解保留多久，一共有三种策略：<br>            public enum RetentionPolicy{<br>                SOURCE,CLASS,RUNTIME<br>            }<br>        1.SOURCE  被编译器忽略<br>        2.CLASS  注解会被保留在Class文件中，但在运行时并不会被vm保留(默认)<br>        3.RUNTIME  保留至运行时，可以通过反射去获取注解信息。<br>    @Target注解<br>        说明该注解可以被声明在哪些元素之前<br>            public enum ElementType{<br>                TYPE,FIELD,METHOD,PARAMETER,CONSTRUCTOR,LOCAL_VARIABLE,<br>                ANNOTATION_TYPE,PACKAGE,TYPE_PARAMETER,TYPE_USE<br>            }<br>        1.TYPE  类之前<br>        2.FIELD  类的字段前<br>        3.METHOD  类的方法前<br>        4.PARAMETER  方法参数前<br>        5.CONSTRUCTOR  构造方法前<br>        6.LOCAL_VARIABLE  局部变量之前<br>        7.ANNOTATION_TYPE  注解类型之前<br>        8.PACKAGE  包名前<br>12.Spring框架下的AOP Annotation<br>    1.切入点语法：<br>        execution(public <em> </em> (..))<br>        execution(<em> set</em> (..))<br>        execution(<em> com.xyz.servie.AccountService.</em> (..))<br>        execution(<em> com.xyz.service.</em>.<em> (..))<br>        within(com.xyz.service.</em>)    //service包中<br>        within(com.xyz.service..*)    //service或其子包<br>    2.声明通知<br>        1.@Before 前置通知<br>        2.@AfterReturning  后置通知<br>        3.AfterThrowing  异常通知，在一个方法抛出异常后执行<br>        4.@After  最终通知，必会执行的<br>        5.@Around  环绕通知，在方法执行前及执行后，常用于线程安全的情况下，共享数据<br>13.Spring Security<br>    1.安全处理方法：<br>        1.access(String)                Spring EL表达式结果为true时可访问<br>        2.anonymouns()                    匿名可访问<br>        3.denyAll()                        用户不能访问<br>        4.fullyAuthenticated()            用户完全认证可访问(非remeber me)<br>        5.hasAnyAuthority(String..)        如果用户有参数，则其中任一权限可访问<br>        6.hasAnyRole(String..)                    如果用户有参数，则其中任一角色可访问<br>        7.hasAuthority(String)            如果用户有参数，则其权限可访问<br>        8.hasRole(String)                若用户由参数中的角色可访问<br>        9.permitAll()                    用户可任意访问<br>        10.rememberMe()                    允许通过remember-me登陆的用户访问<br>        11.authenticated()                用户登陆后可访问<br>14.JMS<br>    1.安装ActiveMQ<br>    2.在application.properties中配置ActiveMQ的消息代理地址<br>        spring.activemq.broker-url=tcp://localhost:61616<br>    3.定义发送端<br>        需要实现MessageCreator接口，并重写其createMessage方法<br>        eg:     class Msg implements MessageCreator{<br>                    @override<br>                    public Message createMessage() throws JMSException{<br>                        return session.createTextMessage(“发送了消息”);<br>                    }<br>                }<br>    4.定义发送及目的地<br>        1.使用CommandLineRunner接口，用于程序启动后执行的代码，通过重写其run方法执行<br>        2.注入Springboot提供的JmsTemplate的Bean<br>        3.通过JmsTemplate的send方法向 “my-destination” 目的地发送Msg 的消息<br>        eg:        class Ch934Application implements CommandLineRunner{<br>                    @AutoWired<br>                    JmsTemplate jmsTemplate;</p>
-<pre><code>            @Override
-            public void run(String... args) throws Exception{
-                jmsTemplate.send(&quot;my-destination”,new Msg());
+<pre><code>                @Override
+                public void run(String... args) throws Exception{
+                    jmsTemplate.send(&quot;my-destination”,new Msg());
+                }
             }
-        }
-4.定义消息监听
-    使用@JmsListener注解，来简化JMS开发。只需要在这个注解的属性destination指定要监听的目的地，即可接收该目的地发送的消息。
-eg:        class Receiver{
-            @JmsListener(destination = &quot;my-destination”)
-            public void receiveMessage(String message){
-                sout(&quot;收到：&quot;+message+&quot;，消息&quot;)
+    4.定义消息监听
+        使用@JmsListener注解，来简化JMS开发。只需要在这个注解的属性destination指定要监听的目的地，即可接收该目的地发送的消息。
+    eg:        class Receiver{
+                @JmsListener(destination = &quot;my-destination”)
+                public void receiveMessage(String message){
+                    sout(&quot;收到：&quot;+message+&quot;，消息&quot;)
+                }
             }
-        }
 
 
 
@@ -525,7 +585,7 @@ eg:        class Receiver{
 
 
 
-#SpringBoot的配置文件.properties
+    #SpringBoot的配置文件.properties
 </code></pre><h1 id="Logging"><a href="#Logging" class="headerlink" title="Logging"></a>Logging</h1><pre><code>logging.config=classpath:logback-spring.xml
 </code></pre><h1 id="Mysql-Configuration"><a href="#Mysql-Configuration" class="headerlink" title="Mysql Configuration"></a>Mysql Configuration</h1><pre><code>spring.datasource.url=jdbc:mysql://localhost:3306/pgc                          #数据库地址
 spring.datasource.username=root                                                #账号
@@ -585,7 +645,7 @@ spring.http.multipart.maxRequestSize=100MB
     另外，PonyFoo提出另一种合并commit的简洁方法，就是先撤销过去5个commit，再建一个新的
         git reset HEAD~5
         git add
-        git commit -am &quot;Here&apos;s the bug fix that closes #28&quot;
+        git commit -am &quot;Here&#39;s the bug fix that closes #28&quot;
         git push --force
 6.推送到远程仓库
     合并commit之后，就可以推送当前分支到远程仓库了
@@ -686,38 +746,38 @@ spring.http.multipart.maxRequestSize=100MB
 具体方法查看：https://blog.csdn.net/wujiaqi0921/article/details/78324722
 </code></pre><p>SpringBoot 序列化器注解使用方法<br>    1.@JsonIgnoreProperties<br>        类注解，作用是json序列化时将java bean中的一些属性忽略掉，序列化和反序列化都受影响<br>    2.@JsonIgnore<br>        属性或方法注解（最好在属性上），作用同JsonIgnoreProperties<br>    3.@JsonFormat<br>        属性或方法注解（最好在属性上），可以方便的把Date类型直接转化为我们想要的模式，例如@JsonFormat(pattern=”yyyy-MM-dd HH-mm-ss”)<br>    4.@JsonSerialize<br>        用于属性或getter方法上，用于在序列化时嵌入我们自定义的代码<br>    5.@JsonDeserialize<br>        用于属性或getter方法上，用于在反序列化时可以嵌入我们自定义的代码</p>
 <p>SpringBoot 使用 JavaMailSender发送邮件<br>—–.SpringBoot<br>        添加依赖<br>        <dependency><br>            <groupid>org.springframework.boot</groupid><br>            <artifactid>spring-boot-starter-mail</artifactid><br>        </dependency><br>    2.配置属性<br>        spring.mail.host=smtp.qq.com<br>        spring.mail.username=用户名<br>        spring.mail.password=密码<br>        spring.mail.properties.mail.smtp.auth=true<br>        spring.mail.properties.mail.smtp.starttls.enable=true<br>        spring.mail.properties.mail.smtp.starttls.required=true<br>    3.测试<br>        @Autowired<br>        private JavaMailSender mailSender;</p>
-<pre><code>SimpleMailMessage message = new SimpleMailMessage();
-message.setFrom(&quot;1153693791@qq.com&quot;);
-message.setTo(&quot;1153693791@qq.com&quot;);
-message.setSubject(&quot;主题：&quot;+title);
-message.setText(content);
-mailSender.send(message);
+<pre><code>    SimpleMailMessage message = new SimpleMailMessage();
+    message.setFrom(&quot;1153693791@qq.com&quot;);
+    message.setTo(&quot;1153693791@qq.com&quot;);
+    message.setSubject(&quot;主题：&quot;+title);
+    message.setText(content);
+    mailSender.send(message);
 </code></pre><p>Spring JPA 开启审计功能：<br>    JPA Audit:<br>        在Spring jpa中，支持在字段或者方法上进行注解@CreateDate,@CreatedBy,@LastModifiedDate,@LastModifiedBy<br>    使用：<br>        1.申明实体类，需要在类上添加注解@EntityListeners(AuditingEntityListener.class)，<br>            @Entity<br>            @Table(name = “store_source_bind”)<br>            @EntityListeners(AuditingEntityListener.class)<br>            public class StoreSourceBind {</p>
-<pre><code>2.在需要的字段上加上@CreateDate,@CreatedBy,@LastModifiedDate,@LastModifiedBy
-@Column(name = &quot;create_time&quot;)
-@CreatedDate
-private Date createTime;
+<pre><code>    2.在需要的字段上加上@CreateDate,@CreatedBy,@LastModifiedDate,@LastModifiedBy
+    @Column(name = &quot;create_time&quot;)
+    @CreatedDate
+    private Date createTime;
 
-3.继承AuditorAware&lt;T&gt;来指定返回的创建信息:
-    @Component(&quot;auditorAware&quot;)
-    public class SpringSecurityAuditorAware implements AuditorAware&lt;String&gt; {
+    3.继承AuditorAware&lt;T&gt;来指定返回的创建信息:
+        @Component(&quot;auditorAware&quot;)
+        public class SpringSecurityAuditorAware implements AuditorAware&lt;String&gt; {
 
-        private HttpSession session;
+            private HttpSession session;
 
-        @Override
-        public String getCurrentAuditor() {
-            return Utils.getUserIdFromSession(session);
+            @Override
+            public String getCurrentAuditor() {
+                return Utils.getUserIdFromSession(session);
+            }
+        }
+    4.在application启动类中加上注解EnableJpaAuditing或者EnableMongoAuditing（MongoDB的审计），
+
+    @EnableJpaAuditing
+    @EnableMongoAuditing(auditorAwareRef = &quot;auditorAware&quot;)//开启审计功能
+    public class WalletApplication {
+        public static void main(String[] args) {
+            new SpringApplicationBuilder(WalletApplication.class).web(true).run(args);
         }
     }
-4.在application启动类中加上注解EnableJpaAuditing或者EnableMongoAuditing（MongoDB的审计），
-
-@EnableJpaAuditing
-@EnableMongoAuditing(auditorAwareRef = &quot;auditorAware&quot;)//开启审计功能
-public class WalletApplication {
-    public static void main(String[] args) {
-        new SpringApplicationBuilder(WalletApplication.class).web(true).run(args);
-    }
-}
 </code></pre><p>SpringBoot 定时任务：</p>
 <pre><code>1.开启定时任务的配置
   在启动文件上，添加注解 @EnableScheduling
@@ -934,59 +994,6 @@ public class WalletApplication {
             <div class="article-badge left-badge text-color">
                 <i class="fa fa-chevron-left"></i>&nbsp;Previous</div>
             <div class="card">
-                <a href="/2018/10/01/React/2.ReduxFlow/">
-                    <div class="card-image">
-                        
-                        
-                        <img src="/medias/featureimages/9.jpg" class="responsive-img" alt="Redux入门">
-                        
-                        <span class="card-title">Redux入门</span>
-                    </div>
-                </a>
-                <div class="card-content article-content">
-                    <div class="summary block-with-text">
-                        
-                            Redux 入门使用Redux重构之前的TodoList，使用全局state来实现。
-Redux FlowRedux的工作流：
-一、引入依赖需要先引入Ant Design和 Redux
-
-yarn add antdyarn add redu
-                        
-                    </div>
-                    <div class="publish-info">
-                        <span class="publish-date">
-                            <i class="fa fa-clock-o fa-fw icon-date"></i>2018-10-01
-                        </span>
-                        <span class="publish-author">
-                            
-                            <i class="fa fa-bookmark fa-fw icon-category"></i>
-                            
-                            <a href="/categories/React学习/" class="post-category" target="_blank">
-                                    React学习
-                                </a>
-                            
-                            
-                        </span>
-                    </div>
-                </div>
-                
-                <div class="card-action article-tags">
-                    
-                    <a href="/tags/java/" target="_blank">
-                        <span class="chip bg-color">java</span>
-                    </a>
-                    
-                </div>
-                
-            </div>
-        </div>
-        
-        
-        <div class="article col s12 m6" data-aos="fade-up">
-            <div class="article-badge right-badge text-color">
-                Next&nbsp;<i class="fa fa-chevron-right"></i>
-            </div>
-            <div class="card">
                 <a href="/2018/09/30/java/Java中使用Properties/">
                     <div class="card-image">
                         
@@ -1001,13 +1008,14 @@ yarn add antdyarn add redu
                         
                             读取Properties文件的几种方式
 
-读取 Properties 文件1.在xml 配置文件中使用”${}”123&lt;bean id="xxx" class="com.javadoop.Xxx"&gt;     &lt;proper
+读取 Properties 文件1.在xml 配置文件中使用”${}”&lt;bean id="xxx" class="com.javadoop.Xxx">
+     &lt;property na
                         
                     </div>
                     <div class="publish-info">
-                            <span class="publish-date">
-                                <i class="fa fa-clock-o fa-fw icon-date"></i>2018-09-30
-                            </span>
+                        <span class="publish-date">
+                            <i class="fa fa-clock-o fa-fw icon-date"></i>2018-09-30
+                        </span>
                         <span class="publish-author">
                             
                             <i class="fa fa-bookmark fa-fw icon-category"></i>
@@ -1029,6 +1037,58 @@ yarn add antdyarn add redu
                     
                     <a href="/tags/SpringBoot/" target="_blank">
                         <span class="chip bg-color">SpringBoot</span>
+                    </a>
+                    
+                </div>
+                
+            </div>
+        </div>
+        
+        
+        <div class="article col s12 m6" data-aos="fade-up">
+            <div class="article-badge right-badge text-color">
+                Next&nbsp;<i class="fa fa-chevron-right"></i>
+            </div>
+            <div class="card">
+                <a href="/2018/09/29/java/regex/">
+                    <div class="card-image">
+                        
+                        
+                        <img src="/medias/featureimages/3.jpg" class="responsive-img" alt="正则表达式">
+                        
+                        <span class="card-title">正则表达式</span>
+                    </div>
+                </a>
+                <div class="card-content article-content">
+                    <div class="summary block-with-text">
+                        
+                            正则表达式什么是正则表达式
+正则表达式是一组由字母和符号组成的特殊文本, 它可以用来从文本中找出满足你想要的格式的句子.
+
+一个正则表达式是在一个主体字符串中从左到右匹配字符串时的一种样式.“Regular expression”这个词比较
+                        
+                    </div>
+                    <div class="publish-info">
+                            <span class="publish-date">
+                                <i class="fa fa-clock-o fa-fw icon-date"></i>2018-09-29
+                            </span>
+                        <span class="publish-author">
+                            
+                            <i class="fa fa-bookmark fa-fw icon-category"></i>
+                            
+                            <a href="/categories/Java成神之路/" class="post-category" target="_blank">
+                                    Java成神之路
+                                </a>
+                            
+                            
+                        </span>
+                    </div>
+                </div>
+                
+                <div class="card-action article-tags">
+                    
+                    <a href="/tags/java/" target="_blank">
+                        <span class="chip bg-color">java</span>
                     </a>
                     
                 </div>
@@ -1180,6 +1240,10 @@ yarn add antdyarn add redu
     </a>
 
 
+
+    <a href="/atom.xml" class="tooltipped" target="_blank" data-tooltip="RSS 订阅" data-position="top" data-delay="50">
+        <i class="fa fa-rss"></i>
+    </a>
 </div>
     </div>
 </footer>

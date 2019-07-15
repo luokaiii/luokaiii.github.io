@@ -8,7 +8,7 @@
     <meta name="description" content="钩子函数
 钩子(hook)，是一种具有 既定生命周期 的框架工具，在生命周期的各个阶段预留给用户执行一些特定操作的口子，其实是一种 面向切面 编程。
 例如当 JVM 程序即将退出时，会执行我们注入的 钩子线程。
-12345678910111">
+ public static">
     <meta http-equiv="X-UA-Compatible" content="IE=edge">
     <meta name="viewport" content="width=device-width, initial-scale=1.0, user-scalable=no">
     <meta name="renderer" content="webkit|ie-stand|ie-comp">
@@ -31,7 +31,7 @@
     </style>
 
     <script src="/libs/jquery/jquery-2.2.0.min.js"></script>
-</head>
+<link rel="stylesheet" href="/css/prism-tomorrow.css" type="text/css"></head>
 
 
 <body>
@@ -423,13 +423,64 @@
                 <h1 id="钩子函数"><a href="#钩子函数" class="headerlink" title="钩子函数"></a>钩子函数</h1><blockquote>
 <p>钩子(hook)，是一种具有 <code>既定生命周期</code> 的框架工具，在生命周期的各个阶段预留给用户执行一些特定操作的口子，其实是一种 <code>面向切面</code> 编程。</p>
 <p>例如当 JVM 程序即将退出时，会执行我们注入的 钩子线程。</p>
-<figure class="highlight java"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br><span class="line">14</span><br><span class="line">15</span><br><span class="line">16</span><br><span class="line">17</span><br><span class="line">18</span><br><span class="line">19</span><br><span class="line">20</span><br><span class="line">21</span><br><span class="line">22</span><br><span class="line">23</span><br><span class="line">24</span><br><span class="line">25</span><br><span class="line">26</span><br><span class="line">27</span><br><span class="line">28</span><br></pre></td><td class="code"><pre><span class="line">&gt;  <span class="function"><span class="keyword">public</span> <span class="keyword">static</span> <span class="keyword">void</span> <span class="title">main</span><span class="params">(String[] args)</span> </span>&#123;</span><br><span class="line">&gt;      Runtime.getRuntime().addShutdownHook(<span class="keyword">new</span> Thread(<span class="keyword">new</span> Runnable() &#123;</span><br><span class="line">&gt;          <span class="meta">@Override</span></span><br><span class="line">&gt;          <span class="function"><span class="keyword">public</span> <span class="keyword">void</span> <span class="title">run</span><span class="params">()</span> </span>&#123;</span><br><span class="line">&gt;              System.out.println(<span class="string">"The hook thread 1 is running."</span>);</span><br><span class="line">&gt;              <span class="keyword">try</span> &#123;</span><br><span class="line">&gt;                  TimeUnit.SECONDS.sleep(<span class="number">2</span>);</span><br><span class="line">&gt;              &#125; <span class="keyword">catch</span> (InterruptedException e) &#123;</span><br><span class="line">&gt;                  e.printStackTrace();</span><br><span class="line">&gt;              &#125;</span><br><span class="line">&gt;              System.out.println(<span class="string">"The hook thread 1 is exit."</span>);</span><br><span class="line">&gt;          &#125;</span><br><span class="line">&gt;      &#125;));</span><br><span class="line">&gt; </span><br><span class="line">&gt;      Runtime.getRuntime().addShutdownHook(<span class="keyword">new</span> Thread(<span class="keyword">new</span> Runnable() &#123;</span><br><span class="line">&gt;          <span class="meta">@Override</span></span><br><span class="line">&gt;          <span class="function"><span class="keyword">public</span> <span class="keyword">void</span> <span class="title">run</span><span class="params">()</span> </span>&#123;</span><br><span class="line">&gt;              System.out.println(<span class="string">"The hook thread 2 is running."</span>);</span><br><span class="line">&gt;              <span class="keyword">try</span> &#123;</span><br><span class="line">&gt;                  TimeUnit.SECONDS.sleep(<span class="number">2</span>);</span><br><span class="line">&gt;              &#125; <span class="keyword">catch</span> (InterruptedException e) &#123;</span><br><span class="line">&gt;                  e.printStackTrace();</span><br><span class="line">&gt;              &#125;</span><br><span class="line">&gt;              System.out.println(<span class="string">"The hook thread 2 is exit."</span>);</span><br><span class="line">&gt;          &#125;</span><br><span class="line">&gt;      &#125;));</span><br><span class="line">&gt;  &#125;</span><br><span class="line">&gt;</span><br></pre></td></tr></table></figure>
-</blockquote>
-<blockquote>
+<pre class=" language-java"><code class="language-java"> <span class="token keyword">public</span> <span class="token keyword">static</span> <span class="token keyword">void</span> <span class="token function">main</span><span class="token punctuation">(</span>String<span class="token punctuation">[</span><span class="token punctuation">]</span> args<span class="token punctuation">)</span> <span class="token punctuation">{</span>
+     Runtime<span class="token punctuation">.</span><span class="token function">getRuntime</span><span class="token punctuation">(</span><span class="token punctuation">)</span><span class="token punctuation">.</span><span class="token function">addShutdownHook</span><span class="token punctuation">(</span><span class="token keyword">new</span> <span class="token class-name">Thread</span><span class="token punctuation">(</span><span class="token keyword">new</span> <span class="token class-name">Runnable</span><span class="token punctuation">(</span><span class="token punctuation">)</span> <span class="token punctuation">{</span>
+         <span class="token annotation punctuation">@Override</span>
+         <span class="token keyword">public</span> <span class="token keyword">void</span> <span class="token function">run</span><span class="token punctuation">(</span><span class="token punctuation">)</span> <span class="token punctuation">{</span>
+             System<span class="token punctuation">.</span>out<span class="token punctuation">.</span><span class="token function">println</span><span class="token punctuation">(</span><span class="token string">"The hook thread 1 is running."</span><span class="token punctuation">)</span><span class="token punctuation">;</span>
+             <span class="token keyword">try</span> <span class="token punctuation">{</span>
+                 TimeUnit<span class="token punctuation">.</span>SECONDS<span class="token punctuation">.</span><span class="token function">sleep</span><span class="token punctuation">(</span><span class="token number">2</span><span class="token punctuation">)</span><span class="token punctuation">;</span>
+             <span class="token punctuation">}</span> <span class="token keyword">catch</span> <span class="token punctuation">(</span><span class="token class-name">InterruptedException</span> e<span class="token punctuation">)</span> <span class="token punctuation">{</span>
+                 e<span class="token punctuation">.</span><span class="token function">printStackTrace</span><span class="token punctuation">(</span><span class="token punctuation">)</span><span class="token punctuation">;</span>
+             <span class="token punctuation">}</span>
+             System<span class="token punctuation">.</span>out<span class="token punctuation">.</span><span class="token function">println</span><span class="token punctuation">(</span><span class="token string">"The hook thread 1 is exit."</span><span class="token punctuation">)</span><span class="token punctuation">;</span>
+         <span class="token punctuation">}</span>
+     <span class="token punctuation">}</span><span class="token punctuation">)</span><span class="token punctuation">)</span><span class="token punctuation">;</span>
+
+     Runtime<span class="token punctuation">.</span><span class="token function">getRuntime</span><span class="token punctuation">(</span><span class="token punctuation">)</span><span class="token punctuation">.</span><span class="token function">addShutdownHook</span><span class="token punctuation">(</span><span class="token keyword">new</span> <span class="token class-name">Thread</span><span class="token punctuation">(</span><span class="token keyword">new</span> <span class="token class-name">Runnable</span><span class="token punctuation">(</span><span class="token punctuation">)</span> <span class="token punctuation">{</span>
+         <span class="token annotation punctuation">@Override</span>
+         <span class="token keyword">public</span> <span class="token keyword">void</span> <span class="token function">run</span><span class="token punctuation">(</span><span class="token punctuation">)</span> <span class="token punctuation">{</span>
+             System<span class="token punctuation">.</span>out<span class="token punctuation">.</span><span class="token function">println</span><span class="token punctuation">(</span><span class="token string">"The hook thread 2 is running."</span><span class="token punctuation">)</span><span class="token punctuation">;</span>
+             <span class="token keyword">try</span> <span class="token punctuation">{</span>
+                 TimeUnit<span class="token punctuation">.</span>SECONDS<span class="token punctuation">.</span><span class="token function">sleep</span><span class="token punctuation">(</span><span class="token number">2</span><span class="token punctuation">)</span><span class="token punctuation">;</span>
+             <span class="token punctuation">}</span> <span class="token keyword">catch</span> <span class="token punctuation">(</span><span class="token class-name">InterruptedException</span> e<span class="token punctuation">)</span> <span class="token punctuation">{</span>
+                 e<span class="token punctuation">.</span><span class="token function">printStackTrace</span><span class="token punctuation">(</span><span class="token punctuation">)</span><span class="token punctuation">;</span>
+             <span class="token punctuation">}</span>
+             System<span class="token punctuation">.</span>out<span class="token punctuation">.</span><span class="token function">println</span><span class="token punctuation">(</span><span class="token string">"The hook thread 2 is exit."</span><span class="token punctuation">)</span><span class="token punctuation">;</span>
+         <span class="token punctuation">}</span>
+     <span class="token punctuation">}</span><span class="token punctuation">)</span><span class="token punctuation">)</span><span class="token punctuation">;</span>
+ <span class="token punctuation">}</span>
+</code></pre>
 <p>当该方法运行结束时，会调用这两个 hook 线程。</p>
-<h2 id="应用场景：防止应用程序重复启动"><a href="#应用场景：防止应用程序重复启动" class="headerlink" title="应用场景：防止应用程序重复启动"></a>应用场景：防止应用程序重复启动</h2><figure class="highlight java"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br><span class="line">14</span><br><span class="line">15</span><br><span class="line">16</span><br><span class="line">17</span><br><span class="line">18</span><br><span class="line">19</span><br><span class="line">20</span><br><span class="line">21</span><br><span class="line">22</span><br><span class="line">23</span><br><span class="line">24</span><br><span class="line">25</span><br><span class="line">26</span><br><span class="line">27</span><br><span class="line">28</span><br><span class="line">29</span><br></pre></td><td class="code"><pre><span class="line">&gt; <span class="function"><span class="keyword">public</span> <span class="keyword">static</span> <span class="keyword">void</span> <span class="title">main</span><span class="params">(String[] args)</span> </span>&#123;</span><br><span class="line">&gt;     File file = <span class="keyword">new</span> File(<span class="string">"./.lock"</span>);</span><br><span class="line">&gt;     <span class="keyword">if</span>(file.exists())&#123;</span><br><span class="line">&gt;         <span class="keyword">throw</span> <span class="keyword">new</span> RuntimeException(<span class="string">"The program already running."</span>);</span><br><span class="line">&gt;     &#125;</span><br><span class="line">&gt;     <span class="keyword">try</span> &#123;</span><br><span class="line">&gt;         file.createNewFile();</span><br><span class="line">&gt;     &#125; <span class="keyword">catch</span> (IOException e) &#123;</span><br><span class="line">&gt;         e.printStackTrace();</span><br><span class="line">&gt;     &#125;</span><br><span class="line">&gt; </span><br><span class="line">&gt;     Runtime.getRuntime().addShutdownHook(<span class="keyword">new</span> Thread(<span class="keyword">new</span> Runnable() &#123;</span><br><span class="line">&gt;         <span class="meta">@Override</span></span><br><span class="line">&gt;         <span class="function"><span class="keyword">public</span> <span class="keyword">void</span> <span class="title">run</span><span class="params">()</span> </span>&#123;</span><br><span class="line">&gt;             System.out.println(<span class="string">"The program received kill signal."</span>);</span><br><span class="line">&gt;             file.delete();</span><br><span class="line">&gt;         &#125;</span><br><span class="line">&gt;     &#125;));</span><br><span class="line">&gt; </span><br><span class="line">&gt;     <span class="keyword">while</span>(<span class="keyword">true</span>)&#123;</span><br><span class="line">&gt;         <span class="keyword">try</span> &#123;</span><br><span class="line">&gt;             TimeUnit.SECONDS.sleep(<span class="number">1</span>);</span><br><span class="line">&gt;             System.out.println(<span class="string">"The program is running."</span>);</span><br><span class="line">&gt;         &#125; <span class="keyword">catch</span> (InterruptedException e) &#123;</span><br><span class="line">&gt;             e.printStackTrace();</span><br><span class="line">&gt;         &#125;</span><br><span class="line">&gt;     &#125;</span><br><span class="line">&gt; &#125;</span><br><span class="line">&gt;</span><br></pre></td></tr></table></figure>
-</blockquote>
-<blockquote>
+<h2 id="应用场景：防止应用程序重复启动"><a href="#应用场景：防止应用程序重复启动" class="headerlink" title="应用场景：防止应用程序重复启动"></a>应用场景：防止应用程序重复启动</h2><pre class=" language-java"><code class="language-java"><span class="token keyword">public</span> <span class="token keyword">static</span> <span class="token keyword">void</span> <span class="token function">main</span><span class="token punctuation">(</span>String<span class="token punctuation">[</span><span class="token punctuation">]</span> args<span class="token punctuation">)</span> <span class="token punctuation">{</span>
+    File file <span class="token operator">=</span> <span class="token keyword">new</span> <span class="token class-name">File</span><span class="token punctuation">(</span><span class="token string">"./.lock"</span><span class="token punctuation">)</span><span class="token punctuation">;</span>
+    <span class="token keyword">if</span><span class="token punctuation">(</span>file<span class="token punctuation">.</span><span class="token function">exists</span><span class="token punctuation">(</span><span class="token punctuation">)</span><span class="token punctuation">)</span><span class="token punctuation">{</span>
+        <span class="token keyword">throw</span> <span class="token keyword">new</span> <span class="token class-name">RuntimeException</span><span class="token punctuation">(</span><span class="token string">"The program already running."</span><span class="token punctuation">)</span><span class="token punctuation">;</span>
+    <span class="token punctuation">}</span>
+    <span class="token keyword">try</span> <span class="token punctuation">{</span>
+        file<span class="token punctuation">.</span><span class="token function">createNewFile</span><span class="token punctuation">(</span><span class="token punctuation">)</span><span class="token punctuation">;</span>
+    <span class="token punctuation">}</span> <span class="token keyword">catch</span> <span class="token punctuation">(</span><span class="token class-name">IOException</span> e<span class="token punctuation">)</span> <span class="token punctuation">{</span>
+        e<span class="token punctuation">.</span><span class="token function">printStackTrace</span><span class="token punctuation">(</span><span class="token punctuation">)</span><span class="token punctuation">;</span>
+    <span class="token punctuation">}</span>
+
+    Runtime<span class="token punctuation">.</span><span class="token function">getRuntime</span><span class="token punctuation">(</span><span class="token punctuation">)</span><span class="token punctuation">.</span><span class="token function">addShutdownHook</span><span class="token punctuation">(</span><span class="token keyword">new</span> <span class="token class-name">Thread</span><span class="token punctuation">(</span><span class="token keyword">new</span> <span class="token class-name">Runnable</span><span class="token punctuation">(</span><span class="token punctuation">)</span> <span class="token punctuation">{</span>
+        <span class="token annotation punctuation">@Override</span>
+        <span class="token keyword">public</span> <span class="token keyword">void</span> <span class="token function">run</span><span class="token punctuation">(</span><span class="token punctuation">)</span> <span class="token punctuation">{</span>
+            System<span class="token punctuation">.</span>out<span class="token punctuation">.</span><span class="token function">println</span><span class="token punctuation">(</span><span class="token string">"The program received kill signal."</span><span class="token punctuation">)</span><span class="token punctuation">;</span>
+            file<span class="token punctuation">.</span><span class="token function">delete</span><span class="token punctuation">(</span><span class="token punctuation">)</span><span class="token punctuation">;</span>
+        <span class="token punctuation">}</span>
+    <span class="token punctuation">}</span><span class="token punctuation">)</span><span class="token punctuation">)</span><span class="token punctuation">;</span>
+
+    <span class="token keyword">while</span><span class="token punctuation">(</span><span class="token boolean">true</span><span class="token punctuation">)</span><span class="token punctuation">{</span>
+        <span class="token keyword">try</span> <span class="token punctuation">{</span>
+            TimeUnit<span class="token punctuation">.</span>SECONDS<span class="token punctuation">.</span><span class="token function">sleep</span><span class="token punctuation">(</span><span class="token number">1</span><span class="token punctuation">)</span><span class="token punctuation">;</span>
+            System<span class="token punctuation">.</span>out<span class="token punctuation">.</span><span class="token function">println</span><span class="token punctuation">(</span><span class="token string">"The program is running."</span><span class="token punctuation">)</span><span class="token punctuation">;</span>
+        <span class="token punctuation">}</span> <span class="token keyword">catch</span> <span class="token punctuation">(</span><span class="token class-name">InterruptedException</span> e<span class="token punctuation">)</span> <span class="token punctuation">{</span>
+            e<span class="token punctuation">.</span><span class="token function">printStackTrace</span><span class="token punctuation">(</span><span class="token punctuation">)</span><span class="token punctuation">;</span>
+        <span class="token punctuation">}</span>
+    <span class="token punctuation">}</span>
+<span class="token punctuation">}</span>
+</code></pre>
 </blockquote>
 
             </div>
@@ -635,22 +686,22 @@
             <div class="article-badge left-badge text-color">
                 <i class="fa fa-chevron-left"></i>&nbsp;Previous</div>
             <div class="card">
-                <a href="/2018/09/29/java/regex/">
+                <a href="/2018/09/29/java/模拟Ping获取IP响应时间/">
                     <div class="card-image">
                         
                         
-                        <img src="/medias/featureimages/3.jpg" class="responsive-img" alt="正则表达式">
+                        <img src="/medias/featureimages/16.jpg" class="responsive-img" alt="模拟Ping">
                         
-                        <span class="card-title">正则表达式</span>
+                        <span class="card-title">模拟Ping</span>
                     </div>
                 </a>
                 <div class="card-content article-content">
                     <div class="summary block-with-text">
                         
-                            正则表达式什么是正则表达式
-正则表达式是一组由字母和符号组成的特殊文本, 它可以用来从文本中找出满足你想要的格式的句子.
-
-一个正则表达式是在一个主体字符串中从左到右匹配字符串时的一种样式.“Regular expression”这个词比较
+                            import java.io.BufferedReader;
+import java.io.IOException;
+import java.io.InputStream;
+import java.io.InputStreamReader;
                         
                     </div>
                     <div class="publish-info">
@@ -661,8 +712,8 @@
                             
                             <i class="fa fa-bookmark fa-fw icon-category"></i>
                             
-                            <a href="/categories/Java成神之路/" class="post-category" target="_blank">
-                                    Java成神之路
+                            <a href="/categories/工具函数/" class="post-category" target="_blank">
+                                    工具函数
                                 </a>
                             
                             
@@ -687,19 +738,25 @@
                 Next&nbsp;<i class="fa fa-chevron-right"></i>
             </div>
             <div class="card">
-                <a href="/2018/09/29/java/模拟Ping获取IP响应时间/">
+                <a href="/2018/09/29/java/POI操作EXCEl/">
                     <div class="card-image">
                         
                         
-                        <img src="/medias/featureimages/16.jpg" class="responsive-img" alt="模拟Ping">
+                        <img src="/medias/featureimages/15.jpg" class="responsive-img" alt="通过 POI 将数据库中的数据上传至 OSS 对象存储">
                         
-                        <span class="card-title">模拟Ping</span>
+                        <span class="card-title">通过 POI 将数据库中的数据上传至 OSS 对象存储</span>
                     </div>
                 </a>
                 <div class="card-content article-content">
                     <div class="summary block-with-text">
                         
-                            123456789101112131415161718192021222324252627282930313233343536373839404142434445import java.io.BufferedReader;import ja
+                            通过 POI 将数据库中的数据上传至 OSS 对象存储我爱你，第一句是假的，第二句也是假的。
+
+
+
+表格的具体样式可以参考 第三章
+我们以 aliyun 的 OSS 为例上传 上传方法
+一、准备工作第一步：引入 Apache POI 的依赖
                         
                     </div>
                     <div class="publish-info">
@@ -710,8 +767,8 @@
                             
                             <i class="fa fa-bookmark fa-fw icon-category"></i>
                             
-                            <a href="/categories/工具函数/" class="post-category" target="_blank">
-                                    工具函数
+                            <a href="/categories/Java成神之路/" class="post-category" target="_blank">
+                                    Java成神之路
                                 </a>
                             
                             
@@ -723,6 +780,10 @@
                     
                     <a href="/tags/java/" target="_blank">
                         <span class="chip bg-color">java</span>
+                    </a>
+                    
+                    <a href="/tags/poi/" target="_blank">
+                        <span class="chip bg-color">poi</span>
                     </a>
                     
                 </div>
@@ -874,6 +935,10 @@
     </a>
 
 
+
+    <a href="/atom.xml" class="tooltipped" target="_blank" data-tooltip="RSS 订阅" data-position="top" data-delay="50">
+        <i class="fa fa-rss"></i>
+    </a>
 </div>
     </div>
 </footer>

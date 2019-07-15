@@ -28,7 +28,7 @@
     </style>
 
     <script src="/libs/jquery/jquery-2.2.0.min.js"></script>
-</head>
+<link rel="stylesheet" href="/css/prism-tomorrow.css" type="text/css"></head>
 
 
 <body>
@@ -418,26 +418,96 @@
         <div class="card-content article-card-content">
             <div id="articleContent">
                 <h1 id="Spring-Data-MongoDB-（二）-查询"><a href="#Spring-Data-MongoDB-（二）-查询" class="headerlink" title="Spring Data MongoDB （二） 查询"></a>Spring Data MongoDB （二） 查询</h1><h2 id="创建查询（去重、区间、忽略大小写等）"><a href="#创建查询（去重、区间、忽略大小写等）" class="headerlink" title="创建查询（去重、区间、忽略大小写等）"></a>创建查询（去重、区间、忽略大小写等）</h2><p>查询的构建机制，将截断前缀 find…By、 read…By、 query…By、 count…By、 get…By 等，从剩余部分开始解析，省略号中可以使用如：Distinct、Between、LessThan、GreaterThan、Like等表达式</p>
-<figure class="highlight java"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br><span class="line">14</span><br><span class="line">15</span><br><span class="line">16</span><br><span class="line">17</span><br></pre></td><td class="code"><pre><span class="line"><span class="class"><span class="keyword">interface</span> <span class="title">PersonRepository</span> <span class="keyword">extends</span> <span class="title">Repository</span>&lt;<span class="title">User</span>, <span class="title">Long</span>&gt; </span>&#123;</span><br><span class="line"></span><br><span class="line">  <span class="function">List&lt;Person&gt; <span class="title">findByEmailAddressAndLastname</span><span class="params">(EmailAddress emailAddress, String lastname)</span></span>;</span><br><span class="line"></span><br><span class="line">  <span class="comment">// 使用 Distinct 去重</span></span><br><span class="line">  <span class="function">List&lt;Person&gt; <span class="title">findDistinctPeopleByLastnameOrFirstname</span><span class="params">(String lastname, String firstname)</span></span>;</span><br><span class="line">  <span class="function">List&lt;Person&gt; <span class="title">findPeopleDistinctByLastnameOrFirstname</span><span class="params">(String lastname, String firstname)</span></span>;</span><br><span class="line"></span><br><span class="line">  <span class="comment">// 使用 IgnoreCase 忽略大小写查询</span></span><br><span class="line">  <span class="function">List&lt;Person&gt; <span class="title">findByLastnameIgnoreCase</span><span class="params">(String lastname)</span></span>;</span><br><span class="line">  <span class="comment">// 使用 AllIgnoreCase 全部忽略大小写</span></span><br><span class="line">  <span class="function">List&lt;Person&gt; <span class="title">findByLastnameAndFirstnameAllIgnoreCase</span><span class="params">(String lastname, String firstname)</span></span>;</span><br><span class="line"></span><br><span class="line">  <span class="comment">// 使用 OrderBy (Field) ASC/DESC 进行排序</span></span><br><span class="line">  <span class="function">List&lt;Person&gt; <span class="title">findByLastnameOrderByFirstnameAsc</span><span class="params">(String lastname)</span></span>;</span><br><span class="line">  <span class="function">List&lt;Person&gt; <span class="title">findByLastnameOrderByFirstnameDesc</span><span class="params">(String lastname)</span></span>;</span><br><span class="line">&#125;</span><br></pre></td></tr></table></figure>
+<pre class=" language-java"><code class="language-java"><span class="token keyword">interface</span> <span class="token class-name">PersonRepository</span> <span class="token keyword">extends</span> <span class="token class-name">Repository</span><span class="token operator">&lt;</span>User<span class="token punctuation">,</span> Long<span class="token operator">></span> <span class="token punctuation">{</span>
+
+  List<span class="token operator">&lt;</span>Person<span class="token operator">></span> <span class="token function">findByEmailAddressAndLastname</span><span class="token punctuation">(</span>EmailAddress emailAddress<span class="token punctuation">,</span> String lastname<span class="token punctuation">)</span><span class="token punctuation">;</span>
+
+  <span class="token comment" spellcheck="true">// 使用 Distinct 去重</span>
+  List<span class="token operator">&lt;</span>Person<span class="token operator">></span> <span class="token function">findDistinctPeopleByLastnameOrFirstname</span><span class="token punctuation">(</span>String lastname<span class="token punctuation">,</span> String firstname<span class="token punctuation">)</span><span class="token punctuation">;</span>
+  List<span class="token operator">&lt;</span>Person<span class="token operator">></span> <span class="token function">findPeopleDistinctByLastnameOrFirstname</span><span class="token punctuation">(</span>String lastname<span class="token punctuation">,</span> String firstname<span class="token punctuation">)</span><span class="token punctuation">;</span>
+
+  <span class="token comment" spellcheck="true">// 使用 IgnoreCase 忽略大小写查询</span>
+  List<span class="token operator">&lt;</span>Person<span class="token operator">></span> <span class="token function">findByLastnameIgnoreCase</span><span class="token punctuation">(</span>String lastname<span class="token punctuation">)</span><span class="token punctuation">;</span>
+  <span class="token comment" spellcheck="true">// 使用 AllIgnoreCase 全部忽略大小写</span>
+  List<span class="token operator">&lt;</span>Person<span class="token operator">></span> <span class="token function">findByLastnameAndFirstnameAllIgnoreCase</span><span class="token punctuation">(</span>String lastname<span class="token punctuation">,</span> String firstname<span class="token punctuation">)</span><span class="token punctuation">;</span>
+
+  <span class="token comment" spellcheck="true">// 使用 OrderBy (Field) ASC/DESC 进行排序</span>
+  List<span class="token operator">&lt;</span>Person<span class="token operator">></span> <span class="token function">findByLastnameOrderByFirstnameAsc</span><span class="token punctuation">(</span>String lastname<span class="token punctuation">)</span><span class="token punctuation">;</span>
+  List<span class="token operator">&lt;</span>Person<span class="token operator">></span> <span class="token function">findByLastnameOrderByFirstnameDesc</span><span class="token punctuation">(</span>String lastname<span class="token punctuation">)</span><span class="token punctuation">;</span>
+<span class="token punctuation">}</span>
+</code></pre>
 <h2 id="属性表达式（子属性查询）"><a href="#属性表达式（子属性查询）" class="headerlink" title="属性表达式（子属性查询）"></a>属性表达式（子属性查询）</h2><p>即一个被管理实体的属性，在查询时，会去查找该属性类的嵌套属性类。如：Person 有一个 Health 属性类，二Health 也有一个 HeartIm 属性类，则通过方法名查询为：</p>
-<figure class="highlight java"><table><tr><td class="gutter"><pre><span class="line">1</span><br></pre></td><td class="code"><pre><span class="line"><span class="function">List&lt;Person&gt; <span class="title">findByHealthHeartIm</span><span class="params">(HeartIm heartIm)</span></span>;    <span class="comment">// 相当于 &#123;health.heart:?0&#125;</span></span><br></pre></td></tr></table></figure>
+<pre class=" language-java"><code class="language-java">List<span class="token operator">&lt;</span>Person<span class="token operator">></span> <span class="token function">findByHealthHeartIm</span><span class="token punctuation">(</span>HeartIm heartIm<span class="token punctuation">)</span><span class="token punctuation">;</span>    <span class="token comment" spellcheck="true">// 相当于 {health.heart:?0}</span>
+</code></pre>
 <p>其查询顺序为，先匹配 healthheartIm 属性是否存在，若否，匹配 healthHeart.Im ，最后才是 health.Heart.Im。再没有则接着向下拆分。为了解决模糊不清的含义，我们可以在方法名中使用 “_” 手动创建分割点。</p>
-<figure class="highlight java"><table><tr><td class="gutter"><pre><span class="line">1</span><br></pre></td><td class="code"><pre><span class="line"><span class="function">List&lt;Person&gt; <span class="title">findByHealth_HeartIm</span><span class="params">(HeartIm heartIm)</span></span>;</span><br></pre></td></tr></table></figure>
+<pre class=" language-java"><code class="language-java">List<span class="token operator">&lt;</span>Person<span class="token operator">></span> <span class="token function">findByHealth_HeartIm</span><span class="token punctuation">(</span>HeartIm heartIm<span class="token punctuation">)</span><span class="token punctuation">;</span>
+</code></pre>
 <h2 id="特殊参数（分页、排序）"><a href="#特殊参数（分页、排序）" class="headerlink" title="特殊参数（分页、排序）"></a>特殊参数（分页、排序）</h2><p>除了在查询中定义处理方法参数之外，还有一些特殊的类型，如：Pageable 和 Sort，用于分页和排序:</p>
-<figure class="highlight java"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br></pre></td><td class="code"><pre><span class="line"><span class="comment">// Page 接口中返回了元素的总数、可分页数等，其实是通过底层触发 count 方法进行了总数查询</span></span><br><span class="line"><span class="function">Page&lt;User&gt; <span class="title">findByLastname</span><span class="params">(String lastname, Pageable pageable)</span></span>;</span><br><span class="line"></span><br><span class="line"><span class="comment">// Slice 仅仅知道是否有下一个可用的 Slice，在遍历大结果集时非常有效</span></span><br><span class="line"><span class="function">Slice&lt;User&gt; <span class="title">findByLastname</span><span class="params">(String lastname, Pageable pageable)</span></span>;</span><br><span class="line"></span><br><span class="line"><span class="function">List&lt;User&gt; <span class="title">findByLastname</span><span class="params">(String lastname, Sort sort)</span></span>;</span><br><span class="line"></span><br><span class="line"><span class="function">List&lt;User&gt; <span class="title">findByLastname</span><span class="params">(String lastname, Pageable pageable)</span></span>;</span><br></pre></td></tr></table></figure>
+<pre class=" language-java"><code class="language-java"><span class="token comment" spellcheck="true">// Page 接口中返回了元素的总数、可分页数等，其实是通过底层触发 count 方法进行了总数查询</span>
+Page<span class="token operator">&lt;</span>User<span class="token operator">></span> <span class="token function">findByLastname</span><span class="token punctuation">(</span>String lastname<span class="token punctuation">,</span> Pageable pageable<span class="token punctuation">)</span><span class="token punctuation">;</span>
+
+<span class="token comment" spellcheck="true">// Slice 仅仅知道是否有下一个可用的 Slice，在遍历大结果集时非常有效</span>
+Slice<span class="token operator">&lt;</span>User<span class="token operator">></span> <span class="token function">findByLastname</span><span class="token punctuation">(</span>String lastname<span class="token punctuation">,</span> Pageable pageable<span class="token punctuation">)</span><span class="token punctuation">;</span>
+
+List<span class="token operator">&lt;</span>User<span class="token operator">></span> <span class="token function">findByLastname</span><span class="token punctuation">(</span>String lastname<span class="token punctuation">,</span> Sort sort<span class="token punctuation">)</span><span class="token punctuation">;</span>
+
+List<span class="token operator">&lt;</span>User<span class="token operator">></span> <span class="token function">findByLastname</span><span class="token punctuation">(</span>String lastname<span class="token punctuation">,</span> Pageable pageable<span class="token punctuation">)</span><span class="token punctuation">;</span>
+</code></pre>
 <h2 id="限制查询结果（Top、First等）"><a href="#限制查询结果（Top、First等）" class="headerlink" title="限制查询结果（Top、First等）"></a>限制查询结果（Top、First等）</h2><p>查询方法的结果可以通过关键字：first、top 来限制，紧跟随的数值会限定长度，默认为1</p>
-<figure class="highlight java"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br></pre></td><td class="code"><pre><span class="line"><span class="function">User <span class="title">findFirstByOrderByLastnameAsc</span><span class="params">()</span></span>;</span><br><span class="line"></span><br><span class="line"><span class="function">User <span class="title">findTopByOrderByAgeDesc</span><span class="params">()</span></span>;</span><br><span class="line"></span><br><span class="line"><span class="function">Page&lt;User&gt; <span class="title">queryFirst10ByLastname</span><span class="params">(String lastname, Pageable pageable)</span></span>;</span><br><span class="line"></span><br><span class="line"><span class="function">Slice&lt;User&gt; <span class="title">findTop3ByLastname</span><span class="params">(String lastname, Pageable pageable)</span></span>;</span><br><span class="line"></span><br><span class="line"><span class="function">List&lt;User&gt; <span class="title">findFirst10ByLastname</span><span class="params">(String lastname, Sort sort)</span></span>;</span><br><span class="line"></span><br><span class="line"><span class="function">List&lt;User&gt; <span class="title">findTop10ByLastname</span><span class="params">(String lastname, Pageable pageable)</span></span>;</span><br></pre></td></tr></table></figure>
+<pre class=" language-java"><code class="language-java">User <span class="token function">findFirstByOrderByLastnameAsc</span><span class="token punctuation">(</span><span class="token punctuation">)</span><span class="token punctuation">;</span>
+
+User <span class="token function">findTopByOrderByAgeDesc</span><span class="token punctuation">(</span><span class="token punctuation">)</span><span class="token punctuation">;</span>
+
+Page<span class="token operator">&lt;</span>User<span class="token operator">></span> <span class="token function">queryFirst10ByLastname</span><span class="token punctuation">(</span>String lastname<span class="token punctuation">,</span> Pageable pageable<span class="token punctuation">)</span><span class="token punctuation">;</span>
+
+Slice<span class="token operator">&lt;</span>User<span class="token operator">></span> <span class="token function">findTop3ByLastname</span><span class="token punctuation">(</span>String lastname<span class="token punctuation">,</span> Pageable pageable<span class="token punctuation">)</span><span class="token punctuation">;</span>
+
+List<span class="token operator">&lt;</span>User<span class="token operator">></span> <span class="token function">findFirst10ByLastname</span><span class="token punctuation">(</span>String lastname<span class="token punctuation">,</span> Sort sort<span class="token punctuation">)</span><span class="token punctuation">;</span>
+
+List<span class="token operator">&lt;</span>User<span class="token operator">></span> <span class="token function">findTop10ByLastname</span><span class="token punctuation">(</span>String lastname<span class="token punctuation">,</span> Pageable pageable<span class="token punctuation">)</span><span class="token punctuation">;</span>
+</code></pre>
 <h2 id="查询结果流（Stream）"><a href="#查询结果流（Stream）" class="headerlink" title="查询结果流（Stream）"></a>查询结果流（Stream）</h2><p>查询的结果可以使用 java8 的 Stream<t> 来处理，这样可以使用 stream 的良好性能。</t></p>
-<figure class="highlight java"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br></pre></td><td class="code"><pre><span class="line"><span class="meta">@Query</span>(<span class="string">"select u from User u"</span>)</span><br><span class="line"><span class="function">Stream&lt;User&gt; <span class="title">findAllByCustomQueryAndStream</span><span class="params">()</span></span>;</span><br><span class="line"></span><br><span class="line"><span class="function">Stream&lt;User&gt; <span class="title">readAllByFirstnameNotNull</span><span class="params">()</span></span>;</span><br><span class="line"></span><br><span class="line"><span class="meta">@Query</span>(<span class="string">"select u from User u"</span>)</span><br><span class="line"><span class="function">Stream&lt;User&gt; <span class="title">streamAllPaged</span><span class="params">(Pageable pageable)</span></span>;</span><br></pre></td></tr></table></figure>
+<pre class=" language-java"><code class="language-java"><span class="token annotation punctuation">@Query</span><span class="token punctuation">(</span><span class="token string">"select u from User u"</span><span class="token punctuation">)</span>
+Stream<span class="token operator">&lt;</span>User<span class="token operator">></span> <span class="token function">findAllByCustomQueryAndStream</span><span class="token punctuation">(</span><span class="token punctuation">)</span><span class="token punctuation">;</span>
+
+Stream<span class="token operator">&lt;</span>User<span class="token operator">></span> <span class="token function">readAllByFirstnameNotNull</span><span class="token punctuation">(</span><span class="token punctuation">)</span><span class="token punctuation">;</span>
+
+<span class="token annotation punctuation">@Query</span><span class="token punctuation">(</span><span class="token string">"select u from User u"</span><span class="token punctuation">)</span>
+Stream<span class="token operator">&lt;</span>User<span class="token operator">></span> <span class="token function">streamAllPaged</span><span class="token punctuation">(</span>Pageable pageable<span class="token punctuation">)</span><span class="token punctuation">;</span>
+</code></pre>
 <p>因为 Stream 使用了底层的资源，所以在使用之后必须关闭：</p>
-<figure class="highlight java"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br></pre></td><td class="code"><pre><span class="line"><span class="keyword">try</span> (Stream&lt;User&gt; stream = repository.findAllByCustomQueryAndStream()) &#123;  </span><br><span class="line">    stream.forEach(…);</span><br><span class="line">&#125;</span><br></pre></td></tr></table></figure>
+<pre class=" language-java"><code class="language-java"><span class="token keyword">try</span> <span class="token punctuation">(</span>Stream<span class="token operator">&lt;</span>User<span class="token operator">></span> stream <span class="token operator">=</span> repository<span class="token punctuation">.</span><span class="token function">findAllByCustomQueryAndStream</span><span class="token punctuation">(</span><span class="token punctuation">)</span><span class="token punctuation">)</span> <span class="token punctuation">{</span>  
+    stream<span class="token punctuation">.</span><span class="token function">forEach</span><span class="token punctuation">(</span>…<span class="token punctuation">)</span><span class="token punctuation">;</span>
+<span class="token punctuation">}</span>
+</code></pre>
 <p>而且，并不是所有的 Spring Data 模块都支持 Stream</p>
 <h2 id="异步查询结果"><a href="#异步查询结果" class="headerlink" title="异步查询结果"></a>异步查询结果</h2><p>Repository 的查询方法可以异步执行，这意味着该方法在调用时会立即返回，但是 <code>实际的查询要提交给 Spring 的任务TaskExecutor</code></p>
-<figure class="highlight java"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br><span class="line">14</span><br></pre></td><td class="code"><pre><span class="line"><span class="comment">/** Future 的常用方法： </span></span><br><span class="line"><span class="comment">isCancelled():boolean    </span></span><br><span class="line"><span class="comment">isDone():boolean    </span></span><br><span class="line"><span class="comment">get():V     </span></span><br><span class="line"><span class="comment">get(long timeout,<span class="doctag">@NotNull</span> TimeUnit unit):V</span></span><br><span class="line"><span class="comment">*/</span></span><br><span class="line"><span class="meta">@Async</span></span><br><span class="line"><span class="function">Future&lt;User&gt; <span class="title">findByFirstname</span><span class="params">(String firstname)</span></span>;     <span class="comment">// java.util.concurrent.Future          </span></span><br><span class="line"></span><br><span class="line"><span class="meta">@Async</span></span><br><span class="line"><span class="function">CompletableFuture&lt;User&gt; <span class="title">findOneByFirstname</span><span class="params">(String firstname)</span></span>;  <span class="comment">// Java 8 的 java.util.concurrent.CompletableFuture</span></span><br><span class="line"></span><br><span class="line"><span class="meta">@Async</span></span><br><span class="line"><span class="function">ListenableFuture&lt;User&gt; <span class="title">findOneByLastname</span><span class="params">(String lastname)</span></span>;  <span class="comment">// org.springframework.util.concurrent.ListenableFuture</span></span><br></pre></td></tr></table></figure>
+<pre class=" language-java"><code class="language-java"><span class="token comment" spellcheck="true">/** Future 的常用方法： 
+isCancelled():boolean    
+isDone():boolean    
+get():V     
+get(long timeout,@NotNull TimeUnit unit):V
+*/</span>
+<span class="token annotation punctuation">@Async</span>
+Future<span class="token operator">&lt;</span>User<span class="token operator">></span> <span class="token function">findByFirstname</span><span class="token punctuation">(</span>String firstname<span class="token punctuation">)</span><span class="token punctuation">;</span>     <span class="token comment" spellcheck="true">// java.util.concurrent.Future          </span>
+
+<span class="token annotation punctuation">@Async</span>
+CompletableFuture<span class="token operator">&lt;</span>User<span class="token operator">></span> <span class="token function">findOneByFirstname</span><span class="token punctuation">(</span>String firstname<span class="token punctuation">)</span><span class="token punctuation">;</span>  <span class="token comment" spellcheck="true">// Java 8 的 java.util.concurrent.CompletableFuture</span>
+
+<span class="token annotation punctuation">@Async</span>
+ListenableFuture<span class="token operator">&lt;</span>User<span class="token operator">></span> <span class="token function">findOneByLastname</span><span class="token punctuation">(</span>String lastname<span class="token punctuation">)</span><span class="token punctuation">;</span>  <span class="token comment" spellcheck="true">// org.springframework.util.concurrent.ListenableFuture</span>
+</code></pre>
 <h2 id="生成-Repository-实例"><a href="#生成-Repository-实例" class="headerlink" title="生成 Repository 实例"></a>生成 Repository 实例</h2><p>使用 xml 配置的方式 指定repositories 扫描的包路径：</p>
-<figure class="highlight java"><table><tr><td class="gutter"><pre><span class="line">1</span><br></pre></td><td class="code"><pre><span class="line">&lt;repositories base-<span class="keyword">package</span>=<span class="string">"com.acme.repositories"</span> /&gt;</span><br></pre></td></tr></table></figure>
+<pre class=" language-java"><code class="language-java"><span class="token operator">&lt;</span>repositories base<span class="token operator">-</span><span class="token keyword">package</span><span class="token operator">=</span><span class="token string">"com.acme.repositories"</span> <span class="token operator">/</span><span class="token operator">></span>
+</code></pre>
 <p>使用注解的方式：</p>
-<figure class="highlight java"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br></pre></td><td class="code"><pre><span class="line"><span class="meta">@Configuration</span></span><br><span class="line"><span class="meta">@EnableJpaRepositories</span>(<span class="string">"com.acme.repositories"</span>)</span><br><span class="line"><span class="class"><span class="keyword">class</span> <span class="title">ApplicationConfiguration</span> </span>&#123;</span><br><span class="line">    <span class="meta">@Bean</span></span><br><span class="line">    <span class="function">EntityManagerFactory <span class="title">entityManagerFactory</span><span class="params">()</span> </span>&#123; <span class="comment">// … &#125;</span></span><br><span class="line">&#125;</span><br></pre></td></tr></table></figure>
+<pre class=" language-java"><code class="language-java"><span class="token annotation punctuation">@Configuration</span>
+<span class="token annotation punctuation">@EnableJpaRepositories</span><span class="token punctuation">(</span><span class="token string">"com.acme.repositories"</span><span class="token punctuation">)</span>
+<span class="token keyword">class</span> <span class="token class-name">ApplicationConfiguration</span> <span class="token punctuation">{</span>
+    <span class="token annotation punctuation">@Bean</span>
+    EntityManagerFactory <span class="token function">entityManagerFactory</span><span class="token punctuation">(</span><span class="token punctuation">)</span> <span class="token punctuation">{</span> <span class="token comment" spellcheck="true">// … }</span>
+<span class="token punctuation">}</span>
+</code></pre>
 <blockquote>
 <p>以上是 Spring Data 的公共基础部分，再往下就是 MongoDBFactory 等的底层实现了。才疏学浅，看不下去啊。就到这里吧，第八章。</p>
 </blockquote>
@@ -646,19 +716,21 @@
             <div class="article-badge left-badge text-color">
                 <i class="fa fa-chevron-left"></i>&nbsp;Previous</div>
             <div class="card">
-                <a href="/2018/09/01/SpringData/Spring-Data-MongoDB（3）/">
+                <a href="/2018/09/01/POI/POI生成Excel-基础生成/">
                     <div class="card-image">
                         
                         
-                        <img src="/medias/featureimages/21.jpg" class="responsive-img" alt="SpringDataMongoDB(三)">
+                        <img src="/medias/featureimages/16.jpg" class="responsive-img" alt="使用POI导出Excel">
                         
-                        <span class="card-title">SpringDataMongoDB(三)</span>
+                        <span class="card-title">使用POI导出Excel</span>
                     </div>
                 </a>
                 <div class="card-content article-content">
                     <div class="summary block-with-text">
                         
-                            Spring Data MongoDB （三） 自定义converter123456789101112131415161718192021222324252627282930313233343536373839404142package c
+                            使用POI导出Excel一、引入POI4.0的包&lt;dependency>
+    &lt;groupId>org.apache.poi&lt;/groupId>
+    &lt;artifactId>poi&lt;/artifactI
                         
                     </div>
                     <div class="publish-info">
@@ -680,8 +752,8 @@
                 
                 <div class="card-action article-tags">
                     
-                    <a href="/tags/Spring-Data/" target="_blank">
-                        <span class="chip bg-color">Spring Data</span>
+                    <a href="/tags/POI/" target="_blank">
+                        <span class="chip bg-color">POI</span>
                     </a>
                     
                 </div>
@@ -695,24 +767,20 @@
                 Next&nbsp;<i class="fa fa-chevron-right"></i>
             </div>
             <div class="card">
-                <a href="/2018/09/01/MarkDown/MarkDown-语法说明/">
+                <a href="/2018/09/01/SpringBootWebsocket/SpringBoot消息机制(四)-ActiveMQ介绍/">
                     <div class="card-image">
                         
                         
-                        <img src="/medias/featureimages/17.jpg" class="responsive-img" alt="MarkDown语法">
+                        <img src="/medias/featureimages/5.jpg" class="responsive-img" alt="SpringBoot消息机制(四)-ActiveMQ介绍">
                         
-                        <span class="card-title">MarkDown语法</span>
+                        <span class="card-title">SpringBoot消息机制(四)-ActiveMQ介绍</span>
                     </div>
                 </a>
                 <div class="card-content article-content">
                     <div class="summary block-with-text">
                         
-                            sfMarkDown语法d“=”是最高阶标题，Setext形式，标记等号上一行的段落
-“-”是二阶标题，同“=”的作用
+                            #SpringBoot消息机制(四)-ActiveMQ介绍
 
-
-区块引用则使用 email 形式的’&gt;’角括号
-中间使用一行回车来换行，如果不带”&gt;”括号，则分块这都是
                         
                     </div>
                     <div class="publish-info">
@@ -723,13 +791,21 @@
                             
                             <i class="fa fa-bookmark fa-fw icon-category"></i>
                             
-                            <a href="/categories/MarkDown语法/" class="post-category" target="_blank">
-                                    MarkDown语法
+                            <a href="/categories/Java/" class="post-category" target="_blank">
+                                    Java
                                 </a>
                             
                             
                         </span>
                     </div>
+                </div>
+                
+                <div class="card-action article-tags">
+                    
+                    <a href="/tags/MQ/" target="_blank">
+                        <span class="chip bg-color">MQ</span>
+                    </a>
+                    
                 </div>
                 
             </div>
@@ -879,6 +955,10 @@
     </a>
 
 
+
+    <a href="/atom.xml" class="tooltipped" target="_blank" data-tooltip="RSS 订阅" data-position="top" data-delay="50">
+        <i class="fa fa-rss"></i>
+    </a>
 </div>
     </div>
 </footer>
