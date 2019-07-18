@@ -4,9 +4,14 @@
 
 <head>
     <meta charset="utf-8">
-    <meta name="keywords" content="帅">
-    <meta name="description" content="根据踏瑞云的权限架构，所认知的SpringSecurity一、 实体类1.1 CoreUser用于存储用户的基本信息，如用户名、密码、真实姓名、手机号、邮箱、是否是管理员、是否禁用、学号、备注、学校备注、组织、权限集合
-1.2 Organi">
+    <meta name="keywords" content="《Spring Security》第六章 SpringSecurity 身份认证流程, 帅">
+    <meta name="description" content="第六章 SpringSecurity 身份认证流程一、标准的身份认证一个标准的身份验证流程：
+
+用户提供用户名与密码
+系统验证用户名密码是否正确
+获取该用户的上下文信息（如角色列表、权限等）
+为用户建立安全上下文
+访问受保护资源时，通过上下">
     <meta http-equiv="X-UA-Compatible" content="IE=edge">
     <meta name="viewport" content="width=device-width, initial-scale=1.0, user-scalable=no">
     <meta name="renderer" content="webkit|ie-stand|ie-comp">
@@ -14,7 +19,7 @@
     <meta name="format-detection" content="telephone=no">
     <meta name="apple-mobile-web-app-capable" content="yes">
     <meta name="apple-mobile-web-app-status-bar-style" content="black-translucent">
-    <title>罗凯的博客</title>
+    <title>《Spring Security》第六章 SpringSecurity 身份认证流程 | 罗凯的博客</title>
     <link rel="icon" type="image/png" href="/favicon.png">
 
     <link rel="stylesheet" type="text/css" href="/libs/awesome/css/font-awesome.min.css">
@@ -261,13 +266,13 @@
 
 
 
-<div class="bg-cover pd-header post-cover" style="background-image: url('/medias/featureimages/0.jpg')">
+<div class="bg-cover pd-header post-cover" style="background-image: url('/medias/featureimages/1.jpg')">
     <div class="container">
         <div class="row">
             <div class="col s12 m12 l12">
                 <div class="brand">
                     <div class="description center-align post-title">
-                        
+                        《Spring Security》第六章 SpringSecurity 身份认证流程
                     </div>
                 </div>
             </div>
@@ -376,12 +381,25 @@
             <div class="row tag-cate">
                 <div class="col s7">
                     
-                          <div class="article-tag">
-                            <span class="chip bg-color">No tag</span>
-                          </div>
+                    <div class="article-tag">
+                        
+                            <a href="/tags/读书笔记/" target="_blank">
+                                <span class="chip bg-color">读书笔记</span>
+                            </a>
+                        
+                    </div>
                     
                 </div>
                 <div class="col s5 right-align">
+                    
+                    <div class="post-cate">
+                        <i class="fa fa-bookmark fa-fw icon-category"></i>
+                        
+                            <a href="/categories/Spring-Security/" class="post-category" target="_blank">
+                                Spring Security
+                            </a>
+                        
+                    </div>
                     
                 </div>
             </div>
@@ -389,7 +407,7 @@
             <div class="post-info">
                 <div class="post-date info-break-policy">
                     <i class="fa fa-calendar-minus-o fa-fw"></i>Publish Date:&nbsp;&nbsp;
-                    2019-07-01
+                    2019-07-18
                 </div>
 
                 
@@ -405,98 +423,67 @@
         <hr class="clearfix">
         <div class="card-content article-card-content">
             <div id="articleContent">
-                <h1 id="根据踏瑞云的权限架构，所认知的SpringSecurity"><a href="#根据踏瑞云的权限架构，所认知的SpringSecurity" class="headerlink" title="根据踏瑞云的权限架构，所认知的SpringSecurity"></a>根据踏瑞云的权限架构，所认知的SpringSecurity</h1><h2 id="一、-实体类"><a href="#一、-实体类" class="headerlink" title="一、 实体类"></a>一、 实体类</h2><h2 id="1-1-CoreUser"><a href="#1-1-CoreUser" class="headerlink" title="1.1 CoreUser"></a>1.1 CoreUser</h2><pre><code>用于存储用户的基本信息，如用户名、密码、真实姓名、手机号、邮箱、是否是管理员、是否禁用、学号、备注、学校备注、组织、权限集合
-</code></pre><h2 id="1-2-Organization"><a href="#1-2-Organization" class="headerlink" title="1.2 Organization"></a>1.2 Organization</h2><pre><code>组织，包含编号、管理员备注、产品、是否禁用
-</code></pre><h2 id="1-3-OrganizationMemeber"><a href="#1-3-OrganizationMemeber" class="headerlink" title="1.3 OrganizationMemeber"></a>1.3 OrganizationMemeber</h2><pre><code>组织成员，包含 用户Id、组织Id、组织权限role
-</code></pre><h2 id="1-4-OrganizationMemeberRole"><a href="#1-4-OrganizationMemeberRole" class="headerlink" title="1.4 OrganizationMemeberRole"></a>1.4 OrganizationMemeberRole</h2><pre><code>组织权限：Administrator 管理员、Teacher 教师、Student 学生
-</code></pre><h2 id="1-5-OrganizationAuthorization"><a href="#1-5-OrganizationAuthorization" class="headerlink" title="1.5 OrganizationAuthorization"></a>1.5 OrganizationAuthorization</h2><pre><code>组织授权： 授权Id、过期时间、授权的课程集合
-</code></pre><h2 id="二、权限类"><a href="#二、权限类" class="headerlink" title="二、权限类"></a>二、权限类</h2><h2 id="2-1-CoreUserDetails"><a href="#2-1-CoreUserDetails" class="headerlink" title="2.1 CoreUserDetails"></a>2.1 CoreUserDetails</h2><pre><code>该类包含了 CoreUser 的信息，和权限的方法，因此需要继承 CoreUser 类和实现 CoreUserDetails 类：UserDetails extends CoreUser implements UserDetails
-即：CoreUserDetails = CoreUser用户信息 + UserDetails的方法 + Organization组织 + OrganizationMember组织内的权限 + OrganizationAuthorization组织授权课程
-新增参数：
-    organizations：List&lt;Organization&gt;  组织集合
-    loginName : String  用户名
-    organizationMemebers：List&lt;OrganizationMember&gt;    成员与组织对应的权限
-    organizationAuthorizations： List&lt;OrganizationAuthorization&gt;    授权内容
-三个构造方法：
-    1. 无参构造
-    2. 含有 登录名 loginName 的构造函数
-    3. 含有 组织集合、组织授权集合、登录名 的构造函数
-实现了 UserDetails 的 7 个方法
-    getAuthorities()        得到权限集合
-    getPassword()           密码
-    getUsername()           用户名
-    isAccountNonExpired()   账户是否未过期
-    isAccountNonLocked()    账户是否未被锁
-    isCredentialsNonExpired()   证书是否未过期
-    isEnabled()             是否可用
-</code></pre><h2 id="2-2-LoginUserService"><a href="#2-2-LoginUserService" class="headerlink" title="2.2 LoginUserService"></a>2.2 LoginUserService</h2><pre><code>用户登录的 Service，实现 UserDetailsService 类的 UserDetails loadUserByUsername(String loginName) 方法，该方法返回 UserDetails，因此需要 CoreUserDetails 实现 CoreUserDetails 类，来将 CoreUserDetails 返回。
-在实现的方法中：
-    1. 通过 loginName (手机号、邮箱、用户名) 查询数据库中是否存在该用户 --&gt; 得到 CoreUser
-    2. 构造一个 带 loginName 的 CoreUserDetails，将 CoreUser 注入 CoreUserDetails &lt;&lt;**1**&gt;&gt;
-    3. 查询用户对应的 组织权限(memberList)，并添加到 CoreUserDetails，即 coreUserDetails.setOrganizationMembers(memberList) &lt;&lt;**2**&gt;&gt;
-    4. 提取 用户组织权限 中的所有组织Id，得到所有的组织信息(organizations)，添加到 CoreUserDetails，即coreUserDetails.setOrganizations(organizations) &lt;&lt;**3**&gt;&gt;
-    5. 通过 组织Id ，得到组织下所有的授权信息(authorizations)，添加到 CoreUserDetails，即 coreUserDetails.setOrganizationAuthorizations(authorizations) &lt;&lt;**4**&gt;&gt;
-    6. 最后，将注入之后的 coreUserDetails 返回
-</code></pre><h2 id="2-3-MethodSecurityConfig"><a href="#2-3-MethodSecurityConfig" class="headerlink" title="2.3 MethodSecurityConfig"></a>2.3 MethodSecurityConfig</h2><blockquote>
-<p>开启方法级别的权限验证。<br>    // @EnableGlocalMethodSecurity()在任何 @Configuration 实例上使用，用来开启基于注解的安全验证<br>    //      prePostEnabled = true ； 表示在方法执行之前进行验证<br>    @EnableGlobalMethodSecurity(prePostEnabled = true)<br>    @Configuration<br>    // GlobalMethodSecurityConfiguration 表示基于方法的安全验证<br>    public class MethodSecurityConfig extends GlobalMethodSecurityConfiguration {</p>
-</blockquote>
-<pre><code>    @Override
-    protected MethodSecurityExpressionHandler createExpressionHandler() {
-        // 返回一个 表达式验证的方法级控制器
-        return new ResourceMethodSecurityExpressionHandler();
-    }
-}
-</code></pre><h2 id="2-4-ResourceMethodSecurityExpressionHandler"><a href="#2-4-ResourceMethodSecurityExpressionHandler" class="headerlink" title="2.4 ResourceMethodSecurityExpressionHandler"></a>2.4 ResourceMethodSecurityExpressionHandler</h2><pre><code>实现 DefaultMethodSecurityExpressionHandler 控制器的 createSecurityExpressionRoot 方法，重写ResourceMethodSecurityExpressionRoot
+                <h1 id="第六章-SpringSecurity-身份认证流程"><a href="#第六章-SpringSecurity-身份认证流程" class="headerlink" title="第六章 SpringSecurity 身份认证流程"></a>第六章 SpringSecurity 身份认证流程</h1><h2 id="一、标准的身份认证"><a href="#一、标准的身份认证" class="headerlink" title="一、标准的身份认证"></a>一、标准的身份认证</h2><p>一个标准的身份验证流程：</p>
+<ol>
+<li>用户提供用户名与密码</li>
+<li>系统验证用户名密码是否正确</li>
+<li>获取该用户的上下文信息（如角色列表、权限等）</li>
+<li>为用户建立安全上下文</li>
+<li>访问受保护资源时，通过上下文信息验证权限</li>
+</ol>
+<p>以下示例来自于 <code>Spring Security Reference</code>，演示了一个简单的迷你认证环境。</p>
+<h3 id="模拟身份认证"><a href="#模拟身份认证" class="headerlink" title="模拟身份认证"></a>模拟身份认证</h3><pre class=" language-java"><code class="language-java"><span class="token keyword">public</span> <span class="token keyword">class</span> <span class="token class-name">AuthenticationExample</span> <span class="token punctuation">{</span>
+<span class="token keyword">private</span> <span class="token keyword">static</span> AuthenticationManager am <span class="token operator">=</span> <span class="token keyword">new</span> <span class="token class-name">SampleAuthenticationManager</span><span class="token punctuation">(</span><span class="token punctuation">)</span><span class="token punctuation">;</span>
 
-public class ResourceMethodSecurityExpressionHandler extends DefaultMethodSecurityExpressionHandler {
+<span class="token keyword">public</span> <span class="token keyword">static</span> <span class="token keyword">void</span> <span class="token function">main</span><span class="token punctuation">(</span>String<span class="token punctuation">[</span><span class="token punctuation">]</span> args<span class="token punctuation">)</span> <span class="token keyword">throws</span> Exception <span class="token punctuation">{</span>
+    BufferedReader in <span class="token operator">=</span> <span class="token keyword">new</span> <span class="token class-name">BufferedReader</span><span class="token punctuation">(</span><span class="token keyword">new</span> <span class="token class-name">InputStreamReader</span><span class="token punctuation">(</span>System<span class="token punctuation">.</span>in<span class="token punctuation">)</span><span class="token punctuation">)</span><span class="token punctuation">;</span>
 
-    private AuthenticationTrustResolver trustResolver =
-            new AuthenticationTrustResolverImpl();
+    <span class="token keyword">while</span><span class="token punctuation">(</span><span class="token boolean">true</span><span class="token punctuation">)</span> <span class="token punctuation">{</span>
+        <span class="token comment" spellcheck="true">// 1. 接收用户名与密码</span>
+    System<span class="token punctuation">.</span>out<span class="token punctuation">.</span><span class="token function">println</span><span class="token punctuation">(</span><span class="token string">"Please enter your username:"</span><span class="token punctuation">)</span><span class="token punctuation">;</span>
+    String name <span class="token operator">=</span> in<span class="token punctuation">.</span><span class="token function">readLine</span><span class="token punctuation">(</span><span class="token punctuation">)</span><span class="token punctuation">;</span>
+    System<span class="token punctuation">.</span>out<span class="token punctuation">.</span><span class="token function">println</span><span class="token punctuation">(</span><span class="token string">"Please enter your password:"</span><span class="token punctuation">)</span><span class="token punctuation">;</span>
+    String password <span class="token operator">=</span> in<span class="token punctuation">.</span><span class="token function">readLine</span><span class="token punctuation">(</span><span class="token punctuation">)</span><span class="token punctuation">;</span>
+    <span class="token keyword">try</span> <span class="token punctuation">{</span>
+        <span class="token comment" spellcheck="true">// 2. 生成 token</span>
+        Authentication request <span class="token operator">=</span> <span class="token keyword">new</span> <span class="token class-name">UsernamePasswordAuthenticationToken</span><span class="token punctuation">(</span>name<span class="token punctuation">,</span> password<span class="token punctuation">)</span><span class="token punctuation">;</span>
+        <span class="token comment" spellcheck="true">// 3. 验证 token 是否正确</span>
+        Authentication result <span class="token operator">=</span> am<span class="token punctuation">.</span><span class="token function">authenticate</span><span class="token punctuation">(</span>request<span class="token punctuation">)</span><span class="token punctuation">;</span>
+        <span class="token comment" spellcheck="true">// 4. 将认证主题注入上下文</span>
+        SecurityContextHolder<span class="token punctuation">.</span><span class="token function">getContext</span><span class="token punctuation">(</span><span class="token punctuation">)</span><span class="token punctuation">.</span><span class="token function">setAuthentication</span><span class="token punctuation">(</span>result<span class="token punctuation">)</span><span class="token punctuation">;</span>
+        <span class="token keyword">break</span><span class="token punctuation">;</span>
+    <span class="token punctuation">}</span> <span class="token keyword">catch</span><span class="token punctuation">(</span>AuthenticationException e<span class="token punctuation">)</span> <span class="token punctuation">{</span>
+        System<span class="token punctuation">.</span>out<span class="token punctuation">.</span><span class="token function">println</span><span class="token punctuation">(</span><span class="token string">"Authentication failed: "</span> <span class="token operator">+</span> e<span class="token punctuation">.</span><span class="token function">getMessage</span><span class="token punctuation">(</span><span class="token punctuation">)</span><span class="token punctuation">)</span><span class="token punctuation">;</span>
+    <span class="token punctuation">}</span>
+    <span class="token punctuation">}</span>
+    System<span class="token punctuation">.</span>out<span class="token punctuation">.</span><span class="token function">println</span><span class="token punctuation">(</span><span class="token string">"Successfully authenticated. Security context contains: "</span> <span class="token operator">+</span>
+            SecurityContextHolder<span class="token punctuation">.</span><span class="token function">getContext</span><span class="token punctuation">(</span><span class="token punctuation">)</span><span class="token punctuation">.</span><span class="token function">getAuthentication</span><span class="token punctuation">(</span><span class="token punctuation">)</span><span class="token punctuation">)</span><span class="token punctuation">;</span>
+<span class="token punctuation">}</span>
+<span class="token punctuation">}</span>
 
-    @Override
-    protected MethodSecurityExpressionOperations createSecurityExpressionRoot(Authentication authentication, MethodInvocation invocation) {
-        ResourceMethodSecurityExpressionRoot root =
-                new ResourceMethodSecurityExpressionRoot(authentication);
-        root.setPermissionEvaluator(getPermissionEvaluator());
-        root.setTrustResolver(this.trustResolver);
-        root.setRoleHierarchy(getRoleHierarchy());
-        return root;
-    }
-}
-</code></pre><h2 id="2-5-ResourceMethodSecurityExpressionRoot"><a href="#2-5-ResourceMethodSecurityExpressionRoot" class="headerlink" title="2.5 ResourceMethodSecurityExpressionRoot"></a>2.5 ResourceMethodSecurityExpressionRoot</h2><pre><code>自定义 MethodSecurity 的表达式，eg：
+<span class="token keyword">class</span> <span class="token class-name">SampleAuthenticationManager</span> <span class="token keyword">implements</span> <span class="token class-name">AuthenticationManager</span> <span class="token punctuation">{</span>
+<span class="token keyword">static</span> <span class="token keyword">final</span> List<span class="token operator">&lt;</span>GrantedAuthority<span class="token operator">></span> AUTHORITIES <span class="token operator">=</span> <span class="token keyword">new</span> <span class="token class-name">ArrayList</span><span class="token operator">&lt;</span>GrantedAuthority<span class="token operator">></span><span class="token punctuation">(</span><span class="token punctuation">)</span><span class="token punctuation">;</span>
 
-public class ResourceMethodSecurityExpressionRoot extends SecurityExpressionRoot implements MethodSecurityExpressionOperations {
-    private static final Logger logger = LoggerFactory.getLogger(ResourceMethodSecurityExpressionRoot.class);
-    private Object filterObject;
-    private Object returnObject;
-    private Object target;
-    public ResourceMethodSecurityExpressionRoot(Authentication authentication) {
-        super(authentication);
-    }
-    // 用来在 @PreAuthorize 注解中使用的方法
-    public boolean canReadCourse(String courseId) {
-        logger.debug(&quot;method params courseId : {}&quot;, courseId);
-        logger.debug(&quot;current principal {}&quot;, getPrincipal());
-        return true;
-    }
-    /** setter and getter */
-}
-</code></pre><h1 id="三、大致的流程："><a href="#三、大致的流程：" class="headerlink" title="三、大致的流程："></a>三、大致的流程：</h1><pre><code>1. 用户登录，判定用户名密码是否正确，登录成功此时会将登录名交给 UserSetailsService
-2. 在 loadUserByUsername(String loginName) 方法中，填充用户的组织等信息，并返回
-    此时的用户已经通过 验证了
-2. 在请求资源时，在需要判定的方法上加上注解：@PreAuthorize(&quot;hasRole(&#39;Administrator&#39;)&quot;) 
-</code></pre><h1 id="四、常用的注解"><a href="#四、常用的注解" class="headerlink" title="四、常用的注解"></a>四、常用的注解</h1><pre><code>access()                    SpringEL表达式结果为true时可访问
-anonymous()                 匿名可访问
-denyAll()                   用户不可访问
-fullyAuthenticated()        用户完全认证可访问（非Remeber me下自动登录）
-hasAnyAuthority(String...)  参数中任意 权限 的用户可访问
-hasAnyRole(String...)       参数中任意 角色 的用户可访问
-hasAuthority(String)        某一 权限 的用户可访问
-hasRole(String)             某一 角色 的用户可访问
-permitAll()                 所有用户可访问
-rememberMe()                允许通过 remeber me 登录的用户访问
-hasIpAddress(String)        用户来自参数中的ip时可访问
+<span class="token keyword">static</span> <span class="token punctuation">{</span>
+    AUTHORITIES<span class="token punctuation">.</span><span class="token function">add</span><span class="token punctuation">(</span><span class="token keyword">new</span> <span class="token class-name">SimpleGrantedAuthority</span><span class="token punctuation">(</span><span class="token string">"ROLE_USER"</span><span class="token punctuation">)</span><span class="token punctuation">)</span><span class="token punctuation">;</span>
+<span class="token punctuation">}</span>
+
+<span class="token keyword">public</span> Authentication <span class="token function">authenticate</span><span class="token punctuation">(</span>Authentication auth<span class="token punctuation">)</span> <span class="token keyword">throws</span> AuthenticationException <span class="token punctuation">{</span>
+    <span class="token keyword">if</span> <span class="token punctuation">(</span>auth<span class="token punctuation">.</span><span class="token function">getName</span><span class="token punctuation">(</span><span class="token punctuation">)</span><span class="token punctuation">.</span><span class="token function">equals</span><span class="token punctuation">(</span>auth<span class="token punctuation">.</span><span class="token function">getCredentials</span><span class="token punctuation">(</span><span class="token punctuation">)</span><span class="token punctuation">)</span><span class="token punctuation">)</span> <span class="token punctuation">{</span>
+    <span class="token keyword">return</span> <span class="token keyword">new</span> <span class="token class-name">UsernamePasswordAuthenticationToken</span><span class="token punctuation">(</span>auth<span class="token punctuation">.</span><span class="token function">getName</span><span class="token punctuation">(</span><span class="token punctuation">)</span><span class="token punctuation">,</span>
+        auth<span class="token punctuation">.</span><span class="token function">getCredentials</span><span class="token punctuation">(</span><span class="token punctuation">)</span><span class="token punctuation">,</span> AUTHORITIES<span class="token punctuation">)</span><span class="token punctuation">;</span>
+    <span class="token punctuation">}</span>
+    <span class="token keyword">throw</span> <span class="token keyword">new</span> <span class="token class-name">BadCredentialsException</span><span class="token punctuation">(</span><span class="token string">"Bad Credentials"</span><span class="token punctuation">)</span><span class="token punctuation">;</span>
+<span class="token punctuation">}</span>
+<span class="token punctuation">}</span>
 </code></pre>
+<p>通常情况下，这个流程是由 Spring Security 内部执行的，但是这大致显示了 Spring Security 通过 username、password 构建一个 SecurityContext 的过程。</p>
+<h3 id="直接设置-SecurityContextHolder"><a href="#直接设置-SecurityContextHolder" class="headerlink" title="直接设置 SecurityContextHolder"></a>直接设置 SecurityContextHolder</h3><p>如果你需要在一个已经拥有身份认证的系统（如自定义了过滤器或MVC控制器、拥有自己的认证系统等）中，接入 Spring Security 环境。</p>
+<p>只需要在原有系统中读取第三方用户信息，构建一个 Spring Security 特定的 Authentication 对象，并将其放入 SecurityContextHolder 中即可。</p>
+<h2 id="二、Web应用中的身份验证"><a href="#二、Web应用中的身份验证" class="headerlink" title="二、Web应用中的身份验证"></a>二、Web应用中的身份验证</h2><p>在一个Web 应用程序中使用 Spring Security 访问受保护的资源，流程如下：</p>
+<p><img src="https://i.loli.net/2019/07/18/5d304878a579473801.png" alt="访问Web受保护资源的流程"></p>
+<p>Spring Security 中提供了不同的类负责上图中的不同流程，主要参与者（按照使用顺序）是 ExceptionTranslationFilter、AuthenticationEntryPoint和 authentication mechanism。负责调用的是 AuthenticationManager。</p>
+
             </div>
             <hr/>
 
@@ -654,9 +641,9 @@ hasIpAddress(String)        用户来自参数中的ip时可访问
             <br/>
             <span xmlns:dct="http://purl.org/dc/terms/" href="http://purl.org/dc/dcmitype/Text"
                   property="dct:title" rel="dct:type">
-                    《》
+                    《《Spring Security》第六章 SpringSecurity 身份认证流程》
                 </span> by
-            <a xmlns:cc="http://creativecommons.org/ns#" href="/2019/07/01/SpringBoot/SpringSecurity/" property="cc:attributionName"
+            <a xmlns:cc="http://creativecommons.org/ns#" href="/2019/07/18/读书笔记/《SpringSecurity》/6.身份认证流程/" property="cc:attributionName"
                rel="cc:attributionURL">
                 koral
             </a> is licensed under a
@@ -700,35 +687,58 @@ hasIpAddress(String)        用户来自参数中的ip时可访问
             <div class="article-badge left-badge text-color">
                 <i class="fa fa-chevron-left"></i>&nbsp;Previous</div>
             <div class="card">
-                <a href="/2019/07/01/SpringSecurity/1.初识SpringSecurity/">
+                <a href="/2019/11/30/读书笔记/《高性能MySQL》/0.目录/">
                     <div class="card-image">
                         
                         
-                        <img src="/medias/featureimages/0.jpg" class="responsive-img" alt="">
+                        <img src="/medias/featureimages/22.jpg" class="responsive-img" alt="《高性能MySQL》读书笔记 - 目录">
                         
-                        <span class="card-title"></span>
+                        <span class="card-title">《高性能MySQL》读书笔记 - 目录</span>
                     </div>
                 </a>
                 <div class="card-content article-content">
                     <div class="summary block-with-text">
                         
-                            Spring Security准备工作
-创建一个 Web 工程，需要引入 spring-boot-starter-web 的包
-引入 spring-boot-starter-security 的包
-引入 thymeleaf 的包 sprin
+                            
+
+高性能 MySQL 读书笔记
+第一章 数据库设计规范
+第二章 数据库字段设计规范
+第三章 数据库 SQL 开发规范
+第四章 数据库操作行为规范
+第五章 设计数据库分区表
+第六章 MySQL存储引擎
+第七章 MySQL 执行优化
+第八章 
                         
                     </div>
                     <div class="publish-info">
                         <span class="publish-date">
-                            <i class="fa fa-clock-o fa-fw icon-date"></i>2019-07-01
+                            <i class="fa fa-clock-o fa-fw icon-date"></i>2019-11-30
                         </span>
                         <span class="publish-author">
                             
-                            <i class="fa fa-user fa-fw"></i>
-                            koral
+                            <i class="fa fa-bookmark fa-fw icon-category"></i>
+                            
+                            <a href="/categories/高性能MySQL/" class="post-category" target="_blank">
+                                    高性能MySQL
+                                </a>
+                            
                             
                         </span>
                     </div>
+                </div>
+                
+                <div class="card-action article-tags">
+                    
+                    <a href="/tags/MySQL/" target="_blank">
+                        <span class="chip bg-color">MySQL</span>
+                    </a>
+                    
+                    <a href="/tags/数据库/" target="_blank">
+                        <span class="chip bg-color">数据库</span>
+                    </a>
+                    
                 </div>
                 
             </div>
@@ -740,34 +750,45 @@ hasIpAddress(String)        用户来自参数中的ip时可访问
                 Next&nbsp;<i class="fa fa-chevron-right"></i>
             </div>
             <div class="card">
-                <a href="/2019/07/01/SpringBoot/Sso单点登录/">
+                <a href="/2019/07/18/读书笔记/《SpringSecurity》/5.体系结构/">
                     <div class="card-image">
                         
                         
-                        <img src="/medias/featureimages/0.jpg" class="responsive-img" alt="">
+                        <img src="/medias/featureimages/5.jpg" class="responsive-img" alt="《Spring Security》第五章 SpringSecurity 中的核心组件">
                         
-                        <span class="card-title"></span>
+                        <span class="card-title">《Spring Security》第五章 SpringSecurity 中的核心组件</span>
                     </div>
                 </a>
                 <div class="card-content article-content">
                     <div class="summary block-with-text">
                         
-                            单点登录一、单点登录机制web 应用采用的是 b/s 架构，以 http 作为通信协议。而 http 是无状态协议，浏览器每一次请求，服务器都会独立处理，不与之前或者之后的请求产生关联。
-
-在三次请求、响应对之间没有任何联系。这同时也意味着
+                            第五章 SpringSecurity 中的核心组件通过前四章简单介绍了下 SpringSecurity 的命名空间配置和Java 配置，已经可以简单一个基于 Spring Security 的应用程序。
+下面，将会研究其中一些在整个框架中使
                         
                     </div>
                     <div class="publish-info">
                             <span class="publish-date">
-                                <i class="fa fa-clock-o fa-fw icon-date"></i>2019-07-01
+                                <i class="fa fa-clock-o fa-fw icon-date"></i>2019-07-18
                             </span>
                         <span class="publish-author">
                             
-                            <i class="fa fa-user fa-fw"></i>
-                            koral
+                            <i class="fa fa-bookmark fa-fw icon-category"></i>
+                            
+                            <a href="/categories/Spring-Security/" class="post-category" target="_blank">
+                                    Spring Security
+                                </a>
+                            
                             
                         </span>
                     </div>
+                </div>
+                
+                <div class="card-action article-tags">
+                    
+                    <a href="/tags/读书笔记/" target="_blank">
+                        <span class="chip bg-color">读书笔记</span>
+                    </a>
+                    
                 </div>
                 
             </div>
