@@ -481,8 +481,21 @@
 <h3 id="直接设置-SecurityContextHolder"><a href="#直接设置-SecurityContextHolder" class="headerlink" title="直接设置 SecurityContextHolder"></a>直接设置 SecurityContextHolder</h3><p>如果你需要在一个已经拥有身份认证的系统（如自定义了过滤器或MVC控制器、拥有自己的认证系统等）中，接入 Spring Security 环境。</p>
 <p>只需要在原有系统中读取第三方用户信息，构建一个 Spring Security 特定的 Authentication 对象，并将其放入 SecurityContextHolder 中即可。</p>
 <h2 id="二、Web应用中的身份验证"><a href="#二、Web应用中的身份验证" class="headerlink" title="二、Web应用中的身份验证"></a>二、Web应用中的身份验证</h2><p>在一个Web 应用程序中使用 Spring Security 访问受保护的资源，流程如下：</p>
-<p><img src="https://i.loli.net/2019/07/18/5d304878a579473801.png" alt="访问Web受保护资源的流程"></p>
+<p><img src="https://i.loli.net/2019/07/19/5d312c9031ea155349.png" alt="访问资源的验证及认证流程"></p>
 <p>Spring Security 中提供了不同的类负责上图中的不同流程，主要参与者（按照使用顺序）是 ExceptionTranslationFilter、AuthenticationEntryPoint和 authentication mechanism。负责调用的是 AuthenticationManager。</p>
+<p><img src="https://i.loli.net/2019/07/19/5d312f3a9d38248120.png" alt="安全拦截器与安全对象模型"></p>
+<h3 id="ExceptionTranslationFilter"><a href="#ExceptionTranslationFilter" class="headerlink" title="ExceptionTranslationFilter"></a>ExceptionTranslationFilter</h3><p>ExceptionTranslationFilter 是一个 Spring Security 过滤器，负责检测所有引发的 Spring Security 异常。通常情况下，异常都是由 AbstractSecurityInterceptor 引发的，它是授权服务的主要提供者。</p>
+<p>ExceptionTranslationFilter 在验证主题时(如图中的 ③⑦)，负责返回错误代码403(即认证成功，但是缺少权限的情况)，或者启动 AuthenticationEntryPoint（尚未登录）。</p>
+<h3 id="AuthenticationEntryPoint"><a href="#AuthenticationEntryPoint" class="headerlink" title="AuthenticationEntryPoint"></a>AuthenticationEntryPoint</h3><p>负责为 web 应用程序提供一个默认的身份认证策略(③ )。</p>
+<h3 id="Authentication-Mechanism-认证机制"><a href="#Authentication-Mechanism-认证机制" class="headerlink" title="Authentication Mechanism 认证机制"></a>Authentication Mechanism 认证机制</h3><p>浏览器提供了身份验证凭据之后，服务器就需要收集这些身份信息，并进入“身份验证机制”。将用户验证的凭据生成一个“request”对象，然后交给 AuthenticationManager。</p>
+<p>如果 AuthenticationManager 验证接收回完全填充的 Authentication 对象后，它将认为请求有效，并将 Authentication 放入 SecurityContextHolder 中，并进行重试请求。</p>
+<p>如果 AuthenticationManager 拒绝请求，身份验证机制将要求用户重新进行认证（跳转至url或者返回http状态码）。</p>
+<h3 id="Store-SecurityContext"><a href="#Store-SecurityContext" class="headerlink" title="Store SecurityContext"></a>Store SecurityContext</h3><p>在 Spring Security 中，由 SecurityContextPersistenceFilter 来承担在请求之间存储 SecurityContext，它默认将 SecurityContext 作为HttpSession 的属性存储。</p>
+<p>每个请求都会将 SecurityContext 恢复到 SecurityContextHolder 汇总，并且在请求完成时清除 SecurityContextHolder。这样做是十分安全的，且您不应该直接与 HttpSession交互，而应当总是与 SecurityContextHolder 交互。</p>
+<p>如果在不使用 HttpSession 的应用程序(如 无状态的 Restful web 服务)中，对每个请求进行身份验证。SecurityContextPersistenceFilter 依然十分重要，因为它会确保 SecurityContextHolder 在每个请求之后被清除。</p>
+<p>您可以通过自定义 SecurityContextPersistenceFilter 的行为，为每个请求创建一个新的 SecurityContext。以防止一个线程中的更改影响另一个线程，或者在临时更改上下文的地方创建一个新实例。</p>
+<h3 id="Access-Control-访问控制"><a href="#Access-Control-访问控制" class="headerlink" title="Access-Control 访问控制"></a>Access-Control 访问控制</h3><p>在 Spring Security 中负责访问控制决策的接口是 AccessDecisionManager，它具有一个 decide 方法，该方法使用 Authentication 对象代表请求访问的主体、安全对象、和一个基于该对象的安全元数据属性列表（如角色列表属性等）。</p>
+<h3 id="Spring-Security-与-AOP"><a href="#Spring-Security-与-AOP" class="headerlink" title="Spring Security 与 AOP"></a>Spring Security 与 AOP</h3><p>AOP 中提供了如：before、after、throws、around通知。Spring Security 为方法调用和 Web 请求提供了一个大致的建议，通过 around 通知，可以决定该方法是否继续调用，是否修改响应，以及是否抛出异常。</p>
 
             </div>
             <hr/>
@@ -687,41 +700,32 @@
             <div class="article-badge left-badge text-color">
                 <i class="fa fa-chevron-left"></i>&nbsp;Previous</div>
             <div class="card">
-                <a href="/2019/11/30/读书笔记/《高性能MySQL》/0.目录/">
+                <a href="/2019/07/19/读书笔记/《SpringSecurity》/7.核心服务/">
                     <div class="card-image">
                         
                         
-                        <img src="/medias/featureimages/22.jpg" class="responsive-img" alt="《高性能MySQL》读书笔记 - 目录">
+                        <img src="/medias/featureimages/20.jpg" class="responsive-img" alt="《Spring Security》第七章 Spring Security 中的核心服务">
                         
-                        <span class="card-title">《高性能MySQL》读书笔记 - 目录</span>
+                        <span class="card-title">《Spring Security》第七章 Spring Security 中的核心服务</span>
                     </div>
                 </a>
                 <div class="card-content article-content">
                     <div class="summary block-with-text">
                         
-                            
-
-高性能 MySQL 读书笔记
-第一章 数据库设计规范
-第二章 数据库字段设计规范
-第三章 数据库 SQL 开发规范
-第四章 数据库操作行为规范
-第五章 设计数据库分区表
-第六章 MySQL存储引擎
-第七章 MySQL 执行优化
-第八章 
+                            第七章 Spring Security 中的核心服务
+一、核心接口与其实现在 第五章 SpringSecurity 中的核心组件 与 第六章 SpringSecurity 身份认证流程 中介绍了 Spring Security 体系结构及其
                         
                     </div>
                     <div class="publish-info">
                         <span class="publish-date">
-                            <i class="fa fa-clock-o fa-fw icon-date"></i>2019-11-30
+                            <i class="fa fa-clock-o fa-fw icon-date"></i>2019-07-19
                         </span>
                         <span class="publish-author">
                             
                             <i class="fa fa-bookmark fa-fw icon-category"></i>
                             
-                            <a href="/categories/高性能MySQL/" class="post-category" target="_blank">
-                                    高性能MySQL
+                            <a href="/categories/Spring-Security/" class="post-category" target="_blank">
+                                    Spring Security
                                 </a>
                             
                             
@@ -731,12 +735,8 @@
                 
                 <div class="card-action article-tags">
                     
-                    <a href="/tags/MySQL/" target="_blank">
-                        <span class="chip bg-color">MySQL</span>
-                    </a>
-                    
-                    <a href="/tags/数据库/" target="_blank">
-                        <span class="chip bg-color">数据库</span>
+                    <a href="/tags/读书笔记/" target="_blank">
+                        <span class="chip bg-color">读书笔记</span>
                     </a>
                     
                 </div>
