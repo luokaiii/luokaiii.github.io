@@ -6,10 +6,7 @@
     <meta charset="utf-8">
     <meta name="keywords" content="《Spring Security》读书笔记 - 目录, 帅">
     <meta name="description" content="《Spring Security》 读书笔记 - 目录
-笔记的版本为 Spring Security-4.0 与 Spring Framework 5.0.5.RELEASE。
-
-
-SpringSecurity 是一个强大的、高度可定制的身">
+笔记的版本为 Spring Security-4.0 与 Spring Framework 5.0.5.RELEASE。这个笔记只是把 Spring Security 的 Docs 简">
     <meta http-equiv="X-UA-Compatible" content="IE=edge">
     <meta name="viewport" content="width=device-width, initial-scale=1.0, user-scalable=no">
     <meta name="renderer" content="webkit|ie-stand|ie-comp">
@@ -422,7 +419,7 @@ SpringSecurity 是一个强大的、高度可定制的身">
         <div class="card-content article-card-content">
             <div id="articleContent">
                 <h1 id="《Spring-Security》-读书笔记-目录"><a href="#《Spring-Security》-读书笔记-目录" class="headerlink" title="《Spring Security》 读书笔记 - 目录"></a>《Spring Security》 读书笔记 - 目录</h1><blockquote>
-<p>笔记的版本为 <code>Spring Security-4.0 与 Spring Framework 5.0.5.RELEASE</code>。</p>
+<p>笔记的版本为 <code>Spring Security-4.0 与 Spring Framework 5.0.5.RELEASE</code>。这个笔记只是把 Spring Security 的 Docs 简化并抄了一遍(算是 google 翻译加官方文档的省略版，哈哈)，也可以自己去看，<a href="https://docs.spring.io/spring-security/site/docs/5.0.5.RELEASE/reference/htmlsingle" target="_blank" rel="noopener">传送门</a>。</p>
 </blockquote>
 <blockquote>
 <p>SpringSecurity 是一个强大的、高度可定制的身份验证和访问控制框架，它是确保基于 Spring 的应用程序安全的事实标准。<br>Spring Security is a powerful and highly customizable authentication and access-control framework. It is the de-facto standard for securing Spring-based applications.</p>
@@ -480,14 +477,14 @@ SpringSecurity 是一个强大的、高度可定制的身">
 </ol>
 <h3 id="第三部分-测试支持"><a href="#第三部分-测试支持" class="headerlink" title="第三部分 测试支持"></a>第三部分 测试支持</h3><ol start="8">
 <li><a href="../../../../../07/19/读书笔记/《SpringSecurity》/8.单元测试/">Spring Security 的单元测试支持</a><ol>
-<li>@WithMockUser</li>
-<li>@WithAnonymousUser</li>
-<li>@WithUserDetails</li>
+<li>@WithMockUser - 使用Mock的对象</li>
+<li>@WithAnonymousUser - 使用匿名Mock对象</li>
+<li>@WithUserDetails - 使用DB中的对象，需要数据库连接</li>
 </ol>
 </li>
 <li><a href="../../../../../07/19/读书笔记/《SpringSecurity》/9.自定义注解/">自定义测试注解</a><ol>
-<li>模仿@WithMockUser</li>
-<li>重写 WithSecurityContextFactory</li>
+<li>模仿@WithMockUser - 使用自定义的对象</li>
+<li>重写 WithSecurityContextFactory - 生成自定义的对象，并注入 SecurityContextHolder</li>
 </ol>
 </li>
 <li>Spring Security 对 WebFlux 测试的支持<ol>
@@ -495,15 +492,67 @@ SpringSecurity 是一个强大的、高度可定制的身">
 </ol>
 </li>
 </ol>
-<h3 id="第四部分-Web应用安全原理"><a href="#第四部分-Web应用安全原理" class="headerlink" title="第四部分 Web应用安全原理"></a>第四部分 Web应用安全原理</h3><ol start="10">
-<li>过滤链</li>
-<li>RememberMe</li>
-<li>CSRF</li>
-<li>CORS</li>
-<li>匿名身份验证</li>
-<li>WebSocket</li>
+<h3 id="第四部分-Web应用安全原理"><a href="#第四部分-Web应用安全原理" class="headerlink" title="第四部分 Web应用安全原理"></a>第四部分 Web应用安全原理</h3><ol start="11">
+<li><p><a href="../../../../../07/22/读书笔记/《SpringSecurity》/10.过滤器链/">安全过滤器链</a></p>
+<ol>
+<li><p>Filter Ordering - 过滤链顺序如下</p>
+<ol>
+<li>ChannelProcessingFilter - 确保web请求会被channel通过</li>
+<li>SecurityContextPersistenceFilter - 加载SecurityContext</li>
+<li>ConcurrentSessionFilter - 监听session是否改变</li>
+<li>AbstractAuthenticationProcessingFilter - 抽象身份验证处理过滤器<ol>
+<li>UsernamePasswordAuthenticationFilter - 用户名密码验证</li>
+<li>CasAuthenticationFilter - Cas验证</li>
+<li>BasicAuthenticationFilter - Basic验证，请求头认证的一种</li>
+<li>……</li>
 </ol>
-<h3 id="第五部分-授权体系原理"><a href="#第五部分-授权体系原理" class="headerlink" title="第五部分 授权体系原理"></a>第五部分 授权体系原理</h3><ol start="5">
+</li>
+<li>SecurityContextHolderAwareRequestFilter - ServletAPI与Security之间的包装类</li>
+<li>JaasApiIntegrationFilter</li>
+<li>RememberMeAuthenticationFilter - 以cookie方式进行身份验证</li>
+<li>AnonymousAuthenticationFilter - 匿名身份验证</li>
+<li>ExceptionTranslationFilter - 移除处理</li>
+<li>FilterSecurityInterceptor - HTTP资源的安全处理</li>
+</ol>
+</li>
+</ol>
+</li>
+<li><a href="../../../../../07/22/读书笔记/《SpringSecurity》/11.核心安全过滤器/">核心过滤器</a><ol>
+<li>FilterSecurityInterceptor</li>
+<li>ExceptionTransactionFilter</li>
+<li>SecurityContextPersistenceFilter</li>
+<li>UsernamePasswordAuthenticationFilter</li>
+</ol>
+</li>
+<li><a href="../../../../../07/22/读书笔记/《SpringSecurity》/12.ServletAPI/">Spring Security 与 Servlet API 的集成</a><ol>
+<li>getRemoteUser() - 登录用户名</li>
+<li>getUserPrincipal() - 登录用户</li>
+<li>isUserInRole(String) - 是否存在权限(去掉ROLE前缀)</li>
+<li>authenticate(HttpServletRequest,HttpServletResponse) - 是否通过了验证</li>
+<li>login(String,String) - 登录</li>
+<li>logout() - 登出</li>
+<li>changeSessionId() - 改变session id</li>
+</ol>
+</li>
+<li><a href="../../../../../07/22/读书笔记/《SpringSecurity》/13.BasicAuth/">Basic Authentication</a></li>
+<li><a href="../../../../../07/23/读书笔记/《SpringSecurity》/14.RememberMeAuth/">Remember-Me Authentication</a> - “记住我”功能的实现<ol>
+<li>Simple Hash-Based Token Approach - 简单hash令牌，不建议使用</li>
+<li>Persistent Token Approach - 持久令牌，使用 datasource 存储</li>
+</ol>
+</li>
+<li>CSRF</li>
+<li><a href="../../../../../07/23/读书笔记/《SpringSecurity》/15.CORS/">CORS</a> - HTTP 请求控制</li>
+<li><a href="../../../../../07/23/读书笔记/《SpringSecurity》/16.ResponseHeader/">HTTP Response Headers</a></li>
+<li><a href="../../../../../07/23/读书笔记/《SpringSecurity》/17.SessionManagement/">Session Management</a> - 会话管理<ol>
+<li>SessionManagementFilter - session与security-context的管理</li>
+<li>SessionAuthenticationStrategy - session相关的认证策略</li>
+<li>固化攻击、会话超时、会话数量限制</li>
+</ol>
+</li>
+<li><a href="../../../../../07/23/读书笔记/《SpringSecurity》/18.AnonymousAuth/">Anonymous Authentication</a> - 匿名身份认证</li>
+<li>WebSocket Security</li>
+</ol>
+<h3 id="第五部分-授权体系原理"><a href="#第五部分-授权体系原理" class="headerlink" title="第五部分 授权体系原理"></a>第五部分 授权体系原理</h3><ol start="22">
 <li>授权</li>
 </ol>
 <h3 id="第六部分-单点登录-CAS与OAuth2"><a href="#第六部分-单点登录-CAS与OAuth2" class="headerlink" title="第六部分 单点登录 CAS与OAuth2"></a>第六部分 单点登录 CAS与OAuth2</h3><ol start="5">
