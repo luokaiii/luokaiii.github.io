@@ -1,0 +1,922 @@
+<!DOCTYPE html>
+
+
+
+  
+
+
+<html class="theme-next pisces use-motion" lang="zh-Hans">
+<head>
+  <meta charset="UTF-8"/>
+<meta http-equiv="X-UA-Compatible" content="IE=edge" />
+<meta name="viewport" content="width=device-width, initial-scale=1, maximum-scale=1"/>
+<meta name="theme-color" content="#222">
+
+
+
+
+
+
+
+
+
+<meta http-equiv="Cache-Control" content="no-transform" />
+<meta http-equiv="Cache-Control" content="no-siteapp" />
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+  
+  
+  <link href="/lib/fancybox/source/jquery.fancybox.css?v=2.1.5" rel="stylesheet" type="text/css" />
+
+
+
+
+
+
+
+<link href="/lib/font-awesome/css/font-awesome.min.css?v=4.6.2" rel="stylesheet" type="text/css" />
+
+<link href="/css/main.css?v=5.1.4" rel="stylesheet" type="text/css" />
+
+
+  <link rel="apple-touch-icon" sizes="180x180" href="/images/apple-touch-icon-next.png?v=5.1.4">
+
+
+  <link rel="icon" type="image/png" sizes="32x32" href="/images/favicon-32x32-next.png?v=5.1.4">
+
+
+  <link rel="icon" type="image/png" sizes="16x16" href="/images/favicon-16x16-next.png?v=5.1.4">
+
+
+  <link rel="mask-icon" href="/images/logo.svg?v=5.1.4" color="#222">
+
+
+
+
+
+  <meta name="keywords" content="Hexo, NexT" />
+
+
+
+
+
+  <link rel="alternate" href="/atom.xml" title="罗凯的博客" type="application/atom+xml" />
+
+
+
+
+
+
+<meta name="description" content="Docker + Nginx + Jenkins 部署 SpringBoot Jar本文能解决的问题：  如何使用Docker 部署Jenkins Jenkins 会重写url(使用三级域名) nginx 配置 jenkins、前端、后端 部署 Maven 子项目(单 maven 项目更简单，我相信你们能举一反三)  一、docker-compose编写 docker-compose，连接 ngi">
+<meta name="keywords" content="帅">
+<meta property="og:type" content="article">
+<meta property="og:title" content="罗凯的博客">
+<meta property="og:url" content="http://luokaiii.github.io/2019/08/06/CICD/jenkins-springboot/index.html">
+<meta property="og:site_name" content="罗凯的博客">
+<meta property="og:description" content="Docker + Nginx + Jenkins 部署 SpringBoot Jar本文能解决的问题：  如何使用Docker 部署Jenkins Jenkins 会重写url(使用三级域名) nginx 配置 jenkins、前端、后端 部署 Maven 子项目(单 maven 项目更简单，我相信你们能举一反三)  一、docker-compose编写 docker-compose，连接 ngi">
+<meta property="og:locale" content="zh-Hans">
+<meta property="og:image" content="https://i.loli.net/2019/08/06/3AErybK1UaCoXgv.png">
+<meta property="og:image" content="c:/Users/user/AppData/Roaming/Typora/typora-user-images/1565082401841.png">
+<meta property="og:image" content="https://i.loli.net/2019/08/06/nSx9yFpINqrEAlo.png">
+<meta property="og:image" content="https://i.loli.net/2019/08/06/he49txiGX5PQgzT.png">
+<meta property="og:image" content="https://i.loli.net/2019/08/06/GaonXC9TAKLF1wr.png">
+<meta property="og:updated_time" content="2019-08-06T09:42:38.145Z">
+<meta name="twitter:card" content="summary">
+<meta name="twitter:title" content="罗凯的博客">
+<meta name="twitter:description" content="Docker + Nginx + Jenkins 部署 SpringBoot Jar本文能解决的问题：  如何使用Docker 部署Jenkins Jenkins 会重写url(使用三级域名) nginx 配置 jenkins、前端、后端 部署 Maven 子项目(单 maven 项目更简单，我相信你们能举一反三)  一、docker-compose编写 docker-compose，连接 ngi">
+<meta name="twitter:image" content="https://i.loli.net/2019/08/06/3AErybK1UaCoXgv.png">
+
+
+
+<script type="text/javascript" id="hexo.configurations">
+  var NexT = window.NexT || {};
+  var CONFIG = {
+    root: '/',
+    scheme: 'Pisces',
+    version: '5.1.4',
+    sidebar: {"position":"right","display":"always","offset":12,"b2t":false,"scrollpercent":false,"onmobile":false},
+    fancybox: true,
+    tabs: true,
+    motion: {"enable":true,"async":false,"transition":{"post_block":"fadeIn","post_header":"slideDownIn","post_body":"slideDownIn","coll_header":"slideLeftIn","sidebar":"slideUpIn"}},
+    duoshuo: {
+      userId: '0',
+      author: '博主'
+    },
+    algolia: {
+      applicationID: '',
+      apiKey: '',
+      indexName: '',
+      hits: {"per_page":5},
+      labels: {"input_placeholder":"Search for Posts","hits_empty":"We didn't find any results for the search: ${query}","hits_stats":"${hits} results found in ${time} ms"}
+    }
+  };
+</script>
+
+
+
+  <link rel="canonical" href="http://luokaiii.github.io/2019/08/06/CICD/jenkins-springboot/"/>
+
+
+
+
+
+  <title> | 罗凯的博客</title>
+  
+
+
+
+
+
+
+
+
+<link rel="stylesheet" href="/css/prism-tomorrow.css" type="text/css"></head>
+
+<body itemscope itemtype="http://schema.org/WebPage" lang="zh-Hans">
+
+  
+  
+    
+  
+
+  <div class="container sidebar-position-right page-post-detail">
+    <div class="headband"></div>
+
+    <header id="header" class="header" itemscope itemtype="http://schema.org/WPHeader">
+      <div class="header-inner"><div class="site-brand-wrapper">
+  <div class="site-meta ">
+    
+
+    <div class="custom-logo-site-title">
+      <a href="/"  class="brand" rel="start">
+        <span class="logo-line-before"><i></i></span>
+        <span class="site-title">罗凯的博客</span>
+        <span class="logo-line-after"><i></i></span>
+      </a>
+    </div>
+      
+        <p class="site-subtitle">l u o k a i</p>
+      
+  </div>
+
+  <div class="site-nav-toggle">
+    <button>
+      <span class="btn-bar"></span>
+      <span class="btn-bar"></span>
+      <span class="btn-bar"></span>
+    </button>
+  </div>
+</div>
+
+<nav class="site-nav">
+  
+
+  
+    <ul id="menu" class="menu">
+      
+        
+        <li class="menu-item menu-item-home">
+          <a href="/" rel="section">
+            
+              <i class="menu-item-icon fa fa-fw fa-home"></i> <br />
+            
+            首页
+          </a>
+        </li>
+      
+        
+        <li class="menu-item menu-item-archives">
+          <a href="/archives" rel="section">
+            
+              <i class="menu-item-icon fa fa-fw fa-question-circle"></i> <br />
+            
+            归档
+          </a>
+        </li>
+      
+        
+        <li class="menu-item menu-item-about">
+          <a href="/about" rel="section">
+            
+              <i class="menu-item-icon fa fa-fw fa-question-circle"></i> <br />
+            
+            关于
+          </a>
+        </li>
+      
+        
+        <li class="menu-item menu-item-tags">
+          <a href="/tags" rel="section">
+            
+              <i class="menu-item-icon fa fa-fw fa-question-circle"></i> <br />
+            
+            标签
+          </a>
+        </li>
+      
+        
+        <li class="menu-item menu-item-categories">
+          <a href="/categories/" rel="section">
+            
+              <i class="menu-item-icon fa fa-fw fa-th"></i> <br />
+            
+            分类
+          </a>
+        </li>
+      
+        
+        <li class="menu-item menu-item-schedule">
+          <a href="/schedule" rel="section">
+            
+              <i class="menu-item-icon fa fa-fw fa-question-circle"></i> <br />
+            
+            日程表
+          </a>
+        </li>
+      
+        
+        <li class="menu-item menu-item-sitemap">
+          <a href="/sitemap.xml" rel="section">
+            
+              <i class="menu-item-icon fa fa-fw fa-sitemap"></i> <br />
+            
+            站点地图
+          </a>
+        </li>
+      
+        
+        <li class="menu-item menu-item-commonweal">
+          <a href="/404/" rel="section">
+            
+              <i class="menu-item-icon fa fa-fw fa-heartbeat"></i> <br />
+            
+            公益404
+          </a>
+        </li>
+      
+
+      
+    </ul>
+  
+
+  
+</nav>
+
+
+
+ </div>
+    </header>
+
+    <main id="main" class="main">
+      <div class="main-inner">
+        <div class="content-wrap">
+          <div id="content" class="content">
+            
+
+  <div id="posts" class="posts-expand">
+    
+
+  
+
+  
+  
+  
+
+  <article class="post post-type-normal" itemscope itemtype="http://schema.org/Article">
+  
+  
+  
+  <div class="post-block">
+    <link itemprop="mainEntityOfPage" href="http://luokaiii.github.io/2019/08/06/CICD/jenkins-springboot/">
+
+    <span hidden itemprop="author" itemscope itemtype="http://schema.org/Person">
+      <meta itemprop="name" content="koral">
+      <meta itemprop="description" content="">
+      <meta itemprop="image" content="https://upload-images.jianshu.io/upload_images/13603359-6aa0d85db5eaa03e.gif">
+    </span>
+
+    <span hidden itemprop="publisher" itemscope itemtype="http://schema.org/Organization">
+      <meta itemprop="name" content="罗凯的博客">
+    </span>
+
+    
+      <header class="post-header">
+
+        
+        
+          <h1 class="post-title" itemprop="name headline"></h1>
+        
+
+        <div class="post-meta">
+          <span class="post-time">
+            
+              <span class="post-meta-item-icon">
+                <i class="fa fa-calendar-o"></i>
+              </span>
+              
+                <span class="post-meta-item-text">发表于</span>
+              
+              <time title="创建于" itemprop="dateCreated datePublished" datetime="2019-08-06T16:40:00+08:00">
+                2019-08-06
+              </time>
+            
+
+            
+
+            
+          </span>
+
+          
+
+          
+            
+          
+
+          
+          
+
+          
+
+          
+
+          
+
+        </div>
+      </header>
+    
+
+    
+    
+    
+    <div class="post-body" itemprop="articleBody">
+
+      
+      
+
+      
+        <h1 id="Docker-Nginx-Jenkins-部署-SpringBoot-Jar"><a href="#Docker-Nginx-Jenkins-部署-SpringBoot-Jar" class="headerlink" title="Docker + Nginx + Jenkins 部署 SpringBoot Jar"></a>Docker + Nginx + Jenkins 部署 SpringBoot Jar</h1><p>本文能解决的问题：</p>
+<ol>
+<li>如何使用Docker 部署Jenkins</li>
+<li>Jenkins 会重写url(使用三级域名)</li>
+<li>nginx 配置 jenkins、前端、后端</li>
+<li>部署 Maven 子项目(单 maven 项目更简单，我相信你们能举一反三)</li>
+</ol>
+<h2 id="一、docker-compose"><a href="#一、docker-compose" class="headerlink" title="一、docker-compose"></a>一、docker-compose</h2><p>编写 docker-compose，连接 nginx 与 jenkins。</p>
+<blockquote>
+<p>如果不是使用 Docker 做容器管理，此步可忽略。直接启动 Nginx 与 Jenkins 即可。</p>
+</blockquote>
+<pre class=" language-sh"><code class="language-sh">version: '3'
+
+services:
+  jenkins:
+    container_name: 'jenkins.ci'
+    image: 'jenkins/jenkins:lts'
+    #ports:  不对外暴露端口，直接使用nginx容器转到8080
+      #- '8080:8080'
+      #- '50000:50000'
+    volumes:
+      - '/home/docker-images/jenkins/var/jenkins_home:/var/jenkins_home'
+      - '/home/docker-images/jenkins/html:/usr/share/jenkins/html' #挂载编译打包后的存放路径
+  nginx:
+    container_name: 'nginx'
+    depends_on:
+      - jenkins
+    image: nginx:alpine
+    volumes:
+      - '/home/luokaiii/backstage_page/html:/usr/www/luokaiii/cn/html'
+      - '/home/docker-images/nginx/conf:/etc/nginx/conf.d'
+      - '/home/docker-images/nginx/cert:/etc/nginx/cert'
+    ports:
+      - 80:80 # 对外统一使用80端口
+      - 443:443
+    restart: always
+
+</code></pre>
+<h2 id="二、nginx-conf"><a href="#二、nginx-conf" class="headerlink" title="二、nginx.conf"></a>二、nginx.conf</h2><pre class=" language-sh"><code class="language-sh">upstream apisupport {
+    # 自己部署的后端服务，因为是在容器访问外部服务，所以需要使用内网IP
+    # 第二种方法是在 docker-compose 中将 jar 作为一个 service 连接
+    server xxx.xx.xx.xxx:9000;
+}
+# 这里用到了 docker-compose 中的容器，如果没用docker，直接写localhost就可以了。
+upstream dk-jenkins {
+    server jenkins:8080;
+}
+server {
+    listen 80 default_server;
+    listen [::]:80 default_server;
+    server_name www.luokaiii.cn;
+    return    301 https://$server_name$request_uri; 
+}
+server {
+    listen 80;
+    # 我用了一个 三级域名来处理Jenkins的请求，因为 jenkins 会从根目录查找静态资源和发送请求，总是会重写url。
+    server_name jenkins.luokaiii.cn;
+    location / {
+        proxy_pass http://dk-jenkins/;
+    }
+}
+# 如果没有 https 证书，直接将 ssl 以下的部分写在 80 里就行了
+server { 
+    listen 443 ssl; 
+    server_name www.luokaiii.cn luokaiii.cn; 
+
+    # ssl config
+    ssl on;   #设置为on启用SSL功能。
+    ssl_certificate cert/2292046_www.luokaiii.cn.pem;
+    ssl_certificate_key cert/2292046_www.luokaiii.cn.key;
+    ssl_session_timeout 5m;
+    ssl_ciphers ECDHE-RSA-AES128-GCM-SHA256:ECDHE:ECDH:AES:HIGH:!NULL:!aNULL:!MD5:!ADH:!RC4;
+    ssl_protocols TLSv1 TLSv1.1 TLSv1.2;
+    ssl_prefer_server_ciphers on; 
+
+    # 压缩请求，这样服务返回会快一些，毕竟国内带宽很贵的
+    gzip on;
+    gzip_min_length 1k;
+    gzip_comp_level 9;
+    gzip_types text/plain application/javascript application/x-javascript text/css application/xml text/javascript application/x-httpd-php image/jpeg image/gif image/png;
+    gzip_vary on;
+    gzip_disable "MSIE [1-6]\.";
+
+    # 静态资源代理，在Jenkins部署前端项目的文章中，就是把前端静态文件部署在该目录下，直接由nginx代理即可。
+    root /usr/www/luokaiii/cn/html;
+
+    location / {
+        try_files $uri $uri/ /index.html;
+    }
+
+    # 请求转发，将 /api/ 请求转发到 jar 服务上
+    location /api/ {
+        proxy_pass http://apisupport/;
+        proxy_redirect  http://api/support/ https://www.luokaiii.cn/api/;
+        proxy_set_header X-Forwarded-For $proxy_add_x_forwarded_for;
+        proxy_set_header Host  $host;
+        proxy_set_header X-Real_IP  $remote_addr;
+        proxy_set_header REMOTE-HOST $remote_addr;
+        proxy_set_header X-Nginx-Proxy true;
+        proxy_connect_timeout 300;
+        proxy_send_timeout 300;
+        proxy_read_timeout 600;
+        proxy_buffer_size 256k;
+        proxy_buffers 4 256k;
+        proxy_busy_buffers_size 256k;
+        proxy_temp_file_write_size 256k;
+        proxy_next_upstream error timeout invalid_header http_500 http_502 http_503 http_504 http_404;
+        proxy_max_temp_file_size 128m;
+        proxy_http_version 1.1;
+        #proxy_cache mycache;
+        #proxy_cache_valid 200 302 1h;
+        #proxy_cache_valid 301 1h;
+        #proxy_cache_valid any 1m;
+    }
+}
+</code></pre>
+<blockquote>
+<p>这里使用了一个三级域名来代理 Jenkins，因为 Jenkins 总是会从根目录查找静态资源，以及发送请求。如果是 <a href="http://www.luokaiii.cn/jenkins/" target="_blank" rel="noopener">www.luokaiii.cn/jenkins/</a> 的话总是会被重写为 <a href="http://www.luokaiii.cn，所以直接用三级域名，让它从根目录找好了。" target="_blank" rel="noopener">www.luokaiii.cn，所以直接用三级域名，让它从根目录找好了。</a></p>
+<p>如果有知道如何代理的大佬也可以告诉我，虚心请教，谢谢。</p>
+</blockquote>
+<h2 id="三、SpringBoot-项目"><a href="#三、SpringBoot-项目" class="headerlink" title="三、SpringBoot 项目"></a>三、SpringBoot 项目</h2><p>这里项目以我自己写的 Demo <a href="https://github.com/luokaiii/luokaiii.api" target="_blank" rel="noopener"><a href="https://github.com/luokaiii/luokaiii.api" target="_blank" rel="noopener">https://github.com/luokaiii/luokaiii.api</a></a> 为例，一个 Maven 多级项目，我们只部署其中的 admin-server 模块。</p>
+<p>具体的项目是怎么写的就不说了，大致是：打开idea  &gt; 新建 Spring Initializr &gt; 选择maven &gt; 在 Application 中写一个 GetMapping &gt; OK</p>
+<h2 id="四、进入正题"><a href="#四、进入正题" class="headerlink" title="四、进入正题"></a>四、进入正题</h2><p>打开Jenkins，并新建一个 Freestyle（即自由风格的软件项目）。</p>
+<p>除了上一节 <a href="https://www.jianshu.com/p/e34674f34242" target="_blank" rel="noopener">Jenkins部署前端React项目</a> 中所需的依赖之外，这里还需要 <code>Maven Integration</code> 依赖。</p>
+<h3 id="1-项目描述（随便写）"><a href="#1-项目描述（随便写）" class="headerlink" title="1. 项目描述（随便写）"></a>1. 项目描述（随便写）</h3><p><img src="https://i.loli.net/2019/08/06/3AErybK1UaCoXgv.png" alt="UTOOLS1565082361195.png"></p>
+<h3 id="2-源码管理"><a href="#2-源码管理" class="headerlink" title="2. 源码管理"></a>2. 源码管理</h3><p>刚创建的用户，Credentials 可能为空，创建一个 username+password(一般是你的git账号密码)就行，(如果觉得不安全，可以使用SSH的方式，自己百度)。</p>
+<p><img src="C:\Users\user\AppData\Roaming\Typora\typora-user-images\1565082401841.png" alt="1565082401841"></p>
+<blockquote>
+<p>这里分支使用的是 <code>develop</code>，原因：在 Git Flow 中，develop 为开发分支(这里用来做测试服务器的分支)，master 为主分支(即正式服务器的分支)。</p>
+<p>因人而异，你想用 master 也行，反正不是我的项目，哈哈。</p>
+</blockquote>
+<h3 id="3-构建（jenkins与测试服务器在同一台服务器上）"><a href="#3-构建（jenkins与测试服务器在同一台服务器上）" class="headerlink" title="3. 构建（jenkins与测试服务器在同一台服务器上）"></a>3. 构建（jenkins与测试服务器在同一台服务器上）</h3><p>如果你的 jenkins 部署在测试服务器上，那么直接将打包后的 jar 文件移动至指定目录即可。</p>
+<ol>
+<li>调用顶层 Maven 目标，使用maven 打包项目<ol>
+<li>因为打包的是子项目，所以使用 -pl 参数指定需要打包的子项目，通过 -am 参数开启依赖项目的构建</li>
+<li>-Dmaven.test.skip=true 跳过测试(一般对单元测试有严格要求的都不应该跳过此步骤)</li>
+</ol>
+</li>
+<li>Send files or execute commands over SSH<ol>
+<li>通过 SSH发送文件或执行命令 </li>
+<li>因为jenkins与测试在一起，所以我们只需要执行mv命令即可</li>
+<li>下面的jenkins与服务器分开(比如正式服部署，总不能还浪费带宽吧)，就需要发送将jar发送到服务器然后运行</li>
+</ol>
+</li>
+</ol>
+<p><img src="https://i.loli.net/2019/08/06/nSx9yFpINqrEAlo.png" alt="UTOOLS1565082655139.png"></p>
+<blockquote>
+</blockquote>
+<h3 id="4-构建（jenkins与测试服务器分离）"><a href="#4-构建（jenkins与测试服务器分离）" class="headerlink" title="4. 构建（jenkins与测试服务器分离）"></a>4. 构建（jenkins与测试服务器分离）</h3><p>跟步骤3没什么太大的区别，只是将 jar 发送到服务器。</p>
+<p><img src="https://i.loli.net/2019/08/06/he49txiGX5PQgzT.png" alt="UTOOLS1565083626352.png"></p>
+<blockquote>
+<p>最后一句 <code>pm2 restart api-support</code> 类似于 <code>nohup java -jar xxx.jar</code> 我是使用 pm2 管理的jar包，有兴趣的可以自己查一下(或者推荐一下其他的进程管理工具也行)。</p>
+</blockquote>
+<h2 id="5-测试"><a href="#5-测试" class="headerlink" title="5. 测试"></a>5. 测试</h2><p>随便提交一次代码，点击立即构建。经过漫长的等待(maven首次更新、向服务器发送jar包)，打印出以下日志。</p>
+<p><img src="https://i.loli.net/2019/08/06/GaonXC9TAKLF1wr.png" alt="构建成功"></p>
+<p>完成，收工！</p>
+<blockquote>
+<p>最后提一下我为什么会写两种构建方式，因为我先用步骤 四4 中的构建时，1M (上行才100多k，T_T)小水管发一个 jar 包快二十分钟了。所以想到同服务器还是直接拷贝的比较好。</p>
+</blockquote>
+
+      
+    </div>
+    
+    
+    
+
+    
+
+    
+
+    
+
+    <footer class="post-footer">
+      
+
+      
+      
+      
+
+      
+        <div class="post-nav">
+          <div class="post-nav-next post-nav-item">
+            
+              <a href="/2019/08/06/docker/Docker版本升级/" rel="next" title="">
+                <i class="fa fa-chevron-left"></i> 
+              </a>
+            
+          </div>
+
+          <span class="post-nav-divider"></span>
+
+          <div class="post-nav-prev post-nav-item">
+            
+              <a href="/2019/11/30/读书笔记/《高性能MySQL》/0.目录/" rel="prev" title="《高性能MySQL》读书笔记 - 目录">
+                《高性能MySQL》读书笔记 - 目录 <i class="fa fa-chevron-right"></i>
+              </a>
+            
+          </div>
+        </div>
+      
+
+      
+      
+    </footer>
+  </div>
+  
+  
+  
+  </article>
+
+
+
+    <div class="post-spread">
+      
+    </div>
+  </div>
+
+
+          </div>
+          
+
+
+          
+
+  
+
+
+
+        </div>
+        
+          
+  
+  <div class="sidebar-toggle">
+    <div class="sidebar-toggle-line-wrap">
+      <span class="sidebar-toggle-line sidebar-toggle-line-first"></span>
+      <span class="sidebar-toggle-line sidebar-toggle-line-middle"></span>
+      <span class="sidebar-toggle-line sidebar-toggle-line-last"></span>
+    </div>
+  </div>
+
+  <aside id="sidebar" class="sidebar">
+    
+    <div class="sidebar-inner">
+
+      
+
+      
+        <ul class="sidebar-nav motion-element">
+          <li class="sidebar-nav-toc sidebar-nav-active" data-target="post-toc-wrap">
+            文章目录
+          </li>
+          <li class="sidebar-nav-overview" data-target="site-overview-wrap">
+            站点概览
+          </li>
+        </ul>
+      
+
+      <section class="site-overview-wrap sidebar-panel">
+        <div class="site-overview">
+          <div class="site-author motion-element" itemprop="author" itemscope itemtype="http://schema.org/Person">
+            
+              <img class="site-author-image" itemprop="image"
+                src="https://upload-images.jianshu.io/upload_images/13603359-6aa0d85db5eaa03e.gif"
+                alt="koral" />
+            
+              <p class="site-author-name" itemprop="name">koral</p>
+              <p class="site-description motion-element" itemprop="description">如果我16岁，我可以悄悄的说我好喜欢你，如果我26岁，我可以大声告诉你我很爱你，可惜我6岁，我什么都给不了你，我还要上小学。</p>
+          </div>
+
+          <nav class="site-state motion-element">
+
+            
+              <div class="site-state-item site-state-posts">
+              
+                <a href="/archives">
+              
+                  <span class="site-state-item-count">205</span>
+                  <span class="site-state-item-name">日志</span>
+                </a>
+              </div>
+            
+
+            
+              
+              
+              <div class="site-state-item site-state-categories">
+                <a href="/categories/index.html">
+                  <span class="site-state-item-count">18</span>
+                  <span class="site-state-item-name">分类</span>
+                </a>
+              </div>
+            
+
+            
+              
+              
+              <div class="site-state-item site-state-tags">
+                <a href="/tags/index.html">
+                  <span class="site-state-item-count">18</span>
+                  <span class="site-state-item-name">标签</span>
+                </a>
+              </div>
+            
+
+          </nav>
+
+          
+            <div class="feed-link motion-element">
+              <a href="/atom.xml" rel="alternate">
+                <i class="fa fa-rss"></i>
+                RSS
+              </a>
+            </div>
+          
+
+          
+
+          
+          
+
+          
+          
+
+          
+
+        </div>
+      </section>
+
+      
+      <!--noindex-->
+        <section class="post-toc-wrap motion-element sidebar-panel sidebar-panel-active">
+          <div class="post-toc">
+
+            
+              
+            
+
+            
+              <div class="post-toc-content"><ol class="nav"><li class="nav-item nav-level-1"><a class="nav-link" href="#Docker-Nginx-Jenkins-部署-SpringBoot-Jar"><span class="nav-number">1.</span> <span class="nav-text">Docker + Nginx + Jenkins 部署 SpringBoot Jar</span></a><ol class="nav-child"><li class="nav-item nav-level-2"><a class="nav-link" href="#一、docker-compose"><span class="nav-number">1.1.</span> <span class="nav-text">一、docker-compose</span></a></li><li class="nav-item nav-level-2"><a class="nav-link" href="#二、nginx-conf"><span class="nav-number">1.2.</span> <span class="nav-text">二、nginx.conf</span></a></li><li class="nav-item nav-level-2"><a class="nav-link" href="#三、SpringBoot-项目"><span class="nav-number">1.3.</span> <span class="nav-text">三、SpringBoot 项目</span></a></li><li class="nav-item nav-level-2"><a class="nav-link" href="#四、进入正题"><span class="nav-number">1.4.</span> <span class="nav-text">四、进入正题</span></a><ol class="nav-child"><li class="nav-item nav-level-3"><a class="nav-link" href="#1-项目描述（随便写）"><span class="nav-number">1.4.1.</span> <span class="nav-text">1. 项目描述（随便写）</span></a></li><li class="nav-item nav-level-3"><a class="nav-link" href="#2-源码管理"><span class="nav-number">1.4.2.</span> <span class="nav-text">2. 源码管理</span></a></li><li class="nav-item nav-level-3"><a class="nav-link" href="#3-构建（jenkins与测试服务器在同一台服务器上）"><span class="nav-number">1.4.3.</span> <span class="nav-text">3. 构建（jenkins与测试服务器在同一台服务器上）</span></a></li><li class="nav-item nav-level-3"><a class="nav-link" href="#4-构建（jenkins与测试服务器分离）"><span class="nav-number">1.4.4.</span> <span class="nav-text">4. 构建（jenkins与测试服务器分离）</span></a></li></ol></li><li class="nav-item nav-level-2"><a class="nav-link" href="#5-测试"><span class="nav-number">1.5.</span> <span class="nav-text">5. 测试</span></a></li></ol></li></ol></div>
+            
+
+          </div>
+        </section>
+      <!--/noindex-->
+      
+
+      
+
+    </div>
+  </aside>
+
+
+        
+      </div>
+    </main>
+
+    <footer id="footer" class="footer">
+      <div class="footer-inner">
+        <div class="copyright">&copy; <span itemprop="copyrightYear">2019</span>
+  <span class="with-love">
+    <i class="fa fa-user"></i>
+  </span>
+  <span class="author" itemprop="copyrightHolder">koral</span>
+
+  
+</div>
+
+
+  <div class="powered-by">由 <a class="theme-link" target="_blank" href="https://hexo.io">Hexo</a> 强力驱动</div>
+
+
+
+  <span class="post-meta-divider">|</span>
+
+
+
+  <div class="theme-info">主题 &mdash; <a class="theme-link" target="_blank" href="https://github.com/iissnan/hexo-theme-next">NexT.Pisces</a> v5.1.4</div>
+
+
+
+
+        
+
+
+
+
+
+
+
+        
+      </div>
+    </footer>
+
+    
+      <div class="back-to-top">
+        <i class="fa fa-arrow-up"></i>
+        
+      </div>
+    
+
+    
+
+  </div>
+
+  
+
+<script type="text/javascript">
+  if (Object.prototype.toString.call(window.Promise) !== '[object Function]') {
+    window.Promise = null;
+  }
+</script>
+
+
+
+
+
+
+
+
+
+  
+
+
+
+
+
+
+
+
+
+
+
+
+  
+  
+    <script type="text/javascript" src="/lib/jquery/index.js?v=2.1.3"></script>
+  
+
+  
+  
+    <script type="text/javascript" src="/lib/fastclick/lib/fastclick.min.js?v=1.0.6"></script>
+  
+
+  
+  
+    <script type="text/javascript" src="/lib/jquery_lazyload/jquery.lazyload.js?v=1.9.7"></script>
+  
+
+  
+  
+    <script type="text/javascript" src="/lib/velocity/velocity.min.js?v=1.2.1"></script>
+  
+
+  
+  
+    <script type="text/javascript" src="/lib/velocity/velocity.ui.min.js?v=1.2.1"></script>
+  
+
+  
+  
+    <script type="text/javascript" src="/lib/fancybox/source/jquery.fancybox.pack.js?v=2.1.5"></script>
+  
+
+
+  
+
+
+  <script type="text/javascript" src="/js/src/utils.js?v=5.1.4"></script>
+
+  <script type="text/javascript" src="/js/src/motion.js?v=5.1.4"></script>
+
+
+
+  
+  
+
+
+  <script type="text/javascript" src="/js/src/affix.js?v=5.1.4"></script>
+
+  <script type="text/javascript" src="/js/src/schemes/pisces.js?v=5.1.4"></script>
+
+
+
+  
+  <script type="text/javascript" src="/js/src/scrollspy.js?v=5.1.4"></script>
+<script type="text/javascript" src="/js/src/post-details.js?v=5.1.4"></script>
+
+
+
+  
+
+
+  <script type="text/javascript" src="/js/src/bootstrap.js?v=5.1.4"></script>
+
+
+
+  
+
+
+  
+
+
+
+
+	
+
+
+
+
+
+  
+
+
+
+
+
+  
+
+
+
+
+
+
+
+
+
+
+
+
+  
+
+
+
+
+
+  
+
+  
+
+  
+
+  
+  
+
+  
+
+  
+
+  
+
+</body>
+</html>
