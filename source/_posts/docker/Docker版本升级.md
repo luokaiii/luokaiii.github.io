@@ -1,0 +1,27 @@
+# 升级Docker版本
+
+1. sudo apt-get remove docker docker-engine docker.io # 移除旧版本
+2. sudo apt-get update # 更新软件源
+3. sudo apt-get install apt-transport-https ca-certificates curl software-properties-common # 安装依赖包
+4. curl -fsSL https://download.docker.com/linux/ubuntu/gpg | sudo apt-get add - # 添加官方密钥
+5. sudo add-apt-repository "deb [arch=amd64] https://download.docker.com/linux/ubuntu $(lsb_release -cs) stable" # 添加仓库
+6. sudo apt-get update # 更新软件源
+7. sudo apt-get install docker-ce # 安装docker
+8. docker -v # 查看docker版本
+
+# Docker API版本异常
+
+异常：Error response from daemon: client is newer than server (client API version: 1.23, server API version: 1.20)
+
+原因：客户端与服务端的版本不一致，导致docker命令无法使用。
+
+解决方法：export DOCKER_API_VERSION=1.2.0，将客户端版本将至与服务端一致。或者将服务端版本升级到1.23
+
+# Docker 启动、重启命令
+
+1. systemctl start docker 启动
+2. sudo systemctl daemon-reload 守护进程重启
+3. systemctl restart docker 重启
+4. sudo service docker restart 重启
+5. service docker stop 关闭
+6. systemctl stop docker 关闭
