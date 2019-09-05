@@ -1,4 +1,12 @@
-# MyBatis 中的 XML 详细配置
+---
+title: 《MyBatis》读书笔记 - MyBatis 中的 XML 详细配置
+date: 2019-09-05 10:10:20
+tags: 
+  - 读书笔记
+  - MyBatis
+---
+
+# 二、MyBatis 中的 XML 详细配置
 
 MyBatis 的配置文件包含了深深影响 MyBatis 行为的设置和属性信息。配置文档的顶层结构如下：
 

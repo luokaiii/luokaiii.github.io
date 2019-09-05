@@ -1,4 +1,12 @@
-# MyBatis 动态SQL
+---
+title: 《MyBatis》读书笔记 - MyBatis 动态SQL
+date: 2019-09-05 16:10:20
+tags: 
+  - 读书笔记
+  - MyBatis
+---
+
+# 四、MyBatis 动态SQL
 
 MyBatis 提供了可以被用在任意 SQL 映射语句中的动态SQL。动态 SQL 元素和 JSTL 或基于 XML 的文本处理器相似。
 

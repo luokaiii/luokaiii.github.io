@@ -1,4 +1,12 @@
-# MyBatis XML 映射文件
+---
+title: 《MyBatis》读书笔记 - MyBatis XML 映射文件
+date: 2019-09-05 14:10:20
+tags: 
+  - 读书笔记
+  - MyBatis
+---
+
+# 三、MyBatis XML 映射文件
 
 MyBatis 通过映射 XML 文件的方式，减少了 JDBC 的样板代码，十分的简单。
 
