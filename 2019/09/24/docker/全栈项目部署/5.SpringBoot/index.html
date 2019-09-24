@@ -1,0 +1,1152 @@
+<!DOCTYPE html>
+
+
+
+  
+
+
+<html class="theme-next pisces use-motion" lang="zh-Hans">
+<head>
+  <meta charset="UTF-8"/>
+<meta http-equiv="X-UA-Compatible" content="IE=edge" />
+<meta name="viewport" content="width=device-width, initial-scale=1, maximum-scale=1"/>
+<meta name="theme-color" content="#222">
+
+
+
+
+
+
+
+
+
+<meta http-equiv="Cache-Control" content="no-transform" />
+<meta http-equiv="Cache-Control" content="no-siteapp" />
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+  
+  
+  <link href="/lib/fancybox/source/jquery.fancybox.css?v=2.1.5" rel="stylesheet" type="text/css" />
+
+
+
+
+
+
+
+<link href="/lib/font-awesome/css/font-awesome.min.css?v=4.6.2" rel="stylesheet" type="text/css" />
+
+<link href="/css/main.css?v=5.1.4" rel="stylesheet" type="text/css" />
+
+
+  <link rel="apple-touch-icon" sizes="180x180" href="/images/apple-touch-icon-next.png?v=5.1.4">
+
+
+  <link rel="icon" type="image/png" sizes="32x32" href="/images/favicon-32x32-next.png?v=5.1.4">
+
+
+  <link rel="icon" type="image/png" sizes="16x16" href="/images/favicon-16x16-next.png?v=5.1.4">
+
+
+  <link rel="mask-icon" href="/images/logo.svg?v=5.1.4" color="#222">
+
+
+
+
+
+  <meta name="keywords" content="java,docker," />
+
+
+
+
+
+  <link rel="alternate" href="/atom.xml" title="罗凯的博客" type="application/atom+xml" />
+
+
+
+
+
+
+<meta name="description" content="Docker部署全栈项目：五、SpringBoot Jar一、创建 SpringBoot 项目1. 创建接口@EntityScan(&quot;cn.luokaiii.api.entity&quot;) @RestController @SpringBootApplication public class ApiApplication {      private final UserMongoService mon">
+<meta name="keywords" content="java,docker">
+<meta property="og:type" content="article">
+<meta property="og:title" content="Docker部署全栈：五、Docker-Compose部署SpringBoot">
+<meta property="og:url" content="http://luokaiii.github.io/2019/09/24/docker/全栈项目部署/5.SpringBoot/index.html">
+<meta property="og:site_name" content="罗凯的博客">
+<meta property="og:description" content="Docker部署全栈项目：五、SpringBoot Jar一、创建 SpringBoot 项目1. 创建接口@EntityScan(&quot;cn.luokaiii.api.entity&quot;) @RestController @SpringBootApplication public class ApiApplication {      private final UserMongoService mon">
+<meta property="og:locale" content="zh-Hans">
+<meta property="og:image" content="https://i.loli.net/2019/09/24/XfK9C25qhBNSERr.png">
+<meta property="og:image" content="https://i.loli.net/2019/09/24/VDTEhsdHlyFC1Zi.png">
+<meta property="og:image" content="https://i.loli.net/2019/09/24/POFBid9THoQbWNg.png">
+<meta property="og:image" content="c:/Users/user/AppData/Roaming/Typora/typora-user-images/1569306056942.png">
+<meta property="og:image" content="https://i.loli.net/2019/09/24/tUzEfZaIGOLouvP.png">
+<meta property="og:updated_time" content="2019-09-24T09:19:59.278Z">
+<meta name="twitter:card" content="summary">
+<meta name="twitter:title" content="Docker部署全栈：五、Docker-Compose部署SpringBoot">
+<meta name="twitter:description" content="Docker部署全栈项目：五、SpringBoot Jar一、创建 SpringBoot 项目1. 创建接口@EntityScan(&quot;cn.luokaiii.api.entity&quot;) @RestController @SpringBootApplication public class ApiApplication {      private final UserMongoService mon">
+<meta name="twitter:image" content="https://i.loli.net/2019/09/24/XfK9C25qhBNSERr.png">
+
+
+
+<script type="text/javascript" id="hexo.configurations">
+  var NexT = window.NexT || {};
+  var CONFIG = {
+    root: '/',
+    scheme: 'Pisces',
+    version: '5.1.4',
+    sidebar: {"position":"right","display":"always","offset":12,"b2t":false,"scrollpercent":false,"onmobile":false},
+    fancybox: true,
+    tabs: true,
+    motion: {"enable":true,"async":false,"transition":{"post_block":"fadeIn","post_header":"slideDownIn","post_body":"slideDownIn","coll_header":"slideLeftIn","sidebar":"slideUpIn"}},
+    duoshuo: {
+      userId: '0',
+      author: '博主'
+    },
+    algolia: {
+      applicationID: '',
+      apiKey: '',
+      indexName: '',
+      hits: {"per_page":5},
+      labels: {"input_placeholder":"Search for Posts","hits_empty":"We didn't find any results for the search: ${query}","hits_stats":"${hits} results found in ${time} ms"}
+    }
+  };
+</script>
+
+
+
+  <link rel="canonical" href="http://luokaiii.github.io/2019/09/24/docker/全栈项目部署/5.SpringBoot/"/>
+
+
+
+
+
+  <title>Docker部署全栈：五、Docker-Compose部署SpringBoot | 罗凯的博客</title>
+  
+
+
+
+
+
+
+
+
+<link rel="stylesheet" href="/css/prism-tomorrow.css" type="text/css"></head>
+
+<body itemscope itemtype="http://schema.org/WebPage" lang="zh-Hans">
+
+  
+  
+    
+  
+
+  <div class="container sidebar-position-right page-post-detail">
+    <div class="headband"></div>
+
+    <header id="header" class="header" itemscope itemtype="http://schema.org/WPHeader">
+      <div class="header-inner"><div class="site-brand-wrapper">
+  <div class="site-meta ">
+    
+
+    <div class="custom-logo-site-title">
+      <a href="/"  class="brand" rel="start">
+        <span class="logo-line-before"><i></i></span>
+        <span class="site-title">罗凯的博客</span>
+        <span class="logo-line-after"><i></i></span>
+      </a>
+    </div>
+      
+        <p class="site-subtitle">l u o k a i</p>
+      
+  </div>
+
+  <div class="site-nav-toggle">
+    <button>
+      <span class="btn-bar"></span>
+      <span class="btn-bar"></span>
+      <span class="btn-bar"></span>
+    </button>
+  </div>
+</div>
+
+<nav class="site-nav">
+  
+
+  
+    <ul id="menu" class="menu">
+      
+        
+        <li class="menu-item menu-item-home">
+          <a href="/" rel="section">
+            
+              <i class="menu-item-icon fa fa-fw fa-home"></i> <br />
+            
+            首页
+          </a>
+        </li>
+      
+        
+        <li class="menu-item menu-item-archives">
+          <a href="/archives" rel="section">
+            
+              <i class="menu-item-icon fa fa-fw fa-question-circle"></i> <br />
+            
+            归档
+          </a>
+        </li>
+      
+        
+        <li class="menu-item menu-item-about">
+          <a href="/about" rel="section">
+            
+              <i class="menu-item-icon fa fa-fw fa-question-circle"></i> <br />
+            
+            关于
+          </a>
+        </li>
+      
+        
+        <li class="menu-item menu-item-tags">
+          <a href="/tags" rel="section">
+            
+              <i class="menu-item-icon fa fa-fw fa-question-circle"></i> <br />
+            
+            标签
+          </a>
+        </li>
+      
+        
+        <li class="menu-item menu-item-categories">
+          <a href="/categories/" rel="section">
+            
+              <i class="menu-item-icon fa fa-fw fa-th"></i> <br />
+            
+            分类
+          </a>
+        </li>
+      
+        
+        <li class="menu-item menu-item-schedule">
+          <a href="/schedule" rel="section">
+            
+              <i class="menu-item-icon fa fa-fw fa-question-circle"></i> <br />
+            
+            日程表
+          </a>
+        </li>
+      
+        
+        <li class="menu-item menu-item-sitemap">
+          <a href="/sitemap.xml" rel="section">
+            
+              <i class="menu-item-icon fa fa-fw fa-sitemap"></i> <br />
+            
+            站点地图
+          </a>
+        </li>
+      
+        
+        <li class="menu-item menu-item-commonweal">
+          <a href="/404/" rel="section">
+            
+              <i class="menu-item-icon fa fa-fw fa-heartbeat"></i> <br />
+            
+            公益404
+          </a>
+        </li>
+      
+
+      
+    </ul>
+  
+
+  
+</nav>
+
+
+
+ </div>
+    </header>
+
+    <main id="main" class="main">
+      <div class="main-inner">
+        <div class="content-wrap">
+          <div id="content" class="content">
+            
+
+  <div id="posts" class="posts-expand">
+    
+
+  
+
+  
+  
+  
+
+  <article class="post post-type-normal" itemscope itemtype="http://schema.org/Article">
+  
+  
+  
+  <div class="post-block">
+    <link itemprop="mainEntityOfPage" href="http://luokaiii.github.io/2019/09/24/docker/全栈项目部署/5.SpringBoot/">
+
+    <span hidden itemprop="author" itemscope itemtype="http://schema.org/Person">
+      <meta itemprop="name" content="koral">
+      <meta itemprop="description" content="">
+      <meta itemprop="image" content="https://upload-images.jianshu.io/upload_images/13603359-6aa0d85db5eaa03e.gif">
+    </span>
+
+    <span hidden itemprop="publisher" itemscope itemtype="http://schema.org/Organization">
+      <meta itemprop="name" content="罗凯的博客">
+    </span>
+
+    
+      <header class="post-header">
+
+        
+        
+          <h1 class="post-title" itemprop="name headline">Docker部署全栈：五、Docker-Compose部署SpringBoot</h1>
+        
+
+        <div class="post-meta">
+          <span class="post-time">
+            
+              <span class="post-meta-item-icon">
+                <i class="fa fa-calendar-o"></i>
+              </span>
+              
+                <span class="post-meta-item-text">发表于</span>
+              
+              <time title="创建于" itemprop="dateCreated datePublished" datetime="2019-09-24T16:05:00+08:00">
+                2019-09-24
+              </time>
+            
+
+            
+
+            
+          </span>
+
+          
+            <span class="post-category" >
+            
+              <span class="post-meta-divider">|</span>
+            
+              <span class="post-meta-item-icon">
+                <i class="fa fa-folder-o"></i>
+              </span>
+              
+                <span class="post-meta-item-text">分类于</span>
+              
+              
+                <span itemprop="about" itemscope itemtype="http://schema.org/Thing">
+                  <a href="/categories/Docker全栈部署/" itemprop="url" rel="index">
+                    <span itemprop="name">Docker全栈部署</span>
+                  </a>
+                </span>
+
+                
+                
+              
+            </span>
+          
+
+          
+            
+          
+
+          
+          
+
+          
+
+          
+
+          
+
+        </div>
+      </header>
+    
+
+    
+    
+    
+    <div class="post-body" itemprop="articleBody">
+
+      
+      
+
+      
+        <h1 id="Docker部署全栈项目：五、SpringBoot-Jar"><a href="#Docker部署全栈项目：五、SpringBoot-Jar" class="headerlink" title="Docker部署全栈项目：五、SpringBoot Jar"></a>Docker部署全栈项目：五、SpringBoot Jar</h1><h2 id="一、创建-SpringBoot-项目"><a href="#一、创建-SpringBoot-项目" class="headerlink" title="一、创建 SpringBoot 项目"></a>一、创建 SpringBoot 项目</h2><h3 id="1-创建接口"><a href="#1-创建接口" class="headerlink" title="1. 创建接口"></a>1. 创建接口</h3><pre class=" language-java"><code class="language-java"><span class="token annotation punctuation">@EntityScan</span><span class="token punctuation">(</span><span class="token string">"cn.luokaiii.api.entity"</span><span class="token punctuation">)</span>
+<span class="token annotation punctuation">@RestController</span>
+<span class="token annotation punctuation">@SpringBootApplication</span>
+<span class="token keyword">public</span> <span class="token keyword">class</span> <span class="token class-name">ApiApplication</span> <span class="token punctuation">{</span>
+
+    <span class="token keyword">private</span> <span class="token keyword">final</span> UserMongoService mongoService<span class="token punctuation">;</span>
+
+    <span class="token keyword">private</span> <span class="token keyword">final</span> UserMySQLService mySQLService<span class="token punctuation">;</span>
+
+    <span class="token keyword">private</span> <span class="token keyword">final</span> StringRedisTemplate stringRedisTemplate<span class="token punctuation">;</span>
+
+    <span class="token annotation punctuation">@Autowired</span>
+    <span class="token keyword">public</span> <span class="token function">ApiApplication</span><span class="token punctuation">(</span>UserMongoService mongoService<span class="token punctuation">,</span>
+                          UserMySQLService mySQLService<span class="token punctuation">,</span>
+                          StringRedisTemplate stringRedisTemplate<span class="token punctuation">)</span> <span class="token punctuation">{</span>
+        <span class="token keyword">this</span><span class="token punctuation">.</span>mongoService <span class="token operator">=</span> mongoService<span class="token punctuation">;</span>
+        <span class="token keyword">this</span><span class="token punctuation">.</span>mySQLService <span class="token operator">=</span> mySQLService<span class="token punctuation">;</span>
+        <span class="token keyword">this</span><span class="token punctuation">.</span>stringRedisTemplate <span class="token operator">=</span> stringRedisTemplate<span class="token punctuation">;</span>
+    <span class="token punctuation">}</span>
+
+    <span class="token keyword">public</span> <span class="token keyword">static</span> <span class="token keyword">void</span> <span class="token function">main</span><span class="token punctuation">(</span>String<span class="token punctuation">[</span><span class="token punctuation">]</span> args<span class="token punctuation">)</span> <span class="token punctuation">{</span>
+        SpringApplication<span class="token punctuation">.</span><span class="token function">run</span><span class="token punctuation">(</span>ApiApplication<span class="token punctuation">.</span><span class="token keyword">class</span><span class="token punctuation">,</span> args<span class="token punctuation">)</span><span class="token punctuation">;</span>
+    <span class="token punctuation">}</span>
+
+    <span class="token annotation punctuation">@PostMapping</span>
+    <span class="token keyword">public</span> ResponseEntity <span class="token function">createByMySql</span><span class="token punctuation">(</span><span class="token annotation punctuation">@RequestBody</span> Person person<span class="token punctuation">)</span> <span class="token punctuation">{</span>
+        <span class="token keyword">final</span> Person save <span class="token operator">=</span> mySQLService<span class="token punctuation">.</span><span class="token function">save</span><span class="token punctuation">(</span>person<span class="token punctuation">)</span><span class="token punctuation">;</span>
+        <span class="token keyword">final</span> User user <span class="token operator">=</span> mongoService<span class="token punctuation">.</span><span class="token function">save</span><span class="token punctuation">(</span><span class="token keyword">new</span> <span class="token class-name">User</span><span class="token punctuation">(</span>person<span class="token punctuation">.</span><span class="token function">getId</span><span class="token punctuation">(</span><span class="token punctuation">)</span><span class="token punctuation">.</span><span class="token function">toString</span><span class="token punctuation">(</span><span class="token punctuation">)</span><span class="token punctuation">,</span> person<span class="token punctuation">.</span><span class="token function">getName</span><span class="token punctuation">(</span><span class="token punctuation">)</span><span class="token punctuation">,</span> <span class="token number">22</span><span class="token punctuation">)</span><span class="token punctuation">)</span><span class="token punctuation">;</span>
+        stringRedisTemplate<span class="token punctuation">.</span><span class="token function">opsForValue</span><span class="token punctuation">(</span><span class="token punctuation">)</span><span class="token punctuation">.</span><span class="token function">set</span><span class="token punctuation">(</span>person<span class="token punctuation">.</span><span class="token function">getName</span><span class="token punctuation">(</span><span class="token punctuation">)</span><span class="token punctuation">,</span> person<span class="token punctuation">.</span><span class="token function">getSex</span><span class="token punctuation">(</span><span class="token punctuation">)</span><span class="token punctuation">.</span><span class="token function">toString</span><span class="token punctuation">(</span><span class="token punctuation">)</span><span class="token punctuation">)</span><span class="token punctuation">;</span>
+        <span class="token keyword">return</span> ResponseEntity<span class="token punctuation">.</span><span class="token function">ok</span><span class="token punctuation">(</span><span class="token keyword">new</span> <span class="token class-name">UPDTO</span><span class="token punctuation">(</span>save<span class="token punctuation">,</span> user<span class="token punctuation">,</span> null<span class="token punctuation">)</span><span class="token punctuation">)</span><span class="token punctuation">;</span>
+    <span class="token punctuation">}</span>
+
+    <span class="token annotation punctuation">@GetMapping</span>
+    <span class="token keyword">public</span> ResponseEntity <span class="token function">getByMySql</span><span class="token punctuation">(</span><span class="token annotation punctuation">@RequestParam</span> String username<span class="token punctuation">)</span> <span class="token punctuation">{</span>
+        <span class="token keyword">final</span> Person person <span class="token operator">=</span> mySQLService<span class="token punctuation">.</span><span class="token function">findFirstByName</span><span class="token punctuation">(</span>username<span class="token punctuation">)</span><span class="token punctuation">;</span>
+        <span class="token keyword">final</span> User user <span class="token operator">=</span> mongoService<span class="token punctuation">.</span><span class="token function">findFirstByName</span><span class="token punctuation">(</span>username<span class="token punctuation">)</span><span class="token punctuation">;</span>
+        <span class="token keyword">final</span> String redis <span class="token operator">=</span> stringRedisTemplate<span class="token punctuation">.</span><span class="token function">opsForValue</span><span class="token punctuation">(</span><span class="token punctuation">)</span><span class="token punctuation">.</span><span class="token function">get</span><span class="token punctuation">(</span>username<span class="token punctuation">)</span><span class="token punctuation">;</span>
+        <span class="token keyword">return</span> ResponseEntity<span class="token punctuation">.</span><span class="token function">ok</span><span class="token punctuation">(</span><span class="token keyword">new</span> <span class="token class-name">UPDTO</span><span class="token punctuation">(</span>person<span class="token punctuation">,</span> user<span class="token punctuation">,</span> redis<span class="token punctuation">)</span><span class="token punctuation">)</span><span class="token punctuation">;</span>
+    <span class="token punctuation">}</span>
+<span class="token punctuation">}</span>
+</code></pre>
+<h3 id="2-配置参数"><a href="#2-配置参数" class="headerlink" title="2. 配置参数"></a>2. 配置参数</h3><p>连上我们之前配置的MongoDB、MySQL、Redis容器。</p>
+<blockquote>
+<p>这里使用配置的 docker-compose 中的服务名称。这样服务会自动连接，而 <code>localhost</code> 或者 <code>127.0.0.1</code> 则表示 <code>luokaiii-api</code> 当前容器内部的端口号，肯定会连接失败的。</p>
+</blockquote>
+<pre class=" language-properties"><code class="language-properties"><span class="token comment" spellcheck="true"># MongoDB 连接</span>
+<span class="token attr-name">spring.data.mongodb.uri</span><span class="token punctuation">=</span><span class="token attr-value">mongodb://mongoadmin:password@mongo:27017/demo?authSource=admin</span>
+
+<span class="token comment" spellcheck="true"># MySQL 连接</span>
+<span class="token attr-name">spring.datasource.username</span><span class="token punctuation">=</span><span class="token attr-value">root</span>
+<span class="token attr-name">spring.datasource.password</span><span class="token punctuation">=</span><span class="token attr-value">password</span>
+<span class="token attr-name">spring.datasource.driver-class-name</span><span class="token punctuation">=</span><span class="token attr-value">com.mysql.cj.jdbc.Driver</span>
+<span class="token attr-name">spring.datasource.url</span><span class="token punctuation">=</span><span class="token attr-value">jdbc:mysql://mariadb:3306/db_user?useUnicode=true&amp;characterEncoding=GBK&amp;useSSL=false</span>
+
+<span class="token comment" spellcheck="true"># Redis 连接</span>
+<span class="token attr-name">spring.redis.host</span><span class="token punctuation">=</span><span class="token attr-value">redis</span>
+<span class="token attr-name">spring.redis.port</span><span class="token punctuation">=</span><span class="token attr-value">6379</span>
+<span class="token attr-name">spring.redis.password</span><span class="token punctuation">=</span><span class="token attr-value">password</span>
+</code></pre>
+<h3 id="3-测试"><a href="#3-测试" class="headerlink" title="3. 测试"></a>3. 测试</h3><p>执行如下 Post 命令：</p>
+<pre class=" language-sh"><code class="language-sh"># Post 请求
+$ curl -i -X POST  -H "Content-Type:application/json" -d '{ "id":2, "name":"zhangsan", "sex":1 }' 'http://localhost:8080/'
+
+# 返回结果
+{"mysql":{"id":2,"name":"zhangsan","sex":1},"mongo":{"id":"2","name":"zhangsan","age":22},"redis":null}
+</code></pre>
+<p>执行如下 Get 命令：</p>
+<pre class=" language-sh"><code class="language-sh"># Get 请求
+$ curl -i -X GET 'http://localhost:8080?username=zhangsan'
+
+# 返回结果
+{"mysql":{"id":2,"name":"zhangsan","sex":1},"mongo":{"id":"2","name":"zhangsan","age":22},"redis":"1"}
+</code></pre>
+<h2 id="二、构建-Docker-镜像"><a href="#二、构建-Docker-镜像" class="headerlink" title="二、构建 Docker 镜像"></a>二、构建 Docker 镜像</h2><h3 id="1-pom-xml-中增加-docker-插件"><a href="#1-pom-xml-中增加-docker-插件" class="headerlink" title="1. pom.xml 中增加 docker 插件"></a>1. pom.xml 中增加 docker 插件</h3><p>完整的 <code>pom.xml</code> 如下：</p>
+<pre class=" language-xml"><code class="language-xml"><span class="token prolog">&lt;?xml version="1.0" encoding="UTF-8"?></span>
+<span class="token tag"><span class="token tag"><span class="token punctuation">&lt;</span>project</span> <span class="token attr-name">xmlns</span><span class="token attr-value"><span class="token punctuation">=</span><span class="token punctuation">"</span>http://maven.apache.org/POM/4.0.0<span class="token punctuation">"</span></span> <span class="token attr-name"><span class="token namespace">xmlns:</span>xsi</span><span class="token attr-value"><span class="token punctuation">=</span><span class="token punctuation">"</span>http://www.w3.org/2001/XMLSchema-instance<span class="token punctuation">"</span></span>
+         <span class="token attr-name"><span class="token namespace">xsi:</span>schemaLocation</span><span class="token attr-value"><span class="token punctuation">=</span><span class="token punctuation">"</span>http://maven.apache.org/POM/4.0.0 https://maven.apache.org/xsd/maven-4.0.0.xsd<span class="token punctuation">"</span></span><span class="token punctuation">></span></span>
+    <span class="token tag"><span class="token tag"><span class="token punctuation">&lt;</span>modelVersion</span><span class="token punctuation">></span></span>4.0.0<span class="token tag"><span class="token tag"><span class="token punctuation">&lt;/</span>modelVersion</span><span class="token punctuation">></span></span>
+    <span class="token tag"><span class="token tag"><span class="token punctuation">&lt;</span>parent</span><span class="token punctuation">></span></span>
+        <span class="token tag"><span class="token tag"><span class="token punctuation">&lt;</span>groupId</span><span class="token punctuation">></span></span>org.springframework.boot<span class="token tag"><span class="token tag"><span class="token punctuation">&lt;/</span>groupId</span><span class="token punctuation">></span></span>
+        <span class="token tag"><span class="token tag"><span class="token punctuation">&lt;</span>artifactId</span><span class="token punctuation">></span></span>spring-boot-starter-parent<span class="token tag"><span class="token tag"><span class="token punctuation">&lt;/</span>artifactId</span><span class="token punctuation">></span></span>
+        <span class="token tag"><span class="token tag"><span class="token punctuation">&lt;</span>version</span><span class="token punctuation">></span></span>2.1.8.RELEASE<span class="token tag"><span class="token tag"><span class="token punctuation">&lt;/</span>version</span><span class="token punctuation">></span></span>
+        <span class="token tag"><span class="token tag"><span class="token punctuation">&lt;</span>relativePath</span><span class="token punctuation">/></span></span> <span class="token comment" spellcheck="true">&lt;!-- lookup parent from repository --></span>
+    <span class="token tag"><span class="token tag"><span class="token punctuation">&lt;/</span>parent</span><span class="token punctuation">></span></span>
+    <span class="token comment" spellcheck="true">&lt;!-- 当前项目的版本、名称等信息 --></span>
+    <span class="token tag"><span class="token tag"><span class="token punctuation">&lt;</span>groupId</span><span class="token punctuation">></span></span>cn.luokaiii<span class="token tag"><span class="token tag"><span class="token punctuation">&lt;/</span>groupId</span><span class="token punctuation">></span></span>
+    <span class="token tag"><span class="token tag"><span class="token punctuation">&lt;</span>artifactId</span><span class="token punctuation">></span></span>api<span class="token tag"><span class="token tag"><span class="token punctuation">&lt;/</span>artifactId</span><span class="token punctuation">></span></span>
+    <span class="token tag"><span class="token tag"><span class="token punctuation">&lt;</span>version</span><span class="token punctuation">></span></span>0.0.1-SNAPSHOT<span class="token tag"><span class="token tag"><span class="token punctuation">&lt;/</span>version</span><span class="token punctuation">></span></span>
+    <span class="token tag"><span class="token tag"><span class="token punctuation">&lt;</span>name</span><span class="token punctuation">></span></span>api<span class="token tag"><span class="token tag"><span class="token punctuation">&lt;/</span>name</span><span class="token punctuation">></span></span>
+    <span class="token tag"><span class="token tag"><span class="token punctuation">&lt;</span>description</span><span class="token punctuation">></span></span>java api<span class="token tag"><span class="token tag"><span class="token punctuation">&lt;/</span>description</span><span class="token punctuation">></span></span>
+
+    <span class="token comment" spellcheck="true">&lt;!-- JDK版本 --></span>
+    <span class="token tag"><span class="token tag"><span class="token punctuation">&lt;</span>properties</span><span class="token punctuation">></span></span>
+        <span class="token tag"><span class="token tag"><span class="token punctuation">&lt;</span>java.version</span><span class="token punctuation">></span></span>1.8<span class="token tag"><span class="token tag"><span class="token punctuation">&lt;/</span>java.version</span><span class="token punctuation">></span></span>
+    <span class="token tag"><span class="token tag"><span class="token punctuation">&lt;/</span>properties</span><span class="token punctuation">></span></span>
+
+    <span class="token tag"><span class="token tag"><span class="token punctuation">&lt;</span>dependencies</span><span class="token punctuation">></span></span>
+        <span class="token comment" spellcheck="true">&lt;!-- Spring Data JPA --></span>
+        <span class="token tag"><span class="token tag"><span class="token punctuation">&lt;</span>dependency</span><span class="token punctuation">></span></span>
+            <span class="token tag"><span class="token tag"><span class="token punctuation">&lt;</span>groupId</span><span class="token punctuation">></span></span>org.springframework.boot<span class="token tag"><span class="token tag"><span class="token punctuation">&lt;/</span>groupId</span><span class="token punctuation">></span></span>
+            <span class="token tag"><span class="token tag"><span class="token punctuation">&lt;</span>artifactId</span><span class="token punctuation">></span></span>spring-boot-starter-data-jpa<span class="token tag"><span class="token tag"><span class="token punctuation">&lt;/</span>artifactId</span><span class="token punctuation">></span></span>
+        <span class="token tag"><span class="token tag"><span class="token punctuation">&lt;/</span>dependency</span><span class="token punctuation">></span></span>
+        <span class="token comment" spellcheck="true">&lt;!-- Spring Data MongoDB --></span>
+        <span class="token tag"><span class="token tag"><span class="token punctuation">&lt;</span>dependency</span><span class="token punctuation">></span></span>
+            <span class="token tag"><span class="token tag"><span class="token punctuation">&lt;</span>groupId</span><span class="token punctuation">></span></span>org.springframework.boot<span class="token tag"><span class="token tag"><span class="token punctuation">&lt;/</span>groupId</span><span class="token punctuation">></span></span>
+            <span class="token tag"><span class="token tag"><span class="token punctuation">&lt;</span>artifactId</span><span class="token punctuation">></span></span>spring-boot-starter-data-mongodb<span class="token tag"><span class="token tag"><span class="token punctuation">&lt;/</span>artifactId</span><span class="token punctuation">></span></span>
+        <span class="token tag"><span class="token tag"><span class="token punctuation">&lt;/</span>dependency</span><span class="token punctuation">></span></span>
+        <span class="token comment" spellcheck="true">&lt;!-- Spring Data Redis --></span>
+        <span class="token tag"><span class="token tag"><span class="token punctuation">&lt;</span>dependency</span><span class="token punctuation">></span></span>
+            <span class="token tag"><span class="token tag"><span class="token punctuation">&lt;</span>groupId</span><span class="token punctuation">></span></span>org.springframework.boot<span class="token tag"><span class="token tag"><span class="token punctuation">&lt;/</span>groupId</span><span class="token punctuation">></span></span>
+            <span class="token tag"><span class="token tag"><span class="token punctuation">&lt;</span>artifactId</span><span class="token punctuation">></span></span>spring-boot-starter-data-redis<span class="token tag"><span class="token tag"><span class="token punctuation">&lt;/</span>artifactId</span><span class="token punctuation">></span></span>
+        <span class="token tag"><span class="token tag"><span class="token punctuation">&lt;/</span>dependency</span><span class="token punctuation">></span></span>
+        <span class="token comment" spellcheck="true">&lt;!-- Web 服务器 --></span>
+        <span class="token tag"><span class="token tag"><span class="token punctuation">&lt;</span>dependency</span><span class="token punctuation">></span></span>
+            <span class="token tag"><span class="token tag"><span class="token punctuation">&lt;</span>groupId</span><span class="token punctuation">></span></span>org.springframework.boot<span class="token tag"><span class="token tag"><span class="token punctuation">&lt;/</span>groupId</span><span class="token punctuation">></span></span>
+            <span class="token tag"><span class="token tag"><span class="token punctuation">&lt;</span>artifactId</span><span class="token punctuation">></span></span>spring-boot-starter-web<span class="token tag"><span class="token tag"><span class="token punctuation">&lt;/</span>artifactId</span><span class="token punctuation">></span></span>
+        <span class="token tag"><span class="token tag"><span class="token punctuation">&lt;/</span>dependency</span><span class="token punctuation">></span></span>
+        <span class="token comment" spellcheck="true">&lt;!-- MySQL驱动连接 --></span>
+        <span class="token tag"><span class="token tag"><span class="token punctuation">&lt;</span>dependency</span><span class="token punctuation">></span></span>
+            <span class="token tag"><span class="token tag"><span class="token punctuation">&lt;</span>groupId</span><span class="token punctuation">></span></span>mysql<span class="token tag"><span class="token tag"><span class="token punctuation">&lt;/</span>groupId</span><span class="token punctuation">></span></span>
+            <span class="token tag"><span class="token tag"><span class="token punctuation">&lt;</span>artifactId</span><span class="token punctuation">></span></span>mysql-connector-java<span class="token tag"><span class="token tag"><span class="token punctuation">&lt;/</span>artifactId</span><span class="token punctuation">></span></span>
+        <span class="token tag"><span class="token tag"><span class="token punctuation">&lt;/</span>dependency</span><span class="token punctuation">></span></span>
+        <span class="token comment" spellcheck="true">&lt;!-- 测试 --></span>
+        <span class="token tag"><span class="token tag"><span class="token punctuation">&lt;</span>dependency</span><span class="token punctuation">></span></span>
+            <span class="token tag"><span class="token tag"><span class="token punctuation">&lt;</span>groupId</span><span class="token punctuation">></span></span>org.springframework.boot<span class="token tag"><span class="token tag"><span class="token punctuation">&lt;/</span>groupId</span><span class="token punctuation">></span></span>
+            <span class="token tag"><span class="token tag"><span class="token punctuation">&lt;</span>artifactId</span><span class="token punctuation">></span></span>spring-boot-starter-test<span class="token tag"><span class="token tag"><span class="token punctuation">&lt;/</span>artifactId</span><span class="token punctuation">></span></span>
+            <span class="token tag"><span class="token tag"><span class="token punctuation">&lt;</span>scope</span><span class="token punctuation">></span></span>test<span class="token tag"><span class="token tag"><span class="token punctuation">&lt;/</span>scope</span><span class="token punctuation">></span></span>
+        <span class="token tag"><span class="token tag"><span class="token punctuation">&lt;/</span>dependency</span><span class="token punctuation">></span></span>
+    <span class="token tag"><span class="token tag"><span class="token punctuation">&lt;/</span>dependencies</span><span class="token punctuation">></span></span>
+
+    <span class="token tag"><span class="token tag"><span class="token punctuation">&lt;</span>build</span><span class="token punctuation">></span></span>
+        <span class="token tag"><span class="token tag"><span class="token punctuation">&lt;</span>plugins</span><span class="token punctuation">></span></span>
+            <span class="token comment" spellcheck="true">&lt;!-- Maven 插件 --></span>
+            <span class="token tag"><span class="token tag"><span class="token punctuation">&lt;</span>plugin</span><span class="token punctuation">></span></span>
+                <span class="token tag"><span class="token tag"><span class="token punctuation">&lt;</span>groupId</span><span class="token punctuation">></span></span>org.springframework.boot<span class="token tag"><span class="token tag"><span class="token punctuation">&lt;/</span>groupId</span><span class="token punctuation">></span></span>
+                <span class="token tag"><span class="token tag"><span class="token punctuation">&lt;</span>artifactId</span><span class="token punctuation">></span></span>spring-boot-maven-plugin<span class="token tag"><span class="token tag"><span class="token punctuation">&lt;/</span>artifactId</span><span class="token punctuation">></span></span>
+            <span class="token tag"><span class="token tag"><span class="token punctuation">&lt;/</span>plugin</span><span class="token punctuation">></span></span>
+            <span class="token comment" spellcheck="true">&lt;!-- Docker Maven 插件 --></span>
+            <span class="token tag"><span class="token tag"><span class="token punctuation">&lt;</span>plugin</span><span class="token punctuation">></span></span>
+                <span class="token tag"><span class="token tag"><span class="token punctuation">&lt;</span>groupId</span><span class="token punctuation">></span></span>com.spotify<span class="token tag"><span class="token tag"><span class="token punctuation">&lt;/</span>groupId</span><span class="token punctuation">></span></span>
+                <span class="token tag"><span class="token tag"><span class="token punctuation">&lt;</span>artifactId</span><span class="token punctuation">></span></span>docker-maven-plugin<span class="token tag"><span class="token tag"><span class="token punctuation">&lt;/</span>artifactId</span><span class="token punctuation">></span></span>
+                <span class="token tag"><span class="token tag"><span class="token punctuation">&lt;</span>version</span><span class="token punctuation">></span></span>1.2.0<span class="token tag"><span class="token tag"><span class="token punctuation">&lt;/</span>version</span><span class="token punctuation">></span></span>
+                <span class="token tag"><span class="token tag"><span class="token punctuation">&lt;</span>configuration</span><span class="token punctuation">></span></span>
+                    <span class="token comment" spellcheck="true">&lt;!-- 构建出的镜像名 --></span>
+                    <span class="token tag"><span class="token tag"><span class="token punctuation">&lt;</span>imageName</span><span class="token punctuation">></span></span>luokaiii-api<span class="token tag"><span class="token tag"><span class="token punctuation">&lt;/</span>imageName</span><span class="token punctuation">></span></span>
+                    <span class="token comment" spellcheck="true">&lt;!-- 基础依赖的镜像 --></span>
+                    <span class="token tag"><span class="token tag"><span class="token punctuation">&lt;</span>baseImage</span><span class="token punctuation">></span></span>openjdk:8-slim<span class="token tag"><span class="token tag"><span class="token punctuation">&lt;/</span>baseImage</span><span class="token punctuation">></span></span>
+
+                    <span class="token tag"><span class="token tag"><span class="token punctuation">&lt;</span>entryPoint</span><span class="token punctuation">></span></span>["java", "-jar", "/${project.build.finalName}.jar"]<span class="token tag"><span class="token tag"><span class="token punctuation">&lt;/</span>entryPoint</span><span class="token punctuation">></span></span>
+                    <span class="token tag"><span class="token tag"><span class="token punctuation">&lt;</span>resources</span><span class="token punctuation">></span></span>
+                        <span class="token tag"><span class="token tag"><span class="token punctuation">&lt;</span>resource</span><span class="token punctuation">></span></span>
+                            <span class="token tag"><span class="token tag"><span class="token punctuation">&lt;</span>targetPath</span><span class="token punctuation">></span></span>/<span class="token tag"><span class="token tag"><span class="token punctuation">&lt;/</span>targetPath</span><span class="token punctuation">></span></span>
+                            <span class="token tag"><span class="token tag"><span class="token punctuation">&lt;</span>directory</span><span class="token punctuation">></span></span>${project.build.directory}<span class="token tag"><span class="token tag"><span class="token punctuation">&lt;/</span>directory</span><span class="token punctuation">></span></span>
+                            <span class="token tag"><span class="token tag"><span class="token punctuation">&lt;</span>include</span><span class="token punctuation">></span></span>${project.build.finalName}.jar<span class="token tag"><span class="token tag"><span class="token punctuation">&lt;/</span>include</span><span class="token punctuation">></span></span>
+                        <span class="token tag"><span class="token tag"><span class="token punctuation">&lt;/</span>resource</span><span class="token punctuation">></span></span>
+                    <span class="token tag"><span class="token tag"><span class="token punctuation">&lt;/</span>resources</span><span class="token punctuation">></span></span>
+                <span class="token tag"><span class="token tag"><span class="token punctuation">&lt;/</span>configuration</span><span class="token punctuation">></span></span>
+            <span class="token tag"><span class="token tag"><span class="token punctuation">&lt;/</span>plugin</span><span class="token punctuation">></span></span>
+        <span class="token tag"><span class="token tag"><span class="token punctuation">&lt;/</span>plugins</span><span class="token punctuation">></span></span>
+    <span class="token tag"><span class="token tag"><span class="token punctuation">&lt;/</span>build</span><span class="token punctuation">></span></span>
+
+<span class="token tag"><span class="token tag"><span class="token punctuation">&lt;/</span>project</span><span class="token punctuation">></span></span>
+</code></pre>
+<h3 id="2-构建镜像"><a href="#2-构建镜像" class="headerlink" title="2. 构建镜像"></a>2. 构建镜像</h3><pre class=" language-sh"><code class="language-sh"># mvn clean package 重新打包， -Dmaven.test.skip 跳过测试，docker:build 构建镜像
+$ mvn clean package -Dmaven.test.skip=true docker:build
+</code></pre>
+<blockquote>
+<p>正常的生产环境，应该有严格的单元测试。</p>
+</blockquote>
+<p>查看 Docker Images (<code>$ docker images</code>)，应该有如下几个镜像了：</p>
+<p><img src="https://i.loli.net/2019/09/24/XfK9C25qhBNSERr.png" alt="图：Docker Images"></p>
+<p>带上之前的镜像，一共有如下几个：<code>luokaiii-api</code> ，<code>mongo:4.0.12</code> ，<code>mariadb:10.4.8</code> ，<code>openjdk:8-slim</code>， <code>redis:4.0.14</code></p>
+<h3 id="3-测试-1"><a href="#3-测试-1" class="headerlink" title="3. 测试"></a>3. 测试</h3><h4 id="a-启动-luokaiii-api-镜像"><a href="#a-启动-luokaiii-api-镜像" class="headerlink" title="a) 启动 luokaiii-api 镜像"></a>a) 启动 <code>luokaiii-api</code> 镜像</h4><p>这里我们直接使用了 Docker-Compose 来启动该镜像，因为 <code>luokaiii-api</code> 依赖了如 <code>mongodb</code>，<code>mariadb</code>，<code>redis</code> 等其他镜像容器。</p>
+<h4 id="a-1-在父级目录下创建-docker-compose-yml-文件"><a href="#a-1-在父级目录下创建-docker-compose-yml-文件" class="headerlink" title="a.1 在父级目录下创建 docker-compose.yml 文件"></a>a.1 在父级目录下创建 docker-compose.yml 文件</h4><blockquote>
+<p> 不再开放mongo、mysql、redis的外部连接，统一改为容器内部通信，只对外提供一个 8080 端口用于访问。</p>
+</blockquote>
+<p><code>docker-compose.yml</code> 文件如下：</p>
+<pre class=" language-yml"><code class="language-yml"># Docker-Compose 的版本
+version: '3'
+
+# 服务声明
+services:
+  # MongoDB 服务
+  mongo:
+    container_name: 'luokaiii-mongo'
+    image: 'mongo:4.0.12'
+    volumes:
+      - mongodata:/data/db
+    environment:
+      MONGO_INITDB_ROOT_USERNAME: mongoadmin
+      MONGO_INITDB_ROOT_PASSWORD: password
+    restart: always
+    expose:    # 暴露端口，但不映射到宿主机
+      - '27017'
+  # MariaDB 服务
+  mariadb:
+    container_name: 'luokaiii-mysql'
+    image: 'mariadb:10.4.8'
+    volumes:
+      - './mysql/data/:/var/lib/mysql'
+      - './mysql/conf/local.cnf:/etc/mysql/conf.d/local.cnf'
+    environment:
+      MYSQL_ROOT_PASSWORD: password
+      MYSQL_DATABASE: db_user
+    command: ['mysqld', '--character-set-server=utf8mb4', '--collation-server=utf8mb4_unicode_ci']
+    restart: always
+    expose:
+      - '3306'
+  # Redis 服务
+  redis:
+    container_name: 'luokaiii-redis'
+    image: 'redis:4.0.14'
+    volumes:
+      - './redis/data:/data'
+    command: redis-server --requirepass password
+    restart: always
+    expose:
+      - '6379'
+  # Java API 服务
+  api:
+    container_name: 'luokaiii-api'
+    depends_on: # 依赖其他容器(如DB连接等)
+      - mongo
+      - redis
+      - mariadb
+    image: 'luokaiii-api:latest'
+    ports:    # 对外暴露 8080 端口
+      - '8080:8080'
+    restart: always
+
+# 容器能够使用的数据卷
+volumes:
+  mongodata:
+</code></pre>
+<h4 id="a-2-修改之前的-application-properties"><a href="#a-2-修改之前的-application-properties" class="headerlink" title="a.2 修改之前的 application.properties"></a>a.2 修改之前的 application.properties</h4><p>将 <code>localhost</code> 全部改为对应 <code>Compose</code> 的服务名称，这样 容器在运行时会动态加载对应的服务及端口。</p>
+<pre class=" language-properties"><code class="language-properties"><span class="token comment" spellcheck="true"># MongoDB 连接</span>
+<span class="token attr-name">spring.data.mongodb.uri</span><span class="token punctuation">=</span><span class="token attr-value">mongodb://mongoadmin:password@mongo:27017/demo?authSource=admin</span>
+
+<span class="token comment" spellcheck="true"># MySQL 连接</span>
+<span class="token attr-name">spring.datasource.username</span><span class="token punctuation">=</span><span class="token attr-value">root</span>
+<span class="token attr-name">spring.datasource.password</span><span class="token punctuation">=</span><span class="token attr-value">password</span>
+<span class="token attr-name">spring.datasource.driver-class-name</span><span class="token punctuation">=</span><span class="token attr-value">com.mysql.cj.jdbc.Driver</span>
+<span class="token attr-name">spring.datasource.url</span><span class="token punctuation">=</span><span class="token attr-value">jdbc:mysql://mariadb:3306/db_user?useUnicode=true&amp;characterEncoding=GBK&amp;useSSL=false</span>
+
+<span class="token comment" spellcheck="true"># Redis 连接</span>
+<span class="token attr-name">spring.redis.host</span><span class="token punctuation">=</span><span class="token attr-value">redis</span>
+<span class="token attr-name">spring.redis.port</span><span class="token punctuation">=</span><span class="token attr-value">6379</span>
+<span class="token attr-name">spring.redis.password</span><span class="token punctuation">=</span><span class="token attr-value">password</span>
+</code></pre>
+<h4 id="a-3-运行-docker-compose"><a href="#a-3-运行-docker-compose" class="headerlink" title="a.3 运行 docker-compose"></a>a.3 运行 docker-compose</h4><pre class=" language-sh"><code class="language-sh"># 后台运行所有容器
+$ docker-compose -d up
+
+# 停止所有容器
+# docker-compose down
+
+# 停止单个容器
+# docker-compose stop luokaiii-api
+
+# 运行单个容器(停止状态)
+# docker-compose start luokaiii-api
+
+# 运行单个容器(被删除后)
+# docker-compose run --name luokaiii-api luokaiii-api
+</code></pre>
+<h4 id="a-4-依次查看容器的日志"><a href="#a-4-依次查看容器的日志" class="headerlink" title="a.4 依次查看容器的日志"></a>a.4 依次查看容器的日志</h4><p>控制台打印的日志太过混乱，这里我们一个一个的查看：</p>
+<pre class=" language-sh"><code class="language-sh"># 查看 MongoDB 运行情况
+$ docker logs luokaiii-mongo
+</code></pre>
+<p><img src="https://i.loli.net/2019/09/24/VDTEhsdHlyFC1Zi.png" alt="MongoDB运行情况"></p>
+<pre class=" language-sh"><code class="language-sh"># 查看 MariaDB 运行情况
+$ docker logs luokaiii-mysql
+</code></pre>
+<p><img src="https://i.loli.net/2019/09/24/POFBid9THoQbWNg.png" alt="MariaDB运行情况"></p>
+<pre class=" language-sh"><code class="language-sh"># 查看 Redis 运行情况
+$ docker logs luokaiii-redis
+</code></pre>
+<p><img src="C:\Users\user\AppData\Roaming\Typora\typora-user-images\1569306056942.png" alt="Redis 运行情况"></p>
+<pre class=" language-sh"><code class="language-sh"># 查看 JAVA Server 运行情况
+$ docker logs luokaiii-api
+</code></pre>
+<p><img src="https://i.loli.net/2019/09/24/tUzEfZaIGOLouvP.png" alt="Java运行状况"></p>
+<h3 id="b-生成数据表"><a href="#b-生成数据表" class="headerlink" title="b. 生成数据表"></a>b. 生成数据表</h3><p>进入 <code>luokaiii-mysql</code> 容器，进入 MySQL，生成 person 表。 发送请求即可。</p>
+<h2 id="遇到的问题"><a href="#遇到的问题" class="headerlink" title="遇到的问题"></a>遇到的问题</h2><h3 id="1-MongoDB无法挂载data目录"><a href="#1-MongoDB无法挂载data目录" class="headerlink" title="1. MongoDB无法挂载data目录"></a>1. MongoDB无法挂载data目录</h3><p>按照正常来说，<code>mongo</code> 服务的编排应该如下所示：</p>
+<pre class=" language-yml"><code class="language-yml">services:
+  mongo:
+    container_name: 'luokaiii-mongo'
+    image: 'mongo:4.0.12'
+    volumes:
+      - ./mongo/db:/data/db
+    environment:
+      MONGO_INITDB_ROOT_USERNAME: mongoadmin
+      MONGO_INITDB_ROOT_PASSWORD: password
+    restart: always
+    expose:
+      - '27017'
+......
+</code></pre>
+<h4 id="问题："><a href="#问题：" class="headerlink" title="问题："></a>问题：</h4><p>这样的挂载，却会抛出文件无法打开、无法读取、无法写入的问题。详见 <a href="https://github.com/docker-library/mongo/issues/74" target="_blank" rel="noopener">Github Issue</a>。</p>
+<h4 id="原因："><a href="#原因：" class="headerlink" title="原因："></a>原因：</h4><p>Docker 中的 Mongo 容器无法使用部分文件。</p>
+<h4 id="解决方案："><a href="#解决方案：" class="headerlink" title="解决方案："></a>解决方案：</h4><p>手动创建一个共享卷，即如下改动：</p>
+<pre class=" language-yml"><code class="language-yml">services:
+  mongo:
+    container_name: 'luokaiii-mongo'
+    image: 'mongo:4.0.12'
+    volumes:
+      - mongodata:/data/db   # 这里改为下面声明的卷
+    environment:
+      MONGO_INITDB_ROOT_USERNAME: mongoadmin
+      MONGO_INITDB_ROOT_PASSWORD: password
+    restart: always
+    expose:
+      - '27017'
+......
+volumes:
+  mongodata:
+</code></pre>
+<blockquote>
+<p><code>$ docker volume list</code> 能够查看所有共享的卷</p>
+<p><code>$ docker volume inspect &lt;name&gt;</code> 能够查看具体的卷信息(如实际地址等)</p>
+</blockquote>
+<h3 id="2-MySQL-初始密码未生效"><a href="#2-MySQL-初始密码未生效" class="headerlink" title="2. MySQL 初始密码未生效"></a>2. MySQL 初始密码未生效</h3><h4 id="问题：-1"><a href="#问题：-1" class="headerlink" title="问题："></a>问题：</h4><p>在使用 <code>docker-compose up</code> 启动完所有程序后，<code>luokaiii-api</code> 项目抛出 “无法连接 MySQL 数据库的异常”。</p>
+<p>而我们在 <code>docker-compose.yml</code> 中已经指定了具体的初始密码:</p>
+<pre class=" language-yml"><code class="language-yml">MYSQL_ROOT_PASSWORD: password
+</code></pre>
+<h4 id="原因：-1"><a href="#原因：-1" class="headerlink" title="原因："></a>原因：</h4><p>经排查发现，是 <code>luokaiii-mysql</code> 容器的密码未初始化。</p>
+<h4 id="解决方案：-1"><a href="#解决方案：-1" class="headerlink" title="解决方案："></a>解决方案：</h4><p>依次运行以下代码：</p>
+<pre class=" language-sh"><code class="language-sh"># 进入 MySQL 容器(Windows需要加上 `winpty`)
+$ docker exec -it luokaiii-mysql bash
+
+# 匹配环境变量
+root@xx/# env | grep -i password
+MYSQL_ROOT_PASSWORD=password
+
+# 尝试无密码登录 - 失败
+root@xx/# mysql -Uroot
+ERROR 1045 (28000): Access denied for user 'root'@'localhost' (using password: NO)
+
+# 尝试使用密码登录，成功？？？？为什么？？？
+root@xx/# mysql -Uroot -ppassword
+</code></pre>
+<p>详见 <a href="https://github.com/docker-library/mysql/issues/557" target="_blank" rel="noopener">Github Issue</a>。</p>
+<blockquote>
+<p>首次操作即可，往后未出现该bug。</p>
+</blockquote>
+<p>参考资料：</p>
+<ol>
+<li><a href="https://github.com/spotify/docker-maven-plugin" target="_blank" rel="noopener">Docker-maven-plugin</a></li>
+<li><a href="https://hub.docker.com/_/openjdk" target="_blank" rel="noopener">Docker Hub OpenJDK</a></li>
+<li><a href="https://stackoverflow.com/questions/45729326/how-to-change-the-default-character-set-of-mysql-using-docker-compose" target="_blank" rel="noopener">https://stackoverflow.com/questions/45729326/how-to-change-the-default-character-set-of-mysql-using-docker-compose</a></li>
+<li><a href="https://www.hi-linux.com/posts/12554.html" target="_blank" rel="noopener">运维之美</a></li>
+<li><a href="https://github.com/docker-library/mysql/issues/557" target="_blank" rel="noopener">https://github.com/docker-library/mysql/issues/557</a></li>
+</ol>
+<h2 id="项目地址"><a href="#项目地址" class="headerlink" title="项目地址"></a>项目地址</h2><ul>
+<li><p><a href="https://github.com/luokaiii/luokaiii.docker-images" target="_blank" rel="noopener">Github</a></p>
+</li>
+<li><p><a href="https://gitee.com/luokaiii/luokaiii.docker-images" target="_blank" rel="noopener">Gitee</a></p>
+</li>
+</ul>
+
+      
+    </div>
+    
+    
+    
+
+    
+
+    
+
+    
+
+    <footer class="post-footer">
+      
+        <div class="post-tags">
+          
+            <a href="/tags/java/" rel="tag"># java</a>
+          
+            <a href="/tags/docker/" rel="tag"># docker</a>
+          
+        </div>
+      
+
+      
+      
+      
+
+      
+        <div class="post-nav">
+          <div class="post-nav-next post-nav-item">
+            
+              <a href="/2019/09/23/docker/全栈项目部署/4.MariaDB/" rel="next" title="Docker部署全栈：四、安装MySQL">
+                <i class="fa fa-chevron-left"></i> Docker部署全栈：四、安装MySQL
+              </a>
+            
+          </div>
+
+          <span class="post-nav-divider"></span>
+
+          <div class="post-nav-prev post-nav-item">
+            
+              <a href="/2019/09/24/docker/全栈项目部署/6.Nginx/" rel="prev" title="Docker部署全栈：六、部署Nginx和React">
+                Docker部署全栈：六、部署Nginx和React <i class="fa fa-chevron-right"></i>
+              </a>
+            
+          </div>
+        </div>
+      
+
+      
+      
+    </footer>
+  </div>
+  
+  
+  
+  </article>
+
+
+
+    <div class="post-spread">
+      
+    </div>
+  </div>
+
+
+          </div>
+          
+
+
+          
+
+  
+
+
+
+        </div>
+        
+          
+  
+  <div class="sidebar-toggle">
+    <div class="sidebar-toggle-line-wrap">
+      <span class="sidebar-toggle-line sidebar-toggle-line-first"></span>
+      <span class="sidebar-toggle-line sidebar-toggle-line-middle"></span>
+      <span class="sidebar-toggle-line sidebar-toggle-line-last"></span>
+    </div>
+  </div>
+
+  <aside id="sidebar" class="sidebar">
+    
+    <div class="sidebar-inner">
+
+      
+
+      
+        <ul class="sidebar-nav motion-element">
+          <li class="sidebar-nav-toc sidebar-nav-active" data-target="post-toc-wrap">
+            文章目录
+          </li>
+          <li class="sidebar-nav-overview" data-target="site-overview-wrap">
+            站点概览
+          </li>
+        </ul>
+      
+
+      <section class="site-overview-wrap sidebar-panel">
+        <div class="site-overview">
+          <div class="site-author motion-element" itemprop="author" itemscope itemtype="http://schema.org/Person">
+            
+              <img class="site-author-image" itemprop="image"
+                src="https://upload-images.jianshu.io/upload_images/13603359-6aa0d85db5eaa03e.gif"
+                alt="koral" />
+            
+              <p class="site-author-name" itemprop="name">koral</p>
+              <p class="site-description motion-element" itemprop="description">如果我16岁，我可以悄悄的说我好喜欢你，如果我26岁，我可以大声告诉你我很爱你，可惜我6岁，我什么都给不了你，我还要上小学。</p>
+          </div>
+
+          <nav class="site-state motion-element">
+
+            
+              <div class="site-state-item site-state-posts">
+              
+                <a href="/archives">
+              
+                  <span class="site-state-item-count">232</span>
+                  <span class="site-state-item-name">日志</span>
+                </a>
+              </div>
+            
+
+            
+              
+              
+              <div class="site-state-item site-state-categories">
+                <a href="/categories/index.html">
+                  <span class="site-state-item-count">21</span>
+                  <span class="site-state-item-name">分类</span>
+                </a>
+              </div>
+            
+
+            
+              
+              
+              <div class="site-state-item site-state-tags">
+                <a href="/tags/index.html">
+                  <span class="site-state-item-count">20</span>
+                  <span class="site-state-item-name">标签</span>
+                </a>
+              </div>
+            
+
+          </nav>
+
+          
+            <div class="feed-link motion-element">
+              <a href="/atom.xml" rel="alternate">
+                <i class="fa fa-rss"></i>
+                RSS
+              </a>
+            </div>
+          
+
+          
+
+          
+          
+
+          
+          
+
+          
+
+        </div>
+      </section>
+
+      
+      <!--noindex-->
+        <section class="post-toc-wrap motion-element sidebar-panel sidebar-panel-active">
+          <div class="post-toc">
+
+            
+              
+            
+
+            
+              <div class="post-toc-content"><ol class="nav"><li class="nav-item nav-level-1"><a class="nav-link" href="#Docker部署全栈项目：五、SpringBoot-Jar"><span class="nav-number">1.</span> <span class="nav-text">Docker部署全栈项目：五、SpringBoot Jar</span></a><ol class="nav-child"><li class="nav-item nav-level-2"><a class="nav-link" href="#一、创建-SpringBoot-项目"><span class="nav-number">1.1.</span> <span class="nav-text">一、创建 SpringBoot 项目</span></a><ol class="nav-child"><li class="nav-item nav-level-3"><a class="nav-link" href="#1-创建接口"><span class="nav-number">1.1.1.</span> <span class="nav-text">1. 创建接口</span></a></li><li class="nav-item nav-level-3"><a class="nav-link" href="#2-配置参数"><span class="nav-number">1.1.2.</span> <span class="nav-text">2. 配置参数</span></a></li><li class="nav-item nav-level-3"><a class="nav-link" href="#3-测试"><span class="nav-number">1.1.3.</span> <span class="nav-text">3. 测试</span></a></li></ol></li><li class="nav-item nav-level-2"><a class="nav-link" href="#二、构建-Docker-镜像"><span class="nav-number">1.2.</span> <span class="nav-text">二、构建 Docker 镜像</span></a><ol class="nav-child"><li class="nav-item nav-level-3"><a class="nav-link" href="#1-pom-xml-中增加-docker-插件"><span class="nav-number">1.2.1.</span> <span class="nav-text">1. pom.xml 中增加 docker 插件</span></a></li><li class="nav-item nav-level-3"><a class="nav-link" href="#2-构建镜像"><span class="nav-number">1.2.2.</span> <span class="nav-text">2. 构建镜像</span></a></li><li class="nav-item nav-level-3"><a class="nav-link" href="#3-测试-1"><span class="nav-number">1.2.3.</span> <span class="nav-text">3. 测试</span></a><ol class="nav-child"><li class="nav-item nav-level-4"><a class="nav-link" href="#a-启动-luokaiii-api-镜像"><span class="nav-number">1.2.3.1.</span> <span class="nav-text">a) 启动 luokaiii-api 镜像</span></a></li><li class="nav-item nav-level-4"><a class="nav-link" href="#a-1-在父级目录下创建-docker-compose-yml-文件"><span class="nav-number">1.2.3.2.</span> <span class="nav-text">a.1 在父级目录下创建 docker-compose.yml 文件</span></a></li><li class="nav-item nav-level-4"><a class="nav-link" href="#a-2-修改之前的-application-properties"><span class="nav-number">1.2.3.3.</span> <span class="nav-text">a.2 修改之前的 application.properties</span></a></li><li class="nav-item nav-level-4"><a class="nav-link" href="#a-3-运行-docker-compose"><span class="nav-number">1.2.3.4.</span> <span class="nav-text">a.3 运行 docker-compose</span></a></li><li class="nav-item nav-level-4"><a class="nav-link" href="#a-4-依次查看容器的日志"><span class="nav-number">1.2.3.5.</span> <span class="nav-text">a.4 依次查看容器的日志</span></a></li></ol></li><li class="nav-item nav-level-3"><a class="nav-link" href="#b-生成数据表"><span class="nav-number">1.2.4.</span> <span class="nav-text">b. 生成数据表</span></a></li></ol></li><li class="nav-item nav-level-2"><a class="nav-link" href="#遇到的问题"><span class="nav-number">1.3.</span> <span class="nav-text">遇到的问题</span></a><ol class="nav-child"><li class="nav-item nav-level-3"><a class="nav-link" href="#1-MongoDB无法挂载data目录"><span class="nav-number">1.3.1.</span> <span class="nav-text">1. MongoDB无法挂载data目录</span></a><ol class="nav-child"><li class="nav-item nav-level-4"><a class="nav-link" href="#问题："><span class="nav-number">1.3.1.1.</span> <span class="nav-text">问题：</span></a></li><li class="nav-item nav-level-4"><a class="nav-link" href="#原因："><span class="nav-number">1.3.1.2.</span> <span class="nav-text">原因：</span></a></li><li class="nav-item nav-level-4"><a class="nav-link" href="#解决方案："><span class="nav-number">1.3.1.3.</span> <span class="nav-text">解决方案：</span></a></li></ol></li><li class="nav-item nav-level-3"><a class="nav-link" href="#2-MySQL-初始密码未生效"><span class="nav-number">1.3.2.</span> <span class="nav-text">2. MySQL 初始密码未生效</span></a><ol class="nav-child"><li class="nav-item nav-level-4"><a class="nav-link" href="#问题：-1"><span class="nav-number">1.3.2.1.</span> <span class="nav-text">问题：</span></a></li><li class="nav-item nav-level-4"><a class="nav-link" href="#原因：-1"><span class="nav-number">1.3.2.2.</span> <span class="nav-text">原因：</span></a></li><li class="nav-item nav-level-4"><a class="nav-link" href="#解决方案：-1"><span class="nav-number">1.3.2.3.</span> <span class="nav-text">解决方案：</span></a></li></ol></li></ol></li><li class="nav-item nav-level-2"><a class="nav-link" href="#项目地址"><span class="nav-number">1.4.</span> <span class="nav-text">项目地址</span></a></li></ol></li></ol></div>
+            
+
+          </div>
+        </section>
+      <!--/noindex-->
+      
+
+      
+
+    </div>
+  </aside>
+
+
+        
+      </div>
+    </main>
+
+    <footer id="footer" class="footer">
+      <div class="footer-inner">
+        <div class="copyright">&copy; <span itemprop="copyrightYear">2019</span>
+  <span class="with-love">
+    <i class="fa fa-user"></i>
+  </span>
+  <span class="author" itemprop="copyrightHolder">koral</span>
+
+  
+</div>
+
+
+  <div class="powered-by">由 <a class="theme-link" target="_blank" href="https://hexo.io">Hexo</a> 强力驱动</div>
+
+
+
+  <span class="post-meta-divider">|</span>
+
+
+
+  <div class="theme-info">主题 &mdash; <a class="theme-link" target="_blank" href="https://github.com/iissnan/hexo-theme-next">NexT.Pisces</a> v5.1.4</div>
+
+
+
+
+
+        
+
+
+
+
+
+
+
+        
+      </div>
+    </footer>
+
+    
+      <div class="back-to-top">
+        <i class="fa fa-arrow-up"></i>
+        
+      </div>
+    
+
+    
+
+  </div>
+
+  
+
+<script type="text/javascript">
+  if (Object.prototype.toString.call(window.Promise) !== '[object Function]') {
+    window.Promise = null;
+  }
+</script>
+
+
+
+
+
+
+
+
+
+  
+
+
+
+
+
+
+
+
+
+
+
+
+  
+  
+    <script type="text/javascript" src="/lib/jquery/index.js?v=2.1.3"></script>
+  
+
+  
+  
+    <script type="text/javascript" src="/lib/fastclick/lib/fastclick.min.js?v=1.0.6"></script>
+  
+
+  
+  
+    <script type="text/javascript" src="/lib/jquery_lazyload/jquery.lazyload.js?v=1.9.7"></script>
+  
+
+  
+  
+    <script type="text/javascript" src="/lib/velocity/velocity.min.js?v=1.2.1"></script>
+  
+
+  
+  
+    <script type="text/javascript" src="/lib/velocity/velocity.ui.min.js?v=1.2.1"></script>
+  
+
+  
+  
+    <script type="text/javascript" src="/lib/fancybox/source/jquery.fancybox.pack.js?v=2.1.5"></script>
+  
+
+
+  
+
+
+  <script type="text/javascript" src="/js/src/utils.js?v=5.1.4"></script>
+
+  <script type="text/javascript" src="/js/src/motion.js?v=5.1.4"></script>
+
+
+
+  
+  
+
+
+  <script type="text/javascript" src="/js/src/affix.js?v=5.1.4"></script>
+
+  <script type="text/javascript" src="/js/src/schemes/pisces.js?v=5.1.4"></script>
+
+
+
+  
+  <script type="text/javascript" src="/js/src/scrollspy.js?v=5.1.4"></script>
+<script type="text/javascript" src="/js/src/post-details.js?v=5.1.4"></script>
+
+
+
+  
+
+
+  <script type="text/javascript" src="/js/src/bootstrap.js?v=5.1.4"></script>
+
+
+
+  
+
+
+  
+
+
+
+
+	
+
+
+
+
+
+  
+
+
+
+
+
+  
+
+
+
+
+
+
+
+
+
+
+
+
+  
+
+
+
+
+
+  
+
+  
+
+  
+
+  
+  
+
+  
+
+  
+
+  
+
+</body>
+</html>

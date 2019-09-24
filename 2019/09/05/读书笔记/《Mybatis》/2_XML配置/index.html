@@ -1,0 +1,1400 @@
+<!DOCTYPE html>
+
+
+
+  
+
+
+<html class="theme-next pisces use-motion" lang="zh-Hans">
+<head>
+  <meta charset="UTF-8"/>
+<meta http-equiv="X-UA-Compatible" content="IE=edge" />
+<meta name="viewport" content="width=device-width, initial-scale=1, maximum-scale=1"/>
+<meta name="theme-color" content="#222">
+
+
+
+
+
+
+
+
+
+<meta http-equiv="Cache-Control" content="no-transform" />
+<meta http-equiv="Cache-Control" content="no-siteapp" />
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+  
+  
+  <link href="/lib/fancybox/source/jquery.fancybox.css?v=2.1.5" rel="stylesheet" type="text/css" />
+
+
+
+
+
+
+
+<link href="/lib/font-awesome/css/font-awesome.min.css?v=4.6.2" rel="stylesheet" type="text/css" />
+
+<link href="/css/main.css?v=5.1.4" rel="stylesheet" type="text/css" />
+
+
+  <link rel="apple-touch-icon" sizes="180x180" href="/images/apple-touch-icon-next.png?v=5.1.4">
+
+
+  <link rel="icon" type="image/png" sizes="32x32" href="/images/favicon-32x32-next.png?v=5.1.4">
+
+
+  <link rel="icon" type="image/png" sizes="16x16" href="/images/favicon-16x16-next.png?v=5.1.4">
+
+
+  <link rel="mask-icon" href="/images/logo.svg?v=5.1.4" color="#222">
+
+
+
+
+
+  <meta name="keywords" content="读书笔记,MyBatis," />
+
+
+
+
+
+  <link rel="alternate" href="/atom.xml" title="罗凯的博客" type="application/atom+xml" />
+
+
+
+
+
+
+<meta name="description" content="二、MyBatis 中的 XML 详细配置MyBatis 的配置文件包含了深深影响 MyBatis 行为的设置和属性信息。配置文档的顶层结构如下：  configuration(配置) properties(属性) settings(设置) typealiases(类型别名) typeHandlers(类型处理器) objectFactory(对象工厂) plugins(插件) environme">
+<meta name="keywords" content="读书笔记,MyBatis">
+<meta property="og:type" content="article">
+<meta property="og:title" content="《MyBatis》读书笔记 - MyBatis 中的 XML 详细配置">
+<meta property="og:url" content="http://luokaiii.github.io/2019/09/05/读书笔记/《Mybatis》/2_XML配置/index.html">
+<meta property="og:site_name" content="罗凯的博客">
+<meta property="og:description" content="二、MyBatis 中的 XML 详细配置MyBatis 的配置文件包含了深深影响 MyBatis 行为的设置和属性信息。配置文档的顶层结构如下：  configuration(配置) properties(属性) settings(设置) typealiases(类型别名) typeHandlers(类型处理器) objectFactory(对象工厂) plugins(插件) environme">
+<meta property="og:locale" content="zh-Hans">
+<meta property="og:updated_time" content="2019-09-05T10:54:04.379Z">
+<meta name="twitter:card" content="summary">
+<meta name="twitter:title" content="《MyBatis》读书笔记 - MyBatis 中的 XML 详细配置">
+<meta name="twitter:description" content="二、MyBatis 中的 XML 详细配置MyBatis 的配置文件包含了深深影响 MyBatis 行为的设置和属性信息。配置文档的顶层结构如下：  configuration(配置) properties(属性) settings(设置) typealiases(类型别名) typeHandlers(类型处理器) objectFactory(对象工厂) plugins(插件) environme">
+
+
+
+<script type="text/javascript" id="hexo.configurations">
+  var NexT = window.NexT || {};
+  var CONFIG = {
+    root: '/',
+    scheme: 'Pisces',
+    version: '5.1.4',
+    sidebar: {"position":"right","display":"always","offset":12,"b2t":false,"scrollpercent":false,"onmobile":false},
+    fancybox: true,
+    tabs: true,
+    motion: {"enable":true,"async":false,"transition":{"post_block":"fadeIn","post_header":"slideDownIn","post_body":"slideDownIn","coll_header":"slideLeftIn","sidebar":"slideUpIn"}},
+    duoshuo: {
+      userId: '0',
+      author: '博主'
+    },
+    algolia: {
+      applicationID: '',
+      apiKey: '',
+      indexName: '',
+      hits: {"per_page":5},
+      labels: {"input_placeholder":"Search for Posts","hits_empty":"We didn't find any results for the search: ${query}","hits_stats":"${hits} results found in ${time} ms"}
+    }
+  };
+</script>
+
+
+
+  <link rel="canonical" href="http://luokaiii.github.io/2019/09/05/读书笔记/《Mybatis》/2_XML配置/"/>
+
+
+
+
+
+  <title>《MyBatis》读书笔记 - MyBatis 中的 XML 详细配置 | 罗凯的博客</title>
+  
+
+
+
+
+
+
+
+
+<link rel="stylesheet" href="/css/prism-tomorrow.css" type="text/css"></head>
+
+<body itemscope itemtype="http://schema.org/WebPage" lang="zh-Hans">
+
+  
+  
+    
+  
+
+  <div class="container sidebar-position-right page-post-detail">
+    <div class="headband"></div>
+
+    <header id="header" class="header" itemscope itemtype="http://schema.org/WPHeader">
+      <div class="header-inner"><div class="site-brand-wrapper">
+  <div class="site-meta ">
+    
+
+    <div class="custom-logo-site-title">
+      <a href="/"  class="brand" rel="start">
+        <span class="logo-line-before"><i></i></span>
+        <span class="site-title">罗凯的博客</span>
+        <span class="logo-line-after"><i></i></span>
+      </a>
+    </div>
+      
+        <p class="site-subtitle">l u o k a i</p>
+      
+  </div>
+
+  <div class="site-nav-toggle">
+    <button>
+      <span class="btn-bar"></span>
+      <span class="btn-bar"></span>
+      <span class="btn-bar"></span>
+    </button>
+  </div>
+</div>
+
+<nav class="site-nav">
+  
+
+  
+    <ul id="menu" class="menu">
+      
+        
+        <li class="menu-item menu-item-home">
+          <a href="/" rel="section">
+            
+              <i class="menu-item-icon fa fa-fw fa-home"></i> <br />
+            
+            首页
+          </a>
+        </li>
+      
+        
+        <li class="menu-item menu-item-archives">
+          <a href="/archives" rel="section">
+            
+              <i class="menu-item-icon fa fa-fw fa-question-circle"></i> <br />
+            
+            归档
+          </a>
+        </li>
+      
+        
+        <li class="menu-item menu-item-about">
+          <a href="/about" rel="section">
+            
+              <i class="menu-item-icon fa fa-fw fa-question-circle"></i> <br />
+            
+            关于
+          </a>
+        </li>
+      
+        
+        <li class="menu-item menu-item-tags">
+          <a href="/tags" rel="section">
+            
+              <i class="menu-item-icon fa fa-fw fa-question-circle"></i> <br />
+            
+            标签
+          </a>
+        </li>
+      
+        
+        <li class="menu-item menu-item-categories">
+          <a href="/categories/" rel="section">
+            
+              <i class="menu-item-icon fa fa-fw fa-th"></i> <br />
+            
+            分类
+          </a>
+        </li>
+      
+        
+        <li class="menu-item menu-item-schedule">
+          <a href="/schedule" rel="section">
+            
+              <i class="menu-item-icon fa fa-fw fa-question-circle"></i> <br />
+            
+            日程表
+          </a>
+        </li>
+      
+        
+        <li class="menu-item menu-item-sitemap">
+          <a href="/sitemap.xml" rel="section">
+            
+              <i class="menu-item-icon fa fa-fw fa-sitemap"></i> <br />
+            
+            站点地图
+          </a>
+        </li>
+      
+        
+        <li class="menu-item menu-item-commonweal">
+          <a href="/404/" rel="section">
+            
+              <i class="menu-item-icon fa fa-fw fa-heartbeat"></i> <br />
+            
+            公益404
+          </a>
+        </li>
+      
+
+      
+    </ul>
+  
+
+  
+</nav>
+
+
+
+ </div>
+    </header>
+
+    <main id="main" class="main">
+      <div class="main-inner">
+        <div class="content-wrap">
+          <div id="content" class="content">
+            
+
+  <div id="posts" class="posts-expand">
+    
+
+  
+
+  
+  
+  
+
+  <article class="post post-type-normal" itemscope itemtype="http://schema.org/Article">
+  
+  
+  
+  <div class="post-block">
+    <link itemprop="mainEntityOfPage" href="http://luokaiii.github.io/2019/09/05/读书笔记/《Mybatis》/2_XML配置/">
+
+    <span hidden itemprop="author" itemscope itemtype="http://schema.org/Person">
+      <meta itemprop="name" content="koral">
+      <meta itemprop="description" content="">
+      <meta itemprop="image" content="https://upload-images.jianshu.io/upload_images/13603359-6aa0d85db5eaa03e.gif">
+    </span>
+
+    <span hidden itemprop="publisher" itemscope itemtype="http://schema.org/Organization">
+      <meta itemprop="name" content="罗凯的博客">
+    </span>
+
+    
+      <header class="post-header">
+
+        
+        
+          <h1 class="post-title" itemprop="name headline">《MyBatis》读书笔记 - MyBatis 中的 XML 详细配置</h1>
+        
+
+        <div class="post-meta">
+          <span class="post-time">
+            
+              <span class="post-meta-item-icon">
+                <i class="fa fa-calendar-o"></i>
+              </span>
+              
+                <span class="post-meta-item-text">发表于</span>
+              
+              <time title="创建于" itemprop="dateCreated datePublished" datetime="2019-09-05T10:10:20+08:00">
+                2019-09-05
+              </time>
+            
+
+            
+
+            
+          </span>
+
+          
+
+          
+            
+          
+
+          
+          
+
+          
+
+          
+
+          
+
+        </div>
+      </header>
+    
+
+    
+    
+    
+    <div class="post-body" itemprop="articleBody">
+
+      
+      
+
+      
+        <h1 id="二、MyBatis-中的-XML-详细配置"><a href="#二、MyBatis-中的-XML-详细配置" class="headerlink" title="二、MyBatis 中的 XML 详细配置"></a>二、MyBatis 中的 XML 详细配置</h1><p>MyBatis 的配置文件包含了深深影响 MyBatis 行为的设置和属性信息。配置文档的顶层结构如下：</p>
+<ul>
+<li>configuration(配置)<ul>
+<li>properties(属性)</li>
+<li>settings(设置)</li>
+<li>typealiases(类型别名)</li>
+<li>typeHandlers(类型处理器)</li>
+<li>objectFactory(对象工厂)</li>
+<li>plugins(插件)</li>
+<li>environments(环境配置)<ul>
+<li>environment(环境变量)<ul>
+<li>transactionManager(事务管理器)</li>
+<li>dataSource(数据源)</li>
+</ul>
+</li>
+</ul>
+</li>
+<li>databaseIdProvider(数据库厂商标识)</li>
+<li>mappers(映射器)</li>
+</ul>
+</li>
+</ul>
+<h2 id="一、属性（Properties）"><a href="#一、属性（Properties）" class="headerlink" title="一、属性（Properties）"></a>一、属性（Properties）</h2><p>这些属性都是可外部配置且可动态替换的，如：</p>
+<pre class=" language-xml"><code class="language-xml"><span class="token tag"><span class="token tag"><span class="token punctuation">&lt;</span>properties</span> <span class="token attr-name">resource</span><span class="token attr-value"><span class="token punctuation">=</span><span class="token punctuation">"</span>org/mybatis/example/config.properties<span class="token punctuation">"</span></span><span class="token punctuation">></span></span>
+    <span class="token tag"><span class="token tag"><span class="token punctuation">&lt;</span>property</span> <span class="token attr-name">name</span><span class="token attr-value"><span class="token punctuation">=</span><span class="token punctuation">"</span>username<span class="token punctuation">"</span></span> <span class="token attr-name">value</span><span class="token attr-value"><span class="token punctuation">=</span><span class="token punctuation">"</span>dev_user<span class="token punctuation">"</span></span><span class="token punctuation">/></span></span>
+    <span class="token tag"><span class="token tag"><span class="token punctuation">&lt;</span>property</span> <span class="token attr-name">name</span><span class="token attr-value"><span class="token punctuation">=</span><span class="token punctuation">"</span>password<span class="token punctuation">"</span></span> <span class="token attr-name">value</span><span class="token attr-value"><span class="token punctuation">=</span><span class="token punctuation">"</span>12345678<span class="token punctuation">"</span></span><span class="token punctuation">/></span></span>
+<span class="token tag"><span class="token tag"><span class="token punctuation">&lt;/</span>properties</span><span class="token punctuation">></span></span>
+</code></pre>
+<p>可替换的动态配置属性值：</p>
+<pre class=" language-xml"><code class="language-xml"><span class="token tag"><span class="token tag"><span class="token punctuation">&lt;</span>dataSource</span> <span class="token attr-name">type</span><span class="token attr-value"><span class="token punctuation">=</span><span class="token punctuation">"</span>POOLED<span class="token punctuation">"</span></span><span class="token punctuation">></span></span>
+    <span class="token tag"><span class="token tag"><span class="token punctuation">&lt;</span>property</span> <span class="token attr-name">name</span><span class="token attr-value"><span class="token punctuation">=</span><span class="token punctuation">"</span>driver<span class="token punctuation">"</span></span> <span class="token attr-name">value</span><span class="token attr-value"><span class="token punctuation">=</span><span class="token punctuation">"</span>${driver}<span class="token punctuation">"</span></span><span class="token punctuation">/></span></span>
+    <span class="token tag"><span class="token tag"><span class="token punctuation">&lt;</span>property</span> <span class="token attr-name">name</span><span class="token attr-value"><span class="token punctuation">=</span><span class="token punctuation">"</span>url<span class="token punctuation">"</span></span> <span class="token attr-name">value</span><span class="token attr-value"><span class="token punctuation">=</span><span class="token punctuation">"</span>${url}<span class="token punctuation">"</span></span><span class="token punctuation">/></span></span>
+    <span class="token tag"><span class="token tag"><span class="token punctuation">&lt;</span>property</span> <span class="token attr-name">name</span><span class="token attr-value"><span class="token punctuation">=</span><span class="token punctuation">"</span>username<span class="token punctuation">"</span></span> <span class="token attr-name">value</span><span class="token attr-value"><span class="token punctuation">=</span><span class="token punctuation">"</span>${username}<span class="token punctuation">"</span></span><span class="token punctuation">/></span></span>
+    <span class="token tag"><span class="token tag"><span class="token punctuation">&lt;</span>property</span> <span class="token attr-name">name</span><span class="token attr-value"><span class="token punctuation">=</span><span class="token punctuation">"</span>password<span class="token punctuation">"</span></span> <span class="token attr-name">value</span><span class="token attr-value"><span class="token punctuation">=</span><span class="token punctuation">"</span>${password}<span class="token punctuation">"</span></span><span class="token punctuation">/></span></span>
+<span class="token tag"><span class="token tag"><span class="token punctuation">&lt;/</span>dataSource</span><span class="token punctuation">></span></span>
+</code></pre>
+<p>如果属性不值在一个地方进行了配置，那么 MyBatis 的加载顺序如下：</p>
+<ul>
+<li>首先读取在 properties 元素体内属性值</li>
+<li>根据 properties 元素中的 resource 属性读取类路径下的文件或 url 读取属性文件，并覆盖已读取的同名属性</li>
+<li>最后读取作为方法参数传递的属性，并覆盖已读取的同名属性</li>
+</ul>
+<p>因此，方法参数传递的属性优先级最高，其次是 resource/url 指定的配置文件，最后是 properties 中指定的属性。</p>
+<p>在 MyBatis 3.4.2 开始，可以为占位符制定一个默认值，如：</p>
+<pre class=" language-xml"><code class="language-xml"><span class="token tag"><span class="token tag"><span class="token punctuation">&lt;</span>dataSource</span> <span class="token attr-name">type</span><span class="token attr-value"><span class="token punctuation">=</span><span class="token punctuation">"</span>POOLED<span class="token punctuation">"</span></span><span class="token punctuation">></span></span>
+    <span class="token comment" spellcheck="true">&lt;!-- 如果属性 username 没有配置，那么默认值为 ut_user --></span>
+     <span class="token tag"><span class="token tag"><span class="token punctuation">&lt;</span>property</span> <span class="token attr-name">name</span><span class="token attr-value"><span class="token punctuation">=</span><span class="token punctuation">"</span>username<span class="token punctuation">"</span></span> <span class="token attr-name">value</span><span class="token attr-value"><span class="token punctuation">=</span><span class="token punctuation">"</span>${username:ut_user}<span class="token punctuation">"</span></span><span class="token punctuation">/></span></span>
+<span class="token tag"><span class="token tag"><span class="token punctuation">&lt;/</span>dataSource</span><span class="token punctuation">></span></span>
+</code></pre>
+<p>这个特性默认是关闭的，应该添加一个指定的属性来开启这个特性，如：</p>
+<pre class=" language-xml"><code class="language-xml"><span class="token tag"><span class="token tag"><span class="token punctuation">&lt;</span>properties</span> <span class="token attr-name">resoure</span><span class="token attr-value"><span class="token punctuation">=</span><span class="token punctuation">"</span>org/mybatis/example/config.properties<span class="token punctuation">"</span></span><span class="token punctuation">></span></span>
+    <span class="token comment" spellcheck="true">&lt;!-- 启用默认值特性 --></span>
+    <span class="token tag"><span class="token tag"><span class="token punctuation">&lt;</span>property</span> <span class="token attr-name">name</span><span class="token attr-value"><span class="token punctuation">=</span><span class="token punctuation">"</span>org.apache.ibatis.parsing.PropertyParser.enable-default-value<span class="token punctuation">"</span></span> <span class="token attr-name">value</span><span class="token attr-value"><span class="token punctuation">=</span><span class="token punctuation">"</span>true<span class="token punctuation">"</span></span> <span class="token punctuation">/></span></span>
+<span class="token tag"><span class="token tag"><span class="token punctuation">&lt;/</span>properties</span><span class="token punctuation">></span></span>
+</code></pre>
+<h2 id="二、设置（settings）"><a href="#二、设置（settings）" class="headerlink" title="二、设置（settings）"></a>二、设置（settings）</h2><p>MyBatis 中极为重要的调整设置，它们会改变 MyBatis 的运行时行为，下标描述了设置中各项的意图、默认值等。</p>
+<table>
+<thead>
+<tr>
+<th>设置名</th>
+<th>描述</th>
+</tr>
+</thead>
+<tbody>
+<tr>
+<td>cacheEnabled</td>
+<td>全局地开关映射器中已经配置的缓存</td>
+</tr>
+<tr>
+<td>lazyLoadingEnabled</td>
+<td>延迟加载的全局开关，所有关联对象都会延迟加载，可以通过 fetchType 来覆盖该项</td>
+</tr>
+<tr>
+<td>aggressiveLazyLoading</td>
+<td>开启时，任何方法的调用都会加载该对象的所有属性。否则，每个对象会按需加载</td>
+</tr>
+<tr>
+<td>multipleResultSetsEnabled</td>
+<td>是否允许单一语句返回多结果集（需要驱动支持）</td>
+</tr>
+<tr>
+<td>useColumnLabel</td>
+<td>使用列标签代替列名</td>
+</tr>
+<tr>
+<td>useGeneratedKeys</td>
+<td>允许 JDBC 支持自动生成主键</td>
+</tr>
+<tr>
+<td>autoMappingBehavior</td>
+<td>指定MyBatis应如何自动映射列到字段或属性。NONE：取消自动映射；PARTIAL：自动映射没有定义嵌套结果集的；FULL：自动映射任意复杂的结果集</td>
+</tr>
+<tr>
+<td>autoMappingUnknownColumnBehavior</td>
+<td>指定发现自动映射目标未知列（或未知属性）的行为。NONE：不做任何反应；WARNING：输出提醒日志；FAILING：映射失败（抛出SqlSessionException）</td>
+</tr>
+<tr>
+<td>defaultExecutorType</td>
+<td>配置默认的执行器。SIMPLE：普通执行器；REUSE 执行器会重用预处理语句；BATCH：执行器将重用语句并执行批量更新</td>
+</tr>
+<tr>
+<td>defaultStatementTimeout</td>
+<td>设置超时时间，决定驱动等待数据库响应的描述</td>
+</tr>
+<tr>
+<td>defaultFetchSize</td>
+<td>为驱动的结果集获取数量（fetchSize）设置一个提示值</td>
+</tr>
+<tr>
+<td>defaultResultSetType</td>
+<td>指定每个语句的省略滚动策略</td>
+</tr>
+<tr>
+<td>safeRowBoundsEnabled</td>
+<td>允许在嵌套语句中使用分页（RowBounds）。false为允许</td>
+</tr>
+<tr>
+<td>safeResultHandlerEnabled</td>
+<td>允许在嵌套局域中使用分页(RowHandler)。false为允许</td>
+</tr>
+<tr>
+<td>mapUnderscoreToCamelCase</td>
+<td>是否开启自动驼峰命名规则映射，即从列名 A_COLUMN 到 Java 属性名 aColumn 的类似映射</td>
+</tr>
+<tr>
+<td>localCacheScope</td>
+<td>MyBatis 利用本地缓存机制防止循环引用和加速重复嵌套查询。SESSION：默认，会缓存一个会话中执行的所有查询；STATEMENT：仅用在局域执行上，对相同的 SqlSession 的不同调用不会共享数据</td>
+</tr>
+<tr>
+<td>jdbcTypeForNull</td>
+<td>当没有参数提供特定的 JDBC 类型时，为空值指定 JDBC 类型</td>
+</tr>
+<tr>
+<td>lazyLoadTriggerMethods</td>
+<td>指定哪个对象的方法触发一次延迟加载</td>
+</tr>
+<tr>
+<td>defaultScriptingLanguage</td>
+<td>指定动态 SQL 生成的默认语言</td>
+</tr>
+<tr>
+<td>defaultEnumTypeHandler</td>
+<td>指定 Enum 使用的默认 TypeHandler(3.4.5)</td>
+</tr>
+<tr>
+<td>callSettersOnNulls</td>
+<td>指定当结果集中值为 null 时，是否调用映射对象的 setter 方法。</td>
+</tr>
+<tr>
+<td>returnInstanceForEmptyRow</td>
+<td>当返回的列都是空时，MyBatis默认返回 null。开启后，会返回一个空实例</td>
+</tr>
+<tr>
+<td>logPrefix</td>
+<td>指定 MyBatis 增加到日志名称的前缀</td>
+</tr>
+<tr>
+<td>logImpl</td>
+<td>指定 MyBatis 所用日志的具体实现，未指定时将自动查找</td>
+</tr>
+<tr>
+<td>proxyFactory</td>
+<td>指定 MyBatis 创建具有延迟加载能力的对象所用到的代理工具</td>
+</tr>
+<tr>
+<td>vfsImpl</td>
+<td>指定 VFS 的实现</td>
+</tr>
+<tr>
+<td>useActualParamName</td>
+<td>允许使用方法签名中的名称作为语句参数名称。需要java 8编译，并加上 -parameters 选项</td>
+</tr>
+<tr>
+<td>configurationFactory</td>
+<td>指定一个提供 Configuration 实例的类。这个被返回的 Configuration 实例用来加载被反序列化对象的延迟加载属性值。这个类必须包含一个签名为 static Configuration getConfiguration() 的方法(3.2.3)</td>
+</tr>
+</tbody>
+</table>
+<p>一个完整的 settings 元素示例如下：</p>
+<pre class=" language-xml"><code class="language-xml"><span class="token tag"><span class="token tag"><span class="token punctuation">&lt;</span>settings</span><span class="token punctuation">></span></span>
+    <span class="token tag"><span class="token tag"><span class="token punctuation">&lt;</span>setting</span> <span class="token attr-name">name</span><span class="token attr-value"><span class="token punctuation">=</span><span class="token punctuation">"</span>cacheEnabled<span class="token punctuation">"</span></span> <span class="token attr-name">value</span><span class="token attr-value"><span class="token punctuation">=</span><span class="token punctuation">"</span>true<span class="token punctuation">"</span></span><span class="token punctuation">/></span></span>
+    <span class="token tag"><span class="token tag"><span class="token punctuation">&lt;</span>setting</span> <span class="token attr-name">name</span><span class="token attr-value"><span class="token punctuation">=</span><span class="token punctuation">"</span>lazyLoadingEnabled<span class="token punctuation">"</span></span> <span class="token attr-name">value</span><span class="token attr-value"><span class="token punctuation">=</span><span class="token punctuation">"</span>true<span class="token punctuation">"</span></span><span class="token punctuation">/></span></span>
+    <span class="token tag"><span class="token tag"><span class="token punctuation">&lt;</span>setting</span> <span class="token attr-name">name</span><span class="token attr-value"><span class="token punctuation">=</span><span class="token punctuation">"</span>multipleResultSetEnabled<span class="token punctuation">"</span></span> <span class="token attr-name">value</span><span class="token attr-value"><span class="token punctuation">=</span><span class="token punctuation">"</span>true<span class="token punctuation">"</span></span><span class="token punctuation">/></span></span>
+    <span class="token tag"><span class="token tag"><span class="token punctuation">&lt;</span>setting</span> <span class="token attr-name">name</span><span class="token attr-value"><span class="token punctuation">=</span><span class="token punctuation">"</span>useColumnLabel<span class="token punctuation">"</span></span> <span class="token attr-name">value</span><span class="token attr-value"><span class="token punctuation">=</span><span class="token punctuation">"</span>true<span class="token punctuation">"</span></span><span class="token punctuation">/></span></span>
+    <span class="token tag"><span class="token tag"><span class="token punctuation">&lt;</span>setting</span> <span class="token attr-name">name</span><span class="token attr-value"><span class="token punctuation">=</span><span class="token punctuation">"</span>useGeneratedKeys<span class="token punctuation">"</span></span> <span class="token attr-name">value</span><span class="token attr-value"><span class="token punctuation">=</span><span class="token punctuation">"</span>false<span class="token punctuation">"</span></span><span class="token punctuation">/></span></span>
+    <span class="token tag"><span class="token tag"><span class="token punctuation">&lt;</span>setting</span> <span class="token attr-name">name</span><span class="token attr-value"><span class="token punctuation">=</span><span class="token punctuation">"</span>autoMappingBehavior<span class="token punctuation">"</span></span> <span class="token attr-name">value</span><span class="token attr-value"><span class="token punctuation">=</span><span class="token punctuation">"</span>PARTIAL<span class="token punctuation">"</span></span><span class="token punctuation">/></span></span>
+    <span class="token tag"><span class="token tag"><span class="token punctuation">&lt;</span>setting</span> <span class="token attr-name">name</span><span class="token attr-value"><span class="token punctuation">=</span><span class="token punctuation">"</span>autoMappingUnknownColumnBehavior<span class="token punctuation">"</span></span> <span class="token attr-name">value</span><span class="token attr-value"><span class="token punctuation">=</span><span class="token punctuation">"</span>WARNING<span class="token punctuation">"</span></span><span class="token punctuation">/></span></span>
+    <span class="token tag"><span class="token tag"><span class="token punctuation">&lt;</span>setting</span> <span class="token attr-name">name</span><span class="token attr-value"><span class="token punctuation">=</span><span class="token punctuation">"</span>defaultExecutorType<span class="token punctuation">"</span></span> <span class="token attr-name">value</span><span class="token attr-value"><span class="token punctuation">=</span><span class="token punctuation">"</span>EXAMPLE<span class="token punctuation">"</span></span><span class="token punctuation">/></span></span>
+    <span class="token tag"><span class="token tag"><span class="token punctuation">&lt;</span>setting</span> <span class="token attr-name">name</span><span class="token attr-value"><span class="token punctuation">=</span><span class="token punctuation">"</span>defaultStatementTimeout<span class="token punctuation">"</span></span> <span class="token attr-name">value</span><span class="token attr-value"><span class="token punctuation">=</span><span class="token punctuation">"</span>25<span class="token punctuation">"</span></span><span class="token punctuation">/></span></span>
+    <span class="token tag"><span class="token tag"><span class="token punctuation">&lt;</span>setting</span> <span class="token attr-name">name</span><span class="token attr-value"><span class="token punctuation">=</span><span class="token punctuation">"</span>defaultFetchSize<span class="token punctuation">"</span></span> <span class="token attr-name">value</span><span class="token attr-value"><span class="token punctuation">=</span><span class="token punctuation">"</span>100<span class="token punctuation">"</span></span><span class="token punctuation">/></span></span>
+    <span class="token tag"><span class="token tag"><span class="token punctuation">&lt;</span>setting</span> <span class="token attr-name">name</span><span class="token attr-value"><span class="token punctuation">=</span><span class="token punctuation">"</span>safeRowBoundsEnabled<span class="token punctuation">"</span></span> <span class="token attr-name">value</span><span class="token attr-value"><span class="token punctuation">=</span><span class="token punctuation">"</span>false<span class="token punctuation">"</span></span><span class="token punctuation">/></span></span>
+    <span class="token tag"><span class="token tag"><span class="token punctuation">&lt;</span>setting</span> <span class="token attr-name">name</span><span class="token attr-value"><span class="token punctuation">=</span><span class="token punctuation">"</span>mapUnderscoreToCamelCase<span class="token punctuation">"</span></span> <span class="token attr-name">value</span><span class="token attr-value"><span class="token punctuation">=</span><span class="token punctuation">"</span>false<span class="token punctuation">"</span></span><span class="token punctuation">/></span></span>
+    <span class="token tag"><span class="token tag"><span class="token punctuation">&lt;</span>setting</span> <span class="token attr-name">name</span><span class="token attr-value"><span class="token punctuation">=</span><span class="token punctuation">"</span>localCacheScope<span class="token punctuation">"</span></span> <span class="token attr-name">value</span><span class="token attr-value"><span class="token punctuation">=</span><span class="token punctuation">"</span>SESSION<span class="token punctuation">"</span></span><span class="token punctuation">/></span></span>
+    <span class="token tag"><span class="token tag"><span class="token punctuation">&lt;</span>setting</span> <span class="token attr-name">name</span><span class="token attr-value"><span class="token punctuation">=</span><span class="token punctuation">"</span>jdbcTypeForNull<span class="token punctuation">"</span></span> <span class="token attr-name">value</span><span class="token attr-value"><span class="token punctuation">=</span><span class="token punctuation">"</span>OTHER<span class="token punctuation">"</span></span><span class="token punctuation">/></span></span>
+    <span class="token tag"><span class="token tag"><span class="token punctuation">&lt;</span>setting</span> <span class="token attr-name">name</span><span class="token attr-value"><span class="token punctuation">=</span><span class="token punctuation">"</span>lazyLoadTriggerMethods<span class="token punctuation">"</span></span> <span class="token attr-name">value</span><span class="token attr-value"><span class="token punctuation">=</span><span class="token punctuation">"</span>equals,clone,hashCode,toString<span class="token punctuation">"</span></span><span class="token punctuation">/></span></span>
+<span class="token tag"><span class="token tag"><span class="token punctuation">&lt;/</span>settings</span><span class="token punctuation">></span></span>
+</code></pre>
+<h2 id="三、类型别名（typeAliases）"><a href="#三、类型别名（typeAliases）" class="headerlink" title="三、类型别名（typeAliases）"></a>三、类型别名（typeAliases）</h2><p>类型别名用来减少类完全限定名的冗余，如：</p>
+<pre class=" language-xml"><code class="language-xml"><span class="token tag"><span class="token tag"><span class="token punctuation">&lt;</span>typeAliases</span><span class="token punctuation">></span></span>
+    <span class="token tag"><span class="token tag"><span class="token punctuation">&lt;</span>typeAlias</span> <span class="token attr-name">alias</span><span class="token attr-value"><span class="token punctuation">=</span><span class="token punctuation">"</span>Author<span class="token punctuation">"</span></span> <span class="token attr-name">type</span><span class="token attr-value"><span class="token punctuation">=</span><span class="token punctuation">"</span>cn.luokaiii.adminservice.model.Author<span class="token punctuation">"</span></span><span class="token punctuation">/></span></span>
+    <span class="token tag"><span class="token tag"><span class="token punctuation">&lt;</span>typeAlias</span> <span class="token attr-name">alias</span><span class="token attr-value"><span class="token punctuation">=</span><span class="token punctuation">"</span>Teacher<span class="token punctuation">"</span></span> <span class="token attr-name">type</span><span class="token attr-value"><span class="token punctuation">=</span><span class="token punctuation">"</span>cn.luokaiii.adminservice.model.Teacher<span class="token punctuation">"</span></span><span class="token punctuation">/></span></span>
+<span class="token tag"><span class="token tag"><span class="token punctuation">&lt;/</span>typeAliases</span><span class="token punctuation">></span></span>
+</code></pre>
+<p>也可以指定一个报名，MyBatis 会在包名下搜索 Java Bean，在没有注解的情况下，会使用Bean 的首字母小写的非限定类名来作为它的别名，如：</p>
+<pre class=" language-xml"><code class="language-xml"><span class="token tag"><span class="token tag"><span class="token punctuation">&lt;</span>typeAliases</span><span class="token punctuation">></span></span>
+    <span class="token tag"><span class="token tag"><span class="token punctuation">&lt;</span>package</span> <span class="token attr-name">name</span><span class="token attr-value"><span class="token punctuation">=</span><span class="token punctuation">"</span>domain.blog<span class="token punctuation">"</span></span> <span class="token punctuation">/></span></span>
+<span class="token tag"><span class="token tag"><span class="token punctuation">&lt;/</span>typeAliases</span><span class="token punctuation">></span></span>
+</code></pre>
+<p>或者使用注解的方式，如：</p>
+<pre class=" language-java"><code class="language-java"><span class="token annotation punctuation">@Alias</span><span class="token punctuation">(</span><span class="token string">"author"</span><span class="token punctuation">)</span>
+<span class="token keyword">public</span> <span class="token keyword">class</span> <span class="token class-name">Author</span> <span class="token punctuation">{</span>
+    <span class="token punctuation">.</span><span class="token punctuation">.</span><span class="token punctuation">.</span><span class="token punctuation">.</span><span class="token punctuation">.</span><span class="token punctuation">.</span>
+<span class="token punctuation">}</span>
+</code></pre>
+<p>Java 类型内建的相应类型别名（不区分大小写）：</p>
+<table>
+<thead>
+<tr>
+<th>别名</th>
+<th>映射的类型</th>
+</tr>
+</thead>
+<tbody>
+<tr>
+<td>_byte</td>
+<td>byte</td>
+</tr>
+<tr>
+<td>_long</td>
+<td>long</td>
+</tr>
+<tr>
+<td>_short</td>
+<td>short</td>
+</tr>
+<tr>
+<td>_int</td>
+<td>int</td>
+</tr>
+<tr>
+<td>_integer</td>
+<td>int</td>
+</tr>
+<tr>
+<td>_double</td>
+<td>double</td>
+</tr>
+<tr>
+<td>_float</td>
+<td>float</td>
+</tr>
+<tr>
+<td>_boolean</td>
+<td>boolean</td>
+</tr>
+<tr>
+<td>string</td>
+<td>String</td>
+</tr>
+<tr>
+<td>byte</td>
+<td>Byte</td>
+</tr>
+<tr>
+<td>long</td>
+<td>Long</td>
+</tr>
+<tr>
+<td>short</td>
+<td>Short</td>
+</tr>
+<tr>
+<td>int</td>
+<td>Integer</td>
+</tr>
+<tr>
+<td>integer</td>
+<td>Integer</td>
+</tr>
+<tr>
+<td>double</td>
+<td>Double</td>
+</tr>
+<tr>
+<td>float</td>
+<td>Float</td>
+</tr>
+<tr>
+<td>boolean</td>
+<td>Boolean</td>
+</tr>
+<tr>
+<td>date</td>
+<td>Date</td>
+</tr>
+<tr>
+<td>decimal</td>
+<td>BigDecimal</td>
+</tr>
+<tr>
+<td>bigdecimal</td>
+<td>BigDecimal</td>
+</tr>
+<tr>
+<td>object</td>
+<td>Object</td>
+</tr>
+<tr>
+<td>map</td>
+<td>Map</td>
+</tr>
+<tr>
+<td>hashMap</td>
+<td>HashMap</td>
+</tr>
+<tr>
+<td>list</td>
+<td>List</td>
+</tr>
+<tr>
+<td>arraylist</td>
+<td>ArrayList</td>
+</tr>
+<tr>
+<td>collection</td>
+<td>Collection</td>
+</tr>
+<tr>
+<td>iterator</td>
+<td>Iterator</td>
+</tr>
+</tbody>
+</table>
+<h2 id="四、类型处理器（typeHandlers）"><a href="#四、类型处理器（typeHandlers）" class="headerlink" title="四、类型处理器（typeHandlers）"></a>四、类型处理器（typeHandlers）</h2><p>无论是 MyBatis 在预处理语句（PreparedStatement）中设置一个参数时，还是从结果集中取出一个值时，都会用类型处理器将获取的值以合适的方式转换为 Java 类型。</p>
+<table>
+<thead>
+<tr>
+<th>类型处理器</th>
+<th>Java 类型</th>
+<th>JDBC 类型</th>
+</tr>
+</thead>
+<tbody>
+<tr>
+<td>BooleanTypeHandler</td>
+<td>Java.lang.Boolean,boolean</td>
+<td>BOOLEAN</td>
+</tr>
+<tr>
+<td>ByteTypeHandler</td>
+<td>java.lang.Byte,byte</td>
+<td>NUMERIC,BYTE</td>
+</tr>
+<tr>
+<td>ShortTypeHandler</td>
+<td>java.lang.Short,short</td>
+<td>NUMERIC,SMALLINT</td>
+</tr>
+<tr>
+<td>IntegerTypeHandler</td>
+<td>java.lang.Integer,int</td>
+<td>NUMERIC,INTEGER</td>
+</tr>
+<tr>
+<td>FloatTypeHandler</td>
+<td>java.lang.Float,float</td>
+<td>NUMERIC,FLOAT</td>
+</tr>
+<tr>
+<td>DoubleTypeHandler</td>
+<td>java.lang.Double,double</td>
+<td>NUMERIC,DOUBLE</td>
+</tr>
+<tr>
+<td>BigDecimalTypeHandler</td>
+<td>java.math.BigDecimal</td>
+<td>NUMERIC,DECIMAL</td>
+</tr>
+<tr>
+<td>StringTypeHandler</td>
+<td>java.lang.String</td>
+<td>CHAR,VARCHAR</td>
+</tr>
+<tr>
+<td>ClobReaderTypeHandler</td>
+<td>java.io.Reader</td>
+<td>-</td>
+</tr>
+<tr>
+<td>ClobTypeHandler</td>
+<td>java.lang.String</td>
+<td>CLOB,LONGVARCHAR</td>
+</tr>
+<tr>
+<td>NStringTypeHandler</td>
+<td>java.lang.String</td>
+<td>NVARCHAR,NCHAR</td>
+</tr>
+<tr>
+<td>NClobTypeHandler</td>
+<td>java.lang.String</td>
+<td>NCLOB</td>
+</tr>
+<tr>
+<td>BlobInputStreamTypeHandler</td>
+<td>java.io.InputStream</td>
+<td>-</td>
+</tr>
+<tr>
+<td>ByteArrayTypeHandler</td>
+<td>byte[]</td>
+<td></td>
+</tr>
+<tr>
+<td>DateTypeHandler</td>
+<td>byte[]</td>
+<td>L</td>
+</tr>
+<tr>
+<td>DateOnlyTypeHandler</td>
+<td>java.util.Date</td>
+<td>TIMESTAMP</td>
+</tr>
+<tr>
+<td>TimeOnlyTypeHandler</td>
+<td>java.util.Date</td>
+<td>DATE</td>
+</tr>
+<tr>
+<td>SqlTimestampTypeHandler</td>
+<td>java.sql.Timestamp</td>
+<td>TIMESTAMP</td>
+</tr>
+<tr>
+<td>SqlDateTypeHandler</td>
+<td>java.sql.Date</td>
+<td>DATE</td>
+</tr>
+<tr>
+<td>SqlTimeTypeHandler</td>
+<td>java.sql.Time</td>
+<td>TIME</td>
+</tr>
+<tr>
+<td>ObjectTypeHandler</td>
+<td>Any</td>
+<td>OTHER</td>
+</tr>
+<tr>
+<td>EnumTypeHandler</td>
+<td>Enum</td>
+<td>VARCHAR</td>
+</tr>
+<tr>
+<td>EnumOrdinalTypeHandler</td>
+<td>Enum</td>
+<td>NUMERIC,DOUBLE</td>
+</tr>
+<tr>
+<td>SqlxmlTypeHandler</td>
+<td>java.lang.String</td>
+<td>SQLXML</td>
+</tr>
+<tr>
+<td>InstantTypeHandler</td>
+<td>java.time.Instant</td>
+<td>TIMESTAMP</td>
+</tr>
+<tr>
+<td>LocalDateTimeTypeHandler</td>
+<td>java.time.LocalDateTime</td>
+<td>TIMESTAMP</td>
+</tr>
+<tr>
+<td>LocalDateTypeHandler</td>
+<td>java.time.LocalDate</td>
+<td>DATE</td>
+</tr>
+<tr>
+<td>OffsetTimeTypeHandler</td>
+<td>java.time.OffsetDateTime</td>
+<td>TIMESTAMP</td>
+</tr>
+<tr>
+<td>ZonedDateTimeTypeHandler</td>
+<td>java.time.ZonedDateTime</td>
+<td>TIMESTAMP</td>
+</tr>
+<tr>
+<td>YearTypeHandler</td>
+<td>java.time.Year</td>
+<td>INTEGER</td>
+</tr>
+<tr>
+<td>MonthTypeHandler</td>
+<td>java.time.Month</td>
+<td>INTEGER</td>
+</tr>
+<tr>
+<td>YearMonthTypeHandler</td>
+<td>java.time.YearMonth</td>
+<td>VARCHAR,LONGVARCHAR</td>
+</tr>
+<tr>
+<td>JapaneseDateTypeHandler</td>
+<td>java.time.chrono.JapaneseDate</td>
+<td>DATE</td>
+</tr>
+</tbody>
+</table>
+<p>可以通过重写类型处理器或创建自己的类型处理器来处理不支持的或非标准的类型。具体做法为：实现 org.apache.ibatis.type.TypeHandler 或集成 org.apache.ibatis.type.BaseTypeHandler，然后将它映射到一个 JDBC 类型：</p>
+<pre class=" language-java"><code class="language-java"><span class="token annotation punctuation">@MappedJdbcTypes</span><span class="token punctuation">(</span>JdbcType<span class="token punctuation">.</span>VARCHAR<span class="token punctuation">)</span>
+<span class="token keyword">public</span> <span class="token keyword">class</span> <span class="token class-name">ExampleTypeHandler</span> <span class="token keyword">extends</span> <span class="token class-name">BaseTypeHandler</span><span class="token operator">&lt;</span>String<span class="token operator">></span> <span class="token punctuation">{</span>
+  <span class="token annotation punctuation">@Override</span>
+  <span class="token keyword">public</span> <span class="token keyword">void</span> <span class="token function">setNonNullParameter</span><span class="token punctuation">(</span>PreparedStatement ps<span class="token punctuation">,</span> <span class="token keyword">int</span> i<span class="token punctuation">,</span> String parameter<span class="token punctuation">,</span> JdbcType jdbcType<span class="token punctuation">)</span> <span class="token keyword">throws</span> SQLException <span class="token punctuation">{</span>
+    ps<span class="token punctuation">.</span><span class="token function">setString</span><span class="token punctuation">(</span>i<span class="token punctuation">,</span> parameter<span class="token punctuation">)</span><span class="token punctuation">;</span>
+  <span class="token punctuation">}</span>
+
+  <span class="token annotation punctuation">@Override</span>
+  <span class="token keyword">public</span> String <span class="token function">getNullableResult</span><span class="token punctuation">(</span>ResultSet rs<span class="token punctuation">,</span> String columnName<span class="token punctuation">)</span> <span class="token keyword">throws</span> SQLException <span class="token punctuation">{</span>
+    <span class="token keyword">return</span> rs<span class="token punctuation">.</span><span class="token function">getString</span><span class="token punctuation">(</span>columnName<span class="token punctuation">)</span><span class="token punctuation">;</span>
+  <span class="token punctuation">}</span>
+
+  <span class="token annotation punctuation">@Override</span>
+  <span class="token keyword">public</span> String <span class="token function">getNullableResult</span><span class="token punctuation">(</span>ResultSet rs<span class="token punctuation">,</span> <span class="token keyword">int</span> columnIndex<span class="token punctuation">)</span> <span class="token keyword">throws</span> SQLException <span class="token punctuation">{</span>
+    <span class="token keyword">return</span> rs<span class="token punctuation">.</span><span class="token function">getString</span><span class="token punctuation">(</span>columnIndex<span class="token punctuation">)</span><span class="token punctuation">;</span>
+  <span class="token punctuation">}</span>
+
+  <span class="token annotation punctuation">@Override</span>
+  <span class="token keyword">public</span> String <span class="token function">getNullableResult</span><span class="token punctuation">(</span>CallableStatement cs<span class="token punctuation">,</span> <span class="token keyword">int</span> columnIndex<span class="token punctuation">)</span> <span class="token keyword">throws</span> SQLException <span class="token punctuation">{</span>
+    <span class="token keyword">return</span> cs<span class="token punctuation">.</span><span class="token function">getString</span><span class="token punctuation">(</span>columnIndex<span class="token punctuation">)</span><span class="token punctuation">;</span>
+  <span class="token punctuation">}</span>
+<span class="token punctuation">}</span>
+</code></pre>
+<pre class=" language-xml"><code class="language-xml"><span class="token tag"><span class="token tag"><span class="token punctuation">&lt;</span>typeHandlers</span><span class="token punctuation">></span></span>
+    <span class="token tag"><span class="token tag"><span class="token punctuation">&lt;</span>typeHandler</span> <span class="token attr-name">handler</span><span class="token attr-value"><span class="token punctuation">=</span><span class="token punctuation">"</span>org.mybatis.example.ExampleTypeHandler<span class="token punctuation">"</span></span><span class="token punctuation">/></span></span>
+<span class="token tag"><span class="token tag"><span class="token punctuation">&lt;/</span>typeHandlers</span><span class="token punctuation">></span></span>
+</code></pre>
+<h2 id="五、对象工厂（objectFactory）"><a href="#五、对象工厂（objectFactory）" class="headerlink" title="五、对象工厂（objectFactory）"></a>五、对象工厂（objectFactory）</h2><p>MyBatis 每次创建结果对象的新实例时，都会使用一个对象工厂（ObjectFactory）实例来完成。要么通过默认构造方法，要么在参数映射存在的时候通过参数构造方法来实例化。</p>
+<p>如何想覆盖对象工厂的默认行为，可以通过创建自己的对象工厂来实现，如：</p>
+<pre class=" language-java"><code class="language-java"><span class="token keyword">public</span> <span class="token keyword">class</span> <span class="token class-name">ExampleObjectFactory</span> <span class="token keyword">extends</span> <span class="token class-name">DefaultObjectFactory</span> <span class="token punctuation">{</span>
+    <span class="token comment" spellcheck="true">// 包含两个创建方法</span>
+    <span class="token comment" spellcheck="true">// 处理默认构造方法</span>
+    <span class="token keyword">public</span> Object <span class="token function">create</span><span class="token punctuation">(</span>Class <span class="token class-name">type</span><span class="token punctuation">)</span><span class="token punctuation">{</span>
+        <span class="token keyword">return</span> <span class="token keyword">super</span><span class="token punctuation">.</span><span class="token function">create</span><span class="token punctuation">(</span>type<span class="token punctuation">)</span><span class="token punctuation">;</span>
+    <span class="token punctuation">}</span>
+
+    <span class="token comment" spellcheck="true">// 处理带参数的构造方法</span>
+    <span class="token keyword">public</span> Object <span class="token function">create</span><span class="token punctuation">(</span>Class <span class="token class-name">type</span><span class="token punctuation">,</span>List<span class="token operator">&lt;</span>Class<span class="token operator">></span> constructorArgTypes<span class="token punctuation">,</span>List<span class="token operator">&lt;</span>Object<span class="token operator">></span> constructorArgs<span class="token punctuation">)</span><span class="token punctuation">{</span>
+        <span class="token keyword">return</span> <span class="token keyword">super</span><span class="token punctuation">.</span><span class="token function">create</span><span class="token punctuation">(</span>type<span class="token punctuation">,</span>constructorArgTypes<span class="token punctuation">,</span>constructorArgs<span class="token punctuation">)</span><span class="token punctuation">;</span>
+    <span class="token punctuation">}</span>
+
+    <span class="token comment" spellcheck="true">// 可以被用来配置 ObjectFactory，在初始化ObjectFactory后，objectFactory元素体中定义的属性会被传递给 setProperties 方法</span>
+    <span class="token keyword">public</span> <span class="token keyword">void</span> <span class="token function">setProperties</span><span class="token punctuation">(</span>Properties properties<span class="token punctuation">)</span><span class="token punctuation">{</span>
+        <span class="token keyword">super</span><span class="token punctuation">.</span><span class="token function">setProperties</span><span class="token punctuation">(</span>properties<span class="token punctuation">)</span><span class="token punctuation">;</span>
+    <span class="token punctuation">}</span>
+
+    <span class="token keyword">public</span> <span class="token operator">&lt;</span>T<span class="token operator">></span> <span class="token keyword">boolean</span> <span class="token function">isCollection</span><span class="token punctuation">(</span>Class<span class="token operator">&lt;</span>T<span class="token operator">></span> type<span class="token punctuation">)</span><span class="token punctuation">{</span>
+        <span class="token keyword">return</span> Collection<span class="token punctuation">.</span><span class="token keyword">class</span><span class="token punctuation">.</span><span class="token function">isAssignableFrom</span><span class="token punctuation">(</span>type<span class="token punctuation">)</span><span class="token punctuation">;</span>
+    <span class="token punctuation">}</span>
+<span class="token punctuation">}</span>
+</code></pre>
+<pre class=" language-xml"><code class="language-xml"><span class="token tag"><span class="token tag"><span class="token punctuation">&lt;</span>objectFactory</span> <span class="token attr-name">type</span><span class="token attr-value"><span class="token punctuation">=</span><span class="token punctuation">"</span>org.mybatis.example.ExampleObjectFactory<span class="token punctuation">"</span></span><span class="token punctuation">></span></span>
+    <span class="token tag"><span class="token tag"><span class="token punctuation">&lt;</span>property</span> <span class="token attr-name">name</span><span class="token attr-value"><span class="token punctuation">=</span><span class="token punctuation">"</span>someProperty<span class="token punctuation">"</span></span> <span class="token attr-name">value</span><span class="token attr-value"><span class="token punctuation">=</span><span class="token punctuation">"</span>100<span class="token punctuation">"</span></span><span class="token punctuation">/></span></span>
+<span class="token tag"><span class="token tag"><span class="token punctuation">&lt;/</span>objectFactory</span><span class="token punctuation">></span></span>
+</code></pre>
+<h2 id="六、插件（Plugins）"><a href="#六、插件（Plugins）" class="headerlink" title="六、插件（Plugins）"></a>六、插件（Plugins）</h2><p>MyBatis 允许你在已映射语句执行过程中的某一点进行拦截调用。默认情况下，MyBatis 允许使用插件来拦截的方法调用包含：</p>
+<ul>
+<li>Executor（update、query、flushStatements、commit、rollback、getTransaction、close、isClosed）</li>
+<li>ParameterHandler（getParameterObject、setParameters）</li>
+<li>ResultSetHandler（handleResultSets、handleOutputParameters）</li>
+<li>StatementHandler（prepare、parameterize、batch、update、query）</li>
+</ul>
+<p>这些都是很底层的类和方法，如果在试图修改或重写已有方法的行为时，很可能会破坏 MyBatis的核心模块，因此在使用插件的时候要当心。</p>
+<h2 id="七、环境配置（environments）"><a href="#七、环境配置（environments）" class="headerlink" title="七、环境配置（environments）"></a>七、环境配置（environments）</h2><p>MyBatis 可以配置成适应多种环境，这种机制有助于将 SQL 映射应用于多种数据库之中。</p>
+<p>如开发、测试、生产环境需要不同的配置；或者现在相同 Schema 的多个库中使用相同的 SQL 映射。</p>
+<blockquote>
+<p>尽管可以配置多个环境，但是每个 SqlSessionFactory 实例只能选择一种环境</p>
+</blockquote>
+<p>环境元素定义了如何配置环境：</p>
+<pre class=" language-xml"><code class="language-xml"><span class="token tag"><span class="token tag"><span class="token punctuation">&lt;</span>enviroments</span> <span class="token attr-name">default</span><span class="token attr-value"><span class="token punctuation">=</span><span class="token punctuation">"</span>development<span class="token punctuation">"</span></span><span class="token punctuation">></span></span>
+    <span class="token tag"><span class="token tag"><span class="token punctuation">&lt;</span>enviroment</span> <span class="token attr-name">id</span><span class="token attr-value"><span class="token punctuation">=</span><span class="token punctuation">"</span>development<span class="token punctuation">"</span></span><span class="token punctuation">></span></span>
+        <span class="token tag"><span class="token tag"><span class="token punctuation">&lt;</span>transactionManager</span> <span class="token attr-name">type</span><span class="token attr-value"><span class="token punctuation">=</span><span class="token punctuation">"</span>JDBC<span class="token punctuation">"</span></span><span class="token punctuation">></span></span>
+            <span class="token tag"><span class="token tag"><span class="token punctuation">&lt;</span>property</span> <span class="token attr-name">name</span><span class="token attr-value"><span class="token punctuation">=</span><span class="token punctuation">"</span>...<span class="token punctuation">"</span></span> <span class="token attr-name">value</span><span class="token attr-value"><span class="token punctuation">=</span><span class="token punctuation">"</span>...<span class="token punctuation">"</span></span><span class="token punctuation">/></span></span>
+        <span class="token tag"><span class="token tag"><span class="token punctuation">&lt;/</span>transactionManager</span><span class="token punctuation">></span></span>
+        <span class="token tag"><span class="token tag"><span class="token punctuation">&lt;</span>dataSource</span> <span class="token attr-name">type</span><span class="token attr-value"><span class="token punctuation">=</span><span class="token punctuation">"</span>POOLED<span class="token punctuation">"</span></span><span class="token punctuation">></span></span>
+            <span class="token tag"><span class="token tag"><span class="token punctuation">&lt;</span>property</span> <span class="token attr-name">name</span><span class="token attr-value"><span class="token punctuation">=</span><span class="token punctuation">"</span>driver<span class="token punctuation">"</span></span> <span class="token attr-name">value</span><span class="token attr-value"><span class="token punctuation">=</span><span class="token punctuation">"</span>...<span class="token punctuation">"</span></span><span class="token punctuation">/></span></span>
+            ...
+        <span class="token tag"><span class="token tag"><span class="token punctuation">&lt;/</span>dataSource</span><span class="token punctuation">></span></span>
+    <span class="token tag"><span class="token tag"><span class="token punctuation">&lt;/</span>enviroment</span><span class="token punctuation">></span></span>
+<span class="token tag"><span class="token tag"><span class="token punctuation">&lt;/</span>enviroments</span><span class="token punctuation">></span></span>
+</code></pre>
+<p>这里的关键：</p>
+<ul>
+<li>默认使用的环境ID（default=”development”）</li>
+<li>每个元素都有一个环境ID</li>
+<li>事务管理器的配置</li>
+<li>数据源的配置</li>
+</ul>
+<h3 id="1-事务管理器（transactionManager）"><a href="#1-事务管理器（transactionManager）" class="headerlink" title="1. 事务管理器（transactionManager）"></a>1. 事务管理器（transactionManager）</h3><p>MyBatis 有两种类型的事务管理器：</p>
+<ol>
+<li>JDBC - 直接使用 JDBC 的提交和回滚设置，依赖于从数据源得到的连接来管理事务作用域</li>
+<li>MANAGED - 让容器来管理事务的整个生命周期。默认会关闭连接，然而一些容器不希望这样，因此需要将 closeConnection 设置为 false 来阻止它默认的关闭行为</li>
+</ol>
+<blockquote>
+<p>如果使用 Spring+MyBatis，则没必要配置事务管理器，因为 Spring 模块会使用自带的管理器来覆盖前面的配置。</p>
+</blockquote>
+<h3 id="2-数据源（DataSource）"><a href="#2-数据源（DataSource）" class="headerlink" title="2. 数据源（DataSource）"></a>2. 数据源（DataSource）</h3><p>dataSource 元素使用标准的 JDBC 数据源接口来配置 JDBC 连接对象的资源。</p>
+<p>MyBatis 提供了三种内建的数据源类型。</p>
+<h4 id="UNPOOLED"><a href="#UNPOOLED" class="headerlink" title="UNPOOLED"></a>UNPOOLED</h4><p>每次被请求时打开和关闭连接</p>
+<h4 id="POOLED"><a href="#POOLED" class="headerlink" title="POOLED"></a>POOLED</h4><p>使用连接池的方式，避免创建新实例时所需的初始化和认证时间</p>
+<h4 id="JNDI"><a href="#JNDI" class="headerlink" title="JNDI"></a>JNDI</h4><p>为了能在如 EJB 或应用服务器这类容器汇总使用，容器可以集成或在外部配置数据源</p>
+<h4 id="第三方数据源"><a href="#第三方数据源" class="headerlink" title="第三方数据源"></a>第三方数据源</h4><p>可以通过实现接口 <code>org.apache.ibatis.datasource.DataSourceFactory</code> 来使用第三方数据源。</p>
+<h2 id="八、数据库厂商标识（databaseIdProvider）"><a href="#八、数据库厂商标识（databaseIdProvider）" class="headerlink" title="八、数据库厂商标识（databaseIdProvider）"></a>八、数据库厂商标识（databaseIdProvider）</h2><h2 id="九、映射器（mappers）"><a href="#九、映射器（mappers）" class="headerlink" title="九、映射器（mappers）"></a>九、映射器（mappers）</h2><p>mappers 定义 SQL 映射语句，告诉 MyBatis 去哪里找这些语句。如：</p>
+<pre class=" language-xml"><code class="language-xml"><span class="token comment" spellcheck="true">&lt;!-- 使用相对于类路径的资源引用 --></span>
+<span class="token tag"><span class="token tag"><span class="token punctuation">&lt;</span>mappers</span><span class="token punctuation">></span></span>
+    <span class="token tag"><span class="token tag"><span class="token punctuation">&lt;</span>mapper</span> <span class="token attr-name">resource</span><span class="token attr-value"><span class="token punctuation">=</span><span class="token punctuation">"</span>org/mybatis/builder/AuthorMapper.xml<span class="token punctuation">"</span></span><span class="token punctuation">/></span></span>
+<span class="token tag"><span class="token tag"><span class="token punctuation">&lt;/</span>mappers</span><span class="token punctuation">></span></span>
+</code></pre>
+<pre class=" language-xml"><code class="language-xml"><span class="token comment" spellcheck="true">&lt;!-- 使用完全限定资源定位符 URL --></span>
+<span class="token tag"><span class="token tag"><span class="token punctuation">&lt;</span>mappers</span><span class="token punctuation">></span></span>
+    <span class="token tag"><span class="token tag"><span class="token punctuation">&lt;</span>mapper</span> <span class="token attr-name">url</span><span class="token attr-value"><span class="token punctuation">=</span><span class="token punctuation">"</span>file:///var/mappers/AuthorMapper.xml<span class="token punctuation">"</span></span><span class="token punctuation">/></span></span>
+<span class="token tag"><span class="token tag"><span class="token punctuation">&lt;/</span>mappers</span><span class="token punctuation">></span></span>
+</code></pre>
+<pre class=" language-xml"><code class="language-xml"><span class="token comment" spellcheck="true">&lt;!-- 使用映射器接口实现类的完全限定类名 --></span>
+<span class="token tag"><span class="token tag"><span class="token punctuation">&lt;</span>mappers</span><span class="token punctuation">></span></span>
+    <span class="token tag"><span class="token tag"><span class="token punctuation">&lt;</span>mapper</span> <span class="token attr-name">class</span><span class="token attr-value"><span class="token punctuation">=</span><span class="token punctuation">"</span>org.mybatis.builder.AuthorMapper<span class="token punctuation">"</span></span><span class="token punctuation">/></span></span>
+<span class="token tag"><span class="token tag"><span class="token punctuation">&lt;/</span>mappers</span><span class="token punctuation">></span></span>
+</code></pre>
+<pre class=" language-xml"><code class="language-xml"><span class="token comment" spellcheck="true">&lt;!-- 将包内的映射器接口实现全部注册为映射器 --></span>
+<span class="token tag"><span class="token tag"><span class="token punctuation">&lt;</span>mappers</span><span class="token punctuation">></span></span>
+    <span class="token tag"><span class="token tag"><span class="token punctuation">&lt;</span>package</span> <span class="token attr-name">name</span><span class="token attr-value"><span class="token punctuation">=</span><span class="token punctuation">"</span>org.mybatis.builder<span class="token punctuation">"</span></span><span class="token punctuation">/></span></span>
+<span class="token tag"><span class="token tag"><span class="token punctuation">&lt;/</span>mappers</span><span class="token punctuation">></span></span>
+</code></pre>
+
+      
+    </div>
+    
+    
+    
+
+    
+
+    
+
+    
+
+    <footer class="post-footer">
+      
+        <div class="post-tags">
+          
+            <a href="/tags/读书笔记/" rel="tag"># 读书笔记</a>
+          
+            <a href="/tags/MyBatis/" rel="tag"># MyBatis</a>
+          
+        </div>
+      
+
+      
+      
+      
+
+      
+        <div class="post-nav">
+          <div class="post-nav-next post-nav-item">
+            
+              <a href="/2019/09/05/读书笔记/《Mybatis》/1_入门/" rel="next" title="《MyBatis》读书笔记 - 入门">
+                <i class="fa fa-chevron-left"></i> 《MyBatis》读书笔记 - 入门
+              </a>
+            
+          </div>
+
+          <span class="post-nav-divider"></span>
+
+          <div class="post-nav-prev post-nav-item">
+            
+              <a href="/2019/09/05/读书笔记/《SpringSecurity》/23.自定义权限验证/" rel="prev" title="《Spring Security》自定义权限验证@PreAuthorize">
+                《Spring Security》自定义权限验证@PreAuthorize <i class="fa fa-chevron-right"></i>
+              </a>
+            
+          </div>
+        </div>
+      
+
+      
+      
+    </footer>
+  </div>
+  
+  
+  
+  </article>
+
+
+
+    <div class="post-spread">
+      
+    </div>
+  </div>
+
+
+          </div>
+          
+
+
+          
+
+  
+
+
+
+        </div>
+        
+          
+  
+  <div class="sidebar-toggle">
+    <div class="sidebar-toggle-line-wrap">
+      <span class="sidebar-toggle-line sidebar-toggle-line-first"></span>
+      <span class="sidebar-toggle-line sidebar-toggle-line-middle"></span>
+      <span class="sidebar-toggle-line sidebar-toggle-line-last"></span>
+    </div>
+  </div>
+
+  <aside id="sidebar" class="sidebar">
+    
+    <div class="sidebar-inner">
+
+      
+
+      
+        <ul class="sidebar-nav motion-element">
+          <li class="sidebar-nav-toc sidebar-nav-active" data-target="post-toc-wrap">
+            文章目录
+          </li>
+          <li class="sidebar-nav-overview" data-target="site-overview-wrap">
+            站点概览
+          </li>
+        </ul>
+      
+
+      <section class="site-overview-wrap sidebar-panel">
+        <div class="site-overview">
+          <div class="site-author motion-element" itemprop="author" itemscope itemtype="http://schema.org/Person">
+            
+              <img class="site-author-image" itemprop="image"
+                src="https://upload-images.jianshu.io/upload_images/13603359-6aa0d85db5eaa03e.gif"
+                alt="koral" />
+            
+              <p class="site-author-name" itemprop="name">koral</p>
+              <p class="site-description motion-element" itemprop="description">如果我16岁，我可以悄悄的说我好喜欢你，如果我26岁，我可以大声告诉你我很爱你，可惜我6岁，我什么都给不了你，我还要上小学。</p>
+          </div>
+
+          <nav class="site-state motion-element">
+
+            
+              <div class="site-state-item site-state-posts">
+              
+                <a href="/archives">
+              
+                  <span class="site-state-item-count">232</span>
+                  <span class="site-state-item-name">日志</span>
+                </a>
+              </div>
+            
+
+            
+              
+              
+              <div class="site-state-item site-state-categories">
+                <a href="/categories/index.html">
+                  <span class="site-state-item-count">21</span>
+                  <span class="site-state-item-name">分类</span>
+                </a>
+              </div>
+            
+
+            
+              
+              
+              <div class="site-state-item site-state-tags">
+                <a href="/tags/index.html">
+                  <span class="site-state-item-count">20</span>
+                  <span class="site-state-item-name">标签</span>
+                </a>
+              </div>
+            
+
+          </nav>
+
+          
+            <div class="feed-link motion-element">
+              <a href="/atom.xml" rel="alternate">
+                <i class="fa fa-rss"></i>
+                RSS
+              </a>
+            </div>
+          
+
+          
+
+          
+          
+
+          
+          
+
+          
+
+        </div>
+      </section>
+
+      
+      <!--noindex-->
+        <section class="post-toc-wrap motion-element sidebar-panel sidebar-panel-active">
+          <div class="post-toc">
+
+            
+              
+            
+
+            
+              <div class="post-toc-content"><ol class="nav"><li class="nav-item nav-level-1"><a class="nav-link" href="#二、MyBatis-中的-XML-详细配置"><span class="nav-number">1.</span> <span class="nav-text">二、MyBatis 中的 XML 详细配置</span></a><ol class="nav-child"><li class="nav-item nav-level-2"><a class="nav-link" href="#一、属性（Properties）"><span class="nav-number">1.1.</span> <span class="nav-text">一、属性（Properties）</span></a></li><li class="nav-item nav-level-2"><a class="nav-link" href="#二、设置（settings）"><span class="nav-number">1.2.</span> <span class="nav-text">二、设置（settings）</span></a></li><li class="nav-item nav-level-2"><a class="nav-link" href="#三、类型别名（typeAliases）"><span class="nav-number">1.3.</span> <span class="nav-text">三、类型别名（typeAliases）</span></a></li><li class="nav-item nav-level-2"><a class="nav-link" href="#四、类型处理器（typeHandlers）"><span class="nav-number">1.4.</span> <span class="nav-text">四、类型处理器（typeHandlers）</span></a></li><li class="nav-item nav-level-2"><a class="nav-link" href="#五、对象工厂（objectFactory）"><span class="nav-number">1.5.</span> <span class="nav-text">五、对象工厂（objectFactory）</span></a></li><li class="nav-item nav-level-2"><a class="nav-link" href="#六、插件（Plugins）"><span class="nav-number">1.6.</span> <span class="nav-text">六、插件（Plugins）</span></a></li><li class="nav-item nav-level-2"><a class="nav-link" href="#七、环境配置（environments）"><span class="nav-number">1.7.</span> <span class="nav-text">七、环境配置（environments）</span></a><ol class="nav-child"><li class="nav-item nav-level-3"><a class="nav-link" href="#1-事务管理器（transactionManager）"><span class="nav-number">1.7.1.</span> <span class="nav-text">1. 事务管理器（transactionManager）</span></a></li><li class="nav-item nav-level-3"><a class="nav-link" href="#2-数据源（DataSource）"><span class="nav-number">1.7.2.</span> <span class="nav-text">2. 数据源（DataSource）</span></a><ol class="nav-child"><li class="nav-item nav-level-4"><a class="nav-link" href="#UNPOOLED"><span class="nav-number">1.7.2.1.</span> <span class="nav-text">UNPOOLED</span></a></li><li class="nav-item nav-level-4"><a class="nav-link" href="#POOLED"><span class="nav-number">1.7.2.2.</span> <span class="nav-text">POOLED</span></a></li><li class="nav-item nav-level-4"><a class="nav-link" href="#JNDI"><span class="nav-number">1.7.2.3.</span> <span class="nav-text">JNDI</span></a></li><li class="nav-item nav-level-4"><a class="nav-link" href="#第三方数据源"><span class="nav-number">1.7.2.4.</span> <span class="nav-text">第三方数据源</span></a></li></ol></li></ol></li><li class="nav-item nav-level-2"><a class="nav-link" href="#八、数据库厂商标识（databaseIdProvider）"><span class="nav-number">1.8.</span> <span class="nav-text">八、数据库厂商标识（databaseIdProvider）</span></a></li><li class="nav-item nav-level-2"><a class="nav-link" href="#九、映射器（mappers）"><span class="nav-number">1.9.</span> <span class="nav-text">九、映射器（mappers）</span></a></li></ol></li></ol></div>
+            
+
+          </div>
+        </section>
+      <!--/noindex-->
+      
+
+      
+
+    </div>
+  </aside>
+
+
+        
+      </div>
+    </main>
+
+    <footer id="footer" class="footer">
+      <div class="footer-inner">
+        <div class="copyright">&copy; <span itemprop="copyrightYear">2019</span>
+  <span class="with-love">
+    <i class="fa fa-user"></i>
+  </span>
+  <span class="author" itemprop="copyrightHolder">koral</span>
+
+  
+</div>
+
+
+  <div class="powered-by">由 <a class="theme-link" target="_blank" href="https://hexo.io">Hexo</a> 强力驱动</div>
+
+
+
+  <span class="post-meta-divider">|</span>
+
+
+
+  <div class="theme-info">主题 &mdash; <a class="theme-link" target="_blank" href="https://github.com/iissnan/hexo-theme-next">NexT.Pisces</a> v5.1.4</div>
+
+
+
+
+
+        
+
+
+
+
+
+
+
+        
+      </div>
+    </footer>
+
+    
+      <div class="back-to-top">
+        <i class="fa fa-arrow-up"></i>
+        
+      </div>
+    
+
+    
+
+  </div>
+
+  
+
+<script type="text/javascript">
+  if (Object.prototype.toString.call(window.Promise) !== '[object Function]') {
+    window.Promise = null;
+  }
+</script>
+
+
+
+
+
+
+
+
+
+  
+
+
+
+
+
+
+
+
+
+
+
+
+  
+  
+    <script type="text/javascript" src="/lib/jquery/index.js?v=2.1.3"></script>
+  
+
+  
+  
+    <script type="text/javascript" src="/lib/fastclick/lib/fastclick.min.js?v=1.0.6"></script>
+  
+
+  
+  
+    <script type="text/javascript" src="/lib/jquery_lazyload/jquery.lazyload.js?v=1.9.7"></script>
+  
+
+  
+  
+    <script type="text/javascript" src="/lib/velocity/velocity.min.js?v=1.2.1"></script>
+  
+
+  
+  
+    <script type="text/javascript" src="/lib/velocity/velocity.ui.min.js?v=1.2.1"></script>
+  
+
+  
+  
+    <script type="text/javascript" src="/lib/fancybox/source/jquery.fancybox.pack.js?v=2.1.5"></script>
+  
+
+
+  
+
+
+  <script type="text/javascript" src="/js/src/utils.js?v=5.1.4"></script>
+
+  <script type="text/javascript" src="/js/src/motion.js?v=5.1.4"></script>
+
+
+
+  
+  
+
+
+  <script type="text/javascript" src="/js/src/affix.js?v=5.1.4"></script>
+
+  <script type="text/javascript" src="/js/src/schemes/pisces.js?v=5.1.4"></script>
+
+
+
+  
+  <script type="text/javascript" src="/js/src/scrollspy.js?v=5.1.4"></script>
+<script type="text/javascript" src="/js/src/post-details.js?v=5.1.4"></script>
+
+
+
+  
+
+
+  <script type="text/javascript" src="/js/src/bootstrap.js?v=5.1.4"></script>
+
+
+
+  
+
+
+  
+
+
+
+
+	
+
+
+
+
+
+  
+
+
+
+
+
+  
+
+
+
+
+
+
+
+
+
+
+
+
+  
+
+
+
+
+
+  
+
+  
+
+  
+
+  
+  
+
+  
+
+  
+
+  
+
+</body>
+</html>
