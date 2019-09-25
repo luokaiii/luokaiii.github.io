@@ -1,10 +1,10 @@
 ---
-title: 《React》官方文档 - 目录
+title: 《React官方文档》创建React应用
 date: 2019-09-12 11:27:00
 tags: 
   - 读书笔记
   - React
-top: true
+visible: hide
 ---
 
 React 推荐的工具链：

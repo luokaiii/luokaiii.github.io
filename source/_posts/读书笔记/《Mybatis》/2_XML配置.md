@@ -4,6 +4,7 @@ date: 2019-09-05 10:10:20
 tags: 
   - 读书笔记
   - MyBatis
+visible: hide
 ---
 
 # 二、MyBatis 中的 XML 详细配置
