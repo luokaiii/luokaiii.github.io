@@ -1,0 +1,872 @@
+<!DOCTYPE html>
+
+
+
+  
+
+
+<html class="theme-next pisces use-motion" lang="zh-Hans">
+<head>
+  <meta charset="UTF-8"/>
+<meta http-equiv="X-UA-Compatible" content="IE=edge" />
+<meta name="viewport" content="width=device-width, initial-scale=1, maximum-scale=1"/>
+<meta name="theme-color" content="#222">
+
+
+
+
+
+
+
+
+
+<meta http-equiv="Cache-Control" content="no-transform" />
+<meta http-equiv="Cache-Control" content="no-siteapp" />
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+  
+  
+  <link href="/lib/fancybox/source/jquery.fancybox.css?v=2.1.5" rel="stylesheet" type="text/css" />
+
+
+
+
+
+
+
+<link href="/lib/font-awesome/css/font-awesome.min.css?v=4.6.2" rel="stylesheet" type="text/css" />
+
+<link href="/css/main.css?v=5.1.4" rel="stylesheet" type="text/css" />
+
+
+  <link rel="apple-touch-icon" sizes="180x180" href="/images/apple-touch-icon-next.png?v=5.1.4">
+
+
+  <link rel="icon" type="image/png" sizes="32x32" href="/images/favicon-32x32-next.png?v=5.1.4">
+
+
+  <link rel="icon" type="image/png" sizes="16x16" href="/images/favicon-16x16-next.png?v=5.1.4">
+
+
+  <link rel="mask-icon" href="/images/logo.svg?v=5.1.4" color="#222">
+
+
+
+
+
+  <meta name="keywords" content="Git," />
+
+
+
+
+
+  <link rel="alternate" href="/atom.xml" title="罗凯的博客" type="application/atom+xml" />
+
+
+
+
+
+
+<meta name="description" content="1. 初始化仓库git init 2. 添加文件至仓库git add .   // 点表示所有，也可以将点换成指定的文件名 3. 本地仓库关联远程仓库git remote add origin gitee.com/luo-qiang/koral.git 4. 推送到远程git push -u origin master 5. 切换分支git checkout origin/develop Git">
+<meta name="keywords" content="Git">
+<meta property="og:type" content="article">
+<meta property="og:title" content="Git常见命令">
+<meta property="og:url" content="http://luokaiii.github.io/2018/09/28/Git/3.Git命令/index.html">
+<meta property="og:site_name" content="罗凯的博客">
+<meta property="og:description" content="1. 初始化仓库git init 2. 添加文件至仓库git add .   // 点表示所有，也可以将点换成指定的文件名 3. 本地仓库关联远程仓库git remote add origin gitee.com/luo-qiang/koral.git 4. 推送到远程git push -u origin master 5. 切换分支git checkout origin/develop Git">
+<meta property="og:locale" content="zh-Hans">
+<meta property="og:updated_time" content="2019-07-01T02:49:01.342Z">
+<meta name="twitter:card" content="summary">
+<meta name="twitter:title" content="Git常见命令">
+<meta name="twitter:description" content="1. 初始化仓库git init 2. 添加文件至仓库git add .   // 点表示所有，也可以将点换成指定的文件名 3. 本地仓库关联远程仓库git remote add origin gitee.com/luo-qiang/koral.git 4. 推送到远程git push -u origin master 5. 切换分支git checkout origin/develop Git">
+
+
+
+<script type="text/javascript" id="hexo.configurations">
+  var NexT = window.NexT || {};
+  var CONFIG = {
+    root: '/',
+    scheme: 'Pisces',
+    version: '5.1.4',
+    sidebar: {"position":"right","display":"always","offset":12,"b2t":false,"scrollpercent":false,"onmobile":false},
+    fancybox: true,
+    tabs: true,
+    motion: {"enable":true,"async":false,"transition":{"post_block":"fadeIn","post_header":"slideDownIn","post_body":"slideDownIn","coll_header":"slideLeftIn","sidebar":"slideUpIn"}},
+    duoshuo: {
+      userId: '0',
+      author: '博主'
+    },
+    algolia: {
+      applicationID: '',
+      apiKey: '',
+      indexName: '',
+      hits: {"per_page":5},
+      labels: {"input_placeholder":"Search for Posts","hits_empty":"We didn't find any results for the search: ${query}","hits_stats":"${hits} results found in ${time} ms"}
+    }
+  };
+</script>
+
+
+
+  <link rel="canonical" href="http://luokaiii.github.io/2018/09/28/Git/3.Git命令/"/>
+
+
+
+
+
+  <title>Git常见命令 | 罗凯的博客</title>
+  
+
+
+
+
+
+
+
+
+<link rel="stylesheet" href="/css/prism-tomorrow.css" type="text/css"></head>
+
+<body itemscope itemtype="http://schema.org/WebPage" lang="zh-Hans">
+
+  
+  
+    
+  
+
+  <div class="container sidebar-position-right page-post-detail">
+    <div class="headband"></div>
+
+    <header id="header" class="header" itemscope itemtype="http://schema.org/WPHeader">
+      <div class="header-inner"><div class="site-brand-wrapper">
+  <div class="site-meta ">
+    
+
+    <div class="custom-logo-site-title">
+      <a href="/"  class="brand" rel="start">
+        <span class="logo-line-before"><i></i></span>
+        <span class="site-title">罗凯的博客</span>
+        <span class="logo-line-after"><i></i></span>
+      </a>
+    </div>
+      
+        <p class="site-subtitle">l u o k a i</p>
+      
+  </div>
+
+  <div class="site-nav-toggle">
+    <button>
+      <span class="btn-bar"></span>
+      <span class="btn-bar"></span>
+      <span class="btn-bar"></span>
+    </button>
+  </div>
+</div>
+
+<nav class="site-nav">
+  
+
+  
+    <ul id="menu" class="menu">
+      
+        
+        <li class="menu-item menu-item-home">
+          <a href="/" rel="section">
+            
+              <i class="menu-item-icon fa fa-fw fa-home"></i> <br />
+            
+            首页
+          </a>
+        </li>
+      
+        
+        <li class="menu-item menu-item-archives">
+          <a href="/archives" rel="section">
+            
+              <i class="menu-item-icon fa fa-fw fa-question-circle"></i> <br />
+            
+            归档
+          </a>
+        </li>
+      
+        
+        <li class="menu-item menu-item-about">
+          <a href="/about" rel="section">
+            
+              <i class="menu-item-icon fa fa-fw fa-question-circle"></i> <br />
+            
+            关于
+          </a>
+        </li>
+      
+        
+        <li class="menu-item menu-item-tags">
+          <a href="/tags" rel="section">
+            
+              <i class="menu-item-icon fa fa-fw fa-question-circle"></i> <br />
+            
+            标签
+          </a>
+        </li>
+      
+        
+        <li class="menu-item menu-item-categories">
+          <a href="/categories/" rel="section">
+            
+              <i class="menu-item-icon fa fa-fw fa-th"></i> <br />
+            
+            分类
+          </a>
+        </li>
+      
+        
+        <li class="menu-item menu-item-schedule">
+          <a href="/schedule" rel="section">
+            
+              <i class="menu-item-icon fa fa-fw fa-question-circle"></i> <br />
+            
+            日程表
+          </a>
+        </li>
+      
+        
+        <li class="menu-item menu-item-sitemap">
+          <a href="/sitemap.xml" rel="section">
+            
+              <i class="menu-item-icon fa fa-fw fa-sitemap"></i> <br />
+            
+            站点地图
+          </a>
+        </li>
+      
+        
+        <li class="menu-item menu-item-commonweal">
+          <a href="/404/" rel="section">
+            
+              <i class="menu-item-icon fa fa-fw fa-heartbeat"></i> <br />
+            
+            公益404
+          </a>
+        </li>
+      
+
+      
+    </ul>
+  
+
+  
+</nav>
+
+
+
+ </div>
+    </header>
+
+    <main id="main" class="main">
+      <div class="main-inner">
+        <div class="content-wrap">
+          <div id="content" class="content">
+            
+
+  <div id="posts" class="posts-expand">
+    
+
+  
+
+  
+  
+  
+
+  <article class="post post-type-normal" itemscope itemtype="http://schema.org/Article">
+  
+  
+  
+  <div class="post-block">
+    <link itemprop="mainEntityOfPage" href="http://luokaiii.github.io/2018/09/28/Git/3.Git命令/">
+
+    <span hidden itemprop="author" itemscope itemtype="http://schema.org/Person">
+      <meta itemprop="name" content="koral">
+      <meta itemprop="description" content="">
+      <meta itemprop="image" content="https://upload-images.jianshu.io/upload_images/13603359-6aa0d85db5eaa03e.gif">
+    </span>
+
+    <span hidden itemprop="publisher" itemscope itemtype="http://schema.org/Organization">
+      <meta itemprop="name" content="罗凯的博客">
+    </span>
+
+    
+      <header class="post-header">
+
+        
+        
+          <h1 class="post-title" itemprop="name headline">Git常见命令</h1>
+        
+
+        <div class="post-meta">
+          <span class="post-time">
+            
+              <span class="post-meta-item-icon">
+                <i class="fa fa-calendar-o"></i>
+              </span>
+              
+                <span class="post-meta-item-text">发表于</span>
+              
+              <time title="创建于" itemprop="dateCreated datePublished" datetime="2018-09-28T16:51:15+08:00">
+                2018-09-28
+              </time>
+            
+
+            
+
+            
+          </span>
+
+          
+            <span class="post-category" >
+            
+              <span class="post-meta-divider">|</span>
+            
+              <span class="post-meta-item-icon">
+                <i class="fa fa-folder-o"></i>
+              </span>
+              
+                <span class="post-meta-item-text">分类于</span>
+              
+              
+                <span itemprop="about" itemscope itemtype="http://schema.org/Thing">
+                  <a href="/categories/Git命令学习/" itemprop="url" rel="index">
+                    <span itemprop="name">Git命令学习</span>
+                  </a>
+                </span>
+
+                
+                
+              
+            </span>
+          
+
+          
+            
+          
+
+          
+          
+
+          
+
+          
+
+          
+
+        </div>
+      </header>
+    
+
+    
+    
+    
+    <div class="post-body" itemprop="articleBody">
+
+      
+      
+
+      
+        <h2 id="1-初始化仓库"><a href="#1-初始化仓库" class="headerlink" title="1. 初始化仓库"></a>1. 初始化仓库</h2><pre><code>git init
+</code></pre><h2 id="2-添加文件至仓库"><a href="#2-添加文件至仓库" class="headerlink" title="2. 添加文件至仓库"></a>2. 添加文件至仓库</h2><pre><code>git add .   // 点表示所有，也可以将点换成指定的文件名
+</code></pre><h2 id="3-本地仓库关联远程仓库"><a href="#3-本地仓库关联远程仓库" class="headerlink" title="3. 本地仓库关联远程仓库"></a>3. 本地仓库关联远程仓库</h2><pre><code>git remote add origin gitee.com/luo-qiang/koral.git
+</code></pre><h2 id="4-推送到远程"><a href="#4-推送到远程" class="headerlink" title="4. 推送到远程"></a>4. 推送到远程</h2><pre><code>git push -u origin master
+</code></pre><h2 id="5-切换分支"><a href="#5-切换分支" class="headerlink" title="5. 切换分支"></a>5. 切换分支</h2><pre><code>git checkout origin/develop
+</code></pre><h1 id="Git-常用命令速查表"><a href="#Git-常用命令速查表" class="headerlink" title="Git 常用命令速查表"></a>Git 常用命令速查表</h1><blockquote>
+<p>分支</p>
+</blockquote>
+<pre><code>  master                    # 默认开发分支
+  origin                    # 默认远程版本库
+  Head                      # 默认开发分支
+  Head^                     # Head 的父提交
+</code></pre><blockquote>
+<p>创建版本库</p>
+</blockquote>
+<pre><code>  git clone &lt;URL&gt;           # 克隆远程版本库
+  git init                  # 初始化本地版本库
+</code></pre><blockquote>
+<p>修改和提交</p>
+</blockquote>
+<pre><code>  git status                # 查看状态
+  git diff                  # 查看变更内容
+  git add .                 # 跟踪所有改动过的文件
+  git add &lt;file&gt;            # 跟踪指定的文件
+  git mv &lt;old&gt; &lt;new&gt;        # 文件改名
+  git rm &lt;file&gt;             # 删除文件
+  git rm --cached &lt;file&gt;    # 停止跟踪文件但不删除
+  git commit -m &quot;commit message&quot;    #提交所有更新过的文件到本地仓库
+  git commit --amend        # 修改最后一次提交
+</code></pre><blockquote>
+<p>查看提交历史</p>
+</blockquote>
+<pre><code>  git log                   # 查看提交历史
+  git log -p &lt;file&gt;         # 查看指定文件的提交历史
+  git blame &lt;file&gt;          # 以列表方式查看指定文件的提交历史
+</code></pre><blockquote>
+<p>撤销</p>
+</blockquote>
+<pre><code>  git reset --hard HEAD     # 撤销工作目录中所有未提交文件的修改内容
+  git checkout HEAD &lt;file&gt;  # 撤销指定的未提交文件的修改内容
+  git revert &lt;commit&gt;       # 撤销指定的提交
+</code></pre><blockquote>
+<p>分支与标签</p>
+</blockquote>
+<pre><code>  git branch                # 显示所有本地分支
+  git checkout &lt;branch/tag&gt; # 切换到指定分支或标签
+  git branch &lt;new-branch&gt;   # 创建新分支
+  git branch -d &lt;branch&gt;    # 删除本地分支
+  git tag                   # 列出所有本地标签
+  git tag &lt;tagname&gt;         # 基于最新提交创建标签
+  git tag -d &lt;tagname&gt;      # 删除标签
+</code></pre><blockquote>
+<p>合并与衍合(即变基合并)</p>
+</blockquote>
+<pre><code>  git merge &lt;branch&gt;        # 合并指定分支到当前分支
+  git rebase &lt;branch&gt;       # 衍合指定分支到当前分支
+</code></pre><blockquote>
+<p>远程操作</p>
+</blockquote>
+<pre><code>  git remote -v             # 查看远程版本库信息
+  git remote show &lt;remote&gt;  # 查看指定远程版本库信息
+  git remote add &lt;remote&gt; &lt;url&gt; # 添加远程版本库
+  git fetch &lt;remote&gt;        # 从远程库获取代码
+  git pull &lt;remote&gt; &lt;branch&gt; # 下载代码及快速合并
+  git push &lt;remote&gt; &lt;branch&gt; # 下载代码及快速合并
+  git push &lt;remote&gt; :&lt;branch/tag-name&gt; # 删除远程分支或便签
+  git push --tags           # 上传所有标签
+</code></pre><blockquote>
+<p>暂存切换分支</p>
+</blockquote>
+<table>
+<thead>
+<tr>
+<th>–</th>
+<th>–</th>
+</tr>
+</thead>
+<tbody>
+<tr>
+<td></td>
+</tr>
+</tbody>
+</table>
+<p>git stash save -a “message”  会将ignore 的文件也进行暂存，当进行pop该 stash 时，会出现</p>
+<pre class=" language-shell"><code class="language-shell">Could not restore untracked files from stash
+</code></pre>
+<p>git stash save -u “message” 不会将ignore 的文件进行暂存</p>
+
+      
+    </div>
+    
+    
+    
+
+    
+
+    
+
+    
+
+    <footer class="post-footer">
+      
+        <div class="post-tags">
+          
+            <a href="/tags/Git/" rel="tag"># Git</a>
+          
+        </div>
+      
+
+      
+      
+      
+
+      
+        <div class="post-nav">
+          <div class="post-nav-next post-nav-item">
+            
+              <a href="/2018/09/28/Git/2.分支管理策略/" rel="next" title="Git分支管理策略">
+                <i class="fa fa-chevron-left"></i> Git分支管理策略
+              </a>
+            
+          </div>
+
+          <span class="post-nav-divider"></span>
+
+          <div class="post-nav-prev post-nav-item">
+            
+              <a href="/2018/09/29/java/regex/" rel="prev" title="正则表达式">
+                正则表达式 <i class="fa fa-chevron-right"></i>
+              </a>
+            
+          </div>
+        </div>
+      
+
+      
+      
+    </footer>
+  </div>
+  
+  
+  
+  </article>
+
+
+
+    <div class="post-spread">
+      
+    </div>
+  </div>
+
+
+          </div>
+          
+
+
+          
+
+  
+
+
+
+        </div>
+        
+          
+  
+  <div class="sidebar-toggle">
+    <div class="sidebar-toggle-line-wrap">
+      <span class="sidebar-toggle-line sidebar-toggle-line-first"></span>
+      <span class="sidebar-toggle-line sidebar-toggle-line-middle"></span>
+      <span class="sidebar-toggle-line sidebar-toggle-line-last"></span>
+    </div>
+  </div>
+
+  <aside id="sidebar" class="sidebar">
+    
+    <div class="sidebar-inner">
+
+      
+
+      
+        <ul class="sidebar-nav motion-element">
+          <li class="sidebar-nav-toc sidebar-nav-active" data-target="post-toc-wrap">
+            文章目录
+          </li>
+          <li class="sidebar-nav-overview" data-target="site-overview-wrap">
+            站点概览
+          </li>
+        </ul>
+      
+
+      <section class="site-overview-wrap sidebar-panel">
+        <div class="site-overview">
+          <div class="site-author motion-element" itemprop="author" itemscope itemtype="http://schema.org/Person">
+            
+              <img class="site-author-image" itemprop="image"
+                src="https://upload-images.jianshu.io/upload_images/13603359-6aa0d85db5eaa03e.gif"
+                alt="koral" />
+            
+              <p class="site-author-name" itemprop="name">koral</p>
+              <p class="site-description motion-element" itemprop="description">如果我16岁，我可以悄悄的说我好喜欢你，如果我26岁，我可以大声告诉你我很爱你，可惜我6岁，我什么都给不了你，我还要上小学。</p>
+          </div>
+
+          <nav class="site-state motion-element">
+
+            
+              <div class="site-state-item site-state-posts">
+              
+                <a href="/archives">
+              
+                  <span class="site-state-item-count">210</span>
+                  <span class="site-state-item-name">日志</span>
+                </a>
+              </div>
+            
+
+            
+              
+              
+              <div class="site-state-item site-state-categories">
+                <a href="/categories/index.html">
+                  <span class="site-state-item-count">20</span>
+                  <span class="site-state-item-name">分类</span>
+                </a>
+              </div>
+            
+
+            
+              
+              
+              <div class="site-state-item site-state-tags">
+                <a href="/tags/index.html">
+                  <span class="site-state-item-count">21</span>
+                  <span class="site-state-item-name">标签</span>
+                </a>
+              </div>
+            
+
+          </nav>
+
+          
+            <div class="feed-link motion-element">
+              <a href="/atom.xml" rel="alternate">
+                <i class="fa fa-rss"></i>
+                RSS
+              </a>
+            </div>
+          
+
+          
+
+          
+          
+
+          
+          
+
+          
+
+        </div>
+      </section>
+
+      
+      <!--noindex-->
+        <section class="post-toc-wrap motion-element sidebar-panel sidebar-panel-active">
+          <div class="post-toc">
+
+            
+              
+            
+
+            
+              <div class="post-toc-content"><ol class="nav"><li class="nav-item nav-level-2"><a class="nav-link" href="#1-初始化仓库"><span class="nav-number">1.</span> <span class="nav-text">1. 初始化仓库</span></a></li><li class="nav-item nav-level-2"><a class="nav-link" href="#2-添加文件至仓库"><span class="nav-number">2.</span> <span class="nav-text">2. 添加文件至仓库</span></a></li><li class="nav-item nav-level-2"><a class="nav-link" href="#3-本地仓库关联远程仓库"><span class="nav-number">3.</span> <span class="nav-text">3. 本地仓库关联远程仓库</span></a></li><li class="nav-item nav-level-2"><a class="nav-link" href="#4-推送到远程"><span class="nav-number">4.</span> <span class="nav-text">4. 推送到远程</span></a></li><li class="nav-item nav-level-2"><a class="nav-link" href="#5-切换分支"><span class="nav-number">5.</span> <span class="nav-text">5. 切换分支</span></a></li></ol></li><li class="nav-item nav-level-1"><a class="nav-link" href="#Git-常用命令速查表"><span class="nav-number"></span> <span class="nav-text">Git 常用命令速查表</span></a></div>
+            
+
+          </div>
+        </section>
+      <!--/noindex-->
+      
+
+      
+
+    </div>
+  </aside>
+
+
+        
+      </div>
+    </main>
+
+    <footer id="footer" class="footer">
+      <div class="footer-inner">
+        <div class="copyright">&copy; <span itemprop="copyrightYear">2019</span>
+  <span class="with-love">
+    <i class="fa fa-user"></i>
+  </span>
+  <span class="author" itemprop="copyrightHolder">koral</span>
+
+  
+</div>
+
+
+  <div class="powered-by">由 <a class="theme-link" target="_blank" href="https://hexo.io">Hexo</a> 强力驱动</div>
+
+
+
+  <span class="post-meta-divider">|</span>
+
+
+
+  <div class="theme-info">主题 &mdash; <a class="theme-link" target="_blank" href="https://github.com/iissnan/hexo-theme-next">NexT.Pisces</a> v5.1.4</div>
+
+
+
+
+        
+
+
+
+
+
+
+
+        
+      </div>
+    </footer>
+
+    
+      <div class="back-to-top">
+        <i class="fa fa-arrow-up"></i>
+        
+      </div>
+    
+
+    
+
+  </div>
+
+  
+
+<script type="text/javascript">
+  if (Object.prototype.toString.call(window.Promise) !== '[object Function]') {
+    window.Promise = null;
+  }
+</script>
+
+
+
+
+
+
+
+
+
+  
+
+
+
+
+
+
+
+
+
+
+
+
+  
+  
+    <script type="text/javascript" src="/lib/jquery/index.js?v=2.1.3"></script>
+  
+
+  
+  
+    <script type="text/javascript" src="/lib/fastclick/lib/fastclick.min.js?v=1.0.6"></script>
+  
+
+  
+  
+    <script type="text/javascript" src="/lib/jquery_lazyload/jquery.lazyload.js?v=1.9.7"></script>
+  
+
+  
+  
+    <script type="text/javascript" src="/lib/velocity/velocity.min.js?v=1.2.1"></script>
+  
+
+  
+  
+    <script type="text/javascript" src="/lib/velocity/velocity.ui.min.js?v=1.2.1"></script>
+  
+
+  
+  
+    <script type="text/javascript" src="/lib/fancybox/source/jquery.fancybox.pack.js?v=2.1.5"></script>
+  
+
+
+  
+
+
+  <script type="text/javascript" src="/js/src/utils.js?v=5.1.4"></script>
+
+  <script type="text/javascript" src="/js/src/motion.js?v=5.1.4"></script>
+
+
+
+  
+  
+
+
+  <script type="text/javascript" src="/js/src/affix.js?v=5.1.4"></script>
+
+  <script type="text/javascript" src="/js/src/schemes/pisces.js?v=5.1.4"></script>
+
+
+
+  
+  <script type="text/javascript" src="/js/src/scrollspy.js?v=5.1.4"></script>
+<script type="text/javascript" src="/js/src/post-details.js?v=5.1.4"></script>
+
+
+
+  
+
+
+  <script type="text/javascript" src="/js/src/bootstrap.js?v=5.1.4"></script>
+
+
+
+  
+
+
+  
+
+
+
+
+	
+
+
+
+
+
+  
+
+
+
+
+
+  
+
+
+
+
+
+
+
+
+
+
+
+
+  
+
+
+
+
+
+  
+
+  
+
+  
+
+  
+  
+
+  
+
+  
+
+  
+
+</body>
+</html>

@@ -1,0 +1,859 @@
+<!DOCTYPE html>
+
+
+
+  
+
+
+<html class="theme-next pisces use-motion" lang="zh-Hans">
+<head>
+  <meta charset="UTF-8"/>
+<meta http-equiv="X-UA-Compatible" content="IE=edge" />
+<meta name="viewport" content="width=device-width, initial-scale=1, maximum-scale=1"/>
+<meta name="theme-color" content="#222">
+
+
+
+
+
+
+
+
+
+<meta http-equiv="Cache-Control" content="no-transform" />
+<meta http-equiv="Cache-Control" content="no-siteapp" />
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+  
+  
+  <link href="/lib/fancybox/source/jquery.fancybox.css?v=2.1.5" rel="stylesheet" type="text/css" />
+
+
+
+
+
+
+
+<link href="/lib/font-awesome/css/font-awesome.min.css?v=4.6.2" rel="stylesheet" type="text/css" />
+
+<link href="/css/main.css?v=5.1.4" rel="stylesheet" type="text/css" />
+
+
+  <link rel="apple-touch-icon" sizes="180x180" href="/images/apple-touch-icon-next.png?v=5.1.4">
+
+
+  <link rel="icon" type="image/png" sizes="32x32" href="/images/favicon-32x32-next.png?v=5.1.4">
+
+
+  <link rel="icon" type="image/png" sizes="16x16" href="/images/favicon-16x16-next.png?v=5.1.4">
+
+
+  <link rel="mask-icon" href="/images/logo.svg?v=5.1.4" color="#222">
+
+
+
+
+
+  <meta name="keywords" content="java," />
+
+
+
+
+
+  <link rel="alternate" href="/atom.xml" title="罗凯的博客" type="application/atom+xml" />
+
+
+
+
+
+
+<meta name="description" content="React入门父组件向子组件传值：父组件可以通过向子组件传递属性，子组件通过props拿到该属性。子组件向父组件传值：父组件先 将操作元素的方法 传递给子组件，子组件通过props调用父组件的方法。 单向数据流：子组件只能读取父组件传递的属性，不能修改父组件的属性。 当组件的state或props发生改变时，render函数就会重新执行 React对性能的提升：    使用虚拟DOM的方式来渲染页">
+<meta name="keywords" content="java">
+<meta property="og:type" content="article">
+<meta property="og:title" content="React入门">
+<meta property="og:url" content="http://luokaiii.github.io/2019/05/07/读书笔记/《React》简书慕课/1.基础语法/index.html">
+<meta property="og:site_name" content="罗凯的博客">
+<meta property="og:description" content="React入门父组件向子组件传值：父组件可以通过向子组件传递属性，子组件通过props拿到该属性。子组件向父组件传值：父组件先 将操作元素的方法 传递给子组件，子组件通过props调用父组件的方法。 单向数据流：子组件只能读取父组件传递的属性，不能修改父组件的属性。 当组件的state或props发生改变时，render函数就会重新执行 React对性能的提升：    使用虚拟DOM的方式来渲染页">
+<meta property="og:locale" content="zh-Hans">
+<meta property="og:updated_time" content="2019-09-26T02:35:25.421Z">
+<meta name="twitter:card" content="summary">
+<meta name="twitter:title" content="React入门">
+<meta name="twitter:description" content="React入门父组件向子组件传值：父组件可以通过向子组件传递属性，子组件通过props拿到该属性。子组件向父组件传值：父组件先 将操作元素的方法 传递给子组件，子组件通过props调用父组件的方法。 单向数据流：子组件只能读取父组件传递的属性，不能修改父组件的属性。 当组件的state或props发生改变时，render函数就会重新执行 React对性能的提升：    使用虚拟DOM的方式来渲染页">
+
+
+
+<script type="text/javascript" id="hexo.configurations">
+  var NexT = window.NexT || {};
+  var CONFIG = {
+    root: '/',
+    scheme: 'Pisces',
+    version: '5.1.4',
+    sidebar: {"position":"right","display":"always","offset":12,"b2t":false,"scrollpercent":false,"onmobile":false},
+    fancybox: true,
+    tabs: true,
+    motion: {"enable":true,"async":false,"transition":{"post_block":"fadeIn","post_header":"slideDownIn","post_body":"slideDownIn","coll_header":"slideLeftIn","sidebar":"slideUpIn"}},
+    duoshuo: {
+      userId: '0',
+      author: '博主'
+    },
+    algolia: {
+      applicationID: '',
+      apiKey: '',
+      indexName: '',
+      hits: {"per_page":5},
+      labels: {"input_placeholder":"Search for Posts","hits_empty":"We didn't find any results for the search: ${query}","hits_stats":"${hits} results found in ${time} ms"}
+    }
+  };
+</script>
+
+
+
+  <link rel="canonical" href="http://luokaiii.github.io/2019/05/07/读书笔记/《React》简书慕课/1.基础语法/"/>
+
+
+
+
+
+  <title>React入门 | 罗凯的博客</title>
+  
+
+
+
+
+
+
+
+
+<link rel="stylesheet" href="/css/prism-tomorrow.css" type="text/css"></head>
+
+<body itemscope itemtype="http://schema.org/WebPage" lang="zh-Hans">
+
+  
+  
+    
+  
+
+  <div class="container sidebar-position-right page-post-detail">
+    <div class="headband"></div>
+
+    <header id="header" class="header" itemscope itemtype="http://schema.org/WPHeader">
+      <div class="header-inner"><div class="site-brand-wrapper">
+  <div class="site-meta ">
+    
+
+    <div class="custom-logo-site-title">
+      <a href="/"  class="brand" rel="start">
+        <span class="logo-line-before"><i></i></span>
+        <span class="site-title">罗凯的博客</span>
+        <span class="logo-line-after"><i></i></span>
+      </a>
+    </div>
+      
+        <p class="site-subtitle">l u o k a i</p>
+      
+  </div>
+
+  <div class="site-nav-toggle">
+    <button>
+      <span class="btn-bar"></span>
+      <span class="btn-bar"></span>
+      <span class="btn-bar"></span>
+    </button>
+  </div>
+</div>
+
+<nav class="site-nav">
+  
+
+  
+    <ul id="menu" class="menu">
+      
+        
+        <li class="menu-item menu-item-home">
+          <a href="/" rel="section">
+            
+              <i class="menu-item-icon fa fa-fw fa-home"></i> <br />
+            
+            首页
+          </a>
+        </li>
+      
+        
+        <li class="menu-item menu-item-archives">
+          <a href="/archives" rel="section">
+            
+              <i class="menu-item-icon fa fa-fw fa-question-circle"></i> <br />
+            
+            归档
+          </a>
+        </li>
+      
+        
+        <li class="menu-item menu-item-about">
+          <a href="/about" rel="section">
+            
+              <i class="menu-item-icon fa fa-fw fa-question-circle"></i> <br />
+            
+            关于
+          </a>
+        </li>
+      
+        
+        <li class="menu-item menu-item-tags">
+          <a href="/tags" rel="section">
+            
+              <i class="menu-item-icon fa fa-fw fa-question-circle"></i> <br />
+            
+            标签
+          </a>
+        </li>
+      
+        
+        <li class="menu-item menu-item-categories">
+          <a href="/categories/" rel="section">
+            
+              <i class="menu-item-icon fa fa-fw fa-th"></i> <br />
+            
+            分类
+          </a>
+        </li>
+      
+        
+        <li class="menu-item menu-item-schedule">
+          <a href="/schedule" rel="section">
+            
+              <i class="menu-item-icon fa fa-fw fa-question-circle"></i> <br />
+            
+            日程表
+          </a>
+        </li>
+      
+        
+        <li class="menu-item menu-item-sitemap">
+          <a href="/sitemap.xml" rel="section">
+            
+              <i class="menu-item-icon fa fa-fw fa-sitemap"></i> <br />
+            
+            站点地图
+          </a>
+        </li>
+      
+        
+        <li class="menu-item menu-item-commonweal">
+          <a href="/404/" rel="section">
+            
+              <i class="menu-item-icon fa fa-fw fa-heartbeat"></i> <br />
+            
+            公益404
+          </a>
+        </li>
+      
+
+      
+    </ul>
+  
+
+  
+</nav>
+
+
+
+ </div>
+    </header>
+
+    <main id="main" class="main">
+      <div class="main-inner">
+        <div class="content-wrap">
+          <div id="content" class="content">
+            
+
+  <div id="posts" class="posts-expand">
+    
+
+  
+
+  
+  
+  
+
+  <article class="post post-type-normal" itemscope itemtype="http://schema.org/Article">
+  
+  
+  
+  <div class="post-block">
+    <link itemprop="mainEntityOfPage" href="http://luokaiii.github.io/2019/05/07/读书笔记/《React》简书慕课/1.基础语法/">
+
+    <span hidden itemprop="author" itemscope itemtype="http://schema.org/Person">
+      <meta itemprop="name" content="koral">
+      <meta itemprop="description" content="">
+      <meta itemprop="image" content="https://upload-images.jianshu.io/upload_images/13603359-6aa0d85db5eaa03e.gif">
+    </span>
+
+    <span hidden itemprop="publisher" itemscope itemtype="http://schema.org/Organization">
+      <meta itemprop="name" content="罗凯的博客">
+    </span>
+
+    
+      <header class="post-header">
+
+        
+        
+          <h1 class="post-title" itemprop="name headline">React入门</h1>
+        
+
+        <div class="post-meta">
+          <span class="post-time">
+            
+              <span class="post-meta-item-icon">
+                <i class="fa fa-calendar-o"></i>
+              </span>
+              
+                <span class="post-meta-item-text">发表于</span>
+              
+              <time title="创建于" itemprop="dateCreated datePublished" datetime="2019-05-07T00:00:00+08:00">
+                2019-05-07
+              </time>
+            
+
+            
+
+            
+          </span>
+
+          
+            <span class="post-category" >
+            
+              <span class="post-meta-divider">|</span>
+            
+              <span class="post-meta-item-icon">
+                <i class="fa fa-folder-o"></i>
+              </span>
+              
+                <span class="post-meta-item-text">分类于</span>
+              
+              
+                <span itemprop="about" itemscope itemtype="http://schema.org/Thing">
+                  <a href="/categories/React学习/" itemprop="url" rel="index">
+                    <span itemprop="name">React学习</span>
+                  </a>
+                </span>
+
+                
+                
+              
+            </span>
+          
+
+          
+            
+          
+
+          
+          
+
+          
+
+          
+
+          
+
+        </div>
+      </header>
+    
+
+    
+    
+    
+    <div class="post-body" itemprop="articleBody">
+
+      
+      
+
+      
+        <h1 id="React入门"><a href="#React入门" class="headerlink" title="React入门"></a>React入门</h1><p>父组件向子组件传值：父组件可以通过向子组件传递属性，子组件通过props拿到该属性。<br>子组件向父组件传值：父组件先 将操作元素的方法 传递给子组件，子组件通过props调用父组件的方法。</p>
+<p>单向数据流：子组件只能读取父组件传递的属性，不能修改父组件的属性。</p>
+<p>当组件的state或props发生改变时，render函数就会重新执行</p>
+<p>React对性能的提升：<br>    使用虚拟DOM的方式来渲染页面，当组件的state和props发生改变时，会重新调用一次组件的render方法，重新生成一次页面。如果是直接使用新的DOM替换旧的DOM，非常损耗性能。而使用虚拟DOM可以极大地提升性能。</p>
+<p>React的虚拟DOM的流程：</p>
+<pre><code>1. state 数据
+2. JSX 模板
+3. 数据 + 模板 生成虚拟DOM
+    1. `[&#39;div&#39;, {id :&#39;abc&#39;}, [&#39;span&#39;,{},&#39;hello&#39;]]`
+4. 使用虚拟DOM 生成真实的DOM
+    1. `&lt;div id=&#39;abc&#39;&gt;&lt;span&gt;hello&lt;/span&gt;&lt;/div&gt;`
+5. 数据(state、props)发生了改变
+6. 数据 + 模板 生成新的虚拟DOM
+    1. `[&#39;div&#39;, {id :&#39;abc&#39;}, [&#39;span&#39;,{},&#39;bye bye&#39;]]`
+7. 比较新的虚拟DOM 和原有的虚拟DOM，找出差异处
+    1. Diff 算法：
+    2. 将多个setState合为一个setState渲染
+    3. 逐层比较，类似于异或
+    4. 列表循环时，key值要保持稳定
+8. 使用新的虚拟DOM重新渲染差异处
+</code></pre><p>优点：</p>
+<pre><code>1. 极大地提升了性能
+    1. 将直接生成真实DOM，改为先生成虚拟DOM，再通过虚拟DOM生成真实DOM
+    2. 降低比较真实DOM的损耗，改为直接比较虚拟DOM
+    3. 从直接渲染新的真实DOM，改为先比较虚拟DOM
+    4. 使用虚拟DOM的差异重新渲染数据
+2. 使跨端应用得以实现（如React Native）
+    1. 在第三步生成虚拟DOM之后，可以通过虚拟DOM生成如Android、IOS可使用的组件
+</code></pre><h2 id="React生命周期函数"><a href="#React生命周期函数" class="headerlink" title="React生命周期函数"></a>React生命周期函数</h2><p>在某一时刻，自动执行的函数</p>
+<ol>
+<li>Initialization 初始化阶段<ol>
+<li>constructor</li>
+</ol>
+</li>
+<li>Mounting 挂载阶段<ol>
+<li>componentWillMount 组件被挂载前，自动执行</li>
+<li>render 组件挂载时，自动执行</li>
+<li>componentDidMount 组件挂载完成时，自动执行</li>
+</ol>
+</li>
+<li>Updation 数据更新阶段<ol>
+<li>props 属性更新<ol>
+<li>componentWillReceiveProps 子组件重新接受Props时，自动执行</li>
+<li>shouldComponentUpdate 重新渲染render前，自动执行，且影响render是否执行</li>
+<li>componentWillUpdate 组件将被更新前、shouldComponentUpdate后，自动执行</li>
+<li>render</li>
+<li>componentDidUpdate 组件更新之后，自动执行</li>
+</ol>
+</li>
+<li>states 状态更新<ol>
+<li>shouldComponentUpdate 重新渲染render前，自动执行，且影响render是否执行</li>
+<li>componentWillUpdate 组件将被更新前、shouldComponentUpdate后，自动执行</li>
+<li>render</li>
+<li>componentDidUpdate 组件更新之后，自动执行</li>
+</ol>
+</li>
+</ol>
+</li>
+<li>Unmounting 移除挂载阶段<ol>
+<li>componentWillUnmount 子组件将被移除前，自动执行</li>
+</ol>
+</li>
+</ol>
+<h2 id="Axios"><a href="#Axios" class="headerlink" title="Axios"></a>Axios</h2><p>新增依赖</p>
+<blockquote>
+<p>yarn add axios</p>
+</blockquote>
+<h3 id="Charles-Mock数据"><a href="#Charles-Mock数据" class="headerlink" title="Charles Mock数据"></a>Charles Mock数据</h3><p>使用Charles进行数据的Mock</p>
+<h2 id="Ant-Design"><a href="#Ant-Design" class="headerlink" title="Ant Design"></a>Ant Design</h2><p>使用 <code>Ant Design</code> 重构代码样式布局。</p>
+<blockquote>
+<p>yarn add antd // 新增ant design依赖</p>
+</blockquote>
+<h2 id="Redux"><a href="#Redux" class="headerlink" title="Redux"></a>Redux</h2><p>详见 ReduxFlow</p>
+<h2 id="组件"><a href="#组件" class="headerlink" title="组件"></a>组件</h2><p>普通组件、UI组件、容器组件、无状态组件</p>
+
+      
+    </div>
+    
+    
+    
+
+    
+
+    
+
+    
+
+    <footer class="post-footer">
+      
+        <div class="post-tags">
+          
+            <a href="/tags/java/" rel="tag"># java</a>
+          
+        </div>
+      
+
+      
+      
+      
+
+      
+        <div class="post-nav">
+          <div class="post-nav-next post-nav-item">
+            
+              <a href="/2018/11/16/java/POI-PPT2IMG/" rel="next" title="POI之PPT转image,SmartArt解决方法">
+                <i class="fa fa-chevron-left"></i> POI之PPT转image,SmartArt解决方法
+              </a>
+            
+          </div>
+
+          <span class="post-nav-divider"></span>
+
+          <div class="post-nav-prev post-nav-item">
+            
+              <a href="/2019/05/08/读书笔记/《React》简书慕课/2.ReduxFlow/" rel="prev" title="Redux入门">
+                Redux入门 <i class="fa fa-chevron-right"></i>
+              </a>
+            
+          </div>
+        </div>
+      
+
+      
+      
+    </footer>
+  </div>
+  
+  
+  
+  </article>
+
+
+
+    <div class="post-spread">
+      
+    </div>
+  </div>
+
+
+          </div>
+          
+
+
+          
+
+  
+
+
+
+        </div>
+        
+          
+  
+  <div class="sidebar-toggle">
+    <div class="sidebar-toggle-line-wrap">
+      <span class="sidebar-toggle-line sidebar-toggle-line-first"></span>
+      <span class="sidebar-toggle-line sidebar-toggle-line-middle"></span>
+      <span class="sidebar-toggle-line sidebar-toggle-line-last"></span>
+    </div>
+  </div>
+
+  <aside id="sidebar" class="sidebar">
+    
+    <div class="sidebar-inner">
+
+      
+
+      
+        <ul class="sidebar-nav motion-element">
+          <li class="sidebar-nav-toc sidebar-nav-active" data-target="post-toc-wrap">
+            文章目录
+          </li>
+          <li class="sidebar-nav-overview" data-target="site-overview-wrap">
+            站点概览
+          </li>
+        </ul>
+      
+
+      <section class="site-overview-wrap sidebar-panel">
+        <div class="site-overview">
+          <div class="site-author motion-element" itemprop="author" itemscope itemtype="http://schema.org/Person">
+            
+              <img class="site-author-image" itemprop="image"
+                src="https://upload-images.jianshu.io/upload_images/13603359-6aa0d85db5eaa03e.gif"
+                alt="koral" />
+            
+              <p class="site-author-name" itemprop="name">koral</p>
+              <p class="site-description motion-element" itemprop="description">如果我16岁，我可以悄悄的说我好喜欢你，如果我26岁，我可以大声告诉你我很爱你，可惜我6岁，我什么都给不了你，我还要上小学。</p>
+          </div>
+
+          <nav class="site-state motion-element">
+
+            
+              <div class="site-state-item site-state-posts">
+              
+                <a href="/archives">
+              
+                  <span class="site-state-item-count">210</span>
+                  <span class="site-state-item-name">日志</span>
+                </a>
+              </div>
+            
+
+            
+              
+              
+              <div class="site-state-item site-state-categories">
+                <a href="/categories/index.html">
+                  <span class="site-state-item-count">20</span>
+                  <span class="site-state-item-name">分类</span>
+                </a>
+              </div>
+            
+
+            
+              
+              
+              <div class="site-state-item site-state-tags">
+                <a href="/tags/index.html">
+                  <span class="site-state-item-count">21</span>
+                  <span class="site-state-item-name">标签</span>
+                </a>
+              </div>
+            
+
+          </nav>
+
+          
+            <div class="feed-link motion-element">
+              <a href="/atom.xml" rel="alternate">
+                <i class="fa fa-rss"></i>
+                RSS
+              </a>
+            </div>
+          
+
+          
+
+          
+          
+
+          
+          
+
+          
+
+        </div>
+      </section>
+
+      
+      <!--noindex-->
+        <section class="post-toc-wrap motion-element sidebar-panel sidebar-panel-active">
+          <div class="post-toc">
+
+            
+              
+            
+
+            
+              <div class="post-toc-content"><ol class="nav"><li class="nav-item nav-level-1"><a class="nav-link" href="#React入门"><span class="nav-number">1.</span> <span class="nav-text">React入门</span></a><ol class="nav-child"><li class="nav-item nav-level-2"><a class="nav-link" href="#React生命周期函数"><span class="nav-number">1.1.</span> <span class="nav-text">React生命周期函数</span></a></li><li class="nav-item nav-level-2"><a class="nav-link" href="#Axios"><span class="nav-number">1.2.</span> <span class="nav-text">Axios</span></a><ol class="nav-child"><li class="nav-item nav-level-3"><a class="nav-link" href="#Charles-Mock数据"><span class="nav-number">1.2.1.</span> <span class="nav-text">Charles Mock数据</span></a></li></ol></li><li class="nav-item nav-level-2"><a class="nav-link" href="#Ant-Design"><span class="nav-number">1.3.</span> <span class="nav-text">Ant Design</span></a></li><li class="nav-item nav-level-2"><a class="nav-link" href="#Redux"><span class="nav-number">1.4.</span> <span class="nav-text">Redux</span></a></li><li class="nav-item nav-level-2"><a class="nav-link" href="#组件"><span class="nav-number">1.5.</span> <span class="nav-text">组件</span></a></li></ol></li></ol></div>
+            
+
+          </div>
+        </section>
+      <!--/noindex-->
+      
+
+      
+
+    </div>
+  </aside>
+
+
+        
+      </div>
+    </main>
+
+    <footer id="footer" class="footer">
+      <div class="footer-inner">
+        <div class="copyright">&copy; <span itemprop="copyrightYear">2019</span>
+  <span class="with-love">
+    <i class="fa fa-user"></i>
+  </span>
+  <span class="author" itemprop="copyrightHolder">koral</span>
+
+  
+</div>
+
+
+  <div class="powered-by">由 <a class="theme-link" target="_blank" href="https://hexo.io">Hexo</a> 强力驱动</div>
+
+
+
+  <span class="post-meta-divider">|</span>
+
+
+
+  <div class="theme-info">主题 &mdash; <a class="theme-link" target="_blank" href="https://github.com/iissnan/hexo-theme-next">NexT.Pisces</a> v5.1.4</div>
+
+
+
+
+        
+
+
+
+
+
+
+
+        
+      </div>
+    </footer>
+
+    
+      <div class="back-to-top">
+        <i class="fa fa-arrow-up"></i>
+        
+      </div>
+    
+
+    
+
+  </div>
+
+  
+
+<script type="text/javascript">
+  if (Object.prototype.toString.call(window.Promise) !== '[object Function]') {
+    window.Promise = null;
+  }
+</script>
+
+
+
+
+
+
+
+
+
+  
+
+
+
+
+
+
+
+
+
+
+
+
+  
+  
+    <script type="text/javascript" src="/lib/jquery/index.js?v=2.1.3"></script>
+  
+
+  
+  
+    <script type="text/javascript" src="/lib/fastclick/lib/fastclick.min.js?v=1.0.6"></script>
+  
+
+  
+  
+    <script type="text/javascript" src="/lib/jquery_lazyload/jquery.lazyload.js?v=1.9.7"></script>
+  
+
+  
+  
+    <script type="text/javascript" src="/lib/velocity/velocity.min.js?v=1.2.1"></script>
+  
+
+  
+  
+    <script type="text/javascript" src="/lib/velocity/velocity.ui.min.js?v=1.2.1"></script>
+  
+
+  
+  
+    <script type="text/javascript" src="/lib/fancybox/source/jquery.fancybox.pack.js?v=2.1.5"></script>
+  
+
+
+  
+
+
+  <script type="text/javascript" src="/js/src/utils.js?v=5.1.4"></script>
+
+  <script type="text/javascript" src="/js/src/motion.js?v=5.1.4"></script>
+
+
+
+  
+  
+
+
+  <script type="text/javascript" src="/js/src/affix.js?v=5.1.4"></script>
+
+  <script type="text/javascript" src="/js/src/schemes/pisces.js?v=5.1.4"></script>
+
+
+
+  
+  <script type="text/javascript" src="/js/src/scrollspy.js?v=5.1.4"></script>
+<script type="text/javascript" src="/js/src/post-details.js?v=5.1.4"></script>
+
+
+
+  
+
+
+  <script type="text/javascript" src="/js/src/bootstrap.js?v=5.1.4"></script>
+
+
+
+  
+
+
+  
+
+
+
+
+	
+
+
+
+
+
+  
+
+
+
+
+
+  
+
+
+
+
+
+
+
+
+
+
+
+
+  
+
+
+
+
+
+  
+
+  
+
+  
+
+  
+  
+
+  
+
+  
+
+  
+
+</body>
+</html>
