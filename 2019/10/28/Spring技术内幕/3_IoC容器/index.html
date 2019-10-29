@@ -1,0 +1,976 @@
+<!DOCTYPE html>
+
+
+
+  
+
+
+<html class="theme-next pisces use-motion" lang="zh-Hans">
+<head>
+  <meta charset="UTF-8"/>
+<meta http-equiv="X-UA-Compatible" content="IE=edge" />
+<meta name="viewport" content="width=device-width, initial-scale=1, maximum-scale=1"/>
+<meta name="theme-color" content="#222">
+
+
+
+
+
+
+
+
+
+<meta http-equiv="Cache-Control" content="no-transform" />
+<meta http-equiv="Cache-Control" content="no-siteapp" />
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+  
+  
+  <link href="/lib/fancybox/source/jquery.fancybox.css?v=2.1.5" rel="stylesheet" type="text/css" />
+
+
+
+
+
+
+
+<link href="/lib/font-awesome/css/font-awesome.min.css?v=4.6.2" rel="stylesheet" type="text/css" />
+
+<link href="/css/main.css?v=5.1.4" rel="stylesheet" type="text/css" />
+
+
+  <link rel="apple-touch-icon" sizes="180x180" href="/images/apple-touch-icon-next.png?v=5.1.4">
+
+
+  <link rel="icon" type="image/png" sizes="32x32" href="/images/favicon-32x32-next.png?v=5.1.4">
+
+
+  <link rel="icon" type="image/png" sizes="16x16" href="/images/favicon-16x16-next.png?v=5.1.4">
+
+
+  <link rel="mask-icon" href="/images/logo.svg?v=5.1.4" color="#222">
+
+
+
+
+
+  <meta name="keywords" content="Hexo, NexT" />
+
+
+
+
+
+  <link rel="alternate" href="/atom.xml" title="罗凯的博客" type="application/atom+xml" />
+
+
+
+
+
+
+<meta name="description" content="第二章 Spring Framework 的核心：IoC容器的实现通过 Spring 的核心 IoC 容器和 AOP 的设计和实现可以了解 Spring 所倡导的开发思路，如 使用 POJO 开发企业应用、提供一直的编程模型、强调对接口编程等。 Spring 核心的模式实现，是为应用提供 IoC 容器和 AOP 框架： IoC 容器很好地降低了框架的侵入性，在简化用户开发的同时，依然能够使用强大的">
+<meta name="keywords" content="帅">
+<meta property="og:type" content="article">
+<meta property="og:title" content="罗凯的博客">
+<meta property="og:url" content="http://luokaiii.github.io/2019/10/28/Spring技术内幕/3_IoC容器/index.html">
+<meta property="og:site_name" content="罗凯的博客">
+<meta property="og:description" content="第二章 Spring Framework 的核心：IoC容器的实现通过 Spring 的核心 IoC 容器和 AOP 的设计和实现可以了解 Spring 所倡导的开发思路，如 使用 POJO 开发企业应用、提供一直的编程模型、强调对接口编程等。 Spring 核心的模式实现，是为应用提供 IoC 容器和 AOP 框架： IoC 容器很好地降低了框架的侵入性，在简化用户开发的同时，依然能够使用强大的">
+<meta property="og:locale" content="zh-Hans">
+<meta property="og:image" content="https://i.loli.net/2019/10/28/GBZJu6QvjUnb1x5.png">
+<meta property="og:updated_time" content="2019-10-29T06:46:01.883Z">
+<meta name="twitter:card" content="summary">
+<meta name="twitter:title" content="罗凯的博客">
+<meta name="twitter:description" content="第二章 Spring Framework 的核心：IoC容器的实现通过 Spring 的核心 IoC 容器和 AOP 的设计和实现可以了解 Spring 所倡导的开发思路，如 使用 POJO 开发企业应用、提供一直的编程模型、强调对接口编程等。 Spring 核心的模式实现，是为应用提供 IoC 容器和 AOP 框架： IoC 容器很好地降低了框架的侵入性，在简化用户开发的同时，依然能够使用强大的">
+<meta name="twitter:image" content="https://i.loli.net/2019/10/28/GBZJu6QvjUnb1x5.png">
+
+
+
+<script type="text/javascript" id="hexo.configurations">
+  var NexT = window.NexT || {};
+  var CONFIG = {
+    root: '/',
+    scheme: 'Pisces',
+    version: '5.1.4',
+    sidebar: {"position":"right","display":"always","offset":12,"b2t":false,"scrollpercent":false,"onmobile":false},
+    fancybox: true,
+    tabs: true,
+    motion: {"enable":true,"async":false,"transition":{"post_block":"fadeIn","post_header":"slideDownIn","post_body":"slideDownIn","coll_header":"slideLeftIn","sidebar":"slideUpIn"}},
+    duoshuo: {
+      userId: '0',
+      author: '博主'
+    },
+    algolia: {
+      applicationID: '',
+      apiKey: '',
+      indexName: '',
+      hits: {"per_page":5},
+      labels: {"input_placeholder":"Search for Posts","hits_empty":"We didn't find any results for the search: ${query}","hits_stats":"${hits} results found in ${time} ms"}
+    }
+  };
+</script>
+
+
+
+  <link rel="canonical" href="http://luokaiii.github.io/2019/10/28/Spring技术内幕/3_IoC容器/"/>
+
+
+
+
+
+  <title> | 罗凯的博客</title>
+  
+
+
+
+
+
+
+
+
+<link rel="stylesheet" href="/css/prism-tomorrow.css" type="text/css"></head>
+
+<body itemscope itemtype="http://schema.org/WebPage" lang="zh-Hans">
+
+  
+  
+    
+  
+
+  <div class="container sidebar-position-right page-post-detail">
+    <div class="headband"></div>
+
+    <header id="header" class="header" itemscope itemtype="http://schema.org/WPHeader">
+      <div class="header-inner"><div class="site-brand-wrapper">
+  <div class="site-meta ">
+    
+
+    <div class="custom-logo-site-title">
+      <a href="/"  class="brand" rel="start">
+        <span class="logo-line-before"><i></i></span>
+        <span class="site-title">罗凯的博客</span>
+        <span class="logo-line-after"><i></i></span>
+      </a>
+    </div>
+      
+        <p class="site-subtitle">l u o k a i</p>
+      
+  </div>
+
+  <div class="site-nav-toggle">
+    <button>
+      <span class="btn-bar"></span>
+      <span class="btn-bar"></span>
+      <span class="btn-bar"></span>
+    </button>
+  </div>
+</div>
+
+<nav class="site-nav">
+  
+
+  
+    <ul id="menu" class="menu">
+      
+        
+        <li class="menu-item menu-item-home">
+          <a href="/" rel="section">
+            
+              <i class="menu-item-icon fa fa-fw fa-home"></i> <br />
+            
+            首页
+          </a>
+        </li>
+      
+        
+        <li class="menu-item menu-item-archives">
+          <a href="/archives" rel="section">
+            
+              <i class="menu-item-icon fa fa-fw fa-question-circle"></i> <br />
+            
+            归档
+          </a>
+        </li>
+      
+        
+        <li class="menu-item menu-item-about">
+          <a href="/about" rel="section">
+            
+              <i class="menu-item-icon fa fa-fw fa-question-circle"></i> <br />
+            
+            关于
+          </a>
+        </li>
+      
+        
+        <li class="menu-item menu-item-tags">
+          <a href="/tags" rel="section">
+            
+              <i class="menu-item-icon fa fa-fw fa-question-circle"></i> <br />
+            
+            标签
+          </a>
+        </li>
+      
+        
+        <li class="menu-item menu-item-categories">
+          <a href="/categories/" rel="section">
+            
+              <i class="menu-item-icon fa fa-fw fa-th"></i> <br />
+            
+            分类
+          </a>
+        </li>
+      
+        
+        <li class="menu-item menu-item-schedule">
+          <a href="/schedule" rel="section">
+            
+              <i class="menu-item-icon fa fa-fw fa-question-circle"></i> <br />
+            
+            日程表
+          </a>
+        </li>
+      
+        
+        <li class="menu-item menu-item-sitemap">
+          <a href="/sitemap.xml" rel="section">
+            
+              <i class="menu-item-icon fa fa-fw fa-sitemap"></i> <br />
+            
+            站点地图
+          </a>
+        </li>
+      
+        
+        <li class="menu-item menu-item-commonweal">
+          <a href="/404/" rel="section">
+            
+              <i class="menu-item-icon fa fa-fw fa-heartbeat"></i> <br />
+            
+            公益404
+          </a>
+        </li>
+      
+
+      
+    </ul>
+  
+
+  
+</nav>
+
+
+
+ </div>
+    </header>
+
+    <main id="main" class="main">
+      <div class="main-inner">
+        <div class="content-wrap">
+          <div id="content" class="content">
+            
+
+  <div id="posts" class="posts-expand">
+    
+
+  
+
+  
+  
+  
+
+  <article class="post post-type-normal" itemscope itemtype="http://schema.org/Article">
+  
+  
+  
+  <div class="post-block">
+    <link itemprop="mainEntityOfPage" href="http://luokaiii.github.io/2019/10/28/Spring技术内幕/3_IoC容器/">
+
+    <span hidden itemprop="author" itemscope itemtype="http://schema.org/Person">
+      <meta itemprop="name" content="koral">
+      <meta itemprop="description" content="">
+      <meta itemprop="image" content="https://upload-images.jianshu.io/upload_images/13603359-6aa0d85db5eaa03e.gif">
+    </span>
+
+    <span hidden itemprop="publisher" itemscope itemtype="http://schema.org/Organization">
+      <meta itemprop="name" content="罗凯的博客">
+    </span>
+
+    
+      <header class="post-header">
+
+        
+        
+          <h1 class="post-title" itemprop="name headline"></h1>
+        
+
+        <div class="post-meta">
+          <span class="post-time">
+            
+              <span class="post-meta-item-icon">
+                <i class="fa fa-calendar-o"></i>
+              </span>
+              
+                <span class="post-meta-item-text">发表于</span>
+              
+              <time title="创建于" itemprop="dateCreated datePublished" datetime="2019-10-28T14:48:05+08:00">
+                2019-10-28
+              </time>
+            
+
+            
+
+            
+          </span>
+
+          
+
+          
+            
+          
+
+          
+          
+
+          
+
+          
+
+          
+
+        </div>
+      </header>
+    
+
+    
+    
+    
+    <div class="post-body" itemprop="articleBody">
+
+      
+      
+
+      
+        <h2 id="第二章-Spring-Framework-的核心：IoC容器的实现"><a href="#第二章-Spring-Framework-的核心：IoC容器的实现" class="headerlink" title="第二章 Spring Framework 的核心：IoC容器的实现"></a>第二章 Spring Framework 的核心：IoC容器的实现</h2><p>通过 Spring 的核心 IoC 容器和 AOP 的设计和实现可以了解 Spring 所倡导的开发思路，如 <strong>使用 POJO 开发企业应用</strong>、提供<strong>一直的编程模型</strong>、<strong>强调对接口编程</strong>等。</p>
+<p>Spring 核心的模式实现，是为应用提供 IoC 容器和 AOP 框架：</p>
+<p>IoC 容器很好地降低了框架的侵入性，在简化用户开发的同时，依然能够使用强大的服务；</p>
+<p>AOP 技术决定了 Spring 作为一个平台的地位，使 Spring 成为一个兼容并包的开放体系，通过 AOP 技术，使第三方解决方案能够尽可能地结合到 Spring 平台上。</p>
+<h2 id="一、Spring-IoC容器概述"><a href="#一、Spring-IoC容器概述" class="headerlink" title="一、Spring IoC容器概述"></a>一、Spring IoC容器概述</h2><h3 id="1-1-什么是依赖反转？"><a href="#1-1-什么是依赖反转？" class="headerlink" title="1.1 什么是依赖反转？"></a>1.1 什么是依赖反转？</h3><p>如果一个对象 与其合作对象的应用 或 依赖关系的管理 由具体对象来完成，那么会导致代码的高度耦合和可测试性的降低。</p>
+<p>在面向对象系统中，对象封装了数据和对数据的处理，对象的依赖关系常常体现了对数据和方法的依赖上。</p>
+<p>这些依赖关系通过把对象的依赖注入交给IoC容器来完成，则可以很大程度上简化该复杂性。</p>
+<blockquote>
+<p>控制反转是关于一个对象如何获取它所依赖的对象的应用。在这里，反转指的是责任的反转（将对象的依赖转到 IoC 容器中了）。</p>
+</blockquote>
+<h3 id="1-2-Ioc-的应用场景"><a href="#1-2-Ioc-的应用场景" class="headerlink" title="1.2 Ioc 的应用场景"></a>1.2 Ioc 的应用场景</h3><p>上面介绍的 IoC 设计模式，是解耦组件之间复杂关系的利器，Spring IoC 模块就是这一模式的实现。</p>
+<p>在原有的 EJB 模式中，开发者需要编写满足 EJB 规范的组件，才能运行在 EJB 容器中，从而获取事务管理、生命周期管理等组件开发的基本服务。</p>
+<p>Spring 提供的服务与 EJB 并无太大区别，但两者在设计模式上有很大不同。</p>
+<p>Spring 通过 IoC 模式管理依赖关系，并通过依赖注入和 AOP 切面增强了为 JavaBean 这样的  POJO 对象赋予事务管理、生命周期管理等基本功能。</p>
+<p>也就是说 Spring 把 EJB 组件还原成了 POJO 对象或 JavaBean 对象，降低了应用开发对传统 J2EE 技术规范的依赖。</p>
+<p>一方面，通过 IoC 容器的资源控制反转，使依赖关系的适配和管理更加灵活；另一方面，如果在反转的实现中，通过可读文本来完成配置，则在变动时无需修改和重新编译源代码，符合设计模式中的开闭原则，能够提高组件系统设计的灵活性。</p>
+<h2 id="二、IoC-容器系列的设计与实现：BeanFactory-和-ApplicationContext"><a href="#二、IoC-容器系列的设计与实现：BeanFactory-和-ApplicationContext" class="headerlink" title="二、IoC 容器系列的设计与实现：BeanFactory 和 ApplicationContext"></a>二、IoC 容器系列的设计与实现：BeanFactory 和 ApplicationContext</h2><p>在 Spring IoC 容器的设计中，包含两个主要的容器：BeanFactory 接口的简单容器系列，只实现了容器的最基本功能；ApplicationContext 应用上下文，作为容器的高级形态而存在，在简单容器的基础上增加了许多面向框架的特性。</p>
+<h2 id="2-1-Spring-的-IoC-容器"><a href="#2-1-Spring-的-IoC-容器" class="headerlink" title="2.1 Spring 的 IoC 容器"></a>2.1 Spring 的 IoC 容器</h2><p>BeanFactory 定义了作为 IoC 容器所需要的最基本的功能规范。且 Spring 通过定义 BeanDefinition 来管理基于 Spring 应用中的各种对象以及它们之间的相互依赖关系。</p>
+<p>BeanDefinition 抽象了对 Bean 的定义，即依赖反转模式中管理的对象依赖关系的数据抽象，也是容器实现依赖反转功能的核心数据结构。</p>
+<p><img src="https://i.loli.net/2019/10/28/GBZJu6QvjUnb1x5.png" alt="IoC容器的接口设计图"></p>
+<h4 id="1-BeanFactory-的应用场景"><a href="#1-BeanFactory-的应用场景" class="headerlink" title="1. BeanFactory 的应用场景"></a>1. BeanFactory 的应用场景</h4><p>BeanFactory 接口定义了 IoC 容器最基本的形式，也是最基本的规范，勾画了 IoC 的基本轮廓。</p>
+<blockquote>
+<p>FactoryBean 和 BeanFactory 的区别：</p>
+<p>虽然看起来挺像，但是本质是不同的。BeanFactory 是 管理所有 Bean 的工厂，而 FactoryBean 是一个工厂类型的 Bean。</p>
+</blockquote>
+<p>BeanFactory 设计了 getBean 方法，用来通过名称获取 IoC 容器中管理的 Bean。</p>
+<p>有了BeanFactory 的定义，用户可以执行以下操作：</p>
+<ul>
+<li>containsBean，判断容器是否含有指定名称的Bean</li>
+<li>isSingleton，查询指定名称的 Bean 是否是 Singleton 类型</li>
+<li>isPrototype，查询指定名称的 Bean 是否是 prototype 类型的</li>
+<li>isTypeMatch，查询指定名称的 Bean 是否是特定的 Class 类型</li>
+<li>getType，查询Bean 的 Class 类型</li>
+<li>getAliases，查询 Bean 的所有别名</li>
+</ul>
+<p>通过以上的一系列接口，可以使用不同的 Bean 的检索方法，很方便地从 IoC 容器中得到需要的 Bean，从而忽略具体的 IoC 容器的实现。</p>
+<h4 id="2-BeanFactory-容器的设计原理"><a href="#2-BeanFactory-容器的设计原理" class="headerlink" title="2. BeanFactory 容器的设计原理"></a>2. BeanFactory 容器的设计原理</h4><p><code>BeanFactory</code> 接口提供了使用 IoC 容器的规范。我们以 <code>XmlBeanFactory</code> 为例，从其源码来看看 <code>BeanFactory</code> 的设计思路。</p>
+<pre class=" language-java"><code class="language-java"><span class="token keyword">public</span> <span class="token keyword">class</span> <span class="token class-name">XmlBeanFactory</span> <span class="token keyword">extends</span> <span class="token class-name">DefaultListableBeanFactory</span> <span class="token punctuation">{</span>
+    <span class="token comment" spellcheck="true">/**
+     * 初始化一个 XmlBeanDefinitionReader，用来处理 BeanDefinition
+     */</span>
+    <span class="token keyword">private</span> <span class="token keyword">final</span> XmlBeanDefinitionReader reader <span class="token operator">=</span> <span class="token keyword">new</span> <span class="token class-name">XmlBeanDefinitionReader</span><span class="token punctuation">(</span><span class="token keyword">this</span><span class="token punctuation">)</span><span class="token punctuation">;</span>
+
+    <span class="token comment" spellcheck="true">/**
+     * 通过 Resource 获取存储 BeanDefinition 的 .xml 文件
+     * 用来定位需要的 BeanDefinition 信息来对 Bean 完成容器的初始化和依赖注入过程
+     */</span>
+    <span class="token keyword">public</span> <span class="token function">XmlBeanFactory</span><span class="token punctuation">(</span>Resource resource<span class="token punctuation">)</span> <span class="token keyword">throws</span> BeansException <span class="token punctuation">{</span>
+        <span class="token keyword">this</span><span class="token punctuation">(</span>resource<span class="token punctuation">,</span> null<span class="token punctuation">)</span><span class="token punctuation">;</span>
+    <span class="token punctuation">}</span>
+
+    <span class="token comment" spellcheck="true">/**
+     * 通过指定的 xml 文件加载 BeanDefinition
+     */</span>
+    <span class="token keyword">public</span> <span class="token function">XmlBeanFactory</span><span class="token punctuation">(</span>Resource resource<span class="token punctuation">,</span> BeanFactory parentBeanFactory<span class="token punctuation">)</span> <span class="token keyword">throws</span> BeansException <span class="token punctuation">{</span>
+        <span class="token keyword">super</span><span class="token punctuation">(</span>parentBeanFactory<span class="token punctuation">)</span><span class="token punctuation">;</span>
+        <span class="token keyword">this</span><span class="token punctuation">.</span>reader<span class="token punctuation">.</span><span class="token function">loadBeanDefinitions</span><span class="token punctuation">(</span>resource<span class="token punctuation">)</span><span class="token punctuation">;</span>
+    <span class="token punctuation">}</span>
+<span class="token punctuation">}</span>
+</code></pre>
+<p>参考 XMLBeanFactory 的实现，大致可以将 IoC 容器的创建分为如下几个步骤：</p>
+<ol>
+<li>创建 IoC 配置文件的抽象资源</li>
+<li>创建一个 BeanFactory </li>
+<li>创建一个载入 BeanDefinition 的读取器</li>
+<li>从定义好的资源读入配置信息</li>
+<li>完成 IoC 容器中 Bean 的初始化</li>
+</ol>
+<pre class=" language-java"><code class="language-java">ClassPathResource res <span class="token operator">=</span> <span class="token keyword">new</span> <span class="token class-name">ClassPathResource</span><span class="token punctuation">(</span><span class="token string">"beans.xml"</span><span class="token punctuation">)</span><span class="token punctuation">;</span>
+DefaultListableBeanFactory factory <span class="token operator">=</span> <span class="token keyword">new</span> <span class="token class-name">DefaultListableBeanFactory</span><span class="token punctuation">(</span><span class="token punctuation">)</span><span class="token punctuation">;</span>
+XmlBeanDefinitionReader reader <span class="token operator">=</span> <span class="token keyword">new</span> <span class="token class-name">XmlBeanDefinitionReader</span><span class="token punctuation">(</span>factory<span class="token punctuation">)</span><span class="token punctuation">;</span>
+reader<span class="token punctuation">.</span><span class="token function">loadBeanDefinitions</span><span class="token punctuation">(</span>res<span class="token punctuation">)</span><span class="token punctuation">;</span>
+</code></pre>
+<h4 id="3-ApplicationContext-的应用场景"><a href="#3-ApplicationContext-的应用场景" class="headerlink" title="3. ApplicationContext 的应用场景"></a>3. ApplicationContext 的应用场景</h4><p>ApplicationContext 除了能够使用 IoC 容器的基本功能之外，还为用户提供了以下附加服务：</p>
+<pre class=" language-java"><code class="language-java"><span class="token comment" spellcheck="true">/**
+ * 在 ApplicationContext 中提供的附加服务，使基本 IoC 容器的功能更加丰富。与简单的 BeanFactory 相比，它的使用是一种面向框架的使用风格
+ * ListableBeanFactory：访问应用中 Bean 工厂的方法
+ * MessageSource：解析消息的能力，支持国际化
+ * ResourceLoader：加载文件资源的能力
+ * ApplicationEventPublisher：发布应用事件的能力，这些事件和 Bean 的生命周期结合，为管理 Bean 提供了便利
+ */</span>
+<span class="token keyword">public</span> <span class="token keyword">interface</span> <span class="token class-name">ApplicationContext</span> <span class="token keyword">extends</span> <span class="token class-name">EnvironmentCapable</span><span class="token punctuation">,</span> ListableBeanFactory<span class="token punctuation">,</span> HierarchicalBeanFactory<span class="token punctuation">,</span> MessageSource<span class="token punctuation">,</span> ApplicationEventPublisher<span class="token punctuation">,</span> ResourcePatternResolver <span class="token punctuation">{</span>   
+    <span class="token annotation punctuation">@Nullable</span>   
+    String <span class="token function">getId</span><span class="token punctuation">(</span><span class="token punctuation">)</span><span class="token punctuation">;</span>  
+    String <span class="token function">getApplicationName</span><span class="token punctuation">(</span><span class="token punctuation">)</span><span class="token punctuation">;</span>  
+    String <span class="token function">getDisplayName</span><span class="token punctuation">(</span><span class="token punctuation">)</span><span class="token punctuation">;</span>  
+    <span class="token keyword">long</span> <span class="token function">getStartupDate</span><span class="token punctuation">(</span><span class="token punctuation">)</span><span class="token punctuation">;</span>  
+    <span class="token annotation punctuation">@Nullable</span>   
+    ApplicationContext <span class="token function">getParent</span><span class="token punctuation">(</span><span class="token punctuation">)</span><span class="token punctuation">;</span>   
+    AutowireCapableBeanFactory <span class="token function">getAutowireCapableBeanFactory</span><span class="token punctuation">(</span><span class="token punctuation">)</span> <span class="token keyword">throws</span> IllegalStateException<span class="token punctuation">;</span>
+<span class="token punctuation">}</span>
+</code></pre>
+<h4 id="4-ApplicationContext-的设计原理"><a href="#4-ApplicationContext-的设计原理" class="headerlink" title="4. ApplicationContext 的设计原理"></a>4. ApplicationContext 的设计原理</h4><p>在 ApplicationContext 容器的实现中，以 FileSystemXmlApplicationContext 的实现为例：</p>
+<pre class=" language-java"><code class="language-java"><span class="token keyword">public</span> <span class="token keyword">class</span> <span class="token class-name">FileSystemXmlApplicationContext</span> <span class="token keyword">extends</span> <span class="token class-name">AbstractXmlApplicationContext</span> <span class="token punctuation">{</span>
+    <span class="token comment" spellcheck="true">/**
+     * 除了实例化应用上下文的支持，还支持启动 IoC 容器的 refresh() 
+     * 在这个过程中，还通过下面的方法读取 文件系统中XML形式的 BeanDefinition 资源
+     */</span>
+    <span class="token keyword">public</span> <span class="token function">FileSystemXmlApplicationContext</span><span class="token punctuation">(</span>
+            String<span class="token punctuation">[</span><span class="token punctuation">]</span> configLocations<span class="token punctuation">,</span> <span class="token keyword">boolean</span> refresh<span class="token punctuation">,</span> <span class="token annotation punctuation">@Nullable</span> ApplicationContext parent<span class="token punctuation">)</span>
+            <span class="token keyword">throws</span> BeansException <span class="token punctuation">{</span>
+
+        <span class="token keyword">super</span><span class="token punctuation">(</span>parent<span class="token punctuation">)</span><span class="token punctuation">;</span>
+        <span class="token function">setConfigLocations</span><span class="token punctuation">(</span>configLocations<span class="token punctuation">)</span><span class="token punctuation">;</span>
+        <span class="token keyword">if</span> <span class="token punctuation">(</span>refresh<span class="token punctuation">)</span> <span class="token punctuation">{</span>
+            <span class="token function">refresh</span><span class="token punctuation">(</span><span class="token punctuation">)</span><span class="token punctuation">;</span>
+        <span class="token punctuation">}</span>
+    <span class="token punctuation">}</span>
+
+    <span class="token comment" spellcheck="true">/**
+     * 获得 FileSystemResource 的资源定位
+     */</span>
+    <span class="token annotation punctuation">@Override</span>
+    <span class="token keyword">protected</span> Resource <span class="token function">getResourceByPath</span><span class="token punctuation">(</span>String path<span class="token punctuation">)</span> <span class="token punctuation">{</span>
+        <span class="token keyword">if</span> <span class="token punctuation">(</span>path<span class="token punctuation">.</span><span class="token function">startsWith</span><span class="token punctuation">(</span><span class="token string">"/"</span><span class="token punctuation">)</span><span class="token punctuation">)</span> <span class="token punctuation">{</span>
+            path <span class="token operator">=</span> path<span class="token punctuation">.</span><span class="token function">substring</span><span class="token punctuation">(</span><span class="token number">1</span><span class="token punctuation">)</span><span class="token punctuation">;</span>
+        <span class="token punctuation">}</span>
+        <span class="token keyword">return</span> <span class="token keyword">new</span> <span class="token class-name">FileSystemResource</span><span class="token punctuation">(</span>path<span class="token punctuation">)</span><span class="token punctuation">;</span>
+    <span class="token punctuation">}</span>
+
+<span class="token punctuation">}</span>
+</code></pre>
+<h2 id="三、IoC-容器的初始化过程"><a href="#三、IoC-容器的初始化过程" class="headerlink" title="三、IoC 容器的初始化过程"></a>三、IoC 容器的初始化过程</h2><p>IoC 容器的初始化是由前面介绍的 refresh() 方法来启动的。该启动包括 BeanDefinition 的 Resource 定位、载入和注册三个过程。</p>
+<h3 id="3-1-BeanDefinition-的-Resource-定位"><a href="#3-1-BeanDefinition-的-Resource-定位" class="headerlink" title="3.1 BeanDefinition 的 Resource 定位"></a>3.1 BeanDefinition 的 Resource 定位</h3><p>当我们手动使用 IoC 容器的时候，是通过 <code>new Resource(&quot;beans.xml&quot;)</code> 的方式获取 xml 中的信息。</p>
+<p>以 FileSystemXmlApplicationContext 为例，getResourceByPath 返回的是一个 FileSystemResource 对象，作为 Resource 的实现类。</p>
+<p>其他 ApplicationContext 的子实现类也会生成对应的 Resource 实现类。</p>
+<h3 id="3-2-BeanDefinition-的载入和解析"><a href="#3-2-BeanDefinition-的载入和解析" class="headerlink" title="3.2 BeanDefinition 的载入和解析"></a>3.2 BeanDefinition 的载入和解析</h3><p>对于 IoC 容器而言，BeanDefinition 信息的载入，相当于把定义的 BeanDefinition 转换为 Spring 内部表示的数据结构的过程。<strong>在 IoC 容器中是通过 HashMap 来保持和维护 BeanDefinition 数据的</strong>。</p>
+<p>以 <code>AbstractApplicationContext</code> 的 refresh() 方法为例：</p>
+<pre class=" language-java"><code class="language-java">    <span class="token annotation punctuation">@Override</span>
+    <span class="token keyword">public</span> <span class="token keyword">void</span> <span class="token function">refresh</span><span class="token punctuation">(</span><span class="token punctuation">)</span> <span class="token keyword">throws</span> BeansException<span class="token punctuation">,</span> IllegalStateException <span class="token punctuation">{</span>
+        <span class="token keyword">synchronized</span> <span class="token punctuation">(</span><span class="token keyword">this</span><span class="token punctuation">.</span>startupShutdownMonitor<span class="token punctuation">)</span> <span class="token punctuation">{</span>
+            <span class="token comment" spellcheck="true">// Prepare this context for refreshing.</span>
+            <span class="token function">prepareRefresh</span><span class="token punctuation">(</span><span class="token punctuation">)</span><span class="token punctuation">;</span>
+
+            <span class="token comment" spellcheck="true">// 创建或刷新 BeanFactory</span>
+            ConfigurableListableBeanFactory beanFactory <span class="token operator">=</span> <span class="token function">obtainFreshBeanFactory</span><span class="token punctuation">(</span><span class="token punctuation">)</span><span class="token punctuation">;</span>
+
+            <span class="token comment" spellcheck="true">// 准备 BeanFactory 的一些初始化操作</span>
+            <span class="token function">prepareBeanFactory</span><span class="token punctuation">(</span>beanFactory<span class="token punctuation">)</span><span class="token punctuation">;</span>
+
+            <span class="token keyword">try</span> <span class="token punctuation">{</span>
+                <span class="token comment" spellcheck="true">// 允许子类对 BeanFactory 进行一些后置操作</span>
+                <span class="token function">postProcessBeanFactory</span><span class="token punctuation">(</span>beanFactory<span class="token punctuation">)</span><span class="token punctuation">;</span>
+
+                <span class="token comment" spellcheck="true">// 注册 BeanFactory 到 context 中</span>
+                <span class="token function">invokeBeanFactoryPostProcessors</span><span class="token punctuation">(</span>beanFactory<span class="token punctuation">)</span><span class="token punctuation">;</span>
+
+                <span class="token function">registerBeanPostProcessors</span><span class="token punctuation">(</span>beanFactory<span class="token punctuation">)</span><span class="token punctuation">;</span>
+
+                <span class="token function">initMessageSource</span><span class="token punctuation">(</span><span class="token punctuation">)</span><span class="token punctuation">;</span>
+
+                <span class="token function">initApplicationEventMulticaster</span><span class="token punctuation">(</span><span class="token punctuation">)</span><span class="token punctuation">;</span>
+
+                <span class="token comment" spellcheck="true">// 由子类实现该刷新方法</span>
+                <span class="token function">onRefresh</span><span class="token punctuation">(</span><span class="token punctuation">)</span><span class="token punctuation">;</span>
+
+                <span class="token comment" spellcheck="true">// 检查并注册监听器</span>
+                <span class="token function">registerListeners</span><span class="token punctuation">(</span><span class="token punctuation">)</span><span class="token punctuation">;</span>
+
+                <span class="token comment" spellcheck="true">// 实例化所有剩余单例</span>
+                <span class="token function">finishBeanFactoryInitialization</span><span class="token punctuation">(</span>beanFactory<span class="token punctuation">)</span><span class="token punctuation">;</span>
+
+                <span class="token comment" spellcheck="true">// 完成刷新，并发布事件</span>
+                <span class="token function">finishRefresh</span><span class="token punctuation">(</span><span class="token punctuation">)</span><span class="token punctuation">;</span>
+            <span class="token punctuation">}</span>
+
+            <span class="token keyword">catch</span> <span class="token punctuation">(</span><span class="token class-name">BeansException</span> ex<span class="token punctuation">)</span> <span class="token punctuation">{</span>
+                <span class="token keyword">if</span> <span class="token punctuation">(</span>logger<span class="token punctuation">.</span><span class="token function">isWarnEnabled</span><span class="token punctuation">(</span><span class="token punctuation">)</span><span class="token punctuation">)</span> <span class="token punctuation">{</span>
+                    logger<span class="token punctuation">.</span><span class="token function">warn</span><span class="token punctuation">(</span><span class="token string">"Exception encountered during context initialization - "</span> <span class="token operator">+</span>
+                            <span class="token string">"cancelling refresh attempt: "</span> <span class="token operator">+</span> ex<span class="token punctuation">)</span><span class="token punctuation">;</span>
+                <span class="token punctuation">}</span>
+
+                <span class="token comment" spellcheck="true">// Destroy already created singletons to avoid dangling resources.</span>
+                <span class="token function">destroyBeans</span><span class="token punctuation">(</span><span class="token punctuation">)</span><span class="token punctuation">;</span>
+
+                <span class="token comment" spellcheck="true">// Reset 'active' flag.</span>
+                <span class="token function">cancelRefresh</span><span class="token punctuation">(</span>ex<span class="token punctuation">)</span><span class="token punctuation">;</span>
+
+                <span class="token comment" spellcheck="true">// Propagate exception to caller.</span>
+                <span class="token keyword">throw</span> ex<span class="token punctuation">;</span>
+            <span class="token punctuation">}</span>
+
+            <span class="token keyword">finally</span> <span class="token punctuation">{</span>
+                <span class="token comment" spellcheck="true">// Reset common introspection caches in Spring's core, since we</span>
+                <span class="token comment" spellcheck="true">// might not ever need metadata for singleton beans anymore...</span>
+                <span class="token function">resetCommonCaches</span><span class="token punctuation">(</span><span class="token punctuation">)</span><span class="token punctuation">;</span>
+            <span class="token punctuation">}</span>
+        <span class="token punctuation">}</span>
+    <span class="token punctuation">}</span>
+</code></pre>
+<p>具体刷新方法，可以参考 <code>AbstractApplicationContext</code> 的实现子类 <code>AbstractRefreshableApplicationContext</code>：</p>
+<pre class=" language-java"><code class="language-java"><span class="token annotation punctuation">@Override</span>
+<span class="token keyword">protected</span> <span class="token keyword">final</span> <span class="token keyword">void</span> <span class="token function">refreshBeanFactory</span><span class="token punctuation">(</span><span class="token punctuation">)</span> <span class="token keyword">throws</span> BeansException <span class="token punctuation">{</span>
+    <span class="token comment" spellcheck="true">// 如果存在 BeanFactory 则先关闭销毁</span>
+    <span class="token keyword">if</span> <span class="token punctuation">(</span><span class="token function">hasBeanFactory</span><span class="token punctuation">(</span><span class="token punctuation">)</span><span class="token punctuation">)</span> <span class="token punctuation">{</span>
+        <span class="token function">destroyBeans</span><span class="token punctuation">(</span><span class="token punctuation">)</span><span class="token punctuation">;</span>
+        <span class="token function">closeBeanFactory</span><span class="token punctuation">(</span><span class="token punctuation">)</span><span class="token punctuation">;</span>
+    <span class="token punctuation">}</span>
+    <span class="token keyword">try</span> <span class="token punctuation">{</span>
+        DefaultListableBeanFactory beanFactory <span class="token operator">=</span> <span class="token function">createBeanFactory</span><span class="token punctuation">(</span><span class="token punctuation">)</span><span class="token punctuation">;</span>
+        beanFactory<span class="token punctuation">.</span><span class="token function">setSerializationId</span><span class="token punctuation">(</span><span class="token function">getId</span><span class="token punctuation">(</span><span class="token punctuation">)</span><span class="token punctuation">)</span><span class="token punctuation">;</span>
+        <span class="token function">customizeBeanFactory</span><span class="token punctuation">(</span>beanFactory<span class="token punctuation">)</span><span class="token punctuation">;</span>
+        <span class="token function">loadBeanDefinitions</span><span class="token punctuation">(</span>beanFactory<span class="token punctuation">)</span><span class="token punctuation">;</span>
+        <span class="token keyword">synchronized</span> <span class="token punctuation">(</span><span class="token keyword">this</span><span class="token punctuation">.</span>beanFactoryMonitor<span class="token punctuation">)</span> <span class="token punctuation">{</span>
+            <span class="token keyword">this</span><span class="token punctuation">.</span>beanFactory <span class="token operator">=</span> beanFactory<span class="token punctuation">;</span>
+        <span class="token punctuation">}</span>
+    <span class="token punctuation">}</span>
+    <span class="token keyword">catch</span> <span class="token punctuation">(</span><span class="token class-name">IOException</span> ex<span class="token punctuation">)</span> <span class="token punctuation">{</span>
+        <span class="token keyword">throw</span> <span class="token keyword">new</span> <span class="token class-name">ApplicationContextException</span><span class="token punctuation">(</span><span class="token string">"I/O error parsing bean definition source for "</span> <span class="token operator">+</span> <span class="token function">getDisplayName</span><span class="token punctuation">(</span><span class="token punctuation">)</span><span class="token punctuation">,</span> ex<span class="token punctuation">)</span><span class="token punctuation">;</span>
+    <span class="token punctuation">}</span>
+<span class="token punctuation">}</span>
+</code></pre>
+<h3 id="3-3-BeanDefinition-在-IoC-容器中的注册"><a href="#3-3-BeanDefinition-在-IoC-容器中的注册" class="headerlink" title="3.3 BeanDefinition 在 IoC 容器中的注册"></a>3.3 BeanDefinition 在 IoC 容器中的注册</h3><p>在 DefaultListableBeanFactory 中，通过一个 HashMap 来持有载入的 BeanDefinition 的。</p>
+<p>DefaultListableBeanFactory 实现了 BeanDefinitionRegistry 的接口，用来完成 BeanDefinition 向容器的注册。注册的过程就是把解析得到的 BeanDefinition 设置到 HashMap 中去，如果遇到同名的 BeanDefinition，在处理时就需要依据 allowBeanDefinitionOverriding 的配置来完成。</p>
+<blockquote>
+<p>每个图都是我自己画的</p>
+</blockquote>
+
+      
+    </div>
+    
+    
+    
+
+    
+
+    
+
+    
+
+    <footer class="post-footer">
+      
+
+      
+      
+      
+
+      
+        <div class="post-nav">
+          <div class="post-nav-next post-nav-item">
+            
+              <a href="/2019/10/28/Spring技术内幕/2_Spring架构/" rel="next" title="">
+                <i class="fa fa-chevron-left"></i> 
+              </a>
+            
+          </div>
+
+          <span class="post-nav-divider"></span>
+
+          <div class="post-nav-prev post-nav-item">
+            
+              <a href="/2019/11/30/读书笔记/《高性能MySQL》/0.目录/" rel="prev" title="《高性能MySQL》读书笔记 - 目录">
+                《高性能MySQL》读书笔记 - 目录 <i class="fa fa-chevron-right"></i>
+              </a>
+            
+          </div>
+        </div>
+      
+
+      
+      
+    </footer>
+  </div>
+  
+  
+  
+  </article>
+
+
+
+    <div class="post-spread">
+      
+    </div>
+  </div>
+
+
+          </div>
+          
+
+
+          
+
+  
+
+
+
+        </div>
+        
+          
+  
+  <div class="sidebar-toggle">
+    <div class="sidebar-toggle-line-wrap">
+      <span class="sidebar-toggle-line sidebar-toggle-line-first"></span>
+      <span class="sidebar-toggle-line sidebar-toggle-line-middle"></span>
+      <span class="sidebar-toggle-line sidebar-toggle-line-last"></span>
+    </div>
+  </div>
+
+  <aside id="sidebar" class="sidebar">
+    
+    <div class="sidebar-inner">
+
+      
+
+      
+        <ul class="sidebar-nav motion-element">
+          <li class="sidebar-nav-toc sidebar-nav-active" data-target="post-toc-wrap">
+            文章目录
+          </li>
+          <li class="sidebar-nav-overview" data-target="site-overview-wrap">
+            站点概览
+          </li>
+        </ul>
+      
+
+      <section class="site-overview-wrap sidebar-panel">
+        <div class="site-overview">
+          <div class="site-author motion-element" itemprop="author" itemscope itemtype="http://schema.org/Person">
+            
+              <img class="site-author-image" itemprop="image"
+                src="https://upload-images.jianshu.io/upload_images/13603359-6aa0d85db5eaa03e.gif"
+                alt="koral" />
+            
+              <p class="site-author-name" itemprop="name">koral</p>
+              <p class="site-description motion-element" itemprop="description">如果我16岁，我可以悄悄的说我好喜欢你，如果我26岁，我可以大声告诉你我很爱你，可惜我6岁，我什么都给不了你，我还要上小学。</p>
+          </div>
+
+          <nav class="site-state motion-element">
+
+            
+              <div class="site-state-item site-state-posts">
+              
+                <a href="/archives">
+              
+                  <span class="site-state-item-count">212</span>
+                  <span class="site-state-item-name">日志</span>
+                </a>
+              </div>
+            
+
+            
+              
+              
+              <div class="site-state-item site-state-categories">
+                <a href="/categories/index.html">
+                  <span class="site-state-item-count">19</span>
+                  <span class="site-state-item-name">分类</span>
+                </a>
+              </div>
+            
+
+            
+              
+              
+              <div class="site-state-item site-state-tags">
+                <a href="/tags/index.html">
+                  <span class="site-state-item-count">21</span>
+                  <span class="site-state-item-name">标签</span>
+                </a>
+              </div>
+            
+
+          </nav>
+
+          
+            <div class="feed-link motion-element">
+              <a href="/atom.xml" rel="alternate">
+                <i class="fa fa-rss"></i>
+                RSS
+              </a>
+            </div>
+          
+
+          
+
+          
+          
+
+          
+          
+
+          
+
+        </div>
+      </section>
+
+      
+      <!--noindex-->
+        <section class="post-toc-wrap motion-element sidebar-panel sidebar-panel-active">
+          <div class="post-toc">
+
+            
+              
+            
+
+            
+              <div class="post-toc-content"><ol class="nav"><li class="nav-item nav-level-2"><a class="nav-link" href="#第二章-Spring-Framework-的核心：IoC容器的实现"><span class="nav-number">1.</span> <span class="nav-text">第二章 Spring Framework 的核心：IoC容器的实现</span></a></li><li class="nav-item nav-level-2"><a class="nav-link" href="#一、Spring-IoC容器概述"><span class="nav-number">2.</span> <span class="nav-text">一、Spring IoC容器概述</span></a><ol class="nav-child"><li class="nav-item nav-level-3"><a class="nav-link" href="#1-1-什么是依赖反转？"><span class="nav-number">2.1.</span> <span class="nav-text">1.1 什么是依赖反转？</span></a></li><li class="nav-item nav-level-3"><a class="nav-link" href="#1-2-Ioc-的应用场景"><span class="nav-number">2.2.</span> <span class="nav-text">1.2 Ioc 的应用场景</span></a></li></ol></li><li class="nav-item nav-level-2"><a class="nav-link" href="#二、IoC-容器系列的设计与实现：BeanFactory-和-ApplicationContext"><span class="nav-number">3.</span> <span class="nav-text">二、IoC 容器系列的设计与实现：BeanFactory 和 ApplicationContext</span></a></li><li class="nav-item nav-level-2"><a class="nav-link" href="#2-1-Spring-的-IoC-容器"><span class="nav-number">4.</span> <span class="nav-text">2.1 Spring 的 IoC 容器</span></a><ol class="nav-child"><li class="nav-item nav-level-4"><a class="nav-link" href="#1-BeanFactory-的应用场景"><span class="nav-number">4.0.1.</span> <span class="nav-text">1. BeanFactory 的应用场景</span></a></li><li class="nav-item nav-level-4"><a class="nav-link" href="#2-BeanFactory-容器的设计原理"><span class="nav-number">4.0.2.</span> <span class="nav-text">2. BeanFactory 容器的设计原理</span></a></li><li class="nav-item nav-level-4"><a class="nav-link" href="#3-ApplicationContext-的应用场景"><span class="nav-number">4.0.3.</span> <span class="nav-text">3. ApplicationContext 的应用场景</span></a></li><li class="nav-item nav-level-4"><a class="nav-link" href="#4-ApplicationContext-的设计原理"><span class="nav-number">4.0.4.</span> <span class="nav-text">4. ApplicationContext 的设计原理</span></a></li></ol></li></ol></li><li class="nav-item nav-level-2"><a class="nav-link" href="#三、IoC-容器的初始化过程"><span class="nav-number">5.</span> <span class="nav-text">三、IoC 容器的初始化过程</span></a><ol class="nav-child"><li class="nav-item nav-level-3"><a class="nav-link" href="#3-1-BeanDefinition-的-Resource-定位"><span class="nav-number">5.1.</span> <span class="nav-text">3.1 BeanDefinition 的 Resource 定位</span></a></li><li class="nav-item nav-level-3"><a class="nav-link" href="#3-2-BeanDefinition-的载入和解析"><span class="nav-number">5.2.</span> <span class="nav-text">3.2 BeanDefinition 的载入和解析</span></a></li><li class="nav-item nav-level-3"><a class="nav-link" href="#3-3-BeanDefinition-在-IoC-容器中的注册"><span class="nav-number">5.3.</span> <span class="nav-text">3.3 BeanDefinition 在 IoC 容器中的注册</span></a></li></ol></li></ol></div>
+            
+
+          </div>
+        </section>
+      <!--/noindex-->
+      
+
+      
+
+    </div>
+  </aside>
+
+
+        
+      </div>
+    </main>
+
+    <footer id="footer" class="footer">
+      <div class="footer-inner">
+        <div class="copyright">&copy; <span itemprop="copyrightYear">2019</span>
+  <span class="with-love">
+    <i class="fa fa-user"></i>
+  </span>
+  <span class="author" itemprop="copyrightHolder">koral</span>
+
+  
+</div>
+
+
+  <div class="powered-by">由 <a class="theme-link" target="_blank" href="https://hexo.io">Hexo</a> 强力驱动</div>
+
+
+
+  <span class="post-meta-divider">|</span>
+
+
+
+  <div class="theme-info">主题 &mdash; <a class="theme-link" target="_blank" href="https://github.com/iissnan/hexo-theme-next">NexT.Pisces</a> v5.1.4</div>
+
+
+
+
+        
+
+
+
+
+
+
+
+        
+      </div>
+    </footer>
+
+    
+      <div class="back-to-top">
+        <i class="fa fa-arrow-up"></i>
+        
+      </div>
+    
+
+    
+
+  </div>
+
+  
+
+<script type="text/javascript">
+  if (Object.prototype.toString.call(window.Promise) !== '[object Function]') {
+    window.Promise = null;
+  }
+</script>
+
+
+
+
+
+
+
+
+
+  
+
+
+
+
+
+
+
+
+
+
+
+
+  
+  
+    <script type="text/javascript" src="/lib/jquery/index.js?v=2.1.3"></script>
+  
+
+  
+  
+    <script type="text/javascript" src="/lib/fastclick/lib/fastclick.min.js?v=1.0.6"></script>
+  
+
+  
+  
+    <script type="text/javascript" src="/lib/jquery_lazyload/jquery.lazyload.js?v=1.9.7"></script>
+  
+
+  
+  
+    <script type="text/javascript" src="/lib/velocity/velocity.min.js?v=1.2.1"></script>
+  
+
+  
+  
+    <script type="text/javascript" src="/lib/velocity/velocity.ui.min.js?v=1.2.1"></script>
+  
+
+  
+  
+    <script type="text/javascript" src="/lib/fancybox/source/jquery.fancybox.pack.js?v=2.1.5"></script>
+  
+
+
+  
+
+
+  <script type="text/javascript" src="/js/src/utils.js?v=5.1.4"></script>
+
+  <script type="text/javascript" src="/js/src/motion.js?v=5.1.4"></script>
+
+
+
+  
+  
+
+
+  <script type="text/javascript" src="/js/src/affix.js?v=5.1.4"></script>
+
+  <script type="text/javascript" src="/js/src/schemes/pisces.js?v=5.1.4"></script>
+
+
+
+  
+  <script type="text/javascript" src="/js/src/scrollspy.js?v=5.1.4"></script>
+<script type="text/javascript" src="/js/src/post-details.js?v=5.1.4"></script>
+
+
+
+  
+
+
+  <script type="text/javascript" src="/js/src/bootstrap.js?v=5.1.4"></script>
+
+
+
+  
+
+
+  
+
+
+
+
+	
+
+
+
+
+
+  
+
+
+
+
+
+  
+
+
+
+
+
+
+
+
+
+
+
+
+  
+
+
+
+
+
+  
+
+  
+
+  
+
+  
+  
+
+  
+
+  
+
+  
+
+</body>
+</html>
