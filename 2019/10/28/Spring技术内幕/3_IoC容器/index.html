@@ -90,7 +90,11 @@
 <meta property="og:description" content="第二章 Spring Framework 的核心：IoC容器的实现通过 Spring 的核心 IoC 容器和 AOP 的设计和实现可以了解 Spring 所倡导的开发思路，如 使用 POJO 开发企业应用、提供一直的编程模型、强调对接口编程等。 Spring 核心的模式实现，是为应用提供 IoC 容器和 AOP 框架： IoC 容器很好地降低了框架的侵入性，在简化用户开发的同时，依然能够使用强大的">
 <meta property="og:locale" content="zh-Hans">
 <meta property="og:image" content="https://i.loli.net/2019/10/28/GBZJu6QvjUnb1x5.png">
-<meta property="og:updated_time" content="2019-10-29T06:46:01.883Z">
+<meta property="og:image" content="https://i.loli.net/2019/10/29/L6lwDNeXrCmu97U.png">
+<meta property="og:image" content="https://i.loli.net/2019/10/29/HSazslc1QID87iW.png">
+<meta property="og:image" content="https://i.loli.net/2019/10/29/tu5IzsErGjPkYom.png">
+<meta property="og:image" content="https://i.loli.net/2019/10/29/cbATGnhrwI2DvH6.png">
+<meta property="og:updated_time" content="2019-10-29T10:04:18.433Z">
 <meta name="twitter:card" content="summary">
 <meta name="twitter:title" content="罗凯的博客">
 <meta name="twitter:description" content="第二章 Spring Framework 的核心：IoC容器的实现通过 Spring 的核心 IoC 容器和 AOP 的设计和实现可以了解 Spring 所倡导的开发思路，如 使用 POJO 开发企业应用、提供一直的编程模型、强调对接口编程等。 Spring 核心的模式实现，是为应用提供 IoC 容器和 AOP 框架： IoC 容器很好地降低了框架的侵入性，在简化用户开发的同时，依然能够使用强大的">
@@ -578,9 +582,45 @@ reader<span class="token punctuation">.</span><span class="token function">loadB
 </code></pre>
 <h3 id="3-3-BeanDefinition-在-IoC-容器中的注册"><a href="#3-3-BeanDefinition-在-IoC-容器中的注册" class="headerlink" title="3.3 BeanDefinition 在 IoC 容器中的注册"></a>3.3 BeanDefinition 在 IoC 容器中的注册</h3><p>在 DefaultListableBeanFactory 中，通过一个 HashMap 来持有载入的 BeanDefinition 的。</p>
 <p>DefaultListableBeanFactory 实现了 BeanDefinitionRegistry 的接口，用来完成 BeanDefinition 向容器的注册。注册的过程就是把解析得到的 BeanDefinition 设置到 HashMap 中去，如果遇到同名的 BeanDefinition，在处理时就需要依据 allowBeanDefinitionOverriding 的配置来完成。</p>
+<h2 id="四、IoC-容器的依赖注入"><a href="#四、IoC-容器的依赖注入" class="headerlink" title="四、IoC 容器的依赖注入"></a>四、IoC 容器的依赖注入</h2><p><img src="https://i.loli.net/2019/10/29/L6lwDNeXrCmu97U.png" alt="依赖注入的过程"></p>
+<p><code>createBeanInstance()</code> 生成了 Bean 所包含的 Java 对象，生成方式由相关的 BeanDefinition 指定(如工厂方法生成、容器autowire特性生成等)</p>
+<p>在 Bean 的创建和对象依赖注入的过程中，需要依据 BeanDefinition 中的信息来递归地完成依赖注入。</p>
+<p>这些递归都是以 getBean 为入口的。一个递归是在上下文体系中查找需要的 Bean 和创建 Bean 的递归调用；另一个递归是在依赖注入时，通过递归调用容器的 getBean 方法，得到当前 Bean 的依赖 Bean，同时也触发对依赖 Bean 的创建和注入。</p>
+<p>在对 Bean 的属性进行依赖注入时，解析的过程也是一个递归的过程。根据依赖关系，一层一层地完成 Bean 的创建和注入，知道完成当前 Bean  的创建。</p>
+<h2 id="五、容器其他相关特性的设计与实现"><a href="#五、容器其他相关特性的设计与实现" class="headerlink" title="五、容器其他相关特性的设计与实现"></a>五、容器其他相关特性的设计与实现</h2><p><img src="https://i.loli.net/2019/10/29/HSazslc1QID87iW.png" alt="容器初始化和关闭过程"></p>
+<p><code>prepareBeanFactory(beanFactory)</code> 在初始化 IoC 容器时配置 ClassLoader、PropertyEditor 和 BeanPostProcessor 等，为容器的启动做必要的准备工作</p>
+<p><img src="https://i.loli.net/2019/10/29/tu5IzsErGjPkYom.png" alt="prepareBeanFactory"></p>
+<p>同样，关闭容器时，也会先发出关闭容器的信号，然后将 Bean 逐个关闭，最后关闭容器自身。</p>
+<p><img src="https://i.loli.net/2019/10/29/cbATGnhrwI2DvH6.png" alt="容器关闭"></p>
+<h3 id="5-1-IoC-容器中的-Bean-生命周期"><a href="#5-1-IoC-容器中的-Bean-生命周期" class="headerlink" title="5.1 IoC 容器中的 Bean 生命周期"></a>5.1 IoC 容器中的 Bean 生命周期</h3><ul>
+<li>Bean 实例的创建</li>
+<li>为 Bean 实例设置属性</li>
+<li>调用 Bean 的初始化方法</li>
+<li>应用可以通过 IoC 容器使用 Bean</li>
+<li>当容器关闭时，调用 Bean 的销毁方法<ul>
+<li>在 DisposableBeanAdapter 中可以看到 destory 方法的实现</li>
+<li>首先对 postProcessBeforeDestruction 进行调用，然后调用 Bean 的 destory 方法，最后是对 Bean 的自定义销毁方法的调用</li>
+</ul>
+</li>
+</ul>
 <blockquote>
-<p>每个图都是我自己画的</p>
+<p>在初始化 Bean 之前，会把相关的 BeanName、BeanClassLoader、BeanFactory 注入到 Bean 中去。</p>
+<p>接着会调用 invokeInitMethods 和 afterPropertiesSet</p>
+<p>最后还会判断 Bean 是否配置有 initMethod，如果有，则直接通过 invokeCustomInitMethod 调用，最终完成 Bean 的初始化</p>
 </blockquote>
+<h3 id="5-2-lazy-init-属性和预实例化"><a href="#5-2-lazy-init-属性和预实例化" class="headerlink" title="5.2 lazy-init 属性和预实例化"></a>5.2 lazy-init 属性和预实例化</h3><p>在 IoC 容器的初始化过程中，主要是对 BeanDefinition 的定位、载入、解析和注册。当应用第一次向容器索要 Bean 时，依赖注入才会发生。</p>
+<p>通过设置 lazy-init 属性，可以使容器初始化时就完成对 Bean 的依赖注入。虽然这种方式会对容器初始化的性能有一些影响，但是会提高应用第一次获取 Bean 的性能。</p>
+<p>在 <code>finishBeanFactoryInitialization</code> 中封装了对 lazy-init 属性的处理，实际的处理是在 <code>DefaultListableBeanFactory</code> 这个基本容器的 <code>preInstantiateSingletons</code> 方法中完成的。</p>
+<h3 id="5-3-Bean-对-IoC-容器的感知"><a href="#5-3-Bean-对-IoC-容器的感知" class="headerlink" title="5.3 Bean 对 IoC 容器的感知"></a>5.3 Bean 对 IoC 容器的感知</h3><p>一般情况下，Bean 并不需要了解容器的状态和直接使用容器，但是 Spring IoC 容器也提供了该功能，它是通过特定的 aware 接口实现的：</p>
+<ul>
+<li>BeanNameAware - 获取实例名称</li>
+<li>BeanFactoryAware - 直接得到 Bean 所在的 IoC 容器</li>
+<li>ApplicationContextAware - 获得 Bean 所在的应用上下文 ApplicationContext</li>
+<li>MessageSourceAware - 获得消息源</li>
+<li>ApplicationEventPublisherAware - 获得应用上下文的事件发布器</li>
+<li>ResourceLoaderAware - 得到 ResourceLoader，可以在 Bean中加载外部对应的 Resource 资源</li>
+</ul>
+<h2 id="六、总结"><a href="#六、总结" class="headerlink" title="六、总结"></a>六、总结</h2><p>本章说明了 IoC 容器和上下文的基本工作原理、容器的初始化过程、依赖注入的实现，等等。</p>
 
       
     </div>
@@ -760,7 +800,7 @@ reader<span class="token punctuation">.</span><span class="token function">loadB
             
 
             
-              <div class="post-toc-content"><ol class="nav"><li class="nav-item nav-level-2"><a class="nav-link" href="#第二章-Spring-Framework-的核心：IoC容器的实现"><span class="nav-number">1.</span> <span class="nav-text">第二章 Spring Framework 的核心：IoC容器的实现</span></a></li><li class="nav-item nav-level-2"><a class="nav-link" href="#一、Spring-IoC容器概述"><span class="nav-number">2.</span> <span class="nav-text">一、Spring IoC容器概述</span></a><ol class="nav-child"><li class="nav-item nav-level-3"><a class="nav-link" href="#1-1-什么是依赖反转？"><span class="nav-number">2.1.</span> <span class="nav-text">1.1 什么是依赖反转？</span></a></li><li class="nav-item nav-level-3"><a class="nav-link" href="#1-2-Ioc-的应用场景"><span class="nav-number">2.2.</span> <span class="nav-text">1.2 Ioc 的应用场景</span></a></li></ol></li><li class="nav-item nav-level-2"><a class="nav-link" href="#二、IoC-容器系列的设计与实现：BeanFactory-和-ApplicationContext"><span class="nav-number">3.</span> <span class="nav-text">二、IoC 容器系列的设计与实现：BeanFactory 和 ApplicationContext</span></a></li><li class="nav-item nav-level-2"><a class="nav-link" href="#2-1-Spring-的-IoC-容器"><span class="nav-number">4.</span> <span class="nav-text">2.1 Spring 的 IoC 容器</span></a><ol class="nav-child"><li class="nav-item nav-level-4"><a class="nav-link" href="#1-BeanFactory-的应用场景"><span class="nav-number">4.0.1.</span> <span class="nav-text">1. BeanFactory 的应用场景</span></a></li><li class="nav-item nav-level-4"><a class="nav-link" href="#2-BeanFactory-容器的设计原理"><span class="nav-number">4.0.2.</span> <span class="nav-text">2. BeanFactory 容器的设计原理</span></a></li><li class="nav-item nav-level-4"><a class="nav-link" href="#3-ApplicationContext-的应用场景"><span class="nav-number">4.0.3.</span> <span class="nav-text">3. ApplicationContext 的应用场景</span></a></li><li class="nav-item nav-level-4"><a class="nav-link" href="#4-ApplicationContext-的设计原理"><span class="nav-number">4.0.4.</span> <span class="nav-text">4. ApplicationContext 的设计原理</span></a></li></ol></li></ol></li><li class="nav-item nav-level-2"><a class="nav-link" href="#三、IoC-容器的初始化过程"><span class="nav-number">5.</span> <span class="nav-text">三、IoC 容器的初始化过程</span></a><ol class="nav-child"><li class="nav-item nav-level-3"><a class="nav-link" href="#3-1-BeanDefinition-的-Resource-定位"><span class="nav-number">5.1.</span> <span class="nav-text">3.1 BeanDefinition 的 Resource 定位</span></a></li><li class="nav-item nav-level-3"><a class="nav-link" href="#3-2-BeanDefinition-的载入和解析"><span class="nav-number">5.2.</span> <span class="nav-text">3.2 BeanDefinition 的载入和解析</span></a></li><li class="nav-item nav-level-3"><a class="nav-link" href="#3-3-BeanDefinition-在-IoC-容器中的注册"><span class="nav-number">5.3.</span> <span class="nav-text">3.3 BeanDefinition 在 IoC 容器中的注册</span></a></li></ol></li></ol></div>
+              <div class="post-toc-content"><ol class="nav"><li class="nav-item nav-level-2"><a class="nav-link" href="#第二章-Spring-Framework-的核心：IoC容器的实现"><span class="nav-number">1.</span> <span class="nav-text">第二章 Spring Framework 的核心：IoC容器的实现</span></a></li><li class="nav-item nav-level-2"><a class="nav-link" href="#一、Spring-IoC容器概述"><span class="nav-number">2.</span> <span class="nav-text">一、Spring IoC容器概述</span></a><ol class="nav-child"><li class="nav-item nav-level-3"><a class="nav-link" href="#1-1-什么是依赖反转？"><span class="nav-number">2.1.</span> <span class="nav-text">1.1 什么是依赖反转？</span></a></li><li class="nav-item nav-level-3"><a class="nav-link" href="#1-2-Ioc-的应用场景"><span class="nav-number">2.2.</span> <span class="nav-text">1.2 Ioc 的应用场景</span></a></li></ol></li><li class="nav-item nav-level-2"><a class="nav-link" href="#二、IoC-容器系列的设计与实现：BeanFactory-和-ApplicationContext"><span class="nav-number">3.</span> <span class="nav-text">二、IoC 容器系列的设计与实现：BeanFactory 和 ApplicationContext</span></a></li><li class="nav-item nav-level-2"><a class="nav-link" href="#2-1-Spring-的-IoC-容器"><span class="nav-number">4.</span> <span class="nav-text">2.1 Spring 的 IoC 容器</span></a><ol class="nav-child"><li class="nav-item nav-level-4"><a class="nav-link" href="#1-BeanFactory-的应用场景"><span class="nav-number">4.0.1.</span> <span class="nav-text">1. BeanFactory 的应用场景</span></a></li><li class="nav-item nav-level-4"><a class="nav-link" href="#2-BeanFactory-容器的设计原理"><span class="nav-number">4.0.2.</span> <span class="nav-text">2. BeanFactory 容器的设计原理</span></a></li><li class="nav-item nav-level-4"><a class="nav-link" href="#3-ApplicationContext-的应用场景"><span class="nav-number">4.0.3.</span> <span class="nav-text">3. ApplicationContext 的应用场景</span></a></li><li class="nav-item nav-level-4"><a class="nav-link" href="#4-ApplicationContext-的设计原理"><span class="nav-number">4.0.4.</span> <span class="nav-text">4. ApplicationContext 的设计原理</span></a></li></ol></li></ol></li><li class="nav-item nav-level-2"><a class="nav-link" href="#三、IoC-容器的初始化过程"><span class="nav-number">5.</span> <span class="nav-text">三、IoC 容器的初始化过程</span></a><ol class="nav-child"><li class="nav-item nav-level-3"><a class="nav-link" href="#3-1-BeanDefinition-的-Resource-定位"><span class="nav-number">5.1.</span> <span class="nav-text">3.1 BeanDefinition 的 Resource 定位</span></a></li><li class="nav-item nav-level-3"><a class="nav-link" href="#3-2-BeanDefinition-的载入和解析"><span class="nav-number">5.2.</span> <span class="nav-text">3.2 BeanDefinition 的载入和解析</span></a></li><li class="nav-item nav-level-3"><a class="nav-link" href="#3-3-BeanDefinition-在-IoC-容器中的注册"><span class="nav-number">5.3.</span> <span class="nav-text">3.3 BeanDefinition 在 IoC 容器中的注册</span></a></li></ol></li><li class="nav-item nav-level-2"><a class="nav-link" href="#四、IoC-容器的依赖注入"><span class="nav-number">6.</span> <span class="nav-text">四、IoC 容器的依赖注入</span></a></li><li class="nav-item nav-level-2"><a class="nav-link" href="#五、容器其他相关特性的设计与实现"><span class="nav-number">7.</span> <span class="nav-text">五、容器其他相关特性的设计与实现</span></a><ol class="nav-child"><li class="nav-item nav-level-3"><a class="nav-link" href="#5-1-IoC-容器中的-Bean-生命周期"><span class="nav-number">7.1.</span> <span class="nav-text">5.1 IoC 容器中的 Bean 生命周期</span></a></li><li class="nav-item nav-level-3"><a class="nav-link" href="#5-2-lazy-init-属性和预实例化"><span class="nav-number">7.2.</span> <span class="nav-text">5.2 lazy-init 属性和预实例化</span></a></li><li class="nav-item nav-level-3"><a class="nav-link" href="#5-3-Bean-对-IoC-容器的感知"><span class="nav-number">7.3.</span> <span class="nav-text">5.3 Bean 对 IoC 容器的感知</span></a></li></ol></li><li class="nav-item nav-level-2"><a class="nav-link" href="#六、总结"><span class="nav-number">8.</span> <span class="nav-text">六、总结</span></a></li></ol></div>
             
 
           </div>
