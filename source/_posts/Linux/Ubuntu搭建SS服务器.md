@@ -1,5 +1,5 @@
 ---
-title: Linux学习之路(一)
+title: Ubuntu搭建SS服务器
 date: 2018-09-08 14:46:03
 tags:
  - Linux
