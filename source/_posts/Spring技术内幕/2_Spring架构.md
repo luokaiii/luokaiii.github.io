@@ -36,9 +36,9 @@ Spring 为开发者提供一个一站式的轻量级应用开发框架(平台)�
 
 Spring架构分为以下七个模块：
 
-1. Spring IOC：包含了基本的IOC容器 BeanFactory的接口与实现
+1. Spring IOC：包含了基本的IOC容器 BeanFactory 的接口与实现
 2. Spring AOP：集成了 AspectJ 作为 AOP 的特定时限，围绕着 AOP 的增强功能，作为 Spring 集成其他模块的工具，如 TransactionProxyFactoryBean 声明式事务处理便是通过 AOP 集成到 Spring中的。Spring AOP 实现了一个完整的 AOP 代理对象，实现 AOP 拦截器、直至实现各种 Advice 通知的过程
-3. Spring MVC：包含对 Web 应用的支持。该模块以 DispatcherServlet 为核心，实现了 MVC 模式，包含与 Web 容器环境的集成，web 请求的拦截、分发、处理和 ModelAndView 数据的返回，以及如何继承各种 UI 视图的展现，如 PDF、Excel等
+3. Spring MVC：包含对 Web 应用的支持。该模块以 DispatcherServlet 为核心，实现了 MVC 模式，包含与 Web 容器环境的集成，web 请求的拦截、分发、处理和 ModelAndView 数据的返回，以及如何继承各种 UI 视图的展现，如 PDF、Excel 等
 4. Spring JDBC/ORM：对于关系型数据库的数据处理的支持。除了 JdbcTemplate 外，还提供了对其他 ORM 工具的封装，如 Hibernate、iBatis等
 5. Spring 事务：是一个通过 Spring AOP 实现自身功能增强的典型模块。通过 AOP 的切面增强实现了声明式事务处理的功能，包含怎样配置事务处理的拦截器，怎样读入事务配置属性，并结合事务配置属性对事务对象进行处理（如事务的创建、挂起、提交、回滚等基本过程），还可以看到具体的事务处理器（DataSourceTransactionManager、HibernateTransactionManager、JtaTransactionManager等）是怎样封装不同的事务处理机制的。
 6. Spring 远程调用：远端调用为应用提供解耦，解耦后将应用模块分布式地部署，从而提高系统整体的性能

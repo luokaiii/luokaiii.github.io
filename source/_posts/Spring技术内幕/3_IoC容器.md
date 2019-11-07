@@ -1,6 +1,6 @@
 ## 第二章 Spring Framework 的核心：IoC容器的实现
 
-通过 Spring 的核心 IoC 容器和 AOP 的设计和实现可以了解 Spring 所倡导的开发思路，如 **使用 POJO 开发企业应用**、提供**一直的编程模型**、**强调对接口编程**等。
+通过 Spring 的核心 IoC 容器和 AOP 的设计和实现可以了解 Spring 所倡导的开发思路，如 **使用 POJO 开发企业应用**、提供**一致的编程模型**、**强调对接口编程**等。
 
 Spring 核心的模式实现，是为应用提供 IoC 容器和 AOP 框架：
 
@@ -14,7 +14,7 @@ AOP 技术决定了 Spring 作为一个平台的地位，使 Spring 成为一个
 
 如果一个对象 与其合作对象的应用 或 依赖关系的管理 由具体对象来完成，那么会导致代码的高度耦合和可测试性的降低。
 
-在面向对象系统中，对象封装了数据和对数据的处理，对象的依赖关系常常体现了对数据和方法的依赖上。
+在面向对象系统中，对象封装了数据和对数据的处理，对象的依赖关系常常体现在对数据和方法的依赖上。
 
 这些依赖关系通过把对象的依赖注入交给IoC容器来完成，则可以很大程度上简化该复杂性。
 
@@ -283,4 +283,65 @@ protected final void refreshBeanFactory() throws BeansException {
 
 DefaultListableBeanFactory 实现了 BeanDefinitionRegistry 的接口，用来完成 BeanDefinition 向容器的注册。注册的过程就是把解析得到的 BeanDefinition 设置到 HashMap 中去，如果遇到同名的 BeanDefinition，在处理时就需要依据 allowBeanDefinitionOverriding 的配置来完成。
 
-> 每个图都是我自己画的
+## 四、IoC 容器的依赖注入
+
+![依赖注入的过程](https://i.loli.net/2019/10/29/L6lwDNeXrCmu97U.png)
+
+`createBeanInstance()` 生成了 Bean 所包含的 Java 对象，生成方式由相关的 BeanDefinition 指定(如工厂方法生成、容器autowire特性生成等)
+
+在 Bean 的创建和对象依赖注入的过程中，需要依据 BeanDefinition 中的信息来递归地完成依赖注入。
+
+这些递归都是以 getBean 为入口的。一个递归是在上下文体系中查找需要的 Bean 和创建 Bean 的递归调用；另一个递归是在依赖注入时，通过递归调用容器的 getBean 方法，得到当前 Bean 的依赖 Bean，同时也触发对依赖 Bean 的创建和注入。
+
+在对 Bean 的属性进行依赖注入时，解析的过程也是一个递归的过程。根据依赖关系，一层一层地完成 Bean 的创建和注入，知道完成当前 Bean  的创建。
+
+## 五、容器其他相关特性的设计与实现
+
+![容器初始化和关闭过程](https://i.loli.net/2019/10/29/HSazslc1QID87iW.png)
+
+`prepareBeanFactory(beanFactory)` 在初始化 IoC 容器时配置 ClassLoader、PropertyEditor 和 BeanPostProcessor 等，为容器的启动做必要的准备工作
+
+![prepareBeanFactory](https://i.loli.net/2019/10/29/tu5IzsErGjPkYom.png)
+
+同样，关闭容器时，也会先发出关闭容器的信号，然后将 Bean 逐个关闭，最后关闭容器自身。
+
+![容器关闭](https://i.loli.net/2019/10/29/cbATGnhrwI2DvH6.png)
+
+### 5.1 IoC 容器中的 Bean 生命周期
+
+- Bean 实例的创建
+- 为 Bean 实例设置属性
+- 调用 Bean 的初始化方法
+- 应用可以通过 IoC 容器使用 Bean
+- 当容器关闭时，调用 Bean 的销毁方法
+  - 在 DisposableBeanAdapter 中可以看到 destory 方法的实现
+  - 首先对 postProcessBeforeDestruction 进行调用，然后调用 Bean 的 destory 方法，最后是对 Bean 的自定义销毁方法的调用
+
+> 在初始化 Bean 之前，会把相关的 BeanName、BeanClassLoader、BeanFactory 注入到 Bean 中去。
+>
+> 接着会调用 invokeInitMethods 和 afterPropertiesSet
+>
+> 最后还会判断 Bean 是否配置有 initMethod，如果有，则直接通过 invokeCustomInitMethod 调用，最终完成 Bean 的初始化
+
+### 5.2 lazy-init 属性和预实例化
+
+在 IoC 容器的初始化过程中，主要是对 BeanDefinition 的定位、载入、解析和注册。当应用第一次向容器索要 Bean 时，依赖注入才会发生。
+
+通过设置 lazy-init 属性，可以使容器初始化时就完成对 Bean 的依赖注入。虽然这种方式会对容器初始化的性能有一些影响，但是会提高应用第一次获取 Bean 的性能。
+
+在 `finishBeanFactoryInitialization` 中封装了对 lazy-init 属性的处理，实际的处理是在 `DefaultListableBeanFactory` 这个基本容器的 `preInstantiateSingletons` 方法中完成的。
+
+### 5.3 Bean 对 IoC 容器的感知
+
+一般情况下，Bean 并不需要了解容器的状态和直接使用容器，但是 Spring IoC 容器也提供了该功能，它是通过特定的 aware 接口实现的：
+
+- BeanNameAware - 获取实例名称
+- BeanFactoryAware - 直接得到 Bean 所在的 IoC 容器
+- ApplicationContextAware - 获得 Bean 所在的应用上下文 ApplicationContext
+- MessageSourceAware - 获得消息源
+- ApplicationEventPublisherAware - 获得应用上下文的事件发布器
+- ResourceLoaderAware - 得到 ResourceLoader，可以在 Bean中加载外部对应的 Resource 资源
+
+## 六、总结
+
+本章说明了 IoC 容器和上下文的基本工作原理、容器的初始化过程、依赖注入的实现，等等。
