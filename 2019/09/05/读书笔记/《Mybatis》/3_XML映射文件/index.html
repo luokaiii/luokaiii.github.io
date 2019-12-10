@@ -376,26 +376,26 @@
 <li>select - 查询语句</li>
 </ul>
 <h2 id="一、select"><a href="#一、select" class="headerlink" title="一、select"></a>一、select</h2><p>查询语句，如：</p>
-<pre class=" language-xml"><code class="language-xml"><span class="token tag"><span class="token tag"><span class="token punctuation">&lt;</span>select</span> <span class="token attr-name">id</span><span class="token attr-value"><span class="token punctuation">=</span><span class="token punctuation">"</span>selectPerson<span class="token punctuation">"</span></span> <span class="token attr-name">parameterType</span><span class="token attr-value"><span class="token punctuation">=</span><span class="token punctuation">"</span>int<span class="token punctuation">"</span></span> <span class="token attr-name">resultType</span><span class="token attr-value"><span class="token punctuation">=</span><span class="token punctuation">"</span>hashmap<span class="token punctuation">"</span></span><span class="token punctuation">></span></span>
+<pre><code class="xml">&lt;select id=&quot;selectPerson&quot; parameterType=&quot;int&quot; resultType=&quot;hashmap&quot;&gt;
     SELECT * FROM PERSON WHERE ID = #{id}
-<span class="token tag"><span class="token tag"><span class="token punctuation">&lt;/</span>select</span><span class="token punctuation">></span></span>
+&lt;/select&gt;
 </code></pre>
 <p>select 元素允许你配置很多属性来配置每条语句的作用细节</p>
-<pre class=" language-xml"><code class="language-xml"><span class="token tag"><span class="token tag"><span class="token punctuation">&lt;</span>select</span>
-          <span class="token attr-name">id</span><span class="token attr-value"><span class="token punctuation">=</span><span class="token punctuation">"</span>selectPerson<span class="token punctuation">"</span></span>
-        <span class="token attr-name">parameterType</span><span class="token attr-value"><span class="token punctuation">=</span><span class="token punctuation">"</span>int<span class="token punctuation">"</span></span>
-        <span class="token attr-name">parameterMap</span><span class="token attr-value"><span class="token punctuation">=</span><span class="token punctuation">"</span>deprecated<span class="token punctuation">"</span></span>
-        <span class="token attr-name">result</span><span class="token attr-value"><span class="token punctuation">=</span><span class="token punctuation">"</span>hashMap<span class="token punctuation">"</span></span>
-        <span class="token attr-name">resultMap</span><span class="token attr-value"><span class="token punctuation">=</span><span class="token punctuation">"</span>personResultMap<span class="token punctuation">"</span></span>
-        <span class="token attr-name">flushCache</span><span class="token attr-value"><span class="token punctuation">=</span><span class="token punctuation">"</span>false<span class="token punctuation">"</span></span>
-        <span class="token attr-name">useCache</span><span class="token attr-value"><span class="token punctuation">=</span><span class="token punctuation">"</span>true<span class="token punctuation">"</span></span>
-        <span class="token attr-name">timeout</span><span class="token attr-value"><span class="token punctuation">=</span><span class="token punctuation">"</span>10<span class="token punctuation">"</span></span>
-        <span class="token attr-name">fetchSize</span><span class="token attr-value"><span class="token punctuation">=</span><span class="token punctuation">"</span>256<span class="token punctuation">"</span></span>
-        <span class="token attr-name">statementType</span><span class="token attr-value"><span class="token punctuation">=</span><span class="token punctuation">"</span>PREPARED<span class="token punctuation">"</span></span>
-        <span class="token attr-name">resultSetType</span><span class="token attr-value"><span class="token punctuation">=</span><span class="token punctuation">"</span>FORWARD_ONLY<span class="token punctuation">"</span></span>
-        <span class="token punctuation">></span></span>
+<pre><code class="xml">&lt;select
+          id=&quot;selectPerson&quot;
+        parameterType=&quot;int&quot;
+        parameterMap=&quot;deprecated&quot;
+        result=&quot;hashMap&quot;
+        resultMap=&quot;personResultMap&quot;
+        flushCache=&quot;false&quot;
+        useCache=&quot;true&quot;
+        timeout=&quot;10&quot;
+        fetchSize=&quot;256&quot;
+        statementType=&quot;PREPARED&quot;
+        resultSetType=&quot;FORWARD_ONLY&quot;
+        &gt;
 
-<span class="token tag"><span class="token tag"><span class="token punctuation">&lt;/</span>select</span><span class="token punctuation">></span></span>
+&lt;/select&gt;
 </code></pre>
 <table>
 <thead>
@@ -464,62 +464,62 @@
 </tbody>
 </table>
 <h2 id="二、insert、update、delete"><a href="#二、insert、update、delete" class="headerlink" title="二、insert、update、delete"></a>二、insert、update、delete</h2><p>与 select 参数相似，以一个示例来说明：</p>
-<pre class=" language-xml"><code class="language-xml"><span class="token tag"><span class="token tag"><span class="token punctuation">&lt;</span>insert</span> <span class="token attr-name">id</span><span class="token attr-value"><span class="token punctuation">=</span><span class="token punctuation">"</span>insertAuthor<span class="token punctuation">"</span></span> <span class="token attr-name">useGeneratedKeys</span><span class="token attr-value"><span class="token punctuation">=</span><span class="token punctuation">"</span>true<span class="token punctuation">"</span></span> <span class="token attr-name">keyProperty</span><span class="token attr-value"><span class="token punctuation">=</span><span class="token punctuation">"</span>id<span class="token punctuation">"</span></span><span class="token punctuation">></span></span>
+<pre><code class="xml">&lt;insert id=&quot;insertAuthor&quot; useGeneratedKeys=&quot;true&quot; keyProperty=&quot;id&quot;&gt;
    insert into  Author(username,password,email) values 
-   <span class="token tag"><span class="token tag"><span class="token punctuation">&lt;</span>foreach</span> <span class="token attr-name">item</span><span class="token attr-value"><span class="token punctuation">=</span><span class="token punctuation">"</span>item<span class="token punctuation">"</span></span> <span class="token attr-name">collection</span><span class="token attr-value"><span class="token punctuation">=</span><span class="token punctuation">"</span>list<span class="token punctuation">"</span></span> <span class="token attr-name">separator</span><span class="token attr-value"><span class="token punctuation">=</span><span class="token punctuation">"</span>,<span class="token punctuation">"</span></span><span class="token punctuation">></span></span>
+   &lt;foreach item=&quot;item&quot; collection=&quot;list&quot; separator=&quot;,&quot;&gt;
        (#{item.username},#{item.password},#{item.email})
-   <span class="token tag"><span class="token tag"><span class="token punctuation">&lt;/</span>foreach</span><span class="token punctuation">></span></span>
-<span class="token tag"><span class="token tag"><span class="token punctuation">&lt;/</span>insert</span><span class="token punctuation">></span></span>
+   &lt;/foreach&gt;
+&lt;/insert&gt;
 
-<span class="token tag"><span class="token tag"><span class="token punctuation">&lt;</span>update</span> <span class="token attr-name">id</span><span class="token attr-value"><span class="token punctuation">=</span><span class="token punctuation">"</span>updateAuthor<span class="token punctuation">"</span></span><span class="token punctuation">></span></span>
+&lt;update id=&quot;updateAuthor&quot;&gt;
     update Author set
      username=#{username},
      password=#{password},
      email=#{email}
     where id=#{id}
-<span class="token tag"><span class="token tag"><span class="token punctuation">&lt;/</span>update</span><span class="token punctuation">></span></span>
+&lt;/update&gt;
 
-<span class="token tag"><span class="token tag"><span class="token punctuation">&lt;</span>delete</span> <span class="token attr-name">id</span><span class="token attr-value"><span class="token punctuation">=</span><span class="token punctuation">"</span>deleteAuthor<span class="token punctuation">"</span></span><span class="token punctuation">></span></span>
+&lt;delete id=&quot;deleteAuthor&quot;&gt;
     delete from Author where id=#{id}
-<span class="token tag"><span class="token tag"><span class="token punctuation">&lt;/</span>delete</span><span class="token punctuation">></span></span>
+&lt;/delete&gt;
 </code></pre>
 <h2 id="三、sql"><a href="#三、sql" class="headerlink" title="三、sql"></a>三、sql</h2><p>该元素可以被用来定义可重用的 SQL 代码段，这些 SQL 代码可以被包含在其他语句中。它可以在加载的时候被静态地设置参数。在不同的包含语句中可以设置不同的值到参数占位符上，如：</p>
-<pre class=" language-xml"><code class="language-xml"><span class="token tag"><span class="token tag"><span class="token punctuation">&lt;</span>sql</span> <span class="token attr-name">id</span><span class="token attr-value"><span class="token punctuation">=</span><span class="token punctuation">"</span>userColumns<span class="token punctuation">"</span></span><span class="token punctuation">></span></span> ${alias}.id,${alias}.username,${alias}.password<span class="token tag"><span class="token tag"><span class="token punctuation">&lt;/</span>sql</span><span class="token punctuation">></span></span>
+<pre><code class="xml">&lt;sql id=&quot;userColumns&quot;&gt; ${alias}.id,${alias}.username,${alias}.password&lt;/sql&gt;
 </code></pre>
-<pre class=" language-xml"><code class="language-xml"><span class="token tag"><span class="token tag"><span class="token punctuation">&lt;</span>select</span> <span class="token attr-name">id</span><span class="token attr-value"><span class="token punctuation">=</span><span class="token punctuation">"</span>selectUsers<span class="token punctuation">"</span></span> <span class="token attr-name">resultType</span><span class="token attr-value"><span class="token punctuation">=</span><span class="token punctuation">"</span>map<span class="token punctuation">"</span></span><span class="token punctuation">></span></span>
+<pre><code class="xml">&lt;select id=&quot;selectUsers&quot; resultType=&quot;map&quot;&gt;
     select
-     <span class="token tag"><span class="token tag"><span class="token punctuation">&lt;</span>includ</span> <span class="token attr-name">refid</span><span class="token attr-value"><span class="token punctuation">=</span><span class="token punctuation">"</span>userColumns<span class="token punctuation">"</span></span><span class="token punctuation">></span></span><span class="token tag"><span class="token tag"><span class="token punctuation">&lt;</span>property</span> <span class="token attr-name">name</span><span class="token attr-value"><span class="token punctuation">=</span><span class="token punctuation">"</span>alias<span class="token punctuation">"</span></span> <span class="token attr-name">value</span><span class="token attr-value"><span class="token punctuation">=</span><span class="token punctuation">"</span>t1<span class="token punctuation">"</span></span><span class="token punctuation">/></span></span><span class="token tag"><span class="token tag"><span class="token punctuation">&lt;/</span>includ</span><span class="token punctuation">></span></span>
-     <span class="token tag"><span class="token tag"><span class="token punctuation">&lt;</span>includ</span> <span class="token attr-name">refid</span><span class="token attr-value"><span class="token punctuation">=</span><span class="token punctuation">"</span>userColumns<span class="token punctuation">"</span></span><span class="token punctuation">></span></span><span class="token tag"><span class="token tag"><span class="token punctuation">&lt;</span>property</span> <span class="token attr-name">name</span><span class="token attr-value"><span class="token punctuation">=</span><span class="token punctuation">"</span>alias<span class="token punctuation">"</span></span> <span class="token attr-name">value</span><span class="token attr-value"><span class="token punctuation">=</span><span class="token punctuation">"</span>t1<span class="token punctuation">"</span></span><span class="token punctuation">/></span></span><span class="token tag"><span class="token tag"><span class="token punctuation">&lt;/</span>includ</span><span class="token punctuation">></span></span>
+     &lt;includ refid=&quot;userColumns&quot;&gt;&lt;property name=&quot;alias&quot; value=&quot;t1&quot;/&gt;&lt;/includ&gt;
+     &lt;includ refid=&quot;userColumns&quot;&gt;&lt;property name=&quot;alias&quot; value=&quot;t1&quot;/&gt;&lt;/includ&gt;
     from some_table t1
     cross join some_table t2
-<span class="token tag"><span class="token tag"><span class="token punctuation">&lt;/</span>select</span><span class="token punctuation">></span></span>
+&lt;/select&gt;
 </code></pre>
 <blockquote>
 <p>cross join 表示笛卡尔积，t1+t2的所有情况</p>
 </blockquote>
 <p>属性值也可以被用在 include 元素的 refid 属性里或 include 元素的内部语句中，如：</p>
-<pre class=" language-xml"><code class="language-xml"><span class="token tag"><span class="token tag"><span class="token punctuation">&lt;</span>sql</span> <span class="token attr-name">id</span><span class="token attr-value"><span class="token punctuation">=</span><span class="token punctuation">"</span>sometable<span class="token punctuation">"</span></span><span class="token punctuation">></span></span>
+<pre><code class="xml">&lt;sql id=&quot;sometable&quot;&gt;
     ${prefix}Table
-<span class="token tag"><span class="token tag"><span class="token punctuation">&lt;/</span>sql</span><span class="token punctuation">></span></span>
+&lt;/sql&gt;
 
-<span class="token tag"><span class="token tag"><span class="token punctuation">&lt;</span>sql</span> <span class="token attr-name">id</span><span class="token attr-value"><span class="token punctuation">=</span><span class="token punctuation">"</span>someinclud<span class="token punctuation">"</span></span><span class="token punctuation">></span></span>
+&lt;sql id=&quot;someinclud&quot;&gt;
       from
-     <span class="token tag"><span class="token tag"><span class="token punctuation">&lt;</span>includ</span> <span class="token attr-name">refid</span><span class="token attr-value"><span class="token punctuation">=</span><span class="token punctuation">"</span>${include_target}<span class="token punctuation">"</span></span><span class="token punctuation">/></span></span>
-<span class="token tag"><span class="token tag"><span class="token punctuation">&lt;/</span>sql</span><span class="token punctuation">></span></span>
+     &lt;includ refid=&quot;${include_target}&quot;/&gt;
+&lt;/sql&gt;
 
-<span class="token tag"><span class="token tag"><span class="token punctuation">&lt;</span>select</span> <span class="token attr-name">id</span><span class="token attr-value"><span class="token punctuation">=</span><span class="token punctuation">"</span>select<span class="token punctuation">"</span></span> <span class="token attr-name">resultType</span><span class="token attr-value"><span class="token punctuation">=</span><span class="token punctuation">"</span>map<span class="token punctuation">"</span></span><span class="token punctuation">></span></span>
+&lt;select id=&quot;select&quot; resultType=&quot;map&quot;&gt;
     select
      field1,field2,field3
-    <span class="token tag"><span class="token tag"><span class="token punctuation">&lt;</span>includ</span> <span class="token attr-name">refid</span><span class="token attr-value"><span class="token punctuation">=</span><span class="token punctuation">"</span>someinclud<span class="token punctuation">"</span></span><span class="token punctuation">></span></span>
-     <span class="token tag"><span class="token tag"><span class="token punctuation">&lt;</span>property</span> <span class="token attr-name">name</span><span class="token attr-value"><span class="token punctuation">=</span><span class="token punctuation">"</span>prefix<span class="token punctuation">"</span></span> <span class="token attr-name">value</span><span class="token attr-value"><span class="token punctuation">=</span><span class="token punctuation">"</span>Some<span class="token punctuation">"</span></span><span class="token punctuation">/></span></span>
-     <span class="token tag"><span class="token tag"><span class="token punctuation">&lt;</span>property</span> <span class="token attr-name">name</span><span class="token attr-value"><span class="token punctuation">=</span><span class="token punctuation">"</span>includ_target<span class="token punctuation">"</span></span> <span class="token attr-name">value</span><span class="token attr-value"><span class="token punctuation">=</span><span class="token punctuation">"</span>sometable<span class="token punctuation">"</span></span><span class="token punctuation">/></span></span>
-    <span class="token tag"><span class="token tag"><span class="token punctuation">&lt;/</span>includ</span><span class="token punctuation">></span></span>
-<span class="token tag"><span class="token tag"><span class="token punctuation">&lt;/</span>select</span><span class="token punctuation">></span></span>
+    &lt;includ refid=&quot;someinclud&quot;&gt;
+     &lt;property name=&quot;prefix&quot; value=&quot;Some&quot;/&gt;
+     &lt;property name=&quot;includ_target&quot; value=&quot;sometable&quot;/&gt;
+    &lt;/includ&gt;
+&lt;/select&gt;
 </code></pre>
-<h2 id="四、参数"><a href="#四、参数" class="headerlink" title="四、参数"></a>四、参数</h2><pre class=" language-xml"><code class="language-xml"><span class="token tag"><span class="token tag"><span class="token punctuation">&lt;</span>insert</span> <span class="token attr-name">id</span><span class="token attr-value"><span class="token punctuation">=</span><span class="token punctuation">"</span>selectUser<span class="token punctuation">"</span></span> <span class="token attr-name">parameterType</span><span class="token attr-value"><span class="token punctuation">=</span><span class="token punctuation">"</span>User<span class="token punctuation">"</span></span><span class="token punctuation">></span></span>
+<h2 id="四、参数"><a href="#四、参数" class="headerlink" title="四、参数"></a>四、参数</h2><pre><code class="xml">&lt;insert id=&quot;selectUser&quot; parameterType=&quot;User&quot;&gt;
     insert into users (id,username,password)
     values (#{id},#{username},#{password})
-<span class="token tag"><span class="token tag"><span class="token punctuation">&lt;/</span>insert</span><span class="token punctuation">></span></span>
+&lt;/insert&gt;
 </code></pre>
 <p>上面的语句中，User 类型的参数对象传递到了语句中，id、username、password 属性会被查找，然后将它们的值传入预处理语句的参数中。</p>
 <p>参数也可以指定一个特殊的数据类型：</p>
@@ -541,64 +541,64 @@
 </blockquote>
 <p>这样，MyBatis 不会修改或转义字符串。</p>
 <p>有时，替换字符串会非常有用，如：</p>
-<pre class=" language-java"><code class="language-java"><span class="token annotation punctuation">@Select</span><span class="token punctuation">(</span><span class="token string">"select * from user where id=#{id}"</span><span class="token punctuation">)</span>
-User <span class="token function">findById</span><span class="token punctuation">(</span><span class="token annotation punctuation">@Param</span><span class="token punctuation">(</span><span class="token string">"id"</span><span class="token punctuation">)</span> <span class="token keyword">long</span> id<span class="token punctuation">)</span><span class="token punctuation">;</span>
+<pre><code class="java">@Select(&quot;select * from user where id=#{id}&quot;)
+User findById(@Param(&quot;id&quot;) long id);
 
-<span class="token annotation punctuation">@Select</span><span class="token punctuation">(</span><span class="token string">"select * from user where name=#{name}"</span><span class="token punctuation">)</span>
-User <span class="token function">findByName</span><span class="token punctuation">(</span><span class="token annotation punctuation">@Param</span><span class="token punctuation">(</span><span class="token string">"name"</span><span class="token punctuation">)</span> String name<span class="token punctuation">)</span><span class="token punctuation">;</span>
+@Select(&quot;select * from user where name=#{name}&quot;)
+User findByName(@Param(&quot;name&quot;) String name);
 
-<span class="token annotation punctuation">@Select</span><span class="token punctuation">(</span><span class="token string">"select * from user where email=#{email}"</span><span class="token punctuation">)</span>
-User <span class="token function">findByEmail</span><span class="token punctuation">(</span><span class="token annotation punctuation">@Param</span><span class="token punctuation">(</span><span class="token string">"email"</span><span class="token punctuation">)</span> <span class="token keyword">long</span> email<span class="token punctuation">)</span><span class="token punctuation">;</span>
+@Select(&quot;select * from user where email=#{email}&quot;)
+User findByEmail(@Param(&quot;email&quot;) long email);
 </code></pre>
 <p>可以只写一个方法：</p>
-<pre class=" language-java"><code class="language-java"><span class="token annotation punctuation">@Select</span><span class="token punctuation">(</span><span class="token string">"select * from user where ${column}=#{email}"</span><span class="token punctuation">)</span>
-User <span class="token function">findByColumn</span><span class="token punctuation">(</span><span class="token annotation punctuation">@Param</span><span class="token punctuation">(</span><span class="token string">"column"</span><span class="token punctuation">)</span> String column<span class="token punctuation">,</span> <span class="token annotation punctuation">@Param</span><span class="token punctuation">(</span><span class="token string">"email"</span><span class="token punctuation">)</span> <span class="token keyword">long</span> email<span class="token punctuation">)</span><span class="token punctuation">;</span>
+<pre><code class="java">@Select(&quot;select * from user where ${column}=#{email}&quot;)
+User findByColumn(@Param(&quot;column&quot;) String column, @Param(&quot;email&quot;) long email);
 </code></pre>
 <p>使用的时候，可以如下调用：</p>
-<pre class=" language-java"><code class="language-java">User u1 <span class="token operator">=</span> userMapper<span class="token punctuation">.</span><span class="token function">findByColumn</span><span class="token punctuation">(</span><span class="token string">"id"</span><span class="token punctuation">,</span>1L<span class="token punctuation">)</span><span class="token punctuation">;</span>
-User u2 <span class="token operator">=</span> userMapper<span class="token punctuation">.</span><span class="token function">findByColumn</span><span class="token punctuation">(</span><span class="token string">"name"</span><span class="token punctuation">,</span><span class="token string">"zhangsan"</span><span class="token punctuation">)</span><span class="token punctuation">;</span>
-User u3 <span class="token operator">=</span> userMapper<span class="token punctuation">.</span><span class="token function">findByColumn</span><span class="token punctuation">(</span><span class="token string">"email"</span><span class="token punctuation">,</span><span class="token string">"xx@qq.com"</span><span class="token punctuation">)</span><span class="token punctuation">;</span>
+<pre><code class="java">User u1 = userMapper.findByColumn(&quot;id&quot;,1L);
+User u2 = userMapper.findByColumn(&quot;name&quot;,&quot;zhangsan&quot;);
+User u3 = userMapper.findByColumn(&quot;email&quot;,&quot;xx@qq.com&quot;);
 </code></pre>
 <h2 id="五、结果映射"><a href="#五、结果映射" class="headerlink" title="五、结果映射"></a>五、结果映射</h2><p>resultMap 可以将返回结果映射到JavaBean或POJO上。如：</p>
-<pre class=" language-xml"><code class="language-xml"><span class="token tag"><span class="token tag"><span class="token punctuation">&lt;</span>select</span> <span class="token attr-name">id</span><span class="token attr-value"><span class="token punctuation">=</span><span class="token punctuation">"</span>selectUsers<span class="token punctuation">"</span></span> <span class="token attr-name">resultType</span><span class="token attr-value"><span class="token punctuation">=</span><span class="token punctuation">"</span>cn.luokaiii.model.User<span class="token punctuation">"</span></span><span class="token punctuation">></span></span>
+<pre><code class="xml">&lt;select id=&quot;selectUsers&quot; resultType=&quot;cn.luokaiii.model.User&quot;&gt;
     select id,username
     from tb_user
     where id=#{id}
-<span class="token tag"><span class="token tag"><span class="token punctuation">&lt;/</span>select</span><span class="token punctuation">></span></span>
+&lt;/select&gt;
 </code></pre>
 <p>也可以使用类型别名，来代替完全限定名：</p>
-<pre class=" language-xml"><code class="language-xml"><span class="token tag"><span class="token tag"><span class="token punctuation">&lt;</span>typeAlias</span> <span class="token attr-name">type</span><span class="token attr-value"><span class="token punctuation">=</span><span class="token punctuation">"</span>cn.luokaiii.model.User<span class="token punctuation">"</span></span> <span class="token attr-name">alias</span><span class="token attr-value"><span class="token punctuation">=</span><span class="token punctuation">"</span>User<span class="token punctuation">"</span></span><span class="token punctuation">/></span></span>
+<pre><code class="xml">&lt;typeAlias type=&quot;cn.luokaiii.model.User&quot; alias=&quot;User&quot;/&gt;
 
-<span class="token tag"><span class="token tag"><span class="token punctuation">&lt;</span>select</span> <span class="token attr-name">id</span><span class="token attr-value"><span class="token punctuation">=</span><span class="token punctuation">"</span>selectUsers<span class="token punctuation">"</span></span> <span class="token attr-name">resultType</span><span class="token attr-value"><span class="token punctuation">=</span><span class="token punctuation">"</span>User<span class="token punctuation">"</span></span><span class="token punctuation">></span></span>
+&lt;select id=&quot;selectUsers&quot; resultType=&quot;User&quot;&gt;
     select id,username
     from tb_user
     where id=#{id}
-<span class="token tag"><span class="token tag"><span class="token punctuation">&lt;/</span>select</span><span class="token punctuation">></span></span>
+&lt;/select&gt;
 </code></pre>
 <p>如果列名与属性名没有精确匹配，可以在 SELECT 语句中对列使用别名来匹配标签，如：</p>
-<pre class=" language-xml"><code class="language-xml"><span class="token tag"><span class="token tag"><span class="token punctuation">&lt;</span>select</span> <span class="token attr-name">id</span><span class="token attr-value"><span class="token punctuation">=</span><span class="token punctuation">"</span>selectUsers<span class="token punctuation">"</span></span> <span class="token attr-name">resultType</span><span class="token attr-value"><span class="token punctuation">=</span><span class="token punctuation">"</span>cn.luokaiii.model.User<span class="token punctuation">"</span></span><span class="token punctuation">></span></span>
+<pre><code class="xml">&lt;select id=&quot;selectUsers&quot; resultType=&quot;cn.luokaiii.model.User&quot;&gt;
     select 
-     id        as "id",
-     username  as "userName"
+     id        as &quot;id&quot;,
+     username  as &quot;userName&quot;
     from tb_user
     where id=#{id}
-<span class="token tag"><span class="token tag"><span class="token punctuation">&lt;/</span>select</span><span class="token punctuation">></span></span>
+&lt;/select&gt;
 </code></pre>
 <p>或者使用外部的 <code>resultMap</code> 来映射：</p>
-<pre class=" language-xml"><code class="language-xml"><span class="token tag"><span class="token tag"><span class="token punctuation">&lt;</span>resultMap</span> <span class="token attr-name">id</span><span class="token attr-value"><span class="token punctuation">=</span><span class="token punctuation">"</span>userResultMap<span class="token punctuation">"</span></span> <span class="token attr-name">type</span><span class="token attr-value"><span class="token punctuation">=</span><span class="token punctuation">"</span>User<span class="token punctuation">"</span></span><span class="token punctuation">></span></span>
-    <span class="token tag"><span class="token tag"><span class="token punctuation">&lt;</span>id</span> <span class="token attr-name">property</span><span class="token attr-value"><span class="token punctuation">=</span><span class="token punctuation">"</span>id<span class="token punctuation">"</span></span> <span class="token attr-name">column</span><span class="token attr-value"><span class="token punctuation">=</span><span class="token punctuation">"</span>user_id<span class="token punctuation">"</span></span><span class="token punctuation">/></span></span>
-    <span class="token tag"><span class="token tag"><span class="token punctuation">&lt;</span>result</span> <span class="token attr-name">property</span><span class="token attr-value"><span class="token punctuation">=</span><span class="token punctuation">"</span>username<span class="token punctuation">"</span></span> <span class="token attr-name">column</span><span class="token attr-value"><span class="token punctuation">=</span><span class="token punctuation">"</span>user_name<span class="token punctuation">"</span></span><span class="token punctuation">/></span></span>
-    <span class="token tag"><span class="token tag"><span class="token punctuation">&lt;</span>result</span> <span class="token attr-name">property</span><span class="token attr-value"><span class="token punctuation">=</span><span class="token punctuation">"</span>password<span class="token punctuation">"</span></span> <span class="token attr-name">column</span><span class="token attr-value"><span class="token punctuation">=</span><span class="token punctuation">"</span>hashed_password<span class="token punctuation">"</span></span><span class="token punctuation">/></span></span>
-<span class="token tag"><span class="token tag"><span class="token punctuation">&lt;/</span>resultMap</span><span class="token punctuation">></span></span>
+<pre><code class="xml">&lt;resultMap id=&quot;userResultMap&quot; type=&quot;User&quot;&gt;
+    &lt;id property=&quot;id&quot; column=&quot;user_id&quot;/&gt;
+    &lt;result property=&quot;username&quot; column=&quot;user_name&quot;/&gt;
+    &lt;result property=&quot;password&quot; column=&quot;hashed_password&quot;/&gt;
+&lt;/resultMap&gt;
 </code></pre>
-<pre class=" language-xml"><code class="language-xml"><span class="token tag"><span class="token tag"><span class="token punctuation">&lt;</span>select</span> <span class="token attr-name">id</span><span class="token attr-value"><span class="token punctuation">=</span><span class="token punctuation">"</span>selectUsers<span class="token punctuation">"</span></span> <span class="token attr-name">resultMap</span><span class="token attr-value"><span class="token punctuation">=</span><span class="token punctuation">"</span>userResultMap<span class="token punctuation">"</span></span><span class="token punctuation">></span></span>
+<pre><code class="xml">&lt;select id=&quot;selectUsers&quot; resultMap=&quot;userResultMap&quot;&gt;
     select id,username
     from tb_user
     where id=#{id}
-<span class="token tag"><span class="token tag"><span class="token punctuation">&lt;/</span>select</span><span class="token punctuation">></span></span>
+&lt;/select&gt;
 </code></pre>
-<h3 id="高级结果映射"><a href="#高级结果映射" class="headerlink" title="高级结果映射"></a>高级结果映射</h3><pre class=" language-xml"><code class="language-xml"><span class="token comment" spellcheck="true">&lt;!-- 非常复杂的语句 --></span>
-<span class="token tag"><span class="token tag"><span class="token punctuation">&lt;</span>select</span> <span class="token attr-name">id</span><span class="token attr-value"><span class="token punctuation">=</span><span class="token punctuation">"</span>selectBlogDetails<span class="token punctuation">"</span></span> <span class="token attr-name">resultMap</span><span class="token attr-value"><span class="token punctuation">=</span><span class="token punctuation">"</span>detailedBlogResultMap<span class="token punctuation">"</span></span><span class="token punctuation">></span></span>
+<h3 id="高级结果映射"><a href="#高级结果映射" class="headerlink" title="高级结果映射"></a>高级结果映射</h3><pre><code class="xml">&lt;!-- 非常复杂的语句 --&gt;
+&lt;select id=&quot;selectBlogDetails&quot; resultMap=&quot;detailedBlogResultMap&quot;&gt;
   select
        B.id as blog_id,
        B.title as blog_title,
@@ -630,37 +630,37 @@ User u3 <span class="token operator">=</span> userMapper<span class="token punct
        left outer join Post_Tag PT on PT.post_id = P.id
        left outer join Tag T on PT.tag_id = T.id
   where B.id = #{id}
-<span class="token tag"><span class="token tag"><span class="token punctuation">&lt;/</span>select</span><span class="token punctuation">></span></span>
+&lt;/select&gt;
 </code></pre>
-<pre class=" language-xml"><code class="language-xml"><span class="token comment" spellcheck="true">&lt;!-- 非常复杂的结果映射 --></span>
-<span class="token tag"><span class="token tag"><span class="token punctuation">&lt;</span>resultMap</span> <span class="token attr-name">id</span><span class="token attr-value"><span class="token punctuation">=</span><span class="token punctuation">"</span>detailedBlogResultMap<span class="token punctuation">"</span></span> <span class="token attr-name">type</span><span class="token attr-value"><span class="token punctuation">=</span><span class="token punctuation">"</span>Blog<span class="token punctuation">"</span></span><span class="token punctuation">></span></span>
-  <span class="token tag"><span class="token tag"><span class="token punctuation">&lt;</span>constructor</span><span class="token punctuation">></span></span>
-    <span class="token tag"><span class="token tag"><span class="token punctuation">&lt;</span>idArg</span> <span class="token attr-name">column</span><span class="token attr-value"><span class="token punctuation">=</span><span class="token punctuation">"</span>blog_id<span class="token punctuation">"</span></span> <span class="token attr-name">javaType</span><span class="token attr-value"><span class="token punctuation">=</span><span class="token punctuation">"</span>int<span class="token punctuation">"</span></span><span class="token punctuation">/></span></span>
-  <span class="token tag"><span class="token tag"><span class="token punctuation">&lt;/</span>constructor</span><span class="token punctuation">></span></span>
-  <span class="token tag"><span class="token tag"><span class="token punctuation">&lt;</span>result</span> <span class="token attr-name">property</span><span class="token attr-value"><span class="token punctuation">=</span><span class="token punctuation">"</span>title<span class="token punctuation">"</span></span> <span class="token attr-name">column</span><span class="token attr-value"><span class="token punctuation">=</span><span class="token punctuation">"</span>blog_title<span class="token punctuation">"</span></span><span class="token punctuation">/></span></span>
-  <span class="token tag"><span class="token tag"><span class="token punctuation">&lt;</span>association</span> <span class="token attr-name">property</span><span class="token attr-value"><span class="token punctuation">=</span><span class="token punctuation">"</span>author<span class="token punctuation">"</span></span> <span class="token attr-name">javaType</span><span class="token attr-value"><span class="token punctuation">=</span><span class="token punctuation">"</span>Author<span class="token punctuation">"</span></span><span class="token punctuation">></span></span>
-    <span class="token tag"><span class="token tag"><span class="token punctuation">&lt;</span>id</span> <span class="token attr-name">property</span><span class="token attr-value"><span class="token punctuation">=</span><span class="token punctuation">"</span>id<span class="token punctuation">"</span></span> <span class="token attr-name">column</span><span class="token attr-value"><span class="token punctuation">=</span><span class="token punctuation">"</span>author_id<span class="token punctuation">"</span></span><span class="token punctuation">/></span></span>
-    <span class="token tag"><span class="token tag"><span class="token punctuation">&lt;</span>result</span> <span class="token attr-name">property</span><span class="token attr-value"><span class="token punctuation">=</span><span class="token punctuation">"</span>username<span class="token punctuation">"</span></span> <span class="token attr-name">column</span><span class="token attr-value"><span class="token punctuation">=</span><span class="token punctuation">"</span>author_username<span class="token punctuation">"</span></span><span class="token punctuation">/></span></span>
-    <span class="token tag"><span class="token tag"><span class="token punctuation">&lt;</span>result</span> <span class="token attr-name">property</span><span class="token attr-value"><span class="token punctuation">=</span><span class="token punctuation">"</span>password<span class="token punctuation">"</span></span> <span class="token attr-name">column</span><span class="token attr-value"><span class="token punctuation">=</span><span class="token punctuation">"</span>author_password<span class="token punctuation">"</span></span><span class="token punctuation">/></span></span>
-    <span class="token tag"><span class="token tag"><span class="token punctuation">&lt;</span>result</span> <span class="token attr-name">property</span><span class="token attr-value"><span class="token punctuation">=</span><span class="token punctuation">"</span>email<span class="token punctuation">"</span></span> <span class="token attr-name">column</span><span class="token attr-value"><span class="token punctuation">=</span><span class="token punctuation">"</span>author_email<span class="token punctuation">"</span></span><span class="token punctuation">/></span></span>
-    <span class="token tag"><span class="token tag"><span class="token punctuation">&lt;</span>result</span> <span class="token attr-name">property</span><span class="token attr-value"><span class="token punctuation">=</span><span class="token punctuation">"</span>bio<span class="token punctuation">"</span></span> <span class="token attr-name">column</span><span class="token attr-value"><span class="token punctuation">=</span><span class="token punctuation">"</span>author_bio<span class="token punctuation">"</span></span><span class="token punctuation">/></span></span>
-    <span class="token tag"><span class="token tag"><span class="token punctuation">&lt;</span>result</span> <span class="token attr-name">property</span><span class="token attr-value"><span class="token punctuation">=</span><span class="token punctuation">"</span>favouriteSection<span class="token punctuation">"</span></span> <span class="token attr-name">column</span><span class="token attr-value"><span class="token punctuation">=</span><span class="token punctuation">"</span>author_favourite_section<span class="token punctuation">"</span></span><span class="token punctuation">/></span></span>
-  <span class="token tag"><span class="token tag"><span class="token punctuation">&lt;/</span>association</span><span class="token punctuation">></span></span>
-  <span class="token tag"><span class="token tag"><span class="token punctuation">&lt;</span>collection</span> <span class="token attr-name">property</span><span class="token attr-value"><span class="token punctuation">=</span><span class="token punctuation">"</span>posts<span class="token punctuation">"</span></span> <span class="token attr-name">ofType</span><span class="token attr-value"><span class="token punctuation">=</span><span class="token punctuation">"</span>Post<span class="token punctuation">"</span></span><span class="token punctuation">></span></span>
-    <span class="token tag"><span class="token tag"><span class="token punctuation">&lt;</span>id</span> <span class="token attr-name">property</span><span class="token attr-value"><span class="token punctuation">=</span><span class="token punctuation">"</span>id<span class="token punctuation">"</span></span> <span class="token attr-name">column</span><span class="token attr-value"><span class="token punctuation">=</span><span class="token punctuation">"</span>post_id<span class="token punctuation">"</span></span><span class="token punctuation">/></span></span>
-    <span class="token tag"><span class="token tag"><span class="token punctuation">&lt;</span>result</span> <span class="token attr-name">property</span><span class="token attr-value"><span class="token punctuation">=</span><span class="token punctuation">"</span>subject<span class="token punctuation">"</span></span> <span class="token attr-name">column</span><span class="token attr-value"><span class="token punctuation">=</span><span class="token punctuation">"</span>post_subject<span class="token punctuation">"</span></span><span class="token punctuation">/></span></span>
-    <span class="token tag"><span class="token tag"><span class="token punctuation">&lt;</span>association</span> <span class="token attr-name">property</span><span class="token attr-value"><span class="token punctuation">=</span><span class="token punctuation">"</span>author<span class="token punctuation">"</span></span> <span class="token attr-name">javaType</span><span class="token attr-value"><span class="token punctuation">=</span><span class="token punctuation">"</span>Author<span class="token punctuation">"</span></span><span class="token punctuation">/></span></span>
-    <span class="token tag"><span class="token tag"><span class="token punctuation">&lt;</span>collection</span> <span class="token attr-name">property</span><span class="token attr-value"><span class="token punctuation">=</span><span class="token punctuation">"</span>comments<span class="token punctuation">"</span></span> <span class="token attr-name">ofType</span><span class="token attr-value"><span class="token punctuation">=</span><span class="token punctuation">"</span>Comment<span class="token punctuation">"</span></span><span class="token punctuation">></span></span>
-      <span class="token tag"><span class="token tag"><span class="token punctuation">&lt;</span>id</span> <span class="token attr-name">property</span><span class="token attr-value"><span class="token punctuation">=</span><span class="token punctuation">"</span>id<span class="token punctuation">"</span></span> <span class="token attr-name">column</span><span class="token attr-value"><span class="token punctuation">=</span><span class="token punctuation">"</span>comment_id<span class="token punctuation">"</span></span><span class="token punctuation">/></span></span>
-    <span class="token tag"><span class="token tag"><span class="token punctuation">&lt;/</span>collection</span><span class="token punctuation">></span></span>
-    <span class="token tag"><span class="token tag"><span class="token punctuation">&lt;</span>collection</span> <span class="token attr-name">property</span><span class="token attr-value"><span class="token punctuation">=</span><span class="token punctuation">"</span>tags<span class="token punctuation">"</span></span> <span class="token attr-name">ofType</span><span class="token attr-value"><span class="token punctuation">=</span><span class="token punctuation">"</span>Tag<span class="token punctuation">"</span></span> <span class="token punctuation">></span></span>
-      <span class="token tag"><span class="token tag"><span class="token punctuation">&lt;</span>id</span> <span class="token attr-name">property</span><span class="token attr-value"><span class="token punctuation">=</span><span class="token punctuation">"</span>id<span class="token punctuation">"</span></span> <span class="token attr-name">column</span><span class="token attr-value"><span class="token punctuation">=</span><span class="token punctuation">"</span>tag_id<span class="token punctuation">"</span></span><span class="token punctuation">/></span></span>
-    <span class="token tag"><span class="token tag"><span class="token punctuation">&lt;/</span>collection</span><span class="token punctuation">></span></span>
-    <span class="token tag"><span class="token tag"><span class="token punctuation">&lt;</span>discriminator</span> <span class="token attr-name">javaType</span><span class="token attr-value"><span class="token punctuation">=</span><span class="token punctuation">"</span>int<span class="token punctuation">"</span></span> <span class="token attr-name">column</span><span class="token attr-value"><span class="token punctuation">=</span><span class="token punctuation">"</span>draft<span class="token punctuation">"</span></span><span class="token punctuation">></span></span>
-      <span class="token tag"><span class="token tag"><span class="token punctuation">&lt;</span>case</span> <span class="token attr-name">value</span><span class="token attr-value"><span class="token punctuation">=</span><span class="token punctuation">"</span>1<span class="token punctuation">"</span></span> <span class="token attr-name">resultType</span><span class="token attr-value"><span class="token punctuation">=</span><span class="token punctuation">"</span>DraftPost<span class="token punctuation">"</span></span><span class="token punctuation">/></span></span>
-    <span class="token tag"><span class="token tag"><span class="token punctuation">&lt;/</span>discriminator</span><span class="token punctuation">></span></span>
-  <span class="token tag"><span class="token tag"><span class="token punctuation">&lt;/</span>collection</span><span class="token punctuation">></span></span>
-<span class="token tag"><span class="token tag"><span class="token punctuation">&lt;/</span>resultMap</span><span class="token punctuation">></span></span>
+<pre><code class="xml">&lt;!-- 非常复杂的结果映射 --&gt;
+&lt;resultMap id=&quot;detailedBlogResultMap&quot; type=&quot;Blog&quot;&gt;
+  &lt;constructor&gt;
+    &lt;idArg column=&quot;blog_id&quot; javaType=&quot;int&quot;/&gt;
+  &lt;/constructor&gt;
+  &lt;result property=&quot;title&quot; column=&quot;blog_title&quot;/&gt;
+  &lt;association property=&quot;author&quot; javaType=&quot;Author&quot;&gt;
+    &lt;id property=&quot;id&quot; column=&quot;author_id&quot;/&gt;
+    &lt;result property=&quot;username&quot; column=&quot;author_username&quot;/&gt;
+    &lt;result property=&quot;password&quot; column=&quot;author_password&quot;/&gt;
+    &lt;result property=&quot;email&quot; column=&quot;author_email&quot;/&gt;
+    &lt;result property=&quot;bio&quot; column=&quot;author_bio&quot;/&gt;
+    &lt;result property=&quot;favouriteSection&quot; column=&quot;author_favourite_section&quot;/&gt;
+  &lt;/association&gt;
+  &lt;collection property=&quot;posts&quot; ofType=&quot;Post&quot;&gt;
+    &lt;id property=&quot;id&quot; column=&quot;post_id&quot;/&gt;
+    &lt;result property=&quot;subject&quot; column=&quot;post_subject&quot;/&gt;
+    &lt;association property=&quot;author&quot; javaType=&quot;Author&quot;/&gt;
+    &lt;collection property=&quot;comments&quot; ofType=&quot;Comment&quot;&gt;
+      &lt;id property=&quot;id&quot; column=&quot;comment_id&quot;/&gt;
+    &lt;/collection&gt;
+    &lt;collection property=&quot;tags&quot; ofType=&quot;Tag&quot; &gt;
+      &lt;id property=&quot;id&quot; column=&quot;tag_id&quot;/&gt;
+    &lt;/collection&gt;
+    &lt;discriminator javaType=&quot;int&quot; column=&quot;draft&quot;&gt;
+      &lt;case value=&quot;1&quot; resultType=&quot;DraftPost&quot;/&gt;
+    &lt;/discriminator&gt;
+  &lt;/collection&gt;
+&lt;/resultMap&gt;
 </code></pre>
 <h3 id="结果映射（resultMap）"><a href="#结果映射（resultMap）" class="headerlink" title="结果映射（resultMap）"></a>结果映射（resultMap）</h3><ul>
 <li>constructor - 用于在实例化类时，注入结果到构造方法中<ul>
@@ -687,47 +687,47 @@ User u3 <span class="token operator">=</span> userMapper<span class="token punct
 </li>
 </ul>
 <h3 id="id-amp-result"><a href="#id-amp-result" class="headerlink" title="id &amp; result"></a>id &amp; result</h3><p>id 和 result 元素都将一个列的值映射到一个简单数据类型的属性或字段。</p>
-<pre class=" language-xml"><code class="language-xml"><span class="token tag"><span class="token tag"><span class="token punctuation">&lt;</span>id</span> <span class="token attr-name">property</span><span class="token attr-value"><span class="token punctuation">=</span><span class="token punctuation">"</span>id<span class="token punctuation">"</span></span> <span class="token attr-name">column</span><span class="token attr-value"><span class="token punctuation">=</span><span class="token punctuation">"</span>post_id<span class="token punctuation">"</span></span><span class="token punctuation">/></span></span>
-<span class="token tag"><span class="token tag"><span class="token punctuation">&lt;</span>result</span> <span class="token attr-name">property</span><span class="token attr-value"><span class="token punctuation">=</span><span class="token punctuation">"</span>subject<span class="token punctuation">"</span></span> <span class="token attr-name">column</span><span class="token attr-value"><span class="token punctuation">=</span><span class="token punctuation">"</span>post_subject<span class="token punctuation">"</span></span><span class="token punctuation">/></span></span>
+<pre><code class="xml">&lt;id property=&quot;id&quot; column=&quot;post_id&quot;/&gt;
+&lt;result property=&quot;subject&quot; column=&quot;post_subject&quot;/&gt;
 </code></pre>
 <h3 id="构造方法"><a href="#构造方法" class="headerlink" title="构造方法"></a>构造方法</h3><p>有时，需要使用不可变类来接收，即在构造方法中注入允许在初始化时设置的值，而不暴露出公有方法。</p>
-<pre class=" language-java"><code class="language-java"><span class="token keyword">public</span> <span class="token keyword">class</span> <span class="token class-name">User</span> <span class="token punctuation">{</span>
-    <span class="token comment" spellcheck="true">// ...property</span>
-    <span class="token keyword">public</span> <span class="token function">User</span><span class="token punctuation">(</span>Integer id<span class="token punctuation">,</span> String userName<span class="token punctuation">,</span> <span class="token keyword">int</span> age<span class="token punctuation">)</span><span class="token punctuation">{</span>
-        <span class="token comment" spellcheck="true">// ...set</span>
-    <span class="token punctuation">}</span>
+<pre><code class="java">public class User {
+    // ...property
+    public User(Integer id, String userName, int age){
+        // ...set
+    }
 
-    <span class="token comment" spellcheck="true">// private setter and getter</span>
-<span class="token punctuation">}</span>
+    // private setter and getter
+}
 </code></pre>
-<pre class=" language-xml"><code class="language-xml"><span class="token tag"><span class="token tag"><span class="token punctuation">&lt;</span>constructor</span><span class="token punctuation">></span></span>
-    <span class="token tag"><span class="token tag"><span class="token punctuation">&lt;</span>idArg</span> <span class="token attr-name">column</span><span class="token attr-value"><span class="token punctuation">=</span><span class="token punctuation">"</span>id<span class="token punctuation">"</span></span> <span class="token attr-name">javaType</span><span class="token attr-value"><span class="token punctuation">=</span><span class="token punctuation">"</span>int<span class="token punctuation">"</span></span> <span class="token attr-name">name</span><span class="token attr-value"><span class="token punctuation">=</span><span class="token punctuation">"</span>id<span class="token punctuation">"</span></span><span class="token punctuation">/></span></span>
-    <span class="token tag"><span class="token tag"><span class="token punctuation">&lt;</span>arg</span> <span class="token attr-name">column</span><span class="token attr-value"><span class="token punctuation">=</span><span class="token punctuation">"</span>username<span class="token punctuation">"</span></span> <span class="token attr-name">javaType</span><span class="token attr-value"><span class="token punctuation">=</span><span class="token punctuation">"</span>String<span class="token punctuation">"</span></span> <span class="token attr-name">name</span><span class="token attr-value"><span class="token punctuation">=</span><span class="token punctuation">"</span>userName<span class="token punctuation">"</span></span><span class="token punctuation">/></span></span>
-    <span class="token tag"><span class="token tag"><span class="token punctuation">&lt;</span>arg</span> <span class="token attr-name">column</span><span class="token attr-value"><span class="token punctuation">=</span><span class="token punctuation">"</span>age<span class="token punctuation">"</span></span> <span class="token attr-name">javaType</span><span class="token attr-value"><span class="token punctuation">=</span><span class="token punctuation">"</span>_int<span class="token punctuation">"</span></span> <span class="token attr-name">name</span><span class="token attr-value"><span class="token punctuation">=</span><span class="token punctuation">"</span>age<span class="token punctuation">"</span></span><span class="token punctuation">/></span></span>
-<span class="token tag"><span class="token tag"><span class="token punctuation">&lt;/</span>constructor</span><span class="token punctuation">></span></span>
+<pre><code class="xml">&lt;constructor&gt;
+    &lt;idArg column=&quot;id&quot; javaType=&quot;int&quot; name=&quot;id&quot;/&gt;
+    &lt;arg column=&quot;username&quot; javaType=&quot;String&quot; name=&quot;userName&quot;/&gt;
+    &lt;arg column=&quot;age&quot; javaType=&quot;_int&quot; name=&quot;age&quot;/&gt;
+&lt;/constructor&gt;
 </code></pre>
 <h3 id="关联"><a href="#关联" class="headerlink" title="关联"></a>关联</h3><p>关联（association）元素处理“有一个”类型的关系。</p>
-<pre class=" language-xml"><code class="language-xml"><span class="token tag"><span class="token tag"><span class="token punctuation">&lt;</span>association</span> <span class="token attr-name">property</span><span class="token attr-value"><span class="token punctuation">=</span><span class="token punctuation">"</span>author<span class="token punctuation">"</span></span> <span class="token attr-name">cloumn</span><span class="token attr-value"><span class="token punctuation">=</span><span class="token punctuation">"</span>blog_author_id<span class="token punctuation">"</span></span> <span class="token attr-name">javaType</span><span class="token attr-value"><span class="token punctuation">=</span><span class="token punctuation">"</span>Author<span class="token punctuation">"</span></span><span class="token punctuation">></span></span>
-    <span class="token tag"><span class="token tag"><span class="token punctuation">&lt;</span>id</span> <span class="token attr-name">property</span><span class="token attr-value"><span class="token punctuation">=</span><span class="token punctuation">"</span>id<span class="token punctuation">"</span></span> <span class="token attr-name">column</span><span class="token attr-value"><span class="token punctuation">=</span><span class="token punctuation">"</span>author_id<span class="token punctuation">"</span></span><span class="token punctuation">/></span></span>
-    <span class="token tag"><span class="token tag"><span class="token punctuation">&lt;</span>result</span> <span class="token attr-name">property</span><span class="token attr-value"><span class="token punctuation">=</span><span class="token punctuation">"</span>username<span class="token punctuation">"</span></span> <span class="token attr-name">column</span><span class="token attr-value"><span class="token punctuation">=</span><span class="token punctuation">"</span>author_username<span class="token punctuation">"</span></span><span class="token punctuation">/></span></span>
-<span class="token tag"><span class="token tag"><span class="token punctuation">&lt;/</span>association</span><span class="token punctuation">></span></span>
+<pre><code class="xml">&lt;association property=&quot;author&quot; cloumn=&quot;blog_author_id&quot; javaType=&quot;Author&quot;&gt;
+    &lt;id property=&quot;id&quot; column=&quot;author_id&quot;/&gt;
+    &lt;result property=&quot;username&quot; column=&quot;author_username&quot;/&gt;
+&lt;/association&gt;
 </code></pre>
 <p>MyBatis 有两种方式加载关联：</p>
 <ul>
 <li>嵌套 Select 查询：通过执行另一个 SQL 映射语句来加载期望的复杂类型</li>
 <li>嵌套结果映射：使用嵌套的结果映射来处理连接结果的重复子集</li>
 </ul>
-<h3 id="关联的嵌套Select查询"><a href="#关联的嵌套Select查询" class="headerlink" title="关联的嵌套Select查询"></a>关联的嵌套Select查询</h3><pre class=" language-xml"><code class="language-xml"><span class="token tag"><span class="token tag"><span class="token punctuation">&lt;</span>resultMap</span> <span class="token attr-name">id</span><span class="token attr-value"><span class="token punctuation">=</span><span class="token punctuation">"</span>blogResult<span class="token punctuation">"</span></span> <span class="token attr-name">type</span><span class="token attr-value"><span class="token punctuation">=</span><span class="token punctuation">"</span>Blog<span class="token punctuation">"</span></span><span class="token punctuation">></span></span>
-    <span class="token tag"><span class="token tag"><span class="token punctuation">&lt;</span>association</span> <span class="token attr-name">property</span><span class="token attr-value"><span class="token punctuation">=</span><span class="token punctuation">"</span>author<span class="token punctuation">"</span></span> <span class="token attr-name">column</span><span class="token attr-value"><span class="token punctuation">=</span><span class="token punctuation">"</span>author_id<span class="token punctuation">"</span></span> <span class="token attr-name">javaType</span><span class="token attr-value"><span class="token punctuation">=</span><span class="token punctuation">"</span>Author<span class="token punctuation">"</span></span> <span class="token attr-name">select</span><span class="token attr-value"><span class="token punctuation">=</span><span class="token punctuation">"</span>selectAuthor<span class="token punctuation">"</span></span><span class="token punctuation">/></span></span>
-<span class="token tag"><span class="token tag"><span class="token punctuation">&lt;/</span>resultMap</span><span class="token punctuation">></span></span>
+<h3 id="关联的嵌套Select查询"><a href="#关联的嵌套Select查询" class="headerlink" title="关联的嵌套Select查询"></a>关联的嵌套Select查询</h3><pre><code class="xml">&lt;resultMap id=&quot;blogResult&quot; type=&quot;Blog&quot;&gt;
+    &lt;association property=&quot;author&quot; column=&quot;author_id&quot; javaType=&quot;Author&quot; select=&quot;selectAuthor&quot;/&gt;
+&lt;/resultMap&gt;
 
-<span class="token tag"><span class="token tag"><span class="token punctuation">&lt;</span>select</span> <span class="token attr-name">id</span><span class="token attr-value"><span class="token punctuation">=</span><span class="token punctuation">"</span>selectBlog<span class="token punctuation">"</span></span> <span class="token attr-name">resultMap</span><span class="token attr-value"><span class="token punctuation">=</span><span class="token punctuation">"</span>blogResult<span class="token punctuation">"</span></span><span class="token punctuation">></span></span>
+&lt;select id=&quot;selectBlog&quot; resultMap=&quot;blogResult&quot;&gt;
     select * from blog where id=#{id}
-<span class="token tag"><span class="token tag"><span class="token punctuation">&lt;/</span>select</span><span class="token punctuation">></span></span>
+&lt;/select&gt;
 
-<span class="token tag"><span class="token tag"><span class="token punctuation">&lt;</span>select</span> <span class="token attr-name">id</span><span class="token attr-value"><span class="token punctuation">=</span><span class="token punctuation">"</span>selectAuthor<span class="token punctuation">"</span></span> <span class="token attr-name">resultType</span><span class="token attr-value"><span class="token punctuation">=</span><span class="token punctuation">"</span>Author<span class="token punctuation">"</span></span><span class="token punctuation">></span></span>
+&lt;select id=&quot;selectAuthor&quot; resultType=&quot;Author&quot;&gt;
     select * from Author where id=#{id}
-<span class="token tag"><span class="token tag"><span class="token punctuation">&lt;/</span>select</span><span class="token punctuation">></span></span>
+&lt;/select&gt;
 </code></pre>
 <p>selectBlog 用来加载博客，selectAuthor 用来加载作者，而 blogResult 结果映射描述了应该使用 selectAuthor 语句加载它的 author 属性。</p>
 <p>这种方式虽然简单，但是<code>在大型数据集或大型数据表上表现不佳</code>。这个问题被称为“N+1查询问题”：</p>
@@ -739,7 +739,7 @@ User u3 <span class="token operator">=</span> userMapper<span class="token punct
 <blockquote>
 <p>解决方法：使用联合查询来避免N+1问题</p>
 </blockquote>
-<pre class=" language-xml"><code class="language-xml"><span class="token tag"><span class="token tag"><span class="token punctuation">&lt;</span>select</span> <span class="token attr-name">id</span><span class="token attr-value"><span class="token punctuation">=</span><span class="token punctuation">"</span>selectBlog<span class="token punctuation">"</span></span> <span class="token attr-name">resultMap</span><span class="token attr-value"><span class="token punctuation">=</span><span class="token punctuation">"</span>blogResult<span class="token punctuation">"</span></span><span class="token punctuation">></span></span>
+<pre><code class="xml">&lt;select id=&quot;selectBlog&quot; resultMap=&quot;blogResult&quot;&gt;
   select
     B.id            as blog_id,
     B.title         as blog_title,
@@ -751,45 +751,45 @@ User u3 <span class="token operator">=</span> userMapper<span class="token punct
     A.bio           as author_bio
   from Blog B left outer join Author A on B.author_id = A.id
   where B.id = #{id}
-<span class="token tag"><span class="token tag"><span class="token punctuation">&lt;/</span>select</span><span class="token punctuation">></span></span>
+&lt;/select&gt;
 </code></pre>
-<pre class=" language-xml"><code class="language-xml"><span class="token tag"><span class="token tag"><span class="token punctuation">&lt;</span>resultMap</span> <span class="token attr-name">id</span><span class="token attr-value"><span class="token punctuation">=</span><span class="token punctuation">"</span>blogResult<span class="token punctuation">"</span></span> <span class="token attr-name">type</span><span class="token attr-value"><span class="token punctuation">=</span><span class="token punctuation">"</span>Blog<span class="token punctuation">"</span></span><span class="token punctuation">></span></span>
-  <span class="token tag"><span class="token tag"><span class="token punctuation">&lt;</span>id</span> <span class="token attr-name">property</span><span class="token attr-value"><span class="token punctuation">=</span><span class="token punctuation">"</span>id<span class="token punctuation">"</span></span> <span class="token attr-name">column</span><span class="token attr-value"><span class="token punctuation">=</span><span class="token punctuation">"</span>blog_id<span class="token punctuation">"</span></span> <span class="token punctuation">/></span></span>
-  <span class="token tag"><span class="token tag"><span class="token punctuation">&lt;</span>result</span> <span class="token attr-name">property</span><span class="token attr-value"><span class="token punctuation">=</span><span class="token punctuation">"</span>title<span class="token punctuation">"</span></span> <span class="token attr-name">column</span><span class="token attr-value"><span class="token punctuation">=</span><span class="token punctuation">"</span>blog_title<span class="token punctuation">"</span></span><span class="token punctuation">/></span></span>
-  <span class="token tag"><span class="token tag"><span class="token punctuation">&lt;</span>association</span> <span class="token attr-name">property</span><span class="token attr-value"><span class="token punctuation">=</span><span class="token punctuation">"</span>author<span class="token punctuation">"</span></span> <span class="token attr-name">column</span><span class="token attr-value"><span class="token punctuation">=</span><span class="token punctuation">"</span>blog_author_id<span class="token punctuation">"</span></span> <span class="token attr-name">javaType</span><span class="token attr-value"><span class="token punctuation">=</span><span class="token punctuation">"</span>Author<span class="token punctuation">"</span></span> <span class="token attr-name">resultMap</span><span class="token attr-value"><span class="token punctuation">=</span><span class="token punctuation">"</span>authorResult<span class="token punctuation">"</span></span><span class="token punctuation">/></span></span>
-<span class="token tag"><span class="token tag"><span class="token punctuation">&lt;/</span>resultMap</span><span class="token punctuation">></span></span>
+<pre><code class="xml">&lt;resultMap id=&quot;blogResult&quot; type=&quot;Blog&quot;&gt;
+  &lt;id property=&quot;id&quot; column=&quot;blog_id&quot; /&gt;
+  &lt;result property=&quot;title&quot; column=&quot;blog_title&quot;/&gt;
+  &lt;association property=&quot;author&quot; column=&quot;blog_author_id&quot; javaType=&quot;Author&quot; resultMap=&quot;authorResult&quot;/&gt;
+&lt;/resultMap&gt;
 
-<span class="token tag"><span class="token tag"><span class="token punctuation">&lt;</span>resultMap</span> <span class="token attr-name">id</span><span class="token attr-value"><span class="token punctuation">=</span><span class="token punctuation">"</span>authorResult<span class="token punctuation">"</span></span> <span class="token attr-name">type</span><span class="token attr-value"><span class="token punctuation">=</span><span class="token punctuation">"</span>Author<span class="token punctuation">"</span></span><span class="token punctuation">></span></span>
-  <span class="token tag"><span class="token tag"><span class="token punctuation">&lt;</span>id</span> <span class="token attr-name">property</span><span class="token attr-value"><span class="token punctuation">=</span><span class="token punctuation">"</span>id<span class="token punctuation">"</span></span> <span class="token attr-name">column</span><span class="token attr-value"><span class="token punctuation">=</span><span class="token punctuation">"</span>author_id<span class="token punctuation">"</span></span><span class="token punctuation">/></span></span>
-  <span class="token tag"><span class="token tag"><span class="token punctuation">&lt;</span>result</span> <span class="token attr-name">property</span><span class="token attr-value"><span class="token punctuation">=</span><span class="token punctuation">"</span>username<span class="token punctuation">"</span></span> <span class="token attr-name">column</span><span class="token attr-value"><span class="token punctuation">=</span><span class="token punctuation">"</span>author_username<span class="token punctuation">"</span></span><span class="token punctuation">/></span></span>
-  <span class="token tag"><span class="token tag"><span class="token punctuation">&lt;</span>result</span> <span class="token attr-name">property</span><span class="token attr-value"><span class="token punctuation">=</span><span class="token punctuation">"</span>password<span class="token punctuation">"</span></span> <span class="token attr-name">column</span><span class="token attr-value"><span class="token punctuation">=</span><span class="token punctuation">"</span>author_password<span class="token punctuation">"</span></span><span class="token punctuation">/></span></span>
-  <span class="token tag"><span class="token tag"><span class="token punctuation">&lt;</span>result</span> <span class="token attr-name">property</span><span class="token attr-value"><span class="token punctuation">=</span><span class="token punctuation">"</span>email<span class="token punctuation">"</span></span> <span class="token attr-name">column</span><span class="token attr-value"><span class="token punctuation">=</span><span class="token punctuation">"</span>author_email<span class="token punctuation">"</span></span><span class="token punctuation">/></span></span>
-  <span class="token tag"><span class="token tag"><span class="token punctuation">&lt;</span>result</span> <span class="token attr-name">property</span><span class="token attr-value"><span class="token punctuation">=</span><span class="token punctuation">"</span>bio<span class="token punctuation">"</span></span> <span class="token attr-name">column</span><span class="token attr-value"><span class="token punctuation">=</span><span class="token punctuation">"</span>author_bio<span class="token punctuation">"</span></span><span class="token punctuation">/></span></span>
-<span class="token tag"><span class="token tag"><span class="token punctuation">&lt;/</span>resultMap</span><span class="token punctuation">></span></span>
+&lt;resultMap id=&quot;authorResult&quot; type=&quot;Author&quot;&gt;
+  &lt;id property=&quot;id&quot; column=&quot;author_id&quot;/&gt;
+  &lt;result property=&quot;username&quot; column=&quot;author_username&quot;/&gt;
+  &lt;result property=&quot;password&quot; column=&quot;author_password&quot;/&gt;
+  &lt;result property=&quot;email&quot; column=&quot;author_email&quot;/&gt;
+  &lt;result property=&quot;bio&quot; column=&quot;author_bio&quot;/&gt;
+&lt;/resultMap&gt;
 </code></pre>
 <h3 id="集合"><a href="#集合" class="headerlink" title="集合"></a>集合</h3><p>集合元素和关联元素几乎是一样的</p>
-<pre class=" language-xml"><code class="language-xml"><span class="token tag"><span class="token tag"><span class="token punctuation">&lt;</span>collection</span> <span class="token attr-name">property</span><span class="token attr-value"><span class="token punctuation">=</span><span class="token punctuation">"</span>posts<span class="token punctuation">"</span></span> <span class="token attr-name">ofType</span><span class="token attr-value"><span class="token punctuation">=</span><span class="token punctuation">"</span>domain.blog.Post<span class="token punctuation">"</span></span><span class="token punctuation">></span></span>
-    <span class="token tag"><span class="token tag"><span class="token punctuation">&lt;</span>id</span> <span class="token attr-name">property</span><span class="token attr-value"><span class="token punctuation">=</span><span class="token punctuation">"</span>id<span class="token punctuation">"</span></span> <span class="token attr-name">column</span><span class="token attr-value"><span class="token punctuation">=</span><span class="token punctuation">"</span>post_id<span class="token punctuation">"</span></span><span class="token punctuation">/></span></span>
-    <span class="token tag"><span class="token tag"><span class="token punctuation">&lt;</span>result</span> <span class="token attr-name">property</span><span class="token attr-value"><span class="token punctuation">=</span><span class="token punctuation">"</span>subject<span class="token punctuation">"</span></span> <span class="token attr-name">column</span><span class="token attr-value"><span class="token punctuation">=</span><span class="token punctuation">"</span>post_subject<span class="token punctuation">"</span></span><span class="token punctuation">/></span></span>
-    <span class="token tag"><span class="token tag"><span class="token punctuation">&lt;</span>result</span> <span class="token attr-name">property</span><span class="token attr-value"><span class="token punctuation">=</span><span class="token punctuation">"</span>body<span class="token punctuation">"</span></span> <span class="token attr-name">column</span><span class="token attr-value"><span class="token punctuation">=</span><span class="token punctuation">"</span>post_body<span class="token punctuation">"</span></span><span class="token punctuation">/></span></span>
-<span class="token tag"><span class="token tag"><span class="token punctuation">&lt;/</span>collection</span><span class="token punctuation">></span></span>
+<pre><code class="xml">&lt;collection property=&quot;posts&quot; ofType=&quot;domain.blog.Post&quot;&gt;
+    &lt;id property=&quot;id&quot; column=&quot;post_id&quot;/&gt;
+    &lt;result property=&quot;subject&quot; column=&quot;post_subject&quot;/&gt;
+    &lt;result property=&quot;body&quot; column=&quot;post_body&quot;/&gt;
+&lt;/collection&gt;
 </code></pre>
-<h4 id="集合的嵌套-Select-查询"><a href="#集合的嵌套-Select-查询" class="headerlink" title="集合的嵌套 Select 查询"></a>集合的嵌套 Select 查询</h4><pre class=" language-xml"><code class="language-xml"><span class="token tag"><span class="token tag"><span class="token punctuation">&lt;</span>resultMap</span> <span class="token attr-name">id</span><span class="token attr-value"><span class="token punctuation">=</span><span class="token punctuation">"</span>blogResult<span class="token punctuation">"</span></span> <span class="token attr-name">type</span><span class="token attr-value"><span class="token punctuation">=</span><span class="token punctuation">"</span>Blog<span class="token punctuation">"</span></span><span class="token punctuation">></span></span>
-    <span class="token tag"><span class="token tag"><span class="token punctuation">&lt;</span>collection</span> <span class="token attr-name">property</span><span class="token attr-value"><span class="token punctuation">=</span><span class="token punctuation">"</span>posts<span class="token punctuation">"</span></span> <span class="token attr-name">javaType</span><span class="token attr-value"><span class="token punctuation">=</span><span class="token punctuation">"</span>ArrayList<span class="token punctuation">"</span></span> <span class="token attr-name">column</span><span class="token attr-value"><span class="token punctuation">=</span><span class="token punctuation">"</span>id<span class="token punctuation">"</span></span> <span class="token attr-name">ofType</span><span class="token attr-value"><span class="token punctuation">=</span><span class="token punctuation">"</span>Post<span class="token punctuation">"</span></span> <span class="token attr-name">select</span><span class="token attr-value"><span class="token punctuation">=</span><span class="token punctuation">"</span>selectPostsForBlog<span class="token punctuation">"</span></span><span class="token punctuation">/></span></span>
-<span class="token tag"><span class="token tag"><span class="token punctuation">&lt;/</span>resultMap</span><span class="token punctuation">></span></span>
+<h4 id="集合的嵌套-Select-查询"><a href="#集合的嵌套-Select-查询" class="headerlink" title="集合的嵌套 Select 查询"></a>集合的嵌套 Select 查询</h4><pre><code class="xml">&lt;resultMap id=&quot;blogResult&quot; type=&quot;Blog&quot;&gt;
+    &lt;collection property=&quot;posts&quot; javaType=&quot;ArrayList&quot; column=&quot;id&quot; ofType=&quot;Post&quot; select=&quot;selectPostsForBlog&quot;/&gt;
+&lt;/resultMap&gt;
 
-<span class="token tag"><span class="token tag"><span class="token punctuation">&lt;</span>select</span> <span class="token attr-name">id</span><span class="token attr-value"><span class="token punctuation">=</span><span class="token punctuation">"</span>selectBlog<span class="token punctuation">"</span></span> <span class="token attr-name">resultMap</span><span class="token attr-value"><span class="token punctuation">=</span><span class="token punctuation">"</span>blogResult<span class="token punctuation">"</span></span><span class="token punctuation">></span></span>
+&lt;select id=&quot;selectBlog&quot; resultMap=&quot;blogResult&quot;&gt;
     select * from blog where id=#{id}
-<span class="token tag"><span class="token tag"><span class="token punctuation">&lt;/</span>select</span><span class="token punctuation">></span></span>
+&lt;/select&gt;
 
-<span class="token tag"><span class="token tag"><span class="token punctuation">&lt;</span>select</span> <span class="token attr-name">id</span><span class="token attr-value"><span class="token punctuation">=</span><span class="token punctuation">"</span>selectPostsForBlog<span class="token punctuation">"</span></span> <span class="token attr-name">resultType</span><span class="token attr-value"><span class="token punctuation">=</span><span class="token punctuation">"</span>Post<span class="token punctuation">"</span></span><span class="token punctuation">></span></span>
+&lt;select id=&quot;selectPostsForBlog&quot; resultType=&quot;Post&quot;&gt;
     select * from post where blog_id=#{id}
-<span class="token tag"><span class="token tag"><span class="token punctuation">&lt;/</span>select</span><span class="token punctuation">></span></span>
+&lt;/select&gt;
 </code></pre>
 <blockquote>
 <p><code>javaType=&quot;ArrayList&quot; ofType=&quot;Post&quot;</code> 等同于结果为：ArrayList<post></post></p>
 </blockquote>
-<h4 id="集合的嵌套结果映射"><a href="#集合的嵌套结果映射" class="headerlink" title="集合的嵌套结果映射"></a>集合的嵌套结果映射</h4><pre class=" language-xml"><code class="language-xml"><span class="token tag"><span class="token tag"><span class="token punctuation">&lt;</span>select</span> <span class="token attr-name">id</span><span class="token attr-value"><span class="token punctuation">=</span><span class="token punctuation">"</span>selectBlog<span class="token punctuation">"</span></span> <span class="token attr-name">resultMap</span><span class="token attr-value"><span class="token punctuation">=</span><span class="token punctuation">"</span>blogResult<span class="token punctuation">"</span></span><span class="token punctuation">></span></span>
+<h4 id="集合的嵌套结果映射"><a href="#集合的嵌套结果映射" class="headerlink" title="集合的嵌套结果映射"></a>集合的嵌套结果映射</h4><pre><code class="xml">&lt;select id=&quot;selectBlog&quot; resultMap=&quot;blogResult&quot;&gt;
   select
   B.id as blog_id,
   B.title as blog_title,
@@ -800,54 +800,54 @@ User u3 <span class="token operator">=</span> userMapper<span class="token punct
   from Blog B
   left outer join Post P on B.id = P.blog_id
   where B.id = #{id}
-<span class="token tag"><span class="token tag"><span class="token punctuation">&lt;/</span>select</span><span class="token punctuation">></span></span>
+&lt;/select&gt;
 </code></pre>
-<pre class=" language-xml"><code class="language-xml"><span class="token tag"><span class="token tag"><span class="token punctuation">&lt;</span>resultMap</span> <span class="token attr-name">id</span><span class="token attr-value"><span class="token punctuation">=</span><span class="token punctuation">"</span>blogResult<span class="token punctuation">"</span></span> <span class="token attr-name">type</span><span class="token attr-value"><span class="token punctuation">=</span><span class="token punctuation">"</span>Blog<span class="token punctuation">"</span></span><span class="token punctuation">></span></span>
-  <span class="token tag"><span class="token tag"><span class="token punctuation">&lt;</span>id</span> <span class="token attr-name">property</span><span class="token attr-value"><span class="token punctuation">=</span><span class="token punctuation">"</span>id<span class="token punctuation">"</span></span> <span class="token attr-name">column</span><span class="token attr-value"><span class="token punctuation">=</span><span class="token punctuation">"</span>blog_id<span class="token punctuation">"</span></span> <span class="token punctuation">/></span></span>
-  <span class="token tag"><span class="token tag"><span class="token punctuation">&lt;</span>result</span> <span class="token attr-name">property</span><span class="token attr-value"><span class="token punctuation">=</span><span class="token punctuation">"</span>title<span class="token punctuation">"</span></span> <span class="token attr-name">column</span><span class="token attr-value"><span class="token punctuation">=</span><span class="token punctuation">"</span>blog_title<span class="token punctuation">"</span></span><span class="token punctuation">/></span></span>
-  <span class="token tag"><span class="token tag"><span class="token punctuation">&lt;</span>collection</span> <span class="token attr-name">property</span><span class="token attr-value"><span class="token punctuation">=</span><span class="token punctuation">"</span>posts<span class="token punctuation">"</span></span> <span class="token attr-name">ofType</span><span class="token attr-value"><span class="token punctuation">=</span><span class="token punctuation">"</span>Post<span class="token punctuation">"</span></span><span class="token punctuation">></span></span>
-    <span class="token tag"><span class="token tag"><span class="token punctuation">&lt;</span>id</span> <span class="token attr-name">property</span><span class="token attr-value"><span class="token punctuation">=</span><span class="token punctuation">"</span>id<span class="token punctuation">"</span></span> <span class="token attr-name">column</span><span class="token attr-value"><span class="token punctuation">=</span><span class="token punctuation">"</span>post_id<span class="token punctuation">"</span></span><span class="token punctuation">/></span></span>
-    <span class="token tag"><span class="token tag"><span class="token punctuation">&lt;</span>result</span> <span class="token attr-name">property</span><span class="token attr-value"><span class="token punctuation">=</span><span class="token punctuation">"</span>subject<span class="token punctuation">"</span></span> <span class="token attr-name">column</span><span class="token attr-value"><span class="token punctuation">=</span><span class="token punctuation">"</span>post_subject<span class="token punctuation">"</span></span><span class="token punctuation">/></span></span>
-    <span class="token tag"><span class="token tag"><span class="token punctuation">&lt;</span>result</span> <span class="token attr-name">property</span><span class="token attr-value"><span class="token punctuation">=</span><span class="token punctuation">"</span>body<span class="token punctuation">"</span></span> <span class="token attr-name">column</span><span class="token attr-value"><span class="token punctuation">=</span><span class="token punctuation">"</span>post_body<span class="token punctuation">"</span></span><span class="token punctuation">/></span></span>
-  <span class="token tag"><span class="token tag"><span class="token punctuation">&lt;/</span>collection</span><span class="token punctuation">></span></span>
-<span class="token tag"><span class="token tag"><span class="token punctuation">&lt;/</span>resultMap</span><span class="token punctuation">></span></span>
+<pre><code class="xml">&lt;resultMap id=&quot;blogResult&quot; type=&quot;Blog&quot;&gt;
+  &lt;id property=&quot;id&quot; column=&quot;blog_id&quot; /&gt;
+  &lt;result property=&quot;title&quot; column=&quot;blog_title&quot;/&gt;
+  &lt;collection property=&quot;posts&quot; ofType=&quot;Post&quot;&gt;
+    &lt;id property=&quot;id&quot; column=&quot;post_id&quot;/&gt;
+    &lt;result property=&quot;subject&quot; column=&quot;post_subject&quot;/&gt;
+    &lt;result property=&quot;body&quot; column=&quot;post_body&quot;/&gt;
+  &lt;/collection&gt;
+&lt;/resultMap&gt;
 </code></pre>
 <h4 id="集合的多结果集（ResultSet）"><a href="#集合的多结果集（ResultSet）" class="headerlink" title="集合的多结果集（ResultSet）"></a>集合的多结果集（ResultSet）</h4><p>可以通过执行存储过程来实现，存储过程会执行两个查询并返回两个结果集。</p>
-<pre class=" language-sql"><code class="language-sql"><span class="token keyword">SELECT</span> <span class="token operator">*</span> <span class="token keyword">FROM</span> BLOG <span class="token keyword">WHERE</span> ID <span class="token operator">=</span> <span class="token comment" spellcheck="true">#{id}</span>
+<pre><code class="sql">SELECT * FROM BLOG WHERE ID = #{id}
 
-<span class="token keyword">SELECT</span> <span class="token operator">*</span> <span class="token keyword">FROM</span> POST <span class="token keyword">WHERE</span> BLOG_ID <span class="token operator">=</span> <span class="token comment" spellcheck="true">#{id}</span>
+SELECT * FROM POST WHERE BLOG_ID = #{id}
 </code></pre>
 <p>在映射时，必须通过 resultSets 属性为每个结果集指定一个名字，使用逗号隔开。</p>
-<pre class=" language-xml"><code class="language-xml"><span class="token tag"><span class="token tag"><span class="token punctuation">&lt;</span>select</span> <span class="token attr-name">id</span><span class="token attr-value"><span class="token punctuation">=</span><span class="token punctuation">"</span>selectBlog<span class="token punctuation">"</span></span> <span class="token attr-name">resultSets</span><span class="token attr-value"><span class="token punctuation">=</span><span class="token punctuation">"</span>blogs,posts<span class="token punctuation">"</span></span> <span class="token attr-name">resultMap</span><span class="token attr-value"><span class="token punctuation">=</span><span class="token punctuation">"</span>blogResult<span class="token punctuation">"</span></span><span class="token punctuation">></span></span>
+<pre><code class="xml">&lt;select id=&quot;selectBlog&quot; resultSets=&quot;blogs,posts&quot; resultMap=&quot;blogResult&quot;&gt;
   {call getBlogsAndPosts(#{id,jdbcType=INTEGER,mode=IN})}
-<span class="token tag"><span class="token tag"><span class="token punctuation">&lt;/</span>select</span><span class="token punctuation">></span></span>
+&lt;/select&gt;
 </code></pre>
 <p>指定结果集的数据进行填充</p>
-<pre class=" language-xml"><code class="language-xml"><span class="token tag"><span class="token tag"><span class="token punctuation">&lt;</span>resultMap</span> <span class="token attr-name">id</span><span class="token attr-value"><span class="token punctuation">=</span><span class="token punctuation">"</span>blogResult<span class="token punctuation">"</span></span> <span class="token attr-name">type</span><span class="token attr-value"><span class="token punctuation">=</span><span class="token punctuation">"</span>Blog<span class="token punctuation">"</span></span><span class="token punctuation">></span></span>
-  <span class="token tag"><span class="token tag"><span class="token punctuation">&lt;</span>id</span> <span class="token attr-name">property</span><span class="token attr-value"><span class="token punctuation">=</span><span class="token punctuation">"</span>id<span class="token punctuation">"</span></span> <span class="token attr-name">column</span><span class="token attr-value"><span class="token punctuation">=</span><span class="token punctuation">"</span>id<span class="token punctuation">"</span></span> <span class="token punctuation">/></span></span>
-  <span class="token tag"><span class="token tag"><span class="token punctuation">&lt;</span>result</span> <span class="token attr-name">property</span><span class="token attr-value"><span class="token punctuation">=</span><span class="token punctuation">"</span>title<span class="token punctuation">"</span></span> <span class="token attr-name">column</span><span class="token attr-value"><span class="token punctuation">=</span><span class="token punctuation">"</span>title<span class="token punctuation">"</span></span><span class="token punctuation">/></span></span>
-  <span class="token tag"><span class="token tag"><span class="token punctuation">&lt;</span>collection</span> <span class="token attr-name">property</span><span class="token attr-value"><span class="token punctuation">=</span><span class="token punctuation">"</span>posts<span class="token punctuation">"</span></span> <span class="token attr-name">ofType</span><span class="token attr-value"><span class="token punctuation">=</span><span class="token punctuation">"</span>Post<span class="token punctuation">"</span></span> <span class="token attr-name">resultSet</span><span class="token attr-value"><span class="token punctuation">=</span><span class="token punctuation">"</span>posts<span class="token punctuation">"</span></span> <span class="token attr-name">column</span><span class="token attr-value"><span class="token punctuation">=</span><span class="token punctuation">"</span>id<span class="token punctuation">"</span></span> <span class="token attr-name">foreignColumn</span><span class="token attr-value"><span class="token punctuation">=</span><span class="token punctuation">"</span>blog_id<span class="token punctuation">"</span></span><span class="token punctuation">></span></span>
-    <span class="token tag"><span class="token tag"><span class="token punctuation">&lt;</span>id</span> <span class="token attr-name">property</span><span class="token attr-value"><span class="token punctuation">=</span><span class="token punctuation">"</span>id<span class="token punctuation">"</span></span> <span class="token attr-name">column</span><span class="token attr-value"><span class="token punctuation">=</span><span class="token punctuation">"</span>id<span class="token punctuation">"</span></span><span class="token punctuation">/></span></span>
-    <span class="token tag"><span class="token tag"><span class="token punctuation">&lt;</span>result</span> <span class="token attr-name">property</span><span class="token attr-value"><span class="token punctuation">=</span><span class="token punctuation">"</span>subject<span class="token punctuation">"</span></span> <span class="token attr-name">column</span><span class="token attr-value"><span class="token punctuation">=</span><span class="token punctuation">"</span>subject<span class="token punctuation">"</span></span><span class="token punctuation">/></span></span>
-    <span class="token tag"><span class="token tag"><span class="token punctuation">&lt;</span>result</span> <span class="token attr-name">property</span><span class="token attr-value"><span class="token punctuation">=</span><span class="token punctuation">"</span>body<span class="token punctuation">"</span></span> <span class="token attr-name">column</span><span class="token attr-value"><span class="token punctuation">=</span><span class="token punctuation">"</span>body<span class="token punctuation">"</span></span><span class="token punctuation">/></span></span>
-  <span class="token tag"><span class="token tag"><span class="token punctuation">&lt;/</span>collection</span><span class="token punctuation">></span></span>
-<span class="token tag"><span class="token tag"><span class="token punctuation">&lt;/</span>resultMap</span><span class="token punctuation">></span></span>
+<pre><code class="xml">&lt;resultMap id=&quot;blogResult&quot; type=&quot;Blog&quot;&gt;
+  &lt;id property=&quot;id&quot; column=&quot;id&quot; /&gt;
+  &lt;result property=&quot;title&quot; column=&quot;title&quot;/&gt;
+  &lt;collection property=&quot;posts&quot; ofType=&quot;Post&quot; resultSet=&quot;posts&quot; column=&quot;id&quot; foreignColumn=&quot;blog_id&quot;&gt;
+    &lt;id property=&quot;id&quot; column=&quot;id&quot;/&gt;
+    &lt;result property=&quot;subject&quot; column=&quot;subject&quot;/&gt;
+    &lt;result property=&quot;body&quot; column=&quot;body&quot;/&gt;
+  &lt;/collection&gt;
+&lt;/resultMap&gt;
 </code></pre>
 <h3 id="鉴别器（discriminator）"><a href="#鉴别器（discriminator）" class="headerlink" title="鉴别器（discriminator）"></a>鉴别器（discriminator）</h3><p>有时，一个数据库查询可能会返回多个不同的结果集。鉴别器元素就是被设计出来应对这种情况的，也能处理如类的继承层次结构的问题。类似于 java 语言中的 switch 语句。</p>
-<pre class=" language-xml"><code class="language-xml"><span class="token tag"><span class="token tag"><span class="token punctuation">&lt;</span>resultMap</span> <span class="token attr-name">id</span><span class="token attr-value"><span class="token punctuation">=</span><span class="token punctuation">"</span>vehicleResult<span class="token punctuation">"</span></span> <span class="token attr-name">type</span><span class="token attr-value"><span class="token punctuation">=</span><span class="token punctuation">"</span>Vehicle<span class="token punctuation">"</span></span><span class="token punctuation">></span></span>
-  <span class="token tag"><span class="token tag"><span class="token punctuation">&lt;</span>id</span> <span class="token attr-name">property</span><span class="token attr-value"><span class="token punctuation">=</span><span class="token punctuation">"</span>id<span class="token punctuation">"</span></span> <span class="token attr-name">column</span><span class="token attr-value"><span class="token punctuation">=</span><span class="token punctuation">"</span>id<span class="token punctuation">"</span></span> <span class="token punctuation">/></span></span>
-  <span class="token tag"><span class="token tag"><span class="token punctuation">&lt;</span>result</span> <span class="token attr-name">property</span><span class="token attr-value"><span class="token punctuation">=</span><span class="token punctuation">"</span>vin<span class="token punctuation">"</span></span> <span class="token attr-name">column</span><span class="token attr-value"><span class="token punctuation">=</span><span class="token punctuation">"</span>vin<span class="token punctuation">"</span></span><span class="token punctuation">/></span></span>
-  <span class="token tag"><span class="token tag"><span class="token punctuation">&lt;</span>result</span> <span class="token attr-name">property</span><span class="token attr-value"><span class="token punctuation">=</span><span class="token punctuation">"</span>year<span class="token punctuation">"</span></span> <span class="token attr-name">column</span><span class="token attr-value"><span class="token punctuation">=</span><span class="token punctuation">"</span>year<span class="token punctuation">"</span></span><span class="token punctuation">/></span></span>
-  <span class="token tag"><span class="token tag"><span class="token punctuation">&lt;</span>result</span> <span class="token attr-name">property</span><span class="token attr-value"><span class="token punctuation">=</span><span class="token punctuation">"</span>make<span class="token punctuation">"</span></span> <span class="token attr-name">column</span><span class="token attr-value"><span class="token punctuation">=</span><span class="token punctuation">"</span>make<span class="token punctuation">"</span></span><span class="token punctuation">/></span></span>
-  <span class="token tag"><span class="token tag"><span class="token punctuation">&lt;</span>result</span> <span class="token attr-name">property</span><span class="token attr-value"><span class="token punctuation">=</span><span class="token punctuation">"</span>model<span class="token punctuation">"</span></span> <span class="token attr-name">column</span><span class="token attr-value"><span class="token punctuation">=</span><span class="token punctuation">"</span>model<span class="token punctuation">"</span></span><span class="token punctuation">/></span></span>
-  <span class="token tag"><span class="token tag"><span class="token punctuation">&lt;</span>result</span> <span class="token attr-name">property</span><span class="token attr-value"><span class="token punctuation">=</span><span class="token punctuation">"</span>color<span class="token punctuation">"</span></span> <span class="token attr-name">column</span><span class="token attr-value"><span class="token punctuation">=</span><span class="token punctuation">"</span>color<span class="token punctuation">"</span></span><span class="token punctuation">/></span></span>
-  <span class="token tag"><span class="token tag"><span class="token punctuation">&lt;</span>discriminator</span> <span class="token attr-name">javaType</span><span class="token attr-value"><span class="token punctuation">=</span><span class="token punctuation">"</span>int<span class="token punctuation">"</span></span> <span class="token attr-name">column</span><span class="token attr-value"><span class="token punctuation">=</span><span class="token punctuation">"</span>vehicle_type<span class="token punctuation">"</span></span><span class="token punctuation">></span></span>
-    <span class="token tag"><span class="token tag"><span class="token punctuation">&lt;</span>case</span> <span class="token attr-name">value</span><span class="token attr-value"><span class="token punctuation">=</span><span class="token punctuation">"</span>1<span class="token punctuation">"</span></span> <span class="token attr-name">resultMap</span><span class="token attr-value"><span class="token punctuation">=</span><span class="token punctuation">"</span>carResult<span class="token punctuation">"</span></span><span class="token punctuation">/></span></span>
-    <span class="token tag"><span class="token tag"><span class="token punctuation">&lt;</span>case</span> <span class="token attr-name">value</span><span class="token attr-value"><span class="token punctuation">=</span><span class="token punctuation">"</span>2<span class="token punctuation">"</span></span> <span class="token attr-name">resultMap</span><span class="token attr-value"><span class="token punctuation">=</span><span class="token punctuation">"</span>truckResult<span class="token punctuation">"</span></span><span class="token punctuation">/></span></span>
-    <span class="token tag"><span class="token tag"><span class="token punctuation">&lt;</span>case</span> <span class="token attr-name">value</span><span class="token attr-value"><span class="token punctuation">=</span><span class="token punctuation">"</span>3<span class="token punctuation">"</span></span> <span class="token attr-name">resultMap</span><span class="token attr-value"><span class="token punctuation">=</span><span class="token punctuation">"</span>vanResult<span class="token punctuation">"</span></span><span class="token punctuation">/></span></span>
-    <span class="token tag"><span class="token tag"><span class="token punctuation">&lt;</span>case</span> <span class="token attr-name">value</span><span class="token attr-value"><span class="token punctuation">=</span><span class="token punctuation">"</span>4<span class="token punctuation">"</span></span> <span class="token attr-name">resultMap</span><span class="token attr-value"><span class="token punctuation">=</span><span class="token punctuation">"</span>suvResult<span class="token punctuation">"</span></span><span class="token punctuation">/></span></span>
-  <span class="token tag"><span class="token tag"><span class="token punctuation">&lt;/</span>discriminator</span><span class="token punctuation">></span></span>
-<span class="token tag"><span class="token tag"><span class="token punctuation">&lt;/</span>resultMap</span><span class="token punctuation">></span></span>
+<pre><code class="xml">&lt;resultMap id=&quot;vehicleResult&quot; type=&quot;Vehicle&quot;&gt;
+  &lt;id property=&quot;id&quot; column=&quot;id&quot; /&gt;
+  &lt;result property=&quot;vin&quot; column=&quot;vin&quot;/&gt;
+  &lt;result property=&quot;year&quot; column=&quot;year&quot;/&gt;
+  &lt;result property=&quot;make&quot; column=&quot;make&quot;/&gt;
+  &lt;result property=&quot;model&quot; column=&quot;model&quot;/&gt;
+  &lt;result property=&quot;color&quot; column=&quot;color&quot;/&gt;
+  &lt;discriminator javaType=&quot;int&quot; column=&quot;vehicle_type&quot;&gt;
+    &lt;case value=&quot;1&quot; resultMap=&quot;carResult&quot;/&gt;
+    &lt;case value=&quot;2&quot; resultMap=&quot;truckResult&quot;/&gt;
+    &lt;case value=&quot;3&quot; resultMap=&quot;vanResult&quot;/&gt;
+    &lt;case value=&quot;4&quot; resultMap=&quot;suvResult&quot;/&gt;
+  &lt;/discriminator&gt;
+&lt;/resultMap&gt;
 </code></pre>
 <h3 id="自动映射"><a href="#自动映射" class="headerlink" title="自动映射"></a>自动映射</h3><p>在简单的场景下，MyBatis 可以为你自动映射查询结果。但如果遇到复杂的场景，则需要自行构建一个结果映射。</p>
 <h2 id="六、缓存"><a href="#六、缓存" class="headerlink" title="六、缓存"></a>六、缓存</h2><p>MyBatis 内置了一个强大的事务性查询缓存机制，可以非常方便地配置和定制。</p>
@@ -867,12 +867,12 @@ User u3 <span class="token operator">=</span> userMapper<span class="token punct
 <blockquote>
 <p>缓存只作用于 cache 标签所在的映射文件中的语句。混用 API和XML，在共用接口中的语句将不会被默认缓存。 可以修改cache 元素的属性：</p>
 </blockquote>
-<pre class=" language-xml"><code class="language-xml">&lt;cache 
-       eviction="FIFO" // FIFO缓存
-       flushInerval="60000" // 每隔60秒刷新
-       size="512"         // 最多可存512个引用
-       readOnly="true"  // 返回对象只读
-/>
+<pre><code class="xml">&lt;cache 
+       eviction=&quot;FIFO&quot; // FIFO缓存
+       flushInerval=&quot;60000&quot; // 每隔60秒刷新
+       size=&quot;512&quot;         // 最多可存512个引用
+       readOnly=&quot;true&quot;  // 返回对象只读
+/&gt;
 </code></pre>
 <p>可用的清除策略：</p>
 <ul>
@@ -882,7 +882,7 @@ User u3 <span class="token operator">=</span> userMapper<span class="token punct
 <li>WEAK - 弱引用：更积极地基于垃圾回收期状态和弱引用规则移除对象</li>
 </ul>
 <h4 id="使用自定义缓存"><a href="#使用自定义缓存" class="headerlink" title="使用自定义缓存"></a>使用自定义缓存</h4><p>通过实现 Cache 接口或者第三方缓存方案，来完全覆盖缓存行为。</p>
-<pre class=" language-xml"><code class="language-xml"><span class="token tag"><span class="token tag"><span class="token punctuation">&lt;</span>cache</span> <span class="token attr-name">type</span><span class="token attr-value"><span class="token punctuation">=</span><span class="token punctuation">"</span>com.domain.something.MyCustomCache<span class="token punctuation">"</span></span><span class="token punctuation">/></span></span>
+<pre><code class="xml">&lt;cache type=&quot;com.domain.something.MyCustomCache&quot;/&gt;
 </code></pre>
 <blockquote>
 <p>上面说到的缓存配置（如清除策略、可读写等），不适用于自定义缓存</p>
@@ -1012,7 +1012,7 @@ User u3 <span class="token operator">=</span> userMapper<span class="token punct
               
                 <a href="/archives">
               
-                  <span class="site-state-item-count">224</span>
+                  <span class="site-state-item-count">237</span>
                   <span class="site-state-item-name">日志</span>
                 </a>
               </div>
@@ -1034,7 +1034,7 @@ User u3 <span class="token operator">=</span> userMapper<span class="token punct
               
               <div class="site-state-item site-state-tags">
                 <a href="/tags/index.html">
-                  <span class="site-state-item-count">21</span>
+                  <span class="site-state-item-count">22</span>
                   <span class="site-state-item-name">标签</span>
                 </a>
               </div>

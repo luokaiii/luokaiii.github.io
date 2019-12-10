@@ -362,58 +362,58 @@
       
 
       
-        <pre class=" language-java"><code class="language-java"><span class="token comment" spellcheck="true">/**
+        <pre><code class="java">/**
  * 阿里巴巴 Java 开发手册：
  *  不要在 foreach 循环中进行元素的 remove/add 操作。 remove 元素请使用 Iterator 方式，如果并发操作，需要对 Iterator 对象加锁。
- */</span>
-<span class="token keyword">public</span> <span class="token keyword">class</span> <span class="token class-name">Three</span> <span class="token punctuation">{</span>
+ */
+public class Three {
 
-    <span class="token keyword">public</span> <span class="token keyword">static</span> <span class="token keyword">void</span> <span class="token function">main</span><span class="token punctuation">(</span>String<span class="token punctuation">[</span><span class="token punctuation">]</span> args<span class="token punctuation">)</span> <span class="token punctuation">{</span>
-        List<span class="token operator">&lt;</span>String<span class="token operator">></span> list <span class="token operator">=</span> <span class="token keyword">new</span> <span class="token class-name">ArrayList</span><span class="token operator">&lt;</span>String<span class="token operator">></span><span class="token punctuation">(</span><span class="token punctuation">)</span><span class="token punctuation">{</span><span class="token punctuation">{</span>
-            <span class="token function">add</span><span class="token punctuation">(</span><span class="token string">"aa"</span><span class="token punctuation">)</span><span class="token punctuation">;</span>
-            <span class="token function">add</span><span class="token punctuation">(</span><span class="token string">"bb"</span><span class="token punctuation">)</span><span class="token punctuation">;</span>
-            <span class="token function">add</span><span class="token punctuation">(</span><span class="token string">"cc"</span><span class="token punctuation">)</span><span class="token punctuation">;</span>
-        <span class="token punctuation">}</span><span class="token punctuation">}</span><span class="token punctuation">;</span>
+    public static void main(String[] args) {
+        List&lt;String&gt; list = new ArrayList&lt;String&gt;(){{
+            add("aa");
+            add("bb");
+            add("cc");
+        }};
 
-<span class="token comment" spellcheck="true">//        System.out.println(filter(list)); // false</span>
-        System<span class="token punctuation">.</span>out<span class="token punctuation">.</span><span class="token function">println</span><span class="token punctuation">(</span><span class="token function">filter2</span><span class="token punctuation">(</span>list<span class="token punctuation">)</span><span class="token punctuation">)</span><span class="token punctuation">;</span>
-        System<span class="token punctuation">.</span>out<span class="token punctuation">.</span><span class="token function">println</span><span class="token punctuation">(</span><span class="token function">filter3</span><span class="token punctuation">(</span>list<span class="token punctuation">)</span><span class="token punctuation">)</span><span class="token punctuation">;</span>
-    <span class="token punctuation">}</span>
+//        System.out.println(filter(list)); // false
+        System.out.println(filter2(list));
+        System.out.println(filter3(list));
+    }
 
-    <span class="token comment" spellcheck="true">/**
+    /**
      * fail-fast 快速错误机制所检查出来的错误
      *  增强 for 循环其实相当于做了一次 iterator，且在执行 iterator() 方法时，就已经确定了循环的次数
      *  但是 remove/add 操作，修改了集合的个数，导致集合个数与循环次数不匹配，进而抛出异常
-     */</span>
-    <span class="token keyword">private</span> <span class="token keyword">static</span> List<span class="token operator">&lt;</span>String<span class="token operator">></span> <span class="token function">filter</span><span class="token punctuation">(</span>List<span class="token operator">&lt;</span>String<span class="token operator">></span> input<span class="token punctuation">)</span><span class="token punctuation">{</span>
-        <span class="token keyword">for</span> <span class="token punctuation">(</span>String s <span class="token operator">:</span> input<span class="token punctuation">)</span> <span class="token punctuation">{</span>
-            <span class="token keyword">if</span><span class="token punctuation">(</span>s<span class="token punctuation">.</span><span class="token function">equals</span><span class="token punctuation">(</span><span class="token string">"aa"</span><span class="token punctuation">)</span><span class="token punctuation">)</span><span class="token punctuation">{</span> <span class="token comment" spellcheck="true">// throw Exception : java.util.ConcurrentModificationException</span>
-                input<span class="token punctuation">.</span><span class="token function">remove</span><span class="token punctuation">(</span>s<span class="token punctuation">)</span><span class="token punctuation">;</span>
-            <span class="token punctuation">}</span>
-        <span class="token punctuation">}</span>
-        <span class="token keyword">return</span> input<span class="token punctuation">;</span>
-    <span class="token punctuation">}</span>
+     */
+    private static List&lt;String&gt; filter(List&lt;String&gt; input){
+        for (String s : input) {
+            if(s.equals(&quot;aa&quot;)){ // throw Exception : java.util.ConcurrentModificationException
+                input.remove(s);
+            }
+        }
+        return input;
+    }
 
-    <span class="token keyword">private</span> <span class="token keyword">static</span> List<span class="token operator">&lt;</span>String<span class="token operator">></span> <span class="token function">filter2</span><span class="token punctuation">(</span>List<span class="token operator">&lt;</span>String<span class="token operator">></span> input<span class="token punctuation">)</span><span class="token punctuation">{</span>
-        Iterator<span class="token operator">&lt;</span>String<span class="token operator">></span> iterator <span class="token operator">=</span> input<span class="token punctuation">.</span><span class="token function">iterator</span><span class="token punctuation">(</span><span class="token punctuation">)</span><span class="token punctuation">;</span>
-        <span class="token keyword">while</span><span class="token punctuation">(</span>iterator<span class="token punctuation">.</span><span class="token function">hasNext</span><span class="token punctuation">(</span><span class="token punctuation">)</span><span class="token punctuation">)</span><span class="token punctuation">{</span>
-            <span class="token keyword">if</span><span class="token punctuation">(</span>iterator<span class="token punctuation">.</span><span class="token function">next</span><span class="token punctuation">(</span><span class="token punctuation">)</span><span class="token punctuation">.</span><span class="token function">equals</span><span class="token punctuation">(</span><span class="token string">"aa"</span><span class="token punctuation">)</span><span class="token punctuation">)</span><span class="token punctuation">{</span>
-                iterator<span class="token punctuation">.</span><span class="token function">remove</span><span class="token punctuation">(</span><span class="token punctuation">)</span><span class="token punctuation">;</span> <span class="token comment" spellcheck="true">// 直接使用 Iterator 的 remove() 方法，能够直接修改循环次数，所以不会发生异常</span>
-            <span class="token punctuation">}</span>
-        <span class="token punctuation">}</span>
-        <span class="token keyword">return</span> input<span class="token punctuation">;</span>
-    <span class="token punctuation">}</span>
+    private static List&lt;String&gt; filter2(List&lt;String&gt; input){
+        Iterator&lt;String&gt; iterator = input.iterator();
+        while(iterator.hasNext()){
+            if(iterator.next().equals(&quot;aa&quot;)){
+                iterator.remove(); // 直接使用 Iterator 的 remove() 方法，能够直接修改循环次数，所以不会发生异常
+            }
+        }
+        return input;
+    }
 
-    <span class="token keyword">private</span> <span class="token keyword">static</span> List<span class="token operator">&lt;</span>String<span class="token operator">></span> <span class="token function">filter3</span><span class="token punctuation">(</span>List<span class="token operator">&lt;</span>String<span class="token operator">></span> input<span class="token punctuation">)</span><span class="token punctuation">{</span>
-        input<span class="token punctuation">.</span><span class="token function">removeIf</span><span class="token punctuation">(</span>val <span class="token operator">-</span><span class="token operator">></span> val<span class="token punctuation">.</span><span class="token function">equals</span><span class="token punctuation">(</span><span class="token string">"aa"</span><span class="token punctuation">)</span><span class="token punctuation">)</span><span class="token punctuation">;</span>
-        <span class="token keyword">return</span> input<span class="token punctuation">;</span>
-    <span class="token punctuation">}</span>
+    private static List&lt;String&gt; filter3(List&lt;String&gt; input){
+        input.removeIf(val -&gt; val.equals(&quot;aa&quot;));
+        return input;
+    }
 
-    <span class="token comment" spellcheck="true">/**
+    /**
      * 还有一种解决方式，就是在 foreach 循环中，使用break跳出循环
      * 即当满足条件后，不执行下一个 next() 方法，也就不会触发异常
-     */</span>
-<span class="token punctuation">}</span>
+     */
+}
 
 </code></pre>
 
@@ -450,7 +450,7 @@
 
           <div class="post-nav-prev post-nav-item">
             
-              <a href="/2019/07/01/leetcode/第一章-初级算法/数组/5存在重复/" rel="prev" title="">
+              <a href="/2019/07/01/leetcode/第一章-初级算法/数组/4旋转数组/" rel="prev" title="">
                  <i class="fa fa-chevron-right"></i>
               </a>
             
@@ -524,7 +524,7 @@
               
                 <a href="/archives">
               
-                  <span class="site-state-item-count">224</span>
+                  <span class="site-state-item-count">237</span>
                   <span class="site-state-item-name">日志</span>
                 </a>
               </div>
@@ -546,7 +546,7 @@
               
               <div class="site-state-item site-state-tags">
                 <a href="/tags/index.html">
-                  <span class="site-state-item-count">21</span>
+                  <span class="site-state-item-count">22</span>
                   <span class="site-state-item-name">标签</span>
                 </a>
               </div>

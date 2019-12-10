@@ -389,7 +389,7 @@
       
 
       
-        <h1 id="Docker部署全栈项目：三、Redis-镜像"><a href="#Docker部署全栈项目：三、Redis-镜像" class="headerlink" title="Docker部署全栈项目：三、Redis 镜像"></a>Docker部署全栈项目：三、Redis 镜像</h1><h2 id="一、编写启动脚本"><a href="#一、编写启动脚本" class="headerlink" title="一、编写启动脚本"></a>一、编写启动脚本</h2><pre class=" language-sh"><code class="language-sh">#!/bin/bash
+        <h1 id="Docker部署全栈项目：三、Redis-镜像"><a href="#Docker部署全栈项目：三、Redis-镜像" class="headerlink" title="Docker部署全栈项目：三、Redis 镜像"></a>Docker部署全栈项目：三、Redis 镜像</h1><h2 id="一、编写启动脚本"><a href="#一、编写启动脚本" class="headerlink" title="一、编写启动脚本"></a>一、编写启动脚本</h2><pre><code class="sh">#!/bin/bash
 
 curr=`PWD`
 
@@ -402,20 +402,20 @@ docker run --name luokaiii-redis \ # 指定运行后的容器名称
         -p 7481:6379 \    # 将容器的6379端口映射到宿主机的7481端口
         -v /${curr}/data/:/data \ # 挂载redis持久化的目录到宿主机
         -d redis:4.0.14 \
-        --requirepass "password" # 指定redis的连接密码
+        --requirepass &quot;password&quot; # 指定redis的连接密码
 </code></pre>
 <blockquote>
 <p>如果需要使用 conf 自定义配置，请参考 <a href="http://download.redis.io/redis-stable/redis.conf" target="_blank" rel="noopener">官网提供的 redis.conf</a> 。</p>
 <p>Redis 的执行速度特别快，能到做到 15W/s 的查询，因此推荐使用较为复杂的密码。</p>
 </blockquote>
-<h2 id="二、启动脚本"><a href="#二、启动脚本" class="headerlink" title="二、启动脚本"></a>二、启动脚本</h2><pre class=" language-sh"><code class="language-sh">$ cd /home/luokaiii/images/redis   # 脚本和DB文件的存放位置
+<h2 id="二、启动脚本"><a href="#二、启动脚本" class="headerlink" title="二、启动脚本"></a>二、启动脚本</h2><pre><code class="sh">$ cd /home/luokaiii/images/redis   # 脚本和DB文件的存放位置
 
 $ mkdir data   # 创建存储目录
 
 $ ./start.sh   # 运行刚刚写的脚本
 994e9e05bb42d1d.....  # 控制台打印这种的，即表示启动成功
 </code></pre>
-<h2 id="三、日志解释"><a href="#三、日志解释" class="headerlink" title="三、日志解释"></a>三、日志解释</h2><pre class=" language-tex"><code class="language-tex"># Redis 启动、配置加载
+<h2 id="三、日志解释"><a href="#三、日志解释" class="headerlink" title="三、日志解释"></a>三、日志解释</h2><pre><code class="tex"># Redis 启动、配置加载
 1:C 23 Sep 08:55:24.988 # oO0OoO0OoO0Oo Redis is starting oO0OoO0OoO0Oo
 1:C 23 Sep 08:55:24.988 # Redis version=4.0.14, bits=64, commit=00000000, modified=0, pid=1, just started
 1:C 23 Sep 08:55:24.989 # Configuration loaded
@@ -426,7 +426,7 @@ $ ./start.sh   # 运行刚刚写的脚本
 </code></pre>
 <h2 id="四、测试"><a href="#四、测试" class="headerlink" title="四、测试"></a>四、测试</h2><p><img src="https://i.loli.net/2019/09/23/YH3OnIpa7G2vieK.png" alt="图：连接测试"></p>
 <h2 id="五、遇到的问题"><a href="#五、遇到的问题" class="headerlink" title="五、遇到的问题"></a>五、遇到的问题</h2><h3 id="1-在-windows-下使用-redis-conf，失败"><a href="#1-在-windows-下使用-redis-conf，失败" class="headerlink" title="1. 在 windows 下使用 redis.conf，失败"></a>1. 在 windows 下使用 redis.conf，失败</h3><p>使用 redis.conf 的 Redis 启动脚本，配置来源于 <a href="http://download.redis.io/redis-stable/redis.conf" target="_blank" rel="noopener">官网提供的 redis.conf</a>，且未做任何修改。</p>
-<pre class=" language-sh"><code class="language-sh">docker run --name luokaiii-redis \ # 指定运行后的容器名称
+<pre><code class="sh">docker run --name luokaiii-redis \ # 指定运行后的容器名称
         -p 7481:6379 \    # 将容器的6379端口映射到宿主机的7481端口
         -v /${PWD}/data/:/data \ # 挂载redis持久化的目录到宿主机
         -v /${PWD}/redis.conf:/usr/local/etc/redis/redis.conf \ # 挂载redis.conf
@@ -435,7 +435,7 @@ $ ./start.sh   # 运行刚刚写的脚本
 </code></pre>
 <p>执行脚本参考自 <a href="https://hub.docker.com/_/redis?tab=description" target="_blank" rel="noopener">Docker Hub</a>。</p>
 <p><img src="https://i.loli.net/2019/09/23/DvtaXPkubZUJL6A.png" alt="图：DockerHub提供的redis启动脚本"></p>
-<h4 id="错误提示"><a href="#错误提示" class="headerlink" title="错误提示"></a>错误提示</h4><pre class=" language-sh"><code class="language-sh">1:C 23 Sep 08:43:00.482 # Fatal error, can't open config file 'C:/Program Files/Git/usr/local/etc/redis/redis.conf'
+<h4 id="错误提示"><a href="#错误提示" class="headerlink" title="错误提示"></a>错误提示</h4><pre><code class="sh">1:C 23 Sep 08:43:00.482 # Fatal error, can&#39;t open config file &#39;C:/Program Files/Git/usr/local/etc/redis/redis.conf&#39;
 </code></pre>
 <h4 id="原因"><a href="#原因" class="headerlink" title="原因"></a>原因</h4><p>未知。不明白为什么 Docker Container 会提示出 ‘C:/…’ 路径。</p>
 <h4 id="解决方案"><a href="#解决方案" class="headerlink" title="解决方案"></a>解决方案</h4><p>Windows 环境不使用 redis.conf. </p>
@@ -576,7 +576,7 @@ $ ./start.sh   # 运行刚刚写的脚本
               
                 <a href="/archives">
               
-                  <span class="site-state-item-count">224</span>
+                  <span class="site-state-item-count">237</span>
                   <span class="site-state-item-name">日志</span>
                 </a>
               </div>
@@ -598,7 +598,7 @@ $ ./start.sh   # 运行刚刚写的脚本
               
               <div class="site-state-item site-state-tags">
                 <a href="/tags/index.html">
-                  <span class="site-state-item-count">21</span>
+                  <span class="site-state-item-count">22</span>
                   <span class="site-state-item-name">标签</span>
                 </a>
               </div>

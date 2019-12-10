@@ -405,28 +405,28 @@
 </ul>
 <p>通过以上的一系列接口，可以使用不同的 Bean 的检索方法，很方便地从 IoC 容器中得到需要的 Bean，从而忽略具体的 IoC 容器的实现。</p>
 <h4 id="2-BeanFactory-容器的设计原理"><a href="#2-BeanFactory-容器的设计原理" class="headerlink" title="2. BeanFactory 容器的设计原理"></a>2. BeanFactory 容器的设计原理</h4><p><code>BeanFactory</code> 接口提供了使用 IoC 容器的规范。我们以 <code>XmlBeanFactory</code> 为例，从其源码来看看 <code>BeanFactory</code> 的设计思路。</p>
-<pre class=" language-java"><code class="language-java"><span class="token keyword">public</span> <span class="token keyword">class</span> <span class="token class-name">XmlBeanFactory</span> <span class="token keyword">extends</span> <span class="token class-name">DefaultListableBeanFactory</span> <span class="token punctuation">{</span>
-    <span class="token comment" spellcheck="true">/**
+<pre><code class="java">public class XmlBeanFactory extends DefaultListableBeanFactory {
+    /**
      * 初始化一个 XmlBeanDefinitionReader，用来处理 BeanDefinition
-     */</span>
-    <span class="token keyword">private</span> <span class="token keyword">final</span> XmlBeanDefinitionReader reader <span class="token operator">=</span> <span class="token keyword">new</span> <span class="token class-name">XmlBeanDefinitionReader</span><span class="token punctuation">(</span><span class="token keyword">this</span><span class="token punctuation">)</span><span class="token punctuation">;</span>
+     */
+    private final XmlBeanDefinitionReader reader = new XmlBeanDefinitionReader(this);
 
-    <span class="token comment" spellcheck="true">/**
+    /**
      * 通过 Resource 获取存储 BeanDefinition 的 .xml 文件
      * 用来定位需要的 BeanDefinition 信息来对 Bean 完成容器的初始化和依赖注入过程
-     */</span>
-    <span class="token keyword">public</span> <span class="token function">XmlBeanFactory</span><span class="token punctuation">(</span>Resource resource<span class="token punctuation">)</span> <span class="token keyword">throws</span> BeansException <span class="token punctuation">{</span>
-        <span class="token keyword">this</span><span class="token punctuation">(</span>resource<span class="token punctuation">,</span> null<span class="token punctuation">)</span><span class="token punctuation">;</span>
-    <span class="token punctuation">}</span>
+     */
+    public XmlBeanFactory(Resource resource) throws BeansException {
+        this(resource, null);
+    }
 
-    <span class="token comment" spellcheck="true">/**
+    /**
      * 通过指定的 xml 文件加载 BeanDefinition
-     */</span>
-    <span class="token keyword">public</span> <span class="token function">XmlBeanFactory</span><span class="token punctuation">(</span>Resource resource<span class="token punctuation">,</span> BeanFactory parentBeanFactory<span class="token punctuation">)</span> <span class="token keyword">throws</span> BeansException <span class="token punctuation">{</span>
-        <span class="token keyword">super</span><span class="token punctuation">(</span>parentBeanFactory<span class="token punctuation">)</span><span class="token punctuation">;</span>
-        <span class="token keyword">this</span><span class="token punctuation">.</span>reader<span class="token punctuation">.</span><span class="token function">loadBeanDefinitions</span><span class="token punctuation">(</span>resource<span class="token punctuation">)</span><span class="token punctuation">;</span>
-    <span class="token punctuation">}</span>
-<span class="token punctuation">}</span>
+     */
+    public XmlBeanFactory(Resource resource, BeanFactory parentBeanFactory) throws BeansException {
+        super(parentBeanFactory);
+        this.reader.loadBeanDefinitions(resource);
+    }
+}
 </code></pre>
 <p>参考 XMLBeanFactory 的实现，大致可以将 IoC 容器的创建分为如下几个步骤：</p>
 <ol>
@@ -436,59 +436,59 @@
 <li>从定义好的资源读入配置信息</li>
 <li>完成 IoC 容器中 Bean 的初始化</li>
 </ol>
-<pre class=" language-java"><code class="language-java">ClassPathResource res <span class="token operator">=</span> <span class="token keyword">new</span> <span class="token class-name">ClassPathResource</span><span class="token punctuation">(</span><span class="token string">"beans.xml"</span><span class="token punctuation">)</span><span class="token punctuation">;</span>
-DefaultListableBeanFactory factory <span class="token operator">=</span> <span class="token keyword">new</span> <span class="token class-name">DefaultListableBeanFactory</span><span class="token punctuation">(</span><span class="token punctuation">)</span><span class="token punctuation">;</span>
-XmlBeanDefinitionReader reader <span class="token operator">=</span> <span class="token keyword">new</span> <span class="token class-name">XmlBeanDefinitionReader</span><span class="token punctuation">(</span>factory<span class="token punctuation">)</span><span class="token punctuation">;</span>
-reader<span class="token punctuation">.</span><span class="token function">loadBeanDefinitions</span><span class="token punctuation">(</span>res<span class="token punctuation">)</span><span class="token punctuation">;</span>
+<pre><code class="java">ClassPathResource res = new ClassPathResource(&quot;beans.xml&quot;);
+DefaultListableBeanFactory factory = new DefaultListableBeanFactory();
+XmlBeanDefinitionReader reader = new XmlBeanDefinitionReader(factory);
+reader.loadBeanDefinitions(res);
 </code></pre>
 <h4 id="3-ApplicationContext-的应用场景"><a href="#3-ApplicationContext-的应用场景" class="headerlink" title="3. ApplicationContext 的应用场景"></a>3. ApplicationContext 的应用场景</h4><p>ApplicationContext 除了能够使用 IoC 容器的基本功能之外，还为用户提供了以下附加服务：</p>
-<pre class=" language-java"><code class="language-java"><span class="token comment" spellcheck="true">/**
+<pre><code class="java">/**
  * 在 ApplicationContext 中提供的附加服务，使基本 IoC 容器的功能更加丰富。与简单的 BeanFactory 相比，它的使用是一种面向框架的使用风格
  * ListableBeanFactory：访问应用中 Bean 工厂的方法
  * MessageSource：解析消息的能力，支持国际化
  * ResourceLoader：加载文件资源的能力
  * ApplicationEventPublisher：发布应用事件的能力，这些事件和 Bean 的生命周期结合，为管理 Bean 提供了便利
- */</span>
-<span class="token keyword">public</span> <span class="token keyword">interface</span> <span class="token class-name">ApplicationContext</span> <span class="token keyword">extends</span> <span class="token class-name">EnvironmentCapable</span><span class="token punctuation">,</span> ListableBeanFactory<span class="token punctuation">,</span> HierarchicalBeanFactory<span class="token punctuation">,</span> MessageSource<span class="token punctuation">,</span> ApplicationEventPublisher<span class="token punctuation">,</span> ResourcePatternResolver <span class="token punctuation">{</span>   
-    <span class="token annotation punctuation">@Nullable</span>   
-    String <span class="token function">getId</span><span class="token punctuation">(</span><span class="token punctuation">)</span><span class="token punctuation">;</span>  
-    String <span class="token function">getApplicationName</span><span class="token punctuation">(</span><span class="token punctuation">)</span><span class="token punctuation">;</span>  
-    String <span class="token function">getDisplayName</span><span class="token punctuation">(</span><span class="token punctuation">)</span><span class="token punctuation">;</span>  
-    <span class="token keyword">long</span> <span class="token function">getStartupDate</span><span class="token punctuation">(</span><span class="token punctuation">)</span><span class="token punctuation">;</span>  
-    <span class="token annotation punctuation">@Nullable</span>   
-    ApplicationContext <span class="token function">getParent</span><span class="token punctuation">(</span><span class="token punctuation">)</span><span class="token punctuation">;</span>   
-    AutowireCapableBeanFactory <span class="token function">getAutowireCapableBeanFactory</span><span class="token punctuation">(</span><span class="token punctuation">)</span> <span class="token keyword">throws</span> IllegalStateException<span class="token punctuation">;</span>
-<span class="token punctuation">}</span>
+ */
+public interface ApplicationContext extends EnvironmentCapable, ListableBeanFactory, HierarchicalBeanFactory, MessageSource, ApplicationEventPublisher, ResourcePatternResolver {   
+    @Nullable   
+    String getId();  
+    String getApplicationName();  
+    String getDisplayName();  
+    long getStartupDate();  
+    @Nullable   
+    ApplicationContext getParent();   
+    AutowireCapableBeanFactory getAutowireCapableBeanFactory() throws IllegalStateException;
+}
 </code></pre>
 <h4 id="4-ApplicationContext-的设计原理"><a href="#4-ApplicationContext-的设计原理" class="headerlink" title="4. ApplicationContext 的设计原理"></a>4. ApplicationContext 的设计原理</h4><p>在 ApplicationContext 容器的实现中，以 FileSystemXmlApplicationContext 的实现为例：</p>
-<pre class=" language-java"><code class="language-java"><span class="token keyword">public</span> <span class="token keyword">class</span> <span class="token class-name">FileSystemXmlApplicationContext</span> <span class="token keyword">extends</span> <span class="token class-name">AbstractXmlApplicationContext</span> <span class="token punctuation">{</span>
-    <span class="token comment" spellcheck="true">/**
+<pre><code class="java">public class FileSystemXmlApplicationContext extends AbstractXmlApplicationContext {
+    /**
      * 除了实例化应用上下文的支持，还支持启动 IoC 容器的 refresh() 
      * 在这个过程中，还通过下面的方法读取 文件系统中XML形式的 BeanDefinition 资源
-     */</span>
-    <span class="token keyword">public</span> <span class="token function">FileSystemXmlApplicationContext</span><span class="token punctuation">(</span>
-            String<span class="token punctuation">[</span><span class="token punctuation">]</span> configLocations<span class="token punctuation">,</span> <span class="token keyword">boolean</span> refresh<span class="token punctuation">,</span> <span class="token annotation punctuation">@Nullable</span> ApplicationContext parent<span class="token punctuation">)</span>
-            <span class="token keyword">throws</span> BeansException <span class="token punctuation">{</span>
+     */
+    public FileSystemXmlApplicationContext(
+            String[] configLocations, boolean refresh, @Nullable ApplicationContext parent)
+            throws BeansException {
 
-        <span class="token keyword">super</span><span class="token punctuation">(</span>parent<span class="token punctuation">)</span><span class="token punctuation">;</span>
-        <span class="token function">setConfigLocations</span><span class="token punctuation">(</span>configLocations<span class="token punctuation">)</span><span class="token punctuation">;</span>
-        <span class="token keyword">if</span> <span class="token punctuation">(</span>refresh<span class="token punctuation">)</span> <span class="token punctuation">{</span>
-            <span class="token function">refresh</span><span class="token punctuation">(</span><span class="token punctuation">)</span><span class="token punctuation">;</span>
-        <span class="token punctuation">}</span>
-    <span class="token punctuation">}</span>
+        super(parent);
+        setConfigLocations(configLocations);
+        if (refresh) {
+            refresh();
+        }
+    }
 
-    <span class="token comment" spellcheck="true">/**
+    /**
      * 获得 FileSystemResource 的资源定位
-     */</span>
-    <span class="token annotation punctuation">@Override</span>
-    <span class="token keyword">protected</span> Resource <span class="token function">getResourceByPath</span><span class="token punctuation">(</span>String path<span class="token punctuation">)</span> <span class="token punctuation">{</span>
-        <span class="token keyword">if</span> <span class="token punctuation">(</span>path<span class="token punctuation">.</span><span class="token function">startsWith</span><span class="token punctuation">(</span><span class="token string">"/"</span><span class="token punctuation">)</span><span class="token punctuation">)</span> <span class="token punctuation">{</span>
-            path <span class="token operator">=</span> path<span class="token punctuation">.</span><span class="token function">substring</span><span class="token punctuation">(</span><span class="token number">1</span><span class="token punctuation">)</span><span class="token punctuation">;</span>
-        <span class="token punctuation">}</span>
-        <span class="token keyword">return</span> <span class="token keyword">new</span> <span class="token class-name">FileSystemResource</span><span class="token punctuation">(</span>path<span class="token punctuation">)</span><span class="token punctuation">;</span>
-    <span class="token punctuation">}</span>
+     */
+    @Override
+    protected Resource getResourceByPath(String path) {
+        if (path.startsWith(&quot;/&quot;)) {
+            path = path.substring(1);
+        }
+        return new FileSystemResource(path);
+    }
 
-<span class="token punctuation">}</span>
+}
 </code></pre>
 <h2 id="三、IoC-容器的初始化过程"><a href="#三、IoC-容器的初始化过程" class="headerlink" title="三、IoC 容器的初始化过程"></a>三、IoC 容器的初始化过程</h2><p>IoC 容器的初始化是由前面介绍的 refresh() 方法来启动的。该启动包括 BeanDefinition 的 Resource 定位、载入和注册三个过程。</p>
 <h3 id="3-1-BeanDefinition-的-Resource-定位"><a href="#3-1-BeanDefinition-的-Resource-定位" class="headerlink" title="3.1 BeanDefinition 的 Resource 定位"></a>3.1 BeanDefinition 的 Resource 定位</h3><p>当我们手动使用 IoC 容器的时候，是通过 <code>new Resource(&quot;beans.xml&quot;)</code> 的方式获取 xml 中的信息。</p>
@@ -496,89 +496,89 @@ reader<span class="token punctuation">.</span><span class="token function">loadB
 <p>其他 ApplicationContext 的子实现类也会生成对应的 Resource 实现类。</p>
 <h3 id="3-2-BeanDefinition-的载入和解析"><a href="#3-2-BeanDefinition-的载入和解析" class="headerlink" title="3.2 BeanDefinition 的载入和解析"></a>3.2 BeanDefinition 的载入和解析</h3><p>对于 IoC 容器而言，BeanDefinition 信息的载入，相当于把定义的 BeanDefinition 转换为 Spring 内部表示的数据结构的过程。<strong>在 IoC 容器中是通过 HashMap 来保持和维护 BeanDefinition 数据的</strong>。</p>
 <p>以 <code>AbstractApplicationContext</code> 的 refresh() 方法为例：</p>
-<pre class=" language-java"><code class="language-java">    <span class="token annotation punctuation">@Override</span>
-    <span class="token keyword">public</span> <span class="token keyword">void</span> <span class="token function">refresh</span><span class="token punctuation">(</span><span class="token punctuation">)</span> <span class="token keyword">throws</span> BeansException<span class="token punctuation">,</span> IllegalStateException <span class="token punctuation">{</span>
-        <span class="token keyword">synchronized</span> <span class="token punctuation">(</span><span class="token keyword">this</span><span class="token punctuation">.</span>startupShutdownMonitor<span class="token punctuation">)</span> <span class="token punctuation">{</span>
-            <span class="token comment" spellcheck="true">// Prepare this context for refreshing.</span>
-            <span class="token function">prepareRefresh</span><span class="token punctuation">(</span><span class="token punctuation">)</span><span class="token punctuation">;</span>
+<pre><code class="java">    @Override
+    public void refresh() throws BeansException, IllegalStateException {
+        synchronized (this.startupShutdownMonitor) {
+            // Prepare this context for refreshing.
+            prepareRefresh();
 
-            <span class="token comment" spellcheck="true">// 创建或刷新 BeanFactory</span>
-            ConfigurableListableBeanFactory beanFactory <span class="token operator">=</span> <span class="token function">obtainFreshBeanFactory</span><span class="token punctuation">(</span><span class="token punctuation">)</span><span class="token punctuation">;</span>
+            // 创建或刷新 BeanFactory
+            ConfigurableListableBeanFactory beanFactory = obtainFreshBeanFactory();
 
-            <span class="token comment" spellcheck="true">// 准备 BeanFactory 的一些初始化操作</span>
-            <span class="token function">prepareBeanFactory</span><span class="token punctuation">(</span>beanFactory<span class="token punctuation">)</span><span class="token punctuation">;</span>
+            // 准备 BeanFactory 的一些初始化操作
+            prepareBeanFactory(beanFactory);
 
-            <span class="token keyword">try</span> <span class="token punctuation">{</span>
-                <span class="token comment" spellcheck="true">// 允许子类对 BeanFactory 进行一些后置操作</span>
-                <span class="token function">postProcessBeanFactory</span><span class="token punctuation">(</span>beanFactory<span class="token punctuation">)</span><span class="token punctuation">;</span>
+            try {
+                // 允许子类对 BeanFactory 进行一些后置操作
+                postProcessBeanFactory(beanFactory);
 
-                <span class="token comment" spellcheck="true">// 注册 BeanFactory 到 context 中</span>
-                <span class="token function">invokeBeanFactoryPostProcessors</span><span class="token punctuation">(</span>beanFactory<span class="token punctuation">)</span><span class="token punctuation">;</span>
+                // 注册 BeanFactory 到 context 中
+                invokeBeanFactoryPostProcessors(beanFactory);
 
-                <span class="token function">registerBeanPostProcessors</span><span class="token punctuation">(</span>beanFactory<span class="token punctuation">)</span><span class="token punctuation">;</span>
+                registerBeanPostProcessors(beanFactory);
 
-                <span class="token function">initMessageSource</span><span class="token punctuation">(</span><span class="token punctuation">)</span><span class="token punctuation">;</span>
+                initMessageSource();
 
-                <span class="token function">initApplicationEventMulticaster</span><span class="token punctuation">(</span><span class="token punctuation">)</span><span class="token punctuation">;</span>
+                initApplicationEventMulticaster();
 
-                <span class="token comment" spellcheck="true">// 由子类实现该刷新方法</span>
-                <span class="token function">onRefresh</span><span class="token punctuation">(</span><span class="token punctuation">)</span><span class="token punctuation">;</span>
+                // 由子类实现该刷新方法
+                onRefresh();
 
-                <span class="token comment" spellcheck="true">// 检查并注册监听器</span>
-                <span class="token function">registerListeners</span><span class="token punctuation">(</span><span class="token punctuation">)</span><span class="token punctuation">;</span>
+                // 检查并注册监听器
+                registerListeners();
 
-                <span class="token comment" spellcheck="true">// 实例化所有剩余单例</span>
-                <span class="token function">finishBeanFactoryInitialization</span><span class="token punctuation">(</span>beanFactory<span class="token punctuation">)</span><span class="token punctuation">;</span>
+                // 实例化所有剩余单例
+                finishBeanFactoryInitialization(beanFactory);
 
-                <span class="token comment" spellcheck="true">// 完成刷新，并发布事件</span>
-                <span class="token function">finishRefresh</span><span class="token punctuation">(</span><span class="token punctuation">)</span><span class="token punctuation">;</span>
-            <span class="token punctuation">}</span>
+                // 完成刷新，并发布事件
+                finishRefresh();
+            }
 
-            <span class="token keyword">catch</span> <span class="token punctuation">(</span><span class="token class-name">BeansException</span> ex<span class="token punctuation">)</span> <span class="token punctuation">{</span>
-                <span class="token keyword">if</span> <span class="token punctuation">(</span>logger<span class="token punctuation">.</span><span class="token function">isWarnEnabled</span><span class="token punctuation">(</span><span class="token punctuation">)</span><span class="token punctuation">)</span> <span class="token punctuation">{</span>
-                    logger<span class="token punctuation">.</span><span class="token function">warn</span><span class="token punctuation">(</span><span class="token string">"Exception encountered during context initialization - "</span> <span class="token operator">+</span>
-                            <span class="token string">"cancelling refresh attempt: "</span> <span class="token operator">+</span> ex<span class="token punctuation">)</span><span class="token punctuation">;</span>
-                <span class="token punctuation">}</span>
+            catch (BeansException ex) {
+                if (logger.isWarnEnabled()) {
+                    logger.warn(&quot;Exception encountered during context initialization - &quot; +
+                            &quot;cancelling refresh attempt: &quot; + ex);
+                }
 
-                <span class="token comment" spellcheck="true">// Destroy already created singletons to avoid dangling resources.</span>
-                <span class="token function">destroyBeans</span><span class="token punctuation">(</span><span class="token punctuation">)</span><span class="token punctuation">;</span>
+                // Destroy already created singletons to avoid dangling resources.
+                destroyBeans();
 
-                <span class="token comment" spellcheck="true">// Reset 'active' flag.</span>
-                <span class="token function">cancelRefresh</span><span class="token punctuation">(</span>ex<span class="token punctuation">)</span><span class="token punctuation">;</span>
+                // Reset &#39;active&#39; flag.
+                cancelRefresh(ex);
 
-                <span class="token comment" spellcheck="true">// Propagate exception to caller.</span>
-                <span class="token keyword">throw</span> ex<span class="token punctuation">;</span>
-            <span class="token punctuation">}</span>
+                // Propagate exception to caller.
+                throw ex;
+            }
 
-            <span class="token keyword">finally</span> <span class="token punctuation">{</span>
-                <span class="token comment" spellcheck="true">// Reset common introspection caches in Spring's core, since we</span>
-                <span class="token comment" spellcheck="true">// might not ever need metadata for singleton beans anymore...</span>
-                <span class="token function">resetCommonCaches</span><span class="token punctuation">(</span><span class="token punctuation">)</span><span class="token punctuation">;</span>
-            <span class="token punctuation">}</span>
-        <span class="token punctuation">}</span>
-    <span class="token punctuation">}</span>
+            finally {
+                // Reset common introspection caches in Spring&#39;s core, since we
+                // might not ever need metadata for singleton beans anymore...
+                resetCommonCaches();
+            }
+        }
+    }
 </code></pre>
 <p>具体刷新方法，可以参考 <code>AbstractApplicationContext</code> 的实现子类 <code>AbstractRefreshableApplicationContext</code>：</p>
-<pre class=" language-java"><code class="language-java"><span class="token annotation punctuation">@Override</span>
-<span class="token keyword">protected</span> <span class="token keyword">final</span> <span class="token keyword">void</span> <span class="token function">refreshBeanFactory</span><span class="token punctuation">(</span><span class="token punctuation">)</span> <span class="token keyword">throws</span> BeansException <span class="token punctuation">{</span>
-    <span class="token comment" spellcheck="true">// 如果存在 BeanFactory 则先关闭销毁</span>
-    <span class="token keyword">if</span> <span class="token punctuation">(</span><span class="token function">hasBeanFactory</span><span class="token punctuation">(</span><span class="token punctuation">)</span><span class="token punctuation">)</span> <span class="token punctuation">{</span>
-        <span class="token function">destroyBeans</span><span class="token punctuation">(</span><span class="token punctuation">)</span><span class="token punctuation">;</span>
-        <span class="token function">closeBeanFactory</span><span class="token punctuation">(</span><span class="token punctuation">)</span><span class="token punctuation">;</span>
-    <span class="token punctuation">}</span>
-    <span class="token keyword">try</span> <span class="token punctuation">{</span>
-        DefaultListableBeanFactory beanFactory <span class="token operator">=</span> <span class="token function">createBeanFactory</span><span class="token punctuation">(</span><span class="token punctuation">)</span><span class="token punctuation">;</span>
-        beanFactory<span class="token punctuation">.</span><span class="token function">setSerializationId</span><span class="token punctuation">(</span><span class="token function">getId</span><span class="token punctuation">(</span><span class="token punctuation">)</span><span class="token punctuation">)</span><span class="token punctuation">;</span>
-        <span class="token function">customizeBeanFactory</span><span class="token punctuation">(</span>beanFactory<span class="token punctuation">)</span><span class="token punctuation">;</span>
-        <span class="token function">loadBeanDefinitions</span><span class="token punctuation">(</span>beanFactory<span class="token punctuation">)</span><span class="token punctuation">;</span>
-        <span class="token keyword">synchronized</span> <span class="token punctuation">(</span><span class="token keyword">this</span><span class="token punctuation">.</span>beanFactoryMonitor<span class="token punctuation">)</span> <span class="token punctuation">{</span>
-            <span class="token keyword">this</span><span class="token punctuation">.</span>beanFactory <span class="token operator">=</span> beanFactory<span class="token punctuation">;</span>
-        <span class="token punctuation">}</span>
-    <span class="token punctuation">}</span>
-    <span class="token keyword">catch</span> <span class="token punctuation">(</span><span class="token class-name">IOException</span> ex<span class="token punctuation">)</span> <span class="token punctuation">{</span>
-        <span class="token keyword">throw</span> <span class="token keyword">new</span> <span class="token class-name">ApplicationContextException</span><span class="token punctuation">(</span><span class="token string">"I/O error parsing bean definition source for "</span> <span class="token operator">+</span> <span class="token function">getDisplayName</span><span class="token punctuation">(</span><span class="token punctuation">)</span><span class="token punctuation">,</span> ex<span class="token punctuation">)</span><span class="token punctuation">;</span>
-    <span class="token punctuation">}</span>
-<span class="token punctuation">}</span>
+<pre><code class="java">@Override
+protected final void refreshBeanFactory() throws BeansException {
+    // 如果存在 BeanFactory 则先关闭销毁
+    if (hasBeanFactory()) {
+        destroyBeans();
+        closeBeanFactory();
+    }
+    try {
+        DefaultListableBeanFactory beanFactory = createBeanFactory();
+        beanFactory.setSerializationId(getId());
+        customizeBeanFactory(beanFactory);
+        loadBeanDefinitions(beanFactory);
+        synchronized (this.beanFactoryMonitor) {
+            this.beanFactory = beanFactory;
+        }
+    }
+    catch (IOException ex) {
+        throw new ApplicationContextException(&quot;I/O error parsing bean definition source for &quot; + getDisplayName(), ex);
+    }
+}
 </code></pre>
 <h3 id="3-3-BeanDefinition-在-IoC-容器中的注册"><a href="#3-3-BeanDefinition-在-IoC-容器中的注册" class="headerlink" title="3.3 BeanDefinition 在 IoC 容器中的注册"></a>3.3 BeanDefinition 在 IoC 容器中的注册</h3><p>在 DefaultListableBeanFactory 中，通过一个 HashMap 来持有载入的 BeanDefinition 的。</p>
 <p>DefaultListableBeanFactory 实现了 BeanDefinitionRegistry 的接口，用来完成 BeanDefinition 向容器的注册。注册的过程就是把解析得到的 BeanDefinition 设置到 HashMap 中去，如果遇到同名的 BeanDefinition，在处理时就需要依据 allowBeanDefinitionOverriding 的配置来完成。</p>
@@ -738,7 +738,7 @@ reader<span class="token punctuation">.</span><span class="token function">loadB
               
                 <a href="/archives">
               
-                  <span class="site-state-item-count">224</span>
+                  <span class="site-state-item-count">237</span>
                   <span class="site-state-item-name">日志</span>
                 </a>
               </div>
@@ -760,7 +760,7 @@ reader<span class="token punctuation">.</span><span class="token function">loadB
               
               <div class="site-state-item site-state-tags">
                 <a href="/tags/index.html">
-                  <span class="site-state-item-count">21</span>
+                  <span class="site-state-item-count">22</span>
                   <span class="site-state-item-name">标签</span>
                 </a>
               </div>

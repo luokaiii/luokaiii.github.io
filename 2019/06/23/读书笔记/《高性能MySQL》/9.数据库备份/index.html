@@ -421,47 +421,47 @@
 <p>备份数据库的账号需要具有以下权限：SELECT, RELOAD, LOCK  TABLES, REPLICATION CLIENT, SHOW VIEW, EVENT, PROCESS</p>
 </blockquote>
 <h3 id="3、备份实例"><a href="#3、备份实例" class="headerlink" title="3、备份实例"></a>3、备份实例</h3><h4 id="1-创建一个用于备份数据库的用户"><a href="#1-创建一个用于备份数据库的用户" class="headerlink" title="1. 创建一个用于备份数据库的用户"></a>1. 创建一个用于备份数据库的用户</h4><p>进入 MySQL 实例中，并执行语句，创建用户：</p>
-<pre class=" language-sh"><code class="language-sh">create user 'backup'@'localhost' identified by '123456';
+<pre><code class="sh">create user &#39;backup&#39;@&#39;localhost&#39; identified by &#39;123456&#39;;
 </code></pre>
-<h4 id="2-为用户授予备份权限"><a href="#2-为用户授予备份权限" class="headerlink" title="2. 为用户授予备份权限"></a>2. 为用户授予备份权限</h4><pre class=" language-sh"><code class="language-sh">grant SELECT, RELOAD, LOCK  TABLES, REPLICATION CLIENT, SHOW VIEW, EVENT, PROCESS on *.* to 'backup'@'localhost';
+<h4 id="2-为用户授予备份权限"><a href="#2-为用户授予备份权限" class="headerlink" title="2. 为用户授予备份权限"></a>2. 为用户授予备份权限</h4><pre><code class="sh">grant SELECT, RELOAD, LOCK  TABLES, REPLICATION CLIENT, SHOW VIEW, EVENT, PROCESS on *.* to &#39;backup&#39;@&#39;localhost&#39;;
 </code></pre>
 <h4 id="3-使用事务备份数据库"><a href="#3-使用事务备份数据库" class="headerlink" title="3. 使用事务备份数据库"></a>3. 使用事务备份数据库</h4><p>情况一：备份 mc_order 数据库中的全部表数据：</p>
-<pre class=" language-sh"><code class="language-sh">mysqldump -ubackup -p --master-data=2 --single-transaction --routines --triggers --events mc_order > mc_order.sql
+<pre><code class="sh">mysqldump -ubackup -p --master-data=2 --single-transaction --routines --triggers --events mc_order &gt; mc_order.sql
 </code></pre>
 <p>情况二：备份 mc-_order 数据库下的 order_master 表：</p>
-<pre class=" language-sh"><code class="language-sh">mysqldump -ubackup -p --master-data=2 --single-transaction --routines --triggers --events mc_order order_master > order_master.sql
+<pre><code class="sh">mysqldump -ubackup -p --master-data=2 --single-transaction --routines --triggers --events mc_order order_master &gt; order_master.sql
 </code></pre>
 <p>情况三：备份全部的数据库，将所有的数据库都保存在 mc.sql 下：</p>
-<pre class=" language-sh"><code class="language-sh">mysqldump -ubackup -p --master-data=1 --single-transaction --routines --triggers --events --all-databases > mc.sql
+<pre><code class="sh">mysqldump -ubackup -p --master-data=1 --single-transaction --routines --triggers --events --all-databases &gt; mc.sql
 </code></pre>
 <p>情况四：备份 mc_order 数据库下的每个表，至指定的目录文件下，即 mc_order 下的每张表都是区分开的：</p>
 <p>注意，使用 –tab 命令需要用户具有 file 写文件的权限：</p>
-<pre class=" language-sh"><code class="language-sh">grant file to 'backup'@'localhost';
+<pre><code class="sh">grant file to &#39;backup&#39;@&#39;localhost&#39;;
 </code></pre>
-<pre class=" language-sh"><code class="language-sh">mysqldump -ubackup -p --master-data=2 --single-transaction --routines --triggers --events --tab="/data/db_backup/mc_order" mc_order;
+<pre><code class="sh">mysqldump -ubackup -p --master-data=2 --single-transaction --routines --triggers --events --tab=&quot;/data/db_backup/mc_order&quot; mc_order;
 </code></pre>
 <p>情况五：备份 mc_oder 下的 order_master 表中 id为1000-1050 的数据：</p>
-<pre class=" language-sh"><code class="language-sh">mysqldump -ubackup -p --master-data=2 --single-transaction --routines --where "order_id>1000 and order_id<1050" mc_order order_master > order_master_1000.sql
+<pre><code class="sh">mysqldump -ubackup -p --master-data=2 --single-transaction --routines --where &quot;order_id&gt;1000 and order_id&lt;1050&quot; mc_order order_master &gt; order_master_1000.sql
 </code></pre>
-<h3 id="四、备份脚本"><a href="#四、备份脚本" class="headerlink" title="四、备份脚本"></a>四、备份脚本</h3><pre class=" language-sh"><code class="language-sh">#!/bin/bash
+<h3 id="四、备份脚本"><a href="#四、备份脚本" class="headerlink" title="四、备份脚本"></a>四、备份脚本</h3><pre><code class="sh">#!/bin/bash
 ##########Basic paramters ######
 DAY=`date +%Y%m%d`
-Environment=$(/sbin/ifconifg | grep "inet addr" | head -1 |grep -v "127.0.0.1" | awk '{print $2;}' | awk -F':' '{print $2;}')
-USER="backup"
-PASSWD="123456"
-HostPort="3306"
-MYSQLBASE="/home/sql"
-DATADIR="/data/db_backup/${DAY}"
+Environment=$(/sbin/ifconifg | grep &quot;inet addr&quot; | head -1 |grep -v &quot;127.0.0.1&quot; | awk &#39;{print $2;}&#39; | awk -F&#39;:&#39; &#39;{print $2;}&#39;)
+USER=&quot;backup&quot;
+PASSWD=&quot;123456&quot;
+HostPort=&quot;3306&quot;
+MYSQLBASE=&quot;/home/sql&quot;
+DATADIR=&quot;/data/db_backup/${DAY}&quot;
 MYSQL=`/usr/bin/whick mysql`
 mkdir -p ${DATADIR}
 
 Dump(){
- ${MYSQLDUMP} --master-data=2 --single-transaction --routines --triggers --events -u${USER} -p${PASSWD} -P${HostPort} ${database} > ${DATADIR}/${Environment}-${database}.sql
+ ${MYSQLDUMP} --master-data=2 --single-transaction --routines --triggers --events -u${USER} -p${PASSWD} -P${HostPort} ${database} &gt; ${DATADIR}/${Environment}-${database}.sql
  cd ${DATADIR}
  gzip ${Environment}-${database}.sql
 }
 
-for db in `echo "SELECT schema_name FROM information_schema.schemata where schema_name not in ('information_schema','sys','performance_schema')" | ${MYSQL} -u${USER} -p${PASSWD} --skip-column-names`
+for db in `echo &quot;SELECT schema_name FROM information_schema.schemata where schema_name not in (&#39;information_schema&#39;,&#39;sys&#39;,&#39;performance_schema&#39;)&quot; | ${MYSQL} -u${USER} -p${PASSWD} --skip-column-names`
 do
   database=${db}
   Dump
@@ -507,8 +507,8 @@ done
         <div class="post-nav">
           <div class="post-nav-next post-nav-item">
             
-              <a href="/2019/06/21/读书笔记/《高性能MySQL》/8.MySQL慢查日志/" rel="next" title="《高性能MySQL》第八章 MySQL 慢查询日志">
-                <i class="fa fa-chevron-left"></i> 《高性能MySQL》第八章 MySQL 慢查询日志
+              <a href="/2019/06/23/读书笔记/《高性能MySQL》/10.MySQL架构拆分/" rel="next" title="《高性能MySQL》第十章 MySQL 架构拆分">
+                <i class="fa fa-chevron-left"></i> 《高性能MySQL》第十章 MySQL 架构拆分
               </a>
             
           </div>
@@ -517,8 +517,8 @@ done
 
           <div class="post-nav-prev post-nav-item">
             
-              <a href="/2019/06/23/读书笔记/《高性能MySQL》/10.MySQL架构拆分/" rel="prev" title="《高性能MySQL》第十章 MySQL 架构拆分">
-                《高性能MySQL》第十章 MySQL 架构拆分 <i class="fa fa-chevron-right"></i>
+              <a href="/2019/06/24/读书笔记/《JavaDesignPatterns》/0.目录/" rel="prev" title="《Java Design Patterns》读书笔记 - 目录">
+                《Java Design Patterns》读书笔记 - 目录 <i class="fa fa-chevron-right"></i>
               </a>
             
           </div>
@@ -600,7 +600,7 @@ done
               
                 <a href="/archives">
               
-                  <span class="site-state-item-count">224</span>
+                  <span class="site-state-item-count">237</span>
                   <span class="site-state-item-name">日志</span>
                 </a>
               </div>
@@ -622,7 +622,7 @@ done
               
               <div class="site-state-item site-state-tags">
                 <a href="/tags/index.html">
-                  <span class="site-state-item-count">21</span>
+                  <span class="site-state-item-count">22</span>
                   <span class="site-state-item-name">标签</span>
                 </a>
               </div>

@@ -415,234 +415,234 @@
 </ol>
 </li>
 </ol>
-<h3 id="2-3-复杂对象、建造者与指挥者"><a href="#2-3-复杂对象、建造者与指挥者" class="headerlink" title="2.3 复杂对象、建造者与指挥者"></a>2.3 复杂对象、建造者与指挥者</h3><pre class=" language-java"><code class="language-java"><span class="token comment" spellcheck="true">// 复杂对象，主要是包含多种不同类型的成员属性(部件)</span>
-<span class="token keyword">class</span> <span class="token class-name">Product</span> <span class="token punctuation">{</span>
-    <span class="token keyword">private</span> String partA<span class="token punctuation">;</span>
-    <span class="token keyword">private</span> Object partB<span class="token punctuation">;</span>
-    <span class="token keyword">private</span> User partC<span class="token punctuation">;</span>
-<span class="token punctuation">}</span>
+<h3 id="2-3-复杂对象、建造者与指挥者"><a href="#2-3-复杂对象、建造者与指挥者" class="headerlink" title="2.3 复杂对象、建造者与指挥者"></a>2.3 复杂对象、建造者与指挥者</h3><pre><code class="java">// 复杂对象，主要是包含多种不同类型的成员属性(部件)
+class Product {
+    private String partA;
+    private Object partB;
+    private User partC;
+}
 </code></pre>
-<pre class=" language-java"><code class="language-java"><span class="token keyword">abstract</span> <span class="token keyword">class</span> <span class="token class-name">Builder</span><span class="token punctuation">{</span>
-    <span class="token comment" spellcheck="true">// 创建产品对象</span>
-    <span class="token keyword">protected</span> Product product <span class="token operator">=</span> <span class="token keyword">new</span> <span class="token class-name">Product</span><span class="token punctuation">(</span><span class="token punctuation">)</span><span class="token punctuation">;</span>
+<pre><code class="java">abstract class Builder{
+    // 创建产品对象
+    protected Product product = new Product();
 
-    <span class="token comment" spellcheck="true">// buildPartX() 方法为产品对象的成员属性设值</span>
-    <span class="token keyword">public</span> <span class="token keyword">abstract</span> <span class="token keyword">void</span> <span class="token function">buildPartA</span><span class="token punctuation">(</span><span class="token punctuation">)</span><span class="token punctuation">;</span>
-    <span class="token keyword">public</span> <span class="token keyword">abstract</span> <span class="token keyword">void</span> <span class="token function">buildPartB</span><span class="token punctuation">(</span><span class="token punctuation">)</span><span class="token punctuation">;</span>
-    <span class="token keyword">public</span> <span class="token keyword">abstract</span> <span class="token keyword">void</span> <span class="token function">buildPartC</span><span class="token punctuation">(</span><span class="token punctuation">)</span><span class="token punctuation">;</span>
+    // buildPartX() 方法为产品对象的成员属性设值
+    public abstract void buildPartA();
+    public abstract void buildPartB();
+    public abstract void buildPartC();
 
-    <span class="token comment" spellcheck="true">// getResult 返回复杂对象</span>
-    <span class="token keyword">public</span> Product <span class="token function">getResult</span><span class="token punctuation">(</span><span class="token punctuation">)</span><span class="token punctuation">{</span>
-        <span class="token keyword">return</span> product<span class="token punctuation">;</span>
-    <span class="token punctuation">}</span>
-<span class="token punctuation">}</span>
+    // getResult 返回复杂对象
+    public Product getResult(){
+        return product;
+    }
+}
 </code></pre>
-<pre class=" language-java"><code class="language-java"><span class="token keyword">class</span> <span class="token class-name">Director</span> <span class="token punctuation">{</span>
-    <span class="token keyword">private</span> Builder builder<span class="token punctuation">;</span>
+<pre><code class="java">class Director {
+    private Builder builder;
 
-    <span class="token comment" spellcheck="true">/**
+    /**
      * 通过构造方法或者setter方法注入一个抽象建造者，由调用者确定使用何种类型的建造者
-     */</span>
-    <span class="token keyword">public</span> <span class="token function">Direct</span><span class="token punctuation">(</span>Builder builder<span class="token punctuation">)</span><span class="token punctuation">{</span>
-        <span class="token keyword">this</span><span class="token punctuation">.</span>builder <span class="token operator">=</span> builder<span class="token punctuation">;</span>
-    <span class="token punctuation">}</span>
+     */
+    public Direct(Builder builder){
+        this.builder = builder;
+    }
 
-    <span class="token comment" spellcheck="true">/**
+    /**
      * construct 方法中调用builder对象的构造部件方法，返回一个产品对象
-     */</span>
-    <span class="token keyword">public</span> Product <span class="token function">construct</span><span class="token punctuation">(</span><span class="token punctuation">)</span> <span class="token punctuation">{</span>
-        build<span class="token punctuation">.</span><span class="token function">buildPartA</span><span class="token punctuation">(</span><span class="token punctuation">)</span><span class="token punctuation">;</span>
-        build<span class="token punctuation">.</span><span class="token function">buildPartB</span><span class="token punctuation">(</span><span class="token punctuation">)</span><span class="token punctuation">;</span>
-        build<span class="token punctuation">.</span><span class="token function">buildPartC</span><span class="token punctuation">(</span><span class="token punctuation">)</span><span class="token punctuation">;</span>
-        <span class="token keyword">return</span> builder<span class="token punctuation">.</span><span class="token function">getResult</span><span class="token punctuation">(</span><span class="token punctuation">)</span><span class="token punctuation">;</span>
-    <span class="token punctuation">}</span>
-<span class="token punctuation">}</span>
+     */
+    public Product construct() {
+        build.buildPartA();
+        build.buildPartB();
+        build.buildPartC();
+        return builder.getResult();
+    }
+}
 </code></pre>
 <p>需要扩展新的建造者时，只需要重新实现抽象建造者即可，无需修改源代码，系统扩展十分方便。</p>
 <p>在客户端代码中，无需关系产品对象的具体组装过程，只需要指定具体建造者的类型即可。</p>
-<h3 id="2-4-建造者模式的使用"><a href="#2-4-建造者模式的使用" class="headerlink" title="2.4 建造者模式的使用"></a>2.4 建造者模式的使用</h3><pre class=" language-java"><code class="language-java">Builder builder <span class="token operator">=</span> <span class="token keyword">new</span> <span class="token class-name">ConcreteBuilder</span><span class="token punctuation">(</span><span class="token punctuation">)</span><span class="token punctuation">;</span>
-Director director <span class="token operator">=</span> <span class="token keyword">new</span> <span class="token class-name">Director</span><span class="token punctuation">(</span>builder<span class="token punctuation">)</span><span class="token punctuation">;</span>
-Product product <span class="token operator">=</span> director<span class="token punctuation">.</span><span class="token function">construct</span><span class="token punctuation">(</span><span class="token punctuation">)</span><span class="token punctuation">;</span>
+<h3 id="2-4-建造者模式的使用"><a href="#2-4-建造者模式的使用" class="headerlink" title="2.4 建造者模式的使用"></a>2.4 建造者模式的使用</h3><pre><code class="java">Builder builder = new ConcreteBuilder();
+Director director = new Director(builder);
+Product product = director.construct();
 </code></pre>
 <h3 id="2-5-建造者模式与抽象工厂模式"><a href="#2-5-建造者模式与抽象工厂模式" class="headerlink" title="2.5 建造者模式与抽象工厂模式"></a>2.5 建造者模式与抽象工厂模式</h3><p>建造者模式与抽象工厂模式很类似：</p>
 <p>抽象工厂模式返回一系列相关的产品，而建造者模式返回一个完整的复杂产品。</p>
 <p>抽象工厂模式中，客户端通过选择具体工厂来生成所需对象，而建造者模式中，客户端通过指定具体建造者类型并指导Director类去生成对象，侧重于一步步构建复杂对象，然后将结果返回。</p>
 <p>类似于：抽象工厂生产出不同类型的汽车配件，而建造者模式就是汽车组装厂。</p>
-<h2 id="三、完整案例"><a href="#三、完整案例" class="headerlink" title="三、完整案例"></a>三、完整案例</h2><pre class=" language-java"><code class="language-java"><span class="token keyword">import</span> lombok<span class="token punctuation">.</span>Getter<span class="token punctuation">;</span>
-<span class="token keyword">import</span> lombok<span class="token punctuation">.</span>Setter<span class="token punctuation">;</span>
+<h2 id="三、完整案例"><a href="#三、完整案例" class="headerlink" title="三、完整案例"></a>三、完整案例</h2><pre><code class="java">import lombok.Getter;
+import lombok.Setter;
 
-<span class="token comment" spellcheck="true">// 角色类 - 复杂产品</span>
-<span class="token annotation punctuation">@Getter</span>
-<span class="token annotation punctuation">@Setter</span>
-<span class="token keyword">public</span> <span class="token keyword">class</span> <span class="token class-name">Actor</span> <span class="token punctuation">{</span>
-    <span class="token keyword">private</span> String type<span class="token punctuation">;</span> <span class="token comment" spellcheck="true">// 角色类型</span>
-    <span class="token keyword">private</span> String sex<span class="token punctuation">;</span> <span class="token comment" spellcheck="true">// 性别</span>
-    <span class="token keyword">private</span> String face<span class="token punctuation">;</span> <span class="token comment" spellcheck="true">// 脸型</span>
-    <span class="token keyword">private</span> String costume<span class="token punctuation">;</span> <span class="token comment" spellcheck="true">// 服装</span>
-    <span class="token keyword">private</span> String hairStyle<span class="token punctuation">;</span> <span class="token comment" spellcheck="true">// 发型</span>
-<span class="token punctuation">}</span>
+// 角色类 - 复杂产品
+@Getter
+@Setter
+public class Actor {
+    private String type; // 角色类型
+    private String sex; // 性别
+    private String face; // 脸型
+    private String costume; // 服装
+    private String hairStyle; // 发型
+}
 
-<span class="token comment" spellcheck="true">// 角色建造器 - 抽象建造者</span>
-<span class="token keyword">abstract</span> <span class="token keyword">class</span> <span class="token class-name">ActorBuilder</span> <span class="token punctuation">{</span>
-    <span class="token keyword">protected</span> Actor actor <span class="token operator">=</span> <span class="token keyword">new</span> <span class="token class-name">Actor</span><span class="token punctuation">(</span><span class="token punctuation">)</span><span class="token punctuation">;</span>
+// 角色建造器 - 抽象建造者
+abstract class ActorBuilder {
+    protected Actor actor = new Actor();
 
-    <span class="token keyword">public</span> <span class="token keyword">abstract</span> <span class="token keyword">void</span> <span class="token function">buildType</span><span class="token punctuation">(</span><span class="token punctuation">)</span><span class="token punctuation">;</span>
+    public abstract void buildType();
 
-    <span class="token keyword">public</span> <span class="token keyword">abstract</span> <span class="token keyword">void</span> <span class="token function">buildSex</span><span class="token punctuation">(</span><span class="token punctuation">)</span><span class="token punctuation">;</span>
+    public abstract void buildSex();
 
-    <span class="token keyword">public</span> <span class="token keyword">abstract</span> <span class="token keyword">void</span> <span class="token function">buildFace</span><span class="token punctuation">(</span><span class="token punctuation">)</span><span class="token punctuation">;</span>
+    public abstract void buildFace();
 
-    <span class="token keyword">public</span> <span class="token keyword">abstract</span> <span class="token keyword">void</span> <span class="token function">buildCostume</span><span class="token punctuation">(</span><span class="token punctuation">)</span><span class="token punctuation">;</span>
+    public abstract void buildCostume();
 
-    <span class="token keyword">public</span> <span class="token keyword">abstract</span> <span class="token keyword">void</span> <span class="token function">buildHairStyle</span><span class="token punctuation">(</span><span class="token punctuation">)</span><span class="token punctuation">;</span>
+    public abstract void buildHairStyle();
 
-    <span class="token comment" spellcheck="true">// 工厂方法，返回一个完整的游戏角色对象</span>
-    <span class="token keyword">public</span> Actor <span class="token function">createActor</span><span class="token punctuation">(</span><span class="token punctuation">)</span> <span class="token punctuation">{</span>
-        <span class="token keyword">return</span> actor<span class="token punctuation">;</span>
-    <span class="token punctuation">}</span>
-<span class="token punctuation">}</span>
+    // 工厂方法，返回一个完整的游戏角色对象
+    public Actor createActor() {
+        return actor;
+    }
+}
 
-<span class="token comment" spellcheck="true">// 天使角色建造器 - 具体建造者</span>
-<span class="token keyword">class</span> <span class="token class-name">AngelBuilder</span> <span class="token keyword">extends</span> <span class="token class-name">ActorBuilder</span> <span class="token punctuation">{</span>
+// 天使角色建造器 - 具体建造者
+class AngelBuilder extends ActorBuilder {
 
-    <span class="token annotation punctuation">@Override</span>
-    <span class="token keyword">public</span> <span class="token keyword">void</span> <span class="token function">buildType</span><span class="token punctuation">(</span><span class="token punctuation">)</span> <span class="token punctuation">{</span>
-        actor<span class="token punctuation">.</span><span class="token function">setType</span><span class="token punctuation">(</span><span class="token string">"天使"</span><span class="token punctuation">)</span><span class="token punctuation">;</span>
-    <span class="token punctuation">}</span>
+    @Override
+    public void buildType() {
+        actor.setType(&quot;天使&quot;);
+    }
 
-    <span class="token annotation punctuation">@Override</span>
-    <span class="token keyword">public</span> <span class="token keyword">void</span> <span class="token function">buildSex</span><span class="token punctuation">(</span><span class="token punctuation">)</span> <span class="token punctuation">{</span>
-        actor<span class="token punctuation">.</span><span class="token function">setSex</span><span class="token punctuation">(</span><span class="token string">"女"</span><span class="token punctuation">)</span><span class="token punctuation">;</span>
-    <span class="token punctuation">}</span>
+    @Override
+    public void buildSex() {
+        actor.setSex(&quot;女&quot;);
+    }
 
-    <span class="token annotation punctuation">@Override</span>
-    <span class="token keyword">public</span> <span class="token keyword">void</span> <span class="token function">buildFace</span><span class="token punctuation">(</span><span class="token punctuation">)</span> <span class="token punctuation">{</span>
-        actor<span class="token punctuation">.</span><span class="token function">setFace</span><span class="token punctuation">(</span><span class="token string">"漂亮"</span><span class="token punctuation">)</span><span class="token punctuation">;</span>
-    <span class="token punctuation">}</span>
+    @Override
+    public void buildFace() {
+        actor.setFace(&quot;漂亮&quot;);
+    }
 
-    <span class="token annotation punctuation">@Override</span>
-    <span class="token keyword">public</span> <span class="token keyword">void</span> <span class="token function">buildCostume</span><span class="token punctuation">(</span><span class="token punctuation">)</span> <span class="token punctuation">{</span>
-        actor<span class="token punctuation">.</span><span class="token function">setCostume</span><span class="token punctuation">(</span><span class="token string">"白裙子"</span><span class="token punctuation">)</span><span class="token punctuation">;</span>
-    <span class="token punctuation">}</span>
+    @Override
+    public void buildCostume() {
+        actor.setCostume(&quot;白裙子&quot;);
+    }
 
-    <span class="token annotation punctuation">@Override</span>
-    <span class="token keyword">public</span> <span class="token keyword">void</span> <span class="token function">buildHairStyle</span><span class="token punctuation">(</span><span class="token punctuation">)</span> <span class="token punctuation">{</span>
-        actor<span class="token punctuation">.</span><span class="token function">setHairStyle</span><span class="token punctuation">(</span><span class="token string">"披肩长发"</span><span class="token punctuation">)</span><span class="token punctuation">;</span>
-    <span class="token punctuation">}</span>
-<span class="token punctuation">}</span>
+    @Override
+    public void buildHairStyle() {
+        actor.setHairStyle(&quot;披肩长发&quot;);
+    }
+}
 
-<span class="token comment" spellcheck="true">// 恶魔角色建造器 - 具体建造者</span>
-<span class="token keyword">class</span> <span class="token class-name">DevilBuilder</span> <span class="token keyword">extends</span> <span class="token class-name">ActorBuilder</span> <span class="token punctuation">{</span>
+// 恶魔角色建造器 - 具体建造者
+class DevilBuilder extends ActorBuilder {
 
-    <span class="token annotation punctuation">@Override</span>
-    <span class="token keyword">public</span> <span class="token keyword">void</span> <span class="token function">buildType</span><span class="token punctuation">(</span><span class="token punctuation">)</span> <span class="token punctuation">{</span>
-        actor<span class="token punctuation">.</span><span class="token function">setType</span><span class="token punctuation">(</span><span class="token string">"恶魔"</span><span class="token punctuation">)</span><span class="token punctuation">;</span>
-    <span class="token punctuation">}</span>
+    @Override
+    public void buildType() {
+        actor.setType(&quot;恶魔&quot;);
+    }
 
-    <span class="token annotation punctuation">@Override</span>
-    <span class="token keyword">public</span> <span class="token keyword">void</span> <span class="token function">buildSex</span><span class="token punctuation">(</span><span class="token punctuation">)</span> <span class="token punctuation">{</span>
-        actor<span class="token punctuation">.</span><span class="token function">setSex</span><span class="token punctuation">(</span><span class="token string">"男"</span><span class="token punctuation">)</span><span class="token punctuation">;</span>
-    <span class="token punctuation">}</span>
+    @Override
+    public void buildSex() {
+        actor.setSex(&quot;男&quot;);
+    }
 
-    <span class="token annotation punctuation">@Override</span>
-    <span class="token keyword">public</span> <span class="token keyword">void</span> <span class="token function">buildFace</span><span class="token punctuation">(</span><span class="token punctuation">)</span> <span class="token punctuation">{</span>
-        actor<span class="token punctuation">.</span><span class="token function">setFace</span><span class="token punctuation">(</span><span class="token string">"丑陋"</span><span class="token punctuation">)</span><span class="token punctuation">;</span>
-    <span class="token punctuation">}</span>
+    @Override
+    public void buildFace() {
+        actor.setFace(&quot;丑陋&quot;);
+    }
 
-    <span class="token annotation punctuation">@Override</span>
-    <span class="token keyword">public</span> <span class="token keyword">void</span> <span class="token function">buildCostume</span><span class="token punctuation">(</span><span class="token punctuation">)</span> <span class="token punctuation">{</span>
-        actor<span class="token punctuation">.</span><span class="token function">setCostume</span><span class="token punctuation">(</span><span class="token string">"丑陋"</span><span class="token punctuation">)</span><span class="token punctuation">;</span>
-    <span class="token punctuation">}</span>
+    @Override
+    public void buildCostume() {
+        actor.setCostume(&quot;丑陋&quot;);
+    }
 
-    <span class="token annotation punctuation">@Override</span>
-    <span class="token keyword">public</span> <span class="token keyword">void</span> <span class="token function">buildHairStyle</span><span class="token punctuation">(</span><span class="token punctuation">)</span> <span class="token punctuation">{</span>
-        actor<span class="token punctuation">.</span><span class="token function">setHairStyle</span><span class="token punctuation">(</span><span class="token string">"光头"</span><span class="token punctuation">)</span><span class="token punctuation">;</span>
-    <span class="token punctuation">}</span>
-<span class="token punctuation">}</span>
+    @Override
+    public void buildHairStyle() {
+        actor.setHairStyle(&quot;光头&quot;);
+    }
+}
 
-<span class="token comment" spellcheck="true">// 游戏角色创建控制器 - 指挥者</span>
-<span class="token keyword">class</span> <span class="token class-name">ActorController</span> <span class="token punctuation">{</span>
-    <span class="token comment" spellcheck="true">// 逐步构建复杂产品对象</span>
-    <span class="token keyword">public</span> Actor <span class="token function">construct</span><span class="token punctuation">(</span>ActorBuilder buidler<span class="token punctuation">)</span> <span class="token punctuation">{</span>
-        buidler<span class="token punctuation">.</span><span class="token function">buildType</span><span class="token punctuation">(</span><span class="token punctuation">)</span><span class="token punctuation">;</span>
-        buidler<span class="token punctuation">.</span><span class="token function">buildSex</span><span class="token punctuation">(</span><span class="token punctuation">)</span><span class="token punctuation">;</span>
-        buidler<span class="token punctuation">.</span><span class="token function">buildFace</span><span class="token punctuation">(</span><span class="token punctuation">)</span><span class="token punctuation">;</span>
-        buidler<span class="token punctuation">.</span><span class="token function">buildCostume</span><span class="token punctuation">(</span><span class="token punctuation">)</span><span class="token punctuation">;</span>
-        buidler<span class="token punctuation">.</span><span class="token function">buildHairStyle</span><span class="token punctuation">(</span><span class="token punctuation">)</span><span class="token punctuation">;</span>
-        <span class="token keyword">return</span> buidler<span class="token punctuation">.</span><span class="token function">createActor</span><span class="token punctuation">(</span><span class="token punctuation">)</span><span class="token punctuation">;</span>
-    <span class="token punctuation">}</span>
-<span class="token punctuation">}</span>
+// 游戏角色创建控制器 - 指挥者
+class ActorController {
+    // 逐步构建复杂产品对象
+    public Actor construct(ActorBuilder buidler) {
+        buidler.buildType();
+        buidler.buildSex();
+        buidler.buildFace();
+        buidler.buildCostume();
+        buidler.buildHairStyle();
+        return buidler.createActor();
+    }
+}
 
-<span class="token comment" spellcheck="true">// 测试客户端，调用指挥者通过具体建造者来构建完整的复杂对象</span>
-<span class="token keyword">class</span> <span class="token class-name">Client</span> <span class="token punctuation">{</span>
-    <span class="token keyword">public</span> <span class="token keyword">static</span> <span class="token keyword">void</span> <span class="token function">main</span><span class="token punctuation">(</span>String<span class="token punctuation">[</span><span class="token punctuation">]</span> args<span class="token punctuation">)</span> <span class="token punctuation">{</span>
-        ActorBuilder actorBuilder <span class="token operator">=</span> <span class="token keyword">new</span> <span class="token class-name">AngelBuilder</span><span class="token punctuation">(</span><span class="token punctuation">)</span><span class="token punctuation">;</span>
-        ActorController actorController <span class="token operator">=</span> <span class="token keyword">new</span> <span class="token class-name">ActorController</span><span class="token punctuation">(</span><span class="token punctuation">)</span><span class="token punctuation">;</span>
-        Actor actor <span class="token operator">=</span> actorController<span class="token punctuation">.</span><span class="token function">construct</span><span class="token punctuation">(</span>actorBuilder<span class="token punctuation">)</span><span class="token punctuation">;</span>
-        System<span class="token punctuation">.</span>out<span class="token punctuation">.</span><span class="token function">println</span><span class="token punctuation">(</span>actor<span class="token punctuation">.</span><span class="token function">getType</span><span class="token punctuation">(</span><span class="token punctuation">)</span> <span class="token operator">+</span> <span class="token string">":"</span> <span class="token operator">+</span> actor<span class="token punctuation">.</span><span class="token function">getFace</span><span class="token punctuation">(</span><span class="token punctuation">)</span><span class="token punctuation">)</span><span class="token punctuation">;</span>
-    <span class="token punctuation">}</span>
-<span class="token punctuation">}</span>
+// 测试客户端，调用指挥者通过具体建造者来构建完整的复杂对象
+class Client {
+    public static void main(String[] args) {
+        ActorBuilder actorBuilder = new AngelBuilder();
+        ActorController actorController = new ActorController();
+        Actor actor = actorController.construct(actorBuilder);
+        System.out.println(actor.getType() + &quot;:&quot; + actor.getFace());
+    }
+}
 </code></pre>
 <h2 id="四、扩展"><a href="#四、扩展" class="headerlink" title="四、扩展"></a>四、扩展</h2><h3 id="4-1-省略Director指挥者"><a href="#4-1-省略Director指挥者" class="headerlink" title="4.1 省略Director指挥者"></a>4.1 省略Director指挥者</h3><p>为了简化系统结构，可以将Director与抽象建造者Builder合并，如下：</p>
-<pre class=" language-java"><code class="language-java"><span class="token comment" spellcheck="true">// 角色建造器 - 抽象建造者</span>
-<span class="token keyword">abstract</span> <span class="token keyword">class</span> <span class="token class-name">ActorBuilder</span> <span class="token punctuation">{</span>
-    <span class="token keyword">protected</span> <span class="token keyword">static</span> Actor actor <span class="token operator">=</span> <span class="token keyword">new</span> <span class="token class-name">Actor</span><span class="token punctuation">(</span><span class="token punctuation">)</span><span class="token punctuation">;</span>
+<pre><code class="java">// 角色建造器 - 抽象建造者
+abstract class ActorBuilder {
+    protected static Actor actor = new Actor();
 
-    <span class="token keyword">public</span> <span class="token keyword">abstract</span> <span class="token keyword">void</span> <span class="token function">buildType</span><span class="token punctuation">(</span><span class="token punctuation">)</span><span class="token punctuation">;</span>
+    public abstract void buildType();
 
-    <span class="token keyword">public</span> <span class="token keyword">abstract</span> <span class="token keyword">void</span> <span class="token function">buildSex</span><span class="token punctuation">(</span><span class="token punctuation">)</span><span class="token punctuation">;</span>
+    public abstract void buildSex();
 
-    <span class="token keyword">public</span> <span class="token keyword">abstract</span> <span class="token keyword">void</span> <span class="token function">buildFace</span><span class="token punctuation">(</span><span class="token punctuation">)</span><span class="token punctuation">;</span>
+    public abstract void buildFace();
 
-    <span class="token keyword">public</span> <span class="token keyword">abstract</span> <span class="token keyword">void</span> <span class="token function">buildCostume</span><span class="token punctuation">(</span><span class="token punctuation">)</span><span class="token punctuation">;</span>
+    public abstract void buildCostume();
 
-    <span class="token keyword">public</span> <span class="token keyword">abstract</span> <span class="token keyword">void</span> <span class="token function">buildHairStyle</span><span class="token punctuation">(</span><span class="token punctuation">)</span><span class="token punctuation">;</span>
+    public abstract void buildHairStyle();
 
-    <span class="token comment" spellcheck="true">// 工厂方法，返回一个完整的游戏角色对象</span>
-    <span class="token keyword">public</span> <span class="token keyword">static</span> Actor <span class="token function">construct</span><span class="token punctuation">(</span>ActorBuilder buidler<span class="token punctuation">)</span> <span class="token punctuation">{</span>
-        buidler<span class="token punctuation">.</span><span class="token function">buildType</span><span class="token punctuation">(</span><span class="token punctuation">)</span><span class="token punctuation">;</span>
-        buidler<span class="token punctuation">.</span><span class="token function">buildSex</span><span class="token punctuation">(</span><span class="token punctuation">)</span><span class="token punctuation">;</span>
-        buidler<span class="token punctuation">.</span><span class="token function">buildFace</span><span class="token punctuation">(</span><span class="token punctuation">)</span><span class="token punctuation">;</span>
-        buidler<span class="token punctuation">.</span><span class="token function">buildCostume</span><span class="token punctuation">(</span><span class="token punctuation">)</span><span class="token punctuation">;</span>
-        buidler<span class="token punctuation">.</span><span class="token function">buildHairStyle</span><span class="token punctuation">(</span><span class="token punctuation">)</span><span class="token punctuation">;</span>
-        <span class="token keyword">return</span> actor<span class="token punctuation">;</span>
-    <span class="token punctuation">}</span>
-<span class="token punctuation">}</span>
+    // 工厂方法，返回一个完整的游戏角色对象
+    public static Actor construct(ActorBuilder buidler) {
+        buidler.buildType();
+        buidler.buildSex();
+        buidler.buildFace();
+        buidler.buildCostume();
+        buidler.buildHairStyle();
+        return actor;
+    }
+}
 </code></pre>
 <h3 id="4-2-钩子方法"><a href="#4-2-钩子方法" class="headerlink" title="4.2 钩子方法"></a>4.2 钩子方法</h3><p>建造者模式除了逐步构建一个复杂产品对象外，还可以通过Director类来精细控制产品的创建过程，如增加一个钩子方法来控制是否构建某个buildPartX()的调用。</p>
-<pre class=" language-java"><code class="language-java"><span class="token keyword">abstract</span> <span class="token keyword">class</span> <span class="token class-name">ActorBuilder</span><span class="token punctuation">{</span>
-    <span class="token keyword">protected</span> Actor actor <span class="token operator">=</span> <span class="token keyword">new</span> <span class="token class-name">Actor</span><span class="token punctuation">(</span><span class="token punctuation">)</span><span class="token punctuation">;</span>
+<pre><code class="java">abstract class ActorBuilder{
+    protected Actor actor = new Actor();
 
-    <span class="token keyword">public</span> <span class="token keyword">abstract</span> <span class="token keyword">void</span> <span class="token function">buildType</span><span class="token punctuation">(</span><span class="token punctuation">)</span><span class="token punctuation">;</span>
+    public abstract void buildType();
 
-    <span class="token keyword">public</span> <span class="token keyword">abstract</span> <span class="token keyword">void</span> <span class="token function">buildSex</span><span class="token punctuation">(</span><span class="token punctuation">)</span><span class="token punctuation">;</span>
+    public abstract void buildSex();
 
-    <span class="token keyword">public</span> <span class="token keyword">abstract</span> <span class="token keyword">void</span> <span class="token function">buildFace</span><span class="token punctuation">(</span><span class="token punctuation">)</span><span class="token punctuation">;</span>
+    public abstract void buildFace();
 
-    <span class="token keyword">public</span> <span class="token keyword">abstract</span> <span class="token keyword">void</span> <span class="token function">buildCostume</span><span class="token punctuation">(</span><span class="token punctuation">)</span><span class="token punctuation">;</span>
+    public abstract void buildCostume();
 
-    <span class="token keyword">public</span> <span class="token keyword">abstract</span> <span class="token keyword">void</span> <span class="token function">buildHairStyle</span><span class="token punctuation">(</span><span class="token punctuation">)</span><span class="token punctuation">;</span>
+    public abstract void buildHairStyle();
 
-    <span class="token comment" spellcheck="true">// 钩子方法 - 是否是光头，true则不进行buildHairStyle</span>
-    <span class="token keyword">public</span> <span class="token keyword">boolean</span> <span class="token function">isBareheaded</span><span class="token punctuation">(</span><span class="token punctuation">)</span><span class="token punctuation">{</span>
-        <span class="token keyword">return</span> <span class="token boolean">false</span><span class="token punctuation">;</span>
-    <span class="token punctuation">}</span>
-<span class="token punctuation">}</span>
+    // 钩子方法 - 是否是光头，true则不进行buildHairStyle
+    public boolean isBareheaded(){
+        return false;
+    }
+}
 
-<span class="token comment" spellcheck="true">// 游戏角色创建控制器 - 指挥者</span>
-<span class="token keyword">class</span> <span class="token class-name">ActorController</span> <span class="token punctuation">{</span>
-    <span class="token comment" spellcheck="true">// 逐步构建复杂产品对象</span>
-    <span class="token keyword">public</span> Actor <span class="token function">construct</span><span class="token punctuation">(</span>ActorBuilder buidler<span class="token punctuation">)</span> <span class="token punctuation">{</span>
-        buidler<span class="token punctuation">.</span><span class="token function">buildType</span><span class="token punctuation">(</span><span class="token punctuation">)</span><span class="token punctuation">;</span>
-        buidler<span class="token punctuation">.</span><span class="token function">buildSex</span><span class="token punctuation">(</span><span class="token punctuation">)</span><span class="token punctuation">;</span>
-        buidler<span class="token punctuation">.</span><span class="token function">buildFace</span><span class="token punctuation">(</span><span class="token punctuation">)</span><span class="token punctuation">;</span>
-        buidler<span class="token punctuation">.</span><span class="token function">buildCostume</span><span class="token punctuation">(</span><span class="token punctuation">)</span><span class="token punctuation">;</span>
-        <span class="token keyword">if</span><span class="token punctuation">(</span><span class="token operator">!</span>isBareheaded<span class="token punctuation">)</span><span class="token punctuation">{</span>
-            buidler<span class="token punctuation">.</span><span class="token function">buildHairStyle</span><span class="token punctuation">(</span><span class="token punctuation">)</span><span class="token punctuation">;</span>
-        <span class="token punctuation">}</span>
-        <span class="token keyword">return</span> buidler<span class="token punctuation">.</span><span class="token function">createActor</span><span class="token punctuation">(</span><span class="token punctuation">)</span><span class="token punctuation">;</span>
-    <span class="token punctuation">}</span>
-<span class="token punctuation">}</span>
+// 游戏角色创建控制器 - 指挥者
+class ActorController {
+    // 逐步构建复杂产品对象
+    public Actor construct(ActorBuilder buidler) {
+        buidler.buildType();
+        buidler.buildSex();
+        buidler.buildFace();
+        buidler.buildCostume();
+        if(!isBareheaded){
+            buidler.buildHairStyle();
+        }
+        return buidler.createActor();
+    }
+}
 </code></pre>
 <h2 id="五、总结"><a href="#五、总结" class="headerlink" title="五、总结"></a>五、总结</h2><h3 id="优点"><a href="#优点" class="headerlink" title="优点"></a>优点</h3><ol>
 <li>在建造者模式中，客户端不必知道产品内部组成细节，将产品本身和产品的创建过程解耦，使得相同创建过程能够创建出不同的产品对象</li>
@@ -662,99 +662,99 @@ Product product <span class="token operator">=</span> director<span class="token
 <h2 id="六、练习"><a href="#六、练习" class="headerlink" title="六、练习"></a>六、练习</h2><blockquote>
 <p>Sunny软件公司欲开发一个视频播放软件，为了给用户使用提供方便，该播放软件提供多种界面显示模式，如完整模式、精简模式、记忆模式、网络模式等。在不同的显示模式下主界面的组成元素有所差异，如在完整模式下将显示菜单、播放列表、主窗口、控制条等，在精简模式下只显示主窗口和控制条，而在记忆模式下将显示主窗口、控制条、收藏列表等。尝试使用建造者模式设计该软件。</p>
 </blockquote>
-<pre class=" language-java"><code class="language-java"><span class="token comment" spellcheck="true">/**
+<pre><code class="java">/**
  * 视频播放显示界面 - 具体产品
  * 具体播放界面，包含显示菜单、播放列表、主窗口、控制条
  * 可能包含的显示模式，完整模式、精简模式、网络模式
- */</span>
-<span class="token annotation punctuation">@Setter</span>
-<span class="token annotation punctuation">@Getter</span>
-<span class="token keyword">public</span> <span class="token keyword">class</span> <span class="token class-name">TechWeb</span> <span class="token punctuation">{</span>
-    <span class="token keyword">private</span> String menu<span class="token punctuation">;</span> <span class="token comment" spellcheck="true">// 菜单</span>
-    <span class="token keyword">private</span> String list<span class="token punctuation">;</span> <span class="token comment" spellcheck="true">// 播放列表</span>
-    <span class="token keyword">private</span> String window<span class="token punctuation">;</span> <span class="token comment" spellcheck="true">// 主窗口</span>
-    <span class="token keyword">private</span> String control<span class="token punctuation">;</span> <span class="token comment" spellcheck="true">// 控制条</span>
-<span class="token punctuation">}</span>
+ */
+@Setter
+@Getter
+public class TechWeb {
+    private String menu; // 菜单
+    private String list; // 播放列表
+    private String window; // 主窗口
+    private String control; // 控制条
+}
 
-<span class="token comment" spellcheck="true">/**
+/**
  * 显示模式 - 抽象建造者
- */</span>
-<span class="token keyword">abstract</span> <span class="token keyword">class</span> <span class="token class-name">ShowPattern</span> <span class="token punctuation">{</span>
-    <span class="token keyword">protected</span> TechWeb techWeb <span class="token operator">=</span> <span class="token keyword">new</span> <span class="token class-name">TechWeb</span><span class="token punctuation">(</span><span class="token punctuation">)</span><span class="token punctuation">;</span>
+ */
+abstract class ShowPattern {
+    protected TechWeb techWeb = new TechWeb();
 
-    <span class="token keyword">public</span> <span class="token keyword">abstract</span> <span class="token keyword">void</span> <span class="token function">buildMenu</span><span class="token punctuation">(</span><span class="token punctuation">)</span><span class="token punctuation">;</span>
-    <span class="token keyword">public</span> <span class="token keyword">abstract</span> <span class="token keyword">void</span> <span class="token function">buildList</span><span class="token punctuation">(</span><span class="token punctuation">)</span><span class="token punctuation">;</span>
-    <span class="token keyword">public</span> <span class="token keyword">abstract</span> <span class="token keyword">void</span> <span class="token function">buildWindow</span><span class="token punctuation">(</span><span class="token punctuation">)</span><span class="token punctuation">;</span>
-    <span class="token keyword">public</span> <span class="token keyword">abstract</span> <span class="token keyword">void</span> <span class="token function">buildControl</span><span class="token punctuation">(</span><span class="token punctuation">)</span><span class="token punctuation">;</span>
+    public abstract void buildMenu();
+    public abstract void buildList();
+    public abstract void buildWindow();
+    public abstract void buildControl();
 
-    <span class="token keyword">public</span> TechWeb <span class="token function">construct</span><span class="token punctuation">(</span><span class="token punctuation">)</span><span class="token punctuation">{</span>
-        <span class="token function">buildControl</span><span class="token punctuation">(</span><span class="token punctuation">)</span><span class="token punctuation">;</span>
-        <span class="token function">buildList</span><span class="token punctuation">(</span><span class="token punctuation">)</span><span class="token punctuation">;</span>
-        <span class="token function">buildMenu</span><span class="token punctuation">(</span><span class="token punctuation">)</span><span class="token punctuation">;</span>
-        <span class="token function">buildWindow</span><span class="token punctuation">(</span><span class="token punctuation">)</span><span class="token punctuation">;</span>
-        <span class="token keyword">return</span> techWeb<span class="token punctuation">;</span>
-    <span class="token punctuation">}</span>
-<span class="token punctuation">}</span>
+    public TechWeb construct(){
+        buildControl();
+        buildList();
+        buildMenu();
+        buildWindow();
+        return techWeb;
+    }
+}
 
-<span class="token comment" spellcheck="true">/**
+/**
  * 完整模式 - 具体建造者
- */</span>
-<span class="token keyword">class</span> <span class="token class-name">FullPattern</span> <span class="token keyword">extends</span> <span class="token class-name">ShowPattern</span><span class="token punctuation">{</span>
+ */
+class FullPattern extends ShowPattern{
 
-    <span class="token annotation punctuation">@Override</span>
-    <span class="token keyword">public</span> <span class="token keyword">void</span> <span class="token function">buildMenu</span><span class="token punctuation">(</span><span class="token punctuation">)</span> <span class="token punctuation">{</span>
-        techWeb<span class="token punctuation">.</span><span class="token function">setControl</span><span class="token punctuation">(</span><span class="token string">"完整控制条"</span><span class="token punctuation">)</span><span class="token punctuation">;</span>
-    <span class="token punctuation">}</span>
+    @Override
+    public void buildMenu() {
+        techWeb.setControl(&quot;完整控制条&quot;);
+    }
 
-    <span class="token annotation punctuation">@Override</span>
-    <span class="token keyword">public</span> <span class="token keyword">void</span> <span class="token function">buildList</span><span class="token punctuation">(</span><span class="token punctuation">)</span> <span class="token punctuation">{</span>
-        techWeb<span class="token punctuation">.</span><span class="token function">setList</span><span class="token punctuation">(</span><span class="token string">"显示50条"</span><span class="token punctuation">)</span><span class="token punctuation">;</span>
-    <span class="token punctuation">}</span>
+    @Override
+    public void buildList() {
+        techWeb.setList(&quot;显示50条&quot;);
+    }
 
-    <span class="token annotation punctuation">@Override</span>
-    <span class="token keyword">public</span> <span class="token keyword">void</span> <span class="token function">buildWindow</span><span class="token punctuation">(</span><span class="token punctuation">)</span> <span class="token punctuation">{</span>
-        techWeb<span class="token punctuation">.</span><span class="token function">setMenu</span><span class="token punctuation">(</span><span class="token string">"菜单列表50条"</span><span class="token punctuation">)</span><span class="token punctuation">;</span>
-    <span class="token punctuation">}</span>
+    @Override
+    public void buildWindow() {
+        techWeb.setMenu(&quot;菜单列表50条&quot;);
+    }
 
-    <span class="token annotation punctuation">@Override</span>
-    <span class="token keyword">public</span> <span class="token keyword">void</span> <span class="token function">buildControl</span><span class="token punctuation">(</span><span class="token punctuation">)</span> <span class="token punctuation">{</span>
-        techWeb<span class="token punctuation">.</span><span class="token function">setWindow</span><span class="token punctuation">(</span><span class="token string">"带所有菜单的窗口"</span><span class="token punctuation">)</span><span class="token punctuation">;</span>
-    <span class="token punctuation">}</span>
-<span class="token punctuation">}</span>
+    @Override
+    public void buildControl() {
+        techWeb.setWindow(&quot;带所有菜单的窗口&quot;);
+    }
+}
 
-<span class="token comment" spellcheck="true">/**
+/**
  * 精简模式
- */</span>
-<span class="token keyword">class</span> <span class="token class-name">SimpPattern</span> <span class="token keyword">extends</span> <span class="token class-name">ShowPattern</span><span class="token punctuation">{</span>
+ */
+class SimpPattern extends ShowPattern{
 
-    <span class="token annotation punctuation">@Override</span>
-    <span class="token keyword">public</span> <span class="token keyword">void</span> <span class="token function">buildMenu</span><span class="token punctuation">(</span><span class="token punctuation">)</span> <span class="token punctuation">{</span>
-        techWeb<span class="token punctuation">.</span><span class="token function">setControl</span><span class="token punctuation">(</span><span class="token string">"完整的控制条"</span><span class="token punctuation">)</span><span class="token punctuation">;</span>
-    <span class="token punctuation">}</span>
+    @Override
+    public void buildMenu() {
+        techWeb.setControl(&quot;完整的控制条&quot;);
+    }
 
-    <span class="token annotation punctuation">@Override</span>
-    <span class="token keyword">public</span> <span class="token keyword">void</span> <span class="token function">buildList</span><span class="token punctuation">(</span><span class="token punctuation">)</span> <span class="token punctuation">{</span>
-        techWeb<span class="token punctuation">.</span><span class="token function">setList</span><span class="token punctuation">(</span><span class="token string">"不显示播放列表"</span><span class="token punctuation">)</span><span class="token punctuation">;</span>
-    <span class="token punctuation">}</span>
+    @Override
+    public void buildList() {
+        techWeb.setList(&quot;不显示播放列表&quot;);
+    }
 
-    <span class="token annotation punctuation">@Override</span>
-    <span class="token keyword">public</span> <span class="token keyword">void</span> <span class="token function">buildWindow</span><span class="token punctuation">(</span><span class="token punctuation">)</span> <span class="token punctuation">{</span>
-        techWeb<span class="token punctuation">.</span><span class="token function">setMenu</span><span class="token punctuation">(</span><span class="token string">"不显示菜单"</span><span class="token punctuation">)</span><span class="token punctuation">;</span>
-    <span class="token punctuation">}</span>
+    @Override
+    public void buildWindow() {
+        techWeb.setMenu(&quot;不显示菜单&quot;);
+    }
 
-    <span class="token annotation punctuation">@Override</span>
-    <span class="token keyword">public</span> <span class="token keyword">void</span> <span class="token function">buildControl</span><span class="token punctuation">(</span><span class="token punctuation">)</span> <span class="token punctuation">{</span>
-        techWeb<span class="token punctuation">.</span><span class="token function">setWindow</span><span class="token punctuation">(</span><span class="token string">"不带菜单的窗口"</span><span class="token punctuation">)</span><span class="token punctuation">;</span>
-    <span class="token punctuation">}</span>
-<span class="token punctuation">}</span>
+    @Override
+    public void buildControl() {
+        techWeb.setWindow(&quot;不带菜单的窗口&quot;);
+    }
+}
 
-<span class="token keyword">class</span> <span class="token class-name">Client</span> <span class="token punctuation">{</span>
-    <span class="token keyword">public</span> <span class="token keyword">static</span> <span class="token keyword">void</span> <span class="token function">main</span><span class="token punctuation">(</span>String<span class="token punctuation">[</span><span class="token punctuation">]</span> args<span class="token punctuation">)</span> <span class="token punctuation">{</span>
-        ShowPattern simpPattern <span class="token operator">=</span> <span class="token keyword">new</span> <span class="token class-name">SimpPattern</span><span class="token punctuation">(</span><span class="token punctuation">)</span><span class="token punctuation">;</span>
-        TechWeb web <span class="token operator">=</span> simpPattern<span class="token punctuation">.</span><span class="token function">construct</span><span class="token punctuation">(</span><span class="token punctuation">)</span><span class="token punctuation">;</span>
-        System<span class="token punctuation">.</span>out<span class="token punctuation">.</span><span class="token function">println</span><span class="token punctuation">(</span>web<span class="token punctuation">.</span><span class="token function">getMenu</span><span class="token punctuation">(</span><span class="token punctuation">)</span><span class="token punctuation">)</span><span class="token punctuation">;</span>
-    <span class="token punctuation">}</span>
-<span class="token punctuation">}</span>
+class Client {
+    public static void main(String[] args) {
+        ShowPattern simpPattern = new SimpPattern();
+        TechWeb web = simpPattern.construct();
+        System.out.println(web.getMenu());
+    }
+}
 </code></pre>
 
       
@@ -879,7 +879,7 @@ Product product <span class="token operator">=</span> director<span class="token
               
                 <a href="/archives">
               
-                  <span class="site-state-item-count">224</span>
+                  <span class="site-state-item-count">237</span>
                   <span class="site-state-item-name">日志</span>
                 </a>
               </div>
@@ -901,7 +901,7 @@ Product product <span class="token operator">=</span> director<span class="token
               
               <div class="site-state-item site-state-tags">
                 <a href="/tags/index.html">
-                  <span class="site-state-item-count">21</span>
+                  <span class="site-state-item-count">22</span>
                   <span class="site-state-item-name">标签</span>
                 </a>
               </div>

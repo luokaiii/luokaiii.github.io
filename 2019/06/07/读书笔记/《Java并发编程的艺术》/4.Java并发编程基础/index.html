@@ -418,20 +418,20 @@
 <p>中断操作是一种简便的线程间交互方式，而这种交互方式最适合用来取消或停止任务。</p>
 <h3 id="4-2-2-安全地终止线程"><a href="#4-2-2-安全地终止线程" class="headerlink" title="4.2.2 安全地终止线程"></a>4.2.2 安全地终止线程</h3><p>通过标识位或者中断操作的方式，能够使线程在终止时有机会去清理资源，而不是武断地将线程停止。</p>
 <p>通过标识位和中断来停止线程：</p>
-<pre class=" language-java"><code class="language-java"><span class="token keyword">public</span> <span class="token keyword">class</span> <span class="token class-name">TestRunner</span> <span class="token keyword">implements</span> <span class="token class-name">Runnable</span> <span class="token punctuation">{</span>
-    <span class="token keyword">private</span> <span class="token keyword">long</span> i<span class="token punctuation">;</span>
-    <span class="token keyword">private</span> <span class="token keyword">volatile</span> <span class="token keyword">boolean</span> on <span class="token operator">=</span> <span class="token boolean">true</span><span class="token punctuation">;</span>
-    <span class="token annotation punctuation">@Override</span>
-    <span class="token keyword">public</span> <span class="token keyword">void</span> <span class="token function">run</span><span class="token punctuation">(</span><span class="token punctuation">)</span> <span class="token punctuation">{</span>
-        <span class="token keyword">while</span><span class="token punctuation">(</span>on <span class="token operator">&amp;&amp;</span> <span class="token operator">!</span>Thread<span class="token punctuation">.</span><span class="token function">currentThread</span><span class="token punctuation">(</span><span class="token punctuation">)</span><span class="token punctuation">.</span><span class="token function">isInterrupted</span><span class="token punctuation">(</span><span class="token punctuation">)</span><span class="token punctuation">)</span><span class="token punctuation">{</span>
-            i<span class="token operator">++</span><span class="token punctuation">;</span>
-        <span class="token punctuation">}</span>
-    <span class="token punctuation">}</span>
+<pre><code class="java">public class TestRunner implements Runnable {
+    private long i;
+    private volatile boolean on = true;
+    @Override
+    public void run() {
+        while(on &amp;&amp; !Thread.currentThread().isInterrupted()){
+            i++;
+        }
+    }
 
-    <span class="token keyword">public</span> <span class="token keyword">void</span> <span class="token function">cancel</span><span class="token punctuation">(</span><span class="token punctuation">)</span><span class="token punctuation">{</span>
-        on <span class="token operator">=</span> <span class="token boolean">false</span><span class="token punctuation">;</span>
-    <span class="token punctuation">}</span>
-<span class="token punctuation">}</span>
+    public void cancel(){
+        on = false;
+    }
+}
 </code></pre>
 <h2 id="4-3-线程间通信"><a href="#4-3-线程间通信" class="headerlink" title="4.3 线程间通信"></a>4.3 线程间通信</h2><p>Java 支持多个线程同时访问一个对象或者对象的成员变量，由于每个线程可以拥有这个变量的拷贝，所以程序在执行过程中，各线程看到的变量并不一定是最新的。</p>
 <h3 id="4-3-1-volatile-和-synchronized-关键字"><a href="#4-3-1-volatile-和-synchronized-关键字" class="headerlink" title="4.3.1 volatile 和 synchronized 关键字"></a>4.3.1 volatile 和 synchronized 关键字</h3><p>volatile 关键字：用来修饰的变量，可以使访问该变量的线程均从共享内存中获取。且对共享变量的修改，必须同步刷新回共享内存中。但是过多地使用volatile 会降低程序执行的效率。</p>
@@ -444,12 +444,12 @@
 <li>如果条件不满足，则调用对象的wait()方法，被通知后仍要检查条件</li>
 <li>条件满足则执行对应的逻辑</li>
 </ol>
-<pre class=" language-java"><code class="language-java"><span class="token keyword">synchronized</span><span class="token punctuation">(</span>对象<span class="token punctuation">)</span><span class="token punctuation">{</span>
-    <span class="token keyword">while</span><span class="token punctuation">(</span>条件不满足<span class="token punctuation">)</span><span class="token punctuation">{</span>
-        对象<span class="token punctuation">.</span><span class="token function">wait</span><span class="token punctuation">(</span><span class="token punctuation">)</span><span class="token punctuation">;</span>
-    <span class="token punctuation">}</span>
+<pre><code class="java">synchronized(对象){
+    while(条件不满足){
+        对象.wait();
+    }
     处理逻辑
-<span class="token punctuation">}</span>
+}
 </code></pre>
 <p>通知方(生产者)：</p>
 <ol>
@@ -457,25 +457,25 @@
 <li>改变条件</li>
 <li>通知所有等待在对象上的线程</li>
 </ol>
-<pre class=" language-java"><code class="language-java"><span class="token keyword">synchronized</span><span class="token punctuation">(</span>对象<span class="token punctuation">)</span><span class="token punctuation">{</span>
+<pre><code class="java">synchronized(对象){
     改变条件
-    对象<span class="token punctuation">.</span><span class="token function">notifyAll</span><span class="token punctuation">(</span><span class="token punctuation">)</span><span class="token punctuation">;</span>
-<span class="token punctuation">}</span>
+    对象.notifyAll();
+}
 </code></pre>
 <h3 id="4-3-3-Thread-join"><a href="#4-3-3-Thread-join" class="headerlink" title="4.3.3 Thread.join()"></a>4.3.3 Thread.join()</h3><p>如果一个线程 A 执行了 thread.join() 语句，其含义是：当前线程 A 等待 thread 线程终止之后才从 thread.join() 返回。</p>
 <h2 id="4-4-线程应用实例"><a href="#4-4-线程应用实例" class="headerlink" title="4.4 线程应用实例"></a>4.4 线程应用实例</h2><h3 id="4-4-1-等待超时模式"><a href="#4-4-1-等待超时模式" class="headerlink" title="4.4.1 等待超时模式"></a>4.4.1 等待超时模式</h3><p>调用一个方法后，如果在等待时间内得到结果则立即返回，否则返回默认结果。</p>
-<pre class=" language-java"><code class="language-java"><span class="token comment" spellcheck="true">// 伪代码：</span>
-<span class="token keyword">public</span> <span class="token keyword">synchronized</span> Object <span class="token function">get</span><span class="token punctuation">(</span><span class="token keyword">long</span> mills<span class="token punctuation">)</span> <span class="token keyword">throws</span> InterruptedException <span class="token punctuation">{</span>
-    <span class="token keyword">long</span> future <span class="token operator">=</span> System<span class="token punctuation">.</span><span class="token function">currentTimeMills</span><span class="token punctuation">(</span><span class="token punctuation">)</span> <span class="token operator">+</span> mills<span class="token punctuation">;</span>
-    <span class="token keyword">long</span> remaining <span class="token operator">=</span> mills<span class="token punctuation">;</span>
+<pre><code class="java">// 伪代码：
+public synchronized Object get(long mills) throws InterruptedException {
+    long future = System.currentTimeMills() + mills;
+    long remaining = mills;
 
-    <span class="token keyword">while</span><span class="token punctuation">(</span><span class="token punctuation">(</span>result <span class="token operator">==</span> null<span class="token punctuation">)</span> <span class="token operator">&amp;&amp;</span> remaining <span class="token operator">></span> <span class="token number">0</span><span class="token punctuation">)</span><span class="token punctuation">{</span>
-        <span class="token function">wait</span><span class="token punctuation">(</span>remaining<span class="token punctuation">)</span><span class="token punctuation">;</span>
-        remaining <span class="token operator">=</span> future <span class="token operator">-</span> System<span class="token punctuation">.</span><span class="token function">currentTimeMills</span><span class="token punctuation">(</span><span class="token punctuation">)</span><span class="token punctuation">;</span>
-    <span class="token punctuation">}</span>
+    while((result == null) &amp;&amp; remaining &gt; 0){
+        wait(remaining);
+        remaining = future - System.currentTimeMills();
+    }
 
-    <span class="token keyword">return</span> result<span class="token punctuation">;</span>
-<span class="token punctuation">}</span>
+    return result;
+}
 </code></pre>
 <h3 id="4-4-2-简单的数据库连接池"><a href="#4-4-2-简单的数据库连接池" class="headerlink" title="4.4.2 简单的数据库连接池"></a>4.4.2 简单的数据库连接池</h3><h3 id="4-4-3-基于数据库连接池的Web服务器"><a href="#4-4-3-基于数据库连接池的Web服务器" class="headerlink" title="4.4.3 基于数据库连接池的Web服务器"></a>4.4.3 基于数据库连接池的Web服务器</h3>
       
@@ -594,7 +594,7 @@
               
                 <a href="/archives">
               
-                  <span class="site-state-item-count">224</span>
+                  <span class="site-state-item-count">237</span>
                   <span class="site-state-item-name">日志</span>
                 </a>
               </div>
@@ -616,7 +616,7 @@
               
               <div class="site-state-item site-state-tags">
                 <a href="/tags/index.html">
-                  <span class="site-state-item-count">21</span>
+                  <span class="site-state-item-count">22</span>
                   <span class="site-state-item-name">标签</span>
                 </a>
               </div>

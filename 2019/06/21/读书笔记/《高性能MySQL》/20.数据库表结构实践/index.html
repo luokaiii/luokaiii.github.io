@@ -384,358 +384,358 @@
       
 
       
-        <h1 id="数据库表实践"><a href="#数据库表实践" class="headerlink" title="数据库表实践"></a>数据库表实践</h1><h2 id="Init-Database"><a href="#Init-Database" class="headerlink" title="Init Database"></a>Init Database</h2><pre class=" language-mysql"><code class="language-mysql">CREATE DATABASE IF NOT EXISTS mc_customer DEFAULT CHARSET utf8 COLLATE utf8_general_ci;
+        <h1 id="数据库表实践"><a href="#数据库表实践" class="headerlink" title="数据库表实践"></a>数据库表实践</h1><h2 id="Init-Database"><a href="#Init-Database" class="headerlink" title="Init Database"></a>Init Database</h2><pre><code class="mysql">CREATE DATABASE IF NOT EXISTS mc_customer DEFAULT CHARSET utf8 COLLATE utf8_general_ci;
 
 CREATE DATABASE IF NOT EXISTS mc_product DEFAULT CHARSET utf8 COLLATE utf8_general_ci;
 
 CREATE DATABASE IF NOT EXISTS mc_order DEFAULT CHARSET utf8 COLLATE utf8_general_ci;
 </code></pre>
-<h2 id="Init-User"><a href="#Init-User" class="headerlink" title="Init User"></a>Init User</h2><pre class=" language-sql"><code class="language-sql">
-<span class="token keyword">CREATE</span> <span class="token keyword">TABLE</span> <span class="token keyword">IF</span> <span class="token operator">NOT</span> <span class="token keyword">EXISTS</span> <span class="token punctuation">`</span>customer_login<span class="token punctuation">`</span><span class="token punctuation">(</span>
- <span class="token punctuation">`</span>customer_id<span class="token punctuation">`</span> <span class="token keyword">INT</span> UNSIGNED <span class="token keyword">AUTO_INCREMENT</span> <span class="token operator">NOT</span> <span class="token boolean">NULL</span> <span class="token keyword">COMMENT</span> <span class="token string">'用户ID'</span><span class="token punctuation">,</span>
- <span class="token punctuation">`</span>login_name<span class="token punctuation">`</span> <span class="token keyword">VARCHAR</span><span class="token punctuation">(</span><span class="token number">20</span><span class="token punctuation">)</span> <span class="token operator">NOT</span> <span class="token boolean">NULL</span> <span class="token keyword">COMMENT</span> <span class="token string">'用户登录名'</span><span class="token punctuation">,</span>
- <span class="token punctuation">`</span>password<span class="token punctuation">`</span> CHAR<span class="token punctuation">(</span><span class="token number">32</span><span class="token punctuation">)</span> <span class="token operator">NOT</span> <span class="token boolean">NULL</span> <span class="token keyword">COMMENT</span> <span class="token string">'md5加密的密码'</span><span class="token punctuation">,</span>
- <span class="token comment" spellcheck="true">-- 禁止使用枚举类型，而采用约定的整型</span>
- <span class="token punctuation">`</span>user_stats<span class="token punctuation">`</span> <span class="token keyword">TINYINT</span> <span class="token operator">NOT</span> <span class="token boolean">NULL</span> <span class="token keyword">DEFAULT</span> <span class="token number">1</span> <span class="token keyword">COMMENT</span> <span class="token string">'用户状态，1 可用，0 冻结'</span><span class="token punctuation">,</span>
- <span class="token comment" spellcheck="true">-- modified_time 在更新数据时自动更新</span>
- <span class="token punctuation">`</span>modified_time<span class="token punctuation">`</span> <span class="token keyword">TIMESTAMP</span> <span class="token operator">NOT</span> <span class="token boolean">NULL</span> <span class="token keyword">DEFAULT</span> <span class="token keyword">CURRENT_TIMESTAMP</span> <span class="token keyword">ON</span> <span class="token keyword">UPDATE</span> <span class="token keyword">CURRENT_TIMESTAMP</span> <span class="token keyword">COMMENT</span> <span class="token string">'最后修改时间'</span><span class="token punctuation">,</span>
- <span class="token keyword">PRIMARY</span> <span class="token keyword">KEY</span> pk_customerid <span class="token punctuation">(</span><span class="token punctuation">`</span>customer_id<span class="token punctuation">`</span><span class="token punctuation">)</span>
-<span class="token punctuation">)</span> <span class="token keyword">engine</span> <span class="token operator">=</span> <span class="token keyword">innodb</span> <span class="token keyword">COMMENT</span><span class="token operator">=</span><span class="token string">'用户登录表'</span><span class="token punctuation">;</span>
+<h2 id="Init-User"><a href="#Init-User" class="headerlink" title="Init User"></a>Init User</h2><pre><code class="sql">
+CREATE TABLE IF NOT EXISTS `customer_login`(
+ `customer_id` INT UNSIGNED AUTO_INCREMENT NOT NULL COMMENT &#39;用户ID&#39;,
+ `login_name` VARCHAR(20) NOT NULL COMMENT &#39;用户登录名&#39;,
+ `password` CHAR(32) NOT NULL COMMENT &#39;md5加密的密码&#39;,
+ -- 禁止使用枚举类型，而采用约定的整型
+ `user_stats` TINYINT NOT NULL DEFAULT 1 COMMENT &#39;用户状态，1 可用，0 冻结&#39;,
+ -- modified_time 在更新数据时自动更新
+ `modified_time` TIMESTAMP NOT NULL DEFAULT CURRENT_TIMESTAMP ON UPDATE CURRENT_TIMESTAMP COMMENT &#39;最后修改时间&#39;,
+ PRIMARY KEY pk_customerid (`customer_id`)
+) engine = innodb COMMENT=&#39;用户登录表&#39;;
 
-<span class="token keyword">INSERT</span> <span class="token keyword">INTO</span> <span class="token punctuation">`</span>customer_login<span class="token punctuation">`</span> <span class="token punctuation">(</span><span class="token punctuation">`</span>customer_id<span class="token punctuation">`</span><span class="token punctuation">,</span> <span class="token punctuation">`</span>login_name<span class="token punctuation">`</span><span class="token punctuation">,</span> <span class="token punctuation">`</span>password<span class="token punctuation">`</span><span class="token punctuation">,</span> <span class="token punctuation">`</span>user_stats<span class="token punctuation">`</span><span class="token punctuation">)</span>
-<span class="token keyword">VALUES</span>
-<span class="token punctuation">(</span><span class="token number">1</span><span class="token punctuation">,</span> <span class="token string">'admin'</span><span class="token punctuation">,</span> <span class="token string">'D959CAADAC9B13DCB3E609440135CF54'</span><span class="token punctuation">,</span> <span class="token number">1</span><span class="token punctuation">)</span><span class="token punctuation">,</span>
-<span class="token punctuation">(</span><span class="token number">2</span><span class="token punctuation">,</span> <span class="token string">'user'</span><span class="token punctuation">,</span> <span class="token string">'D959CAADAC9B13DCB3E609440135CF54'</span><span class="token punctuation">,</span> <span class="token number">1</span><span class="token punctuation">)</span><span class="token punctuation">,</span>
-<span class="token punctuation">(</span><span class="token number">3</span><span class="token punctuation">,</span> <span class="token string">'root'</span><span class="token punctuation">,</span> <span class="token string">'D959CAADAC9B13DCB3E609440135CF54'</span><span class="token punctuation">,</span> <span class="token number">1</span><span class="token punctuation">)</span><span class="token punctuation">,</span>
-<span class="token punctuation">(</span><span class="token number">4</span><span class="token punctuation">,</span> <span class="token string">'guest'</span><span class="token punctuation">,</span> <span class="token string">'D959CAADAC9B13DCB3E609440135CF54'</span><span class="token punctuation">,</span> <span class="token number">1</span><span class="token punctuation">)</span><span class="token punctuation">;</span>
-
-
-
-<span class="token keyword">CREATE</span> <span class="token keyword">TABLE</span> <span class="token keyword">IF</span> <span class="token operator">NOT</span> <span class="token keyword">EXISTS</span> <span class="token punctuation">`</span>customer_inf<span class="token punctuation">`</span><span class="token punctuation">(</span>
- <span class="token punctuation">`</span>customer_inf_id<span class="token punctuation">`</span> <span class="token keyword">INT</span> UNSIGNED <span class="token keyword">AUTO_INCREMENT</span> <span class="token operator">NOT</span> <span class="token boolean">NULL</span> <span class="token keyword">COMMENT</span> <span class="token string">'用户信息ID'</span><span class="token punctuation">,</span>
- <span class="token comment" spellcheck="true">-- 关联外键，但是不使用外键约束，而在程序中维护表关系，避免在增删父表数据时还需要检查外键约束</span>
- <span class="token punctuation">`</span>customer_id<span class="token punctuation">`</span> <span class="token keyword">INT</span> UNSIGNED <span class="token operator">NOT</span> <span class="token boolean">NULL</span> <span class="token keyword">COMMENT</span> <span class="token string">'customer_login表的自增ID'</span><span class="token punctuation">,</span>
- <span class="token punctuation">`</span>customer_name<span class="token punctuation">`</span> <span class="token keyword">VARCHAR</span><span class="token punctuation">(</span><span class="token number">20</span><span class="token punctuation">)</span> <span class="token operator">NOT</span> <span class="token boolean">NULL</span> <span class="token keyword">COMMENT</span> <span class="token string">'用户真实姓名'</span><span class="token punctuation">,</span>
- <span class="token punctuation">`</span>identity_card_type<span class="token punctuation">`</span> <span class="token keyword">TINYINT</span> <span class="token operator">NOT</span> <span class="token boolean">NULL</span> <span class="token keyword">DEFAULT</span> <span class="token number">1</span> <span class="token keyword">comment</span> <span class="token string">'证件类型：1 身份证，2 军官证，3 护照'</span><span class="token punctuation">,</span>
- <span class="token punctuation">`</span>identity_card_no<span class="token punctuation">`</span> <span class="token keyword">VARCHAR</span><span class="token punctuation">(</span><span class="token number">20</span><span class="token punctuation">)</span> <span class="token keyword">COMMENT</span> <span class="token string">'证件号码'</span><span class="token punctuation">,</span>
- <span class="token punctuation">`</span>mobile_phone<span class="token punctuation">`</span> CHAR<span class="token punctuation">(</span><span class="token number">16</span><span class="token punctuation">)</span> <span class="token keyword">COMMENT</span> <span class="token string">'手机号'</span><span class="token punctuation">,</span>
- <span class="token punctuation">`</span>customer_email<span class="token punctuation">`</span> <span class="token keyword">VARCHAR</span><span class="token punctuation">(</span><span class="token number">50</span><span class="token punctuation">)</span> <span class="token keyword">COMMENT</span> <span class="token string">'邮箱'</span><span class="token punctuation">,</span>
- <span class="token comment" spellcheck="true">-- 使用最短长度设置属性的宽度</span>
- <span class="token punctuation">`</span>gender<span class="token punctuation">`</span> CHAR<span class="token punctuation">(</span><span class="token number">1</span><span class="token punctuation">)</span> <span class="token keyword">COMMENT</span> <span class="token string">'性别：0 女，1 男'</span><span class="token punctuation">,</span>
- <span class="token punctuation">`</span>user_point<span class="token punctuation">`</span> <span class="token keyword">INT</span> <span class="token operator">NOT</span> <span class="token boolean">NULL</span> <span class="token keyword">DEFAULT</span> <span class="token number">0</span> <span class="token keyword">COMMENT</span> <span class="token string">'用户积分'</span><span class="token punctuation">,</span>
- <span class="token punctuation">`</span>register_time<span class="token punctuation">`</span> <span class="token keyword">TIMESTAMP</span> <span class="token operator">NOT</span> <span class="token boolean">NULL</span> <span class="token keyword">COMMENT</span> <span class="token string">'注册时间'</span><span class="token punctuation">,</span>
- <span class="token comment" spellcheck="true">-- 使用日期类型，能够使用日期函数，且存储只需8字节</span>
- <span class="token punctuation">`</span>birthday<span class="token punctuation">`</span> <span class="token keyword">DATETIME</span> <span class="token keyword">COMMENT</span> <span class="token string">'会员生日'</span><span class="token punctuation">,</span>
- <span class="token punctuation">`</span>customer_level<span class="token punctuation">`</span> <span class="token keyword">TINYINT</span> <span class="token operator">NOT</span> <span class="token boolean">NULL</span> <span class="token keyword">DEFAULT</span> <span class="token number">1</span> <span class="token keyword">COMMENT</span> <span class="token string">'会员级别：1 普通会员，2 青铜会员，3 白银会员，4 黄金会员，5 钻石会员'</span><span class="token punctuation">,</span>
- <span class="token comment" spellcheck="true">-- 金额类数据，必须使用 decimal 类型，精确浮点型，计算时不会丢失精度</span>
- <span class="token punctuation">`</span>user_money<span class="token punctuation">`</span> <span class="token keyword">DECIMAL</span><span class="token punctuation">(</span><span class="token number">8</span><span class="token punctuation">,</span><span class="token number">2</span><span class="token punctuation">)</span> <span class="token operator">NOT</span> <span class="token boolean">NULL</span> <span class="token keyword">DEFAULT</span> <span class="token number">0.00</span> <span class="token keyword">COMMENT</span> <span class="token string">'用户余额'</span><span class="token punctuation">,</span>
- <span class="token punctuation">`</span>modified_time<span class="token punctuation">`</span> <span class="token keyword">TIMESTAMP</span> <span class="token operator">NOT</span> <span class="token boolean">NULL</span> <span class="token keyword">DEFAULT</span> <span class="token keyword">CURRENT_TIMESTAMP</span> <span class="token keyword">ON</span> <span class="token keyword">UPDATE</span> <span class="token keyword">CURRENT_TIMESTAMP</span> <span class="token keyword">COMMENT</span> <span class="token string">'最后修改时间'</span><span class="token punctuation">,</span>
- <span class="token keyword">PRIMARY</span> <span class="token keyword">KEY</span> pk_customerinfid<span class="token punctuation">(</span><span class="token punctuation">`</span>customer_inf_id<span class="token punctuation">`</span><span class="token punctuation">)</span>
-<span class="token punctuation">)</span> <span class="token keyword">engine</span> <span class="token operator">=</span> <span class="token keyword">innodb</span> <span class="token keyword">COMMENT</span><span class="token operator">=</span><span class="token string">'用户信息表'</span><span class="token punctuation">;</span>
-
-<span class="token keyword">INSERT</span> <span class="token keyword">INTO</span> <span class="token punctuation">`</span>customer_inf<span class="token punctuation">`</span> <span class="token punctuation">(</span>
- <span class="token punctuation">`</span>customer_inf_id<span class="token punctuation">`</span><span class="token punctuation">,</span> 
- <span class="token punctuation">`</span>customer_id<span class="token punctuation">`</span><span class="token punctuation">,</span>
- <span class="token punctuation">`</span>customer_name<span class="token punctuation">`</span><span class="token punctuation">,</span>
- <span class="token punctuation">`</span>identity_card_type<span class="token punctuation">`</span><span class="token punctuation">,</span>
- <span class="token punctuation">`</span>identity_card_no<span class="token punctuation">`</span><span class="token punctuation">,</span>
- <span class="token punctuation">`</span>mobile_phone<span class="token punctuation">`</span><span class="token punctuation">,</span> 
- <span class="token punctuation">`</span>customer_email<span class="token punctuation">`</span><span class="token punctuation">,</span>
- <span class="token punctuation">`</span>gender<span class="token punctuation">`</span><span class="token punctuation">,</span>
- <span class="token punctuation">`</span>user_point<span class="token punctuation">`</span><span class="token punctuation">,</span>
- <span class="token punctuation">`</span>register_time<span class="token punctuation">`</span><span class="token punctuation">,</span>
- <span class="token punctuation">`</span>birthday<span class="token punctuation">`</span><span class="token punctuation">,</span>
- <span class="token punctuation">`</span>customer_level<span class="token punctuation">`</span><span class="token punctuation">,</span>
- <span class="token punctuation">`</span>user_money<span class="token punctuation">`</span><span class="token punctuation">)</span> <span class="token keyword">VALUES</span> 
-<span class="token punctuation">(</span><span class="token number">1</span><span class="token punctuation">,</span> <span class="token number">1</span><span class="token punctuation">,</span> <span class="token string">'管理员'</span><span class="token punctuation">,</span> <span class="token number">1</span><span class="token punctuation">,</span> <span class="token boolean">null</span><span class="token punctuation">,</span> <span class="token string">'+86 13700001111'</span><span class="token punctuation">,</span> <span class="token boolean">null</span><span class="token punctuation">,</span> <span class="token number">1</span><span class="token punctuation">,</span> <span class="token number">0</span><span class="token punctuation">,</span> <span class="token function">NOW</span><span class="token punctuation">(</span><span class="token punctuation">)</span><span class="token punctuation">,</span> <span class="token function">NOW</span><span class="token punctuation">(</span><span class="token punctuation">)</span><span class="token punctuation">,</span> <span class="token number">3</span><span class="token punctuation">,</span> <span class="token number">0.00</span><span class="token punctuation">)</span><span class="token punctuation">,</span>
-<span class="token punctuation">(</span><span class="token number">2</span><span class="token punctuation">,</span> <span class="token number">2</span><span class="token punctuation">,</span> <span class="token string">'用户'</span><span class="token punctuation">,</span> <span class="token number">1</span><span class="token punctuation">,</span> <span class="token boolean">null</span><span class="token punctuation">,</span> <span class="token string">'+86 18800001111'</span><span class="token punctuation">,</span> <span class="token boolean">null</span><span class="token punctuation">,</span> <span class="token number">1</span><span class="token punctuation">,</span> <span class="token number">0</span><span class="token punctuation">,</span> <span class="token function">NOW</span><span class="token punctuation">(</span><span class="token punctuation">)</span><span class="token punctuation">,</span> <span class="token function">NOW</span><span class="token punctuation">(</span><span class="token punctuation">)</span><span class="token punctuation">,</span> <span class="token number">1</span><span class="token punctuation">,</span> <span class="token number">0.00</span><span class="token punctuation">)</span><span class="token punctuation">,</span>
-<span class="token punctuation">(</span><span class="token number">3</span><span class="token punctuation">,</span> <span class="token number">3</span><span class="token punctuation">,</span> <span class="token string">'超级管理员'</span><span class="token punctuation">,</span> <span class="token number">1</span><span class="token punctuation">,</span> <span class="token boolean">null</span><span class="token punctuation">,</span> <span class="token string">'+86 18822223333'</span><span class="token punctuation">,</span> <span class="token boolean">null</span><span class="token punctuation">,</span> <span class="token number">1</span><span class="token punctuation">,</span> <span class="token number">0</span><span class="token punctuation">,</span> <span class="token function">NOW</span><span class="token punctuation">(</span><span class="token punctuation">)</span><span class="token punctuation">,</span> <span class="token function">NOW</span><span class="token punctuation">(</span><span class="token punctuation">)</span><span class="token punctuation">,</span> <span class="token number">5</span><span class="token punctuation">,</span> <span class="token number">0.00</span><span class="token punctuation">)</span><span class="token punctuation">,</span>
-<span class="token punctuation">(</span><span class="token number">4</span><span class="token punctuation">,</span> <span class="token number">4</span><span class="token punctuation">,</span> <span class="token string">'测试'</span><span class="token punctuation">,</span> <span class="token number">1</span><span class="token punctuation">,</span> <span class="token boolean">null</span><span class="token punctuation">,</span> <span class="token string">'+86 18844445555'</span><span class="token punctuation">,</span> <span class="token boolean">null</span><span class="token punctuation">,</span> <span class="token number">1</span><span class="token punctuation">,</span> <span class="token number">0</span><span class="token punctuation">,</span> <span class="token function">NOW</span><span class="token punctuation">(</span><span class="token punctuation">)</span><span class="token punctuation">,</span> <span class="token function">NOW</span><span class="token punctuation">(</span><span class="token punctuation">)</span><span class="token punctuation">,</span> <span class="token number">2</span><span class="token punctuation">,</span> <span class="token number">0.00</span><span class="token punctuation">)</span><span class="token punctuation">;</span>
+INSERT INTO `customer_login` (`customer_id`, `login_name`, `password`, `user_stats`)
+VALUES
+(1, &#39;admin&#39;, &#39;D959CAADAC9B13DCB3E609440135CF54&#39;, 1),
+(2, &#39;user&#39;, &#39;D959CAADAC9B13DCB3E609440135CF54&#39;, 1),
+(3, &#39;root&#39;, &#39;D959CAADAC9B13DCB3E609440135CF54&#39;, 1),
+(4, &#39;guest&#39;, &#39;D959CAADAC9B13DCB3E609440135CF54&#39;, 1);
 
 
 
-<span class="token keyword">CREATE</span> <span class="token keyword">TABLE</span> <span class="token keyword">IF</span> <span class="token operator">NOT</span> <span class="token keyword">EXISTS</span> <span class="token punctuation">`</span>customer_level_inf<span class="token punctuation">`</span><span class="token punctuation">(</span>
- <span class="token punctuation">`</span>customer_level<span class="token punctuation">`</span> <span class="token keyword">TINYINT</span> <span class="token operator">NOT</span> <span class="token boolean">NULL</span> <span class="token keyword">AUTO_INCREMENT</span> <span class="token keyword">COMMENT</span> <span class="token string">'会员级别ID'</span><span class="token punctuation">,</span>
- <span class="token punctuation">`</span>level_name<span class="token punctuation">`</span> <span class="token keyword">VARCHAR</span><span class="token punctuation">(</span><span class="token number">10</span><span class="token punctuation">)</span> <span class="token operator">NOT</span> <span class="token boolean">NULL</span> <span class="token keyword">COMMENT</span> <span class="token string">'会员级别名称'</span><span class="token punctuation">,</span>
- <span class="token comment" spellcheck="true">-- 积分上下线，使用无符号标识，无符号数值的上限为2^32</span>
- <span class="token punctuation">`</span>min_point<span class="token punctuation">`</span> <span class="token keyword">INT</span> UNSIGNED <span class="token operator">NOT</span> <span class="token boolean">NULL</span> <span class="token keyword">DEFAULT</span> <span class="token number">0</span> <span class="token keyword">COMMENT</span> <span class="token string">'该级别最低积分'</span><span class="token punctuation">,</span>
- <span class="token punctuation">`</span>max_point<span class="token punctuation">`</span> <span class="token keyword">INT</span> UNSIGNED <span class="token operator">NOT</span> <span class="token boolean">NULL</span> <span class="token keyword">DEFAULT</span> <span class="token number">0</span> <span class="token keyword">COMMENT</span> <span class="token string">'该级别最高积分'</span><span class="token punctuation">,</span>
- <span class="token punctuation">`</span>modified_time<span class="token punctuation">`</span> <span class="token keyword">TIMESTAMP</span> <span class="token operator">NOT</span> <span class="token boolean">NULL</span> <span class="token keyword">DEFAULT</span> <span class="token keyword">CURRENT_TIMESTAMP</span> <span class="token keyword">ON</span> <span class="token keyword">UPDATE</span> <span class="token keyword">CURRENT_TIMESTAMP</span> <span class="token keyword">COMMENT</span> <span class="token string">'最后修改时间'</span><span class="token punctuation">,</span>
- <span class="token keyword">PRIMARY</span> <span class="token keyword">KEY</span> pk_levelid<span class="token punctuation">(</span><span class="token punctuation">`</span>customer_level<span class="token punctuation">`</span><span class="token punctuation">)</span>
-<span class="token punctuation">)</span> <span class="token keyword">engine</span> <span class="token operator">=</span> <span class="token keyword">innodb</span> <span class="token keyword">COMMENT</span><span class="token operator">=</span><span class="token string">'用户级别信息表'</span><span class="token punctuation">;</span>
+CREATE TABLE IF NOT EXISTS `customer_inf`(
+ `customer_inf_id` INT UNSIGNED AUTO_INCREMENT NOT NULL COMMENT &#39;用户信息ID&#39;,
+ -- 关联外键，但是不使用外键约束，而在程序中维护表关系，避免在增删父表数据时还需要检查外键约束
+ `customer_id` INT UNSIGNED NOT NULL COMMENT &#39;customer_login表的自增ID&#39;,
+ `customer_name` VARCHAR(20) NOT NULL COMMENT &#39;用户真实姓名&#39;,
+ `identity_card_type` TINYINT NOT NULL DEFAULT 1 comment &#39;证件类型：1 身份证，2 军官证，3 护照&#39;,
+ `identity_card_no` VARCHAR(20) COMMENT &#39;证件号码&#39;,
+ `mobile_phone` CHAR(16) COMMENT &#39;手机号&#39;,
+ `customer_email` VARCHAR(50) COMMENT &#39;邮箱&#39;,
+ -- 使用最短长度设置属性的宽度
+ `gender` CHAR(1) COMMENT &#39;性别：0 女，1 男&#39;,
+ `user_point` INT NOT NULL DEFAULT 0 COMMENT &#39;用户积分&#39;,
+ `register_time` TIMESTAMP NOT NULL COMMENT &#39;注册时间&#39;,
+ -- 使用日期类型，能够使用日期函数，且存储只需8字节
+ `birthday` DATETIME COMMENT &#39;会员生日&#39;,
+ `customer_level` TINYINT NOT NULL DEFAULT 1 COMMENT &#39;会员级别：1 普通会员，2 青铜会员，3 白银会员，4 黄金会员，5 钻石会员&#39;,
+ -- 金额类数据，必须使用 decimal 类型，精确浮点型，计算时不会丢失精度
+ `user_money` DECIMAL(8,2) NOT NULL DEFAULT 0.00 COMMENT &#39;用户余额&#39;,
+ `modified_time` TIMESTAMP NOT NULL DEFAULT CURRENT_TIMESTAMP ON UPDATE CURRENT_TIMESTAMP COMMENT &#39;最后修改时间&#39;,
+ PRIMARY KEY pk_customerinfid(`customer_inf_id`)
+) engine = innodb COMMENT=&#39;用户信息表&#39;;
 
-<span class="token keyword">INSERT</span> <span class="token keyword">INTO</span> <span class="token punctuation">`</span>customer_level_inf<span class="token punctuation">`</span> <span class="token punctuation">(</span>
- <span class="token punctuation">`</span>customer_level<span class="token punctuation">`</span><span class="token punctuation">,</span>
- <span class="token punctuation">`</span>level_name<span class="token punctuation">`</span><span class="token punctuation">,</span> 
- <span class="token punctuation">`</span>min_point<span class="token punctuation">`</span><span class="token punctuation">,</span>
- <span class="token punctuation">`</span>max_point<span class="token punctuation">`</span>
-<span class="token punctuation">)</span> <span class="token keyword">VALUES</span>
-<span class="token punctuation">(</span><span class="token number">1</span><span class="token punctuation">,</span> <span class="token string">'普通会员'</span><span class="token punctuation">,</span> <span class="token number">0</span><span class="token punctuation">,</span> <span class="token number">99</span><span class="token punctuation">)</span><span class="token punctuation">,</span>
-<span class="token punctuation">(</span><span class="token number">2</span><span class="token punctuation">,</span> <span class="token string">'青铜会员'</span><span class="token punctuation">,</span> <span class="token number">100</span><span class="token punctuation">,</span> <span class="token number">199</span><span class="token punctuation">)</span><span class="token punctuation">,</span>
-<span class="token punctuation">(</span><span class="token number">3</span><span class="token punctuation">,</span> <span class="token string">'白银会员'</span><span class="token punctuation">,</span> <span class="token number">200</span><span class="token punctuation">,</span> <span class="token number">499</span><span class="token punctuation">)</span><span class="token punctuation">,</span>
-<span class="token punctuation">(</span><span class="token number">4</span><span class="token punctuation">,</span> <span class="token string">'黄金会员'</span><span class="token punctuation">,</span> <span class="token number">500</span><span class="token punctuation">,</span> <span class="token number">1000</span><span class="token punctuation">)</span><span class="token punctuation">,</span>
-<span class="token punctuation">(</span><span class="token number">5</span><span class="token punctuation">,</span> <span class="token string">'钻石会员'</span><span class="token punctuation">,</span> <span class="token number">1000</span><span class="token punctuation">,</span> <span class="token number">10000</span><span class="token punctuation">)</span><span class="token punctuation">;</span>
-
-
-
-<span class="token keyword">CREATE</span> <span class="token keyword">TABLE</span> <span class="token keyword">IF</span> <span class="token operator">NOT</span> <span class="token keyword">EXISTS</span> <span class="token punctuation">`</span>customer_addr<span class="token punctuation">`</span><span class="token punctuation">(</span>
- <span class="token punctuation">`</span>customer_addr_id<span class="token punctuation">`</span> <span class="token keyword">INT</span> UNSIGNED <span class="token keyword">AUTO_INCREMENT</span> <span class="token operator">NOT</span> <span class="token boolean">NULL</span> <span class="token keyword">COMMENT</span> <span class="token string">'自增主键ID'</span><span class="token punctuation">,</span>
- <span class="token punctuation">`</span>customer_id<span class="token punctuation">`</span> <span class="token keyword">INT</span> UNSIGNED <span class="token operator">NOT</span> <span class="token boolean">NULL</span> <span class="token keyword">COMMENT</span> <span class="token string">'customer_login表的自增ID'</span><span class="token punctuation">,</span>
- <span class="token punctuation">`</span>zip<span class="token punctuation">`</span> <span class="token keyword">SMALLINT</span> <span class="token operator">NOT</span> <span class="token boolean">NULL</span> <span class="token keyword">COMMENT</span> <span class="token string">'邮编'</span><span class="token punctuation">,</span>
- <span class="token punctuation">`</span>province<span class="token punctuation">`</span> <span class="token keyword">SMALLINT</span> <span class="token operator">NOT</span> <span class="token boolean">NULL</span> <span class="token keyword">COMMENT</span> <span class="token string">'地区表中的省份ID'</span><span class="token punctuation">,</span>
- <span class="token punctuation">`</span>city<span class="token punctuation">`</span> <span class="token keyword">SMALLINT</span> <span class="token operator">NOT</span> <span class="token boolean">NULL</span> <span class="token keyword">COMMENT</span> <span class="token string">'地区表中的城市ID'</span><span class="token punctuation">,</span>
- <span class="token punctuation">`</span>district<span class="token punctuation">`</span> <span class="token keyword">SMALLINT</span> <span class="token operator">NOT</span> <span class="token boolean">NULL</span> <span class="token keyword">COMMENT</span> <span class="token string">'地区表中的区ID'</span><span class="token punctuation">,</span>
- <span class="token punctuation">`</span>address<span class="token punctuation">`</span> <span class="token keyword">VARCHAR</span><span class="token punctuation">(</span><span class="token number">200</span><span class="token punctuation">)</span> <span class="token operator">NOT</span> <span class="token boolean">NULL</span> <span class="token keyword">COMMENT</span> <span class="token string">'具体的地址门牌号'</span><span class="token punctuation">,</span>
- <span class="token punctuation">`</span>is_default<span class="token punctuation">`</span> <span class="token keyword">TINYINT</span> <span class="token operator">NOT</span> <span class="token boolean">NULL</span> <span class="token keyword">COMMENT</span> <span class="token string">'是否默认：1 默认，0 不默认'</span><span class="token punctuation">,</span>
- <span class="token punctuation">`</span>modified_time<span class="token punctuation">`</span> <span class="token keyword">TIMESTAMP</span> <span class="token operator">NOT</span> <span class="token boolean">NULL</span> <span class="token keyword">DEFAULT</span> <span class="token keyword">CURRENT_TIMESTAMP</span> <span class="token keyword">ON</span> <span class="token keyword">UPDATE</span> <span class="token keyword">CURRENT_TIMESTAMP</span> <span class="token keyword">COMMENT</span> <span class="token string">'最后修改时间'</span><span class="token punctuation">,</span>
- <span class="token keyword">PRIMARY</span> <span class="token keyword">KEY</span> pk_customeraddrid<span class="token punctuation">(</span><span class="token punctuation">`</span>customer_addr_id<span class="token punctuation">`</span><span class="token punctuation">)</span>
-<span class="token punctuation">)</span> <span class="token keyword">engine</span> <span class="token operator">=</span> <span class="token keyword">innodb</span> <span class="token keyword">COMMENT</span><span class="token operator">=</span><span class="token string">'用户地址表'</span><span class="token punctuation">;</span>
-
-<span class="token keyword">INSERT</span> <span class="token keyword">INTO</span> <span class="token punctuation">`</span>customer_addr<span class="token punctuation">`</span> <span class="token punctuation">(</span>
- <span class="token punctuation">`</span>customer_addr_id<span class="token punctuation">`</span><span class="token punctuation">,</span>
- <span class="token punctuation">`</span>customer_id<span class="token punctuation">`</span><span class="token punctuation">,</span>
- <span class="token punctuation">`</span>zip<span class="token punctuation">`</span><span class="token punctuation">,</span>
- <span class="token punctuation">`</span>province<span class="token punctuation">`</span><span class="token punctuation">,</span>
- <span class="token punctuation">`</span>city<span class="token punctuation">`</span><span class="token punctuation">,</span>
- <span class="token punctuation">`</span>district<span class="token punctuation">`</span><span class="token punctuation">,</span>
- <span class="token punctuation">`</span>address<span class="token punctuation">`</span><span class="token punctuation">,</span>
- <span class="token punctuation">`</span>is_default<span class="token punctuation">`</span>
-<span class="token punctuation">)</span> <span class="token keyword">VALUES</span> 
-<span class="token punctuation">(</span><span class="token number">1</span><span class="token punctuation">,</span> <span class="token number">2</span><span class="token punctuation">,</span> <span class="token number">20000</span><span class="token punctuation">,</span> <span class="token number">1</span><span class="token punctuation">,</span> <span class="token number">1</span><span class="token punctuation">,</span> <span class="token number">5</span><span class="token punctuation">,</span> <span class="token string">'湄浦路310弄B栋405室'</span><span class="token punctuation">,</span> <span class="token number">1</span><span class="token punctuation">)</span><span class="token punctuation">,</span>
-<span class="token punctuation">(</span><span class="token number">2</span><span class="token punctuation">,</span> <span class="token number">2</span><span class="token punctuation">,</span> <span class="token number">20000</span><span class="token punctuation">,</span> <span class="token number">1</span><span class="token punctuation">,</span> <span class="token number">1</span><span class="token punctuation">,</span> <span class="token number">8</span><span class="token punctuation">,</span> <span class="token string">'大柏树凉城四村100栋301室'</span><span class="token punctuation">,</span> <span class="token number">0</span><span class="token punctuation">)</span><span class="token punctuation">,</span>
-<span class="token punctuation">(</span><span class="token number">3</span><span class="token punctuation">,</span> <span class="token number">2</span><span class="token punctuation">,</span> <span class="token number">20000</span><span class="token punctuation">,</span> <span class="token number">1</span><span class="token punctuation">,</span> <span class="token number">1</span><span class="token punctuation">,</span> <span class="token number">3</span><span class="token punctuation">,</span> <span class="token string">'长逸路15号复旦软件园B栋1111室'</span><span class="token punctuation">,</span> <span class="token number">0</span><span class="token punctuation">)</span><span class="token punctuation">;</span>
+INSERT INTO `customer_inf` (
+ `customer_inf_id`, 
+ `customer_id`,
+ `customer_name`,
+ `identity_card_type`,
+ `identity_card_no`,
+ `mobile_phone`, 
+ `customer_email`,
+ `gender`,
+ `user_point`,
+ `register_time`,
+ `birthday`,
+ `customer_level`,
+ `user_money`) VALUES 
+(1, 1, &#39;管理员&#39;, 1, null, &#39;+86 13700001111&#39;, null, 1, 0, NOW(), NOW(), 3, 0.00),
+(2, 2, &#39;用户&#39;, 1, null, &#39;+86 18800001111&#39;, null, 1, 0, NOW(), NOW(), 1, 0.00),
+(3, 3, &#39;超级管理员&#39;, 1, null, &#39;+86 18822223333&#39;, null, 1, 0, NOW(), NOW(), 5, 0.00),
+(4, 4, &#39;测试&#39;, 1, null, &#39;+86 18844445555&#39;, null, 1, 0, NOW(), NOW(), 2, 0.00);
 
 
 
-<span class="token keyword">CREATE</span> <span class="token keyword">TABLE</span> <span class="token keyword">IF</span> <span class="token operator">NOT</span> <span class="token keyword">EXISTS</span> <span class="token punctuation">`</span>customer_point_log<span class="token punctuation">`</span><span class="token punctuation">(</span>
- <span class="token punctuation">`</span>point_id<span class="token punctuation">`</span> <span class="token keyword">INT</span> UNSIGNED <span class="token operator">NOT</span> <span class="token boolean">NULL</span> <span class="token keyword">AUTO_INCREMENT</span> <span class="token keyword">COMMENT</span> <span class="token string">'积分日志ID'</span><span class="token punctuation">,</span>
- <span class="token punctuation">`</span>customer_id<span class="token punctuation">`</span> <span class="token keyword">INT</span> UNSIGNED <span class="token operator">NOT</span> <span class="token boolean">NULL</span> <span class="token keyword">COMMENT</span> <span class="token string">'用户ID'</span><span class="token punctuation">,</span>
- <span class="token punctuation">`</span>source<span class="token punctuation">`</span> <span class="token keyword">TINYINT</span> UNSIGNED <span class="token operator">NOT</span> <span class="token boolean">NULL</span> <span class="token keyword">COMMENT</span> <span class="token string">'积分来源：0 订单，1 登录，2 活动'</span><span class="token punctuation">,</span>
- <span class="token punctuation">`</span>refer_number<span class="token punctuation">`</span> <span class="token keyword">INT</span> UNSIGNED <span class="token operator">NOT</span> <span class="token boolean">NULL</span> <span class="token keyword">DEFAULT</span> <span class="token number">0</span> <span class="token keyword">COMMENT</span> <span class="token string">'积分来源相关编号'</span><span class="token punctuation">,</span>
- <span class="token comment" spellcheck="true">-- 变更积分可能为负值，因此为有符号数，有符号数的范围为 -2^31 ~ 2^31-1</span>
- <span class="token punctuation">`</span>change_point<span class="token punctuation">`</span> <span class="token keyword">SMALLINT</span> <span class="token operator">NOT</span> <span class="token boolean">NULL</span> <span class="token keyword">DEFAULT</span> <span class="token number">0</span> <span class="token keyword">COMMENT</span> <span class="token string">'变更积分数'</span><span class="token punctuation">,</span>
- <span class="token punctuation">`</span>create_time<span class="token punctuation">`</span> <span class="token keyword">TIMESTAMP</span> <span class="token operator">NOT</span> <span class="token boolean">NULL</span> <span class="token keyword">COMMENT</span> <span class="token string">'积分日志生成时间'</span><span class="token punctuation">,</span>
- <span class="token keyword">PRIMARY</span> <span class="token keyword">KEY</span> pk_pointid<span class="token punctuation">(</span><span class="token punctuation">`</span>point_id<span class="token punctuation">`</span><span class="token punctuation">)</span>
-<span class="token punctuation">)</span> <span class="token keyword">engine</span> <span class="token operator">=</span> <span class="token keyword">innodb</span> <span class="token keyword">COMMENT</span><span class="token operator">=</span><span class="token string">'用户积分日志表'</span><span class="token punctuation">;</span>
+CREATE TABLE IF NOT EXISTS `customer_level_inf`(
+ `customer_level` TINYINT NOT NULL AUTO_INCREMENT COMMENT &#39;会员级别ID&#39;,
+ `level_name` VARCHAR(10) NOT NULL COMMENT &#39;会员级别名称&#39;,
+ -- 积分上下线，使用无符号标识，无符号数值的上限为2^32
+ `min_point` INT UNSIGNED NOT NULL DEFAULT 0 COMMENT &#39;该级别最低积分&#39;,
+ `max_point` INT UNSIGNED NOT NULL DEFAULT 0 COMMENT &#39;该级别最高积分&#39;,
+ `modified_time` TIMESTAMP NOT NULL DEFAULT CURRENT_TIMESTAMP ON UPDATE CURRENT_TIMESTAMP COMMENT &#39;最后修改时间&#39;,
+ PRIMARY KEY pk_levelid(`customer_level`)
+) engine = innodb COMMENT=&#39;用户级别信息表&#39;;
 
-<span class="token keyword">CREATE</span> <span class="token keyword">TABLE</span> <span class="token keyword">IF</span> <span class="token operator">NOT</span> <span class="token keyword">EXISTS</span> <span class="token punctuation">`</span>customer_balance_log<span class="token punctuation">`</span><span class="token punctuation">(</span>
- <span class="token punctuation">`</span>balance_id<span class="token punctuation">`</span> <span class="token keyword">INT</span> UNSIGNED <span class="token operator">NOT</span> <span class="token boolean">NULL</span> <span class="token keyword">AUTO_INCREMENT</span> <span class="token keyword">COMMENT</span> <span class="token string">'余额日志ID'</span><span class="token punctuation">,</span>
- <span class="token punctuation">`</span>customer_id<span class="token punctuation">`</span> <span class="token keyword">INT</span> UNSIGNED <span class="token operator">NOT</span> <span class="token boolean">NULL</span> <span class="token keyword">COMMENT</span> <span class="token string">'用户ID'</span><span class="token punctuation">,</span>
- <span class="token punctuation">`</span>source<span class="token punctuation">`</span> <span class="token keyword">TINYINT</span> UNSIGNED <span class="token operator">NOT</span> <span class="token boolean">NULL</span> <span class="token keyword">DEFAULT</span> <span class="token number">1</span> <span class="token keyword">COMMENT</span> <span class="token string">'记录来源：1 订单，2 退货单'</span><span class="token punctuation">,</span>
- <span class="token punctuation">`</span>source_sn<span class="token punctuation">`</span> <span class="token keyword">INT</span> UNSIGNED <span class="token operator">NOT</span> <span class="token boolean">NULL</span> <span class="token keyword">COMMENT</span> <span class="token string">'相关单据ID'</span><span class="token punctuation">,</span>
- <span class="token punctuation">`</span>create_time<span class="token punctuation">`</span> <span class="token keyword">TIMESTAMP</span> <span class="token operator">NOT</span> <span class="token boolean">NULL</span> <span class="token keyword">DEFAULT</span> <span class="token keyword">CURRENT_TIMESTAMP</span> <span class="token keyword">COMMENT</span> <span class="token string">'记录生成时间'</span><span class="token punctuation">,</span>
- <span class="token punctuation">`</span>amount<span class="token punctuation">`</span> <span class="token keyword">DECIMAL</span><span class="token punctuation">(</span><span class="token number">8</span><span class="token punctuation">,</span><span class="token number">2</span><span class="token punctuation">)</span> <span class="token operator">NOT</span> <span class="token boolean">NULL</span> <span class="token keyword">DEFAULT</span> <span class="token number">0.00</span> <span class="token keyword">COMMENT</span> <span class="token string">'变动金额'</span><span class="token punctuation">,</span>
- <span class="token keyword">PRIMARY</span> <span class="token keyword">KEY</span> pk_blanceid <span class="token punctuation">(</span><span class="token punctuation">`</span>balance_id<span class="token punctuation">`</span><span class="token punctuation">)</span>
-<span class="token punctuation">)</span> <span class="token keyword">engine</span> <span class="token operator">=</span> <span class="token keyword">innodb</span> <span class="token keyword">COMMENT</span> <span class="token string">'用户余额变动表'</span><span class="token punctuation">;</span>
+INSERT INTO `customer_level_inf` (
+ `customer_level`,
+ `level_name`, 
+ `min_point`,
+ `max_point`
+) VALUES
+(1, &#39;普通会员&#39;, 0, 99),
+(2, &#39;青铜会员&#39;, 100, 199),
+(3, &#39;白银会员&#39;, 200, 499),
+(4, &#39;黄金会员&#39;, 500, 1000),
+(5, &#39;钻石会员&#39;, 1000, 10000);
 
-<span class="token keyword">CREATE</span> <span class="token keyword">TABLE</span> <span class="token keyword">IF</span> <span class="token operator">NOT</span> <span class="token keyword">EXISTS</span> <span class="token punctuation">`</span>customer_login_log<span class="token punctuation">`</span><span class="token punctuation">(</span>
- <span class="token comment" spellcheck="true">-- 分区表不建议创建主键，因为主键会创建一个唯一性全局索引，在 drop 分区表时会使索引失效，导致数据无法入库。</span>
- <span class="token comment" spellcheck="true">-- login_id INT UNSIGNED NOT NULL AUTO_INCREMENT COMMENT '登录日志ID',</span>
- <span class="token punctuation">`</span>customer_id<span class="token punctuation">`</span> <span class="token keyword">INT</span> UNSIGNED <span class="token operator">NOT</span> <span class="token boolean">NULL</span> <span class="token keyword">COMMENT</span> <span class="token string">'登录用户ID'</span><span class="token punctuation">,</span>
- <span class="token comment" spellcheck="true">-- 用户登录只有登录时间，因此不设置修改时间</span>
- <span class="token punctuation">`</span>login_time<span class="token punctuation">`</span> <span class="token keyword">TIMESTAMP</span> <span class="token operator">NOT</span> <span class="token boolean">NULL</span> <span class="token keyword">COMMENT</span> <span class="token string">'用户登录时间'</span><span class="token punctuation">,</span>
- <span class="token punctuation">`</span>login_ip<span class="token punctuation">`</span> <span class="token keyword">INT</span> UNSIGNED <span class="token operator">NOT</span> <span class="token boolean">NULL</span> <span class="token keyword">COMMENT</span> <span class="token string">'登录IP'</span><span class="token punctuation">,</span>
- <span class="token punctuation">`</span>login_type<span class="token punctuation">`</span> <span class="token keyword">TINYINT</span> <span class="token operator">NOT</span> <span class="token boolean">NULL</span> <span class="token keyword">COMMENT</span> <span class="token string">'登录类型：0 未成功，1 成功'</span>
- <span class="token comment" spellcheck="true">-- PRIMARY KEY pk_loginid (login_id)</span>
-<span class="token punctuation">)</span> <span class="token keyword">engine</span> <span class="token operator">=</span> <span class="token keyword">innodb</span> <span class="token keyword">COMMENT</span> <span class="token string">'用户登录日志表'</span>
-<span class="token comment" spellcheck="true">-- 对用户登录日志表进行分区，规则为 login_time 以年为范围分区，这样方便对用户登录日志做归档及删除操作</span>
-<span class="token keyword">PARTITION</span> <span class="token keyword">BY</span> RANGE<span class="token punctuation">(</span>UNIX_TIMESTAMP<span class="token punctuation">(</span><span class="token punctuation">`</span>login_time<span class="token punctuation">`</span><span class="token punctuation">)</span><span class="token punctuation">)</span><span class="token punctuation">(</span>
-    <span class="token keyword">PARTITION</span> p0 <span class="token keyword">VALUES</span> LESS THAN <span class="token punctuation">(</span>UNIX_TIMESTAMP<span class="token punctuation">(</span><span class="token string">'2018-01-01 00:00:00'</span><span class="token punctuation">)</span><span class="token punctuation">)</span><span class="token punctuation">,</span>
-    <span class="token keyword">PARTITION</span> p1 <span class="token keyword">VALUES</span> LESS THAN <span class="token punctuation">(</span>UNIX_TIMESTAMP<span class="token punctuation">(</span><span class="token string">'2019-01-01 00:00:00'</span><span class="token punctuation">)</span><span class="token punctuation">)</span><span class="token punctuation">,</span>
-    <span class="token keyword">PARTITION</span> p2 <span class="token keyword">VALUES</span> LESS THAN <span class="token punctuation">(</span>UNIX_TIMESTAMP<span class="token punctuation">(</span><span class="token string">'2020-01-01 00:00:00'</span><span class="token punctuation">)</span><span class="token punctuation">)</span>
-<span class="token punctuation">)</span><span class="token punctuation">;</span>
 
-<span class="token keyword">INSERT</span> <span class="token keyword">INTO</span> <span class="token punctuation">`</span>customer_login_log<span class="token punctuation">`</span> <span class="token punctuation">(</span><span class="token punctuation">`</span>customer_id<span class="token punctuation">`</span><span class="token punctuation">,</span> <span class="token punctuation">`</span>login_time<span class="token punctuation">`</span><span class="token punctuation">,</span> <span class="token punctuation">`</span>login_ip<span class="token punctuation">`</span><span class="token punctuation">,</span> <span class="token punctuation">`</span>login_type<span class="token punctuation">`</span><span class="token punctuation">)</span> 
-<span class="token keyword">VALUES</span> 
-<span class="token punctuation">(</span><span class="token number">1</span><span class="token punctuation">,</span> <span class="token string">'2015-01-02'</span><span class="token punctuation">,</span>INET_ATON<span class="token punctuation">(</span><span class="token string">'192.168.10.101'</span><span class="token punctuation">)</span><span class="token punctuation">,</span><span class="token number">1</span><span class="token punctuation">)</span><span class="token punctuation">,</span>
-<span class="token punctuation">(</span><span class="token number">1</span><span class="token punctuation">,</span> <span class="token string">'2018-01-02'</span><span class="token punctuation">,</span>INET_ATON<span class="token punctuation">(</span><span class="token string">'192.168.10.102'</span><span class="token punctuation">)</span><span class="token punctuation">,</span><span class="token number">0</span><span class="token punctuation">)</span><span class="token punctuation">,</span>
-<span class="token punctuation">(</span><span class="token number">1</span><span class="token punctuation">,</span> <span class="token string">'2019-01-02'</span><span class="token punctuation">,</span>INET_ATON<span class="token punctuation">(</span><span class="token string">'192.168.10.103'</span><span class="token punctuation">)</span><span class="token punctuation">,</span><span class="token number">1</span><span class="token punctuation">)</span><span class="token punctuation">,</span>
-<span class="token punctuation">(</span><span class="token number">1</span><span class="token punctuation">,</span> <span class="token string">'2017-01-02'</span><span class="token punctuation">,</span>INET_ATON<span class="token punctuation">(</span><span class="token string">'192.168.10.101'</span><span class="token punctuation">)</span><span class="token punctuation">,</span><span class="token number">0</span><span class="token punctuation">)</span><span class="token punctuation">,</span>
-<span class="token punctuation">(</span><span class="token number">1</span><span class="token punctuation">,</span> <span class="token string">'2019-01-02'</span><span class="token punctuation">,</span>INET_ATON<span class="token punctuation">(</span><span class="token string">'192.168.10.102'</span><span class="token punctuation">)</span><span class="token punctuation">,</span><span class="token number">1</span><span class="token punctuation">)</span><span class="token punctuation">;</span>
 
-</code></pre>
-<h2 id="Init-Product"><a href="#Init-Product" class="headerlink" title="Init Product"></a>Init Product</h2><pre class=" language-sql"><code class="language-sql">
-<span class="token keyword">CREATE</span> <span class="token keyword">TABLE</span> <span class="token punctuation">`</span>brand_info<span class="token punctuation">`</span><span class="token punctuation">(</span>
- <span class="token punctuation">`</span>brand_id<span class="token punctuation">`</span> <span class="token keyword">SMALLINT</span> UNSIGNED <span class="token keyword">AUTO_INCREMENT</span> <span class="token operator">NOT</span> <span class="token boolean">NULL</span> <span class="token keyword">COMMENT</span> <span class="token string">'品牌ID'</span><span class="token punctuation">,</span>
- <span class="token punctuation">`</span>brand_name<span class="token punctuation">`</span> <span class="token keyword">VARCHAR</span><span class="token punctuation">(</span><span class="token number">50</span><span class="token punctuation">)</span> <span class="token operator">NOT</span> <span class="token boolean">NULL</span> <span class="token keyword">COMMENT</span> <span class="token string">'品牌名称'</span><span class="token punctuation">,</span>
- <span class="token punctuation">`</span>telephone<span class="token punctuation">`</span> <span class="token keyword">VARCHAR</span><span class="token punctuation">(</span><span class="token number">50</span><span class="token punctuation">)</span> <span class="token operator">NOT</span> <span class="token boolean">NULL</span> <span class="token keyword">COMMENT</span> <span class="token string">'联系电话'</span><span class="token punctuation">,</span>
- <span class="token punctuation">`</span>brand_web<span class="token punctuation">`</span> <span class="token keyword">VARCHAR</span><span class="token punctuation">(</span><span class="token number">100</span><span class="token punctuation">)</span> <span class="token keyword">COMMENT</span> <span class="token string">'品牌网站'</span><span class="token punctuation">,</span>
- <span class="token punctuation">`</span>brand_logo<span class="token punctuation">`</span> <span class="token keyword">VARCHAR</span><span class="token punctuation">(</span><span class="token number">100</span><span class="token punctuation">)</span> <span class="token keyword">COMMENT</span> <span class="token string">'品牌LOGO'</span><span class="token punctuation">,</span>
- <span class="token punctuation">`</span>brand_desc<span class="token punctuation">`</span> <span class="token keyword">VARCHAR</span><span class="token punctuation">(</span><span class="token number">150</span><span class="token punctuation">)</span> <span class="token keyword">COMMENT</span> <span class="token string">'品牌描述'</span><span class="token punctuation">,</span>
- <span class="token punctuation">`</span>brand_status<span class="token punctuation">`</span> <span class="token keyword">TINYINT</span> <span class="token operator">NOT</span> <span class="token boolean">NULL</span> <span class="token keyword">DEFAULT</span> <span class="token number">0</span> <span class="token keyword">COMMENT</span> <span class="token string">'品牌状态：0 禁用，1 启用'</span><span class="token punctuation">,</span>
- <span class="token punctuation">`</span>brand_order<span class="token punctuation">`</span> <span class="token keyword">TINYINT</span> <span class="token operator">NOT</span> <span class="token boolean">NULL</span> <span class="token keyword">DEFAULT</span> <span class="token number">0</span> <span class="token keyword">COMMENT</span> <span class="token string">'排序'</span><span class="token punctuation">,</span>
- <span class="token punctuation">`</span>modified_time<span class="token punctuation">`</span> <span class="token keyword">TIMESTAMP</span> <span class="token operator">NOT</span> <span class="token boolean">NULL</span> <span class="token keyword">DEFAULT</span> <span class="token keyword">CURRENT_TIMESTAMP</span> <span class="token keyword">ON</span> <span class="token keyword">UPDATE</span> <span class="token keyword">CURRENT_TIMESTAMP</span> <span class="token keyword">COMMENT</span> <span class="token string">'最后修改时间'</span><span class="token punctuation">,</span>
- <span class="token keyword">PRIMARY</span> <span class="token keyword">KEY</span> pk_brandid<span class="token punctuation">(</span><span class="token punctuation">`</span>brand_id<span class="token punctuation">`</span><span class="token punctuation">)</span>
-<span class="token punctuation">)</span> <span class="token keyword">ENGINE</span> <span class="token operator">=</span> <span class="token keyword">INNODB</span> <span class="token keyword">COMMENT</span> <span class="token string">'品牌信息表'</span><span class="token punctuation">;</span>
+CREATE TABLE IF NOT EXISTS `customer_addr`(
+ `customer_addr_id` INT UNSIGNED AUTO_INCREMENT NOT NULL COMMENT &#39;自增主键ID&#39;,
+ `customer_id` INT UNSIGNED NOT NULL COMMENT &#39;customer_login表的自增ID&#39;,
+ `zip` SMALLINT NOT NULL COMMENT &#39;邮编&#39;,
+ `province` SMALLINT NOT NULL COMMENT &#39;地区表中的省份ID&#39;,
+ `city` SMALLINT NOT NULL COMMENT &#39;地区表中的城市ID&#39;,
+ `district` SMALLINT NOT NULL COMMENT &#39;地区表中的区ID&#39;,
+ `address` VARCHAR(200) NOT NULL COMMENT &#39;具体的地址门牌号&#39;,
+ `is_default` TINYINT NOT NULL COMMENT &#39;是否默认：1 默认，0 不默认&#39;,
+ `modified_time` TIMESTAMP NOT NULL DEFAULT CURRENT_TIMESTAMP ON UPDATE CURRENT_TIMESTAMP COMMENT &#39;最后修改时间&#39;,
+ PRIMARY KEY pk_customeraddrid(`customer_addr_id`)
+) engine = innodb COMMENT=&#39;用户地址表&#39;;
 
-<span class="token keyword">CREATE</span> <span class="token keyword">TABLE</span> <span class="token punctuation">`</span>product_category<span class="token punctuation">`</span><span class="token punctuation">(</span>
- <span class="token punctuation">`</span>category_id<span class="token punctuation">`</span> <span class="token keyword">SMALLINT</span> UNSIGNED <span class="token keyword">AUTO_INCREMENT</span> <span class="token operator">NOT</span> <span class="token boolean">NULL</span> <span class="token keyword">COMMENT</span> <span class="token string">'分类ID'</span><span class="token punctuation">,</span>
- <span class="token punctuation">`</span>category_name<span class="token punctuation">`</span> <span class="token keyword">VARCHAR</span><span class="token punctuation">(</span><span class="token number">10</span><span class="token punctuation">)</span> <span class="token operator">NOT</span> <span class="token boolean">NULL</span> <span class="token keyword">COMMENT</span> <span class="token string">'分类名称'</span><span class="token punctuation">,</span>
- <span class="token punctuation">`</span>parent_id<span class="token punctuation">`</span> <span class="token keyword">SMALLINT</span> UNSIGNED <span class="token operator">NOT</span> <span class="token boolean">NULL</span> <span class="token keyword">DEFAULT</span> <span class="token number">0</span> <span class="token keyword">COMMENT</span> <span class="token string">'父分类ID'</span><span class="token punctuation">,</span>
- <span class="token punctuation">`</span>category_level<span class="token punctuation">`</span> <span class="token keyword">TINYINT</span> <span class="token operator">NOT</span> <span class="token boolean">NULL</span> <span class="token keyword">DEFAULT</span> <span class="token number">1</span> <span class="token keyword">COMMENT</span> <span class="token string">'分类层级'</span><span class="token punctuation">,</span>
- <span class="token punctuation">`</span>category_status<span class="token punctuation">`</span> <span class="token keyword">TINYINT</span> <span class="token operator">NOT</span> <span class="token boolean">NULL</span> <span class="token keyword">DEFAULT</span> <span class="token number">1</span> <span class="token keyword">COMMENT</span> <span class="token string">'分类状态'</span><span class="token punctuation">,</span>
- <span class="token punctuation">`</span>modified_time<span class="token punctuation">`</span> <span class="token keyword">TIMESTAMP</span> <span class="token operator">NOT</span> <span class="token boolean">NULL</span> <span class="token keyword">DEFAULT</span> <span class="token keyword">CURRENT_TIMESTAMP</span> <span class="token keyword">ON</span> <span class="token keyword">UPDATE</span> <span class="token keyword">CURRENT_TIMESTAMP</span> <span class="token keyword">COMMENT</span> <span class="token string">'最后修改时间'</span><span class="token punctuation">,</span>
- <span class="token keyword">PRIMARY</span> <span class="token keyword">KEY</span> pk_categoryid<span class="token punctuation">(</span><span class="token punctuation">`</span>category_id<span class="token punctuation">`</span><span class="token punctuation">)</span>
-<span class="token punctuation">)</span> <span class="token keyword">ENGINE</span> <span class="token operator">=</span> <span class="token keyword">INNODB</span> <span class="token keyword">COMMENT</span> <span class="token string">'商品分类表'</span><span class="token punctuation">;</span>
+INSERT INTO `customer_addr` (
+ `customer_addr_id`,
+ `customer_id`,
+ `zip`,
+ `province`,
+ `city`,
+ `district`,
+ `address`,
+ `is_default`
+) VALUES 
+(1, 2, 20000, 1, 1, 5, &#39;湄浦路310弄B栋405室&#39;, 1),
+(2, 2, 20000, 1, 1, 8, &#39;大柏树凉城四村100栋301室&#39;, 0),
+(3, 2, 20000, 1, 1, 3, &#39;长逸路15号复旦软件园B栋1111室&#39;, 0);
 
-<span class="token keyword">CREATE</span> <span class="token keyword">TABLE</span> <span class="token punctuation">`</span>supplier_info<span class="token punctuation">`</span><span class="token punctuation">(</span>
- <span class="token punctuation">`</span>supplier_id<span class="token punctuation">`</span> <span class="token keyword">INT</span> UNSIGNED <span class="token keyword">AUTO_INCREMENT</span> <span class="token operator">NOT</span> <span class="token boolean">NULL</span> <span class="token keyword">COMMENT</span> <span class="token string">'供应商ID'</span><span class="token punctuation">,</span>
- <span class="token punctuation">`</span>supplier_code<span class="token punctuation">`</span> CHAR<span class="token punctuation">(</span><span class="token number">8</span><span class="token punctuation">)</span> <span class="token operator">NOT</span> <span class="token boolean">NULL</span> <span class="token keyword">COMMENT</span> <span class="token string">'供应商编码'</span><span class="token punctuation">,</span>
- <span class="token punctuation">`</span>supplier_name<span class="token punctuation">`</span> CHAR<span class="token punctuation">(</span><span class="token number">50</span><span class="token punctuation">)</span> <span class="token operator">NOT</span> <span class="token boolean">NULL</span> <span class="token keyword">COMMENT</span> <span class="token string">'供应商名称'</span><span class="token punctuation">,</span>
- <span class="token punctuation">`</span>supplier_type<span class="token punctuation">`</span> <span class="token keyword">TINYINT</span> <span class="token operator">NOT</span> <span class="token boolean">NULL</span> <span class="token keyword">COMMENT</span> <span class="token string">'供应商类型：1 自营，2 平台'</span><span class="token punctuation">,</span>
- <span class="token punctuation">`</span>link_man<span class="token punctuation">`</span> <span class="token keyword">VARCHAR</span><span class="token punctuation">(</span><span class="token number">10</span><span class="token punctuation">)</span> <span class="token operator">NOT</span> <span class="token boolean">NULL</span> <span class="token keyword">COMMENT</span> <span class="token string">'供应商联系人'</span><span class="token punctuation">,</span>
- <span class="token punctuation">`</span>phone_number<span class="token punctuation">`</span> <span class="token keyword">VARCHAR</span><span class="token punctuation">(</span><span class="token number">50</span><span class="token punctuation">)</span> <span class="token operator">NOT</span> <span class="token boolean">NULL</span> <span class="token keyword">COMMENT</span> <span class="token string">'联系电话'</span><span class="token punctuation">,</span>
- <span class="token punctuation">`</span>bank_name<span class="token punctuation">`</span> <span class="token keyword">VARCHAR</span><span class="token punctuation">(</span><span class="token number">50</span><span class="token punctuation">)</span> <span class="token operator">NOT</span> <span class="token boolean">NULL</span> <span class="token keyword">COMMENT</span> <span class="token string">'供应商开户银行名称'</span><span class="token punctuation">,</span>
- <span class="token punctuation">`</span>bank_account<span class="token punctuation">`</span> <span class="token keyword">VARCHAR</span><span class="token punctuation">(</span><span class="token number">50</span><span class="token punctuation">)</span> <span class="token operator">NOT</span> <span class="token boolean">NULL</span> <span class="token keyword">COMMENT</span> <span class="token string">'银行账号'</span><span class="token punctuation">,</span>
- <span class="token punctuation">`</span>address<span class="token punctuation">`</span> <span class="token keyword">VARCHAR</span><span class="token punctuation">(</span><span class="token number">200</span><span class="token punctuation">)</span> <span class="token operator">NOT</span> <span class="token boolean">NULL</span> <span class="token keyword">COMMENT</span> <span class="token string">'供应商地址'</span><span class="token punctuation">,</span>
- <span class="token punctuation">`</span>supplier_status<span class="token punctuation">`</span> <span class="token keyword">TINYINT</span> <span class="token operator">NOT</span> <span class="token boolean">NULL</span> <span class="token keyword">DEFAULT</span> <span class="token string">'0'</span> <span class="token keyword">COMMENT</span> <span class="token string">'状态：0 禁用，1 启用'</span><span class="token punctuation">,</span>
- <span class="token punctuation">`</span>modified_time<span class="token punctuation">`</span> <span class="token keyword">TIMESTAMP</span> <span class="token operator">NOT</span> <span class="token boolean">NULL</span> <span class="token keyword">DEFAULT</span> <span class="token keyword">CURRENT_TIMESTAMP</span> <span class="token keyword">ON</span> <span class="token keyword">UPDATE</span> <span class="token keyword">CURRENT_TIMESTAMP</span> <span class="token keyword">COMMENT</span> <span class="token string">'最后修改时间'</span><span class="token punctuation">,</span>
- <span class="token keyword">PRIMARY</span> <span class="token keyword">KEY</span> pk_supplierid<span class="token punctuation">(</span><span class="token punctuation">`</span>supplier_id<span class="token punctuation">`</span><span class="token punctuation">)</span>
-<span class="token punctuation">)</span> <span class="token keyword">ENGINE</span> <span class="token operator">=</span> <span class="token keyword">INNODB</span> <span class="token keyword">COMMENT</span> <span class="token string">'供应商信息表'</span><span class="token punctuation">;</span>
 
-<span class="token keyword">CREATE</span> <span class="token keyword">TABLE</span> <span class="token punctuation">`</span>product_info<span class="token punctuation">`</span> <span class="token punctuation">(</span>
- <span class="token punctuation">`</span>product_id<span class="token punctuation">`</span> <span class="token keyword">INT</span> UNSIGNED <span class="token keyword">AUTO_INCREMENT</span> <span class="token operator">NOT</span> <span class="token boolean">NULL</span> <span class="token keyword">COMMENT</span> <span class="token string">'商品ID'</span><span class="token punctuation">,</span>
- <span class="token punctuation">`</span>product_code<span class="token punctuation">`</span> CHAR<span class="token punctuation">(</span><span class="token number">16</span><span class="token punctuation">)</span> <span class="token operator">NOT</span> <span class="token boolean">NULL</span> <span class="token keyword">COMMENT</span> <span class="token string">'商品编码'</span><span class="token punctuation">,</span>
- <span class="token punctuation">`</span>product_name<span class="token punctuation">`</span> <span class="token keyword">VARCHAR</span><span class="token punctuation">(</span><span class="token number">20</span><span class="token punctuation">)</span> <span class="token operator">NOT</span> <span class="token boolean">NULL</span> <span class="token keyword">COMMENT</span> <span class="token string">'商品名称'</span><span class="token punctuation">,</span>
- <span class="token punctuation">`</span>bar_code<span class="token punctuation">`</span> <span class="token keyword">VARCHAR</span><span class="token punctuation">(</span><span class="token number">50</span><span class="token punctuation">)</span> <span class="token operator">NOT</span> <span class="token boolean">NULL</span> <span class="token keyword">COMMENT</span> <span class="token string">'条形码'</span><span class="token punctuation">,</span>
- <span class="token punctuation">`</span>brand_id<span class="token punctuation">`</span> <span class="token keyword">INT</span> UNSIGNED <span class="token operator">NOT</span> <span class="token boolean">NULL</span> <span class="token keyword">COMMENT</span> <span class="token string">'品牌表的ID'</span><span class="token punctuation">,</span>
- <span class="token punctuation">`</span>one_category_id<span class="token punctuation">`</span> <span class="token keyword">SMALLINT</span> <span class="token operator">NOT</span> <span class="token boolean">NULL</span> <span class="token keyword">COMMENT</span> <span class="token string">'一级分类ID'</span><span class="token punctuation">,</span>
- <span class="token punctuation">`</span>two_category_id<span class="token punctuation">`</span> <span class="token keyword">SMALLINT</span> <span class="token operator">NOT</span> <span class="token boolean">NULL</span> <span class="token keyword">COMMENT</span> <span class="token string">'二级分类ID'</span><span class="token punctuation">,</span>
- <span class="token punctuation">`</span>three_category_id<span class="token punctuation">`</span> <span class="token keyword">SMALLINT</span> <span class="token operator">NOT</span> <span class="token boolean">NULL</span> <span class="token keyword">COMMENT</span> <span class="token string">'三级分类ID'</span><span class="token punctuation">,</span>
- <span class="token punctuation">`</span>supplier_id<span class="token punctuation">`</span> <span class="token keyword">INT</span> <span class="token operator">NOT</span> <span class="token boolean">NULL</span> <span class="token keyword">COMMENT</span> <span class="token string">'商品的供应商ID'</span><span class="token punctuation">,</span>
- <span class="token punctuation">`</span>price<span class="token punctuation">`</span> <span class="token keyword">DECIMAL</span><span class="token punctuation">(</span><span class="token number">8</span><span class="token punctuation">,</span><span class="token number">2</span><span class="token punctuation">)</span> <span class="token operator">NOT</span> <span class="token boolean">NULL</span> <span class="token keyword">COMMENT</span> <span class="token string">'商品销售价格'</span><span class="token punctuation">,</span>
- <span class="token punctuation">`</span>average_cose<span class="token punctuation">`</span> <span class="token keyword">DECIMAL</span><span class="token punctuation">(</span><span class="token number">18</span><span class="token punctuation">,</span><span class="token number">2</span><span class="token punctuation">)</span> <span class="token operator">NOT</span> <span class="token boolean">NULL</span> <span class="token keyword">COMMENT</span> <span class="token string">'商品加权平均成本'</span><span class="token punctuation">,</span>
- <span class="token punctuation">`</span>publish_status<span class="token punctuation">`</span> <span class="token keyword">TINYINT</span> <span class="token operator">NOT</span> <span class="token boolean">NULL</span> <span class="token keyword">DEFAULT</span> <span class="token number">0</span> <span class="token keyword">COMMENT</span> <span class="token string">'上下架状态：0 下架，1 上架'</span><span class="token punctuation">,</span>
- <span class="token punctuation">`</span>audit_status<span class="token punctuation">`</span> <span class="token keyword">TINYINT</span> <span class="token operator">NOT</span> <span class="token boolean">NULL</span> <span class="token keyword">DEFAULT</span> <span class="token number">0</span> <span class="token keyword">COMMENT</span> <span class="token string">'审核状态：0 未审核，1 已审核'</span><span class="token punctuation">,</span>
- <span class="token punctuation">`</span>weight<span class="token punctuation">`</span> <span class="token keyword">FLOAT</span> <span class="token keyword">COMMENT</span> <span class="token string">'商品重量'</span><span class="token punctuation">,</span>
- <span class="token punctuation">`</span>length<span class="token punctuation">`</span> <span class="token keyword">FLOAT</span> <span class="token keyword">COMMENT</span> <span class="token string">'商量长度'</span><span class="token punctuation">,</span>
- <span class="token punctuation">`</span>height<span class="token punctuation">`</span> <span class="token keyword">FLOAT</span> <span class="token keyword">COMMENT</span> <span class="token string">'商品高度'</span><span class="token punctuation">,</span>
- <span class="token punctuation">`</span>width<span class="token punctuation">`</span> <span class="token keyword">FLOAT</span> <span class="token keyword">COMMENT</span> <span class="token string">'商品宽度'</span><span class="token punctuation">,</span>
- <span class="token punctuation">`</span>color_type<span class="token punctuation">`</span> <span class="token keyword">ENUM</span><span class="token punctuation">(</span><span class="token string">'红'</span><span class="token punctuation">,</span><span class="token string">'黄'</span><span class="token punctuation">,</span><span class="token string">'绿'</span><span class="token punctuation">,</span><span class="token string">'紫'</span><span class="token punctuation">,</span><span class="token string">'蓝'</span><span class="token punctuation">,</span><span class="token string">'白'</span><span class="token punctuation">,</span><span class="token string">'黑'</span><span class="token punctuation">,</span><span class="token string">'粉'</span><span class="token punctuation">)</span><span class="token punctuation">,</span>
- <span class="token punctuation">`</span>production_date<span class="token punctuation">`</span> <span class="token keyword">DATETIME</span> <span class="token operator">NOT</span> <span class="token boolean">NULL</span> <span class="token keyword">COMMENT</span> <span class="token string">'生产日期'</span><span class="token punctuation">,</span>
- <span class="token punctuation">`</span>shelf_life<span class="token punctuation">`</span> <span class="token keyword">INT</span> <span class="token operator">NOT</span> <span class="token boolean">NULL</span> <span class="token keyword">COMMENT</span> <span class="token string">'商品有效期'</span><span class="token punctuation">,</span>
- <span class="token punctuation">`</span>descript<span class="token punctuation">`</span> <span class="token keyword">TEXT</span> <span class="token operator">NOT</span> <span class="token boolean">NULL</span> <span class="token keyword">COMMENT</span> <span class="token string">'商品描述'</span><span class="token punctuation">,</span>
- <span class="token punctuation">`</span>indate<span class="token punctuation">`</span> <span class="token keyword">TIMESTAMP</span> <span class="token operator">NOT</span> <span class="token boolean">NULL</span> <span class="token keyword">DEFAULT</span> <span class="token keyword">CURRENT_TIMESTAMP</span> <span class="token keyword">COMMENT</span> <span class="token string">'商品录入时间'</span><span class="token punctuation">,</span>
- <span class="token punctuation">`</span>modified_time<span class="token punctuation">`</span> <span class="token keyword">TIMESTAMP</span> <span class="token operator">NOT</span> <span class="token boolean">NULL</span> <span class="token keyword">DEFAULT</span> <span class="token keyword">CURRENT_TIMESTAMP</span> <span class="token keyword">ON</span> <span class="token keyword">UPDATE</span> <span class="token keyword">CURRENT_TIMESTAMP</span> <span class="token keyword">COMMENT</span> <span class="token string">'最后修改时间'</span><span class="token punctuation">,</span>
- <span class="token keyword">PRIMARY</span> <span class="token keyword">KEY</span> pk_productid<span class="token punctuation">(</span><span class="token punctuation">`</span>product_id<span class="token punctuation">`</span><span class="token punctuation">)</span>
-<span class="token punctuation">)</span> <span class="token keyword">ENGINE</span> <span class="token operator">=</span> <span class="token keyword">INNODB</span> <span class="token keyword">COMMENT</span> <span class="token string">'商品信息表'</span><span class="token punctuation">;</span>
 
-<span class="token keyword">CREATE</span> <span class="token keyword">TABLE</span> <span class="token punctuation">`</span>product_pic_info<span class="token punctuation">`</span> <span class="token punctuation">(</span>
- <span class="token punctuation">`</span>product_pic_id<span class="token punctuation">`</span> <span class="token keyword">INT</span> UNSIGNED <span class="token keyword">AUTO_INCREMENT</span> <span class="token operator">NOT</span> <span class="token boolean">NULL</span> <span class="token keyword">COMMENT</span> <span class="token string">'商品图片ID'</span><span class="token punctuation">,</span>
- <span class="token punctuation">`</span>product_id<span class="token punctuation">`</span> <span class="token keyword">INT</span> UNSIGNED <span class="token operator">NOT</span> <span class="token boolean">NULL</span> <span class="token keyword">COMMENT</span> <span class="token string">'商品ID'</span><span class="token punctuation">,</span>
- <span class="token punctuation">`</span>pic_desc<span class="token punctuation">`</span> <span class="token keyword">VARCHAR</span><span class="token punctuation">(</span><span class="token number">50</span><span class="token punctuation">)</span> <span class="token keyword">COMMENT</span> <span class="token string">'图片描述'</span><span class="token punctuation">,</span>
- <span class="token punctuation">`</span>pic_url<span class="token punctuation">`</span> <span class="token keyword">VARCHAR</span><span class="token punctuation">(</span><span class="token number">50</span><span class="token punctuation">)</span> <span class="token keyword">COMMENT</span> <span class="token string">'图片url'</span><span class="token punctuation">,</span>
- <span class="token punctuation">`</span>is_master<span class="token punctuation">`</span> <span class="token keyword">TINYINT</span> <span class="token operator">NOT</span> <span class="token boolean">NULL</span> <span class="token keyword">DEFAULT</span> <span class="token number">0</span> <span class="token keyword">COMMENT</span> <span class="token string">'是否主图：0 非主图，1 主图'</span><span class="token punctuation">,</span>
- <span class="token punctuation">`</span>pic_order<span class="token punctuation">`</span> <span class="token keyword">TINYINT</span> <span class="token operator">NOT</span> <span class="token boolean">NULL</span> <span class="token keyword">DEFAULT</span> <span class="token number">0</span> <span class="token keyword">COMMENT</span> <span class="token string">'图片排序'</span><span class="token punctuation">,</span>
- <span class="token punctuation">`</span>pic_status<span class="token punctuation">`</span> <span class="token keyword">TINYINT</span> <span class="token operator">NOT</span> <span class="token boolean">NULL</span> <span class="token keyword">DEFAULT</span> <span class="token number">1</span> <span class="token keyword">COMMENT</span> <span class="token string">'图片是否有效：0 无效，1 有效'</span><span class="token punctuation">,</span>
- <span class="token punctuation">`</span>modified_time<span class="token punctuation">`</span> <span class="token keyword">TIMESTAMP</span> <span class="token operator">NOT</span> <span class="token boolean">NULL</span> <span class="token keyword">DEFAULT</span> <span class="token keyword">CURRENT_TIMESTAMP</span> <span class="token keyword">ON</span> <span class="token keyword">UPDATE</span> <span class="token keyword">CURRENT_TIMESTAMP</span> <span class="token keyword">COMMENT</span> <span class="token string">'最后修改时间'</span><span class="token punctuation">,</span>
- <span class="token keyword">PRIMARY</span> <span class="token keyword">KEY</span> pk_picid<span class="token punctuation">(</span><span class="token punctuation">`</span>product_pic_id<span class="token punctuation">`</span><span class="token punctuation">)</span>
-<span class="token punctuation">)</span> <span class="token keyword">ENGINE</span> <span class="token operator">=</span> <span class="token keyword">INNODB</span> <span class="token keyword">COMMENT</span> <span class="token string">'商品图片信息表'</span><span class="token punctuation">;</span>
+CREATE TABLE IF NOT EXISTS `customer_point_log`(
+ `point_id` INT UNSIGNED NOT NULL AUTO_INCREMENT COMMENT &#39;积分日志ID&#39;,
+ `customer_id` INT UNSIGNED NOT NULL COMMENT &#39;用户ID&#39;,
+ `source` TINYINT UNSIGNED NOT NULL COMMENT &#39;积分来源：0 订单，1 登录，2 活动&#39;,
+ `refer_number` INT UNSIGNED NOT NULL DEFAULT 0 COMMENT &#39;积分来源相关编号&#39;,
+ -- 变更积分可能为负值，因此为有符号数，有符号数的范围为 -2^31 ~ 2^31-1
+ `change_point` SMALLINT NOT NULL DEFAULT 0 COMMENT &#39;变更积分数&#39;,
+ `create_time` TIMESTAMP NOT NULL COMMENT &#39;积分日志生成时间&#39;,
+ PRIMARY KEY pk_pointid(`point_id`)
+) engine = innodb COMMENT=&#39;用户积分日志表&#39;;
 
-<span class="token keyword">CREATE</span> <span class="token keyword">TABLE</span> <span class="token punctuation">`</span>product_comment<span class="token punctuation">`</span> <span class="token punctuation">(</span>
- <span class="token punctuation">`</span>comment_id<span class="token punctuation">`</span> <span class="token keyword">INT</span> UNSIGNED <span class="token keyword">AUTO_INCREMENT</span> <span class="token operator">NOT</span> <span class="token boolean">NULL</span> <span class="token keyword">COMMENT</span> <span class="token string">'评论ID'</span><span class="token punctuation">,</span>
- <span class="token punctuation">`</span>product_id<span class="token punctuation">`</span> <span class="token keyword">INT</span> UNSIGNED <span class="token operator">NOT</span> <span class="token boolean">NULL</span> <span class="token keyword">COMMENT</span> <span class="token string">'商品ID'</span><span class="token punctuation">,</span>
- <span class="token punctuation">`</span>order_id<span class="token punctuation">`</span> <span class="token keyword">BIGINT</span> UNSIGNED <span class="token operator">NOT</span> <span class="token boolean">NULL</span> <span class="token keyword">COMMENT</span> <span class="token string">'订单ID'</span><span class="token punctuation">,</span>
- <span class="token punctuation">`</span>customer_id<span class="token punctuation">`</span> <span class="token keyword">INT</span> UNSIGNED <span class="token operator">NOT</span> <span class="token boolean">NULL</span> <span class="token keyword">COMMENT</span> <span class="token string">'用户ID'</span><span class="token punctuation">,</span>
- <span class="token punctuation">`</span>title<span class="token punctuation">`</span> <span class="token keyword">VARCHAR</span><span class="token punctuation">(</span><span class="token number">50</span><span class="token punctuation">)</span> <span class="token operator">NOT</span> <span class="token boolean">NULL</span> <span class="token keyword">COMMENT</span> <span class="token string">'评论标题'</span><span class="token punctuation">,</span>
- <span class="token punctuation">`</span>content<span class="token punctuation">`</span> <span class="token keyword">VARCHAR</span><span class="token punctuation">(</span><span class="token number">300</span><span class="token punctuation">)</span> <span class="token operator">NOT</span> <span class="token boolean">NULL</span> <span class="token keyword">COMMENT</span> <span class="token string">'评论内容'</span><span class="token punctuation">,</span>
- <span class="token punctuation">`</span>audit_status<span class="token punctuation">`</span> <span class="token keyword">TINYINT</span> <span class="token operator">NOT</span> <span class="token boolean">NULL</span> <span class="token keyword">COMMENT</span> <span class="token string">'审核状态：0 未审核，1 已审核'</span><span class="token punctuation">,</span>
- <span class="token punctuation">`</span>audit_time<span class="token punctuation">`</span> <span class="token keyword">TIMESTAMP</span> <span class="token operator">NOT</span> <span class="token boolean">NULL</span> <span class="token keyword">COMMENT</span> <span class="token string">'评论时间'</span><span class="token punctuation">,</span>
- <span class="token punctuation">`</span>modified_time<span class="token punctuation">`</span> <span class="token keyword">TIMESTAMP</span> <span class="token operator">NOT</span> <span class="token boolean">NULL</span> <span class="token keyword">DEFAULT</span> <span class="token keyword">CURRENT_TIMESTAMP</span> <span class="token keyword">ON</span> <span class="token keyword">UPDATE</span> <span class="token keyword">CURRENT_TIMESTAMP</span> <span class="token keyword">COMMENT</span> <span class="token string">'最后修改时间'</span><span class="token punctuation">,</span>
- <span class="token keyword">PRIMARY</span> <span class="token keyword">KEY</span> pk_commentid<span class="token punctuation">(</span><span class="token punctuation">`</span>comment_id<span class="token punctuation">`</span><span class="token punctuation">)</span>
-<span class="token punctuation">)</span> <span class="token keyword">ENGINE</span> <span class="token operator">=</span> <span class="token keyword">INNODB</span> <span class="token keyword">COMMENT</span> <span class="token string">'商品评论表'</span><span class="token punctuation">;</span>
+CREATE TABLE IF NOT EXISTS `customer_balance_log`(
+ `balance_id` INT UNSIGNED NOT NULL AUTO_INCREMENT COMMENT &#39;余额日志ID&#39;,
+ `customer_id` INT UNSIGNED NOT NULL COMMENT &#39;用户ID&#39;,
+ `source` TINYINT UNSIGNED NOT NULL DEFAULT 1 COMMENT &#39;记录来源：1 订单，2 退货单&#39;,
+ `source_sn` INT UNSIGNED NOT NULL COMMENT &#39;相关单据ID&#39;,
+ `create_time` TIMESTAMP NOT NULL DEFAULT CURRENT_TIMESTAMP COMMENT &#39;记录生成时间&#39;,
+ `amount` DECIMAL(8,2) NOT NULL DEFAULT 0.00 COMMENT &#39;变动金额&#39;,
+ PRIMARY KEY pk_blanceid (`balance_id`)
+) engine = innodb COMMENT &#39;用户余额变动表&#39;;
+
+CREATE TABLE IF NOT EXISTS `customer_login_log`(
+ -- 分区表不建议创建主键，因为主键会创建一个唯一性全局索引，在 drop 分区表时会使索引失效，导致数据无法入库。
+ -- login_id INT UNSIGNED NOT NULL AUTO_INCREMENT COMMENT &#39;登录日志ID&#39;,
+ `customer_id` INT UNSIGNED NOT NULL COMMENT &#39;登录用户ID&#39;,
+ -- 用户登录只有登录时间，因此不设置修改时间
+ `login_time` TIMESTAMP NOT NULL COMMENT &#39;用户登录时间&#39;,
+ `login_ip` INT UNSIGNED NOT NULL COMMENT &#39;登录IP&#39;,
+ `login_type` TINYINT NOT NULL COMMENT &#39;登录类型：0 未成功，1 成功&#39;
+ -- PRIMARY KEY pk_loginid (login_id)
+) engine = innodb COMMENT &#39;用户登录日志表&#39;
+-- 对用户登录日志表进行分区，规则为 login_time 以年为范围分区，这样方便对用户登录日志做归档及删除操作
+PARTITION BY RANGE(UNIX_TIMESTAMP(`login_time`))(
+    PARTITION p0 VALUES LESS THAN (UNIX_TIMESTAMP(&#39;2018-01-01 00:00:00&#39;)),
+    PARTITION p1 VALUES LESS THAN (UNIX_TIMESTAMP(&#39;2019-01-01 00:00:00&#39;)),
+    PARTITION p2 VALUES LESS THAN (UNIX_TIMESTAMP(&#39;2020-01-01 00:00:00&#39;))
+);
+
+INSERT INTO `customer_login_log` (`customer_id`, `login_time`, `login_ip`, `login_type`) 
+VALUES 
+(1, &#39;2015-01-02&#39;,INET_ATON(&#39;192.168.10.101&#39;),1),
+(1, &#39;2018-01-02&#39;,INET_ATON(&#39;192.168.10.102&#39;),0),
+(1, &#39;2019-01-02&#39;,INET_ATON(&#39;192.168.10.103&#39;),1),
+(1, &#39;2017-01-02&#39;,INET_ATON(&#39;192.168.10.101&#39;),0),
+(1, &#39;2019-01-02&#39;,INET_ATON(&#39;192.168.10.102&#39;),1);
 
 </code></pre>
-<h2 id="Init-Order"><a href="#Init-Order" class="headerlink" title="Init Order"></a>Init Order</h2><pre class=" language-mysql"><code class="language-mysql">
+<h2 id="Init-Product"><a href="#Init-Product" class="headerlink" title="Init Product"></a>Init Product</h2><pre><code class="sql">
+CREATE TABLE `brand_info`(
+ `brand_id` SMALLINT UNSIGNED AUTO_INCREMENT NOT NULL COMMENT &#39;品牌ID&#39;,
+ `brand_name` VARCHAR(50) NOT NULL COMMENT &#39;品牌名称&#39;,
+ `telephone` VARCHAR(50) NOT NULL COMMENT &#39;联系电话&#39;,
+ `brand_web` VARCHAR(100) COMMENT &#39;品牌网站&#39;,
+ `brand_logo` VARCHAR(100) COMMENT &#39;品牌LOGO&#39;,
+ `brand_desc` VARCHAR(150) COMMENT &#39;品牌描述&#39;,
+ `brand_status` TINYINT NOT NULL DEFAULT 0 COMMENT &#39;品牌状态：0 禁用，1 启用&#39;,
+ `brand_order` TINYINT NOT NULL DEFAULT 0 COMMENT &#39;排序&#39;,
+ `modified_time` TIMESTAMP NOT NULL DEFAULT CURRENT_TIMESTAMP ON UPDATE CURRENT_TIMESTAMP COMMENT &#39;最后修改时间&#39;,
+ PRIMARY KEY pk_brandid(`brand_id`)
+) ENGINE = INNODB COMMENT &#39;品牌信息表&#39;;
+
+CREATE TABLE `product_category`(
+ `category_id` SMALLINT UNSIGNED AUTO_INCREMENT NOT NULL COMMENT &#39;分类ID&#39;,
+ `category_name` VARCHAR(10) NOT NULL COMMENT &#39;分类名称&#39;,
+ `parent_id` SMALLINT UNSIGNED NOT NULL DEFAULT 0 COMMENT &#39;父分类ID&#39;,
+ `category_level` TINYINT NOT NULL DEFAULT 1 COMMENT &#39;分类层级&#39;,
+ `category_status` TINYINT NOT NULL DEFAULT 1 COMMENT &#39;分类状态&#39;,
+ `modified_time` TIMESTAMP NOT NULL DEFAULT CURRENT_TIMESTAMP ON UPDATE CURRENT_TIMESTAMP COMMENT &#39;最后修改时间&#39;,
+ PRIMARY KEY pk_categoryid(`category_id`)
+) ENGINE = INNODB COMMENT &#39;商品分类表&#39;;
+
+CREATE TABLE `supplier_info`(
+ `supplier_id` INT UNSIGNED AUTO_INCREMENT NOT NULL COMMENT &#39;供应商ID&#39;,
+ `supplier_code` CHAR(8) NOT NULL COMMENT &#39;供应商编码&#39;,
+ `supplier_name` CHAR(50) NOT NULL COMMENT &#39;供应商名称&#39;,
+ `supplier_type` TINYINT NOT NULL COMMENT &#39;供应商类型：1 自营，2 平台&#39;,
+ `link_man` VARCHAR(10) NOT NULL COMMENT &#39;供应商联系人&#39;,
+ `phone_number` VARCHAR(50) NOT NULL COMMENT &#39;联系电话&#39;,
+ `bank_name` VARCHAR(50) NOT NULL COMMENT &#39;供应商开户银行名称&#39;,
+ `bank_account` VARCHAR(50) NOT NULL COMMENT &#39;银行账号&#39;,
+ `address` VARCHAR(200) NOT NULL COMMENT &#39;供应商地址&#39;,
+ `supplier_status` TINYINT NOT NULL DEFAULT &#39;0&#39; COMMENT &#39;状态：0 禁用，1 启用&#39;,
+ `modified_time` TIMESTAMP NOT NULL DEFAULT CURRENT_TIMESTAMP ON UPDATE CURRENT_TIMESTAMP COMMENT &#39;最后修改时间&#39;,
+ PRIMARY KEY pk_supplierid(`supplier_id`)
+) ENGINE = INNODB COMMENT &#39;供应商信息表&#39;;
+
+CREATE TABLE `product_info` (
+ `product_id` INT UNSIGNED AUTO_INCREMENT NOT NULL COMMENT &#39;商品ID&#39;,
+ `product_code` CHAR(16) NOT NULL COMMENT &#39;商品编码&#39;,
+ `product_name` VARCHAR(20) NOT NULL COMMENT &#39;商品名称&#39;,
+ `bar_code` VARCHAR(50) NOT NULL COMMENT &#39;条形码&#39;,
+ `brand_id` INT UNSIGNED NOT NULL COMMENT &#39;品牌表的ID&#39;,
+ `one_category_id` SMALLINT NOT NULL COMMENT &#39;一级分类ID&#39;,
+ `two_category_id` SMALLINT NOT NULL COMMENT &#39;二级分类ID&#39;,
+ `three_category_id` SMALLINT NOT NULL COMMENT &#39;三级分类ID&#39;,
+ `supplier_id` INT NOT NULL COMMENT &#39;商品的供应商ID&#39;,
+ `price` DECIMAL(8,2) NOT NULL COMMENT &#39;商品销售价格&#39;,
+ `average_cose` DECIMAL(18,2) NOT NULL COMMENT &#39;商品加权平均成本&#39;,
+ `publish_status` TINYINT NOT NULL DEFAULT 0 COMMENT &#39;上下架状态：0 下架，1 上架&#39;,
+ `audit_status` TINYINT NOT NULL DEFAULT 0 COMMENT &#39;审核状态：0 未审核，1 已审核&#39;,
+ `weight` FLOAT COMMENT &#39;商品重量&#39;,
+ `length` FLOAT COMMENT &#39;商量长度&#39;,
+ `height` FLOAT COMMENT &#39;商品高度&#39;,
+ `width` FLOAT COMMENT &#39;商品宽度&#39;,
+ `color_type` ENUM(&#39;红&#39;,&#39;黄&#39;,&#39;绿&#39;,&#39;紫&#39;,&#39;蓝&#39;,&#39;白&#39;,&#39;黑&#39;,&#39;粉&#39;),
+ `production_date` DATETIME NOT NULL COMMENT &#39;生产日期&#39;,
+ `shelf_life` INT NOT NULL COMMENT &#39;商品有效期&#39;,
+ `descript` TEXT NOT NULL COMMENT &#39;商品描述&#39;,
+ `indate` TIMESTAMP NOT NULL DEFAULT CURRENT_TIMESTAMP COMMENT &#39;商品录入时间&#39;,
+ `modified_time` TIMESTAMP NOT NULL DEFAULT CURRENT_TIMESTAMP ON UPDATE CURRENT_TIMESTAMP COMMENT &#39;最后修改时间&#39;,
+ PRIMARY KEY pk_productid(`product_id`)
+) ENGINE = INNODB COMMENT &#39;商品信息表&#39;;
+
+CREATE TABLE `product_pic_info` (
+ `product_pic_id` INT UNSIGNED AUTO_INCREMENT NOT NULL COMMENT &#39;商品图片ID&#39;,
+ `product_id` INT UNSIGNED NOT NULL COMMENT &#39;商品ID&#39;,
+ `pic_desc` VARCHAR(50) COMMENT &#39;图片描述&#39;,
+ `pic_url` VARCHAR(50) COMMENT &#39;图片url&#39;,
+ `is_master` TINYINT NOT NULL DEFAULT 0 COMMENT &#39;是否主图：0 非主图，1 主图&#39;,
+ `pic_order` TINYINT NOT NULL DEFAULT 0 COMMENT &#39;图片排序&#39;,
+ `pic_status` TINYINT NOT NULL DEFAULT 1 COMMENT &#39;图片是否有效：0 无效，1 有效&#39;,
+ `modified_time` TIMESTAMP NOT NULL DEFAULT CURRENT_TIMESTAMP ON UPDATE CURRENT_TIMESTAMP COMMENT &#39;最后修改时间&#39;,
+ PRIMARY KEY pk_picid(`product_pic_id`)
+) ENGINE = INNODB COMMENT &#39;商品图片信息表&#39;;
+
+CREATE TABLE `product_comment` (
+ `comment_id` INT UNSIGNED AUTO_INCREMENT NOT NULL COMMENT &#39;评论ID&#39;,
+ `product_id` INT UNSIGNED NOT NULL COMMENT &#39;商品ID&#39;,
+ `order_id` BIGINT UNSIGNED NOT NULL COMMENT &#39;订单ID&#39;,
+ `customer_id` INT UNSIGNED NOT NULL COMMENT &#39;用户ID&#39;,
+ `title` VARCHAR(50) NOT NULL COMMENT &#39;评论标题&#39;,
+ `content` VARCHAR(300) NOT NULL COMMENT &#39;评论内容&#39;,
+ `audit_status` TINYINT NOT NULL COMMENT &#39;审核状态：0 未审核，1 已审核&#39;,
+ `audit_time` TIMESTAMP NOT NULL COMMENT &#39;评论时间&#39;,
+ `modified_time` TIMESTAMP NOT NULL DEFAULT CURRENT_TIMESTAMP ON UPDATE CURRENT_TIMESTAMP COMMENT &#39;最后修改时间&#39;,
+ PRIMARY KEY pk_commentid(`comment_id`)
+) ENGINE = INNODB COMMENT &#39;商品评论表&#39;;
+
+</code></pre>
+<h2 id="Init-Order"><a href="#Init-Order" class="headerlink" title="Init Order"></a>Init Order</h2><pre><code class="mysql">
 CREATE TABLE `order_master`(
- `order_id` INT UNSIGNED NOT NULL AUTO_INCREMENT COMMENT '订单ID',
- `order_sn` BIGINT UNSIGNED NOT NULL COMMENT '订单编号 yyyymmddnnnnnn',
- `customer_id` INT UNSIGNED NOT NULL COMMENT '下单人ID',
- `shipping_user` VARCHAR(10) NOT NULL COMMENT '收货人姓名',
- `province` SMALLINT NOT NULL COMMENT '省',
- `city` SMALLINT NOT NULL COMMENT '市',
- `district` SMALLINT NOT NULL COMMENT '区',
- `address` VARCHAR(200) NOT NULL COMMENT '地址',
- `payment_method` TINYINT NOT NULL COMMENT '支付方式：1 现金，2 余额，3 网银，4 支付宝，5 微信',
- `order_money` DECIMAL(8,2) NOT NULL COMMENT '订单金额',
- `district_monry` DECIMAL(8,2) NOT NULL DEFAULT 0.00 COMMENT '优惠金额',
- `shipping_money` DECIMAL(8,2) NOT NULL DEFAULT 0.00 COMMENT '运费金额',
- `payment_money` DECIMAL(8,2) NOT NULL DEFAULT 0.00 COMMENT '支付金额',
- `shipping_comp_name` VARCHAR(10) NOT NULL COMMENT '快递公司名称',
- `shipping_sn` VARCHAR(50) NOT NULL COMMENT '快递单号',
- `create_time` TIMESTAMP NOT NULL DEFAULT CURRENT_TIMESTAMP COMMENT '下单时间',
- `shipping_time` DATETIME COMMENT '发货时间',
- `pay_time` DATETIME COMMENT '支付时间',
- `receive_time` DATETIME COMMENT '收货时间',
- `order_status` TINYINT NOT NULL DEFAULT 0 COMMENT '订单状态',
- `order_point` INT UNSIGNED NOT NULL DEFAULT 0 COMMENT '订单积分',
- `invoice_title` VARCHAR(100) NOT NULL COMMENT '发票抬头',
- `modified_time` TIMESTAMP NOT NULL DEFAULT CURRENT_TIMESTAMP ON UPDATE CURRENT_TIMESTAMP COMMENT '最后修改时间',
+ `order_id` INT UNSIGNED NOT NULL AUTO_INCREMENT COMMENT &#39;订单ID&#39;,
+ `order_sn` BIGINT UNSIGNED NOT NULL COMMENT &#39;订单编号 yyyymmddnnnnnn&#39;,
+ `customer_id` INT UNSIGNED NOT NULL COMMENT &#39;下单人ID&#39;,
+ `shipping_user` VARCHAR(10) NOT NULL COMMENT &#39;收货人姓名&#39;,
+ `province` SMALLINT NOT NULL COMMENT &#39;省&#39;,
+ `city` SMALLINT NOT NULL COMMENT &#39;市&#39;,
+ `district` SMALLINT NOT NULL COMMENT &#39;区&#39;,
+ `address` VARCHAR(200) NOT NULL COMMENT &#39;地址&#39;,
+ `payment_method` TINYINT NOT NULL COMMENT &#39;支付方式：1 现金，2 余额，3 网银，4 支付宝，5 微信&#39;,
+ `order_money` DECIMAL(8,2) NOT NULL COMMENT &#39;订单金额&#39;,
+ `district_monry` DECIMAL(8,2) NOT NULL DEFAULT 0.00 COMMENT &#39;优惠金额&#39;,
+ `shipping_money` DECIMAL(8,2) NOT NULL DEFAULT 0.00 COMMENT &#39;运费金额&#39;,
+ `payment_money` DECIMAL(8,2) NOT NULL DEFAULT 0.00 COMMENT &#39;支付金额&#39;,
+ `shipping_comp_name` VARCHAR(10) NOT NULL COMMENT &#39;快递公司名称&#39;,
+ `shipping_sn` VARCHAR(50) NOT NULL COMMENT &#39;快递单号&#39;,
+ `create_time` TIMESTAMP NOT NULL DEFAULT CURRENT_TIMESTAMP COMMENT &#39;下单时间&#39;,
+ `shipping_time` DATETIME COMMENT &#39;发货时间&#39;,
+ `pay_time` DATETIME COMMENT &#39;支付时间&#39;,
+ `receive_time` DATETIME COMMENT &#39;收货时间&#39;,
+ `order_status` TINYINT NOT NULL DEFAULT 0 COMMENT &#39;订单状态&#39;,
+ `order_point` INT UNSIGNED NOT NULL DEFAULT 0 COMMENT &#39;订单积分&#39;,
+ `invoice_title` VARCHAR(100) NOT NULL COMMENT &#39;发票抬头&#39;,
+ `modified_time` TIMESTAMP NOT NULL DEFAULT CURRENT_TIMESTAMP ON UPDATE CURRENT_TIMESTAMP COMMENT &#39;最后修改时间&#39;,
  PRIMARY KEY pk_orderid(`order_id`)
-) ENGINE = INNODB COMMENT '订单主表';
+) ENGINE = INNODB COMMENT &#39;订单主表&#39;;
 
 CREATE TABLE `order_detail`(
- `order_detail_id` INT UNSIGNED NOT NULL AUTO_INCREMENT COMMENT '订单详情ID',
- `order_id` INT UNSIGNED NOT NULL COMMENT '订单表ID',
- `product_id` INT UNSIGNED NOT NULL COMMENT '订单商品ID',
- `product_name` VARCHAR(50) NOT NULL COMMENT '商品名称',
- `product_cnt` INT UNSIGNED NOT NULL DEFAULT 1 COMMENT '购买商品数量',
- `product_price` DECIMAL(8,2) NOT NULL COMMENT '购买商品单价',
- `average_cost` DECIMAL(8,2) NOT NULL DEFAULT 0.00 COMMENT '平均成本价格',
- `weight` FLOAT COMMENT '商品重量',
- `fee_money` DECIMAL(8,2) NOT NULL DEFAULT 0.00 COMMENT '优惠分摊金额',
- `w_id` INT UNSIGNED NOT NULL COMMENT '仓库ID',
- `modified_time` TIMESTAMP NOT NULL DEFAULT CURRENT_TIMESTAMP ON UPDATE CURRENT_TIMESTAMP COMMENT '最后修改时间',
+ `order_detail_id` INT UNSIGNED NOT NULL AUTO_INCREMENT COMMENT &#39;订单详情ID&#39;,
+ `order_id` INT UNSIGNED NOT NULL COMMENT &#39;订单表ID&#39;,
+ `product_id` INT UNSIGNED NOT NULL COMMENT &#39;订单商品ID&#39;,
+ `product_name` VARCHAR(50) NOT NULL COMMENT &#39;商品名称&#39;,
+ `product_cnt` INT UNSIGNED NOT NULL DEFAULT 1 COMMENT &#39;购买商品数量&#39;,
+ `product_price` DECIMAL(8,2) NOT NULL COMMENT &#39;购买商品单价&#39;,
+ `average_cost` DECIMAL(8,2) NOT NULL DEFAULT 0.00 COMMENT &#39;平均成本价格&#39;,
+ `weight` FLOAT COMMENT &#39;商品重量&#39;,
+ `fee_money` DECIMAL(8,2) NOT NULL DEFAULT 0.00 COMMENT &#39;优惠分摊金额&#39;,
+ `w_id` INT UNSIGNED NOT NULL COMMENT &#39;仓库ID&#39;,
+ `modified_time` TIMESTAMP NOT NULL DEFAULT CURRENT_TIMESTAMP ON UPDATE CURRENT_TIMESTAMP COMMENT &#39;最后修改时间&#39;,
  PRIMARY KEY pk_orderdetailid(`order_detail_id`)
-) ENGINE = INNODB COMMENT '订单详情表';
+) ENGINE = INNODB COMMENT &#39;订单详情表&#39;;
 
 CREATE TABLE `order_cart`(
- `cart_id` INT UNSIGNED NOT NULL AUTO_INCREMENT COMMENT '购物车ID',
- `customer_id` INT UNSIGNED NOT NULL COMMENT '用户ID',
- `product_id` INT UNSIGNED NOT NULL COMMENT '商品ID',
- `product_amount` INT UNSIGNED NOT NULL COMMENT '加入购物车商品数量',
- `price` DECIMAL(8,2) NOT NULL COMMENT '商品价格',
- `add_time` TIMESTAMP NOT NULL DEFAULT CURRENT_TIMESTAMP COMMENT '加入购物车时间',
- `modified_time` TIMESTAMP NOT NULL DEFAULT CURRENT_TIMESTAMP ON UPDATE CURRENT_TIMESTAMP COMMENT '最后修改时间',
+ `cart_id` INT UNSIGNED NOT NULL AUTO_INCREMENT COMMENT &#39;购物车ID&#39;,
+ `customer_id` INT UNSIGNED NOT NULL COMMENT &#39;用户ID&#39;,
+ `product_id` INT UNSIGNED NOT NULL COMMENT &#39;商品ID&#39;,
+ `product_amount` INT UNSIGNED NOT NULL COMMENT &#39;加入购物车商品数量&#39;,
+ `price` DECIMAL(8,2) NOT NULL COMMENT &#39;商品价格&#39;,
+ `add_time` TIMESTAMP NOT NULL DEFAULT CURRENT_TIMESTAMP COMMENT &#39;加入购物车时间&#39;,
+ `modified_time` TIMESTAMP NOT NULL DEFAULT CURRENT_TIMESTAMP ON UPDATE CURRENT_TIMESTAMP COMMENT &#39;最后修改时间&#39;,
  PRIMARY KEY pk_cartid(`cart_id`)
-) ENGINE = INNODB COMMENT '购物车表';
+) ENGINE = INNODB COMMENT &#39;购物车表&#39;;
 
 CREATE TABLE `warehouse_info`(
- `w_id` INT UNSIGNED NOT NULL AUTO_INCREMENT COMMENT '仓库ID',
- `warehouse_sn` CHAR(5) NOT NULL COMMENT '仓库编码',
- `warehouse_name` VARCHAR(10) NOT NULL COMMENT '仓库名称',
- `warehouse_phone` VARCHAR(20) NOT NULL COMMENT '仓库电话',
- `contact` VARCHAR(10) NOT NULL COMMENT '仓库联系人',
- `province` SMALLINT NOT NULL COMMENT '省',
- `city` SMALLINT NOT NULL COMMENT '市',
- `district` SMALLINT NOT NULL COMMENT '区',
- `address` VARCHAR(200) NOT NULL COMMENT '仓库地址',
- `warehouse_status` TINYINT NOT NULL DEFAULT 1 COMMENT '仓库状态：0 禁用，1 启用',
- `modified_time` TIMESTAMP NOT NULL DEFAULT CURRENT_TIMESTAMP ON UPDATE CURRENT_TIMESTAMP COMMENT '最后修改时间',
+ `w_id` INT UNSIGNED NOT NULL AUTO_INCREMENT COMMENT &#39;仓库ID&#39;,
+ `warehouse_sn` CHAR(5) NOT NULL COMMENT &#39;仓库编码&#39;,
+ `warehouse_name` VARCHAR(10) NOT NULL COMMENT &#39;仓库名称&#39;,
+ `warehouse_phone` VARCHAR(20) NOT NULL COMMENT &#39;仓库电话&#39;,
+ `contact` VARCHAR(10) NOT NULL COMMENT &#39;仓库联系人&#39;,
+ `province` SMALLINT NOT NULL COMMENT &#39;省&#39;,
+ `city` SMALLINT NOT NULL COMMENT &#39;市&#39;,
+ `district` SMALLINT NOT NULL COMMENT &#39;区&#39;,
+ `address` VARCHAR(200) NOT NULL COMMENT &#39;仓库地址&#39;,
+ `warehouse_status` TINYINT NOT NULL DEFAULT 1 COMMENT &#39;仓库状态：0 禁用，1 启用&#39;,
+ `modified_time` TIMESTAMP NOT NULL DEFAULT CURRENT_TIMESTAMP ON UPDATE CURRENT_TIMESTAMP COMMENT &#39;最后修改时间&#39;,
  PRIMARY KEY pk_wid(`w_id`)
-) ENGINE = INNODB COMMENT '仓库信息表';
+) ENGINE = INNODB COMMENT &#39;仓库信息表&#39;;
 
 CREATE TABLE `warehouse_product`(
- `wp_id` INT UNSIGNED NOT NULL AUTO_INCREMENT COMMENT '商品库存ID',
- `product_id` INT UNSIGNED NOT NULL COMMENT '商品ID',
- `w_id` INT UNSIGNED NOT NULL COMMENT '仓库ID',
- `current_cnt` INT NOT NULL DEFAULT 0 COMMENT '当前商品数量',
- `lock_cnt` INT NOT NULL DEFAULT 0 COMMENT '当前占用数据',
- `in_transit_cnt` INT NOT NULL DEFAULT 0 COMMENT '在途数据',
- `average_cost` DECIMAL(8,2) NOT NULL DEFAULT 0.00 COMMENT '移动加权成本',
- `modified_time` TIMESTAMP NOT NULL DEFAULT CURRENT_TIMESTAMP ON UPDATE CURRENT_TIMESTAMP COMMENT '最后修改时间',
+ `wp_id` INT UNSIGNED NOT NULL AUTO_INCREMENT COMMENT &#39;商品库存ID&#39;,
+ `product_id` INT UNSIGNED NOT NULL COMMENT &#39;商品ID&#39;,
+ `w_id` INT UNSIGNED NOT NULL COMMENT &#39;仓库ID&#39;,
+ `current_cnt` INT NOT NULL DEFAULT 0 COMMENT &#39;当前商品数量&#39;,
+ `lock_cnt` INT NOT NULL DEFAULT 0 COMMENT &#39;当前占用数据&#39;,
+ `in_transit_cnt` INT NOT NULL DEFAULT 0 COMMENT &#39;在途数据&#39;,
+ `average_cost` DECIMAL(8,2) NOT NULL DEFAULT 0.00 COMMENT &#39;移动加权成本&#39;,
+ `modified_time` TIMESTAMP NOT NULL DEFAULT CURRENT_TIMESTAMP ON UPDATE CURRENT_TIMESTAMP COMMENT &#39;最后修改时间&#39;,
  PRIMARY KEY pk_wpid(`wp_id`)
-) ENGINE = INNODB COMMENT '商品库存表';
+) ENGINE = INNODB COMMENT &#39;商品库存表&#39;;
 
 CREATE TABLE `shipping_info`(
- `ship_id` INT UNSIGNED NOT NULL AUTO_INCREMENT COMMENT '物流公司ID',
- `ship_name` VARCHAR(20) NOT NULL COMMENT '物流公司名称',
- `ship_contact` VARCHAR(20) NOT NULL COMMENT '物流公司联系人',
- `telphone` VARCHAR(20) NOT NULL COMMENT '物流公司联系电话',
- `price` DECIMAL(8,2) NOT NULL DEFAULT 0.00 COMMENT '配送价格',
- `modified_time` TIMESTAMP NOT NULL DEFAULT CURRENT_TIMESTAMP ON UPDATE CURRENT_TIMESTAMP COMMENT '最后修改时间',
+ `ship_id` INT UNSIGNED NOT NULL AUTO_INCREMENT COMMENT &#39;物流公司ID&#39;,
+ `ship_name` VARCHAR(20) NOT NULL COMMENT &#39;物流公司名称&#39;,
+ `ship_contact` VARCHAR(20) NOT NULL COMMENT &#39;物流公司联系人&#39;,
+ `telphone` VARCHAR(20) NOT NULL COMMENT &#39;物流公司联系电话&#39;,
+ `price` DECIMAL(8,2) NOT NULL DEFAULT 0.00 COMMENT &#39;配送价格&#39;,
+ `modified_time` TIMESTAMP NOT NULL DEFAULT CURRENT_TIMESTAMP ON UPDATE CURRENT_TIMESTAMP COMMENT &#39;最后修改时间&#39;,
  PRIMARY KEY pk_shipid(`ship_id`)
-) ENGINE = INNODB COMMENT '物流公司信息表';
+) ENGINE = INNODB COMMENT &#39;物流公司信息表&#39;;
 </code></pre>
 
       
@@ -769,8 +769,8 @@ CREATE TABLE `shipping_info`(
         <div class="post-nav">
           <div class="post-nav-next post-nav-item">
             
-              <a href="/2019/06/21/读书笔记/《高性能MySQL》/11.MySQL常用命令/" rel="next" title="《高性能MySQL》第六章 MySQL 中的存储引擎">
-                <i class="fa fa-chevron-left"></i> 《高性能MySQL》第六章 MySQL 中的存储引擎
+              <a href="/2019/06/20/读书笔记/《高性能MySQL》/4.数据库操作行为规范/" rel="next" title="《高性能MySQL》第一章 数据库设计规范">
+                <i class="fa fa-chevron-left"></i> 《高性能MySQL》第一章 数据库设计规范
               </a>
             
           </div>
@@ -862,7 +862,7 @@ CREATE TABLE `shipping_info`(
               
                 <a href="/archives">
               
-                  <span class="site-state-item-count">224</span>
+                  <span class="site-state-item-count">237</span>
                   <span class="site-state-item-name">日志</span>
                 </a>
               </div>
@@ -884,7 +884,7 @@ CREATE TABLE `shipping_info`(
               
               <div class="site-state-item site-state-tags">
                 <a href="/tags/index.html">
-                  <span class="site-state-item-count">21</span>
+                  <span class="site-state-item-count">22</span>
                   <span class="site-state-item-name">标签</span>
                 </a>
               </div>

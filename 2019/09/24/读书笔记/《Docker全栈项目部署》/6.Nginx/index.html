@@ -390,7 +390,7 @@
         <h1 id="Docker部署全栈项目：六、部署Nginx和React"><a href="#Docker部署全栈项目：六、部署Nginx和React" class="headerlink" title="Docker部署全栈项目：六、部署Nginx和React"></a>Docker部署全栈项目：六、部署Nginx和React</h1><p>前端项目不论是 vue 还是 react，编译之后都是 html + css +js 的模板。</p>
 <p>因此这里使用 <code>React Demo</code> 来演示如何部署前端项目至，Nginx的代理中。</p>
 <h2 id="一、创建React项目"><a href="#一、创建React项目" class="headerlink" title="一、创建React项目"></a>一、创建React项目</h2><p>如果你使用的是其它前端语言，或者直接是纯JS写法，都是大同小异。</p>
-<pre class=" language-sh"><code class="language-sh"># 创建React项目
+<pre><code class="sh"># 创建React项目
 $ create-react-app web
 
 # 进入前端项目
@@ -405,7 +405,7 @@ $ yarn build
 <blockquote>
 <p>如果是远程服务器，可以使用 scp、pscp 等命令发送文件。</p>
 </blockquote>
-<h2 id="二、启动Nginx"><a href="#二、启动Nginx" class="headerlink" title="二、启动Nginx"></a>二、启动Nginx</h2><h3 id="1-编写-start-sh"><a href="#1-编写-start-sh" class="headerlink" title="1. 编写 start.sh"></a>1. 编写 start.sh</h3><pre class=" language-sh"><code class="language-sh">#!/bin/bash
+<h2 id="二、启动Nginx"><a href="#二、启动Nginx" class="headerlink" title="二、启动Nginx"></a>二、启动Nginx</h2><h3 id="1-编写-start-sh"><a href="#1-编写-start-sh" class="headerlink" title="1. 编写 start.sh"></a>1. 编写 start.sh</h3><pre><code class="sh">#!/bin/bash
 
 # 启动前停止容器
 docker stop luokaiii-nginx
@@ -418,7 +418,7 @@ docker run --name luokaiii-nginx \ # 指定容器名
         -v /${PWD}/html:/usr/www/luokaiii/cn/html \    # 挂载静态资源
         -d nginx:alpine     # 后台运行nginx
 </code></pre>
-<h3 id="2-编写-conf-nginx-conf"><a href="#2-编写-conf-nginx-conf" class="headerlink" title="2. 编写 conf/nginx.conf"></a>2. 编写 conf/nginx.conf</h3><pre class=" language-sh"><code class="language-sh">server {
+<h3 id="2-编写-conf-nginx-conf"><a href="#2-编写-conf-nginx-conf" class="headerlink" title="2. 编写 conf/nginx.conf"></a>2. 编写 conf/nginx.conf</h3><pre><code class="sh">server {
         listen 80;
 
         root /usr/www/luokaiii/cn/html;
@@ -428,13 +428,13 @@ docker run --name luokaiii-nginx \ # 指定容器名
         }
 }
 </code></pre>
-<h3 id="3-运行脚本"><a href="#3-运行脚本" class="headerlink" title="3. 运行脚本"></a>3. 运行脚本</h3><pre class=" language-sh"><code class="language-sh"># 运行脚本
+<h3 id="3-运行脚本"><a href="#3-运行脚本" class="headerlink" title="3. 运行脚本"></a>3. 运行脚本</h3><pre><code class="sh"># 运行脚本
 $ ./start.sh
 </code></pre>
 <h3 id="4-访问端口"><a href="#4-访问端口" class="headerlink" title="4. 访问端口"></a>4. 访问端口</h3><p><img src="https://i.loli.net/2019/09/24/ur4k3zwVv1AYeZX.png" alt="访问80端口"></p>
 <h2 id="三、使用Nginx代理接口服务"><a href="#三、使用Nginx代理接口服务" class="headerlink" title="三、使用Nginx代理接口服务"></a>三、使用Nginx代理接口服务</h2><p>既然我们的接口使用的是容器服务，那么我可以把 <code>luokaiii-api</code> 的外部端口关闭，改为 nginx 的请求转发。</p>
 <p>修改 nginx.conf：</p>
-<pre class=" language-sh"><code class="language-sh">upstream apisupport {
+<pre><code class="sh">upstream apisupport {
         server api:8080;
 }
 server {
@@ -507,8 +507,8 @@ server {
 
           <div class="post-nav-prev post-nav-item">
             
-              <a href="/2019/09/24/读书笔记/《Docker全栈项目部署》/9.Docker版本升级/" rel="prev" title="Docker部署全栈：八、Docker升级">
-                Docker部署全栈：八、Docker升级 <i class="fa fa-chevron-right"></i>
+              <a href="/2019/09/24/读书笔记/《Docker全栈项目部署》/8.DC命令/" rel="prev" title="Docker部署全栈：七、DockerCompose命令">
+                Docker部署全栈：七、DockerCompose命令 <i class="fa fa-chevron-right"></i>
               </a>
             
           </div>
@@ -590,7 +590,7 @@ server {
               
                 <a href="/archives">
               
-                  <span class="site-state-item-count">224</span>
+                  <span class="site-state-item-count">237</span>
                   <span class="site-state-item-name">日志</span>
                 </a>
               </div>
@@ -612,7 +612,7 @@ server {
               
               <div class="site-state-item site-state-tags">
                 <a href="/tags/index.html">
-                  <span class="site-state-item-count">21</span>
+                  <span class="site-state-item-count">22</span>
                   <span class="site-state-item-name">标签</span>
                 </a>
               </div>

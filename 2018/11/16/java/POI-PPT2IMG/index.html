@@ -392,48 +392,48 @@
 
       
         <h1 id="POI之PPT转image-SmartArt解决方法"><a href="#POI之PPT转image-SmartArt解决方法" class="headerlink" title="POI之PPT转image,SmartArt解决方法"></a>POI之PPT转image,SmartArt解决方法</h1><p>关于使用 POI 将 PPT 转为 图片，随便就能查到以下代码。</p>
-<pre class=" language-java"><code class="language-java"><span class="token keyword">import</span> java<span class="token punctuation">.</span>io<span class="token punctuation">.</span>File<span class="token punctuation">;</span>
-<span class="token keyword">import</span> java<span class="token punctuation">.</span>io<span class="token punctuation">.</span>FileInputStream<span class="token punctuation">;</span>
-<span class="token keyword">import</span> java<span class="token punctuation">.</span>io<span class="token punctuation">.</span>FileOutputStream<span class="token punctuation">;</span>
-<span class="token keyword">import</span> java<span class="token punctuation">.</span>io<span class="token punctuation">.</span>IOException<span class="token punctuation">;</span>
+<pre><code class="java">import java.io.File;
+import java.io.FileInputStream;
+import java.io.FileOutputStream;
+import java.io.IOException;
 
-<span class="token keyword">import</span> org<span class="token punctuation">.</span>apache<span class="token punctuation">.</span>poi<span class="token punctuation">.</span>xslf<span class="token punctuation">.</span>usermodel<span class="token punctuation">.</span>XMLSlideShow<span class="token punctuation">;</span>
-<span class="token keyword">import</span> org<span class="token punctuation">.</span>apache<span class="token punctuation">.</span>poi<span class="token punctuation">.</span>xslf<span class="token punctuation">.</span>usermodel<span class="token punctuation">.</span>XSLFSlide<span class="token punctuation">;</span>
+import org.apache.poi.xslf.usermodel.XMLSlideShow;
+import org.apache.poi.xslf.usermodel.XSLFSlide;
 
-<span class="token keyword">public</span> <span class="token keyword">class</span> <span class="token class-name">PpttoPNG</span> <span class="token punctuation">{</span>
+public class PpttoPNG {
 
-   <span class="token keyword">public</span> <span class="token keyword">static</span> <span class="token keyword">void</span> <span class="token function">main</span><span class="token punctuation">(</span>String args<span class="token punctuation">[</span><span class="token punctuation">]</span><span class="token punctuation">)</span> <span class="token keyword">throws</span> IOException <span class="token punctuation">{</span>
+   public static void main(String args[]) throws IOException {
 
-      <span class="token comment" spellcheck="true">//creating an empty presentation</span>
-      File file <span class="token operator">=</span> <span class="token keyword">new</span> <span class="token class-name">File</span><span class="token punctuation">(</span><span class="token string">"addingimage.pptx"</span><span class="token punctuation">)</span><span class="token punctuation">;</span>
-      XMLSlideShow ppt <span class="token operator">=</span> <span class="token keyword">new</span> <span class="token class-name">XMLSlideShow</span><span class="token punctuation">(</span><span class="token keyword">new</span> <span class="token class-name">FileInputStream</span><span class="token punctuation">(</span>file<span class="token punctuation">)</span><span class="token punctuation">)</span><span class="token punctuation">;</span>
+      //creating an empty presentation
+      File file = new File(&quot;addingimage.pptx&quot;);
+      XMLSlideShow ppt = new XMLSlideShow(new FileInputStream(file));
 
-      <span class="token comment" spellcheck="true">//getting the dimensions and size of the slide </span>
-      Dimension pgsize <span class="token operator">=</span> ppt<span class="token punctuation">.</span><span class="token function">getPageSize</span><span class="token punctuation">(</span><span class="token punctuation">)</span><span class="token punctuation">;</span>
-      XSLFSlide<span class="token punctuation">[</span><span class="token punctuation">]</span> slide <span class="token operator">=</span> ppt<span class="token punctuation">.</span><span class="token function">getSlides</span><span class="token punctuation">(</span><span class="token punctuation">)</span><span class="token punctuation">;</span>
+      //getting the dimensions and size of the slide 
+      Dimension pgsize = ppt.getPageSize();
+      XSLFSlide[] slide = ppt.getSlides();
 
-      <span class="token keyword">for</span> <span class="token punctuation">(</span><span class="token keyword">int</span> i <span class="token operator">=</span> <span class="token number">0</span><span class="token punctuation">;</span> i <span class="token operator">&lt;</span> slide<span class="token punctuation">.</span>length<span class="token punctuation">;</span> i<span class="token operator">++</span><span class="token punctuation">)</span> <span class="token punctuation">{</span>
-         BufferedImage img <span class="token operator">=</span> <span class="token keyword">new</span> <span class="token class-name">BufferedImage</span><span class="token punctuation">(</span>
-            pgsize<span class="token punctuation">.</span>width<span class="token punctuation">,</span> pgsize<span class="token punctuation">.</span>height<span class="token punctuation">,</span>BufferedImage<span class="token punctuation">.</span>TYPE_INT_RGB<span class="token punctuation">)</span><span class="token punctuation">;</span>
-         Graphics2D graphics <span class="token operator">=</span> img<span class="token punctuation">.</span><span class="token function">createGraphics</span><span class="token punctuation">(</span><span class="token punctuation">)</span><span class="token punctuation">;</span>
+      for (int i = 0; i &lt; slide.length; i++) {
+         BufferedImage img = new BufferedImage(
+            pgsize.width, pgsize.height,BufferedImage.TYPE_INT_RGB);
+         Graphics2D graphics = img.createGraphics();
 
-         <span class="token comment" spellcheck="true">//clear the drawing area</span>
-         graphics<span class="token punctuation">.</span><span class="token function">setPaint</span><span class="token punctuation">(</span>Color<span class="token punctuation">.</span>white<span class="token punctuation">)</span><span class="token punctuation">;</span>
-         graphics<span class="token punctuation">.</span><span class="token function">fill</span><span class="token punctuation">(</span><span class="token keyword">new</span> <span class="token class-name">Rectangle2D<span class="token punctuation">.</span>Float</span><span class="token punctuation">(</span><span class="token number">0</span><span class="token punctuation">,</span> <span class="token number">0</span><span class="token punctuation">,</span> pgsize<span class="token punctuation">.</span>width<span class="token punctuation">,</span> pgsize<span class="token punctuation">.</span>height<span class="token punctuation">)</span><span class="token punctuation">)</span><span class="token punctuation">;</span>
+         //clear the drawing area
+         graphics.setPaint(Color.white);
+         graphics.fill(new Rectangle2D.Float(0, 0, pgsize.width, pgsize.height));
 
-         <span class="token comment" spellcheck="true">//render</span>
-         slide<span class="token punctuation">[</span>i<span class="token punctuation">]</span><span class="token punctuation">.</span><span class="token function">draw</span><span class="token punctuation">(</span>graphics<span class="token punctuation">)</span><span class="token punctuation">;</span>
-      <span class="token punctuation">}</span>
+         //render
+         slide[i].draw(graphics);
+      }
 
-      <span class="token comment" spellcheck="true">//creating an image file as output</span>
-      FileOutputStream out <span class="token operator">=</span> <span class="token keyword">new</span> <span class="token class-name">FileOutputStream</span><span class="token punctuation">(</span><span class="token string">"ppt_image.png"</span><span class="token punctuation">)</span><span class="token punctuation">;</span>
-      javax<span class="token punctuation">.</span>imageio<span class="token punctuation">.</span>ImageIO<span class="token punctuation">.</span><span class="token function">write</span><span class="token punctuation">(</span>img<span class="token punctuation">,</span> <span class="token string">"png"</span><span class="token punctuation">,</span> out<span class="token punctuation">)</span><span class="token punctuation">;</span>
-      ppt<span class="token punctuation">.</span><span class="token function">write</span><span class="token punctuation">(</span>out<span class="token punctuation">)</span><span class="token punctuation">;</span>
+      //creating an image file as output
+      FileOutputStream out = new FileOutputStream(&quot;ppt_image.png&quot;);
+      javax.imageio.ImageIO.write(img, &quot;png&quot;, out);
+      ppt.write(out);
 
-      System<span class="token punctuation">.</span>out<span class="token punctuation">.</span><span class="token function">println</span><span class="token punctuation">(</span><span class="token string">"Image successfully created"</span><span class="token punctuation">)</span><span class="token punctuation">;</span>
-      out<span class="token punctuation">.</span><span class="token function">close</span><span class="token punctuation">(</span><span class="token punctuation">)</span><span class="token punctuation">;</span>    
-   <span class="token punctuation">}</span>
-<span class="token punctuation">}</span>
+      System.out.println(&quot;Image successfully created&quot;);
+      out.close();    
+   }
+}
 </code></pre>
 <p>但是问题显然不会这么简单，经过实验发现。</p>
 <p>通过POI导出的图片，出现以下几个问题：</p>
@@ -449,34 +449,34 @@
 <p><img src="https://upload-images.jianshu.io/upload_images/13603359-0b2c169e961ec894.png" alt="无解又是什么鬼"></p>
 <h2 id="解决方法"><a href="#解决方法" class="headerlink" title="解决方法"></a>解决方法</h2><p>无解，所以我们抛弃了 POI，改用其他方式导出。</p>
 <h3 id="1-改用java调用Python"><a href="#1-改用java调用Python" class="headerlink" title="1.改用java调用Python"></a>1.改用java调用Python</h3><p>如果你不会python，可以将下面的py代码放到项目下，通过 <code>jython</code> 解释器来执行。</p>
-<pre class=" language-python"><code class="language-python"><span class="token keyword">import</span> comtypes<span class="token punctuation">.</span>client <span class="token keyword">as</span> client
-<span class="token keyword">import</span> os
+<pre><code class="python">import comtypes.client as client
+import os
 
-<span class="token keyword">def</span> <span class="token function">init_powerpoint</span><span class="token punctuation">(</span><span class="token punctuation">)</span><span class="token punctuation">:</span>
-    powerpoint <span class="token operator">=</span> client<span class="token punctuation">.</span>CreateObject<span class="token punctuation">(</span><span class="token string">"Powerpoint.Application"</span><span class="token punctuation">)</span>
-    powerpoint<span class="token punctuation">.</span>Visible <span class="token operator">=</span> <span class="token number">1</span>
-    <span class="token keyword">return</span> powerpoint
+def init_powerpoint():
+    powerpoint = client.CreateObject(&quot;Powerpoint.Application&quot;)
+    powerpoint.Visible = 1
+    return powerpoint
 
-<span class="token keyword">def</span> <span class="token function">ppt_to_pdf</span><span class="token punctuation">(</span>powerpoint<span class="token punctuation">,</span> inputFileName<span class="token punctuation">,</span> outputFileName<span class="token punctuation">,</span> formatType<span class="token operator">=</span><span class="token number">32</span><span class="token punctuation">)</span><span class="token punctuation">:</span>
-    <span class="token keyword">if</span> outputFileName<span class="token punctuation">[</span><span class="token operator">-</span><span class="token number">3</span><span class="token punctuation">:</span><span class="token punctuation">]</span> <span class="token operator">!=</span> <span class="token string">'pdf'</span><span class="token punctuation">:</span>
-        outputFileName <span class="token operator">=</span> outputFileName<span class="token punctuation">[</span><span class="token number">0</span><span class="token punctuation">:</span><span class="token operator">-</span><span class="token number">4</span><span class="token punctuation">]</span> <span class="token operator">+</span> <span class="token string">"pdf"</span>
-    deck <span class="token operator">=</span> powerpoint<span class="token punctuation">.</span>Presentations<span class="token punctuation">.</span>Open<span class="token punctuation">(</span>inputFileName<span class="token punctuation">)</span>
-    deck<span class="token punctuation">.</span>SaveAs<span class="token punctuation">(</span>outputFileName<span class="token punctuation">,</span> formatType<span class="token punctuation">)</span>  <span class="token comment" spellcheck="true"># formatType = 32 for ppt to pdf</span>
-    deck<span class="token punctuation">.</span>SaveAs<span class="token punctuation">(</span>inputFileName<span class="token punctuation">.</span>rsplit<span class="token punctuation">(</span><span class="token string">'.'</span><span class="token punctuation">)</span><span class="token punctuation">[</span><span class="token number">0</span><span class="token punctuation">]</span> <span class="token operator">+</span> <span class="token string">'.jpg'</span><span class="token punctuation">,</span> <span class="token number">17</span><span class="token punctuation">)</span>
-    deck<span class="token punctuation">.</span>Close<span class="token punctuation">(</span><span class="token punctuation">)</span>
+def ppt_to_pdf(powerpoint, inputFileName, outputFileName, formatType=32):
+    if outputFileName[-3:] != &#39;pdf&#39;:
+        outputFileName = outputFileName[0:-4] + &quot;pdf&quot;
+    deck = powerpoint.Presentations.Open(inputFileName)
+    deck.SaveAs(outputFileName, formatType)  # formatType = 32 for ppt to pdf
+    deck.SaveAs(inputFileName.rsplit(&#39;.&#39;)[0] + &#39;.jpg&#39;, 17)
+    deck.Close()
 
-<span class="token keyword">def</span> <span class="token function">convert_files_in_folder</span><span class="token punctuation">(</span>powerpoint<span class="token punctuation">,</span> folder<span class="token punctuation">)</span><span class="token punctuation">:</span>
-    files <span class="token operator">=</span> os<span class="token punctuation">.</span>listdir<span class="token punctuation">(</span>folder<span class="token punctuation">)</span>
-    pptfiles <span class="token operator">=</span> <span class="token punctuation">[</span>f <span class="token keyword">for</span> f <span class="token keyword">in</span> files <span class="token keyword">if</span> f<span class="token punctuation">.</span>endswith<span class="token punctuation">(</span><span class="token punctuation">(</span><span class="token string">".ppt"</span><span class="token punctuation">,</span> <span class="token string">".pptx"</span><span class="token punctuation">)</span><span class="token punctuation">)</span><span class="token punctuation">]</span>
-    <span class="token keyword">for</span> pptfile <span class="token keyword">in</span> pptfiles<span class="token punctuation">:</span>
-        fullpath <span class="token operator">=</span> os<span class="token punctuation">.</span>path<span class="token punctuation">.</span>join<span class="token punctuation">(</span>cwd<span class="token punctuation">,</span> pptfile<span class="token punctuation">)</span>
-        ppt_to_pdf<span class="token punctuation">(</span>powerpoint<span class="token punctuation">,</span> fullpath<span class="token punctuation">,</span> fullpath<span class="token punctuation">)</span>
+def convert_files_in_folder(powerpoint, folder):
+    files = os.listdir(folder)
+    pptfiles = [f for f in files if f.endswith((&quot;.ppt&quot;, &quot;.pptx&quot;))]
+    for pptfile in pptfiles:
+        fullpath = os.path.join(cwd, pptfile)
+        ppt_to_pdf(powerpoint, fullpath, fullpath)
 
-<span class="token keyword">if</span> __name__ <span class="token operator">==</span> <span class="token string">"__main__"</span><span class="token punctuation">:</span>
-    powerpoint <span class="token operator">=</span> init_powerpoint<span class="token punctuation">(</span><span class="token punctuation">)</span>
-    cwd <span class="token operator">=</span> os<span class="token punctuation">.</span>getcwd<span class="token punctuation">(</span><span class="token punctuation">)</span>
-    convert_files_in_folder<span class="token punctuation">(</span>powerpoint<span class="token punctuation">,</span> cwd<span class="token punctuation">)</span>
-    powerpoint<span class="token punctuation">.</span>Quit<span class="token punctuation">(</span><span class="token punctuation">)</span>
+if __name__ == &quot;__main__&quot;:
+    powerpoint = init_powerpoint()
+    cwd = os.getcwd()
+    convert_files_in_folder(powerpoint, cwd)
+    powerpoint.Quit()
 </code></pre>
 <p>这种方法应该是最适合的了，导出的图片接近完美。</p>
 <h3 id="2-使用第三方服务"><a href="#2-使用第三方服务" class="headerlink" title="2.使用第三方服务"></a>2.使用第三方服务</h3><p>阿里云提供了一个“智能媒体管理”的服务，其中包含了许多的文档转换的API。省事</p>
@@ -512,8 +512,8 @@
         <div class="post-nav">
           <div class="post-nav-next post-nav-item">
             
-              <a href="/2018/11/05/Quartz/SpringBoot整合Quartz(五)/" rel="next" title="SpringBoot整合Quartz(五)-集群测试">
-                <i class="fa fa-chevron-left"></i> SpringBoot整合Quartz(五)-集群测试
+              <a href="/2018/11/05/Quartz/SpringBoot整合Quartz(六)/" rel="next" title="SpringBoot整合Quartz(六)-使用Elastic-Job">
+                <i class="fa fa-chevron-left"></i> SpringBoot整合Quartz(六)-使用Elastic-Job
               </a>
             
           </div>
@@ -605,7 +605,7 @@
               
                 <a href="/archives">
               
-                  <span class="site-state-item-count">224</span>
+                  <span class="site-state-item-count">237</span>
                   <span class="site-state-item-name">日志</span>
                 </a>
               </div>
@@ -627,7 +627,7 @@
               
               <div class="site-state-item site-state-tags">
                 <a href="/tags/index.html">
-                  <span class="site-state-item-count">21</span>
+                  <span class="site-state-item-count">22</span>
                   <span class="site-state-item-name">标签</span>
                 </a>
               </div>

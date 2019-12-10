@@ -371,105 +371,105 @@
 <li>foreach</li>
 </ul>
 <h2 id="if"><a href="#if" class="headerlink" title="if"></a>if</h2><p>动态 SQL 通常要做的事情是根据条件包含 where 子句的一部分，如：</p>
-<pre class=" language-xml"><code class="language-xml"><span class="token tag"><span class="token tag"><span class="token punctuation">&lt;</span>select</span> <span class="token attr-name">id</span><span class="token attr-value"><span class="token punctuation">=</span><span class="token punctuation">"</span>findActive<span class="token punctuation">"</span></span> <span class="token attr-name">resultType</span><span class="token attr-value"><span class="token punctuation">=</span><span class="token punctuation">"</span>Blog<span class="token punctuation">"</span></span><span class="token punctuation">></span></span>
+<pre><code class="xml">&lt;select id=&quot;findActive&quot; resultType=&quot;Blog&quot;&gt;
     select * from blog
-    where  state='active'
-    <span class="token tag"><span class="token tag"><span class="token punctuation">&lt;</span>if</span> <span class="token attr-name">test</span><span class="token attr-value"><span class="token punctuation">=</span><span class="token punctuation">"</span>title !<span class="token punctuation">=</span> null<span class="token punctuation">"</span></span><span class="token punctuation">></span></span>
+    where  state=&#39;active&#39;
+    &lt;if test=&quot;title != null&quot;&gt;
         and title like #{title}
-    <span class="token tag"><span class="token tag"><span class="token punctuation">&lt;/</span>if</span><span class="token punctuation">></span></span>
-<span class="token tag"><span class="token tag"><span class="token punctuation">&lt;/</span>select</span><span class="token punctuation">></span></span>
+    &lt;/if&gt;
+&lt;/select&gt;
 </code></pre>
 <p>需要多个条件，可以使用 and 连接</p>
-<h2 id="choose、when、otherwise"><a href="#choose、when、otherwise" class="headerlink" title="choose、when、otherwise"></a>choose、when、otherwise</h2><pre class=" language-xml"><code class="language-xml"><span class="token tag"><span class="token tag"><span class="token punctuation">&lt;</span>select</span> <span class="token attr-name">id</span><span class="token attr-value"><span class="token punctuation">=</span><span class="token punctuation">"</span>findActive<span class="token punctuation">"</span></span> <span class="token attr-name">resultType</span><span class="token attr-value"><span class="token punctuation">=</span><span class="token punctuation">"</span>Blog<span class="token punctuation">"</span></span><span class="token punctuation">></span></span>
+<h2 id="choose、when、otherwise"><a href="#choose、when、otherwise" class="headerlink" title="choose、when、otherwise"></a>choose、when、otherwise</h2><pre><code class="xml">&lt;select id=&quot;findActive&quot; resultType=&quot;Blog&quot;&gt;
     select * from blog
-    where state="active"
-    <span class="token tag"><span class="token tag"><span class="token punctuation">&lt;</span>choose</span><span class="token punctuation">></span></span>
-        <span class="token tag"><span class="token tag"><span class="token punctuation">&lt;</span>when</span> <span class="token attr-name">test</span><span class="token attr-value"><span class="token punctuation">=</span><span class="token punctuation">"</span>title !<span class="token punctuation">=</span> null<span class="token punctuation">"</span></span><span class="token punctuation">></span></span>
+    where state=&quot;active&quot;
+    &lt;choose&gt;
+        &lt;when test=&quot;title != null&quot;&gt;
             and title like #{title}
-        <span class="token tag"><span class="token tag"><span class="token punctuation">&lt;/</span>when</span><span class="token punctuation">></span></span>
-        <span class="token tag"><span class="token tag"><span class="token punctuation">&lt;</span>when</span> <span class="token attr-name">test</span><span class="token attr-value"><span class="token punctuation">=</span><span class="token punctuation">"</span>author !<span class="token punctuation">=</span> null and author.name !<span class="token punctuation">=</span> null<span class="token punctuation">"</span></span><span class="token punctuation">></span></span>
+        &lt;/when&gt;
+        &lt;when test=&quot;author != null and author.name != null&quot;&gt;
             and author_name like #{author.name}
-        <span class="token tag"><span class="token tag"><span class="token punctuation">&lt;/</span>when</span><span class="token punctuation">></span></span>
-        <span class="token tag"><span class="token tag"><span class="token punctuation">&lt;</span>otherwise</span><span class="token punctuation">></span></span>
+        &lt;/when&gt;
+        &lt;otherwise&gt;
             and featured = 1
-        <span class="token tag"><span class="token tag"><span class="token punctuation">&lt;/</span>otherwise</span><span class="token punctuation">></span></span>
-    <span class="token tag"><span class="token tag"><span class="token punctuation">&lt;/</span>choose</span><span class="token punctuation">></span></span>
-<span class="token tag"><span class="token tag"><span class="token punctuation">&lt;/</span>select</span><span class="token punctuation">></span></span>
+        &lt;/otherwise&gt;
+    &lt;/choose&gt;
+&lt;/select&gt;
 </code></pre>
 <h2 id="trim、where、set"><a href="#trim、where、set" class="headerlink" title="trim、where、set"></a>trim、where、set</h2><p>如果上面的 where 语句中，去掉了 “state=active”，当所有条件都不匹配时，sql 就不正常了。此时，可以使用 where 标签来解决</p>
-<pre class=" language-xml"><code class="language-xml"><span class="token tag"><span class="token tag"><span class="token punctuation">&lt;</span>select</span> <span class="token attr-name">id</span><span class="token attr-value"><span class="token punctuation">=</span><span class="token punctuation">"</span>findActive<span class="token punctuation">"</span></span> <span class="token attr-name">resultType</span><span class="token attr-value"><span class="token punctuation">=</span><span class="token punctuation">"</span>Blog<span class="token punctuation">"</span></span><span class="token punctuation">></span></span>
+<pre><code class="xml">&lt;select id=&quot;findActive&quot; resultType=&quot;Blog&quot;&gt;
      select * from blog
-    <span class="token tag"><span class="token tag"><span class="token punctuation">&lt;</span>where</span><span class="token punctuation">></span></span>
-        <span class="token tag"><span class="token tag"><span class="token punctuation">&lt;</span>if</span> <span class="token attr-name">test</span><span class="token attr-value"><span class="token punctuation">=</span><span class="token punctuation">"</span>state !<span class="token punctuation">=</span> null<span class="token punctuation">"</span></span><span class="token punctuation">></span></span>
+    &lt;where&gt;
+        &lt;if test=&quot;state != null&quot;&gt;
             state = #{state}
-        <span class="token tag"><span class="token tag"><span class="token punctuation">&lt;/</span>if</span><span class="token punctuation">></span></span>
-        <span class="token tag"><span class="token tag"><span class="token punctuation">&lt;</span>if</span> <span class="token attr-name">test</span><span class="token attr-value"><span class="token punctuation">=</span><span class="token punctuation">"</span>title !<span class="token punctuation">=</span> null<span class="token punctuation">"</span></span><span class="token punctuation">></span></span>
+        &lt;/if&gt;
+        &lt;if test=&quot;title != null&quot;&gt;
             and title like #{title}
-        <span class="token tag"><span class="token tag"><span class="token punctuation">&lt;/</span>if</span><span class="token punctuation">></span></span>
-    <span class="token tag"><span class="token tag"><span class="token punctuation">&lt;/</span>where</span><span class="token punctuation">></span></span>
-<span class="token tag"><span class="token tag"><span class="token punctuation">&lt;/</span>select</span><span class="token punctuation">></span></span>
+        &lt;/if&gt;
+    &lt;/where&gt;
+&lt;/select&gt;
 </code></pre>
 <p>where 元素会在至少有一个子元素的条件返回 SQL 子句的情况下才去插入 where 子句。</p>
 <p>若语句开头为 AND 或 OR ，where 元素也会将它们去除。</p>
 <p>和 where 元素等价的自定义 trim 元素：</p>
-<pre class=" language-xml"><code class="language-xml"><span class="token tag"><span class="token tag"><span class="token punctuation">&lt;</span>trim</span> <span class="token attr-name">prefix</span><span class="token attr-value"><span class="token punctuation">=</span><span class="token punctuation">"</span>where<span class="token punctuation">"</span></span> <span class="token attr-name">prefixOverrides</span><span class="token attr-value"><span class="token punctuation">=</span><span class="token punctuation">"</span>AND | OR<span class="token punctuation">"</span></span><span class="token punctuation">></span></span>
+<pre><code class="xml">&lt;trim prefix=&quot;where&quot; prefixOverrides=&quot;AND | OR&quot;&gt;
      ...
-<span class="token tag"><span class="token tag"><span class="token punctuation">&lt;/</span>trim</span><span class="token punctuation">></span></span>
+&lt;/trim&gt;
 </code></pre>
 <p>set 元素可以用于动态包含需要更新的列，而舍去其他的，如：</p>
-<pre class=" language-xml"><code class="language-xml"><span class="token tag"><span class="token tag"><span class="token punctuation">&lt;</span>update</span> <span class="token attr-name">id</span><span class="token attr-value"><span class="token punctuation">=</span><span class="token punctuation">"</span>updateActive<span class="token punctuation">"</span></span><span class="token punctuation">></span></span>
+<pre><code class="xml">&lt;update id=&quot;updateActive&quot;&gt;
     update Author
-    <span class="token tag"><span class="token tag"><span class="token punctuation">&lt;</span>set</span><span class="token punctuation">></span></span>
-        <span class="token tag"><span class="token tag"><span class="token punctuation">&lt;</span>if</span> <span class="token attr-name">test</span><span class="token attr-value"><span class="token punctuation">=</span><span class="token punctuation">"</span>username !<span class="token punctuation">=</span> null<span class="token punctuation">"</span></span><span class="token punctuation">></span></span>username=#{username},<span class="token tag"><span class="token tag"><span class="token punctuation">&lt;/</span>if</span><span class="token punctuation">></span></span>
-        <span class="token tag"><span class="token tag"><span class="token punctuation">&lt;</span>if</span> <span class="token attr-name">test</span><span class="token attr-value"><span class="token punctuation">=</span><span class="token punctuation">"</span>password !<span class="token punctuation">=</span> null<span class="token punctuation">"</span></span><span class="token punctuation">></span></span>password=#{password},<span class="token tag"><span class="token tag"><span class="token punctuation">&lt;/</span>if</span><span class="token punctuation">></span></span>
-        <span class="token tag"><span class="token tag"><span class="token punctuation">&lt;</span>if</span> <span class="token attr-name">test</span><span class="token attr-value"><span class="token punctuation">=</span><span class="token punctuation">"</span>email !<span class="token punctuation">=</span> null<span class="token punctuation">"</span></span><span class="token punctuation">></span></span>email=#{email}<span class="token tag"><span class="token tag"><span class="token punctuation">&lt;/</span>if</span><span class="token punctuation">></span></span>
-    <span class="token tag"><span class="token tag"><span class="token punctuation">&lt;/</span>set</span><span class="token punctuation">></span></span>
-<span class="token tag"><span class="token tag"><span class="token punctuation">&lt;/</span>update</span><span class="token punctuation">></span></span>
+    &lt;set&gt;
+        &lt;if test=&quot;username != null&quot;&gt;username=#{username},&lt;/if&gt;
+        &lt;if test=&quot;password != null&quot;&gt;password=#{password},&lt;/if&gt;
+        &lt;if test=&quot;email != null&quot;&gt;email=#{email}&lt;/if&gt;
+    &lt;/set&gt;
+&lt;/update&gt;
 </code></pre>
 <h2 id="foreach"><a href="#foreach" class="headerlink" title="foreach"></a>foreach</h2><p>动态 SQL 的另一个常用操作是对一个集合进行遍历，通常是在构建 IN 条件语句的时候，如：</p>
-<pre class=" language-xml"><code class="language-xml"><span class="token tag"><span class="token tag"><span class="token punctuation">&lt;</span>select</span> <span class="token attr-name">id</span><span class="token attr-value"><span class="token punctuation">=</span><span class="token punctuation">"</span>selectPostIn<span class="token punctuation">"</span></span> <span class="token attr-name">resultType</span><span class="token attr-value"><span class="token punctuation">=</span><span class="token punctuation">"</span>Post<span class="token punctuation">"</span></span><span class="token punctuation">></span></span>
+<pre><code class="xml">&lt;select id=&quot;selectPostIn&quot; resultType=&quot;Post&quot;&gt;
     select * from post p
     where id in
-    <span class="token tag"><span class="token tag"><span class="token punctuation">&lt;</span>foreach</span> <span class="token attr-name">item</span><span class="token attr-value"><span class="token punctuation">=</span><span class="token punctuation">"</span>item<span class="token punctuation">"</span></span> <span class="token attr-name">index</span><span class="token attr-value"><span class="token punctuation">=</span><span class="token punctuation">"</span>index<span class="token punctuation">"</span></span> <span class="token attr-name">collection</span><span class="token attr-value"><span class="token punctuation">=</span><span class="token punctuation">"</span>list<span class="token punctuation">"</span></span>
-             <span class="token attr-name">open</span><span class="token attr-value"><span class="token punctuation">=</span><span class="token punctuation">"</span>(<span class="token punctuation">"</span></span> <span class="token attr-name">separator</span><span class="token attr-value"><span class="token punctuation">=</span><span class="token punctuation">"</span>,<span class="token punctuation">"</span></span> <span class="token attr-name">close</span><span class="token attr-value"><span class="token punctuation">=</span><span class="token punctuation">"</span>)<span class="token punctuation">"</span></span><span class="token punctuation">></span></span>
+    &lt;foreach item=&quot;item&quot; index=&quot;index&quot; collection=&quot;list&quot;
+             open=&quot;(&quot; separator=&quot;,&quot; close=&quot;)&quot;&gt;
         #{item}
-    <span class="token tag"><span class="token tag"><span class="token punctuation">&lt;/</span>foreach</span><span class="token punctuation">></span></span>
-<span class="token tag"><span class="token tag"><span class="token punctuation">&lt;/</span>select</span><span class="token punctuation">></span></span>
+    &lt;/foreach&gt;
+&lt;/select&gt;
 </code></pre>
 <blockquote>
 <p>foreach 可迭代的对象如 List、Set、Map或数组都可以作为参数。</p>
 </blockquote>
 <h2 id="script"><a href="#script" class="headerlink" title="script"></a>script</h2><p>如果要在注解中使用动态SQL，可以使用 script 元素：</p>
-<pre class=" language-java"><code class="language-java">    <span class="token annotation punctuation">@Update</span><span class="token punctuation">(</span><span class="token punctuation">{</span><span class="token string">"&lt;script>"</span><span class="token punctuation">,</span>
-      <span class="token string">"update Author"</span><span class="token punctuation">,</span>
-      <span class="token string">"  &lt;set>"</span><span class="token punctuation">,</span>
-      <span class="token string">"    &lt;if test='username != null'>username=#{username},&lt;/if>"</span><span class="token punctuation">,</span>
-      <span class="token string">"    &lt;if test='password != null'>password=#{password},&lt;/if>"</span><span class="token punctuation">,</span>
-      <span class="token string">"    &lt;if test='email != null'>email=#{email},&lt;/if>"</span><span class="token punctuation">,</span>
-      <span class="token string">"    &lt;if test='bio != null'>bio=#{bio}&lt;/if>"</span><span class="token punctuation">,</span>
-      <span class="token string">"  &lt;/set>"</span><span class="token punctuation">,</span>
-      <span class="token string">"where id=#{id}"</span><span class="token punctuation">,</span>
-      <span class="token string">"&lt;/script>"</span><span class="token punctuation">}</span><span class="token punctuation">)</span>
-    <span class="token keyword">void</span> <span class="token function">updateAuthorValues</span><span class="token punctuation">(</span>Author author<span class="token punctuation">)</span><span class="token punctuation">;</span>
+<pre><code class="java">    @Update({&quot;&lt;script&gt;&quot;,
+      &quot;update Author&quot;,
+      &quot;  &lt;set&gt;&quot;,
+      &quot;    &lt;if test=&#39;username != null&#39;&gt;username=#{username},&lt;/if&gt;&quot;,
+      &quot;    &lt;if test=&#39;password != null&#39;&gt;password=#{password},&lt;/if&gt;&quot;,
+      &quot;    &lt;if test=&#39;email != null&#39;&gt;email=#{email},&lt;/if&gt;&quot;,
+      &quot;    &lt;if test=&#39;bio != null&#39;&gt;bio=#{bio}&lt;/if&gt;&quot;,
+      &quot;  &lt;/set&gt;&quot;,
+      &quot;where id=#{id}&quot;,
+      &quot;&lt;/script&gt;&quot;})
+    void updateAuthorValues(Author author);
 </code></pre>
 <h2 id="bind"><a href="#bind" class="headerlink" title="bind"></a>bind</h2><p>bind 元素可以从 OGNL 表达式中创建一个变量并将其绑定到上下文中：</p>
-<pre class=" language-xml"><code class="language-xml"><span class="token tag"><span class="token tag"><span class="token punctuation">&lt;</span>select</span> <span class="token attr-name">id</span><span class="token attr-value"><span class="token punctuation">=</span><span class="token punctuation">"</span>selectBlogs<span class="token punctuation">"</span></span> <span class="token attr-name">resultType</span><span class="token attr-value"><span class="token punctuation">=</span><span class="token punctuation">"</span>Blog<span class="token punctuation">"</span></span><span class="token punctuation">></span></span>
-    <span class="token tag"><span class="token tag"><span class="token punctuation">&lt;</span>bind</span> <span class="token attr-name">name</span><span class="token attr-value"><span class="token punctuation">=</span><span class="token punctuation">"</span>pattern<span class="token punctuation">"</span></span> <span class="token attr-name">value</span><span class="token attr-value"><span class="token punctuation">=</span><span class="token punctuation">"</span><span class="token punctuation">'</span>%<span class="token punctuation">'</span> + _parameter.getTitle() + <span class="token punctuation">'</span>%<span class="token punctuation">'</span><span class="token punctuation">"</span></span><span class="token punctuation">/></span></span>
+<pre><code class="xml">&lt;select id=&quot;selectBlogs&quot; resultType=&quot;Blog&quot;&gt;
+    &lt;bind name=&quot;pattern&quot; value=&quot;&#39;%&#39; + _parameter.getTitle() + &#39;%&#39;&quot;/&gt;
     select * from blog
     where title like #{pattern}
-<span class="token tag"><span class="token tag"><span class="token punctuation">&lt;/</span>select</span><span class="token punctuation">></span></span>
+&lt;/select&gt;
 </code></pre>
-<h2 id="多数据库支持"><a href="#多数据库支持" class="headerlink" title="多数据库支持"></a>多数据库支持</h2><pre class=" language-xml"><code class="language-xml"><span class="token tag"><span class="token tag"><span class="token punctuation">&lt;</span>insert</span> <span class="token attr-name">id</span><span class="token attr-value"><span class="token punctuation">=</span><span class="token punctuation">"</span>insert<span class="token punctuation">"</span></span><span class="token punctuation">></span></span>
-  <span class="token tag"><span class="token tag"><span class="token punctuation">&lt;</span>selectKey</span> <span class="token attr-name">keyProperty</span><span class="token attr-value"><span class="token punctuation">=</span><span class="token punctuation">"</span>id<span class="token punctuation">"</span></span> <span class="token attr-name">resultType</span><span class="token attr-value"><span class="token punctuation">=</span><span class="token punctuation">"</span>int<span class="token punctuation">"</span></span> <span class="token attr-name">order</span><span class="token attr-value"><span class="token punctuation">=</span><span class="token punctuation">"</span>BEFORE<span class="token punctuation">"</span></span><span class="token punctuation">></span></span>
-    <span class="token tag"><span class="token tag"><span class="token punctuation">&lt;</span>if</span> <span class="token attr-name">test</span><span class="token attr-value"><span class="token punctuation">=</span><span class="token punctuation">"</span>_databaseId <span class="token punctuation">=</span><span class="token punctuation">=</span> <span class="token punctuation">'</span>oracle<span class="token punctuation">'</span><span class="token punctuation">"</span></span><span class="token punctuation">></span></span>
+<h2 id="多数据库支持"><a href="#多数据库支持" class="headerlink" title="多数据库支持"></a>多数据库支持</h2><pre><code class="xml">&lt;insert id=&quot;insert&quot;&gt;
+  &lt;selectKey keyProperty=&quot;id&quot; resultType=&quot;int&quot; order=&quot;BEFORE&quot;&gt;
+    &lt;if test=&quot;_databaseId == &#39;oracle&#39;&quot;&gt;
       select seq_users.nextval from dual
-    <span class="token tag"><span class="token tag"><span class="token punctuation">&lt;/</span>if</span><span class="token punctuation">></span></span>
-    <span class="token tag"><span class="token tag"><span class="token punctuation">&lt;</span>if</span> <span class="token attr-name">test</span><span class="token attr-value"><span class="token punctuation">=</span><span class="token punctuation">"</span>_databaseId <span class="token punctuation">=</span><span class="token punctuation">=</span> <span class="token punctuation">'</span>db2<span class="token punctuation">'</span><span class="token punctuation">"</span></span><span class="token punctuation">></span></span>
-      select nextval for seq_users from sysibm.sysdummy1"
-    <span class="token tag"><span class="token tag"><span class="token punctuation">&lt;/</span>if</span><span class="token punctuation">></span></span>
-  <span class="token tag"><span class="token tag"><span class="token punctuation">&lt;/</span>selectKey</span><span class="token punctuation">></span></span>
+    &lt;/if&gt;
+    &lt;if test=&quot;_databaseId == &#39;db2&#39;&quot;&gt;
+      select nextval for seq_users from sysibm.sysdummy1&quot;
+    &lt;/if&gt;
+  &lt;/selectKey&gt;
   insert into users values (#{id}, #{name})
-<span class="token tag"><span class="token tag"><span class="token punctuation">&lt;/</span>insert</span><span class="token punctuation">></span></span>
+&lt;/insert&gt;
 </code></pre>
 
       
@@ -596,7 +596,7 @@
               
                 <a href="/archives">
               
-                  <span class="site-state-item-count">224</span>
+                  <span class="site-state-item-count">237</span>
                   <span class="site-state-item-name">日志</span>
                 </a>
               </div>
@@ -618,7 +618,7 @@
               
               <div class="site-state-item site-state-tags">
                 <a href="/tags/index.html">
-                  <span class="site-state-item-count">21</span>
+                  <span class="site-state-item-count">22</span>
                   <span class="site-state-item-name">标签</span>
                 </a>
               </div>

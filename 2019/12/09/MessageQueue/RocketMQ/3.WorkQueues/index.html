@@ -1,0 +1,909 @@
+<!DOCTYPE html>
+
+
+
+  
+
+
+<html class="theme-next pisces use-motion" lang="zh-Hans">
+<head>
+  <meta charset="UTF-8"/>
+<meta http-equiv="X-UA-Compatible" content="IE=edge" />
+<meta name="viewport" content="width=device-width, initial-scale=1, maximum-scale=1"/>
+<meta name="theme-color" content="#222">
+
+
+
+
+
+
+
+
+
+<meta http-equiv="Cache-Control" content="no-transform" />
+<meta http-equiv="Cache-Control" content="no-siteapp" />
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+  
+  
+  <link href="/lib/fancybox/source/jquery.fancybox.css?v=2.1.5" rel="stylesheet" type="text/css" />
+
+
+
+
+
+
+
+<link href="/lib/font-awesome/css/font-awesome.min.css?v=4.6.2" rel="stylesheet" type="text/css" />
+
+<link href="/css/main.css?v=5.1.4" rel="stylesheet" type="text/css" />
+
+
+  <link rel="apple-touch-icon" sizes="180x180" href="/images/apple-touch-icon-next.png?v=5.1.4">
+
+
+  <link rel="icon" type="image/png" sizes="32x32" href="/images/favicon-32x32-next.png?v=5.1.4">
+
+
+  <link rel="icon" type="image/png" sizes="16x16" href="/images/favicon-16x16-next.png?v=5.1.4">
+
+
+  <link rel="mask-icon" href="/images/logo.svg?v=5.1.4" color="#222">
+
+
+
+
+
+  <meta name="keywords" content="RabbitMQ," />
+
+
+
+
+
+  <link rel="alternate" href="/atom.xml" title="罗凯的博客" type="application/atom+xml" />
+
+
+
+
+
+
+<meta name="description" content="二、Work Queues 工作队列Work Queues：在 works 间分配任务(竞争消费模式)。 介绍 竞争消费模式，用于多个消费者间竞争消息。  工作队列(又名任务队列)的主要思想是避免立即执行资源消耗型任务，并且必须等待它完成。 一、思路当消息生产者同一时间发送多个任务时  多个消费者是如何接收任务的？ - 按照顺序接收并处理 任务的完成耗时过长，如何处理中途某一消费者挂了的情况？ -">
+<meta name="keywords" content="RabbitMQ">
+<meta property="og:type" content="article">
+<meta property="og:title" content="RabbitMQ工作队列、消息持久化">
+<meta property="og:url" content="http://luokaiii.github.io/2019/12/09/MessageQueue/RocketMQ/3.WorkQueues/index.html">
+<meta property="og:site_name" content="罗凯的博客">
+<meta property="og:description" content="二、Work Queues 工作队列Work Queues：在 works 间分配任务(竞争消费模式)。 介绍 竞争消费模式，用于多个消费者间竞争消息。  工作队列(又名任务队列)的主要思想是避免立即执行资源消耗型任务，并且必须等待它完成。 一、思路当消息生产者同一时间发送多个任务时  多个消费者是如何接收任务的？ - 按照顺序接收并处理 任务的完成耗时过长，如何处理中途某一消费者挂了的情况？ -">
+<meta property="og:locale" content="zh-Hans">
+<meta property="og:image" content="https://i.loli.net/2019/12/09/18Mw52Tc67yfnmj.png">
+<meta property="og:updated_time" content="2019-12-09T10:07:54.609Z">
+<meta name="twitter:card" content="summary">
+<meta name="twitter:title" content="RabbitMQ工作队列、消息持久化">
+<meta name="twitter:description" content="二、Work Queues 工作队列Work Queues：在 works 间分配任务(竞争消费模式)。 介绍 竞争消费模式，用于多个消费者间竞争消息。  工作队列(又名任务队列)的主要思想是避免立即执行资源消耗型任务，并且必须等待它完成。 一、思路当消息生产者同一时间发送多个任务时  多个消费者是如何接收任务的？ - 按照顺序接收并处理 任务的完成耗时过长，如何处理中途某一消费者挂了的情况？ -">
+<meta name="twitter:image" content="https://i.loli.net/2019/12/09/18Mw52Tc67yfnmj.png">
+
+
+
+<script type="text/javascript" id="hexo.configurations">
+  var NexT = window.NexT || {};
+  var CONFIG = {
+    root: '/',
+    scheme: 'Pisces',
+    version: '5.1.4',
+    sidebar: {"position":"right","display":"always","offset":12,"b2t":false,"scrollpercent":false,"onmobile":false},
+    fancybox: true,
+    tabs: true,
+    motion: {"enable":true,"async":false,"transition":{"post_block":"fadeIn","post_header":"slideDownIn","post_body":"slideDownIn","coll_header":"slideLeftIn","sidebar":"slideUpIn"}},
+    duoshuo: {
+      userId: '0',
+      author: '博主'
+    },
+    algolia: {
+      applicationID: '',
+      apiKey: '',
+      indexName: '',
+      hits: {"per_page":5},
+      labels: {"input_placeholder":"Search for Posts","hits_empty":"We didn't find any results for the search: ${query}","hits_stats":"${hits} results found in ${time} ms"}
+    }
+  };
+</script>
+
+
+
+  <link rel="canonical" href="http://luokaiii.github.io/2019/12/09/MessageQueue/RocketMQ/3.WorkQueues/"/>
+
+
+
+
+
+  <title>RabbitMQ工作队列、消息持久化 | 罗凯的博客</title>
+  
+
+
+
+
+
+
+
+
+</head>
+
+<body itemscope itemtype="http://schema.org/WebPage" lang="zh-Hans">
+
+  
+  
+    
+  
+
+  <div class="container sidebar-position-right page-post-detail">
+    <div class="headband"></div>
+
+    <header id="header" class="header" itemscope itemtype="http://schema.org/WPHeader">
+      <div class="header-inner"><div class="site-brand-wrapper">
+  <div class="site-meta ">
+    
+
+    <div class="custom-logo-site-title">
+      <a href="/"  class="brand" rel="start">
+        <span class="logo-line-before"><i></i></span>
+        <span class="site-title">罗凯的博客</span>
+        <span class="logo-line-after"><i></i></span>
+      </a>
+    </div>
+      
+        <p class="site-subtitle">l u o k a i</p>
+      
+  </div>
+
+  <div class="site-nav-toggle">
+    <button>
+      <span class="btn-bar"></span>
+      <span class="btn-bar"></span>
+      <span class="btn-bar"></span>
+    </button>
+  </div>
+</div>
+
+<nav class="site-nav">
+  
+
+  
+    <ul id="menu" class="menu">
+      
+        
+        <li class="menu-item menu-item-home">
+          <a href="/" rel="section">
+            
+              <i class="menu-item-icon fa fa-fw fa-home"></i> <br />
+            
+            首页
+          </a>
+        </li>
+      
+        
+        <li class="menu-item menu-item-archives">
+          <a href="/archives" rel="section">
+            
+              <i class="menu-item-icon fa fa-fw fa-question-circle"></i> <br />
+            
+            归档
+          </a>
+        </li>
+      
+        
+        <li class="menu-item menu-item-about">
+          <a href="/about" rel="section">
+            
+              <i class="menu-item-icon fa fa-fw fa-question-circle"></i> <br />
+            
+            关于
+          </a>
+        </li>
+      
+        
+        <li class="menu-item menu-item-tags">
+          <a href="/tags" rel="section">
+            
+              <i class="menu-item-icon fa fa-fw fa-question-circle"></i> <br />
+            
+            标签
+          </a>
+        </li>
+      
+        
+        <li class="menu-item menu-item-categories">
+          <a href="/categories/" rel="section">
+            
+              <i class="menu-item-icon fa fa-fw fa-th"></i> <br />
+            
+            分类
+          </a>
+        </li>
+      
+        
+        <li class="menu-item menu-item-schedule">
+          <a href="/schedule" rel="section">
+            
+              <i class="menu-item-icon fa fa-fw fa-question-circle"></i> <br />
+            
+            日程表
+          </a>
+        </li>
+      
+        
+        <li class="menu-item menu-item-sitemap">
+          <a href="/sitemap.xml" rel="section">
+            
+              <i class="menu-item-icon fa fa-fw fa-sitemap"></i> <br />
+            
+            站点地图
+          </a>
+        </li>
+      
+        
+        <li class="menu-item menu-item-commonweal">
+          <a href="/404/" rel="section">
+            
+              <i class="menu-item-icon fa fa-fw fa-heartbeat"></i> <br />
+            
+            公益404
+          </a>
+        </li>
+      
+
+      
+    </ul>
+  
+
+  
+</nav>
+
+
+
+ </div>
+    </header>
+
+    <main id="main" class="main">
+      <div class="main-inner">
+        <div class="content-wrap">
+          <div id="content" class="content">
+            
+
+  <div id="posts" class="posts-expand">
+    
+
+  
+
+  
+  
+  
+
+  <article class="post post-type-normal" itemscope itemtype="http://schema.org/Article">
+  
+  
+  
+  <div class="post-block">
+    <link itemprop="mainEntityOfPage" href="http://luokaiii.github.io/2019/12/09/MessageQueue/RocketMQ/3.WorkQueues/">
+
+    <span hidden itemprop="author" itemscope itemtype="http://schema.org/Person">
+      <meta itemprop="name" content="koral">
+      <meta itemprop="description" content="">
+      <meta itemprop="image" content="https://upload-images.jianshu.io/upload_images/13603359-6aa0d85db5eaa03e.gif">
+    </span>
+
+    <span hidden itemprop="publisher" itemscope itemtype="http://schema.org/Organization">
+      <meta itemprop="name" content="罗凯的博客">
+    </span>
+
+    
+      <header class="post-header">
+
+        
+        
+          <h1 class="post-title" itemprop="name headline">RabbitMQ工作队列、消息持久化</h1>
+        
+
+        <div class="post-meta">
+          <span class="post-time">
+            
+              <span class="post-meta-item-icon">
+                <i class="fa fa-calendar-o"></i>
+              </span>
+              
+                <span class="post-meta-item-text">发表于</span>
+              
+              <time title="创建于" itemprop="dateCreated datePublished" datetime="2019-12-09T14:00:00+08:00">
+                2019-12-09
+              </time>
+            
+
+            
+
+            
+          </span>
+
+          
+
+          
+            
+          
+
+          
+          
+
+          
+
+          
+
+          
+
+        </div>
+      </header>
+    
+
+    
+    
+    
+    <div class="post-body" itemprop="articleBody">
+
+      
+      
+
+      
+        <h1 id="二、Work-Queues-工作队列"><a href="#二、Work-Queues-工作队列" class="headerlink" title="二、Work Queues 工作队列"></a>二、Work Queues 工作队列</h1><p>Work Queues：在 works 间分配任务(竞争消费模式)。</p>
+<p>介绍 <strong>竞争消费模式</strong>，用于多个消费者间竞争消息。</p>
+<p><img src="https://i.loli.net/2019/12/09/18Mw52Tc67yfnmj.png" alt="多消费者"></p>
+<p><strong>工作队列(又名任务队列)</strong>的主要思想是避免立即执行资源消耗型任务，并且必须等待它完成。</p>
+<h2 id="一、思路"><a href="#一、思路" class="headerlink" title="一、思路"></a>一、思路</h2><p>当消息生产者同一时间发送多个任务时</p>
+<ol>
+<li>多个消费者是如何接收任务的？ - <strong>按照顺序接收并处理</strong></li>
+<li>任务的完成耗时过长，如何处理中途某一消费者挂了的情况？ - <strong>使用消息确认</strong></li>
+<li>如果任务执行过程中，RabbitMQ服务停止，如何保证任务不丢失？ - <strong>开启消息持久化</strong></li>
+<li>如果每个消费者的处理时长不同，如何确保一个消费者不会堆积任务？ - <strong>开启prefetchCount公平调度</strong></li>
+</ol>
+<p>下面将会按照以上思路依次讲解。</p>
+<blockquote>
+<p>在消息接收者消费消息时，假设发送者的每个字符都会耗时1S执行，以此来模拟资源消耗型任务。</p>
+</blockquote>
+<h3 id="1-1-循环调度"><a href="#1-1-循环调度" class="headerlink" title="1.1 循环调度"></a>1.1 循环调度</h3><p>使用任务队列的优点之一是能够轻松地并行化工作，如果堆积的任务很多，我们只需要增加更多的消费者，就能够很容易地扩张规模。</p>
+<p>假设有三个消息消费者，同时接收6个消息。</p>
+<p><strong>默认情况下，RabbitMQ 将按照顺序将每条消息发送给下一个使用者</strong>。</p>
+<p>即每个消费者都会收到相同数量的消息。</p>
+<h3 id="1-2-消息确认"><a href="#1-2-消息确认" class="headerlink" title="1.2 消息确认"></a>1.2 消息确认</h3><p>在未开启消息确认时，一旦 RabbitMQ 将消息传递给消费者后，会立即将其标记为删除。如果消费者执行某一任务耗时很长，在执行过程中挂掉，那么这条消息将会丢失，且其它尚未处理的消息也将丢失。</p>
+<p>为了确保消息不会丢失，RabbitMQ 支持消息确认。即消费者执行完毕后，发送一个 ACK，告诉 RabbitMQ 已经接受并处理了一条特定消息。</p>
+<p>如果消费者在没有发送 ACK 的情况下死亡(通道关闭、连接关闭、TCP连接丢失)，RabbitMQ 会将消息重新进行排队（注：消息会放在队列头部，尽快执行）。</p>
+<pre><code class="java">// 每次只接收一个任务
+channel.basicQos(1);
+
+DeliverCallback callback = (consumerTag, message) -&gt; {
+    String msg = new String(message.getBody(), StandardCharsets.UTF_8);
+    System.out.println(&quot;[1] 接收消息: &quot; + msg);
+
+    try {
+        for (int i = 0; i &lt; msg.length(); i++) {
+            Thread.sleep(1000);
+        }
+    } catch (InterruptedException e) {
+        e.printStackTrace();
+    } finally {
+        System.out.println(&quot;[1] 执行完毕&quot;);
+        // 当任务执行完毕后，手动确认 - 确认后 RabbitMQ 才会删除消息，否则消息将会重排
+        channel.basicAck(message.getEnvelope().getDeliveryTag(), false);
+    }
+};
+
+// 关闭自动确认，改为手动确认
+boolean autoAck = false;
+channel.basicConsume(&quot;queue&quot;, autoAck, deliverCallback, consumerTag -&gt; {});
+</code></pre>
+<h3 id="1-3-消息持久性"><a href="#1-3-消息持久性" class="headerlink" title="1.3 消息持久性"></a>1.3 消息持久性</h3><p>消息确认，确保了即使消费者死亡，任务也不会丢失。但是，如果 RabbitMQ 服务器停止，我们的任务仍将丢失。</p>
+<p>要确保 RabbitMQ 退出或崩溃后，队列和消息依然存在，则需要将队列和消息都标记为持久性。</p>
+<pre><code class="java">// 1. 声明一个持久化消息的队列
+boolean durable = true;
+channel.queueDeclare(&quot;hello2&quot;, durable, false, false, null);
+
+// 2. 将消息标记为 text plain
+channel.basicPublish(&quot;&quot;, &quot;hello2&quot;,
+                     MessageProperties.PERSISTENT_TEXT_PLAIN, message.getBytes());
+</code></pre>
+<blockquote>
+<p>注：队列只有在第一次声明时才会创建。因此这里重新声明一个 hello2 的队列。</p>
+</blockquote>
+<h3 id="1-4-公平调度"><a href="#1-4-公平调度" class="headerlink" title="1.4 公平调度"></a>1.4 公平调度</h3><p>在 <strong>1.1 循环调度</strong> 中已经说明，RabbitMQ 默认按照顺序分配任务给消费者们。</p>
+<p>如果有两个消费者，消息队列中，所有奇数列的任务都较重，偶数列的任务较轻。那么会导致消费者A的处理时间无限延长，而消费者B处于空闲的情况。</p>
+<p>为了避免这种情况，我们将 prefetchCount 设置为 1，这样 RabbitMQ 将每次只向消费者发送一条任务。当消费者完成该任务后，再发送新的消息任务。</p>
+<pre><code class="java">int prefetchCount = 1;
+channel.basicQos(prefetchCount);
+</code></pre>
+<h2 id="二、完整的代码"><a href="#二、完整的代码" class="headerlink" title="二、完整的代码"></a>二、完整的代码</h2><h3 id="2-1-消息生产者"><a href="#2-1-消息生产者" class="headerlink" title="2.1 消息生产者"></a>2.1 消息生产者</h3><pre><code class="java">import com.rabbitmq.client.Channel;
+import com.rabbitmq.client.Connection;
+import com.rabbitmq.client.ConnectionFactory;
+import com.rabbitmq.client.MessageProperties;
+
+import java.io.IOException;
+import java.util.concurrent.TimeoutException;
+
+public class Send {
+    private final static String QUEUE_NAME = &quot;hello3&quot;;
+
+    public static void main(String[] args) {
+        final ConnectionFactory factory = new ConnectionFactory();
+        factory.setHost(&quot;localhost&quot;);
+        try (Connection connection = factory.newConnection();
+             Channel channel = connection.createChannel()) {
+            // 持久化队列
+            channel.queueDeclare(QUEUE_NAME, true, false, false, null);
+
+            String message = &quot;任务3:00000000&quot;;
+            // 消息持久化
+            channel.basicPublish(&quot;&quot;, QUEUE_NAME, MessageProperties.PERSISTENT_TEXT_PLAIN, message.getBytes());
+            System.out.println(&quot;[x] sent:&quot; + message);
+        } catch (TimeoutException | IOException e) {
+            e.printStackTrace();
+        }
+    }
+}
+</code></pre>
+<h3 id="2-2-消息消费者"><a href="#2-2-消息消费者" class="headerlink" title="2.2 消息消费者"></a>2.2 消息消费者</h3><pre><code class="java">import com.rabbitmq.client.*;
+
+import java.io.IOException;
+import java.nio.charset.StandardCharsets;
+import java.util.concurrent.TimeoutException;
+
+public class Recv {
+    private final static String QUEUE_NAME = &quot;hello3&quot;;
+
+    public static void main(String[] args) throws IOException, TimeoutException {
+        final ConnectionFactory factory = new ConnectionFactory();
+        factory.setHost(&quot;localhost&quot;);
+
+        final Connection connection = factory.newConnection();
+        final Channel channel = connection.createChannel();
+
+        channel.queueDeclare(QUEUE_NAME, true, false, false, null);
+        System.out.println(&quot;[1] Waiting for messages. To exit press CTRL+C&quot;);
+
+        // 每次只接收一条消息
+        channel.basicQos(1);
+
+        DeliverCallback callback = (consumerTag, message) -&gt; {
+            String msg = new String(message.getBody(), StandardCharsets.UTF_8);
+            System.out.println(&quot;[1] 接收消息: &quot; + msg);
+
+            try {
+                // 模拟资源消耗型任务，每个字符执行一秒
+                for (int i = 0; i &lt; msg.length(); i++) {
+                    Thread.sleep(1000);
+                }
+            } catch (InterruptedException e) {
+                e.printStackTrace();
+            } finally {
+                System.out.println(&quot;[1] 执行完毕&quot;);
+                // 手动确认，消息执行完成
+                channel.basicAck(message.getEnvelope().getDeliveryTag(), false);
+            }
+        };
+
+        // 关闭自动确认，改为手动确认
+        boolean autoAck = false;
+        channel.basicConsume(QUEUE_NAME, autoAck, callback, consumerTag -&gt; {
+        });
+    }
+}
+</code></pre>
+<h2 id="三、参考资料"><a href="#三、参考资料" class="headerlink" title="三、参考资料"></a>三、参考资料</h2><ul>
+<li><a href="https://www.rabbitmq.com/tutorials/tutorial-two-java.html" target="_blank" rel="noopener">RabbitMQ tutorials - Work Queues</a></li>
+</ul>
+
+      
+    </div>
+    
+    
+    
+
+    
+
+    
+
+    
+
+    <footer class="post-footer">
+      
+        <div class="post-tags">
+          
+            <a href="/tags/RabbitMQ/" rel="tag"># RabbitMQ</a>
+          
+        </div>
+      
+
+      
+      
+      
+
+      
+        <div class="post-nav">
+          <div class="post-nav-next post-nav-item">
+            
+              <a href="/2019/12/09/MessageQueue/RocketMQ/2.HelloWorld/" rel="next" title="RocketMQ简单Demo">
+                <i class="fa fa-chevron-left"></i> RocketMQ简单Demo
+              </a>
+            
+          </div>
+
+          <span class="post-nav-divider"></span>
+
+          <div class="post-nav-prev post-nav-item">
+            
+              <a href="/2019/12/09/MessageQueue/RocketMQ/4.PublishSubscribe/" rel="prev" title="RabbitMQ发布订阅模式、交换器类型">
+                RabbitMQ发布订阅模式、交换器类型 <i class="fa fa-chevron-right"></i>
+              </a>
+            
+          </div>
+        </div>
+      
+
+      
+      
+    </footer>
+  </div>
+  
+  
+  
+  </article>
+
+
+
+    <div class="post-spread">
+      
+    </div>
+  </div>
+
+
+          </div>
+          
+
+
+          
+
+  
+
+
+
+        </div>
+        
+          
+  
+  <div class="sidebar-toggle">
+    <div class="sidebar-toggle-line-wrap">
+      <span class="sidebar-toggle-line sidebar-toggle-line-first"></span>
+      <span class="sidebar-toggle-line sidebar-toggle-line-middle"></span>
+      <span class="sidebar-toggle-line sidebar-toggle-line-last"></span>
+    </div>
+  </div>
+
+  <aside id="sidebar" class="sidebar">
+    
+    <div class="sidebar-inner">
+
+      
+
+      
+        <ul class="sidebar-nav motion-element">
+          <li class="sidebar-nav-toc sidebar-nav-active" data-target="post-toc-wrap">
+            文章目录
+          </li>
+          <li class="sidebar-nav-overview" data-target="site-overview-wrap">
+            站点概览
+          </li>
+        </ul>
+      
+
+      <section class="site-overview-wrap sidebar-panel">
+        <div class="site-overview">
+          <div class="site-author motion-element" itemprop="author" itemscope itemtype="http://schema.org/Person">
+            
+              <img class="site-author-image" itemprop="image"
+                src="https://upload-images.jianshu.io/upload_images/13603359-6aa0d85db5eaa03e.gif"
+                alt="koral" />
+            
+              <p class="site-author-name" itemprop="name">koral</p>
+              <p class="site-description motion-element" itemprop="description">如果我16岁，我可以悄悄的说我好喜欢你，如果我26岁，我可以大声告诉你我很爱你，可惜我6岁，我什么都给不了你，我还要上小学。</p>
+          </div>
+
+          <nav class="site-state motion-element">
+
+            
+              <div class="site-state-item site-state-posts">
+              
+                <a href="/archives">
+              
+                  <span class="site-state-item-count">237</span>
+                  <span class="site-state-item-name">日志</span>
+                </a>
+              </div>
+            
+
+            
+              
+              
+              <div class="site-state-item site-state-categories">
+                <a href="/categories/index.html">
+                  <span class="site-state-item-count">19</span>
+                  <span class="site-state-item-name">分类</span>
+                </a>
+              </div>
+            
+
+            
+              
+              
+              <div class="site-state-item site-state-tags">
+                <a href="/tags/index.html">
+                  <span class="site-state-item-count">22</span>
+                  <span class="site-state-item-name">标签</span>
+                </a>
+              </div>
+            
+
+          </nav>
+
+          
+            <div class="feed-link motion-element">
+              <a href="/atom.xml" rel="alternate">
+                <i class="fa fa-rss"></i>
+                RSS
+              </a>
+            </div>
+          
+
+          
+
+          
+          
+
+          
+          
+
+          
+
+        </div>
+      </section>
+
+      
+      <!--noindex-->
+        <section class="post-toc-wrap motion-element sidebar-panel sidebar-panel-active">
+          <div class="post-toc">
+
+            
+              
+            
+
+            
+              <div class="post-toc-content"><ol class="nav"><li class="nav-item nav-level-1"><a class="nav-link" href="#二、Work-Queues-工作队列"><span class="nav-number">1.</span> <span class="nav-text">二、Work Queues 工作队列</span></a><ol class="nav-child"><li class="nav-item nav-level-2"><a class="nav-link" href="#一、思路"><span class="nav-number">1.1.</span> <span class="nav-text">一、思路</span></a><ol class="nav-child"><li class="nav-item nav-level-3"><a class="nav-link" href="#1-1-循环调度"><span class="nav-number">1.1.1.</span> <span class="nav-text">1.1 循环调度</span></a></li><li class="nav-item nav-level-3"><a class="nav-link" href="#1-2-消息确认"><span class="nav-number">1.1.2.</span> <span class="nav-text">1.2 消息确认</span></a></li><li class="nav-item nav-level-3"><a class="nav-link" href="#1-3-消息持久性"><span class="nav-number">1.1.3.</span> <span class="nav-text">1.3 消息持久性</span></a></li><li class="nav-item nav-level-3"><a class="nav-link" href="#1-4-公平调度"><span class="nav-number">1.1.4.</span> <span class="nav-text">1.4 公平调度</span></a></li></ol></li><li class="nav-item nav-level-2"><a class="nav-link" href="#二、完整的代码"><span class="nav-number">1.2.</span> <span class="nav-text">二、完整的代码</span></a><ol class="nav-child"><li class="nav-item nav-level-3"><a class="nav-link" href="#2-1-消息生产者"><span class="nav-number">1.2.1.</span> <span class="nav-text">2.1 消息生产者</span></a></li><li class="nav-item nav-level-3"><a class="nav-link" href="#2-2-消息消费者"><span class="nav-number">1.2.2.</span> <span class="nav-text">2.2 消息消费者</span></a></li></ol></li><li class="nav-item nav-level-2"><a class="nav-link" href="#三、参考资料"><span class="nav-number">1.3.</span> <span class="nav-text">三、参考资料</span></a></li></ol></li></ol></div>
+            
+
+          </div>
+        </section>
+      <!--/noindex-->
+      
+
+      
+
+    </div>
+  </aside>
+
+
+        
+      </div>
+    </main>
+
+    <footer id="footer" class="footer">
+      <div class="footer-inner">
+        <div class="copyright">&copy; <span itemprop="copyrightYear">2019</span>
+  <span class="with-love">
+    <i class="fa fa-user"></i>
+  </span>
+  <span class="author" itemprop="copyrightHolder">koral</span>
+
+  
+</div>
+
+
+  <div class="powered-by">由 <a class="theme-link" target="_blank" href="https://hexo.io">Hexo</a> 强力驱动</div>
+
+
+
+  <span class="post-meta-divider">|</span>
+
+
+
+  <div class="theme-info">主题 &mdash; <a class="theme-link" target="_blank" href="https://github.com/iissnan/hexo-theme-next">NexT.Pisces</a> v5.1.4</div>
+
+
+
+
+        
+
+
+
+
+
+
+
+        
+      </div>
+    </footer>
+
+    
+      <div class="back-to-top">
+        <i class="fa fa-arrow-up"></i>
+        
+      </div>
+    
+
+    
+
+  </div>
+
+  
+
+<script type="text/javascript">
+  if (Object.prototype.toString.call(window.Promise) !== '[object Function]') {
+    window.Promise = null;
+  }
+</script>
+
+
+
+
+
+
+
+
+
+  
+
+
+
+
+
+
+
+
+
+
+
+
+  
+  
+    <script type="text/javascript" src="/lib/jquery/index.js?v=2.1.3"></script>
+  
+
+  
+  
+    <script type="text/javascript" src="/lib/fastclick/lib/fastclick.min.js?v=1.0.6"></script>
+  
+
+  
+  
+    <script type="text/javascript" src="/lib/jquery_lazyload/jquery.lazyload.js?v=1.9.7"></script>
+  
+
+  
+  
+    <script type="text/javascript" src="/lib/velocity/velocity.min.js?v=1.2.1"></script>
+  
+
+  
+  
+    <script type="text/javascript" src="/lib/velocity/velocity.ui.min.js?v=1.2.1"></script>
+  
+
+  
+  
+    <script type="text/javascript" src="/lib/fancybox/source/jquery.fancybox.pack.js?v=2.1.5"></script>
+  
+
+
+  
+
+
+  <script type="text/javascript" src="/js/src/utils.js?v=5.1.4"></script>
+
+  <script type="text/javascript" src="/js/src/motion.js?v=5.1.4"></script>
+
+
+
+  
+  
+
+
+  <script type="text/javascript" src="/js/src/affix.js?v=5.1.4"></script>
+
+  <script type="text/javascript" src="/js/src/schemes/pisces.js?v=5.1.4"></script>
+
+
+
+  
+  <script type="text/javascript" src="/js/src/scrollspy.js?v=5.1.4"></script>
+<script type="text/javascript" src="/js/src/post-details.js?v=5.1.4"></script>
+
+
+
+  
+
+
+  <script type="text/javascript" src="/js/src/bootstrap.js?v=5.1.4"></script>
+
+
+
+  
+
+
+  
+
+
+
+
+	
+
+
+
+
+
+  
+
+
+
+
+
+  
+
+
+
+
+
+
+
+
+
+
+
+
+  
+
+
+
+
+
+  
+
+  
+
+  
+
+  
+  
+
+  
+
+  
+
+  
+
+</body>
+</html>

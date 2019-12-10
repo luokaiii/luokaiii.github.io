@@ -393,33 +393,33 @@
 <p>表格的具体样式可以参考 <a href="#三、设置Excel单元格样式"><code>第三章</code></a></p>
 <p>我们以 aliyun 的 OSS 为例上传 <a href="#四、上传至OSS等对象存储"><code>上传方法</code></a></p>
 <h2 id="一、准备工作"><a href="#一、准备工作" class="headerlink" title="一、准备工作"></a>一、准备工作</h2><p>第一步：引入 Apache POI 的依赖</p>
-<pre class=" language-java"><code class="language-java"><span class="token operator">&lt;</span><span class="token operator">!</span><span class="token operator">--</span> Maven 方式 <span class="token operator">--</span><span class="token operator">></span>
+<pre><code class="java">&lt;!-- Maven 方式 --&gt;
 
-<span class="token operator">&lt;</span>dependency<span class="token operator">></span>
-    <span class="token operator">&lt;</span>groupId<span class="token operator">></span>org<span class="token punctuation">.</span>apache<span class="token punctuation">.</span>poi<span class="token operator">&lt;</span><span class="token operator">/</span>groupId<span class="token operator">></span>
-    <span class="token operator">&lt;</span>artifactId<span class="token operator">></span>poi<span class="token operator">&lt;</span><span class="token operator">/</span>artifactId<span class="token operator">></span>
-    <span class="token operator">&lt;</span>version<span class="token operator">></span><span class="token number">4.0</span><span class="token punctuation">.</span><span class="token number">0</span><span class="token operator">&lt;</span><span class="token operator">/</span>version<span class="token operator">></span>
-<span class="token operator">&lt;</span><span class="token operator">/</span>dependency<span class="token operator">></span>
+&lt;dependency&gt;
+    &lt;groupId&gt;org.apache.poi&lt;/groupId&gt;
+    &lt;artifactId&gt;poi&lt;/artifactId&gt;
+    &lt;version&gt;4.0.0&lt;/version&gt;
+&lt;/dependency&gt;
 </code></pre>
-<pre class=" language-java"><code class="language-java"><span class="token operator">&lt;</span><span class="token operator">!</span><span class="token operator">--</span> Gradle 方式 <span class="token operator">--</span><span class="token operator">></span>
+<pre><code class="java">&lt;!-- Gradle 方式 --&gt;
 
-compile group<span class="token operator">:</span> <span class="token string">'org.apache.poi'</span><span class="token punctuation">,</span> name<span class="token operator">:</span> <span class="token string">'poi'</span><span class="token punctuation">,</span> version<span class="token operator">:</span> <span class="token string">'4.0.0'</span>
+compile group: &#39;org.apache.poi&#39;, name: &#39;poi&#39;, version: &#39;4.0.0&#39;
 </code></pre>
 <p>第二步：引入 JUnit 测试，这里就不做赘述了。</p>
 <h2 id="二、讲解测试用例"><a href="#二、讲解测试用例" class="headerlink" title="二、讲解测试用例"></a>二、讲解测试用例</h2><h3 id="Test方法"><a href="#Test方法" class="headerlink" title="Test方法"></a><code>Test</code>方法</h3><p>我们先从测试方法着手，再逐步讲解测试中所用到的方法。</p>
-<pre class=" language-java"><code class="language-java"><span class="token annotation punctuation">@Autowired</span>
-<span class="token keyword">private</span> UserService userService<span class="token punctuation">;</span>
+<pre><code class="java">@Autowired
+private UserService userService;
 
-<span class="token annotation punctuation">@Test</span>
-<span class="token keyword">public</span> <span class="token keyword">void</span> <span class="token function">upload</span><span class="token punctuation">(</span><span class="token punctuation">)</span><span class="token punctuation">{</span>
-    List<span class="token operator">&lt;</span>User<span class="token operator">></span> users <span class="token operator">=</span> userService<span class="token punctuation">.</span><span class="token function">findAll</span><span class="token punctuation">(</span><span class="token punctuation">)</span><span class="token punctuation">;</span> <span class="token comment" spellcheck="true">// ①</span>
+@Test
+public void upload(){
+    List&lt;User&gt; users = userService.findAll(); // ①
 
-    <span class="token keyword">final</span> ByteArrayOutputStream stream <span class="token operator">=</span> <span class="token function">exportProjectList</span><span class="token punctuation">(</span>users<span class="token punctuation">)</span><span class="token punctuation">;</span> <span class="token comment" spellcheck="true">// ②</span>
+    final ByteArrayOutputStream stream = exportProjectList(users); // ②
 
-    String uri <span class="token operator">=</span> <span class="token function">uploadWorkbook</span><span class="token punctuation">(</span>stream<span class="token punctuation">,</span> <span class="token string">"学生数据表.xlsx"</span><span class="token punctuation">)</span><span class="token punctuation">;</span> <span class="token comment" spellcheck="true">// ③</span>
+    String uri = uploadWorkbook(stream, &quot;学生数据表.xlsx&quot;); // ③
 
-    System<span class="token punctuation">.</span>out<span class="token punctuation">.</span><span class="token function">println</span><span class="token punctuation">(</span>uri<span class="token punctuation">)</span><span class="token punctuation">;</span> <span class="token comment" spellcheck="true">// ④</span>
-<span class="token punctuation">}</span>
+    System.out.println(uri); // ④
+}
 </code></pre>
 <ol>
 <li>从数据库中取出需要导入 Excel 的数据</li>
@@ -429,106 +429,106 @@ compile group<span class="token operator">:</span> <span class="token string">'o
 </ol>
 <h3 id="exportProjectList方法"><a href="#exportProjectList方法" class="headerlink" title="exportProjectList方法"></a><code>exportProjectList</code>方法</h3><p>作用：接收从数据库查询出来的对象集合，将其插入到 Workbook 中，并生成二进制的输出流 <code>ByteArrayOutputStream</code></p>
 <p>表格的具体样式可以参考 <a href="#三、设置Excel单元格样式"><code>第三章</code></a></p>
-<pre class=" language-java"><code class="language-java"><span class="token keyword">private</span> ByteArrayOutputStream <span class="token function">exportProjectList</span><span class="token punctuation">(</span>User<span class="token punctuation">[</span><span class="token punctuation">]</span> users<span class="token punctuation">)</span> <span class="token keyword">throws</span> IOException <span class="token punctuation">{</span>
-        <span class="token comment" spellcheck="true">// Workbook 工作区</span>
-        <span class="token keyword">final</span> XSSFWorkbook workbook <span class="token operator">=</span> <span class="token keyword">new</span> <span class="token class-name">XSSFWorkbook</span><span class="token punctuation">(</span><span class="token punctuation">)</span><span class="token punctuation">;</span>
+<pre><code class="java">private ByteArrayOutputStream exportProjectList(User[] users) throws IOException {
+        // Workbook 工作区
+        final XSSFWorkbook workbook = new XSSFWorkbook();
 
-        <span class="token comment" spellcheck="true">// 单字体居中样式</span>
-        <span class="token keyword">final</span> XSSFCellStyle centerStyle <span class="token operator">=</span> workbook<span class="token punctuation">.</span><span class="token function">createCellStyle</span><span class="token punctuation">(</span><span class="token punctuation">)</span><span class="token punctuation">;</span>
-        centerStyle<span class="token punctuation">.</span><span class="token function">setAlignment</span><span class="token punctuation">(</span>HorizontalAlignment<span class="token punctuation">.</span>CENTER<span class="token punctuation">)</span><span class="token punctuation">;</span>
+        // 单字体居中样式
+        final XSSFCellStyle centerStyle = workbook.createCellStyle();
+        centerStyle.setAlignment(HorizontalAlignment.CENTER);
 
-        <span class="token comment" spellcheck="true">// 字体居中加粗样式</span>
-        <span class="token keyword">final</span> XSSFCellStyle headerStyle <span class="token operator">=</span> workbook<span class="token punctuation">.</span><span class="token function">createCellStyle</span><span class="token punctuation">(</span><span class="token punctuation">)</span><span class="token punctuation">;</span>
-        headerStyle<span class="token punctuation">.</span><span class="token function">setAlignment</span><span class="token punctuation">(</span>HorizontalAlignment<span class="token punctuation">.</span>CENTER<span class="token punctuation">)</span><span class="token punctuation">;</span>
+        // 字体居中加粗样式
+        final XSSFCellStyle headerStyle = workbook.createCellStyle();
+        headerStyle.setAlignment(HorizontalAlignment.CENTER);
 
-        <span class="token keyword">final</span> XSSFFont font <span class="token operator">=</span> workbook<span class="token punctuation">.</span><span class="token function">createFont</span><span class="token punctuation">(</span><span class="token punctuation">)</span><span class="token punctuation">;</span>
-        font<span class="token punctuation">.</span><span class="token function">setBold</span><span class="token punctuation">(</span><span class="token boolean">true</span><span class="token punctuation">)</span><span class="token punctuation">;</span>
-        headerStyle<span class="token punctuation">.</span><span class="token function">setFont</span><span class="token punctuation">(</span>font<span class="token punctuation">)</span><span class="token punctuation">;</span>
+        final XSSFFont font = workbook.createFont();
+        font.setBold(true);
+        headerStyle.setFont(font);
 
-        <span class="token comment" spellcheck="true">// Sheet 分页</span>
-        <span class="token keyword">final</span> XSSFSheet sheet <span class="token operator">=</span> workbook<span class="token punctuation">.</span><span class="token function">createSheet</span><span class="token punctuation">(</span><span class="token string">"Sheet Name"</span><span class="token punctuation">)</span><span class="token punctuation">;</span>
+        // Sheet 分页
+        final XSSFSheet sheet = workbook.createSheet(&quot;Sheet Name&quot;);
 
-        <span class="token keyword">final</span> String<span class="token punctuation">[</span><span class="token punctuation">]</span> strings <span class="token operator">=</span> <span class="token keyword">new</span> <span class="token class-name">String</span><span class="token punctuation">[</span><span class="token punctuation">]</span><span class="token punctuation">{</span><span class="token string">"序号"</span><span class="token punctuation">,</span> <span class="token string">"学号"</span><span class="token punctuation">,</span> <span class="token string">"姓名"</span><span class="token punctuation">,</span> <span class="token string">"年龄"</span><span class="token punctuation">,</span> <span class="token string">"院系"</span><span class="token punctuation">,</span> <span class="token string">"班级"</span><span class="token punctuation">}</span><span class="token punctuation">;</span>
+        final String[] strings = new String[]{&quot;序号&quot;, &quot;学号&quot;, &quot;姓名&quot;, &quot;年龄&quot;, &quot;院系&quot;, &quot;班级&quot;};
 
-        <span class="token comment" spellcheck="true">// 首行内容填充，以及设置样式</span>
-        <span class="token function">setFirstRow</span><span class="token punctuation">(</span>sheet<span class="token punctuation">,</span> strings<span class="token punctuation">,</span> headerStyle<span class="token punctuation">)</span><span class="token punctuation">;</span>
+        // 首行内容填充，以及设置样式
+        setFirstRow(sheet, strings, headerStyle);
 
-        <span class="token keyword">int</span> rowSign <span class="token operator">=</span> <span class="token number">0</span><span class="token punctuation">;</span>
-        <span class="token keyword">for</span> <span class="token punctuation">(</span>user user <span class="token operator">:</span> users<span class="token punctuation">)</span> <span class="token punctuation">{</span>
+        int rowSign = 0;
+        for (user user : users) {
 
-            <span class="token comment" spellcheck="true">// Row 行</span>
-            <span class="token keyword">final</span> XSSFRow row <span class="token operator">=</span> sheet<span class="token punctuation">.</span><span class="token function">createRow</span><span class="token punctuation">(</span><span class="token operator">++</span>rowSign<span class="token punctuation">)</span><span class="token punctuation">;</span>
+            // Row 行
+            final XSSFRow row = sheet.createRow(++rowSign);
 
-            <span class="token comment" spellcheck="true">// Cell 单元格</span>
-            <span class="token keyword">final</span> XSSFCell firstCell <span class="token operator">=</span> row<span class="token punctuation">.</span><span class="token function">createCell</span><span class="token punctuation">(</span><span class="token number">0</span><span class="token punctuation">)</span><span class="token punctuation">;</span>
-            firstCell<span class="token punctuation">.</span><span class="token function">setCellValue</span><span class="token punctuation">(</span>rowSign<span class="token punctuation">)</span><span class="token punctuation">;</span>
-            firstCell<span class="token punctuation">.</span><span class="token function">setCellStyle</span><span class="token punctuation">(</span>centerStyle<span class="token punctuation">)</span><span class="token punctuation">;</span>
+            // Cell 单元格
+            final XSSFCell firstCell = row.createCell(0);
+            firstCell.setCellValue(rowSign);
+            firstCell.setCellStyle(centerStyle);
 
-            <span class="token keyword">final</span> XSSFCell secondCell <span class="token operator">=</span> row<span class="token punctuation">.</span><span class="token function">createCell</span><span class="token punctuation">(</span><span class="token number">1</span><span class="token punctuation">)</span><span class="token punctuation">;</span>
-            secondCell<span class="token punctuation">.</span><span class="token function">setCellValue</span><span class="token punctuation">(</span>user<span class="token punctuation">.</span><span class="token function">getStuNo</span><span class="token punctuation">(</span><span class="token punctuation">)</span><span class="token punctuation">)</span><span class="token punctuation">;</span>
-            secondCell<span class="token punctuation">.</span><span class="token function">setCellStyle</span><span class="token punctuation">(</span>centerStyle<span class="token punctuation">)</span><span class="token punctuation">;</span>
+            final XSSFCell secondCell = row.createCell(1);
+            secondCell.setCellValue(user.getStuNo());
+            secondCell.setCellStyle(centerStyle);
 
-            <span class="token keyword">final</span> XSSFCell thirdCell <span class="token operator">=</span> row<span class="token punctuation">.</span><span class="token function">createCell</span><span class="token punctuation">(</span><span class="token number">2</span><span class="token punctuation">)</span><span class="token punctuation">;</span>
-            thirdCell<span class="token punctuation">.</span><span class="token function">setCellValue</span><span class="token punctuation">(</span>user<span class="token punctuation">.</span><span class="token function">getName</span><span class="token punctuation">(</span><span class="token punctuation">)</span><span class="token punctuation">)</span><span class="token punctuation">;</span>
-            thirdCell<span class="token punctuation">.</span><span class="token function">setCellStyle</span><span class="token punctuation">(</span>centerStyle<span class="token punctuation">)</span><span class="token punctuation">;</span>
+            final XSSFCell thirdCell = row.createCell(2);
+            thirdCell.setCellValue(user.getName());
+            thirdCell.setCellStyle(centerStyle);
 
-            <span class="token keyword">final</span> XSSFCell fourthCell <span class="token operator">=</span> row<span class="token punctuation">.</span><span class="token function">createCell</span><span class="token punctuation">(</span><span class="token number">3</span><span class="token punctuation">)</span><span class="token punctuation">;</span>
-            fourthCell<span class="token punctuation">.</span><span class="token function">setCellValue</span><span class="token punctuation">(</span>user<span class="token punctuation">.</span><span class="token function">getAge</span><span class="token punctuation">(</span><span class="token punctuation">)</span><span class="token punctuation">)</span><span class="token punctuation">;</span>
-            fourthCell<span class="token punctuation">.</span><span class="token function">setCellStyle</span><span class="token punctuation">(</span>centerStyle<span class="token punctuation">)</span><span class="token punctuation">;</span>
+            final XSSFCell fourthCell = row.createCell(3);
+            fourthCell.setCellValue(user.getAge());
+            fourthCell.setCellStyle(centerStyle);
 
-            <span class="token keyword">final</span> XSSFCell fifthCell <span class="token operator">=</span> row<span class="token punctuation">.</span><span class="token function">createCell</span><span class="token punctuation">(</span><span class="token number">4</span><span class="token punctuation">)</span><span class="token punctuation">;</span>
-            fifthCell<span class="token punctuation">.</span><span class="token function">setCellValue</span><span class="token punctuation">(</span>user<span class="token punctuation">.</span><span class="token function">getCollege</span><span class="token punctuation">(</span><span class="token punctuation">)</span><span class="token punctuation">)</span><span class="token punctuation">;</span>
-            fifthCell<span class="token punctuation">.</span><span class="token function">setCellStyle</span><span class="token punctuation">(</span>centerStyle<span class="token punctuation">)</span><span class="token punctuation">;</span>
+            final XSSFCell fifthCell = row.createCell(4);
+            fifthCell.setCellValue(user.getCollege());
+            fifthCell.setCellStyle(centerStyle);
 
-            <span class="token keyword">final</span> XSSFCell sixthCell <span class="token operator">=</span> row<span class="token punctuation">.</span><span class="token function">createCell</span><span class="token punctuation">(</span><span class="token number">5</span><span class="token punctuation">)</span><span class="token punctuation">;</span>
-            sixthCell<span class="token punctuation">.</span><span class="token function">setCellValue</span><span class="token punctuation">(</span>user<span class="token punctuation">.</span><span class="token function">getClass</span><span class="token punctuation">(</span><span class="token punctuation">)</span><span class="token punctuation">)</span><span class="token punctuation">;</span>
-            sixthCell<span class="token punctuation">.</span><span class="token function">setCellStyle</span><span class="token punctuation">(</span>centerStyle<span class="token punctuation">)</span><span class="token punctuation">;</span>
-        <span class="token punctuation">}</span>
+            final XSSFCell sixthCell = row.createCell(5);
+            sixthCell.setCellValue(user.getClass());
+            sixthCell.setCellStyle(centerStyle);
+        }
 
-        <span class="token comment" spellcheck="true">// 宽度自适应</span>
-        <span class="token keyword">for</span> <span class="token punctuation">(</span><span class="token keyword">int</span> s <span class="token operator">=</span> <span class="token number">0</span><span class="token punctuation">;</span> s <span class="token operator">&lt;</span> strings<span class="token punctuation">.</span>length<span class="token punctuation">;</span> s<span class="token operator">++</span><span class="token punctuation">)</span> <span class="token punctuation">{</span>
-            sheet<span class="token punctuation">.</span><span class="token function">autoSizeColumn</span><span class="token punctuation">(</span>s<span class="token punctuation">)</span><span class="token punctuation">;</span>
-            sheet<span class="token punctuation">.</span><span class="token function">setColumnWidth</span><span class="token punctuation">(</span>s<span class="token punctuation">,</span> sheet<span class="token punctuation">.</span><span class="token function">getColumnWidth</span><span class="token punctuation">(</span>s<span class="token punctuation">)</span> <span class="token operator">*</span> <span class="token number">17</span> <span class="token operator">/</span> <span class="token number">10</span><span class="token punctuation">)</span><span class="token punctuation">;</span>
-        <span class="token punctuation">}</span>
+        // 宽度自适应
+        for (int s = 0; s &lt; strings.length; s++) {
+            sheet.autoSizeColumn(s);
+            sheet.setColumnWidth(s, sheet.getColumnWidth(s) * 17 / 10);
+        }
 
-        <span class="token keyword">final</span> ByteArrayOutputStream stream <span class="token operator">=</span> <span class="token keyword">new</span> <span class="token class-name">ByteArrayOutputStream</span><span class="token punctuation">(</span><span class="token punctuation">)</span><span class="token punctuation">;</span>
+        final ByteArrayOutputStream stream = new ByteArrayOutputStream();
 
-        workbook<span class="token punctuation">.</span><span class="token function">write</span><span class="token punctuation">(</span>stream<span class="token punctuation">)</span><span class="token punctuation">;</span>
+        workbook.write(stream);
 
-        <span class="token keyword">return</span> stream<span class="token punctuation">;</span>
-    <span class="token punctuation">}</span>
+        return stream;
+    }
 </code></pre>
 <p>需要注意的是，<code>每一个单元格 (Cell) 都是不能为空的</code>。</p>
 <p>我们将设置头标题的方法抽离出来，可供其他设置的方法使用。</p>
-<pre class=" language-java"><code class="language-java"><span class="token comment" spellcheck="true">/**
+<pre><code class="java">/**
  * 设置第一行的头标题
- */</span>
-<span class="token keyword">private</span> <span class="token keyword">void</span> <span class="token function">setFirstRow</span><span class="token punctuation">(</span>Sheet sheet<span class="token punctuation">,</span> String<span class="token punctuation">[</span><span class="token punctuation">]</span> cellTitles<span class="token punctuation">,</span> XSSFCellStyle headerStyle<span class="token punctuation">)</span> <span class="token punctuation">{</span>
-    <span class="token keyword">final</span> Row row <span class="token operator">=</span> sheet<span class="token punctuation">.</span><span class="token function">createRow</span><span class="token punctuation">(</span><span class="token number">0</span><span class="token punctuation">)</span><span class="token punctuation">;</span>
+ */
+private void setFirstRow(Sheet sheet, String[] cellTitles, XSSFCellStyle headerStyle) {
+    final Row row = sheet.createRow(0);
 
-    <span class="token keyword">int</span> cellSign <span class="token operator">=</span> <span class="token number">0</span><span class="token punctuation">;</span>
+    int cellSign = 0;
 
-    <span class="token keyword">for</span> <span class="token punctuation">(</span>String cellName <span class="token operator">:</span> cellTitles<span class="token punctuation">)</span> <span class="token punctuation">{</span>
-        <span class="token keyword">final</span> Cell cell <span class="token operator">=</span> row<span class="token punctuation">.</span><span class="token function">createCell</span><span class="token punctuation">(</span>cellSign<span class="token operator">++</span><span class="token punctuation">)</span><span class="token punctuation">;</span>
-        cell<span class="token punctuation">.</span><span class="token function">setCellValue</span><span class="token punctuation">(</span>cellName<span class="token punctuation">)</span><span class="token punctuation">;</span>
-        cell<span class="token punctuation">.</span><span class="token function">setCellStyle</span><span class="token punctuation">(</span>headerStyle<span class="token punctuation">)</span><span class="token punctuation">;</span>
-    <span class="token punctuation">}</span>
-<span class="token punctuation">}</span>
+    for (String cellName : cellTitles) {
+        final Cell cell = row.createCell(cellSign++);
+        cell.setCellValue(cellName);
+        cell.setCellStyle(headerStyle);
+    }
+}
 </code></pre>
 <p>在做完前面的工作之后，我们就可以开始写测试方法了</p>
 <h3 id="uploadWorkbook方法"><a href="#uploadWorkbook方法" class="headerlink" title="uploadWorkbook方法"></a><code>uploadWorkbook</code>方法</h3><p>该方法用于：<code>接收 Workbook 生成的流，并将其保存至 OSS 上</code>，本方法适用于 <code>aliyun</code> 的 <code>OSS 对象存储</code>，其他的具体实现都可以从官方API中查到。</p>
-<pre class=" language-java"><code class="language-java"><span class="token keyword">private</span> String <span class="token function">uploadWorkbook</span><span class="token punctuation">(</span>ByteArrayOutputStream stream<span class="token punctuation">,</span> String fileId<span class="token punctuation">)</span> <span class="token keyword">throws</span> IOException <span class="token punctuation">{</span>
-    <span class="token keyword">final</span> ByteArrayInputStream inputStream <span class="token operator">=</span> <span class="token keyword">new</span> <span class="token class-name">ByteArrayInputStream</span><span class="token punctuation">(</span>stream<span class="token punctuation">.</span><span class="token function">toByteArray</span><span class="token punctuation">(</span><span class="token punctuation">)</span><span class="token punctuation">)</span><span class="token punctuation">;</span> <span class="token comment" spellcheck="true">// ①</span>
+<pre><code class="java">private String uploadWorkbook(ByteArrayOutputStream stream, String fileId) throws IOException {
+    final ByteArrayInputStream inputStream = new ByteArrayInputStream(stream.toByteArray()); // ①
 
-    ObjectMetadata objectMetadata <span class="token operator">=</span> <span class="token keyword">new</span> <span class="token class-name">ObjectMetadata</span><span class="token punctuation">(</span><span class="token punctuation">)</span><span class="token punctuation">;</span>
-    objectMetadata<span class="token punctuation">.</span><span class="token function">setContentLength</span><span class="token punctuation">(</span>stream<span class="token punctuation">.</span><span class="token function">size</span><span class="token punctuation">(</span><span class="token punctuation">)</span><span class="token punctuation">)</span><span class="token punctuation">;</span>
-    objectMetadata<span class="token punctuation">.</span><span class="token function">setContentEncoding</span><span class="token punctuation">(</span><span class="token string">"utf-8"</span><span class="token punctuation">)</span><span class="token punctuation">;</span>
-    objectMetadata<span class="token punctuation">.</span><span class="token function">setCacheControl</span><span class="token punctuation">(</span><span class="token string">"no-cache"</span><span class="token punctuation">)</span><span class="token punctuation">;</span>
-    objectMetadata<span class="token punctuation">.</span><span class="token function">setHeader</span><span class="token punctuation">(</span><span class="token string">"Pragma"</span><span class="token punctuation">,</span> <span class="token string">"no-cache"</span><span class="token punctuation">)</span><span class="token punctuation">;</span>
-    objectMetadata<span class="token punctuation">.</span><span class="token function">setContentDisposition</span><span class="token punctuation">(</span><span class="token string">"inline;filename="</span> <span class="token operator">+</span> <span class="token string">"学生表数据.xlsx"</span><span class="token punctuation">)</span><span class="token punctuation">;</span> <span class="token comment" spellcheck="true">// ②</span>
+    ObjectMetadata objectMetadata = new ObjectMetadata();
+    objectMetadata.setContentLength(stream.size());
+    objectMetadata.setContentEncoding(&quot;utf-8&quot;);
+    objectMetadata.setCacheControl(&quot;no-cache&quot;);
+    objectMetadata.setHeader(&quot;Pragma&quot;, &quot;no-cache&quot;);
+    objectMetadata.setContentDisposition(&quot;inline;filename=&quot; + &quot;学生表数据.xlsx&quot;); // ②
 
-    <span class="token keyword">return</span> ossCore<span class="token punctuation">.</span><span class="token function">uploadByStream</span><span class="token punctuation">(</span>fileId<span class="token punctuation">,</span> objectMetadata<span class="token punctuation">,</span> inputStream<span class="token punctuation">)</span><span class="token punctuation">;</span> <span class="token comment" spellcheck="true">// ③</span>
-<span class="token punctuation">}</span>
+    return ossCore.uploadByStream(fileId, objectMetadata, inputStream); // ③
+}
 </code></pre>
 <ol>
 <li>将输出流转换为输入流</li>
@@ -536,75 +536,75 @@ compile group<span class="token operator">:</span> <span class="token string">'o
 <li>上传至 <code>aliyun</code> 的 <code>OSS</code> 对象存储，具体实现可以看 <a href="#四、上传至OSS等对象存储"><code>第四部分</code></a></li>
 </ol>
 <h2 id="三、设置Excel单元格样式"><a href="#三、设置Excel单元格样式" class="headerlink" title="三、设置Excel单元格样式"></a>三、设置Excel单元格样式</h2><p>创建sheet</p>
-<pre class=" language-java"><code class="language-java">HSSFCellStyle cellStyle <span class="token operator">=</span> wb<span class="token punctuation">.</span><span class="token function">createCellStyle</span><span class="token punctuation">(</span><span class="token punctuation">)</span><span class="token punctuation">;</span>  
+<pre><code class="java">HSSFCellStyle cellStyle = wb.createCellStyle();  
 </code></pre>
 <p> 一、设置背景色:</p>
-<pre class=" language-java"><code class="language-java">cellStyle<span class="token punctuation">.</span><span class="token function">setFillForegroundColor</span><span class="token punctuation">(</span><span class="token punctuation">(</span><span class="token keyword">short</span><span class="token punctuation">)</span> <span class="token number">13</span><span class="token punctuation">)</span><span class="token punctuation">;</span><span class="token comment" spellcheck="true">// 设置背景色  </span>
-cellStyle<span class="token punctuation">.</span><span class="token function">setFillPattern</span><span class="token punctuation">(</span>HSSFCellStyle<span class="token punctuation">.</span>SOLID_FOREGROUND<span class="token punctuation">)</span><span class="token punctuation">;</span>  
+<pre><code class="java">cellStyle.setFillForegroundColor((short) 13);// 设置背景色  
+cellStyle.setFillPattern(HSSFCellStyle.SOLID_FOREGROUND);  
 </code></pre>
 <p>二、设置边框:</p>
-<pre class=" language-java"><code class="language-java">cellStyle<span class="token punctuation">.</span><span class="token function">setBorderBottom</span><span class="token punctuation">(</span>HSSFCellStyle<span class="token punctuation">.</span>BORDER_THIN<span class="token punctuation">)</span><span class="token punctuation">;</span> <span class="token comment" spellcheck="true">//下边框  </span>
-cellStyle<span class="token punctuation">.</span><span class="token function">setBorderLeft</span><span class="token punctuation">(</span>HSSFCellStyle<span class="token punctuation">.</span>BORDER_THIN<span class="token punctuation">)</span><span class="token punctuation">;</span><span class="token comment" spellcheck="true">//左边框  </span>
-cellStyle<span class="token punctuation">.</span><span class="token function">setBorderTop</span><span class="token punctuation">(</span>HSSFCellStyle<span class="token punctuation">.</span>BORDER_THIN<span class="token punctuation">)</span><span class="token punctuation">;</span><span class="token comment" spellcheck="true">//上边框  </span>
-cellStyle<span class="token punctuation">.</span><span class="token function">setBorderRight</span><span class="token punctuation">(</span>HSSFCellStyle<span class="token punctuation">.</span>BORDER_THIN<span class="token punctuation">)</span><span class="token punctuation">;</span><span class="token comment" spellcheck="true">//右边框  </span>
+<pre><code class="java">cellStyle.setBorderBottom(HSSFCellStyle.BORDER_THIN); //下边框  
+cellStyle.setBorderLeft(HSSFCellStyle.BORDER_THIN);//左边框  
+cellStyle.setBorderTop(HSSFCellStyle.BORDER_THIN);//上边框  
+cellStyle.setBorderRight(HSSFCellStyle.BORDER_THIN);//右边框  
 </code></pre>
 <p>三、设置居中:</p>
-<pre class=" language-java"><code class="language-java">cellStyle<span class="token punctuation">.</span><span class="token function">setAlignment</span><span class="token punctuation">(</span>HSSFCellStyle<span class="token punctuation">.</span>ALIGN_CENTER<span class="token punctuation">)</span><span class="token punctuation">;</span> <span class="token comment" spellcheck="true">// 居中  </span>
+<pre><code class="java">cellStyle.setAlignment(HSSFCellStyle.ALIGN_CENTER); // 居中  
 </code></pre>
 <p>四、设置字体:</p>
-<pre class=" language-java"><code class="language-java">HSSFFont font <span class="token operator">=</span> wb<span class="token punctuation">.</span><span class="token function">createFont</span><span class="token punctuation">(</span><span class="token punctuation">)</span><span class="token punctuation">;</span>  
-font<span class="token punctuation">.</span><span class="token function">setFontName</span><span class="token punctuation">(</span><span class="token string">"黑体"</span><span class="token punctuation">)</span><span class="token punctuation">;</span>  
-font<span class="token punctuation">.</span><span class="token function">setFontHeightInPoints</span><span class="token punctuation">(</span><span class="token punctuation">(</span><span class="token keyword">short</span><span class="token punctuation">)</span> <span class="token number">16</span><span class="token punctuation">)</span><span class="token punctuation">;</span><span class="token comment" spellcheck="true">//设置字体大小  </span>
+<pre><code class="java">HSSFFont font = wb.createFont();  
+font.setFontName(&quot;黑体&quot;);  
+font.setFontHeightInPoints((short) 16);//设置字体大小  
 
-HSSFFont font2 <span class="token operator">=</span> wb<span class="token punctuation">.</span><span class="token function">createFont</span><span class="token punctuation">(</span><span class="token punctuation">)</span><span class="token punctuation">;</span>  
-font2<span class="token punctuation">.</span><span class="token function">setFontName</span><span class="token punctuation">(</span><span class="token string">"仿宋_GB2312"</span><span class="token punctuation">)</span><span class="token punctuation">;</span>  
-font2<span class="token punctuation">.</span><span class="token function">setBoldweight</span><span class="token punctuation">(</span>HSSFFont<span class="token punctuation">.</span>BOLDWEIGHT_BOLD<span class="token punctuation">)</span><span class="token punctuation">;</span><span class="token comment" spellcheck="true">//粗体显示  </span>
-font2<span class="token punctuation">.</span><span class="token function">setFontHeightInPoints</span><span class="token punctuation">(</span><span class="token punctuation">(</span><span class="token keyword">short</span><span class="token punctuation">)</span> <span class="token number">12</span><span class="token punctuation">)</span><span class="token punctuation">;</span>  
+HSSFFont font2 = wb.createFont();  
+font2.setFontName(&quot;仿宋_GB2312&quot;);  
+font2.setBoldweight(HSSFFont.BOLDWEIGHT_BOLD);//粗体显示  
+font2.setFontHeightInPoints((short) 12);  
 
-cellStyle<span class="token punctuation">.</span><span class="token function">setFont</span><span class="token punctuation">(</span>font<span class="token punctuation">)</span><span class="token punctuation">;</span><span class="token comment" spellcheck="true">//选择需要用到的字体格式  </span>
+cellStyle.setFont(font);//选择需要用到的字体格式  
 </code></pre>
 <p>五、设置列宽:</p>
-<pre class=" language-java"><code class="language-java">sheet<span class="token punctuation">.</span><span class="token function">setColumnWidth</span><span class="token punctuation">(</span><span class="token number">0</span><span class="token punctuation">,</span> <span class="token number">3766</span><span class="token punctuation">)</span><span class="token punctuation">;</span> <span class="token comment" spellcheck="true">//第一个参数代表列id(从0开始),第2个参数代表宽度值  参考 ："2012-08-10"的宽度为2500  </span>
+<pre><code class="java">sheet.setColumnWidth(0, 3766); //第一个参数代表列id(从0开始),第2个参数代表宽度值  参考 ：&quot;2012-08-10&quot;的宽度为2500  
 </code></pre>
 <p>六、设置自动换行:</p>
-<pre class=" language-java"><code class="language-java">cellStyle<span class="token punctuation">.</span><span class="token function">setWrapText</span><span class="token punctuation">(</span><span class="token boolean">true</span><span class="token punctuation">)</span><span class="token punctuation">;</span><span class="token comment" spellcheck="true">//设置自动换行  </span>
+<pre><code class="java">cellStyle.setWrapText(true);//设置自动换行  
 </code></pre>
 <p>七、合并单元格:</p>
-<pre class=" language-java"><code class="language-java">Region region1 <span class="token operator">=</span> <span class="token keyword">new</span> <span class="token class-name">Region</span><span class="token punctuation">(</span><span class="token number">0</span><span class="token punctuation">,</span> <span class="token punctuation">(</span><span class="token keyword">short</span><span class="token punctuation">)</span> <span class="token number">0</span><span class="token punctuation">,</span> <span class="token number">0</span><span class="token punctuation">,</span> <span class="token punctuation">(</span><span class="token keyword">short</span><span class="token punctuation">)</span> <span class="token number">6</span><span class="token punctuation">)</span><span class="token punctuation">;</span><span class="token comment" spellcheck="true">//参数1：行号 参数2：起始列号 参数3：行号 参数4：终止列号</span>
-<span class="token comment" spellcheck="true">//此方法在POI3.8中已经被废弃，建议使用下面一个  </span>
+<pre><code class="java">Region region1 = new Region(0, (short) 0, 0, (short) 6);//参数1：行号 参数2：起始列号 参数3：行号 参数4：终止列号
+//此方法在POI3.8中已经被废弃，建议使用下面一个  
 或者用
 
-CellRangeAddress region1 <span class="token operator">=</span> <span class="token keyword">new</span> <span class="token class-name">CellRangeAddress</span><span class="token punctuation">(</span>rowNumber<span class="token punctuation">,</span> rowNumber<span class="token punctuation">,</span> <span class="token punctuation">(</span><span class="token keyword">short</span><span class="token punctuation">)</span> <span class="token number">0</span><span class="token punctuation">,</span> <span class="token punctuation">(</span><span class="token keyword">short</span><span class="token punctuation">)</span> <span class="token number">11</span><span class="token punctuation">)</span><span class="token punctuation">;</span>
+CellRangeAddress region1 = new CellRangeAddress(rowNumber, rowNumber, (short) 0, (short) 11);
 
-<span class="token comment" spellcheck="true">//参数1：起始行 参数2：终止行 参数3：起始列 参数4：终止列</span>
+//参数1：起始行 参数2：终止行 参数3：起始列 参数4：终止列
 但应注意两个构造方法的参数不是一样的，具体使用哪个取决于POI的不同版本。
 
 
-sheet<span class="token punctuation">.</span><span class="token function">addMergedRegion</span><span class="token punctuation">(</span>region1<span class="token punctuation">)</span><span class="token punctuation">;</span>
+sheet.addMergedRegion(region1);
 </code></pre>
 <h2 id="四、上传至OSS等对象存储"><a href="#四、上传至OSS等对象存储" class="headerlink" title="四、上传至OSS等对象存储"></a>四、上传至OSS等对象存储</h2><p>作用：<code>上传 stream流 至 OSS</code></p>
-<pre class=" language-java"><code class="language-java"><span class="token keyword">public</span> String <span class="token function">uploadByStream</span><span class="token punctuation">(</span>String fileId<span class="token punctuation">,</span> ObjectMetadata metadata<span class="token punctuation">,</span> InputStream in<span class="token punctuation">)</span> <span class="token punctuation">{</span>
-        String ossUrl <span class="token operator">=</span> null<span class="token punctuation">;</span>
-        OSSClient ossClient <span class="token operator">=</span> <span class="token keyword">new</span> <span class="token class-name">OSSClient</span><span class="token punctuation">(</span>ENDPOINT<span class="token punctuation">,</span> ACCESS_KEY_ID<span class="token punctuation">,</span> ACCESS_KEY_SECRET<span class="token punctuation">)</span><span class="token punctuation">;</span>
-        ossClientMap<span class="token punctuation">.</span><span class="token function">put</span><span class="token punctuation">(</span>fileId<span class="token punctuation">,</span> ossClient<span class="token punctuation">)</span><span class="token punctuation">;</span>
-        <span class="token keyword">try</span> <span class="token punctuation">{</span>
-            <span class="token function">putUploadProgress</span><span class="token punctuation">(</span>fileId<span class="token punctuation">,</span> <span class="token number">0</span><span class="token punctuation">)</span><span class="token punctuation">;</span>
-            PutObjectRequest req <span class="token operator">=</span> <span class="token keyword">new</span> <span class="token class-name">PutObjectRequest</span><span class="token punctuation">(</span>OssConnectionUtil<span class="token punctuation">.</span><span class="token function">getBucketName</span><span class="token punctuation">(</span><span class="token punctuation">)</span><span class="token punctuation">,</span> fileId<span class="token punctuation">,</span> in<span class="token punctuation">,</span> metadata<span class="token punctuation">)</span><span class="token punctuation">;</span>
-            req<span class="token punctuation">.</span><span class="token function">setProgressListener</span><span class="token punctuation">(</span><span class="token keyword">new</span> <span class="token class-name">UploadProgressListener</span><span class="token punctuation">(</span>req<span class="token punctuation">)</span><span class="token punctuation">)</span><span class="token punctuation">;</span>
-            PutObjectResult putResult <span class="token operator">=</span> ossClient<span class="token punctuation">.</span><span class="token function">putObject</span><span class="token punctuation">(</span>req<span class="token punctuation">)</span><span class="token punctuation">;</span>
-            <span class="token keyword">if</span> <span class="token punctuation">(</span>putResult<span class="token punctuation">.</span><span class="token function">getETag</span><span class="token punctuation">(</span><span class="token punctuation">)</span> <span class="token operator">!=</span> null<span class="token punctuation">)</span> <span class="token punctuation">{</span>
-                ossUrl <span class="token operator">=</span>  <span class="token function">getOssURL</span><span class="token punctuation">(</span>ossClient<span class="token punctuation">,</span> fileId<span class="token punctuation">)</span><span class="token punctuation">;</span>
-            <span class="token punctuation">}</span>
-            <span class="token keyword">return</span> ossUrl<span class="token punctuation">;</span>
-        <span class="token punctuation">}</span> <span class="token keyword">catch</span><span class="token punctuation">(</span>ClientException ce<span class="token punctuation">)</span> <span class="token punctuation">{</span>
-            <span class="token keyword">return</span> null<span class="token punctuation">;</span>
-        <span class="token punctuation">}</span> <span class="token keyword">catch</span> <span class="token punctuation">(</span><span class="token class-name">Exception</span> e<span class="token punctuation">)</span> <span class="token punctuation">{</span>
-            <span class="token keyword">return</span> null<span class="token punctuation">;</span>
-        <span class="token punctuation">}</span> <span class="token keyword">finally</span> <span class="token punctuation">{</span>
-            ossClient<span class="token punctuation">.</span><span class="token function">shutdown</span><span class="token punctuation">(</span><span class="token punctuation">)</span><span class="token punctuation">;</span>
-            ossClientMap<span class="token punctuation">.</span><span class="token function">remove</span><span class="token punctuation">(</span>fileId<span class="token punctuation">)</span><span class="token punctuation">;</span>
-        <span class="token punctuation">}</span>
-    <span class="token punctuation">}</span>
+<pre><code class="java">public String uploadByStream(String fileId, ObjectMetadata metadata, InputStream in) {
+        String ossUrl = null;
+        OSSClient ossClient = new OSSClient(ENDPOINT, ACCESS_KEY_ID, ACCESS_KEY_SECRET);
+        ossClientMap.put(fileId, ossClient);
+        try {
+            putUploadProgress(fileId, 0);
+            PutObjectRequest req = new PutObjectRequest(OssConnectionUtil.getBucketName(), fileId, in, metadata);
+            req.setProgressListener(new UploadProgressListener(req));
+            PutObjectResult putResult = ossClient.putObject(req);
+            if (putResult.getETag() != null) {
+                ossUrl =  getOssURL(ossClient, fileId);
+            }
+            return ossUrl;
+        } catch(ClientException ce) {
+            return null;
+        } catch (Exception e) {
+            return null;
+        } finally {
+            ossClient.shutdown();
+            ossClientMap.remove(fileId);
+        }
+    }
 </code></pre>
 
       
@@ -638,8 +638,8 @@ sheet<span class="token punctuation">.</span><span class="token function">addMer
         <div class="post-nav">
           <div class="post-nav-next post-nav-item">
             
-              <a href="/2018/09/29/java/regex/" rel="next" title="正则表达式">
-                <i class="fa fa-chevron-left"></i> 正则表达式
+              <a href="/2018/09/29/java/DB-MySQL常用命令/" rel="next" title="模拟Ping">
+                <i class="fa fa-chevron-left"></i> 模拟Ping
               </a>
             
           </div>
@@ -648,8 +648,8 @@ sheet<span class="token punctuation">.</span><span class="token function">addMer
 
           <div class="post-nav-prev post-nav-item">
             
-              <a href="/2018/09/29/java/模拟Ping获取IP响应时间/" rel="prev" title="模拟Ping">
-                模拟Ping <i class="fa fa-chevron-right"></i>
+              <a href="/2018/09/29/java/regex/" rel="prev" title="正则表达式">
+                正则表达式 <i class="fa fa-chevron-right"></i>
               </a>
             
           </div>
@@ -731,7 +731,7 @@ sheet<span class="token punctuation">.</span><span class="token function">addMer
               
                 <a href="/archives">
               
-                  <span class="site-state-item-count">224</span>
+                  <span class="site-state-item-count">237</span>
                   <span class="site-state-item-name">日志</span>
                 </a>
               </div>
@@ -753,7 +753,7 @@ sheet<span class="token punctuation">.</span><span class="token function">addMer
               
               <div class="site-state-item site-state-tags">
                 <a href="/tags/index.html">
-                  <span class="site-state-item-count">21</span>
+                  <span class="site-state-item-count">22</span>
                   <span class="site-state-item-name">标签</span>
                 </a>
               </div>

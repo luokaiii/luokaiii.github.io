@@ -385,35 +385,35 @@
 
       
         <h1 id="第一章-简单工厂模式"><a href="#第一章-简单工厂模式" class="headerlink" title="第一章 简单工厂模式"></a>第一章 简单工厂模式</h1><h2 id="一、设计图表库"><a href="#一、设计图表库" class="headerlink" title="一、设计图表库"></a>一、设计图表库</h2><p>设计一个图表库，用于为系统提供各种不同外观的图表，如柱状图、饼状图、折线图等。</p>
-<h3 id="1-1-初步设计"><a href="#1-1-初步设计" class="headerlink" title="1.1 初步设计"></a>1.1 初步设计</h3><pre class=" language-java"><code class="language-java"><span class="token keyword">public</span> <span class="token keyword">class</span> <span class="token class-name">Chart</span> <span class="token punctuation">{</span>
+<h3 id="1-1-初步设计"><a href="#1-1-初步设计" class="headerlink" title="1.1 初步设计"></a>1.1 初步设计</h3><pre><code class="java">public class Chart {
 
-    <span class="token keyword">private</span> String type<span class="token punctuation">;</span> <span class="token comment" spellcheck="true">// 图表类型</span>
+    private String type; // 图表类型
 
-    <span class="token keyword">public</span> <span class="token function">Chart</span><span class="token punctuation">(</span>Object<span class="token punctuation">[</span><span class="token punctuation">]</span><span class="token punctuation">[</span><span class="token punctuation">]</span> data<span class="token punctuation">,</span> String type<span class="token punctuation">)</span> <span class="token punctuation">{</span>
-        <span class="token keyword">this</span><span class="token punctuation">.</span>type <span class="token operator">=</span> type<span class="token punctuation">;</span>
-        <span class="token keyword">if</span> <span class="token punctuation">(</span>type<span class="token punctuation">.</span><span class="token function">equalsIgnoreCase</span><span class="token punctuation">(</span><span class="token string">"histogram"</span><span class="token punctuation">)</span><span class="token punctuation">)</span> <span class="token punctuation">{</span>
-            <span class="token comment" spellcheck="true">// 初始化柱状图</span>
-        <span class="token punctuation">}</span>
-        <span class="token keyword">if</span> <span class="token punctuation">(</span>type<span class="token punctuation">.</span><span class="token function">equalsIgnoreCase</span><span class="token punctuation">(</span><span class="token string">"pie"</span><span class="token punctuation">)</span><span class="token punctuation">)</span> <span class="token punctuation">{</span>
-            <span class="token comment" spellcheck="true">// 初始化饼状图</span>
-        <span class="token punctuation">}</span>
-        <span class="token keyword">if</span> <span class="token punctuation">(</span>type<span class="token punctuation">.</span><span class="token function">equalsIgnoreCase</span><span class="token punctuation">(</span><span class="token string">"line"</span><span class="token punctuation">)</span><span class="token punctuation">)</span> <span class="token punctuation">{</span>
-            <span class="token comment" spellcheck="true">// 初始化折线图</span>
-        <span class="token punctuation">}</span>
-    <span class="token punctuation">}</span>
+    public Chart(Object[][] data, String type) {
+        this.type = type;
+        if (type.equalsIgnoreCase(&quot;histogram&quot;)) {
+            // 初始化柱状图
+        }
+        if (type.equalsIgnoreCase(&quot;pie&quot;)) {
+            // 初始化饼状图
+        }
+        if (type.equalsIgnoreCase(&quot;line&quot;)) {
+            // 初始化折线图
+        }
+    }
 
-    <span class="token keyword">public</span> <span class="token keyword">void</span> <span class="token function">display</span><span class="token punctuation">(</span><span class="token punctuation">)</span> <span class="token punctuation">{</span>
-        <span class="token keyword">if</span> <span class="token punctuation">(</span>type<span class="token punctuation">.</span><span class="token function">equalsIgnoreCase</span><span class="token punctuation">(</span><span class="token string">"histogram"</span><span class="token punctuation">)</span><span class="token punctuation">)</span> <span class="token punctuation">{</span>
-            <span class="token comment" spellcheck="true">// 显示柱状图</span>
-        <span class="token punctuation">}</span>
-        <span class="token keyword">if</span> <span class="token punctuation">(</span>type<span class="token punctuation">.</span><span class="token function">equalsIgnoreCase</span><span class="token punctuation">(</span><span class="token string">"pie"</span><span class="token punctuation">)</span><span class="token punctuation">)</span> <span class="token punctuation">{</span>
-            <span class="token comment" spellcheck="true">// 显示饼状图</span>
-        <span class="token punctuation">}</span>
-        <span class="token keyword">if</span> <span class="token punctuation">(</span>type<span class="token punctuation">.</span><span class="token function">equalsIgnoreCase</span><span class="token punctuation">(</span><span class="token string">"line"</span><span class="token punctuation">)</span><span class="token punctuation">)</span> <span class="token punctuation">{</span>
-            <span class="token comment" spellcheck="true">// 显示折线图</span>
-        <span class="token punctuation">}</span>
-    <span class="token punctuation">}</span>
-<span class="token punctuation">}</span>
+    public void display() {
+        if (type.equalsIgnoreCase(&quot;histogram&quot;)) {
+            // 显示柱状图
+        }
+        if (type.equalsIgnoreCase(&quot;pie&quot;)) {
+            // 显示饼状图
+        }
+        if (type.equalsIgnoreCase(&quot;line&quot;)) {
+            // 显示折线图
+        }
+    }
+}
 </code></pre>
 <h3 id="1-2-存在的问题"><a href="#1-2-存在的问题" class="headerlink" title="1.2 存在的问题"></a>1.2 存在的问题</h3><p>该类在设计时存在如下几个问题：</p>
 <ol>
@@ -449,78 +449,78 @@
 </ol>
 </li>
 </ol>
-<h2 id="三、具体实现"><a href="#三、具体实现" class="headerlink" title="三、具体实现"></a>三、具体实现</h2><h3 id="3-1-产品抽象类"><a href="#3-1-产品抽象类" class="headerlink" title="3.1 产品抽象类"></a>3.1 产品抽象类</h3><pre class=" language-java"><code class="language-java"><span class="token comment" spellcheck="true">/**
+<h2 id="三、具体实现"><a href="#三、具体实现" class="headerlink" title="三、具体实现"></a>三、具体实现</h2><h3 id="3-1-产品抽象类"><a href="#3-1-产品抽象类" class="headerlink" title="3.1 产品抽象类"></a>3.1 产品抽象类</h3><pre><code class="java">/**
  * 使用简单工厂模式时，需要先对产品类进行重构
  * 根据实际情况设计一个产品层次结构，将所有产品类公共的代码移至抽象类，并声明一些抽象方法供具体产品类类实现
- */</span>
-<span class="token keyword">public</span> <span class="token keyword">interface</span> <span class="token class-name">Chart</span> <span class="token punctuation">{</span>
-    <span class="token keyword">void</span> <span class="token function">display</span><span class="token punctuation">(</span><span class="token punctuation">)</span><span class="token punctuation">;</span>
-<span class="token punctuation">}</span>
+ */
+public interface Chart {
+    void display();
+}
 </code></pre>
-<h3 id="3-2-具体产品类"><a href="#3-2-具体产品类" class="headerlink" title="3.2 具体产品类"></a>3.2 具体产品类</h3><pre class=" language-java"><code class="language-java"><span class="token comment" spellcheck="true">/**
+<h3 id="3-2-具体产品类"><a href="#3-2-具体产品类" class="headerlink" title="3.2 具体产品类"></a>3.2 具体产品类</h3><pre><code class="java">/**
  * 具体产品类实现了抽象产品类中声明的抽象业务方法，不同的具体产品类可以提供不同的实现
- */</span>
-<span class="token keyword">public</span> <span class="token keyword">class</span> <span class="token class-name">HistogramChart</span> <span class="token keyword">implements</span> <span class="token class-name">Chart</span> <span class="token punctuation">{</span>
-    <span class="token keyword">public</span> <span class="token function">HistogramChart</span><span class="token punctuation">(</span><span class="token punctuation">)</span> <span class="token punctuation">{</span>
-        System<span class="token punctuation">.</span>out<span class="token punctuation">.</span><span class="token function">println</span><span class="token punctuation">(</span><span class="token string">"生成柱状图"</span><span class="token punctuation">)</span><span class="token punctuation">;</span>
-    <span class="token punctuation">}</span>
+ */
+public class HistogramChart implements Chart {
+    public HistogramChart() {
+        System.out.println(&quot;生成柱状图&quot;);
+    }
 
-    <span class="token annotation punctuation">@Override</span>
-    <span class="token keyword">public</span> <span class="token keyword">void</span> <span class="token function">display</span><span class="token punctuation">(</span><span class="token punctuation">)</span> <span class="token punctuation">{</span>
-        System<span class="token punctuation">.</span>out<span class="token punctuation">.</span><span class="token function">println</span><span class="token punctuation">(</span><span class="token string">"显示柱状图"</span><span class="token punctuation">)</span><span class="token punctuation">;</span>
-    <span class="token punctuation">}</span>
-<span class="token punctuation">}</span>
+    @Override
+    public void display() {
+        System.out.println(&quot;显示柱状图&quot;);
+    }
+}
 
-<span class="token keyword">public</span> <span class="token keyword">class</span> <span class="token class-name">LineChart</span> <span class="token keyword">implements</span> <span class="token class-name">Chart</span> <span class="token punctuation">{</span>
-    <span class="token keyword">public</span> <span class="token function">LineChart</span><span class="token punctuation">(</span><span class="token punctuation">)</span> <span class="token punctuation">{</span>
-        System<span class="token punctuation">.</span>out<span class="token punctuation">.</span><span class="token function">println</span><span class="token punctuation">(</span><span class="token string">"生成折线图"</span><span class="token punctuation">)</span><span class="token punctuation">;</span>
-    <span class="token punctuation">}</span>
+public class LineChart implements Chart {
+    public LineChart() {
+        System.out.println(&quot;生成折线图&quot;);
+    }
 
-    <span class="token annotation punctuation">@Override</span>
-    <span class="token keyword">public</span> <span class="token keyword">void</span> <span class="token function">display</span><span class="token punctuation">(</span><span class="token punctuation">)</span> <span class="token punctuation">{</span>
-        System<span class="token punctuation">.</span>out<span class="token punctuation">.</span><span class="token function">println</span><span class="token punctuation">(</span><span class="token string">"显示折线图"</span><span class="token punctuation">)</span><span class="token punctuation">;</span>
-    <span class="token punctuation">}</span>
-<span class="token punctuation">}</span>
+    @Override
+    public void display() {
+        System.out.println(&quot;显示折线图&quot;);
+    }
+}
 
-<span class="token keyword">public</span> <span class="token keyword">class</span> <span class="token class-name">PieChart</span> <span class="token keyword">implements</span> <span class="token class-name">Chart</span> <span class="token punctuation">{</span>
-    <span class="token keyword">public</span> <span class="token function">PieChart</span><span class="token punctuation">(</span><span class="token punctuation">)</span> <span class="token punctuation">{</span>
-        System<span class="token punctuation">.</span>out<span class="token punctuation">.</span><span class="token function">println</span><span class="token punctuation">(</span><span class="token string">"生成饼状图"</span><span class="token punctuation">)</span><span class="token punctuation">;</span>
-    <span class="token punctuation">}</span>
+public class PieChart implements Chart {
+    public PieChart() {
+        System.out.println(&quot;生成饼状图&quot;);
+    }
 
-    <span class="token annotation punctuation">@Override</span>
-    <span class="token keyword">public</span> <span class="token keyword">void</span> <span class="token function">display</span><span class="token punctuation">(</span><span class="token punctuation">)</span> <span class="token punctuation">{</span>
-        System<span class="token punctuation">.</span>out<span class="token punctuation">.</span><span class="token function">println</span><span class="token punctuation">(</span><span class="token string">"显示饼状图"</span><span class="token punctuation">)</span><span class="token punctuation">;</span>
-    <span class="token punctuation">}</span>
-<span class="token punctuation">}</span>
+    @Override
+    public void display() {
+        System.out.println(&quot;显示饼状图&quot;);
+    }
+}
 </code></pre>
-<h3 id="3-3-工厂方法类"><a href="#3-3-工厂方法类" class="headerlink" title="3.3 工厂方法类"></a>3.3 工厂方法类</h3><pre class=" language-java"><code class="language-java"><span class="token comment" spellcheck="true">/**
+<h3 id="3-3-工厂方法类"><a href="#3-3-工厂方法类" class="headerlink" title="3.3 工厂方法类"></a>3.3 工厂方法类</h3><pre><code class="java">/**
  * 简单工厂模式的核心就是工厂类
  * 通过工厂类的静态工厂方法来创建具体产品对象，而非直接通过new来创建产品对象
- */</span>
-<span class="token keyword">public</span> <span class="token keyword">class</span> <span class="token class-name">ChartFactory</span> <span class="token punctuation">{</span>
-    <span class="token keyword">public</span> <span class="token keyword">static</span> Chart <span class="token function">getChart</span><span class="token punctuation">(</span>String type<span class="token punctuation">)</span> <span class="token punctuation">{</span>
-        <span class="token keyword">switch</span> <span class="token punctuation">(</span>type<span class="token punctuation">)</span> <span class="token punctuation">{</span>
-            <span class="token keyword">case</span> <span class="token string">"histogram"</span><span class="token operator">:</span>
-                <span class="token keyword">return</span> <span class="token keyword">new</span> <span class="token class-name">HistogramChart</span><span class="token punctuation">(</span><span class="token punctuation">)</span><span class="token punctuation">;</span>
-            <span class="token keyword">case</span> <span class="token string">"pic"</span><span class="token operator">:</span>
-                <span class="token keyword">return</span> <span class="token keyword">new</span> <span class="token class-name">PieChart</span><span class="token punctuation">(</span><span class="token punctuation">)</span><span class="token punctuation">;</span>
-            <span class="token keyword">case</span> <span class="token string">"line"</span><span class="token operator">:</span>
-                <span class="token keyword">return</span> <span class="token keyword">new</span> <span class="token class-name">LineChart</span><span class="token punctuation">(</span><span class="token punctuation">)</span><span class="token punctuation">;</span>
-            <span class="token keyword">default</span><span class="token operator">:</span>
-                <span class="token keyword">return</span> null<span class="token punctuation">;</span>
-        <span class="token punctuation">}</span>
-    <span class="token punctuation">}</span>
-<span class="token punctuation">}</span>
+ */
+public class ChartFactory {
+    public static Chart getChart(String type) {
+        switch (type) {
+            case &quot;histogram&quot;:
+                return new HistogramChart();
+            case &quot;pic&quot;:
+                return new PieChart();
+            case &quot;line&quot;:
+                return new LineChart();
+            default:
+                return null;
+        }
+    }
+}
 </code></pre>
-<h3 id="3-4-客户端测试"><a href="#3-4-客户端测试" class="headerlink" title="3.4 客户端测试"></a>3.4 客户端测试</h3><pre class=" language-java"><code class="language-java"><span class="token comment" spellcheck="true">/**
+<h3 id="3-4-客户端测试"><a href="#3-4-客户端测试" class="headerlink" title="3.4 客户端测试"></a>3.4 客户端测试</h3><pre><code class="java">/**
  * 客户端测试代码
- */</span>
-<span class="token keyword">public</span> <span class="token keyword">class</span> <span class="token class-name">DemoTest</span> <span class="token punctuation">{</span>
-    <span class="token keyword">public</span> <span class="token keyword">static</span> <span class="token keyword">void</span> <span class="token function">main</span><span class="token punctuation">(</span>String<span class="token punctuation">[</span><span class="token punctuation">]</span> args<span class="token punctuation">)</span> <span class="token punctuation">{</span>
-        Chart pie <span class="token operator">=</span> ChartFactory<span class="token punctuation">.</span><span class="token function">getChart</span><span class="token punctuation">(</span><span class="token string">"pie"</span><span class="token punctuation">)</span><span class="token punctuation">;</span>
-        pie<span class="token punctuation">.</span><span class="token function">display</span><span class="token punctuation">(</span><span class="token punctuation">)</span><span class="token punctuation">;</span>
-    <span class="token punctuation">}</span>
-<span class="token punctuation">}</span>
+ */
+public class DemoTest {
+    public static void main(String[] args) {
+        Chart pie = ChartFactory.getChart(&quot;pie&quot;);
+        pie.display();
+    }
+}
 </code></pre>
 <h2 id="四、总结"><a href="#四、总结" class="headerlink" title="四、总结"></a>四、总结</h2><p>简单工厂模式提供了专门的工厂类用于创建对象，将对象的创建和对象的使用分离。</p>
 <h3 id="4-1-优点"><a href="#4-1-优点" class="headerlink" title="4.1 优点"></a>4.1 优点</h3><ol>
@@ -568,8 +568,8 @@
         <div class="post-nav">
           <div class="post-nav-next post-nav-item">
             
-              <a href="/2019/06/25/读书笔记/《JavaDesignPatterns》/2.面向对象设计原则/" rel="next" title="《Java Design Patterns》7大原则">
-                <i class="fa fa-chevron-left"></i> 《Java Design Patterns》7大原则
+              <a href="/2019/06/26/读书笔记/《JavaDesignPatterns》/5.抽象工厂模式/" rel="next" title="《Java Design Patterns》第三章 抽象工厂模式">
+                <i class="fa fa-chevron-left"></i> 《Java Design Patterns》第三章 抽象工厂模式
               </a>
             
           </div>
@@ -578,8 +578,8 @@
 
           <div class="post-nav-prev post-nav-item">
             
-              <a href="/2019/06/26/读书笔记/《JavaDesignPatterns》/4.工厂方法模式/" rel="prev" title="《Java Design Patterns》第二章 工厂方法模式">
-                《Java Design Patterns》第二章 工厂方法模式 <i class="fa fa-chevron-right"></i>
+              <a href="/2019/06/27/读书笔记/《JavaDesignPatterns》/7.原型模式/" rel="prev" title="《Java Design Patterns》第五章 原型模式 - 对象的克隆">
+                《Java Design Patterns》第五章 原型模式 - 对象的克隆 <i class="fa fa-chevron-right"></i>
               </a>
             
           </div>
@@ -661,7 +661,7 @@
               
                 <a href="/archives">
               
-                  <span class="site-state-item-count">224</span>
+                  <span class="site-state-item-count">237</span>
                   <span class="site-state-item-name">日志</span>
                 </a>
               </div>
@@ -683,7 +683,7 @@
               
               <div class="site-state-item site-state-tags">
                 <a href="/tags/index.html">
-                  <span class="site-state-item-count">21</span>
+                  <span class="site-state-item-count">22</span>
                   <span class="site-state-item-name">标签</span>
                 </a>
               </div>

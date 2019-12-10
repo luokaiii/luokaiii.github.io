@@ -384,13 +384,13 @@
       
 
       
-        <h1 id="自定义安全表达式"><a href="#自定义安全表达式" class="headerlink" title="自定义安全表达式"></a>自定义安全表达式</h1><pre class=" language-java"><code class="language-java"><span class="token comment" spellcheck="true">/**
+        <h1 id="自定义安全表达式"><a href="#自定义安全表达式" class="headerlink" title="自定义安全表达式"></a>自定义安全表达式</h1><pre><code class="java">/**
  * Base root object for use in Spring Security expression evaluations.
  *
  * @author Luke Taylor
  * @since 3.0
- */</span>
-<span class="token keyword">public</span> <span class="token keyword">abstract</span> <span class="token keyword">class</span> <span class="token class-name">SecurityExpressionRoot</span> <span class="token keyword">implements</span> <span class="token class-name">SecurityExpressionOperations</span>
+ */
+public abstract class SecurityExpressionRoot implements SecurityExpressionOperations
 </code></pre>
 <p>SecurityExpressionRoot 是所有安全表达式的基类，我们需要做的就是：</p>
 <ol>
@@ -399,150 +399,150 @@
 <li>继承 GlobalMethodSecurityConfiguration，添加自定义的表达式处理器</li>
 </ol>
 <h2 id="一、MethodSecurityConfig"><a href="#一、MethodSecurityConfig" class="headerlink" title="一、MethodSecurityConfig"></a>一、MethodSecurityConfig</h2><p>开启方法级别的安全校验，注入登录用户时加载 UserDetails 的DB服务对象，通过 createExpressionHandler 注入自定义的表达式处理器。</p>
-<pre class=" language-java"><code class="language-java"><span class="token comment" spellcheck="true">/**
+<pre><code class="java">/**
  * 配置 MethodSecurity 表达式
- */</span>
-<span class="token annotation punctuation">@Configuration</span>
-<span class="token annotation punctuation">@EnableGlobalMethodSecurity</span><span class="token punctuation">(</span>prePostEnabled <span class="token operator">=</span> <span class="token boolean">true</span><span class="token punctuation">)</span>
-<span class="token keyword">public</span> <span class="token keyword">class</span> <span class="token class-name">MethodSecurityConfig</span> <span class="token keyword">extends</span> <span class="token class-name">GlobalMethodSecurityConfiguration</span> <span class="token punctuation">{</span>
+ */
+@Configuration
+@EnableGlobalMethodSecurity(prePostEnabled = true)
+public class MethodSecurityConfig extends GlobalMethodSecurityConfiguration {
 
-    <span class="token keyword">private</span> <span class="token keyword">final</span> LoginDetailService loginDetailService<span class="token punctuation">;</span>
+    private final LoginDetailService loginDetailService;
 
-    <span class="token keyword">public</span> <span class="token function">MethodSecurityConfig</span><span class="token punctuation">(</span>LoginDetailService loginDetailService<span class="token punctuation">)</span> <span class="token punctuation">{</span>
-        <span class="token keyword">this</span><span class="token punctuation">.</span>loginDetailService <span class="token operator">=</span> loginDetailService<span class="token punctuation">;</span>
-    <span class="token punctuation">}</span>
+    public MethodSecurityConfig(LoginDetailService loginDetailService) {
+        this.loginDetailService = loginDetailService;
+    }
 
-    <span class="token annotation punctuation">@Override</span>
-    <span class="token keyword">protected</span> MethodSecurityExpressionHandler <span class="token function">createExpressionHandler</span><span class="token punctuation">(</span><span class="token punctuation">)</span> <span class="token punctuation">{</span>
-        <span class="token keyword">return</span> <span class="token keyword">new</span> <span class="token class-name">ResourceMethodSecurityExpressionHandler</span><span class="token punctuation">(</span>loginDetailService<span class="token punctuation">)</span><span class="token punctuation">;</span>
-    <span class="token punctuation">}</span>
-<span class="token punctuation">}</span>
+    @Override
+    protected MethodSecurityExpressionHandler createExpressionHandler() {
+        return new ResourceMethodSecurityExpressionHandler(loginDetailService);
+    }
+}
 </code></pre>
 <h2 id="二、ResourceMethodSecurityExpressionHandler"><a href="#二、ResourceMethodSecurityExpressionHandler" class="headerlink" title="二、ResourceMethodSecurityExpressionHandler"></a>二、ResourceMethodSecurityExpressionHandler</h2><p>接收 UserDetailsService，并创建一个处理表达式的操作类</p>
-<pre class=" language-java"><code class="language-java"><span class="token comment" spellcheck="true">/**
+<pre><code class="java">/**
  * 自定义方法级别的安全校验处理器
- */</span>
-<span class="token keyword">public</span> <span class="token keyword">class</span> <span class="token class-name">ResourceMethodSecurityExpressionHandler</span> <span class="token keyword">extends</span> <span class="token class-name">DefaultMethodSecurityExpressionHandler</span> <span class="token punctuation">{</span>
+ */
+public class ResourceMethodSecurityExpressionHandler extends DefaultMethodSecurityExpressionHandler {
 
-    <span class="token keyword">private</span> <span class="token keyword">final</span> LoginDetailService loginDetailService<span class="token punctuation">;</span>
+    private final LoginDetailService loginDetailService;
 
-    <span class="token keyword">private</span> AuthenticationTrustResolver trustResolver <span class="token operator">=</span> <span class="token keyword">new</span> <span class="token class-name">AuthenticationTrustResolverImpl</span><span class="token punctuation">(</span><span class="token punctuation">)</span><span class="token punctuation">;</span>
+    private AuthenticationTrustResolver trustResolver = new AuthenticationTrustResolverImpl();
 
-    <span class="token keyword">public</span> <span class="token function">ResourceMethodSecurityExpressionHandler</span><span class="token punctuation">(</span>LoginDetailService loginDetailService<span class="token punctuation">)</span> <span class="token punctuation">{</span>
-        <span class="token keyword">this</span><span class="token punctuation">.</span>loginDetailService <span class="token operator">=</span> loginDetailService<span class="token punctuation">;</span>
-    <span class="token punctuation">}</span>
+    public ResourceMethodSecurityExpressionHandler(LoginDetailService loginDetailService) {
+        this.loginDetailService = loginDetailService;
+    }
 
-    <span class="token annotation punctuation">@Override</span>
-    <span class="token keyword">protected</span> MethodSecurityExpressionOperations <span class="token function">createSecurityExpressionRoot</span><span class="token punctuation">(</span>Authentication authentication<span class="token punctuation">,</span> MethodInvocation invocation<span class="token punctuation">)</span> <span class="token punctuation">{</span>
-        <span class="token keyword">final</span> ResourceMethodSecurityExpressionRoot root <span class="token operator">=</span> <span class="token keyword">new</span> <span class="token class-name">ResourceMethodSecurityExpressionRoot</span><span class="token punctuation">(</span>authentication<span class="token punctuation">,</span> loginDetailService<span class="token punctuation">)</span><span class="token punctuation">;</span>
-        root<span class="token punctuation">.</span><span class="token function">setPermissionEvaluator</span><span class="token punctuation">(</span><span class="token function">getPermissionEvaluator</span><span class="token punctuation">(</span><span class="token punctuation">)</span><span class="token punctuation">)</span><span class="token punctuation">;</span>
-        root<span class="token punctuation">.</span><span class="token function">setTrustResolver</span><span class="token punctuation">(</span><span class="token keyword">this</span><span class="token punctuation">.</span>trustResolver<span class="token punctuation">)</span><span class="token punctuation">;</span>
-        root<span class="token punctuation">.</span><span class="token function">setRoleHierarchy</span><span class="token punctuation">(</span><span class="token function">getRoleHierarchy</span><span class="token punctuation">(</span><span class="token punctuation">)</span><span class="token punctuation">)</span><span class="token punctuation">;</span>
-        <span class="token keyword">return</span> root<span class="token punctuation">;</span>
-    <span class="token punctuation">}</span>
-<span class="token punctuation">}</span>
+    @Override
+    protected MethodSecurityExpressionOperations createSecurityExpressionRoot(Authentication authentication, MethodInvocation invocation) {
+        final ResourceMethodSecurityExpressionRoot root = new ResourceMethodSecurityExpressionRoot(authentication, loginDetailService);
+        root.setPermissionEvaluator(getPermissionEvaluator());
+        root.setTrustResolver(this.trustResolver);
+        root.setRoleHierarchy(getRoleHierarchy());
+        return root;
+    }
+}
 </code></pre>
 <h2 id="三、ResourceMethodSecurityExpressionRoot"><a href="#三、ResourceMethodSecurityExpressionRoot" class="headerlink" title="三、ResourceMethodSecurityExpressionRoot"></a>三、ResourceMethodSecurityExpressionRoot</h2><p>仿照 hasAuthority，编写一个自己的实现</p>
-<pre class=" language-java"><code class="language-java"><span class="token comment" spellcheck="true">/**
+<pre><code class="java">/**
  * 自定义 MethodSecurity 表达式
- */</span>
-<span class="token annotation punctuation">@Slf4j</span>
-<span class="token keyword">public</span> <span class="token keyword">class</span> <span class="token class-name">ResourceMethodSecurityExpressionRoot</span> <span class="token keyword">extends</span> <span class="token class-name">SecurityExpressionRoot</span> <span class="token keyword">implements</span> <span class="token class-name">MethodSecurityExpressionOperations</span> <span class="token punctuation">{</span>
+ */
+@Slf4j
+public class ResourceMethodSecurityExpressionRoot extends SecurityExpressionRoot implements MethodSecurityExpressionOperations {
 
-    <span class="token keyword">private</span> LoginDetailService loginDetailService<span class="token punctuation">;</span>
+    private LoginDetailService loginDetailService;
 
-    <span class="token keyword">private</span> Object filterObject<span class="token punctuation">;</span>
-    <span class="token keyword">private</span> Object returnObject<span class="token punctuation">;</span>
-    <span class="token keyword">private</span> Object target<span class="token punctuation">;</span>
+    private Object filterObject;
+    private Object returnObject;
+    private Object target;
 
-    <span class="token keyword">public</span> <span class="token function">ResourceMethodSecurityExpressionRoot</span><span class="token punctuation">(</span>Authentication authentication<span class="token punctuation">,</span> LoginDetailService loginDetailService<span class="token punctuation">)</span> <span class="token punctuation">{</span>
-        <span class="token keyword">super</span><span class="token punctuation">(</span>authentication<span class="token punctuation">)</span><span class="token punctuation">;</span>
-        <span class="token keyword">this</span><span class="token punctuation">.</span>loginDetailService <span class="token operator">=</span> loginDetailService<span class="token punctuation">;</span>
-    <span class="token punctuation">}</span>
+    public ResourceMethodSecurityExpressionRoot(Authentication authentication, LoginDetailService loginDetailService) {
+        super(authentication);
+        this.loginDetailService = loginDetailService;
+    }
 
-    <span class="token comment" spellcheck="true">/**
+    /**
      * 自定义接口，是否允许对该id的访问
-     */</span>
-    <span class="token keyword">public</span> <span class="token keyword">boolean</span> <span class="token function">canReadCourse</span><span class="token punctuation">(</span>String courseId<span class="token punctuation">)</span> <span class="token punctuation">{</span>
-        log<span class="token punctuation">.</span><span class="token function">debug</span><span class="token punctuation">(</span><span class="token string">"method params courseId"</span><span class="token punctuation">,</span> courseId<span class="token punctuation">)</span><span class="token punctuation">;</span>
-        log<span class="token punctuation">.</span><span class="token function">debug</span><span class="token punctuation">(</span><span class="token string">"current principal {}"</span><span class="token punctuation">,</span> <span class="token function">getPrincipal</span><span class="token punctuation">(</span><span class="token punctuation">)</span><span class="token punctuation">)</span><span class="token punctuation">;</span>
-        <span class="token keyword">return</span> <span class="token boolean">true</span><span class="token punctuation">;</span>
-    <span class="token punctuation">}</span>
+     */
+    public boolean canReadCourse(String courseId) {
+        log.debug(&quot;method params courseId&quot;, courseId);
+        log.debug(&quot;current principal {}&quot;, getPrincipal());
+        return true;
+    }
 
-    <span class="token keyword">public</span> <span class="token keyword">final</span> <span class="token keyword">boolean</span> <span class="token function">hasGlobalAuthority</span><span class="token punctuation">(</span>String authority<span class="token punctuation">)</span> <span class="token punctuation">{</span>
-        <span class="token keyword">return</span> <span class="token function">hasAnyGlobalAuthority</span><span class="token punctuation">(</span>authority<span class="token punctuation">)</span><span class="token punctuation">;</span>
-    <span class="token punctuation">}</span>
+    public final boolean hasGlobalAuthority(String authority) {
+        return hasAnyGlobalAuthority(authority);
+    }
 
-    <span class="token keyword">public</span> <span class="token keyword">final</span> <span class="token keyword">boolean</span> <span class="token function">hasAnyGlobalAuthority</span><span class="token punctuation">(</span>String<span class="token punctuation">.</span><span class="token punctuation">.</span><span class="token punctuation">.</span> authorities<span class="token punctuation">)</span> <span class="token punctuation">{</span>
-        <span class="token keyword">return</span> <span class="token function">hasAnyGlobalAuthorityName</span><span class="token punctuation">(</span>null<span class="token punctuation">,</span> authorities<span class="token punctuation">)</span><span class="token punctuation">;</span>
-    <span class="token punctuation">}</span>
+    public final boolean hasAnyGlobalAuthority(String... authorities) {
+        return hasAnyGlobalAuthorityName(null, authorities);
+    }
 
-    <span class="token keyword">private</span> <span class="token keyword">boolean</span> <span class="token function">hasAnyGlobalAuthorityName</span><span class="token punctuation">(</span>String prefix<span class="token punctuation">,</span> String<span class="token punctuation">.</span><span class="token punctuation">.</span><span class="token punctuation">.</span> roles<span class="token punctuation">)</span> <span class="token punctuation">{</span>
-        <span class="token keyword">final</span> String username <span class="token operator">=</span> <span class="token punctuation">(</span><span class="token punctuation">(</span>UserDetails<span class="token punctuation">)</span> <span class="token function">getPrincipal</span><span class="token punctuation">(</span><span class="token punctuation">)</span><span class="token punctuation">)</span><span class="token punctuation">.</span><span class="token function">getUsername</span><span class="token punctuation">(</span><span class="token punctuation">)</span><span class="token punctuation">;</span>
-        <span class="token keyword">final</span> UserDetails details <span class="token operator">=</span> loginDetailService<span class="token punctuation">.</span><span class="token function">loadUserByUsername</span><span class="token punctuation">(</span>username<span class="token punctuation">)</span><span class="token punctuation">;</span>
+    private boolean hasAnyGlobalAuthorityName(String prefix, String... roles) {
+        final String username = ((UserDetails) getPrincipal()).getUsername();
+        final UserDetails details = loginDetailService.loadUserByUsername(username);
 
-        <span class="token keyword">if</span> <span class="token punctuation">(</span>details<span class="token punctuation">.</span><span class="token function">getAuthorities</span><span class="token punctuation">(</span><span class="token punctuation">)</span> <span class="token operator">!=</span> null<span class="token punctuation">)</span> <span class="token punctuation">{</span>
-            <span class="token keyword">final</span> Set<span class="token operator">&lt;</span>String<span class="token operator">></span> roleSet <span class="token operator">=</span> details<span class="token punctuation">.</span><span class="token function">getAuthorities</span><span class="token punctuation">(</span><span class="token punctuation">)</span><span class="token punctuation">.</span><span class="token function">stream</span><span class="token punctuation">(</span><span class="token punctuation">)</span>
-                    <span class="token punctuation">.</span><span class="token function">map</span><span class="token punctuation">(</span>GrantedAuthority<span class="token operator">:</span><span class="token operator">:</span>getAuthority<span class="token punctuation">)</span><span class="token punctuation">.</span><span class="token function">collect</span><span class="token punctuation">(</span>Collectors<span class="token punctuation">.</span><span class="token function">toSet</span><span class="token punctuation">(</span><span class="token punctuation">)</span><span class="token punctuation">)</span><span class="token punctuation">;</span>
+        if (details.getAuthorities() != null) {
+            final Set&lt;String&gt; roleSet = details.getAuthorities().stream()
+                    .map(GrantedAuthority::getAuthority).collect(Collectors.toSet());
 
-            <span class="token keyword">for</span> <span class="token punctuation">(</span>String role <span class="token operator">:</span> roles<span class="token punctuation">)</span> <span class="token punctuation">{</span>
-                String defaultedRole <span class="token operator">=</span> <span class="token function">getRoleWithDefaultPrefix</span><span class="token punctuation">(</span>prefix<span class="token punctuation">,</span> role<span class="token punctuation">)</span><span class="token punctuation">;</span>
-                <span class="token keyword">if</span> <span class="token punctuation">(</span>roleSet<span class="token punctuation">.</span><span class="token function">contains</span><span class="token punctuation">(</span>defaultedRole<span class="token punctuation">)</span><span class="token punctuation">)</span> <span class="token punctuation">{</span>
-                    <span class="token keyword">return</span> <span class="token boolean">true</span><span class="token punctuation">;</span>
-                <span class="token punctuation">}</span>
-            <span class="token punctuation">}</span>
-        <span class="token punctuation">}</span>
+            for (String role : roles) {
+                String defaultedRole = getRoleWithDefaultPrefix(prefix, role);
+                if (roleSet.contains(defaultedRole)) {
+                    return true;
+                }
+            }
+        }
 
-        <span class="token keyword">return</span> <span class="token boolean">false</span><span class="token punctuation">;</span>
-    <span class="token punctuation">}</span>
+        return false;
+    }
 
-    <span class="token keyword">private</span> <span class="token keyword">static</span> String <span class="token function">getRoleWithDefaultPrefix</span><span class="token punctuation">(</span>String defaultRolePrefix<span class="token punctuation">,</span> String role<span class="token punctuation">)</span> <span class="token punctuation">{</span>
-        <span class="token keyword">if</span> <span class="token punctuation">(</span>role <span class="token operator">==</span> null<span class="token punctuation">)</span> <span class="token punctuation">{</span>
-            <span class="token keyword">return</span> role<span class="token punctuation">;</span>
-        <span class="token punctuation">}</span>
-        <span class="token keyword">if</span> <span class="token punctuation">(</span>defaultRolePrefix <span class="token operator">==</span> null <span class="token operator">||</span> defaultRolePrefix<span class="token punctuation">.</span><span class="token function">length</span><span class="token punctuation">(</span><span class="token punctuation">)</span> <span class="token operator">==</span> <span class="token number">0</span><span class="token punctuation">)</span> <span class="token punctuation">{</span>
-            <span class="token keyword">return</span> role<span class="token punctuation">;</span>
-        <span class="token punctuation">}</span>
-        <span class="token keyword">if</span> <span class="token punctuation">(</span>role<span class="token punctuation">.</span><span class="token function">startsWith</span><span class="token punctuation">(</span>defaultRolePrefix<span class="token punctuation">)</span><span class="token punctuation">)</span> <span class="token punctuation">{</span>
-            <span class="token keyword">return</span> role<span class="token punctuation">;</span>
-        <span class="token punctuation">}</span>
-        <span class="token keyword">return</span> defaultRolePrefix <span class="token operator">+</span> role<span class="token punctuation">;</span>
-    <span class="token punctuation">}</span>
+    private static String getRoleWithDefaultPrefix(String defaultRolePrefix, String role) {
+        if (role == null) {
+            return role;
+        }
+        if (defaultRolePrefix == null || defaultRolePrefix.length() == 0) {
+            return role;
+        }
+        if (role.startsWith(defaultRolePrefix)) {
+            return role;
+        }
+        return defaultRolePrefix + role;
+    }
 
-    <span class="token annotation punctuation">@Override</span>
-    <span class="token keyword">public</span> <span class="token keyword">void</span> <span class="token function">setFilterObject</span><span class="token punctuation">(</span>Object filterObject<span class="token punctuation">)</span> <span class="token punctuation">{</span>
-        <span class="token keyword">this</span><span class="token punctuation">.</span>filterObject <span class="token operator">=</span> filterObject<span class="token punctuation">;</span>
-    <span class="token punctuation">}</span>
+    @Override
+    public void setFilterObject(Object filterObject) {
+        this.filterObject = filterObject;
+    }
 
-    <span class="token annotation punctuation">@Override</span>
-    <span class="token keyword">public</span> Object <span class="token function">getFilterObject</span><span class="token punctuation">(</span><span class="token punctuation">)</span> <span class="token punctuation">{</span>
-        <span class="token keyword">return</span> filterObject<span class="token punctuation">;</span>
-    <span class="token punctuation">}</span>
+    @Override
+    public Object getFilterObject() {
+        return filterObject;
+    }
 
-    <span class="token annotation punctuation">@Override</span>
-    <span class="token keyword">public</span> <span class="token keyword">void</span> <span class="token function">setReturnObject</span><span class="token punctuation">(</span>Object returnObject<span class="token punctuation">)</span> <span class="token punctuation">{</span>
-        <span class="token keyword">this</span><span class="token punctuation">.</span>returnObject <span class="token operator">=</span> returnObject<span class="token punctuation">;</span>
-    <span class="token punctuation">}</span>
+    @Override
+    public void setReturnObject(Object returnObject) {
+        this.returnObject = returnObject;
+    }
 
-    <span class="token annotation punctuation">@Override</span>
-    <span class="token keyword">public</span> Object <span class="token function">getReturnObject</span><span class="token punctuation">(</span><span class="token punctuation">)</span> <span class="token punctuation">{</span>
-        <span class="token keyword">return</span> returnObject<span class="token punctuation">;</span>
-    <span class="token punctuation">}</span>
+    @Override
+    public Object getReturnObject() {
+        return returnObject;
+    }
 
-    <span class="token annotation punctuation">@Override</span>
-    <span class="token keyword">public</span> Object <span class="token function">getThis</span><span class="token punctuation">(</span><span class="token punctuation">)</span> <span class="token punctuation">{</span>
-        <span class="token keyword">return</span> target<span class="token punctuation">;</span>
-    <span class="token punctuation">}</span>
+    @Override
+    public Object getThis() {
+        return target;
+    }
 
-    <span class="token keyword">public</span> <span class="token keyword">void</span> <span class="token function">setTarget</span><span class="token punctuation">(</span>Object target<span class="token punctuation">)</span> <span class="token punctuation">{</span>
-        <span class="token keyword">this</span><span class="token punctuation">.</span>target <span class="token operator">=</span> target<span class="token punctuation">;</span>
-    <span class="token punctuation">}</span>
+    public void setTarget(Object target) {
+        this.target = target;
+    }
 
-    <span class="token annotation punctuation">@Override</span>
-    <span class="token keyword">public</span> <span class="token keyword">void</span> <span class="token function">setRoleHierarchy</span><span class="token punctuation">(</span>RoleHierarchy roleHierarchy<span class="token punctuation">)</span> <span class="token punctuation">{</span>
-        <span class="token keyword">super</span><span class="token punctuation">.</span><span class="token function">setRoleHierarchy</span><span class="token punctuation">(</span>roleHierarchy<span class="token punctuation">)</span><span class="token punctuation">;</span>
-    <span class="token punctuation">}</span>
-<span class="token punctuation">}</span>
+    @Override
+    public void setRoleHierarchy(RoleHierarchy roleHierarchy) {
+        super.setRoleHierarchy(roleHierarchy);
+    }
+}
 </code></pre>
 
       
@@ -667,7 +667,7 @@
               
                 <a href="/archives">
               
-                  <span class="site-state-item-count">224</span>
+                  <span class="site-state-item-count">237</span>
                   <span class="site-state-item-name">日志</span>
                 </a>
               </div>
@@ -689,7 +689,7 @@
               
               <div class="site-state-item site-state-tags">
                 <a href="/tags/index.html">
-                  <span class="site-state-item-count">21</span>
+                  <span class="site-state-item-count">22</span>
                   <span class="site-state-item-name">标签</span>
                 </a>
               </div>

@@ -403,50 +403,50 @@
 </blockquote>
 <h3 id="2-将state转换为-Immutable-对象"><a href="#2-将state转换为-Immutable-对象" class="headerlink" title="2. 将state转换为 Immutable 对象"></a>2. 将state转换为 Immutable 对象</h3><p>在使用时，将state通过 Immutable 提供的 fromJS 方法进行包装。包装之后的state便无法再通过 . 属性的方式获取到值。非常类似 Java 中的封装。</p>
 <p>下面是 Header 组件的 reducer.js：</p>
-<pre class=" language-js"><code class="language-js"><span class="token keyword">import</span> <span class="token punctuation">{</span> fromJS <span class="token punctuation">}</span> <span class="token keyword">from</span> <span class="token string">'immutable'</span><span class="token punctuation">;</span>
+<pre><code class="js">import { fromJS } from &#39;immutable&#39;;
 
-<span class="token keyword">const</span> defaultState <span class="token operator">=</span> <span class="token function">fromJS</span><span class="token punctuation">(</span><span class="token punctuation">{</span>
-    value<span class="token punctuation">:</span> <span class="token string">"Hello React !"</span><span class="token punctuation">,</span>
-    focused<span class="token punctuation">:</span> <span class="token boolean">false</span>
-<span class="token punctuation">}</span><span class="token punctuation">)</span><span class="token punctuation">;</span>
+const defaultState = fromJS({
+    value: &quot;Hello React !&quot;,
+    focused: false
+});
 
-<span class="token keyword">export</span> <span class="token keyword">default</span> <span class="token punctuation">(</span>state <span class="token operator">=</span> defaultState<span class="token punctuation">,</span> action<span class="token punctuation">)</span> <span class="token operator">=</span><span class="token operator">></span> <span class="token punctuation">{</span>
-    <span class="token keyword">switch</span><span class="token punctuation">(</span>action<span class="token punctuation">.</span>type<span class="token punctuation">)</span><span class="token punctuation">{</span>
-        <span class="token keyword">case</span> <span class="token string">"aaa"</span><span class="token punctuation">:</span>
-            <span class="token keyword">return</span> state<span class="token punctuation">.</span><span class="token keyword">set</span><span class="token punctuation">(</span><span class="token string">'value'</span><span class="token punctuation">,</span> action<span class="token punctuation">.</span>value<span class="token punctuation">)</span><span class="token punctuation">;</span>
-        <span class="token keyword">case</span> <span class="token string">"bbb"</span><span class="token punctuation">:</span>
-            <span class="token keyword">return</span> state<span class="token punctuation">.</span><span class="token keyword">set</span><span class="token punctuation">(</span><span class="token string">'focused'</span><span class="token punctuation">,</span> <span class="token boolean">true</span><span class="token punctuation">)</span><span class="token punctuation">;</span>
-        <span class="token keyword">default</span><span class="token punctuation">:</span>
-            <span class="token keyword">return</span> state<span class="token punctuation">;</span>
-    <span class="token punctuation">}</span>
-<span class="token punctuation">}</span>
+export default (state = defaultState, action) =&gt; {
+    switch(action.type){
+        case &quot;aaa&quot;:
+            return state.set(&#39;value&#39;, action.value);
+        case &quot;bbb&quot;:
+            return state.set(&#39;focused&#39;, true);
+        default:
+            return state;
+    }
+}
 </code></pre>
 <h3 id="3-将子组件的-state-转换为-Immutable-对象"><a href="#3-将子组件的-state-转换为-Immutable-对象" class="headerlink" title="3. 将子组件的 state 转换为 Immutable 对象"></a>3. 将子组件的 state 转换为 Immutable 对象</h3><p>重点是将 combineReducers 方法，改为从 redux-immutalbe 中获取。</p>
-<pre class=" language-js"><code class="language-js"><span class="token keyword">import</span> <span class="token punctuation">{</span> combineReducers <span class="token punctuation">}</span> <span class="token keyword">from</span> <span class="token string">'redux-immutable'</span><span class="token punctuation">;</span>
-<span class="token keyword">import</span> <span class="token punctuation">{</span> reducer <span class="token keyword">as</span> headerReducer <span class="token punctuation">}</span> <span class="token keyword">from</span> <span class="token string">"../common/header/store"</span><span class="token punctuation">;</span>
+<pre><code class="js">import { combineReducers } from &#39;redux-immutable&#39;;
+import { reducer as headerReducer } from &quot;../common/header/store&quot;;
 
-<span class="token keyword">const</span> reducers <span class="token operator">=</span> <span class="token function">combineReducers</span><span class="token punctuation">(</span><span class="token punctuation">{</span>
-    header<span class="token punctuation">:</span> headerReducer
-<span class="token punctuation">}</span><span class="token punctuation">)</span>
+const reducers = combineReducers({
+    header: headerReducer
+})
 
-<span class="token keyword">export</span> <span class="token keyword">default</span> reducers<span class="token punctuation">;</span>
+export default reducers;
 </code></pre>
 <h3 id="4-Header组件使用-state-header-value"><a href="#4-Header组件使用-state-header-value" class="headerlink" title="4. Header组件使用 state.header.value"></a>4. Header组件使用 state.header.value</h3><p>下面是使用 redux-saga 进行组件与 store 的连接，请查阅 <a href="www.xx.cc">Redux-Saga</a></p>
-<pre class=" language-js"><code class="language-js"><span class="token keyword">class</span> <span class="token class-name">Header</span> <span class="token keyword">extends</span> <span class="token class-name">Component</span> <span class="token punctuation">{</span>
-    <span class="token comment" spellcheck="true">// ......</span>
-<span class="token punctuation">}</span>
+<pre><code class="js">class Header extends Component {
+    // ......
+}
 
-<span class="token keyword">const</span> mapStateToProps <span class="token operator">=</span> <span class="token punctuation">(</span>state<span class="token punctuation">)</span> <span class="token operator">=</span><span class="token operator">></span> <span class="token punctuation">{</span>
-    <span class="token keyword">return</span> <span class="token punctuation">{</span>
-        value<span class="token punctuation">:</span> state<span class="token punctuation">.</span><span class="token keyword">get</span><span class="token punctuation">(</span><span class="token string">'header'</span><span class="token punctuation">)</span><span class="token punctuation">.</span><span class="token keyword">get</span><span class="token punctuation">(</span><span class="token string">'value'</span><span class="token punctuation">)</span><span class="token punctuation">,</span>
-        focused<span class="token punctuation">:</span> state<span class="token punctuation">.</span><span class="token keyword">get</span><span class="token punctuation">(</span><span class="token string">'header'</span><span class="token punctuation">)</span><span class="token punctuation">.</span><span class="token keyword">get</span><span class="token punctuation">(</span><span class="token string">'focused'</span><span class="token punctuation">)</span><span class="token punctuation">,</span>
-        list<span class="token punctuation">:</span> state<span class="token punctuation">.</span><span class="token keyword">get</span><span class="token punctuation">(</span><span class="token string">'header'</span><span class="token punctuation">)</span><span class="token punctuation">.</span><span class="token keyword">get</span><span class="token punctuation">(</span><span class="token string">'list'</span><span class="token punctuation">)</span>
-    <span class="token punctuation">}</span>
-<span class="token punctuation">}</span>
+const mapStateToProps = (state) =&gt; {
+    return {
+        value: state.get(&#39;header&#39;).get(&#39;value&#39;),
+        focused: state.get(&#39;header&#39;).get(&#39;focused&#39;),
+        list: state.get(&#39;header&#39;).get(&#39;list&#39;)
+    }
+}
 
-<span class="token keyword">const</span> mapDispatchToProps <span class="token operator">...</span>
+const mapDispatchToProps ...
 
-<span class="token keyword">export</span> <span class="token keyword">default</span> <span class="token function">connect</span><span class="token punctuation">(</span>mapStateToProps<span class="token punctuation">,</span>mapDispatchToProps<span class="token punctuation">)</span><span class="token punctuation">(</span>Header<span class="token punctuation">)</span><span class="token punctuation">;</span>
+export default connect(mapStateToProps,mapDispatchToProps)(Header);
 </code></pre>
 
       
@@ -571,7 +571,7 @@
               
                 <a href="/archives">
               
-                  <span class="site-state-item-count">224</span>
+                  <span class="site-state-item-count">237</span>
                   <span class="site-state-item-name">日志</span>
                 </a>
               </div>
@@ -593,7 +593,7 @@
               
               <div class="site-state-item site-state-tags">
                 <a href="/tags/index.html">
-                  <span class="site-state-item-count">21</span>
+                  <span class="site-state-item-count">22</span>
                   <span class="site-state-item-name">标签</span>
                 </a>
               </div>

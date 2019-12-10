@@ -81,19 +81,19 @@
 
 
 
-<meta name="description" content="使用POI结合Excel的行列生成雷达图一、先放最后输出的结果图： 二、代码    @Test     public void createRadar() throws IOException {         final String sheetName = &quot;RadarChart&quot;;         try (XSSFWorkbook workbook = new XSSFWorkbook(">
+<meta name="description" content="使用POI结合Excel的行列生成雷达图一、先放最后输出的结果图： 二、代码    @Test     public void createRadar() throws IOException {         final String sheetName = &amp;quot;RadarChart&amp;quot;;         try (XSSFWorkbook workbook = new XSS">
 <meta name="keywords" content="POI">
 <meta property="og:type" content="article">
 <meta property="og:title" content="使用POI结合Excel的行列生成雷达图">
 <meta property="og:url" content="http://luokaiii.github.io/2018/09/01/POI/POI生成原生Excel-雷达图/index.html">
 <meta property="og:site_name" content="罗凯的博客">
-<meta property="og:description" content="使用POI结合Excel的行列生成雷达图一、先放最后输出的结果图： 二、代码    @Test     public void createRadar() throws IOException {         final String sheetName = &quot;RadarChart&quot;;         try (XSSFWorkbook workbook = new XSSFWorkbook(">
+<meta property="og:description" content="使用POI结合Excel的行列生成雷达图一、先放最后输出的结果图： 二、代码    @Test     public void createRadar() throws IOException {         final String sheetName = &amp;quot;RadarChart&amp;quot;;         try (XSSFWorkbook workbook = new XSS">
 <meta property="og:locale" content="zh-Hans">
 <meta property="og:image" content="https://koral-home.oss-cn-beijing.aliyuncs.com/blog/RadarChart.png">
 <meta property="og:updated_time" content="2019-07-01T02:49:01.356Z">
 <meta name="twitter:card" content="summary">
 <meta name="twitter:title" content="使用POI结合Excel的行列生成雷达图">
-<meta name="twitter:description" content="使用POI结合Excel的行列生成雷达图一、先放最后输出的结果图： 二、代码    @Test     public void createRadar() throws IOException {         final String sheetName = &quot;RadarChart&quot;;         try (XSSFWorkbook workbook = new XSSFWorkbook(">
+<meta name="twitter:description" content="使用POI结合Excel的行列生成雷达图一、先放最后输出的结果图： 二、代码    @Test     public void createRadar() throws IOException {         final String sheetName = &amp;quot;RadarChart&amp;quot;;         try (XSSFWorkbook workbook = new XSS">
 <meta name="twitter:image" content="https://koral-home.oss-cn-beijing.aliyuncs.com/blog/RadarChart.png">
 
 
@@ -387,229 +387,229 @@
 
       
         <h1 id="使用POI结合Excel的行列生成雷达图"><a href="#使用POI结合Excel的行列生成雷达图" class="headerlink" title="使用POI结合Excel的行列生成雷达图"></a>使用POI结合Excel的行列生成雷达图</h1><h2 id="一、先放最后输出的结果图："><a href="#一、先放最后输出的结果图：" class="headerlink" title="一、先放最后输出的结果图："></a>一、先放最后输出的结果图：</h2><p><img src="https://koral-home.oss-cn-beijing.aliyuncs.com/blog/RadarChart.png" alt="雷达图"></p>
-<h2 id="二、代码"><a href="#二、代码" class="headerlink" title="二、代码"></a>二、代码</h2><pre class=" language-java"><code class="language-java">    <span class="token annotation punctuation">@Test</span>
-    <span class="token keyword">public</span> <span class="token keyword">void</span> <span class="token function">createRadar</span><span class="token punctuation">(</span><span class="token punctuation">)</span> <span class="token keyword">throws</span> IOException <span class="token punctuation">{</span>
-        <span class="token keyword">final</span> String sheetName <span class="token operator">=</span> <span class="token string">"RadarChart"</span><span class="token punctuation">;</span>
-        <span class="token keyword">try</span> <span class="token punctuation">(</span>XSSFWorkbook workbook <span class="token operator">=</span> <span class="token keyword">new</span> <span class="token class-name">XSSFWorkbook</span><span class="token punctuation">(</span><span class="token punctuation">)</span><span class="token punctuation">)</span> <span class="token punctuation">{</span>
-            XSSFSheet sheet <span class="token operator">=</span> workbook<span class="token punctuation">.</span><span class="token function">createSheet</span><span class="token punctuation">(</span>sheetName<span class="token punctuation">)</span><span class="token punctuation">;</span>
+<h2 id="二、代码"><a href="#二、代码" class="headerlink" title="二、代码"></a>二、代码</h2><pre><code class="java">    @Test
+    public void createRadar() throws IOException {
+        final String sheetName = &quot;RadarChart&quot;;
+        try (XSSFWorkbook workbook = new XSSFWorkbook()) {
+            XSSFSheet sheet = workbook.createSheet(sheetName);
 
-            <span class="token keyword">for</span> <span class="token punctuation">(</span><span class="token keyword">int</span> i <span class="token operator">=</span> <span class="token number">0</span><span class="token punctuation">;</span> i <span class="token operator">&lt;</span> <span class="token number">16</span><span class="token punctuation">;</span> i<span class="token operator">++</span><span class="token punctuation">)</span> <span class="token punctuation">{</span>
-                XSSFRow row <span class="token operator">=</span> sheet<span class="token punctuation">.</span><span class="token function">createRow</span><span class="token punctuation">(</span>i<span class="token punctuation">)</span><span class="token punctuation">;</span>
-                XSSFCell cell <span class="token operator">=</span> row<span class="token punctuation">.</span><span class="token function">createCell</span><span class="token punctuation">(</span><span class="token number">0</span><span class="token punctuation">)</span><span class="token punctuation">;</span>
-                cell<span class="token punctuation">.</span><span class="token function">setCellValue</span><span class="token punctuation">(</span>i <span class="token operator">+</span> <span class="token string">"行"</span><span class="token punctuation">)</span><span class="token punctuation">;</span>
-                XSSFCell cell1 <span class="token operator">=</span> row<span class="token punctuation">.</span><span class="token function">createCell</span><span class="token punctuation">(</span><span class="token number">1</span><span class="token punctuation">)</span><span class="token punctuation">;</span>
-                cell1<span class="token punctuation">.</span><span class="token function">setCellValue</span><span class="token punctuation">(</span>RandomUtils<span class="token punctuation">.</span><span class="token function">nextInt</span><span class="token punctuation">(</span><span class="token number">0</span><span class="token punctuation">,</span> <span class="token number">20</span><span class="token punctuation">)</span><span class="token punctuation">)</span><span class="token punctuation">;</span>
-            <span class="token punctuation">}</span>
+            for (int i = 0; i &lt; 16; i++) {
+                XSSFRow row = sheet.createRow(i);
+                XSSFCell cell = row.createCell(0);
+                cell.setCellValue(i + &quot;行&quot;);
+                XSSFCell cell1 = row.createCell(1);
+                cell1.setCellValue(RandomUtils.nextInt(0, 20));
+            }
 
-            XSSFDrawing drawing <span class="token operator">=</span> sheet<span class="token punctuation">.</span><span class="token function">createDrawingPatriarch</span><span class="token punctuation">(</span><span class="token punctuation">)</span><span class="token punctuation">;</span>
-            XSSFClientAnchor anchor <span class="token operator">=</span> drawing<span class="token punctuation">.</span><span class="token function">createAnchor</span><span class="token punctuation">(</span><span class="token number">0</span><span class="token punctuation">,</span> <span class="token number">0</span><span class="token punctuation">,</span> <span class="token number">0</span><span class="token punctuation">,</span> <span class="token number">0</span><span class="token punctuation">,</span> <span class="token number">2</span><span class="token punctuation">,</span> <span class="token number">0</span><span class="token punctuation">,</span> <span class="token number">7</span><span class="token punctuation">,</span> <span class="token number">16</span><span class="token punctuation">)</span><span class="token punctuation">;</span>
-            XSSFChart chart <span class="token operator">=</span> drawing<span class="token punctuation">.</span><span class="token function">createChart</span><span class="token punctuation">(</span>anchor<span class="token punctuation">)</span><span class="token punctuation">;</span>
+            XSSFDrawing drawing = sheet.createDrawingPatriarch();
+            XSSFClientAnchor anchor = drawing.createAnchor(0, 0, 0, 0, 2, 0, 7, 16);
+            XSSFChart chart = drawing.createChart(anchor);
 
-            CTChart ctChart <span class="token operator">=</span> chart<span class="token punctuation">.</span><span class="token function">getCTChart</span><span class="token punctuation">(</span><span class="token punctuation">)</span><span class="token punctuation">;</span>
-            ctChart<span class="token punctuation">.</span><span class="token function">addNewAutoTitleDeleted</span><span class="token punctuation">(</span><span class="token punctuation">)</span><span class="token punctuation">.</span><span class="token function">setVal</span><span class="token punctuation">(</span><span class="token boolean">false</span><span class="token punctuation">)</span><span class="token punctuation">;</span>
-<span class="token comment" spellcheck="true">//            ctChart.addNewPlotVisOnly().setVal(true);</span>
-<span class="token comment" spellcheck="true">//            ctChart.addNewDispBlanksAs().setVal(STDispBlanksAs.GAP);</span>
-<span class="token comment" spellcheck="true">//            ctChart.addNewShowDLblsOverMax().setVal(false);</span>
+            CTChart ctChart = chart.getCTChart();
+            ctChart.addNewAutoTitleDeleted().setVal(false);
+//            ctChart.addNewPlotVisOnly().setVal(true);
+//            ctChart.addNewDispBlanksAs().setVal(STDispBlanksAs.GAP);
+//            ctChart.addNewShowDLblsOverMax().setVal(false);
 
-            CTPlotArea ctPlotArea <span class="token operator">=</span> ctChart<span class="token punctuation">.</span><span class="token function">addNewPlotArea</span><span class="token punctuation">(</span><span class="token punctuation">)</span><span class="token punctuation">;</span>
-            ctPlotArea<span class="token punctuation">.</span><span class="token function">addNewLayout</span><span class="token punctuation">(</span><span class="token punctuation">)</span><span class="token punctuation">;</span>
-<span class="token comment" spellcheck="true">//            CTShapeProperties ctShapeProperties = ctPlotArea.addNewSpPr();</span>
-<span class="token comment" spellcheck="true">//            ctShapeProperties.addNewNoFill();</span>
-<span class="token comment" spellcheck="true">//            ctShapeProperties.addNewLn().addNewNoFill();</span>
-<span class="token comment" spellcheck="true">//            ctShapeProperties.addNewEffectLst();</span>
+            CTPlotArea ctPlotArea = ctChart.addNewPlotArea();
+            ctPlotArea.addNewLayout();
+//            CTShapeProperties ctShapeProperties = ctPlotArea.addNewSpPr();
+//            ctShapeProperties.addNewNoFill();
+//            ctShapeProperties.addNewLn().addNewNoFill();
+//            ctShapeProperties.addNewEffectLst();
 
-            CTRadarChart ctRadarChart <span class="token operator">=</span> ctPlotArea<span class="token punctuation">.</span><span class="token function">addNewRadarChart</span><span class="token punctuation">(</span><span class="token punctuation">)</span><span class="token punctuation">;</span>
-            <span class="token comment" spellcheck="true">// 这两个值应该对应着catAx和valAx</span>
-            ctRadarChart<span class="token punctuation">.</span><span class="token function">addNewAxId</span><span class="token punctuation">(</span><span class="token punctuation">)</span><span class="token punctuation">.</span><span class="token function">setVal</span><span class="token punctuation">(</span><span class="token number">123456</span><span class="token punctuation">)</span><span class="token punctuation">;</span>
-            ctRadarChart<span class="token punctuation">.</span><span class="token function">addNewAxId</span><span class="token punctuation">(</span><span class="token punctuation">)</span><span class="token punctuation">.</span><span class="token function">setVal</span><span class="token punctuation">(</span><span class="token number">123457</span><span class="token punctuation">)</span><span class="token punctuation">;</span>
-            <span class="token comment" spellcheck="true">// 分类标签等是否显示</span>
-            CTDLbls ctdLbls <span class="token operator">=</span> ctRadarChart<span class="token punctuation">.</span><span class="token function">addNewDLbls</span><span class="token punctuation">(</span><span class="token punctuation">)</span><span class="token punctuation">;</span>
-            ctdLbls<span class="token punctuation">.</span><span class="token function">addNewShowLegendKey</span><span class="token punctuation">(</span><span class="token punctuation">)</span><span class="token punctuation">.</span><span class="token function">setVal</span><span class="token punctuation">(</span><span class="token boolean">false</span><span class="token punctuation">)</span><span class="token punctuation">;</span>
-            ctdLbls<span class="token punctuation">.</span><span class="token function">addNewShowVal</span><span class="token punctuation">(</span><span class="token punctuation">)</span><span class="token punctuation">.</span><span class="token function">setVal</span><span class="token punctuation">(</span><span class="token boolean">false</span><span class="token punctuation">)</span><span class="token punctuation">;</span>
-            ctdLbls<span class="token punctuation">.</span><span class="token function">addNewShowCatName</span><span class="token punctuation">(</span><span class="token punctuation">)</span><span class="token punctuation">.</span><span class="token function">setVal</span><span class="token punctuation">(</span><span class="token boolean">false</span><span class="token punctuation">)</span><span class="token punctuation">;</span>
-            ctdLbls<span class="token punctuation">.</span><span class="token function">addNewShowSerName</span><span class="token punctuation">(</span><span class="token punctuation">)</span><span class="token punctuation">.</span><span class="token function">setVal</span><span class="token punctuation">(</span><span class="token boolean">false</span><span class="token punctuation">)</span><span class="token punctuation">;</span>
-            ctdLbls<span class="token punctuation">.</span><span class="token function">addNewShowPercent</span><span class="token punctuation">(</span><span class="token punctuation">)</span><span class="token punctuation">.</span><span class="token function">setVal</span><span class="token punctuation">(</span><span class="token boolean">false</span><span class="token punctuation">)</span><span class="token punctuation">;</span>
-            ctdLbls<span class="token punctuation">.</span><span class="token function">addNewShowBubbleSize</span><span class="token punctuation">(</span><span class="token punctuation">)</span><span class="token punctuation">.</span><span class="token function">setVal</span><span class="token punctuation">(</span><span class="token boolean">false</span><span class="token punctuation">)</span><span class="token punctuation">;</span>
-            <span class="token comment" spellcheck="true">// 不允许自定义颜色、以及标记的形状</span>
-            ctRadarChart<span class="token punctuation">.</span><span class="token function">addNewRadarStyle</span><span class="token punctuation">(</span><span class="token punctuation">)</span><span class="token punctuation">.</span><span class="token function">setVal</span><span class="token punctuation">(</span>STRadarStyle<span class="token punctuation">.</span>MARKER<span class="token punctuation">)</span><span class="token punctuation">;</span>
-            ctRadarChart<span class="token punctuation">.</span><span class="token function">addNewVaryColors</span><span class="token punctuation">(</span><span class="token punctuation">)</span><span class="token punctuation">.</span><span class="token function">setVal</span><span class="token punctuation">(</span><span class="token boolean">false</span><span class="token punctuation">)</span><span class="token punctuation">;</span>
+            CTRadarChart ctRadarChart = ctPlotArea.addNewRadarChart();
+            // 这两个值应该对应着catAx和valAx
+            ctRadarChart.addNewAxId().setVal(123456);
+            ctRadarChart.addNewAxId().setVal(123457);
+            // 分类标签等是否显示
+            CTDLbls ctdLbls = ctRadarChart.addNewDLbls();
+            ctdLbls.addNewShowLegendKey().setVal(false);
+            ctdLbls.addNewShowVal().setVal(false);
+            ctdLbls.addNewShowCatName().setVal(false);
+            ctdLbls.addNewShowSerName().setVal(false);
+            ctdLbls.addNewShowPercent().setVal(false);
+            ctdLbls.addNewShowBubbleSize().setVal(false);
+            // 不允许自定义颜色、以及标记的形状
+            ctRadarChart.addNewRadarStyle().setVal(STRadarStyle.MARKER);
+            ctRadarChart.addNewVaryColors().setVal(false);
 
-            CTRadarSer ctRadarSer <span class="token operator">=</span> ctRadarChart<span class="token punctuation">.</span><span class="token function">addNewSer</span><span class="token punctuation">(</span><span class="token punctuation">)</span><span class="token punctuation">;</span>
-            ctRadarSer<span class="token punctuation">.</span><span class="token function">addNewIdx</span><span class="token punctuation">(</span><span class="token punctuation">)</span><span class="token punctuation">.</span><span class="token function">setVal</span><span class="token punctuation">(</span><span class="token number">0</span><span class="token punctuation">)</span><span class="token punctuation">;</span>
-            ctRadarSer<span class="token punctuation">.</span><span class="token function">addNewOrder</span><span class="token punctuation">(</span><span class="token punctuation">)</span><span class="token punctuation">.</span><span class="token function">setVal</span><span class="token punctuation">(</span><span class="token number">0</span><span class="token punctuation">)</span><span class="token punctuation">;</span>
-            CTLineProperties ctLineProperties <span class="token operator">=</span> ctRadarSer<span class="token punctuation">.</span><span class="token function">addNewSpPr</span><span class="token punctuation">(</span><span class="token punctuation">)</span><span class="token punctuation">.</span><span class="token function">addNewLn</span><span class="token punctuation">(</span><span class="token punctuation">)</span><span class="token punctuation">;</span>
-            ctLineProperties<span class="token punctuation">.</span><span class="token function">addNewRound</span><span class="token punctuation">(</span><span class="token punctuation">)</span><span class="token punctuation">;</span>
-            ctLineProperties<span class="token punctuation">.</span><span class="token function">addNewSolidFill</span><span class="token punctuation">(</span><span class="token punctuation">)</span><span class="token punctuation">.</span><span class="token function">addNewSchemeClr</span><span class="token punctuation">(</span><span class="token punctuation">)</span><span class="token punctuation">.</span><span class="token function">setVal</span><span class="token punctuation">(</span>STSchemeColorVal<span class="token punctuation">.</span>ACCENT_1<span class="token punctuation">)</span><span class="token punctuation">;</span>
-            <span class="token comment" spellcheck="true">// 渲染数据</span>
-            ctRadarSer<span class="token punctuation">.</span><span class="token function">addNewCat</span><span class="token punctuation">(</span><span class="token punctuation">)</span><span class="token punctuation">.</span><span class="token function">addNewStrRef</span><span class="token punctuation">(</span><span class="token punctuation">)</span><span class="token punctuation">.</span><span class="token function">setF</span><span class="token punctuation">(</span>sheetName <span class="token operator">+</span> <span class="token string">"!$A$1:$A$6"</span><span class="token punctuation">)</span><span class="token punctuation">;</span>
-            ctRadarSer<span class="token punctuation">.</span><span class="token function">addNewVal</span><span class="token punctuation">(</span><span class="token punctuation">)</span><span class="token punctuation">.</span><span class="token function">addNewNumRef</span><span class="token punctuation">(</span><span class="token punctuation">)</span><span class="token punctuation">.</span><span class="token function">setF</span><span class="token punctuation">(</span>sheetName <span class="token operator">+</span> <span class="token string">"!$B$2:$B$6"</span><span class="token punctuation">)</span><span class="token punctuation">;</span>
+            CTRadarSer ctRadarSer = ctRadarChart.addNewSer();
+            ctRadarSer.addNewIdx().setVal(0);
+            ctRadarSer.addNewOrder().setVal(0);
+            CTLineProperties ctLineProperties = ctRadarSer.addNewSpPr().addNewLn();
+            ctLineProperties.addNewRound();
+            ctLineProperties.addNewSolidFill().addNewSchemeClr().setVal(STSchemeColorVal.ACCENT_1);
+            // 渲染数据
+            ctRadarSer.addNewCat().addNewStrRef().setF(sheetName + &quot;!$A$1:$A$6&quot;);
+            ctRadarSer.addNewVal().addNewNumRef().setF(sheetName + &quot;!$B$2:$B$6&quot;);
 
-            CTCatAx ctCatAx <span class="token operator">=</span> ctPlotArea<span class="token punctuation">.</span><span class="token function">addNewCatAx</span><span class="token punctuation">(</span><span class="token punctuation">)</span><span class="token punctuation">;</span>
-            ctCatAx<span class="token punctuation">.</span><span class="token function">addNewAxId</span><span class="token punctuation">(</span><span class="token punctuation">)</span><span class="token punctuation">.</span><span class="token function">setVal</span><span class="token punctuation">(</span><span class="token number">123456</span><span class="token punctuation">)</span><span class="token punctuation">;</span>
-            ctCatAx<span class="token punctuation">.</span><span class="token function">addNewScaling</span><span class="token punctuation">(</span><span class="token punctuation">)</span><span class="token punctuation">.</span><span class="token function">addNewOrientation</span><span class="token punctuation">(</span><span class="token punctuation">)</span><span class="token punctuation">.</span><span class="token function">setVal</span><span class="token punctuation">(</span>MIN_MAX<span class="token punctuation">)</span><span class="token punctuation">;</span>
-            ctCatAx<span class="token punctuation">.</span><span class="token function">addNewDelete</span><span class="token punctuation">(</span><span class="token punctuation">)</span><span class="token punctuation">.</span><span class="token function">setVal</span><span class="token punctuation">(</span><span class="token boolean">false</span><span class="token punctuation">)</span><span class="token punctuation">;</span>
-            ctCatAx<span class="token punctuation">.</span><span class="token function">addNewAxPos</span><span class="token punctuation">(</span><span class="token punctuation">)</span><span class="token punctuation">.</span><span class="token function">setVal</span><span class="token punctuation">(</span>STAxPos<span class="token punctuation">.</span>B<span class="token punctuation">)</span><span class="token punctuation">;</span>
-            ctCatAx<span class="token punctuation">.</span><span class="token function">addNewCrossAx</span><span class="token punctuation">(</span><span class="token punctuation">)</span><span class="token punctuation">.</span><span class="token function">setVal</span><span class="token punctuation">(</span><span class="token number">123457</span><span class="token punctuation">)</span><span class="token punctuation">;</span>
-            ctCatAx<span class="token punctuation">.</span><span class="token function">addNewMajorTickMark</span><span class="token punctuation">(</span><span class="token punctuation">)</span><span class="token punctuation">.</span><span class="token function">setVal</span><span class="token punctuation">(</span>STTickMark<span class="token punctuation">.</span>NONE<span class="token punctuation">)</span><span class="token punctuation">;</span>
-            ctCatAx<span class="token punctuation">.</span><span class="token function">addNewMinorTickMark</span><span class="token punctuation">(</span><span class="token punctuation">)</span><span class="token punctuation">.</span><span class="token function">setVal</span><span class="token punctuation">(</span>STTickMark<span class="token punctuation">.</span>NONE<span class="token punctuation">)</span><span class="token punctuation">;</span>
-            ctCatAx<span class="token punctuation">.</span><span class="token function">addNewTickLblPos</span><span class="token punctuation">(</span><span class="token punctuation">)</span><span class="token punctuation">.</span><span class="token function">setVal</span><span class="token punctuation">(</span>NEXT_TO<span class="token punctuation">)</span><span class="token punctuation">;</span>
-<span class="token comment" spellcheck="true">//            ctCatAx.addNewCrosses().setVal(STCrosses.AUTO_ZERO);</span>
-<span class="token comment" spellcheck="true">//            ctCatAx.addNewAuto().setVal(true);</span>
-<span class="token comment" spellcheck="true">//            ctCatAx.addNewLblAlgn().setVal(STLblAlgn.CTR);</span>
-<span class="token comment" spellcheck="true">//            ctCatAx.addNewLblOffset().setVal(100);</span>
-<span class="token comment" spellcheck="true">//            ctCatAx.addNewNoMultiLvlLbl().setVal(false);</span>
-            <span class="token comment" spellcheck="true">// spPr</span>
-<span class="token comment" spellcheck="true">//            CTShapeProperties ctShapeProperties = ctCatAx.addNewSpPr();</span>
-<span class="token comment" spellcheck="true">//            ctShapeProperties.addNewNoFill();</span>
-<span class="token comment" spellcheck="true">//            ctShapeProperties.addNewEffectLst();</span>
-<span class="token comment" spellcheck="true">//            CTLineProperties ctLineProperties1 = ctShapeProperties.addNewLn();</span>
-<span class="token comment" spellcheck="true">//            ctLineProperties1.setW(9525);</span>
-<span class="token comment" spellcheck="true">//            ctLineProperties1.setCap(STLineCap.FLAT);</span>
-<span class="token comment" spellcheck="true">//            ctLineProperties1.setCmpd(STCompoundLine.SNG);</span>
-<span class="token comment" spellcheck="true">//            ctLineProperties1.setAlgn(STPenAlignment.CTR);</span>
-<span class="token comment" spellcheck="true">//            CTSchemeColor ctSchemeColor = ctLineProperties1.addNewSolidFill().addNewSchemeClr();</span>
-<span class="token comment" spellcheck="true">//            ctSchemeColor.setVal(STSchemeColorVal.TX_1);</span>
-<span class="token comment" spellcheck="true">//            ctSchemeColor.addNewLumMod().setVal(15000);</span>
-<span class="token comment" spellcheck="true">//            ctSchemeColor.addNewLumOff().setVal(85000);</span>
-            <span class="token comment" spellcheck="true">// txPr</span>
-<span class="token comment" spellcheck="true">//            CTTextBody ctTextBody = ctCatAx.addNewTxPr();</span>
-<span class="token comment" spellcheck="true">//            CTTextCharacterProperties ctTextCharacterProperties = ctTextBody.addNewP().addNewPPr().addNewDefRPr();</span>
-<span class="token comment" spellcheck="true">//            ctTextCharacterProperties.setU(STTextUnderlineType.NONE);</span>
-<span class="token comment" spellcheck="true">//            ctTextCharacterProperties.setStrike(STTextStrikeType.NO_STRIKE);</span>
-<span class="token comment" spellcheck="true">//            ctTextCharacterProperties.setSz(900);</span>
-<span class="token comment" spellcheck="true">//            ctTextCharacterProperties.setB(false);</span>
-<span class="token comment" spellcheck="true">//            ctTextCharacterProperties.setI(false);</span>
-<span class="token comment" spellcheck="true">//            ctTextCharacterProperties.setBaseline(0);</span>
-<span class="token comment" spellcheck="true">//            ctTextCharacterProperties.setKern(1200);</span>
-<span class="token comment" spellcheck="true">//            CTSchemeColor ctSchemeColor = ctTextCharacterProperties.addNewSolidFill().addNewSchemeClr();</span>
-<span class="token comment" spellcheck="true">//            ctSchemeColor.setVal(STSchemeColorVal.TX_1);</span>
-<span class="token comment" spellcheck="true">//            ctSchemeColor.addNewLumMod().setVal(65000);</span>
-<span class="token comment" spellcheck="true">//            ctSchemeColor.addNewLumOff().setVal(35000);</span>
+            CTCatAx ctCatAx = ctPlotArea.addNewCatAx();
+            ctCatAx.addNewAxId().setVal(123456);
+            ctCatAx.addNewScaling().addNewOrientation().setVal(MIN_MAX);
+            ctCatAx.addNewDelete().setVal(false);
+            ctCatAx.addNewAxPos().setVal(STAxPos.B);
+            ctCatAx.addNewCrossAx().setVal(123457);
+            ctCatAx.addNewMajorTickMark().setVal(STTickMark.NONE);
+            ctCatAx.addNewMinorTickMark().setVal(STTickMark.NONE);
+            ctCatAx.addNewTickLblPos().setVal(NEXT_TO);
+//            ctCatAx.addNewCrosses().setVal(STCrosses.AUTO_ZERO);
+//            ctCatAx.addNewAuto().setVal(true);
+//            ctCatAx.addNewLblAlgn().setVal(STLblAlgn.CTR);
+//            ctCatAx.addNewLblOffset().setVal(100);
+//            ctCatAx.addNewNoMultiLvlLbl().setVal(false);
+            // spPr
+//            CTShapeProperties ctShapeProperties = ctCatAx.addNewSpPr();
+//            ctShapeProperties.addNewNoFill();
+//            ctShapeProperties.addNewEffectLst();
+//            CTLineProperties ctLineProperties1 = ctShapeProperties.addNewLn();
+//            ctLineProperties1.setW(9525);
+//            ctLineProperties1.setCap(STLineCap.FLAT);
+//            ctLineProperties1.setCmpd(STCompoundLine.SNG);
+//            ctLineProperties1.setAlgn(STPenAlignment.CTR);
+//            CTSchemeColor ctSchemeColor = ctLineProperties1.addNewSolidFill().addNewSchemeClr();
+//            ctSchemeColor.setVal(STSchemeColorVal.TX_1);
+//            ctSchemeColor.addNewLumMod().setVal(15000);
+//            ctSchemeColor.addNewLumOff().setVal(85000);
+            // txPr
+//            CTTextBody ctTextBody = ctCatAx.addNewTxPr();
+//            CTTextCharacterProperties ctTextCharacterProperties = ctTextBody.addNewP().addNewPPr().addNewDefRPr();
+//            ctTextCharacterProperties.setU(STTextUnderlineType.NONE);
+//            ctTextCharacterProperties.setStrike(STTextStrikeType.NO_STRIKE);
+//            ctTextCharacterProperties.setSz(900);
+//            ctTextCharacterProperties.setB(false);
+//            ctTextCharacterProperties.setI(false);
+//            ctTextCharacterProperties.setBaseline(0);
+//            ctTextCharacterProperties.setKern(1200);
+//            CTSchemeColor ctSchemeColor = ctTextCharacterProperties.addNewSolidFill().addNewSchemeClr();
+//            ctSchemeColor.setVal(STSchemeColorVal.TX_1);
+//            ctSchemeColor.addNewLumMod().setVal(65000);
+//            ctSchemeColor.addNewLumOff().setVal(35000);
 
 
-            CTValAx ctValAx <span class="token operator">=</span> ctPlotArea<span class="token punctuation">.</span><span class="token function">addNewValAx</span><span class="token punctuation">(</span><span class="token punctuation">)</span><span class="token punctuation">;</span>
-            ctValAx<span class="token punctuation">.</span><span class="token function">addNewAxId</span><span class="token punctuation">(</span><span class="token punctuation">)</span><span class="token punctuation">.</span><span class="token function">setVal</span><span class="token punctuation">(</span><span class="token number">123457</span><span class="token punctuation">)</span><span class="token punctuation">;</span>
-            ctValAx<span class="token punctuation">.</span><span class="token function">addNewScaling</span><span class="token punctuation">(</span><span class="token punctuation">)</span><span class="token punctuation">.</span><span class="token function">addNewOrientation</span><span class="token punctuation">(</span><span class="token punctuation">)</span><span class="token punctuation">.</span><span class="token function">setVal</span><span class="token punctuation">(</span>MIN_MAX<span class="token punctuation">)</span><span class="token punctuation">;</span>
-            ctValAx<span class="token punctuation">.</span><span class="token function">addNewDelete</span><span class="token punctuation">(</span><span class="token punctuation">)</span><span class="token punctuation">.</span><span class="token function">setVal</span><span class="token punctuation">(</span><span class="token boolean">false</span><span class="token punctuation">)</span><span class="token punctuation">;</span>
-            ctValAx<span class="token punctuation">.</span><span class="token function">addNewAxPos</span><span class="token punctuation">(</span><span class="token punctuation">)</span><span class="token punctuation">.</span><span class="token function">setVal</span><span class="token punctuation">(</span>STAxPos<span class="token punctuation">.</span>L<span class="token punctuation">)</span><span class="token punctuation">;</span>
-            ctValAx<span class="token punctuation">.</span><span class="token function">addNewCrossAx</span><span class="token punctuation">(</span><span class="token punctuation">)</span><span class="token punctuation">.</span><span class="token function">setVal</span><span class="token punctuation">(</span><span class="token number">123456</span><span class="token punctuation">)</span><span class="token punctuation">;</span>
-            ctValAx<span class="token punctuation">.</span><span class="token function">addNewMajorTickMark</span><span class="token punctuation">(</span><span class="token punctuation">)</span><span class="token punctuation">.</span><span class="token function">setVal</span><span class="token punctuation">(</span>STTickMark<span class="token punctuation">.</span>NONE<span class="token punctuation">)</span><span class="token punctuation">;</span>
-            ctValAx<span class="token punctuation">.</span><span class="token function">addNewMinorTickMark</span><span class="token punctuation">(</span><span class="token punctuation">)</span><span class="token punctuation">.</span><span class="token function">setVal</span><span class="token punctuation">(</span>STTickMark<span class="token punctuation">.</span>NONE<span class="token punctuation">)</span><span class="token punctuation">;</span>
-            ctValAx<span class="token punctuation">.</span><span class="token function">addNewTickLblPos</span><span class="token punctuation">(</span><span class="token punctuation">)</span><span class="token punctuation">.</span><span class="token function">setVal</span><span class="token punctuation">(</span>NEXT_TO<span class="token punctuation">)</span><span class="token punctuation">;</span>
-<span class="token comment" spellcheck="true">//            ctValAx.addNewCrosses().setVal(STCrosses.AUTO_ZERO);</span>
-<span class="token comment" spellcheck="true">//            ctValAx.addNewCrossBetween().setVal(STCrossBetween.BETWEEN);</span>
-            <span class="token comment" spellcheck="true">// 设置网格线</span>
-            CTShapeProperties ctShapeProperties <span class="token operator">=</span> ctValAx<span class="token punctuation">.</span><span class="token function">addNewMajorGridlines</span><span class="token punctuation">(</span><span class="token punctuation">)</span><span class="token punctuation">.</span><span class="token function">addNewSpPr</span><span class="token punctuation">(</span><span class="token punctuation">)</span><span class="token punctuation">;</span>
-            CTLineProperties ctLineProperties1 <span class="token operator">=</span> ctShapeProperties<span class="token punctuation">.</span><span class="token function">addNewLn</span><span class="token punctuation">(</span><span class="token punctuation">)</span><span class="token punctuation">;</span>
-            ctLineProperties1<span class="token punctuation">.</span><span class="token function">setW</span><span class="token punctuation">(</span><span class="token number">9525</span><span class="token punctuation">)</span><span class="token punctuation">;</span>
-            ctLineProperties1<span class="token punctuation">.</span><span class="token function">setCap</span><span class="token punctuation">(</span>STLineCap<span class="token punctuation">.</span>FLAT<span class="token punctuation">)</span><span class="token punctuation">;</span>
-            ctLineProperties1<span class="token punctuation">.</span><span class="token function">setCmpd</span><span class="token punctuation">(</span>STCompoundLine<span class="token punctuation">.</span>SNG<span class="token punctuation">)</span><span class="token punctuation">;</span>
-            ctLineProperties1<span class="token punctuation">.</span><span class="token function">setAlgn</span><span class="token punctuation">(</span>STPenAlignment<span class="token punctuation">.</span>CTR<span class="token punctuation">)</span><span class="token punctuation">;</span>
-            <span class="token comment" spellcheck="true">// 值的纵坐标线，不显示</span>
-            ctValAx<span class="token punctuation">.</span><span class="token function">addNewSpPr</span><span class="token punctuation">(</span><span class="token punctuation">)</span><span class="token punctuation">.</span><span class="token function">addNewLn</span><span class="token punctuation">(</span><span class="token punctuation">)</span><span class="token punctuation">.</span><span class="token function">addNewNoFill</span><span class="token punctuation">(</span><span class="token punctuation">)</span><span class="token punctuation">;</span>
-            <span class="token comment" spellcheck="true">// 值的纵坐标值，不显示</span>
-            ctValAx<span class="token punctuation">.</span><span class="token function">addNewTxPr</span><span class="token punctuation">(</span><span class="token punctuation">)</span><span class="token punctuation">.</span><span class="token function">addNewP</span><span class="token punctuation">(</span><span class="token punctuation">)</span><span class="token punctuation">.</span><span class="token function">addNewPPr</span><span class="token punctuation">(</span><span class="token punctuation">)</span><span class="token punctuation">.</span><span class="token function">addNewDefRPr</span><span class="token punctuation">(</span><span class="token punctuation">)</span><span class="token punctuation">.</span><span class="token function">addNewNoFill</span><span class="token punctuation">(</span><span class="token punctuation">)</span><span class="token punctuation">;</span>
+            CTValAx ctValAx = ctPlotArea.addNewValAx();
+            ctValAx.addNewAxId().setVal(123457);
+            ctValAx.addNewScaling().addNewOrientation().setVal(MIN_MAX);
+            ctValAx.addNewDelete().setVal(false);
+            ctValAx.addNewAxPos().setVal(STAxPos.L);
+            ctValAx.addNewCrossAx().setVal(123456);
+            ctValAx.addNewMajorTickMark().setVal(STTickMark.NONE);
+            ctValAx.addNewMinorTickMark().setVal(STTickMark.NONE);
+            ctValAx.addNewTickLblPos().setVal(NEXT_TO);
+//            ctValAx.addNewCrosses().setVal(STCrosses.AUTO_ZERO);
+//            ctValAx.addNewCrossBetween().setVal(STCrossBetween.BETWEEN);
+            // 设置网格线
+            CTShapeProperties ctShapeProperties = ctValAx.addNewMajorGridlines().addNewSpPr();
+            CTLineProperties ctLineProperties1 = ctShapeProperties.addNewLn();
+            ctLineProperties1.setW(9525);
+            ctLineProperties1.setCap(STLineCap.FLAT);
+            ctLineProperties1.setCmpd(STCompoundLine.SNG);
+            ctLineProperties1.setAlgn(STPenAlignment.CTR);
+            // 值的纵坐标线，不显示
+            ctValAx.addNewSpPr().addNewLn().addNewNoFill();
+            // 值的纵坐标值，不显示
+            ctValAx.addNewTxPr().addNewP().addNewPPr().addNewDefRPr().addNewNoFill();
 
-            System<span class="token punctuation">.</span>out<span class="token punctuation">.</span><span class="token function">println</span><span class="token punctuation">(</span>ctChart<span class="token punctuation">)</span><span class="token punctuation">;</span>
+            System.out.println(ctChart);
 
-            FileOutputStream outputStream <span class="token operator">=</span>
-                    <span class="token keyword">new</span> <span class="token class-name">FileOutputStream</span><span class="token punctuation">(</span><span class="token string">"C:\\Users\\user\\Desktop\\out.xlsx"</span><span class="token punctuation">)</span><span class="token punctuation">;</span>
-            workbook<span class="token punctuation">.</span><span class="token function">write</span><span class="token punctuation">(</span>outputStream<span class="token punctuation">)</span><span class="token punctuation">;</span>
-            outputStream<span class="token punctuation">.</span><span class="token function">flush</span><span class="token punctuation">(</span><span class="token punctuation">)</span><span class="token punctuation">;</span>
-            outputStream<span class="token punctuation">.</span><span class="token function">close</span><span class="token punctuation">(</span><span class="token punctuation">)</span><span class="token punctuation">;</span>
-        <span class="token punctuation">}</span>
-    <span class="token punctuation">}</span>
+            FileOutputStream outputStream =
+                    new FileOutputStream(&quot;C:\\Users\\user\\Desktop\\out.xlsx&quot;);
+            workbook.write(outputStream);
+            outputStream.flush();
+            outputStream.close();
+        }
+    }
 </code></pre>
 <h2 id="三、XML结构"><a href="#三、XML结构" class="headerlink" title="三、XML结构"></a>三、XML结构</h2><p>以上生成的图表，归根结底是属于XML的一种，通过 <code>RadarChart</code> 的继承关系可以看到，它其实是 <code>XmlObject</code>的一种实现。</p>
-<pre class=" language-xml"><code class="language-xml"><span class="token tag"><span class="token tag"><span class="token punctuation">&lt;</span>xml-fragment</span> <span class="token attr-name"><span class="token namespace">xmlns:</span>char</span><span class="token attr-value"><span class="token punctuation">=</span><span class="token punctuation">"</span>http://schemas.openxmlformats.org/drawingml/2006/chart<span class="token punctuation">"</span></span> <span class="token attr-name"><span class="token namespace">xmlns:</span>main</span><span class="token attr-value"><span class="token punctuation">=</span><span class="token punctuation">"</span>http://schemas.openxmlformats.org/drawingml/2006/main<span class="token punctuation">"</span></span><span class="token punctuation">></span></span>
-  <span class="token tag"><span class="token tag"><span class="token punctuation">&lt;</span><span class="token namespace">char:</span>autoTitleDeleted</span> <span class="token attr-name">val</span><span class="token attr-value"><span class="token punctuation">=</span><span class="token punctuation">"</span>false<span class="token punctuation">"</span></span><span class="token punctuation">/></span></span>
-  <span class="token tag"><span class="token tag"><span class="token punctuation">&lt;</span><span class="token namespace">char:</span>plotArea</span><span class="token punctuation">></span></span>
-    <span class="token tag"><span class="token tag"><span class="token punctuation">&lt;</span><span class="token namespace">char:</span>layout</span><span class="token punctuation">/></span></span>
-  <span class="token tag"><span class="token tag"><span class="token punctuation">&lt;/</span><span class="token namespace">char:</span>plotArea</span><span class="token punctuation">></span></span>
-  <span class="token tag"><span class="token tag"><span class="token punctuation">&lt;</span><span class="token namespace">char:</span>plotArea</span><span class="token punctuation">></span></span>
-    <span class="token tag"><span class="token tag"><span class="token punctuation">&lt;</span><span class="token namespace">char:</span>layout</span><span class="token punctuation">/></span></span>
-    <span class="token tag"><span class="token tag"><span class="token punctuation">&lt;</span><span class="token namespace">char:</span>radarChart</span><span class="token punctuation">></span></span>
-      <span class="token tag"><span class="token tag"><span class="token punctuation">&lt;</span><span class="token namespace">char:</span>radarStyle</span> <span class="token attr-name">val</span><span class="token attr-value"><span class="token punctuation">=</span><span class="token punctuation">"</span>marker<span class="token punctuation">"</span></span><span class="token punctuation">/></span></span>
-      <span class="token tag"><span class="token tag"><span class="token punctuation">&lt;</span><span class="token namespace">char:</span>varyColors</span> <span class="token attr-name">val</span><span class="token attr-value"><span class="token punctuation">=</span><span class="token punctuation">"</span>false<span class="token punctuation">"</span></span><span class="token punctuation">/></span></span>
-      <span class="token tag"><span class="token tag"><span class="token punctuation">&lt;</span><span class="token namespace">char:</span>ser</span><span class="token punctuation">></span></span>
-        <span class="token tag"><span class="token tag"><span class="token punctuation">&lt;</span><span class="token namespace">char:</span>idx</span> <span class="token attr-name">val</span><span class="token attr-value"><span class="token punctuation">=</span><span class="token punctuation">"</span>0<span class="token punctuation">"</span></span><span class="token punctuation">/></span></span>
-        <span class="token tag"><span class="token tag"><span class="token punctuation">&lt;</span><span class="token namespace">char:</span>order</span> <span class="token attr-name">val</span><span class="token attr-value"><span class="token punctuation">=</span><span class="token punctuation">"</span>0<span class="token punctuation">"</span></span><span class="token punctuation">/></span></span>
-        <span class="token tag"><span class="token tag"><span class="token punctuation">&lt;</span><span class="token namespace">char:</span>spPr</span><span class="token punctuation">></span></span>
-          <span class="token tag"><span class="token tag"><span class="token punctuation">&lt;</span><span class="token namespace">main:</span>ln</span><span class="token punctuation">></span></span>
-            <span class="token tag"><span class="token tag"><span class="token punctuation">&lt;</span><span class="token namespace">main:</span>solidFill</span><span class="token punctuation">></span></span>
-              <span class="token tag"><span class="token tag"><span class="token punctuation">&lt;</span><span class="token namespace">main:</span>schemeClr</span> <span class="token attr-name">val</span><span class="token attr-value"><span class="token punctuation">=</span><span class="token punctuation">"</span>accent1<span class="token punctuation">"</span></span><span class="token punctuation">/></span></span>
-            <span class="token tag"><span class="token tag"><span class="token punctuation">&lt;/</span><span class="token namespace">main:</span>solidFill</span><span class="token punctuation">></span></span>
-            <span class="token tag"><span class="token tag"><span class="token punctuation">&lt;</span><span class="token namespace">main:</span>round</span><span class="token punctuation">/></span></span>
-          <span class="token tag"><span class="token tag"><span class="token punctuation">&lt;/</span><span class="token namespace">main:</span>ln</span><span class="token punctuation">></span></span>
-        <span class="token tag"><span class="token tag"><span class="token punctuation">&lt;/</span><span class="token namespace">char:</span>spPr</span><span class="token punctuation">></span></span>
-        <span class="token tag"><span class="token tag"><span class="token punctuation">&lt;</span><span class="token namespace">char:</span>cat</span><span class="token punctuation">></span></span>
-          <span class="token tag"><span class="token tag"><span class="token punctuation">&lt;</span><span class="token namespace">char:</span>strRef</span><span class="token punctuation">></span></span>
-            <span class="token tag"><span class="token tag"><span class="token punctuation">&lt;</span><span class="token namespace">char:</span>f</span><span class="token punctuation">></span></span>RadarChart!$A$1:$A$6<span class="token tag"><span class="token tag"><span class="token punctuation">&lt;/</span><span class="token namespace">char:</span>f</span><span class="token punctuation">></span></span>
-          <span class="token tag"><span class="token tag"><span class="token punctuation">&lt;/</span><span class="token namespace">char:</span>strRef</span><span class="token punctuation">></span></span>
-        <span class="token tag"><span class="token tag"><span class="token punctuation">&lt;/</span><span class="token namespace">char:</span>cat</span><span class="token punctuation">></span></span>
-        <span class="token tag"><span class="token tag"><span class="token punctuation">&lt;</span><span class="token namespace">char:</span>val</span><span class="token punctuation">></span></span>
-          <span class="token tag"><span class="token tag"><span class="token punctuation">&lt;</span><span class="token namespace">char:</span>numRef</span><span class="token punctuation">></span></span>
-            <span class="token tag"><span class="token tag"><span class="token punctuation">&lt;</span><span class="token namespace">char:</span>f</span><span class="token punctuation">></span></span>RadarChart!$B$2:$B$6<span class="token tag"><span class="token tag"><span class="token punctuation">&lt;/</span><span class="token namespace">char:</span>f</span><span class="token punctuation">></span></span>
-          <span class="token tag"><span class="token tag"><span class="token punctuation">&lt;/</span><span class="token namespace">char:</span>numRef</span><span class="token punctuation">></span></span>
-        <span class="token tag"><span class="token tag"><span class="token punctuation">&lt;/</span><span class="token namespace">char:</span>val</span><span class="token punctuation">></span></span>
-      <span class="token tag"><span class="token tag"><span class="token punctuation">&lt;/</span><span class="token namespace">char:</span>ser</span><span class="token punctuation">></span></span>
-      <span class="token tag"><span class="token tag"><span class="token punctuation">&lt;</span><span class="token namespace">char:</span>dLbls</span><span class="token punctuation">></span></span>
-        <span class="token tag"><span class="token tag"><span class="token punctuation">&lt;</span><span class="token namespace">char:</span>showLegendKey</span> <span class="token attr-name">val</span><span class="token attr-value"><span class="token punctuation">=</span><span class="token punctuation">"</span>false<span class="token punctuation">"</span></span><span class="token punctuation">/></span></span>
-        <span class="token tag"><span class="token tag"><span class="token punctuation">&lt;</span><span class="token namespace">char:</span>showVal</span> <span class="token attr-name">val</span><span class="token attr-value"><span class="token punctuation">=</span><span class="token punctuation">"</span>false<span class="token punctuation">"</span></span><span class="token punctuation">/></span></span>
-        <span class="token tag"><span class="token tag"><span class="token punctuation">&lt;</span><span class="token namespace">char:</span>showCatName</span> <span class="token attr-name">val</span><span class="token attr-value"><span class="token punctuation">=</span><span class="token punctuation">"</span>false<span class="token punctuation">"</span></span><span class="token punctuation">/></span></span>
-        <span class="token tag"><span class="token tag"><span class="token punctuation">&lt;</span><span class="token namespace">char:</span>showSerName</span> <span class="token attr-name">val</span><span class="token attr-value"><span class="token punctuation">=</span><span class="token punctuation">"</span>false<span class="token punctuation">"</span></span><span class="token punctuation">/></span></span>
-        <span class="token tag"><span class="token tag"><span class="token punctuation">&lt;</span><span class="token namespace">char:</span>showPercent</span> <span class="token attr-name">val</span><span class="token attr-value"><span class="token punctuation">=</span><span class="token punctuation">"</span>false<span class="token punctuation">"</span></span><span class="token punctuation">/></span></span>
-        <span class="token tag"><span class="token tag"><span class="token punctuation">&lt;</span><span class="token namespace">char:</span>showBubbleSize</span> <span class="token attr-name">val</span><span class="token attr-value"><span class="token punctuation">=</span><span class="token punctuation">"</span>false<span class="token punctuation">"</span></span><span class="token punctuation">/></span></span>
-      <span class="token tag"><span class="token tag"><span class="token punctuation">&lt;/</span><span class="token namespace">char:</span>dLbls</span><span class="token punctuation">></span></span>
-      <span class="token tag"><span class="token tag"><span class="token punctuation">&lt;</span><span class="token namespace">char:</span>axId</span> <span class="token attr-name">val</span><span class="token attr-value"><span class="token punctuation">=</span><span class="token punctuation">"</span>123456<span class="token punctuation">"</span></span><span class="token punctuation">/></span></span>
-      <span class="token tag"><span class="token tag"><span class="token punctuation">&lt;</span><span class="token namespace">char:</span>axId</span> <span class="token attr-name">val</span><span class="token attr-value"><span class="token punctuation">=</span><span class="token punctuation">"</span>123457<span class="token punctuation">"</span></span><span class="token punctuation">/></span></span>
-    <span class="token tag"><span class="token tag"><span class="token punctuation">&lt;/</span><span class="token namespace">char:</span>radarChart</span><span class="token punctuation">></span></span>
-    <span class="token tag"><span class="token tag"><span class="token punctuation">&lt;</span><span class="token namespace">char:</span>catAx</span><span class="token punctuation">></span></span>
-      <span class="token tag"><span class="token tag"><span class="token punctuation">&lt;</span><span class="token namespace">char:</span>axId</span> <span class="token attr-name">val</span><span class="token attr-value"><span class="token punctuation">=</span><span class="token punctuation">"</span>123456<span class="token punctuation">"</span></span><span class="token punctuation">/></span></span>
-      <span class="token tag"><span class="token tag"><span class="token punctuation">&lt;</span><span class="token namespace">char:</span>scaling</span><span class="token punctuation">></span></span>
-        <span class="token tag"><span class="token tag"><span class="token punctuation">&lt;</span><span class="token namespace">char:</span>orientation</span> <span class="token attr-name">val</span><span class="token attr-value"><span class="token punctuation">=</span><span class="token punctuation">"</span>minMax<span class="token punctuation">"</span></span><span class="token punctuation">/></span></span>
-      <span class="token tag"><span class="token tag"><span class="token punctuation">&lt;/</span><span class="token namespace">char:</span>scaling</span><span class="token punctuation">></span></span>
-      <span class="token tag"><span class="token tag"><span class="token punctuation">&lt;</span><span class="token namespace">char:</span>delete</span> <span class="token attr-name">val</span><span class="token attr-value"><span class="token punctuation">=</span><span class="token punctuation">"</span>false<span class="token punctuation">"</span></span><span class="token punctuation">/></span></span>
-      <span class="token tag"><span class="token tag"><span class="token punctuation">&lt;</span><span class="token namespace">char:</span>axPos</span> <span class="token attr-name">val</span><span class="token attr-value"><span class="token punctuation">=</span><span class="token punctuation">"</span>b<span class="token punctuation">"</span></span><span class="token punctuation">/></span></span>
-      <span class="token tag"><span class="token tag"><span class="token punctuation">&lt;</span><span class="token namespace">char:</span>majorTickMark</span> <span class="token attr-name">val</span><span class="token attr-value"><span class="token punctuation">=</span><span class="token punctuation">"</span>none<span class="token punctuation">"</span></span><span class="token punctuation">/></span></span>
-      <span class="token tag"><span class="token tag"><span class="token punctuation">&lt;</span><span class="token namespace">char:</span>minorTickMark</span> <span class="token attr-name">val</span><span class="token attr-value"><span class="token punctuation">=</span><span class="token punctuation">"</span>none<span class="token punctuation">"</span></span><span class="token punctuation">/></span></span>
-      <span class="token tag"><span class="token tag"><span class="token punctuation">&lt;</span><span class="token namespace">char:</span>tickLblPos</span> <span class="token attr-name">val</span><span class="token attr-value"><span class="token punctuation">=</span><span class="token punctuation">"</span>nextTo<span class="token punctuation">"</span></span><span class="token punctuation">/></span></span>
-      <span class="token tag"><span class="token tag"><span class="token punctuation">&lt;</span><span class="token namespace">char:</span>crossAx</span> <span class="token attr-name">val</span><span class="token attr-value"><span class="token punctuation">=</span><span class="token punctuation">"</span>123457<span class="token punctuation">"</span></span><span class="token punctuation">/></span></span>
-    <span class="token tag"><span class="token tag"><span class="token punctuation">&lt;/</span><span class="token namespace">char:</span>catAx</span><span class="token punctuation">></span></span>
-    <span class="token tag"><span class="token tag"><span class="token punctuation">&lt;</span><span class="token namespace">char:</span>valAx</span><span class="token punctuation">></span></span>
-      <span class="token tag"><span class="token tag"><span class="token punctuation">&lt;</span><span class="token namespace">char:</span>axId</span> <span class="token attr-name">val</span><span class="token attr-value"><span class="token punctuation">=</span><span class="token punctuation">"</span>123457<span class="token punctuation">"</span></span><span class="token punctuation">/></span></span>
-      <span class="token tag"><span class="token tag"><span class="token punctuation">&lt;</span><span class="token namespace">char:</span>scaling</span><span class="token punctuation">></span></span>
-        <span class="token tag"><span class="token tag"><span class="token punctuation">&lt;</span><span class="token namespace">char:</span>orientation</span> <span class="token attr-name">val</span><span class="token attr-value"><span class="token punctuation">=</span><span class="token punctuation">"</span>minMax<span class="token punctuation">"</span></span><span class="token punctuation">/></span></span>
-      <span class="token tag"><span class="token tag"><span class="token punctuation">&lt;/</span><span class="token namespace">char:</span>scaling</span><span class="token punctuation">></span></span>
-      <span class="token tag"><span class="token tag"><span class="token punctuation">&lt;</span><span class="token namespace">char:</span>delete</span> <span class="token attr-name">val</span><span class="token attr-value"><span class="token punctuation">=</span><span class="token punctuation">"</span>false<span class="token punctuation">"</span></span><span class="token punctuation">/></span></span>
-      <span class="token tag"><span class="token tag"><span class="token punctuation">&lt;</span><span class="token namespace">char:</span>axPos</span> <span class="token attr-name">val</span><span class="token attr-value"><span class="token punctuation">=</span><span class="token punctuation">"</span>l<span class="token punctuation">"</span></span><span class="token punctuation">/></span></span>
-      <span class="token tag"><span class="token tag"><span class="token punctuation">&lt;</span><span class="token namespace">char:</span>majorGridlines</span><span class="token punctuation">></span></span>
-        <span class="token tag"><span class="token tag"><span class="token punctuation">&lt;</span><span class="token namespace">char:</span>spPr</span><span class="token punctuation">></span></span>
-          <span class="token tag"><span class="token tag"><span class="token punctuation">&lt;</span><span class="token namespace">main:</span>ln</span> <span class="token attr-name">w</span><span class="token attr-value"><span class="token punctuation">=</span><span class="token punctuation">"</span>9525<span class="token punctuation">"</span></span> <span class="token attr-name">cap</span><span class="token attr-value"><span class="token punctuation">=</span><span class="token punctuation">"</span>flat<span class="token punctuation">"</span></span> <span class="token attr-name">cmpd</span><span class="token attr-value"><span class="token punctuation">=</span><span class="token punctuation">"</span>sng<span class="token punctuation">"</span></span> <span class="token attr-name">algn</span><span class="token attr-value"><span class="token punctuation">=</span><span class="token punctuation">"</span>ctr<span class="token punctuation">"</span></span><span class="token punctuation">/></span></span>
-        <span class="token tag"><span class="token tag"><span class="token punctuation">&lt;/</span><span class="token namespace">char:</span>spPr</span><span class="token punctuation">></span></span>
-      <span class="token tag"><span class="token tag"><span class="token punctuation">&lt;/</span><span class="token namespace">char:</span>majorGridlines</span><span class="token punctuation">></span></span>
-      <span class="token tag"><span class="token tag"><span class="token punctuation">&lt;</span><span class="token namespace">char:</span>majorTickMark</span> <span class="token attr-name">val</span><span class="token attr-value"><span class="token punctuation">=</span><span class="token punctuation">"</span>none<span class="token punctuation">"</span></span><span class="token punctuation">/></span></span>
-      <span class="token tag"><span class="token tag"><span class="token punctuation">&lt;</span><span class="token namespace">char:</span>minorTickMark</span> <span class="token attr-name">val</span><span class="token attr-value"><span class="token punctuation">=</span><span class="token punctuation">"</span>none<span class="token punctuation">"</span></span><span class="token punctuation">/></span></span>
-      <span class="token tag"><span class="token tag"><span class="token punctuation">&lt;</span><span class="token namespace">char:</span>tickLblPos</span> <span class="token attr-name">val</span><span class="token attr-value"><span class="token punctuation">=</span><span class="token punctuation">"</span>nextTo<span class="token punctuation">"</span></span><span class="token punctuation">/></span></span>
-      <span class="token tag"><span class="token tag"><span class="token punctuation">&lt;</span><span class="token namespace">char:</span>spPr</span><span class="token punctuation">></span></span>
-        <span class="token tag"><span class="token tag"><span class="token punctuation">&lt;</span><span class="token namespace">main:</span>ln</span><span class="token punctuation">></span></span>
-          <span class="token tag"><span class="token tag"><span class="token punctuation">&lt;</span><span class="token namespace">main:</span>noFill</span><span class="token punctuation">/></span></span>
-        <span class="token tag"><span class="token tag"><span class="token punctuation">&lt;/</span><span class="token namespace">main:</span>ln</span><span class="token punctuation">></span></span>
-      <span class="token tag"><span class="token tag"><span class="token punctuation">&lt;/</span><span class="token namespace">char:</span>spPr</span><span class="token punctuation">></span></span>
-      <span class="token tag"><span class="token tag"><span class="token punctuation">&lt;</span><span class="token namespace">char:</span>txPr</span><span class="token punctuation">></span></span>
-        <span class="token tag"><span class="token tag"><span class="token punctuation">&lt;</span><span class="token namespace">main:</span>p</span><span class="token punctuation">></span></span>
-          <span class="token tag"><span class="token tag"><span class="token punctuation">&lt;</span><span class="token namespace">main:</span>pPr</span><span class="token punctuation">></span></span>
-            <span class="token tag"><span class="token tag"><span class="token punctuation">&lt;</span><span class="token namespace">main:</span>defRPr</span><span class="token punctuation">></span></span>
-              <span class="token tag"><span class="token tag"><span class="token punctuation">&lt;</span><span class="token namespace">main:</span>noFill</span><span class="token punctuation">/></span></span>
-            <span class="token tag"><span class="token tag"><span class="token punctuation">&lt;/</span><span class="token namespace">main:</span>defRPr</span><span class="token punctuation">></span></span>
-          <span class="token tag"><span class="token tag"><span class="token punctuation">&lt;/</span><span class="token namespace">main:</span>pPr</span><span class="token punctuation">></span></span>
-        <span class="token tag"><span class="token tag"><span class="token punctuation">&lt;/</span><span class="token namespace">main:</span>p</span><span class="token punctuation">></span></span>
-      <span class="token tag"><span class="token tag"><span class="token punctuation">&lt;/</span><span class="token namespace">char:</span>txPr</span><span class="token punctuation">></span></span>
-      <span class="token tag"><span class="token tag"><span class="token punctuation">&lt;</span><span class="token namespace">char:</span>crossAx</span> <span class="token attr-name">val</span><span class="token attr-value"><span class="token punctuation">=</span><span class="token punctuation">"</span>123456<span class="token punctuation">"</span></span><span class="token punctuation">/></span></span>
-    <span class="token tag"><span class="token tag"><span class="token punctuation">&lt;/</span><span class="token namespace">char:</span>valAx</span><span class="token punctuation">></span></span>
-  <span class="token tag"><span class="token tag"><span class="token punctuation">&lt;/</span><span class="token namespace">char:</span>plotArea</span><span class="token punctuation">></span></span>
-  <span class="token tag"><span class="token tag"><span class="token punctuation">&lt;</span><span class="token namespace">char:</span>plotVisOnly</span> <span class="token attr-name">val</span><span class="token attr-value"><span class="token punctuation">=</span><span class="token punctuation">"</span>true<span class="token punctuation">"</span></span><span class="token punctuation">/></span></span>
-<span class="token tag"><span class="token tag"><span class="token punctuation">&lt;/</span>xml-fragment</span><span class="token punctuation">></span></span>
+<pre><code class="xml">&lt;xml-fragment xmlns:char=&quot;http://schemas.openxmlformats.org/drawingml/2006/chart&quot; xmlns:main=&quot;http://schemas.openxmlformats.org/drawingml/2006/main&quot;&gt;
+  &lt;char:autoTitleDeleted val=&quot;false&quot;/&gt;
+  &lt;char:plotArea&gt;
+    &lt;char:layout/&gt;
+  &lt;/char:plotArea&gt;
+  &lt;char:plotArea&gt;
+    &lt;char:layout/&gt;
+    &lt;char:radarChart&gt;
+      &lt;char:radarStyle val=&quot;marker&quot;/&gt;
+      &lt;char:varyColors val=&quot;false&quot;/&gt;
+      &lt;char:ser&gt;
+        &lt;char:idx val=&quot;0&quot;/&gt;
+        &lt;char:order val=&quot;0&quot;/&gt;
+        &lt;char:spPr&gt;
+          &lt;main:ln&gt;
+            &lt;main:solidFill&gt;
+              &lt;main:schemeClr val=&quot;accent1&quot;/&gt;
+            &lt;/main:solidFill&gt;
+            &lt;main:round/&gt;
+          &lt;/main:ln&gt;
+        &lt;/char:spPr&gt;
+        &lt;char:cat&gt;
+          &lt;char:strRef&gt;
+            &lt;char:f&gt;RadarChart!$A$1:$A$6&lt;/char:f&gt;
+          &lt;/char:strRef&gt;
+        &lt;/char:cat&gt;
+        &lt;char:val&gt;
+          &lt;char:numRef&gt;
+            &lt;char:f&gt;RadarChart!$B$2:$B$6&lt;/char:f&gt;
+          &lt;/char:numRef&gt;
+        &lt;/char:val&gt;
+      &lt;/char:ser&gt;
+      &lt;char:dLbls&gt;
+        &lt;char:showLegendKey val=&quot;false&quot;/&gt;
+        &lt;char:showVal val=&quot;false&quot;/&gt;
+        &lt;char:showCatName val=&quot;false&quot;/&gt;
+        &lt;char:showSerName val=&quot;false&quot;/&gt;
+        &lt;char:showPercent val=&quot;false&quot;/&gt;
+        &lt;char:showBubbleSize val=&quot;false&quot;/&gt;
+      &lt;/char:dLbls&gt;
+      &lt;char:axId val=&quot;123456&quot;/&gt;
+      &lt;char:axId val=&quot;123457&quot;/&gt;
+    &lt;/char:radarChart&gt;
+    &lt;char:catAx&gt;
+      &lt;char:axId val=&quot;123456&quot;/&gt;
+      &lt;char:scaling&gt;
+        &lt;char:orientation val=&quot;minMax&quot;/&gt;
+      &lt;/char:scaling&gt;
+      &lt;char:delete val=&quot;false&quot;/&gt;
+      &lt;char:axPos val=&quot;b&quot;/&gt;
+      &lt;char:majorTickMark val=&quot;none&quot;/&gt;
+      &lt;char:minorTickMark val=&quot;none&quot;/&gt;
+      &lt;char:tickLblPos val=&quot;nextTo&quot;/&gt;
+      &lt;char:crossAx val=&quot;123457&quot;/&gt;
+    &lt;/char:catAx&gt;
+    &lt;char:valAx&gt;
+      &lt;char:axId val=&quot;123457&quot;/&gt;
+      &lt;char:scaling&gt;
+        &lt;char:orientation val=&quot;minMax&quot;/&gt;
+      &lt;/char:scaling&gt;
+      &lt;char:delete val=&quot;false&quot;/&gt;
+      &lt;char:axPos val=&quot;l&quot;/&gt;
+      &lt;char:majorGridlines&gt;
+        &lt;char:spPr&gt;
+          &lt;main:ln w=&quot;9525&quot; cap=&quot;flat&quot; cmpd=&quot;sng&quot; algn=&quot;ctr&quot;/&gt;
+        &lt;/char:spPr&gt;
+      &lt;/char:majorGridlines&gt;
+      &lt;char:majorTickMark val=&quot;none&quot;/&gt;
+      &lt;char:minorTickMark val=&quot;none&quot;/&gt;
+      &lt;char:tickLblPos val=&quot;nextTo&quot;/&gt;
+      &lt;char:spPr&gt;
+        &lt;main:ln&gt;
+          &lt;main:noFill/&gt;
+        &lt;/main:ln&gt;
+      &lt;/char:spPr&gt;
+      &lt;char:txPr&gt;
+        &lt;main:p&gt;
+          &lt;main:pPr&gt;
+            &lt;main:defRPr&gt;
+              &lt;main:noFill/&gt;
+            &lt;/main:defRPr&gt;
+          &lt;/main:pPr&gt;
+        &lt;/main:p&gt;
+      &lt;/char:txPr&gt;
+      &lt;char:crossAx val=&quot;123456&quot;/&gt;
+    &lt;/char:valAx&gt;
+  &lt;/char:plotArea&gt;
+  &lt;char:plotVisOnly val=&quot;true&quot;/&gt;
+&lt;/xml-fragment&gt;
 </code></pre>
 <h2 id="四、工具类，我放在-POI生成原生图表-工具类-中"><a href="#四、工具类，我放在-POI生成原生图表-工具类-中" class="headerlink" title="四、工具类，我放在 POI生成原生图表-工具类 中"></a>四、工具类，我放在 <a href="www.baidu.com">POI生成原生图表-工具类</a> 中</h2>
       
@@ -641,8 +641,8 @@
         <div class="post-nav">
           <div class="post-nav-next post-nav-item">
             
-              <a href="/2018/09/01/POI/POI生成原生Excel-簇状柱状图/" rel="next" title="使用POI结合Excel的行列生成原生散点图(XY图)">
-                <i class="fa fa-chevron-left"></i> 使用POI结合Excel的行列生成原生散点图(XY图)
+              <a href="/2018/09/01/POI/POI生成Excel-表格抽象工具类/" rel="next" title="POI生成Excel工具类">
+                <i class="fa fa-chevron-left"></i> POI生成Excel工具类
               </a>
             
           </div>
@@ -651,8 +651,8 @@
 
           <div class="post-nav-prev post-nav-item">
             
-              <a href="/2018/09/01/读书笔记/《SpringData》/MongoDB/Spring-Data-MongoDB（2）/" rel="prev" title="SpringDataMongoDB(二)">
-                SpringDataMongoDB(二) <i class="fa fa-chevron-right"></i>
+              <a href="/2018/09/01/POI/POI生成原生Excel-工具类/" rel="prev" title="POI生成原生Excel-工具类">
+                POI生成原生Excel-工具类 <i class="fa fa-chevron-right"></i>
               </a>
             
           </div>
@@ -734,7 +734,7 @@
               
                 <a href="/archives">
               
-                  <span class="site-state-item-count">224</span>
+                  <span class="site-state-item-count">237</span>
                   <span class="site-state-item-name">日志</span>
                 </a>
               </div>
@@ -756,7 +756,7 @@
               
               <div class="site-state-item site-state-tags">
                 <a href="/tags/index.html">
-                  <span class="site-state-item-count">21</span>
+                  <span class="site-state-item-count">22</span>
                   <span class="site-state-item-name">标签</span>
                 </a>
               </div>

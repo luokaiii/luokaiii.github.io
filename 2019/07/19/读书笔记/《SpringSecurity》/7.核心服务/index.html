@@ -397,174 +397,174 @@
 <p>如果不想看源码，请直接看我写的注释，也能明白这些类的执行过程。</p>
 </blockquote>
 <h3 id="1-UsernamePasswordAuthenticationFilter"><a href="#1-UsernamePasswordAuthenticationFilter" class="headerlink" title="1. UsernamePasswordAuthenticationFilter"></a>1. UsernamePasswordAuthenticationFilter</h3><p>拦截并处理用户的登录请求</p>
-<pre class=" language-java"><code class="language-java"><span class="token keyword">public</span> Authentication <span class="token function">attemptAuthentication</span><span class="token punctuation">(</span>HttpServletRequest request<span class="token punctuation">,</span>
-                                            HttpServletResponse response<span class="token punctuation">)</span> <span class="token keyword">throws</span> AuthenticationException <span class="token punctuation">{</span>
-    <span class="token comment" spellcheck="true">// 1. 登录认证请求必须是POST</span>
-    <span class="token keyword">if</span> <span class="token punctuation">(</span>postOnly <span class="token operator">&amp;&amp;</span> <span class="token operator">!</span>request<span class="token punctuation">.</span><span class="token function">getMethod</span><span class="token punctuation">(</span><span class="token punctuation">)</span><span class="token punctuation">.</span><span class="token function">equals</span><span class="token punctuation">(</span><span class="token string">"POST"</span><span class="token punctuation">)</span><span class="token punctuation">)</span> <span class="token punctuation">{</span>
-        <span class="token keyword">throw</span> <span class="token keyword">new</span> <span class="token class-name">AuthenticationServiceException</span><span class="token punctuation">(</span>
-            <span class="token string">"Authentication method not supported: "</span> <span class="token operator">+</span> request<span class="token punctuation">.</span><span class="token function">getMethod</span><span class="token punctuation">(</span><span class="token punctuation">)</span><span class="token punctuation">)</span><span class="token punctuation">;</span>
-    <span class="token punctuation">}</span>
+<pre><code class="java">public Authentication attemptAuthentication(HttpServletRequest request,
+                                            HttpServletResponse response) throws AuthenticationException {
+    // 1. 登录认证请求必须是POST
+    if (postOnly &amp;&amp; !request.getMethod().equals(&quot;POST&quot;)) {
+        throw new AuthenticationServiceException(
+            &quot;Authentication method not supported: &quot; + request.getMethod());
+    }
 
-    <span class="token comment" spellcheck="true">// 2. 检查请求 request 中是否包含 username、password 参数</span>
-    String username <span class="token operator">=</span> <span class="token function">obtainUsername</span><span class="token punctuation">(</span>request<span class="token punctuation">)</span><span class="token punctuation">;</span>
-    String password <span class="token operator">=</span> <span class="token function">obtainPassword</span><span class="token punctuation">(</span>request<span class="token punctuation">)</span><span class="token punctuation">;</span>
+    // 2. 检查请求 request 中是否包含 username、password 参数
+    String username = obtainUsername(request);
+    String password = obtainPassword(request);
 
-    <span class="token keyword">if</span> <span class="token punctuation">(</span>username <span class="token operator">==</span> null<span class="token punctuation">)</span> <span class="token punctuation">{</span>
-        username <span class="token operator">=</span> <span class="token string">""</span><span class="token punctuation">;</span>
-    <span class="token punctuation">}</span>
+    if (username == null) {
+        username = &quot;&quot;;
+    }
 
-    <span class="token keyword">if</span> <span class="token punctuation">(</span>password <span class="token operator">==</span> null<span class="token punctuation">)</span> <span class="token punctuation">{</span>
-        password <span class="token operator">=</span> <span class="token string">""</span><span class="token punctuation">;</span>
-    <span class="token punctuation">}</span>
+    if (password == null) {
+        password = &quot;&quot;;
+    }
 
-    username <span class="token operator">=</span> username<span class="token punctuation">.</span><span class="token function">trim</span><span class="token punctuation">(</span><span class="token punctuation">)</span><span class="token punctuation">;</span>
+    username = username.trim();
 
-    <span class="token comment" spellcheck="true">// 3. 将 username、password 封装为一个 UsernamePasswordAuthenticationToken 对象</span>
-    <span class="token comment" spellcheck="true">// 该对象是 Authentication 的实现类</span>
-    UsernamePasswordAuthenticationToken authRequest <span class="token operator">=</span> <span class="token keyword">new</span> <span class="token class-name">UsernamePasswordAuthenticationToken</span><span class="token punctuation">(</span>
-        username<span class="token punctuation">,</span> password<span class="token punctuation">)</span><span class="token punctuation">;</span>
+    // 3. 将 username、password 封装为一个 UsernamePasswordAuthenticationToken 对象
+    // 该对象是 Authentication 的实现类
+    UsernamePasswordAuthenticationToken authRequest = new UsernamePasswordAuthenticationToken(
+        username, password);
 
-    <span class="token function">setDetails</span><span class="token punctuation">(</span>request<span class="token punctuation">,</span> authRequest<span class="token punctuation">)</span><span class="token punctuation">;</span>
+    setDetails(request, authRequest);
 
-    <span class="token comment" spellcheck="true">// 4. 调用 AuthenticationManager 的认证方法</span>
-    <span class="token keyword">return</span> <span class="token keyword">this</span><span class="token punctuation">.</span><span class="token function">getAuthenticationManager</span><span class="token punctuation">(</span><span class="token punctuation">)</span><span class="token punctuation">.</span><span class="token function">authenticate</span><span class="token punctuation">(</span>authRequest<span class="token punctuation">)</span><span class="token punctuation">;</span>
-<span class="token punctuation">}</span>
+    // 4. 调用 AuthenticationManager 的认证方法
+    return this.getAuthenticationManager().authenticate(authRequest);
+}
 </code></pre>
 <h3 id="2-ProviderManager"><a href="#2-ProviderManager" class="headerlink" title="2. ProviderManager"></a>2. ProviderManager</h3><p>上面调用 authenticate(authRequset) 的 AuthenticationManager 是一个接口类，其具体实现是 ProviderManager。当然，也可以选择其他实现类或者自定义。</p>
-<pre class=" language-java"><code class="language-java"><span class="token comment" spellcheck="true">/**
+<pre><code class="java">/**
  * 该方法用于验证 authentication（也就是上面传入的 UsernamePasswordAuthenticationToken）
- */</span>
-<span class="token keyword">public</span> Authentication <span class="token function">authenticate</span><span class="token punctuation">(</span>Authentication authentication<span class="token punctuation">)</span>
-    <span class="token keyword">throws</span> AuthenticationException <span class="token punctuation">{</span>
-    Class<span class="token operator">&lt;</span><span class="token operator">?</span> <span class="token keyword">extends</span> <span class="token class-name">Authentication</span><span class="token operator">></span> toTest <span class="token operator">=</span> authentication<span class="token punctuation">.</span><span class="token function">getClass</span><span class="token punctuation">(</span><span class="token punctuation">)</span><span class="token punctuation">;</span>
-    AuthenticationException lastException <span class="token operator">=</span> null<span class="token punctuation">;</span>
-    Authentication result <span class="token operator">=</span> null<span class="token punctuation">;</span>
-    <span class="token keyword">boolean</span> debug <span class="token operator">=</span> logger<span class="token punctuation">.</span><span class="token function">isDebugEnabled</span><span class="token punctuation">(</span><span class="token punctuation">)</span><span class="token punctuation">;</span>
+ */
+public Authentication authenticate(Authentication authentication)
+    throws AuthenticationException {
+    Class&lt;? extends Authentication&gt; toTest = authentication.getClass();
+    AuthenticationException lastException = null;
+    Authentication result = null;
+    boolean debug = logger.isDebugEnabled();
 
-    <span class="token comment" spellcheck="true">// 1. 循环遍历 AuthenticationProvider 的实现类集合</span>
-    <span class="token comment" spellcheck="true">// 如果有超过一个的 provider 支持，则使用第一个</span>
-    <span class="token comment" spellcheck="true">// 如果一个都不支持，则返回 AuthenticationException 异常</span>
-    <span class="token keyword">for</span> <span class="token punctuation">(</span>AuthenticationProvider provider <span class="token operator">:</span> <span class="token function">getProviders</span><span class="token punctuation">(</span><span class="token punctuation">)</span><span class="token punctuation">)</span> <span class="token punctuation">{</span>
-        <span class="token comment" spellcheck="true">// 2. 判断是否支持</span>
-        <span class="token keyword">if</span> <span class="token punctuation">(</span><span class="token operator">!</span>provider<span class="token punctuation">.</span><span class="token function">supports</span><span class="token punctuation">(</span>toTest<span class="token punctuation">)</span><span class="token punctuation">)</span> <span class="token punctuation">{</span>
-            <span class="token keyword">continue</span><span class="token punctuation">;</span>
-        <span class="token punctuation">}</span>
+    // 1. 循环遍历 AuthenticationProvider 的实现类集合
+    // 如果有超过一个的 provider 支持，则使用第一个
+    // 如果一个都不支持，则返回 AuthenticationException 异常
+    for (AuthenticationProvider provider : getProviders()) {
+        // 2. 判断是否支持
+        if (!provider.supports(toTest)) {
+            continue;
+        }
 
-        <span class="token keyword">if</span> <span class="token punctuation">(</span>debug<span class="token punctuation">)</span> <span class="token punctuation">{</span>
-            logger<span class="token punctuation">.</span><span class="token function">debug</span><span class="token punctuation">(</span><span class="token string">"Authentication attempt using "</span>
-                         <span class="token operator">+</span> provider<span class="token punctuation">.</span><span class="token function">getClass</span><span class="token punctuation">(</span><span class="token punctuation">)</span><span class="token punctuation">.</span><span class="token function">getName</span><span class="token punctuation">(</span><span class="token punctuation">)</span><span class="token punctuation">)</span><span class="token punctuation">;</span>
-        <span class="token punctuation">}</span>
+        if (debug) {
+            logger.debug(&quot;Authentication attempt using &quot;
+                         + provider.getClass().getName());
+        }
 
-        <span class="token keyword">try</span> <span class="token punctuation">{</span>
-            <span class="token comment" spellcheck="true">// 3. 调用 provider 的认证，下面会以 DaoAuthenticationProvider 为例进行介绍</span>
-            result <span class="token operator">=</span> provider<span class="token punctuation">.</span><span class="token function">authenticate</span><span class="token punctuation">(</span>authentication<span class="token punctuation">)</span><span class="token punctuation">;</span>
+        try {
+            // 3. 调用 provider 的认证，下面会以 DaoAuthenticationProvider 为例进行介绍
+            result = provider.authenticate(authentication);
 
-            <span class="token keyword">if</span> <span class="token punctuation">(</span>result <span class="token operator">!=</span> null<span class="token punctuation">)</span> <span class="token punctuation">{</span>
-                <span class="token function">copyDetails</span><span class="token punctuation">(</span>authentication<span class="token punctuation">,</span> result<span class="token punctuation">)</span><span class="token punctuation">;</span>
-                <span class="token keyword">break</span><span class="token punctuation">;</span>
-            <span class="token punctuation">}</span>
-        <span class="token punctuation">}</span>
-        <span class="token keyword">catch</span> <span class="token punctuation">(</span><span class="token class-name">AccountStatusException</span> e<span class="token punctuation">)</span> <span class="token punctuation">{</span>
-            <span class="token function">prepareException</span><span class="token punctuation">(</span>e<span class="token punctuation">,</span> authentication<span class="token punctuation">)</span><span class="token punctuation">;</span>
-            <span class="token keyword">throw</span> e<span class="token punctuation">;</span>
-        <span class="token punctuation">}</span>
-        <span class="token keyword">catch</span> <span class="token punctuation">(</span><span class="token class-name">InternalAuthenticationServiceException</span> e<span class="token punctuation">)</span> <span class="token punctuation">{</span>
-            <span class="token function">prepareException</span><span class="token punctuation">(</span>e<span class="token punctuation">,</span> authentication<span class="token punctuation">)</span><span class="token punctuation">;</span>
-            <span class="token keyword">throw</span> e<span class="token punctuation">;</span>
-        <span class="token punctuation">}</span>
-        <span class="token keyword">catch</span> <span class="token punctuation">(</span><span class="token class-name">AuthenticationException</span> e<span class="token punctuation">)</span> <span class="token punctuation">{</span>
-            lastException <span class="token operator">=</span> e<span class="token punctuation">;</span>
-        <span class="token punctuation">}</span>
-    <span class="token punctuation">}</span>
+            if (result != null) {
+                copyDetails(authentication, result);
+                break;
+            }
+        }
+        catch (AccountStatusException e) {
+            prepareException(e, authentication);
+            throw e;
+        }
+        catch (InternalAuthenticationServiceException e) {
+            prepareException(e, authentication);
+            throw e;
+        }
+        catch (AuthenticationException e) {
+            lastException = e;
+        }
+    }
 
-    <span class="token keyword">if</span> <span class="token punctuation">(</span>result <span class="token operator">==</span> null <span class="token operator">&amp;&amp;</span> parent <span class="token operator">!=</span> null<span class="token punctuation">)</span> <span class="token punctuation">{</span>
-        <span class="token keyword">try</span> <span class="token punctuation">{</span>
-            <span class="token comment" spellcheck="true">// 4. 进行父类的认证尝试</span>
-            result <span class="token operator">=</span> parent<span class="token punctuation">.</span><span class="token function">authenticate</span><span class="token punctuation">(</span>authentication<span class="token punctuation">)</span><span class="token punctuation">;</span>
-        <span class="token punctuation">}</span>
-        <span class="token keyword">catch</span> <span class="token punctuation">(</span><span class="token class-name">ProviderNotFoundException</span> e<span class="token punctuation">)</span> <span class="token punctuation">{</span>
+    if (result == null &amp;&amp; parent != null) {
+        try {
+            // 4. 进行父类的认证尝试
+            result = parent.authenticate(authentication);
+        }
+        catch (ProviderNotFoundException e) {
 
-        <span class="token punctuation">}</span>
-        <span class="token keyword">catch</span> <span class="token punctuation">(</span><span class="token class-name">AuthenticationException</span> e<span class="token punctuation">)</span> <span class="token punctuation">{</span>
-            lastException <span class="token operator">=</span> e<span class="token punctuation">;</span>
-        <span class="token punctuation">}</span>
-    <span class="token punctuation">}</span>
+        }
+        catch (AuthenticationException e) {
+            lastException = e;
+        }
+    }
 
-    <span class="token keyword">if</span> <span class="token punctuation">(</span>result <span class="token operator">!=</span> null<span class="token punctuation">)</span> <span class="token punctuation">{</span>
-        <span class="token keyword">if</span> <span class="token punctuation">(</span>eraseCredentialsAfterAuthentication
-            <span class="token operator">&amp;&amp;</span> <span class="token punctuation">(</span>result <span class="token keyword">instanceof</span> <span class="token class-name">CredentialsContainer</span><span class="token punctuation">)</span><span class="token punctuation">)</span> <span class="token punctuation">{</span>
-            <span class="token comment" spellcheck="true">// 5. 认证完成，请求结束之后，删除 SecurityContextHolder 中保存的 SecurityContext，清除相关数据</span>
-            <span class="token punctuation">(</span><span class="token punctuation">(</span>CredentialsContainer<span class="token punctuation">)</span> result<span class="token punctuation">)</span><span class="token punctuation">.</span><span class="token function">eraseCredentials</span><span class="token punctuation">(</span><span class="token punctuation">)</span><span class="token punctuation">;</span>
-        <span class="token punctuation">}</span>
+    if (result != null) {
+        if (eraseCredentialsAfterAuthentication
+            &amp;&amp; (result instanceof CredentialsContainer)) {
+            // 5. 认证完成，请求结束之后，删除 SecurityContextHolder 中保存的 SecurityContext，清除相关数据
+            ((CredentialsContainer) result).eraseCredentials();
+        }
 
-        <span class="token comment" spellcheck="true">// 6. 发送验证成功的事件</span>
-        eventPublisher<span class="token punctuation">.</span><span class="token function">publishAuthenticationSuccess</span><span class="token punctuation">(</span>result<span class="token punctuation">)</span><span class="token punctuation">;</span>
-        <span class="token keyword">return</span> result<span class="token punctuation">;</span>
-    <span class="token punctuation">}</span>
+        // 6. 发送验证成功的事件
+        eventPublisher.publishAuthenticationSuccess(result);
+        return result;
+    }
 
-    <span class="token comment" spellcheck="true">// 7. 身份验证失败，抛出异常</span>
-    <span class="token keyword">if</span> <span class="token punctuation">(</span>lastException <span class="token operator">==</span> null<span class="token punctuation">)</span> <span class="token punctuation">{</span>
-        lastException <span class="token operator">=</span> <span class="token keyword">new</span> <span class="token class-name">ProviderNotFoundException</span><span class="token punctuation">(</span>messages<span class="token punctuation">.</span><span class="token function">getMessage</span><span class="token punctuation">(</span>
-            <span class="token string">"ProviderManager.providerNotFound"</span><span class="token punctuation">,</span>
-            <span class="token keyword">new</span> <span class="token class-name">Object</span><span class="token punctuation">[</span><span class="token punctuation">]</span> <span class="token punctuation">{</span> toTest<span class="token punctuation">.</span><span class="token function">getName</span><span class="token punctuation">(</span><span class="token punctuation">)</span> <span class="token punctuation">}</span><span class="token punctuation">,</span>
-            <span class="token string">"No AuthenticationProvider found for {0}"</span><span class="token punctuation">)</span><span class="token punctuation">)</span><span class="token punctuation">;</span>
-    <span class="token punctuation">}</span>
+    // 7. 身份验证失败，抛出异常
+    if (lastException == null) {
+        lastException = new ProviderNotFoundException(messages.getMessage(
+            &quot;ProviderManager.providerNotFound&quot;,
+            new Object[] { toTest.getName() },
+            &quot;No AuthenticationProvider found for {0}&quot;));
+    }
 
-    <span class="token function">prepareException</span><span class="token punctuation">(</span>lastException<span class="token punctuation">,</span> authentication<span class="token punctuation">)</span><span class="token punctuation">;</span>
+    prepareException(lastException, authentication);
 
-    <span class="token keyword">throw</span> lastException<span class="token punctuation">;</span>
-<span class="token punctuation">}</span>
+    throw lastException;
+}
 </code></pre>
 <h3 id="3-DaoAuthenticationProvider"><a href="#3-DaoAuthenticationProvider" class="headerlink" title="3. DaoAuthenticationProvider"></a>3. DaoAuthenticationProvider</h3><p>DaoAuthenticationProvider 包含两个接口属性 PasswordEncoder 与 UserDetailsService，通过 UserDetailsService 加载用户数据，并使用 PasswordEncoder 比较 UserDetails.password 与 token.password 是否相等。</p>
 <p>以此来决定是否认证成功。</p>
-<pre class=" language-java"><code class="language-java"><span class="token keyword">protected</span> <span class="token keyword">final</span> UserDetails <span class="token function">retrieveUser</span><span class="token punctuation">(</span>String username<span class="token punctuation">,</span>
-                                         UsernamePasswordAuthenticationToken authentication<span class="token punctuation">)</span>
-    <span class="token keyword">throws</span> AuthenticationException <span class="token punctuation">{</span>
-    <span class="token function">prepareTimingAttackProtection</span><span class="token punctuation">(</span><span class="token punctuation">)</span><span class="token punctuation">;</span>
-    <span class="token keyword">try</span> <span class="token punctuation">{</span>
-        <span class="token comment" spellcheck="true">// 调用 UserDetailsService 的 loadUserByUsername 方法，查询装载 UserDetails</span>
-        <span class="token comment" spellcheck="true">// 在实际开发中，通常会自定义 UserDetailsService 的实现，例如将数据库查询的 User 对象与 UserDetails 对象进行一个适配</span>
-        <span class="token comment" spellcheck="true">// 适配者也需要我们自己定义，如 CustomUserDetails 实现 UserDetails，并将 user.role 转换为 authority等。</span>
-        UserDetails loadedUser <span class="token operator">=</span> <span class="token keyword">this</span><span class="token punctuation">.</span><span class="token function">getUserDetailsService</span><span class="token punctuation">(</span><span class="token punctuation">)</span><span class="token punctuation">.</span><span class="token function">loadUserByUsername</span><span class="token punctuation">(</span>username<span class="token punctuation">)</span><span class="token punctuation">;</span>
-        <span class="token keyword">if</span> <span class="token punctuation">(</span>loadedUser <span class="token operator">==</span> null<span class="token punctuation">)</span> <span class="token punctuation">{</span>
-            <span class="token keyword">throw</span> <span class="token keyword">new</span> <span class="token class-name">InternalAuthenticationServiceException</span><span class="token punctuation">(</span>
-                <span class="token string">"UserDetailsService returned null, which is an interface contract violation"</span><span class="token punctuation">)</span><span class="token punctuation">;</span>
-        <span class="token punctuation">}</span>
-        <span class="token keyword">return</span> loadedUser<span class="token punctuation">;</span>
-    <span class="token punctuation">}</span>
-    <span class="token keyword">catch</span> <span class="token punctuation">(</span><span class="token class-name">UsernameNotFoundException</span> ex<span class="token punctuation">)</span> <span class="token punctuation">{</span>
-        <span class="token function">mitigateAgainstTimingAttack</span><span class="token punctuation">(</span>authentication<span class="token punctuation">)</span><span class="token punctuation">;</span>
-        <span class="token keyword">throw</span> ex<span class="token punctuation">;</span>
-    <span class="token punctuation">}</span>
-    <span class="token keyword">catch</span> <span class="token punctuation">(</span><span class="token class-name">InternalAuthenticationServiceException</span> ex<span class="token punctuation">)</span> <span class="token punctuation">{</span>
-        <span class="token keyword">throw</span> ex<span class="token punctuation">;</span>
-    <span class="token punctuation">}</span>
-    <span class="token keyword">catch</span> <span class="token punctuation">(</span><span class="token class-name">Exception</span> ex<span class="token punctuation">)</span> <span class="token punctuation">{</span>
-        <span class="token keyword">throw</span> <span class="token keyword">new</span> <span class="token class-name">InternalAuthenticationServiceException</span><span class="token punctuation">(</span>ex<span class="token punctuation">.</span><span class="token function">getMessage</span><span class="token punctuation">(</span><span class="token punctuation">)</span><span class="token punctuation">,</span> ex<span class="token punctuation">)</span><span class="token punctuation">;</span>
-    <span class="token punctuation">}</span>
-<span class="token punctuation">}</span>
+<pre><code class="java">protected final UserDetails retrieveUser(String username,
+                                         UsernamePasswordAuthenticationToken authentication)
+    throws AuthenticationException {
+    prepareTimingAttackProtection();
+    try {
+        // 调用 UserDetailsService 的 loadUserByUsername 方法，查询装载 UserDetails
+        // 在实际开发中，通常会自定义 UserDetailsService 的实现，例如将数据库查询的 User 对象与 UserDetails 对象进行一个适配
+        // 适配者也需要我们自己定义，如 CustomUserDetails 实现 UserDetails，并将 user.role 转换为 authority等。
+        UserDetails loadedUser = this.getUserDetailsService().loadUserByUsername(username);
+        if (loadedUser == null) {
+            throw new InternalAuthenticationServiceException(
+                &quot;UserDetailsService returned null, which is an interface contract violation&quot;);
+        }
+        return loadedUser;
+    }
+    catch (UsernameNotFoundException ex) {
+        mitigateAgainstTimingAttack(authentication);
+        throw ex;
+    }
+    catch (InternalAuthenticationServiceException ex) {
+        throw ex;
+    }
+    catch (Exception ex) {
+        throw new InternalAuthenticationServiceException(ex.getMessage(), ex);
+    }
+}
 </code></pre>
 <h3 id="4-UserDetailsService"><a href="#4-UserDetailsService" class="headerlink" title="4. UserDetailsService"></a>4. UserDetailsService</h3><p>UserDetailsService 是整个 Dao 认证框架的核心，用来装载特殊的用户数据。</p>
 <p>因为该类为接口类，只声明了一个 loadUserByUsername(String) 方法，所以这里我们使用自定义实现来演示在日常开发场景中的使用过程：</p>
-<pre class=" language-java"><code class="language-java"><span class="token comment" spellcheck="true">// 1. 实现 UserDetailsService 接口，自定义获取用户的方法</span>
-<span class="token annotation punctuation">@Service</span>
-<span class="token keyword">public</span> <span class="token keyword">class</span> <span class="token class-name">DemoUserDetailsService</span> <span class="token keyword">implements</span> <span class="token class-name">UserDetailsService</span> <span class="token punctuation">{</span>
+<pre><code class="java">// 1. 实现 UserDetailsService 接口，自定义获取用户的方法
+@Service
+public class DemoUserDetailsService implements UserDetailsService {
 
-    <span class="token comment" spellcheck="true">// 2. 注入数据库查询实例，这里不限数据库，只要能获取到用户即可。自己new的也行</span>
-    <span class="token annotation punctuation">@Autowired</span>
-    <span class="token keyword">private</span> UserService userService<span class="token punctuation">;</span>
+    // 2. 注入数据库查询实例，这里不限数据库，只要能获取到用户即可。自己new的也行
+    @Autowired
+    private UserService userService;
 
-    <span class="token annotation punctuation">@Override</span>
-    UserDetails <span class="token function">loadUserByUsername</span><span class="token punctuation">(</span>String username<span class="token punctuation">)</span> <span class="token keyword">throws</span> UsernameNotFoundException <span class="token punctuation">{</span>
-        <span class="token comment" spellcheck="true">// 3. 从数据库中查询到 User 对象</span>
-        DBUser user <span class="token operator">=</span> userService<span class="token punctuation">.</span><span class="token function">findUserByUsername</span><span class="token punctuation">(</span>username<span class="token punctuation">)</span><span class="token punctuation">;</span>
-        <span class="token keyword">if</span><span class="token punctuation">(</span>user <span class="token operator">==</span> null<span class="token punctuation">)</span><span class="token punctuation">{</span>
-            <span class="token keyword">throw</span> <span class="token keyword">new</span> <span class="token class-name">AuthenticationCredentialsNotFoundException</span><span class="token punctuation">(</span><span class="token string">"user not found."</span><span class="token punctuation">)</span>；
-        <span class="token punctuation">}</span>
-        <span class="token comment" spellcheck="true">// 4. 将 DBUser 包装为一个 UserDetails 对象，并将 user.roles 转换为 Authority</span>
-        <span class="token keyword">return</span> User<span class="token punctuation">.</span><span class="token function">withDefaultPasswordEncoder</span><span class="token punctuation">(</span><span class="token punctuation">)</span><span class="token punctuation">.</span><span class="token function">username</span><span class="token punctuation">(</span>user<span class="token punctuation">.</span>username<span class="token punctuation">)</span><span class="token punctuation">.</span><span class="token function">password</span><span class="token punctuation">(</span>user<span class="token punctuation">.</span>password<span class="token punctuation">)</span><span class="token punctuation">.</span><span class="token function">authorities</span><span class="token punctuation">(</span>user<span class="token punctuation">.</span>roles<span class="token punctuation">)</span><span class="token punctuation">;</span>
-    <span class="token punctuation">}</span>
-<span class="token punctuation">}</span>
+    @Override
+    UserDetails loadUserByUsername(String username) throws UsernameNotFoundException {
+        // 3. 从数据库中查询到 User 对象
+        DBUser user = userService.findUserByUsername(username);
+        if(user == null){
+            throw new AuthenticationCredentialsNotFoundException(&quot;user not found.&quot;)；
+        }
+        // 4. 将 DBUser 包装为一个 UserDetails 对象，并将 user.roles 转换为 Authority
+        return User.withDefaultPasswordEncoder().username(user.username).password(user.password).authorities(user.roles);
+    }
+}
 </code></pre>
 <h2 id="二、其他"><a href="#二、其他" class="headerlink" title="二、其他"></a>二、其他</h2><p>上面几个类大致说明了，如果将数据库的用户转换为 Spring Security 支持的 Authentication 对象的。</p>
 <p>其它如内存认证、jdbcDaoImpl 的实现不再赘述。</p>
@@ -692,7 +692,7 @@
               
                 <a href="/archives">
               
-                  <span class="site-state-item-count">224</span>
+                  <span class="site-state-item-count">237</span>
                   <span class="site-state-item-name">日志</span>
                 </a>
               </div>
@@ -714,7 +714,7 @@
               
               <div class="site-state-item site-state-tags">
                 <a href="/tags/index.html">
-                  <span class="site-state-item-count">21</span>
+                  <span class="site-state-item-count">22</span>
                   <span class="site-state-item-name">标签</span>
                 </a>
               </div>

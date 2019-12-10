@@ -384,104 +384,104 @@
       
 
       
-        <h1 id="POI生成原生Excel-工具类"><a href="#POI生成原生Excel-工具类" class="headerlink" title="POI生成原生Excel-工具类"></a>POI生成原生Excel-工具类</h1><pre class=" language-java"><code class="language-java"><span class="token keyword">package</span> com<span class="token punctuation">.</span>pgc<span class="token punctuation">.</span>diagnose<span class="token punctuation">.</span>utils<span class="token punctuation">;</span>
+        <h1 id="POI生成原生Excel-工具类"><a href="#POI生成原生Excel-工具类" class="headerlink" title="POI生成原生Excel-工具类"></a>POI生成原生Excel-工具类</h1><pre><code class="java">package com.pgc.diagnose.utils;
 
-<span class="token keyword">import</span> org<span class="token punctuation">.</span>apache<span class="token punctuation">.</span>poi<span class="token punctuation">.</span>xssf<span class="token punctuation">.</span>usermodel<span class="token punctuation">.</span>XSSFChart<span class="token punctuation">;</span>
-<span class="token keyword">import</span> org<span class="token punctuation">.</span>apache<span class="token punctuation">.</span>poi<span class="token punctuation">.</span>xssf<span class="token punctuation">.</span>usermodel<span class="token punctuation">.</span>XSSFClientAnchor<span class="token punctuation">;</span>
-<span class="token keyword">import</span> org<span class="token punctuation">.</span>apache<span class="token punctuation">.</span>poi<span class="token punctuation">.</span>xssf<span class="token punctuation">.</span>usermodel<span class="token punctuation">.</span>XSSFDrawing<span class="token punctuation">;</span>
-<span class="token keyword">import</span> org<span class="token punctuation">.</span>apache<span class="token punctuation">.</span>poi<span class="token punctuation">.</span>xssf<span class="token punctuation">.</span>usermodel<span class="token punctuation">.</span>XSSFSheet<span class="token punctuation">;</span>
-<span class="token keyword">import</span> org<span class="token punctuation">.</span>openxmlformats<span class="token punctuation">.</span>schemas<span class="token punctuation">.</span>drawingml<span class="token punctuation">.</span>x2006<span class="token punctuation">.</span>chart<span class="token punctuation">.</span>*<span class="token punctuation">;</span>
-<span class="token keyword">import</span> org<span class="token punctuation">.</span>openxmlformats<span class="token punctuation">.</span>schemas<span class="token punctuation">.</span>drawingml<span class="token punctuation">.</span>x2006<span class="token punctuation">.</span>main<span class="token punctuation">.</span>*<span class="token punctuation">;</span>
+import org.apache.poi.xssf.usermodel.XSSFChart;
+import org.apache.poi.xssf.usermodel.XSSFClientAnchor;
+import org.apache.poi.xssf.usermodel.XSSFDrawing;
+import org.apache.poi.xssf.usermodel.XSSFSheet;
+import org.openxmlformats.schemas.drawingml.x2006.chart.*;
+import org.openxmlformats.schemas.drawingml.x2006.main.*;
 
-<span class="token keyword">import</span> java<span class="token punctuation">.</span>util<span class="token punctuation">.</span>Iterator<span class="token punctuation">;</span>
-<span class="token keyword">import</span> java<span class="token punctuation">.</span>util<span class="token punctuation">.</span>List<span class="token punctuation">;</span>
+import java.util.Iterator;
+import java.util.List;
 
-<span class="token keyword">import</span> <span class="token keyword">static</span> org<span class="token punctuation">.</span>openxmlformats<span class="token punctuation">.</span>schemas<span class="token punctuation">.</span>drawingml<span class="token punctuation">.</span>x2006<span class="token punctuation">.</span>chart<span class="token punctuation">.</span>STOrientation<span class="token punctuation">.</span>MIN_MAX<span class="token punctuation">;</span>
-<span class="token keyword">import</span> <span class="token keyword">static</span> org<span class="token punctuation">.</span>openxmlformats<span class="token punctuation">.</span>schemas<span class="token punctuation">.</span>drawingml<span class="token punctuation">.</span>x2006<span class="token punctuation">.</span>chart<span class="token punctuation">.</span>STTickLblPos<span class="token punctuation">.</span>NEXT_TO<span class="token punctuation">;</span>
+import static org.openxmlformats.schemas.drawingml.x2006.chart.STOrientation.MIN_MAX;
+import static org.openxmlformats.schemas.drawingml.x2006.chart.STTickLblPos.NEXT_TO;
 
-<span class="token keyword">public</span> <span class="token keyword">class</span> <span class="token class-name">DrawUtils</span> <span class="token punctuation">{</span>
+public class DrawUtils {
 
-    <span class="token keyword">public</span> <span class="token keyword">static</span> <span class="token keyword">void</span> <span class="token function">drawRadarChart</span><span class="token punctuation">(</span>XSSFSheet sheet<span class="token punctuation">,</span> Position start<span class="token punctuation">,</span> Position end<span class="token punctuation">,</span>
-                                      List<span class="token operator">&lt;</span>String<span class="token operator">></span> dataRef<span class="token punctuation">)</span> <span class="token punctuation">{</span>
-        XSSFDrawing drawing <span class="token operator">=</span> sheet<span class="token punctuation">.</span><span class="token function">createDrawingPatriarch</span><span class="token punctuation">(</span><span class="token punctuation">)</span><span class="token punctuation">;</span>
-        XSSFClientAnchor anchor <span class="token operator">=</span> drawing<span class="token punctuation">.</span><span class="token function">createAnchor</span><span class="token punctuation">(</span><span class="token number">0</span><span class="token punctuation">,</span> <span class="token number">0</span><span class="token punctuation">,</span> <span class="token number">100</span><span class="token punctuation">,</span> <span class="token number">50</span><span class="token punctuation">,</span> start<span class="token punctuation">.</span><span class="token function">getX</span><span class="token punctuation">(</span><span class="token punctuation">)</span><span class="token punctuation">,</span> start<span class="token punctuation">.</span><span class="token function">getY</span><span class="token punctuation">(</span><span class="token punctuation">)</span><span class="token punctuation">,</span> end<span class="token punctuation">.</span><span class="token function">getX</span><span class="token punctuation">(</span><span class="token punctuation">)</span><span class="token punctuation">,</span> end<span class="token punctuation">.</span><span class="token function">getY</span><span class="token punctuation">(</span><span class="token punctuation">)</span><span class="token punctuation">)</span><span class="token punctuation">;</span>
-        XSSFChart chart <span class="token operator">=</span> drawing<span class="token punctuation">.</span><span class="token function">createChart</span><span class="token punctuation">(</span>anchor<span class="token punctuation">)</span><span class="token punctuation">;</span>
+    public static void drawRadarChart(XSSFSheet sheet, Position start, Position end,
+                                      List&lt;String&gt; dataRef) {
+        XSSFDrawing drawing = sheet.createDrawingPatriarch();
+        XSSFClientAnchor anchor = drawing.createAnchor(0, 0, 100, 50, start.getX(), start.getY(), end.getX(), end.getY());
+        XSSFChart chart = drawing.createChart(anchor);
 
-        CTChart ctChart <span class="token operator">=</span> chart<span class="token punctuation">.</span><span class="token function">getCTChart</span><span class="token punctuation">(</span><span class="token punctuation">)</span><span class="token punctuation">;</span>
-        CTPlotArea ctPlotArea <span class="token operator">=</span> ctChart<span class="token punctuation">.</span><span class="token function">addNewPlotArea</span><span class="token punctuation">(</span><span class="token punctuation">)</span><span class="token punctuation">;</span>
+        CTChart ctChart = chart.getCTChart();
+        CTPlotArea ctPlotArea = ctChart.addNewPlotArea();
 
-        CTRadarChart ctRadarChart <span class="token operator">=</span> ctPlotArea<span class="token punctuation">.</span><span class="token function">addNewRadarChart</span><span class="token punctuation">(</span><span class="token punctuation">)</span><span class="token punctuation">;</span>
-        <span class="token comment" spellcheck="true">// 不允许自定义颜色、以及标记的形状</span>
-<span class="token comment" spellcheck="true">//        ctRadarChart.addNewRadarStyle().setVal(STRadarStyle.MARKER);</span>
-        ctRadarChart<span class="token punctuation">.</span><span class="token function">addNewVaryColors</span><span class="token punctuation">(</span><span class="token punctuation">)</span><span class="token punctuation">.</span><span class="token function">setVal</span><span class="token punctuation">(</span><span class="token boolean">false</span><span class="token punctuation">)</span><span class="token punctuation">;</span>
+        CTRadarChart ctRadarChart = ctPlotArea.addNewRadarChart();
+        // 不允许自定义颜色、以及标记的形状
+//        ctRadarChart.addNewRadarStyle().setVal(STRadarStyle.MARKER);
+        ctRadarChart.addNewVaryColors().setVal(false);
 
-        <span class="token function">setAxIds</span><span class="token punctuation">(</span>ctRadarChart<span class="token punctuation">)</span><span class="token punctuation">;</span>
-        <span class="token function">setCatAx</span><span class="token punctuation">(</span>ctPlotArea<span class="token punctuation">)</span><span class="token punctuation">;</span>
-        <span class="token function">setRadarValAx</span><span class="token punctuation">(</span>ctPlotArea<span class="token punctuation">)</span><span class="token punctuation">;</span>
-        <span class="token function">setDataLabel</span><span class="token punctuation">(</span>ctRadarChart<span class="token punctuation">)</span><span class="token punctuation">;</span>
-        <span class="token function">paddingData</span><span class="token punctuation">(</span>ctRadarChart<span class="token punctuation">,</span> dataRef<span class="token punctuation">)</span><span class="token punctuation">;</span>
-    <span class="token punctuation">}</span>
+        setAxIds(ctRadarChart);
+        setCatAx(ctPlotArea);
+        setRadarValAx(ctPlotArea);
+        setDataLabel(ctRadarChart);
+        paddingData(ctRadarChart, dataRef);
+    }
 
-    <span class="token comment" spellcheck="true">/**
+    /**
      * 散点图
-     */</span>
-    <span class="token keyword">public</span> <span class="token keyword">static</span> <span class="token keyword">void</span> <span class="token function">drawScatterChart</span><span class="token punctuation">(</span>XSSFSheet sheet<span class="token punctuation">,</span> Position start<span class="token punctuation">,</span> Position end<span class="token punctuation">,</span>
-                                        List<span class="token operator">&lt;</span>String<span class="token operator">></span> dataRef<span class="token punctuation">)</span> <span class="token punctuation">{</span>
-        XSSFDrawing drawing <span class="token operator">=</span> sheet<span class="token punctuation">.</span><span class="token function">createDrawingPatriarch</span><span class="token punctuation">(</span><span class="token punctuation">)</span><span class="token punctuation">;</span>
-        XSSFClientAnchor anchor <span class="token operator">=</span> drawing<span class="token punctuation">.</span><span class="token function">createAnchor</span><span class="token punctuation">(</span><span class="token number">0</span><span class="token punctuation">,</span> <span class="token number">0</span><span class="token punctuation">,</span> <span class="token number">100</span><span class="token punctuation">,</span> <span class="token number">50</span><span class="token punctuation">,</span> start<span class="token punctuation">.</span><span class="token function">getX</span><span class="token punctuation">(</span><span class="token punctuation">)</span><span class="token punctuation">,</span> start<span class="token punctuation">.</span><span class="token function">getY</span><span class="token punctuation">(</span><span class="token punctuation">)</span><span class="token punctuation">,</span> end<span class="token punctuation">.</span><span class="token function">getX</span><span class="token punctuation">(</span><span class="token punctuation">)</span><span class="token punctuation">,</span> end<span class="token punctuation">.</span><span class="token function">getY</span><span class="token punctuation">(</span><span class="token punctuation">)</span><span class="token punctuation">)</span><span class="token punctuation">;</span>
+     */
+    public static void drawScatterChart(XSSFSheet sheet, Position start, Position end,
+                                        List&lt;String&gt; dataRef) {
+        XSSFDrawing drawing = sheet.createDrawingPatriarch();
+        XSSFClientAnchor anchor = drawing.createAnchor(0, 0, 100, 50, start.getX(), start.getY(), end.getX(), end.getY());
 
-        XSSFChart chart <span class="token operator">=</span> drawing<span class="token punctuation">.</span><span class="token function">createChart</span><span class="token punctuation">(</span>anchor<span class="token punctuation">)</span><span class="token punctuation">;</span>
-        chart<span class="token punctuation">.</span><span class="token function">setTitleText</span><span class="token punctuation">(</span>sheet<span class="token punctuation">.</span><span class="token function">getSheetName</span><span class="token punctuation">(</span><span class="token punctuation">)</span><span class="token punctuation">)</span><span class="token punctuation">;</span>
+        XSSFChart chart = drawing.createChart(anchor);
+        chart.setTitleText(sheet.getSheetName());
 
-        CTChart ctChart <span class="token operator">=</span> chart<span class="token punctuation">.</span><span class="token function">getCTChart</span><span class="token punctuation">(</span><span class="token punctuation">)</span><span class="token punctuation">;</span>
-        CTPlotArea ctPlotArea <span class="token operator">=</span> ctChart<span class="token punctuation">.</span><span class="token function">getPlotArea</span><span class="token punctuation">(</span><span class="token punctuation">)</span><span class="token punctuation">;</span>
+        CTChart ctChart = chart.getCTChart();
+        CTPlotArea ctPlotArea = ctChart.getPlotArea();
 
-        CTScatterChart scatterChart <span class="token operator">=</span> ctPlotArea<span class="token punctuation">.</span><span class="token function">addNewScatterChart</span><span class="token punctuation">(</span><span class="token punctuation">)</span><span class="token punctuation">;</span>
-        scatterChart<span class="token punctuation">.</span><span class="token function">addNewVaryColors</span><span class="token punctuation">(</span><span class="token punctuation">)</span><span class="token punctuation">.</span><span class="token function">setVal</span><span class="token punctuation">(</span><span class="token boolean">true</span><span class="token punctuation">)</span><span class="token punctuation">;</span>
+        CTScatterChart scatterChart = ctPlotArea.addNewScatterChart();
+        scatterChart.addNewVaryColors().setVal(true);
 
-        <span class="token function">setAxIds</span><span class="token punctuation">(</span>scatterChart<span class="token punctuation">)</span><span class="token punctuation">;</span>
-        <span class="token function">setCatAx</span><span class="token punctuation">(</span>ctPlotArea<span class="token punctuation">)</span><span class="token punctuation">;</span>
-        <span class="token function">setScatterValAx</span><span class="token punctuation">(</span>ctPlotArea<span class="token punctuation">)</span><span class="token punctuation">;</span>
-        <span class="token function">setDataLabel</span><span class="token punctuation">(</span>scatterChart<span class="token punctuation">)</span><span class="token punctuation">;</span>
-        <span class="token function">paddingData</span><span class="token punctuation">(</span>scatterChart<span class="token punctuation">,</span> dataRef<span class="token punctuation">)</span><span class="token punctuation">;</span>
-        <span class="token comment" spellcheck="true">// 去掉连接线</span>
-        ctPlotArea<span class="token punctuation">.</span><span class="token function">getScatterChartArray</span><span class="token punctuation">(</span><span class="token number">0</span><span class="token punctuation">)</span><span class="token punctuation">.</span><span class="token function">getSerArray</span><span class="token punctuation">(</span><span class="token number">0</span><span class="token punctuation">)</span><span class="token punctuation">.</span><span class="token function">addNewSpPr</span><span class="token punctuation">(</span><span class="token punctuation">)</span><span class="token punctuation">.</span><span class="token function">addNewLn</span><span class="token punctuation">(</span><span class="token punctuation">)</span><span class="token punctuation">.</span><span class="token function">addNewNoFill</span><span class="token punctuation">(</span><span class="token punctuation">)</span><span class="token punctuation">;</span>
-    <span class="token punctuation">}</span>
+        setAxIds(scatterChart);
+        setCatAx(ctPlotArea);
+        setScatterValAx(ctPlotArea);
+        setDataLabel(scatterChart);
+        paddingData(scatterChart, dataRef);
+        // 去掉连接线
+        ctPlotArea.getScatterChartArray(0).getSerArray(0).addNewSpPr().addNewLn().addNewNoFill();
+    }
 
-    <span class="token comment" spellcheck="true">/**
+    /**
      * 折线图
-     */</span>
-    <span class="token keyword">public</span> <span class="token keyword">static</span> <span class="token keyword">void</span> <span class="token function">drawCTLineChart</span><span class="token punctuation">(</span>XSSFSheet sheet<span class="token punctuation">,</span> Position start<span class="token punctuation">,</span> Position end<span class="token punctuation">,</span> List<span class="token operator">&lt;</span>String<span class="token operator">></span> xString<span class="token punctuation">,</span> List<span class="token operator">&lt;</span>String<span class="token operator">></span> serTxName<span class="token punctuation">,</span>
-                                       List<span class="token operator">&lt;</span>String<span class="token operator">></span> dataRef<span class="token punctuation">)</span> <span class="token punctuation">{</span>
-        <span class="token comment" spellcheck="true">// todo 折线图换成堆叠图</span>
-        XSSFDrawing drawing <span class="token operator">=</span> sheet<span class="token punctuation">.</span><span class="token function">createDrawingPatriarch</span><span class="token punctuation">(</span><span class="token punctuation">)</span><span class="token punctuation">;</span>
-        XSSFClientAnchor anchor <span class="token operator">=</span> drawing<span class="token punctuation">.</span><span class="token function">createAnchor</span><span class="token punctuation">(</span><span class="token number">0</span><span class="token punctuation">,</span> <span class="token number">0</span><span class="token punctuation">,</span> <span class="token number">0</span><span class="token punctuation">,</span> <span class="token number">0</span><span class="token punctuation">,</span> start<span class="token punctuation">.</span><span class="token function">getX</span><span class="token punctuation">(</span><span class="token punctuation">)</span><span class="token punctuation">,</span> start<span class="token punctuation">.</span><span class="token function">getY</span><span class="token punctuation">(</span><span class="token punctuation">)</span><span class="token punctuation">,</span> end<span class="token punctuation">.</span><span class="token function">getX</span><span class="token punctuation">(</span><span class="token punctuation">)</span><span class="token punctuation">,</span> end<span class="token punctuation">.</span><span class="token function">getY</span><span class="token punctuation">(</span><span class="token punctuation">)</span><span class="token punctuation">)</span><span class="token punctuation">;</span>
+     */
+    public static void drawCTLineChart(XSSFSheet sheet, Position start, Position end, List&lt;String&gt; xString, List&lt;String&gt; serTxName,
+                                       List&lt;String&gt; dataRef) {
+        // todo 折线图换成堆叠图
+        XSSFDrawing drawing = sheet.createDrawingPatriarch();
+        XSSFClientAnchor anchor = drawing.createAnchor(0, 0, 0, 0, start.getX(), start.getY(), end.getX(), end.getY());
 
-        XSSFChart chart <span class="token operator">=</span> drawing<span class="token punctuation">.</span><span class="token function">createChart</span><span class="token punctuation">(</span>anchor<span class="token punctuation">)</span><span class="token punctuation">;</span>
+        XSSFChart chart = drawing.createChart(anchor);
 
-        CTChart ctChart <span class="token operator">=</span> chart<span class="token punctuation">.</span><span class="token function">getCTChart</span><span class="token punctuation">(</span><span class="token punctuation">)</span><span class="token punctuation">;</span>
-        CTPlotArea ctPlotArea <span class="token operator">=</span> ctChart<span class="token punctuation">.</span><span class="token function">getPlotArea</span><span class="token punctuation">(</span><span class="token punctuation">)</span><span class="token punctuation">;</span>
-        CTLineChart ctLineChart <span class="token operator">=</span> ctPlotArea<span class="token punctuation">.</span><span class="token function">addNewLineChart</span><span class="token punctuation">(</span><span class="token punctuation">)</span><span class="token punctuation">;</span>
+        CTChart ctChart = chart.getCTChart();
+        CTPlotArea ctPlotArea = ctChart.getPlotArea();
+        CTLineChart ctLineChart = ctPlotArea.addNewLineChart();
 
-        ctLineChart<span class="token punctuation">.</span><span class="token function">addNewVaryColors</span><span class="token punctuation">(</span><span class="token punctuation">)</span><span class="token punctuation">.</span><span class="token function">setVal</span><span class="token punctuation">(</span><span class="token boolean">true</span><span class="token punctuation">)</span><span class="token punctuation">;</span>
+        ctLineChart.addNewVaryColors().setVal(true);
 
-        <span class="token comment" spellcheck="true">// telling the Chart that it has axis and giving them Ids</span>
-        <span class="token function">setAxIds</span><span class="token punctuation">(</span>ctLineChart<span class="token punctuation">)</span><span class="token punctuation">;</span>
-        <span class="token comment" spellcheck="true">// set cat axis</span>
-        <span class="token function">setCatAx</span><span class="token punctuation">(</span>ctPlotArea<span class="token punctuation">)</span><span class="token punctuation">;</span>
-        <span class="token comment" spellcheck="true">// set val axis</span>
-        <span class="token function">setValAx</span><span class="token punctuation">(</span>ctPlotArea<span class="token punctuation">)</span><span class="token punctuation">;</span>
-        <span class="token comment" spellcheck="true">// legend</span>
-        <span class="token function">setLegend</span><span class="token punctuation">(</span>ctChart<span class="token punctuation">)</span><span class="token punctuation">;</span>
-        <span class="token comment" spellcheck="true">// set data lable</span>
-        <span class="token function">setDataLabel</span><span class="token punctuation">(</span>ctLineChart<span class="token punctuation">)</span><span class="token punctuation">;</span>
-        <span class="token comment" spellcheck="true">// set chart title</span>
-        <span class="token function">setChartTitle</span><span class="token punctuation">(</span>chart<span class="token punctuation">,</span> sheet<span class="token punctuation">.</span><span class="token function">getSheetName</span><span class="token punctuation">(</span><span class="token punctuation">)</span><span class="token punctuation">)</span><span class="token punctuation">;</span>
+        // telling the Chart that it has axis and giving them Ids
+        setAxIds(ctLineChart);
+        // set cat axis
+        setCatAx(ctPlotArea);
+        // set val axis
+        setValAx(ctPlotArea);
+        // legend
+        setLegend(ctChart);
+        // set data lable
+        setDataLabel(ctLineChart);
+        // set chart title
+        setChartTitle(chart, sheet.getSheetName());
 
-        <span class="token function">paddingData</span><span class="token punctuation">(</span>ctLineChart<span class="token punctuation">,</span> xString<span class="token punctuation">,</span> serTxName<span class="token punctuation">,</span> dataRef<span class="token punctuation">)</span><span class="token punctuation">;</span>
-    <span class="token punctuation">}</span>
+        paddingData(ctLineChart, xString, serTxName, dataRef);
+    }
 
-    <span class="token comment" spellcheck="true">/*
+    /*
      * @param position 图表坐标 起始行，起始列，终点行
      *
      * @param xString 横坐标
@@ -489,285 +489,285 @@
      * @param serTxName 图形示例
      *
      * @param dataRef 柱状图数据范围 sheetName!$A$1:$A$12
-     */</span>
-    <span class="token keyword">public</span> <span class="token keyword">static</span> <span class="token keyword">void</span> <span class="token function">drawBarChart</span><span class="token punctuation">(</span>XSSFSheet sheet<span class="token punctuation">,</span> Position start<span class="token punctuation">,</span> Position end<span class="token punctuation">,</span> List<span class="token operator">&lt;</span>String<span class="token operator">></span> xString<span class="token punctuation">,</span> List<span class="token operator">&lt;</span>String<span class="token operator">></span> serTxName<span class="token punctuation">,</span>
-                                    List<span class="token operator">&lt;</span>String<span class="token operator">></span> dataRef<span class="token punctuation">)</span> <span class="token punctuation">{</span>
+     */
+    public static void drawBarChart(XSSFSheet sheet, Position start, Position end, List&lt;String&gt; xString, List&lt;String&gt; serTxName,
+                                    List&lt;String&gt; dataRef) {
 
-        XSSFDrawing drawing <span class="token operator">=</span> sheet<span class="token punctuation">.</span><span class="token function">createDrawingPatriarch</span><span class="token punctuation">(</span><span class="token punctuation">)</span><span class="token punctuation">;</span>
-        XSSFClientAnchor anchor <span class="token operator">=</span> drawing<span class="token punctuation">.</span><span class="token function">createAnchor</span><span class="token punctuation">(</span><span class="token number">0</span><span class="token punctuation">,</span> <span class="token number">0</span><span class="token punctuation">,</span> <span class="token number">0</span><span class="token punctuation">,</span> <span class="token number">0</span><span class="token punctuation">,</span> start<span class="token punctuation">.</span><span class="token function">getX</span><span class="token punctuation">(</span><span class="token punctuation">)</span><span class="token punctuation">,</span> start<span class="token punctuation">.</span><span class="token function">getY</span><span class="token punctuation">(</span><span class="token punctuation">)</span><span class="token punctuation">,</span> end<span class="token punctuation">.</span><span class="token function">getX</span><span class="token punctuation">(</span><span class="token punctuation">)</span><span class="token punctuation">,</span> end<span class="token punctuation">.</span><span class="token function">getY</span><span class="token punctuation">(</span><span class="token punctuation">)</span><span class="token punctuation">)</span><span class="token punctuation">;</span>
+        XSSFDrawing drawing = sheet.createDrawingPatriarch();
+        XSSFClientAnchor anchor = drawing.createAnchor(0, 0, 0, 0, start.getX(), start.getY(), end.getX(), end.getY());
 
-        XSSFChart chart <span class="token operator">=</span> drawing<span class="token punctuation">.</span><span class="token function">createChart</span><span class="token punctuation">(</span>anchor<span class="token punctuation">)</span><span class="token punctuation">;</span>
+        XSSFChart chart = drawing.createChart(anchor);
 
-        CTChart ctChart <span class="token operator">=</span> chart<span class="token punctuation">.</span><span class="token function">getCTChart</span><span class="token punctuation">(</span><span class="token punctuation">)</span><span class="token punctuation">;</span>
-        CTPlotArea ctPlotArea <span class="token operator">=</span> ctChart<span class="token punctuation">.</span><span class="token function">getPlotArea</span><span class="token punctuation">(</span><span class="token punctuation">)</span><span class="token punctuation">;</span>
-        CTBarChart ctBarChart <span class="token operator">=</span> ctPlotArea<span class="token punctuation">.</span><span class="token function">addNewBarChart</span><span class="token punctuation">(</span><span class="token punctuation">)</span><span class="token punctuation">;</span>
+        CTChart ctChart = chart.getCTChart();
+        CTPlotArea ctPlotArea = ctChart.getPlotArea();
+        CTBarChart ctBarChart = ctPlotArea.addNewBarChart();
 
-        ctBarChart<span class="token punctuation">.</span><span class="token function">addNewVaryColors</span><span class="token punctuation">(</span><span class="token punctuation">)</span><span class="token punctuation">.</span><span class="token function">setVal</span><span class="token punctuation">(</span><span class="token boolean">false</span><span class="token punctuation">)</span><span class="token punctuation">;</span>
-        ctBarChart<span class="token punctuation">.</span><span class="token function">addNewBarDir</span><span class="token punctuation">(</span><span class="token punctuation">)</span><span class="token punctuation">.</span><span class="token function">setVal</span><span class="token punctuation">(</span>STBarDir<span class="token punctuation">.</span>COL<span class="token punctuation">)</span><span class="token punctuation">;</span>
+        ctBarChart.addNewVaryColors().setVal(false);
+        ctBarChart.addNewBarDir().setVal(STBarDir.COL);
 
-        <span class="token comment" spellcheck="true">// telling the Chart that it has axis and giving them Ids</span>
-        <span class="token function">setAxIds</span><span class="token punctuation">(</span>ctBarChart<span class="token punctuation">)</span><span class="token punctuation">;</span>
-        <span class="token comment" spellcheck="true">// set cat axis</span>
-        <span class="token function">setCatAx</span><span class="token punctuation">(</span>ctPlotArea<span class="token punctuation">)</span><span class="token punctuation">;</span>
-        <span class="token comment" spellcheck="true">// set val axis</span>
-        <span class="token function">setValAx</span><span class="token punctuation">(</span>ctPlotArea<span class="token punctuation">)</span><span class="token punctuation">;</span>
-        <span class="token comment" spellcheck="true">// add legend and set legend position</span>
-        <span class="token function">setLegend</span><span class="token punctuation">(</span>ctChart<span class="token punctuation">)</span><span class="token punctuation">;</span>
-        <span class="token comment" spellcheck="true">// set data lable</span>
-        <span class="token function">setDataLabel</span><span class="token punctuation">(</span>ctBarChart<span class="token punctuation">)</span><span class="token punctuation">;</span>
-        <span class="token comment" spellcheck="true">// set chart title</span>
-        <span class="token function">setChartTitle</span><span class="token punctuation">(</span>chart<span class="token punctuation">,</span> sheet<span class="token punctuation">.</span><span class="token function">getSheetName</span><span class="token punctuation">(</span><span class="token punctuation">)</span><span class="token punctuation">)</span><span class="token punctuation">;</span>
-        <span class="token comment" spellcheck="true">// padding data to chart</span>
-        <span class="token function">paddingData</span><span class="token punctuation">(</span>ctBarChart<span class="token punctuation">,</span> xString<span class="token punctuation">,</span> serTxName<span class="token punctuation">,</span> dataRef<span class="token punctuation">)</span><span class="token punctuation">;</span>
-    <span class="token punctuation">}</span>
+        // telling the Chart that it has axis and giving them Ids
+        setAxIds(ctBarChart);
+        // set cat axis
+        setCatAx(ctPlotArea);
+        // set val axis
+        setValAx(ctPlotArea);
+        // add legend and set legend position
+        setLegend(ctChart);
+        // set data lable
+        setDataLabel(ctBarChart);
+        // set chart title
+        setChartTitle(chart, sheet.getSheetName());
+        // padding data to chart
+        paddingData(ctBarChart, xString, serTxName, dataRef);
+    }
 
-    <span class="token keyword">private</span> <span class="token keyword">static</span> <span class="token keyword">void</span> <span class="token function">paddingData</span><span class="token punctuation">(</span>CTBarChart ctBarChart<span class="token punctuation">,</span> List<span class="token operator">&lt;</span>String<span class="token operator">></span> xString<span class="token punctuation">,</span> List<span class="token operator">&lt;</span>String<span class="token operator">></span> serTxName<span class="token punctuation">,</span>
-                                    List<span class="token operator">&lt;</span>String<span class="token operator">></span> dataRef<span class="token punctuation">)</span> <span class="token punctuation">{</span>
-        Iterator<span class="token operator">&lt;</span>String<span class="token operator">></span> iterator <span class="token operator">=</span> serTxName<span class="token punctuation">.</span><span class="token function">iterator</span><span class="token punctuation">(</span><span class="token punctuation">)</span><span class="token punctuation">;</span>
-        <span class="token keyword">for</span> <span class="token punctuation">(</span><span class="token keyword">int</span> r <span class="token operator">=</span> <span class="token number">0</span><span class="token punctuation">,</span> len <span class="token operator">=</span> dataRef<span class="token punctuation">.</span><span class="token function">size</span><span class="token punctuation">(</span><span class="token punctuation">)</span><span class="token punctuation">;</span> r <span class="token operator">&lt;</span> len <span class="token operator">&amp;&amp;</span> iterator<span class="token punctuation">.</span><span class="token function">hasNext</span><span class="token punctuation">(</span><span class="token punctuation">)</span><span class="token punctuation">;</span> r<span class="token operator">++</span><span class="token punctuation">)</span> <span class="token punctuation">{</span>
-            CTBarSer ctBarSer <span class="token operator">=</span> ctBarChart<span class="token punctuation">.</span><span class="token function">addNewSer</span><span class="token punctuation">(</span><span class="token punctuation">)</span><span class="token punctuation">;</span>
+    private static void paddingData(CTBarChart ctBarChart, List&lt;String&gt; xString, List&lt;String&gt; serTxName,
+                                    List&lt;String&gt; dataRef) {
+        Iterator&lt;String&gt; iterator = serTxName.iterator();
+        for (int r = 0, len = dataRef.size(); r &lt; len &amp;&amp; iterator.hasNext(); r++) {
+            CTBarSer ctBarSer = ctBarChart.addNewSer();
 
-            ctBarSer<span class="token punctuation">.</span><span class="token function">addNewIdx</span><span class="token punctuation">(</span><span class="token punctuation">)</span><span class="token punctuation">.</span><span class="token function">setVal</span><span class="token punctuation">(</span>r<span class="token punctuation">)</span><span class="token punctuation">;</span>
-            <span class="token comment" spellcheck="true">// set legend value</span>
-            <span class="token function">setLegend</span><span class="token punctuation">(</span>iterator<span class="token punctuation">.</span><span class="token function">next</span><span class="token punctuation">(</span><span class="token punctuation">)</span><span class="token punctuation">,</span> ctBarSer<span class="token punctuation">.</span><span class="token function">addNewTx</span><span class="token punctuation">(</span><span class="token punctuation">)</span><span class="token punctuation">)</span><span class="token punctuation">;</span>
-            <span class="token comment" spellcheck="true">// cat ax value</span>
-            <span class="token function">setChartCatAxLabel</span><span class="token punctuation">(</span>ctBarSer<span class="token punctuation">.</span><span class="token function">addNewCat</span><span class="token punctuation">(</span><span class="token punctuation">)</span><span class="token punctuation">,</span> xString<span class="token punctuation">)</span><span class="token punctuation">;</span>
-            <span class="token comment" spellcheck="true">// value range</span>
-            ctBarSer<span class="token punctuation">.</span><span class="token function">addNewVal</span><span class="token punctuation">(</span><span class="token punctuation">)</span><span class="token punctuation">.</span><span class="token function">addNewNumRef</span><span class="token punctuation">(</span><span class="token punctuation">)</span><span class="token punctuation">.</span><span class="token function">setF</span><span class="token punctuation">(</span>dataRef<span class="token punctuation">.</span><span class="token function">get</span><span class="token punctuation">(</span>r<span class="token punctuation">)</span><span class="token punctuation">)</span><span class="token punctuation">;</span>
-            <span class="token comment" spellcheck="true">// add border to chart</span>
-            ctBarSer<span class="token punctuation">.</span><span class="token function">addNewSpPr</span><span class="token punctuation">(</span><span class="token punctuation">)</span><span class="token punctuation">.</span><span class="token function">addNewLn</span><span class="token punctuation">(</span><span class="token punctuation">)</span><span class="token punctuation">.</span><span class="token function">addNewSolidFill</span><span class="token punctuation">(</span><span class="token punctuation">)</span><span class="token punctuation">.</span><span class="token function">addNewSrgbClr</span><span class="token punctuation">(</span><span class="token punctuation">)</span><span class="token punctuation">.</span><span class="token function">setVal</span><span class="token punctuation">(</span><span class="token keyword">new</span> <span class="token class-name">byte</span><span class="token punctuation">[</span><span class="token punctuation">]</span><span class="token punctuation">{</span><span class="token number">0</span><span class="token punctuation">,</span> <span class="token number">0</span><span class="token punctuation">,</span> <span class="token number">0</span><span class="token punctuation">}</span><span class="token punctuation">)</span><span class="token punctuation">;</span>
-        <span class="token punctuation">}</span>
-    <span class="token punctuation">}</span>
+            ctBarSer.addNewIdx().setVal(r);
+            // set legend value
+            setLegend(iterator.next(), ctBarSer.addNewTx());
+            // cat ax value
+            setChartCatAxLabel(ctBarSer.addNewCat(), xString);
+            // value range
+            ctBarSer.addNewVal().addNewNumRef().setF(dataRef.get(r));
+            // add border to chart
+            ctBarSer.addNewSpPr().addNewLn().addNewSolidFill().addNewSrgbClr().setVal(new byte[]{0, 0, 0});
+        }
+    }
 
-    <span class="token keyword">private</span> <span class="token keyword">static</span> <span class="token keyword">void</span> <span class="token function">setLegend</span><span class="token punctuation">(</span>String str<span class="token punctuation">,</span> CTSerTx ctSerTx<span class="token punctuation">)</span> <span class="token punctuation">{</span>
-        <span class="token keyword">if</span> <span class="token punctuation">(</span>str<span class="token punctuation">.</span><span class="token function">contains</span><span class="token punctuation">(</span><span class="token string">"$"</span><span class="token punctuation">)</span><span class="token punctuation">)</span>
-            <span class="token comment" spellcheck="true">// set legend by str ref</span>
-            ctSerTx<span class="token punctuation">.</span><span class="token function">addNewStrRef</span><span class="token punctuation">(</span><span class="token punctuation">)</span><span class="token punctuation">.</span><span class="token function">setF</span><span class="token punctuation">(</span>str<span class="token punctuation">)</span><span class="token punctuation">;</span>
-        <span class="token keyword">else</span>
-            <span class="token comment" spellcheck="true">// set legend by str</span>
-            ctSerTx<span class="token punctuation">.</span><span class="token function">setV</span><span class="token punctuation">(</span>str<span class="token punctuation">)</span><span class="token punctuation">;</span>
-    <span class="token punctuation">}</span>
+    private static void setLegend(String str, CTSerTx ctSerTx) {
+        if (str.contains(&quot;$&quot;))
+            // set legend by str ref
+            ctSerTx.addNewStrRef().setF(str);
+        else
+            // set legend by str
+            ctSerTx.setV(str);
+    }
 
-    <span class="token keyword">private</span> <span class="token keyword">static</span> <span class="token keyword">void</span> <span class="token function">paddingData</span><span class="token punctuation">(</span>CTLineChart ctLineChart<span class="token punctuation">,</span> List<span class="token operator">&lt;</span>String<span class="token operator">></span> xString<span class="token punctuation">,</span> List<span class="token operator">&lt;</span>String<span class="token operator">></span> serTxName<span class="token punctuation">,</span>
-                                    List<span class="token operator">&lt;</span>String<span class="token operator">></span> dataRef<span class="token punctuation">)</span> <span class="token punctuation">{</span>
-        Iterator<span class="token operator">&lt;</span>String<span class="token operator">></span> iterator <span class="token operator">=</span> serTxName<span class="token punctuation">.</span><span class="token function">iterator</span><span class="token punctuation">(</span><span class="token punctuation">)</span><span class="token punctuation">;</span>
-        <span class="token keyword">for</span> <span class="token punctuation">(</span><span class="token keyword">int</span> r <span class="token operator">=</span> <span class="token number">0</span><span class="token punctuation">,</span> len <span class="token operator">=</span> dataRef<span class="token punctuation">.</span><span class="token function">size</span><span class="token punctuation">(</span><span class="token punctuation">)</span><span class="token punctuation">;</span> r <span class="token operator">&lt;</span> len <span class="token operator">&amp;&amp;</span> iterator<span class="token punctuation">.</span><span class="token function">hasNext</span><span class="token punctuation">(</span><span class="token punctuation">)</span><span class="token punctuation">;</span> r<span class="token operator">++</span><span class="token punctuation">)</span> <span class="token punctuation">{</span>
-            CTLineSer ctLineSer <span class="token operator">=</span> ctLineChart<span class="token punctuation">.</span><span class="token function">addNewSer</span><span class="token punctuation">(</span><span class="token punctuation">)</span><span class="token punctuation">;</span>
-            ctLineSer<span class="token punctuation">.</span><span class="token function">addNewIdx</span><span class="token punctuation">(</span><span class="token punctuation">)</span><span class="token punctuation">.</span><span class="token function">setVal</span><span class="token punctuation">(</span>r<span class="token punctuation">)</span><span class="token punctuation">;</span>
-            <span class="token function">setLegend</span><span class="token punctuation">(</span>iterator<span class="token punctuation">.</span><span class="token function">next</span><span class="token punctuation">(</span><span class="token punctuation">)</span><span class="token punctuation">,</span> ctLineSer<span class="token punctuation">.</span><span class="token function">addNewTx</span><span class="token punctuation">(</span><span class="token punctuation">)</span><span class="token punctuation">)</span><span class="token punctuation">;</span>
-            <span class="token function">setChartCatAxLabel</span><span class="token punctuation">(</span>ctLineSer<span class="token punctuation">.</span><span class="token function">addNewCat</span><span class="token punctuation">(</span><span class="token punctuation">)</span><span class="token punctuation">,</span> xString<span class="token punctuation">)</span><span class="token punctuation">;</span>
-            ctLineSer<span class="token punctuation">.</span><span class="token function">addNewVal</span><span class="token punctuation">(</span><span class="token punctuation">)</span><span class="token punctuation">.</span><span class="token function">addNewNumRef</span><span class="token punctuation">(</span><span class="token punctuation">)</span><span class="token punctuation">.</span><span class="token function">setF</span><span class="token punctuation">(</span>dataRef<span class="token punctuation">.</span><span class="token function">get</span><span class="token punctuation">(</span>r<span class="token punctuation">)</span><span class="token punctuation">)</span><span class="token punctuation">;</span>
-            ctLineSer<span class="token punctuation">.</span><span class="token function">addNewSpPr</span><span class="token punctuation">(</span><span class="token punctuation">)</span><span class="token punctuation">.</span><span class="token function">addNewLn</span><span class="token punctuation">(</span><span class="token punctuation">)</span><span class="token punctuation">.</span><span class="token function">addNewSolidFill</span><span class="token punctuation">(</span><span class="token punctuation">)</span><span class="token punctuation">.</span><span class="token function">addNewSrgbClr</span><span class="token punctuation">(</span><span class="token punctuation">)</span><span class="token punctuation">.</span><span class="token function">setVal</span><span class="token punctuation">(</span><span class="token keyword">new</span> <span class="token class-name">byte</span><span class="token punctuation">[</span><span class="token punctuation">]</span><span class="token punctuation">{</span><span class="token number">0</span><span class="token punctuation">,</span> <span class="token number">0</span><span class="token punctuation">,</span> <span class="token number">0</span><span class="token punctuation">}</span><span class="token punctuation">)</span><span class="token punctuation">;</span>
-        <span class="token punctuation">}</span>
-    <span class="token punctuation">}</span>
+    private static void paddingData(CTLineChart ctLineChart, List&lt;String&gt; xString, List&lt;String&gt; serTxName,
+                                    List&lt;String&gt; dataRef) {
+        Iterator&lt;String&gt; iterator = serTxName.iterator();
+        for (int r = 0, len = dataRef.size(); r &lt; len &amp;&amp; iterator.hasNext(); r++) {
+            CTLineSer ctLineSer = ctLineChart.addNewSer();
+            ctLineSer.addNewIdx().setVal(r);
+            setLegend(iterator.next(), ctLineSer.addNewTx());
+            setChartCatAxLabel(ctLineSer.addNewCat(), xString);
+            ctLineSer.addNewVal().addNewNumRef().setF(dataRef.get(r));
+            ctLineSer.addNewSpPr().addNewLn().addNewSolidFill().addNewSrgbClr().setVal(new byte[]{0, 0, 0});
+        }
+    }
 
-    <span class="token keyword">private</span> <span class="token keyword">static</span> <span class="token keyword">void</span> <span class="token function">paddingData</span><span class="token punctuation">(</span>CTScatterChart scatterChart<span class="token punctuation">,</span> List<span class="token operator">&lt;</span>String<span class="token operator">></span> dataRef<span class="token punctuation">)</span> <span class="token punctuation">{</span>
-        <span class="token comment" spellcheck="true">// 设置散点图内的信息</span>
-        CTScatterSer ctScatterSer <span class="token operator">=</span> scatterChart<span class="token punctuation">.</span><span class="token function">addNewSer</span><span class="token punctuation">(</span><span class="token punctuation">)</span><span class="token punctuation">;</span>
-        ctScatterSer<span class="token punctuation">.</span><span class="token function">addNewIdx</span><span class="token punctuation">(</span><span class="token punctuation">)</span><span class="token punctuation">.</span><span class="token function">setVal</span><span class="token punctuation">(</span><span class="token number">0</span><span class="token punctuation">)</span><span class="token punctuation">;</span>
-        ctScatterSer<span class="token punctuation">.</span><span class="token function">addNewOrder</span><span class="token punctuation">(</span><span class="token punctuation">)</span><span class="token punctuation">.</span><span class="token function">setVal</span><span class="token punctuation">(</span><span class="token number">0</span><span class="token punctuation">)</span><span class="token punctuation">;</span>
-        <span class="token comment" spellcheck="true">// 设置标记的样式</span>
-        CTMarker ctMarker <span class="token operator">=</span> ctScatterSer<span class="token punctuation">.</span><span class="token function">addNewMarker</span><span class="token punctuation">(</span><span class="token punctuation">)</span><span class="token punctuation">;</span>
-        ctMarker<span class="token punctuation">.</span><span class="token function">addNewSymbol</span><span class="token punctuation">(</span><span class="token punctuation">)</span><span class="token punctuation">.</span><span class="token function">setVal</span><span class="token punctuation">(</span>STMarkerStyle<span class="token punctuation">.</span>Enum<span class="token punctuation">.</span><span class="token function">forInt</span><span class="token punctuation">(</span><span class="token number">3</span><span class="token punctuation">)</span><span class="token punctuation">)</span><span class="token punctuation">;</span>
-        ctMarker<span class="token punctuation">.</span><span class="token function">addNewSize</span><span class="token punctuation">(</span><span class="token punctuation">)</span><span class="token punctuation">.</span><span class="token function">setVal</span><span class="token punctuation">(</span><span class="token punctuation">(</span><span class="token keyword">short</span><span class="token punctuation">)</span> <span class="token number">8</span><span class="token punctuation">)</span><span class="token punctuation">;</span>
-        CTShapeProperties ctShapeProperties1 <span class="token operator">=</span> ctMarker<span class="token punctuation">.</span><span class="token function">addNewSpPr</span><span class="token punctuation">(</span><span class="token punctuation">)</span><span class="token punctuation">;</span>
-        ctShapeProperties1<span class="token punctuation">.</span><span class="token function">addNewSolidFill</span><span class="token punctuation">(</span><span class="token punctuation">)</span><span class="token punctuation">.</span><span class="token function">addNewSchemeClr</span><span class="token punctuation">(</span><span class="token punctuation">)</span><span class="token punctuation">.</span><span class="token function">setVal</span><span class="token punctuation">(</span>STSchemeColorVal<span class="token punctuation">.</span>Enum<span class="token punctuation">.</span><span class="token function">forInt</span><span class="token punctuation">(</span><span class="token number">5</span><span class="token punctuation">)</span><span class="token punctuation">)</span><span class="token punctuation">;</span>
-        CTLineProperties ctLineProperties1 <span class="token operator">=</span> ctShapeProperties1<span class="token punctuation">.</span><span class="token function">addNewLn</span><span class="token punctuation">(</span><span class="token punctuation">)</span><span class="token punctuation">;</span>
-        ctLineProperties1<span class="token punctuation">.</span><span class="token function">setW</span><span class="token punctuation">(</span><span class="token number">9525</span><span class="token punctuation">)</span><span class="token punctuation">;</span>
-        ctLineProperties1<span class="token punctuation">.</span><span class="token function">addNewSolidFill</span><span class="token punctuation">(</span><span class="token punctuation">)</span><span class="token punctuation">.</span><span class="token function">addNewSchemeClr</span><span class="token punctuation">(</span><span class="token punctuation">)</span><span class="token punctuation">.</span><span class="token function">setVal</span><span class="token punctuation">(</span>STSchemeColorVal<span class="token punctuation">.</span>Enum<span class="token punctuation">.</span><span class="token function">forInt</span><span class="token punctuation">(</span><span class="token number">5</span><span class="token punctuation">)</span><span class="token punctuation">)</span><span class="token punctuation">;</span>
+    private static void paddingData(CTScatterChart scatterChart, List&lt;String&gt; dataRef) {
+        // 设置散点图内的信息
+        CTScatterSer ctScatterSer = scatterChart.addNewSer();
+        ctScatterSer.addNewIdx().setVal(0);
+        ctScatterSer.addNewOrder().setVal(0);
+        // 设置标记的样式
+        CTMarker ctMarker = ctScatterSer.addNewMarker();
+        ctMarker.addNewSymbol().setVal(STMarkerStyle.Enum.forInt(3));
+        ctMarker.addNewSize().setVal((short) 8);
+        CTShapeProperties ctShapeProperties1 = ctMarker.addNewSpPr();
+        ctShapeProperties1.addNewSolidFill().addNewSchemeClr().setVal(STSchemeColorVal.Enum.forInt(5));
+        CTLineProperties ctLineProperties1 = ctShapeProperties1.addNewLn();
+        ctLineProperties1.setW(9525);
+        ctLineProperties1.addNewSolidFill().addNewSchemeClr().setVal(STSchemeColorVal.Enum.forInt(5));
 
-        CTNumDataSource ctNumDataSource <span class="token operator">=</span> ctScatterSer<span class="token punctuation">.</span><span class="token function">addNewYVal</span><span class="token punctuation">(</span><span class="token punctuation">)</span><span class="token punctuation">;</span>
-        CTNumRef ctNumRef <span class="token operator">=</span> ctNumDataSource<span class="token punctuation">.</span><span class="token function">addNewNumRef</span><span class="token punctuation">(</span><span class="token punctuation">)</span><span class="token punctuation">;</span>
-        ctNumRef<span class="token punctuation">.</span><span class="token function">setF</span><span class="token punctuation">(</span>dataRef<span class="token punctuation">.</span><span class="token function">get</span><span class="token punctuation">(</span><span class="token number">0</span><span class="token punctuation">)</span><span class="token punctuation">)</span><span class="token punctuation">;</span>
-    <span class="token punctuation">}</span>
+        CTNumDataSource ctNumDataSource = ctScatterSer.addNewYVal();
+        CTNumRef ctNumRef = ctNumDataSource.addNewNumRef();
+        ctNumRef.setF(dataRef.get(0));
+    }
 
-    <span class="token keyword">private</span> <span class="token keyword">static</span> <span class="token keyword">void</span> <span class="token function">paddingData</span><span class="token punctuation">(</span>CTRadarChart ctRadarChart<span class="token punctuation">,</span> List<span class="token operator">&lt;</span>String<span class="token operator">></span> dataRef<span class="token punctuation">)</span> <span class="token punctuation">{</span>
-        CTRadarSer ctRadarSer <span class="token operator">=</span> ctRadarChart<span class="token punctuation">.</span><span class="token function">addNewSer</span><span class="token punctuation">(</span><span class="token punctuation">)</span><span class="token punctuation">;</span>
-        ctRadarSer<span class="token punctuation">.</span><span class="token function">addNewIdx</span><span class="token punctuation">(</span><span class="token punctuation">)</span><span class="token punctuation">.</span><span class="token function">setVal</span><span class="token punctuation">(</span><span class="token number">0</span><span class="token punctuation">)</span><span class="token punctuation">;</span>
-        ctRadarSer<span class="token punctuation">.</span><span class="token function">addNewOrder</span><span class="token punctuation">(</span><span class="token punctuation">)</span><span class="token punctuation">.</span><span class="token function">setVal</span><span class="token punctuation">(</span><span class="token number">0</span><span class="token punctuation">)</span><span class="token punctuation">;</span>
-        CTLineProperties ctLineProperties <span class="token operator">=</span> ctRadarSer<span class="token punctuation">.</span><span class="token function">addNewSpPr</span><span class="token punctuation">(</span><span class="token punctuation">)</span><span class="token punctuation">.</span><span class="token function">addNewLn</span><span class="token punctuation">(</span><span class="token punctuation">)</span><span class="token punctuation">;</span>
-        ctLineProperties<span class="token punctuation">.</span><span class="token function">addNewRound</span><span class="token punctuation">(</span><span class="token punctuation">)</span><span class="token punctuation">;</span>
-        ctLineProperties<span class="token punctuation">.</span><span class="token function">addNewSolidFill</span><span class="token punctuation">(</span><span class="token punctuation">)</span><span class="token punctuation">.</span><span class="token function">addNewSchemeClr</span><span class="token punctuation">(</span><span class="token punctuation">)</span><span class="token punctuation">.</span><span class="token function">setVal</span><span class="token punctuation">(</span>STSchemeColorVal<span class="token punctuation">.</span>ACCENT_1<span class="token punctuation">)</span><span class="token punctuation">;</span>
-        <span class="token comment" spellcheck="true">// 渲染数据</span>
-        ctRadarSer<span class="token punctuation">.</span><span class="token function">addNewCat</span><span class="token punctuation">(</span><span class="token punctuation">)</span><span class="token punctuation">.</span><span class="token function">addNewStrRef</span><span class="token punctuation">(</span><span class="token punctuation">)</span><span class="token punctuation">.</span><span class="token function">setF</span><span class="token punctuation">(</span>dataRef<span class="token punctuation">.</span><span class="token function">get</span><span class="token punctuation">(</span><span class="token number">0</span><span class="token punctuation">)</span><span class="token punctuation">)</span><span class="token punctuation">;</span>
-        ctRadarSer<span class="token punctuation">.</span><span class="token function">addNewVal</span><span class="token punctuation">(</span><span class="token punctuation">)</span><span class="token punctuation">.</span><span class="token function">addNewNumRef</span><span class="token punctuation">(</span><span class="token punctuation">)</span><span class="token punctuation">.</span><span class="token function">setF</span><span class="token punctuation">(</span>dataRef<span class="token punctuation">.</span><span class="token function">get</span><span class="token punctuation">(</span><span class="token number">1</span><span class="token punctuation">)</span><span class="token punctuation">)</span><span class="token punctuation">;</span>
-    <span class="token punctuation">}</span>
+    private static void paddingData(CTRadarChart ctRadarChart, List&lt;String&gt; dataRef) {
+        CTRadarSer ctRadarSer = ctRadarChart.addNewSer();
+        ctRadarSer.addNewIdx().setVal(0);
+        ctRadarSer.addNewOrder().setVal(0);
+        CTLineProperties ctLineProperties = ctRadarSer.addNewSpPr().addNewLn();
+        ctLineProperties.addNewRound();
+        ctLineProperties.addNewSolidFill().addNewSchemeClr().setVal(STSchemeColorVal.ACCENT_1);
+        // 渲染数据
+        ctRadarSer.addNewCat().addNewStrRef().setF(dataRef.get(0));
+        ctRadarSer.addNewVal().addNewNumRef().setF(dataRef.get(1));
+    }
 
-    <span class="token keyword">private</span> <span class="token keyword">static</span> <span class="token keyword">void</span> <span class="token function">setChartCatAxLabel</span><span class="token punctuation">(</span>CTAxDataSource cttAxDataSource<span class="token punctuation">,</span> List<span class="token operator">&lt;</span>String<span class="token operator">></span> xString<span class="token punctuation">)</span> <span class="token punctuation">{</span>
-        <span class="token keyword">if</span> <span class="token punctuation">(</span>xString<span class="token punctuation">.</span><span class="token function">size</span><span class="token punctuation">(</span><span class="token punctuation">)</span> <span class="token operator">==</span> <span class="token number">1</span><span class="token punctuation">)</span> <span class="token punctuation">{</span>
-            cttAxDataSource<span class="token punctuation">.</span><span class="token function">addNewStrRef</span><span class="token punctuation">(</span><span class="token punctuation">)</span><span class="token punctuation">.</span><span class="token function">setF</span><span class="token punctuation">(</span>xString<span class="token punctuation">.</span><span class="token function">get</span><span class="token punctuation">(</span><span class="token number">0</span><span class="token punctuation">)</span><span class="token punctuation">)</span><span class="token punctuation">;</span>
-        <span class="token punctuation">}</span> <span class="token keyword">else</span> <span class="token punctuation">{</span>
-            CTStrData ctStrData <span class="token operator">=</span> cttAxDataSource<span class="token punctuation">.</span><span class="token function">addNewStrLit</span><span class="token punctuation">(</span><span class="token punctuation">)</span><span class="token punctuation">;</span>
-            <span class="token keyword">for</span> <span class="token punctuation">(</span><span class="token keyword">int</span> m <span class="token operator">=</span> <span class="token number">0</span><span class="token punctuation">,</span> xlen <span class="token operator">=</span> xString<span class="token punctuation">.</span><span class="token function">size</span><span class="token punctuation">(</span><span class="token punctuation">)</span><span class="token punctuation">;</span> m <span class="token operator">&lt;</span> xlen<span class="token punctuation">;</span> m<span class="token operator">++</span><span class="token punctuation">)</span> <span class="token punctuation">{</span>
-                CTStrVal ctStrVal <span class="token operator">=</span> ctStrData<span class="token punctuation">.</span><span class="token function">addNewPt</span><span class="token punctuation">(</span><span class="token punctuation">)</span><span class="token punctuation">;</span>
-                ctStrVal<span class="token punctuation">.</span><span class="token function">setIdx</span><span class="token punctuation">(</span><span class="token punctuation">(</span><span class="token keyword">long</span><span class="token punctuation">)</span> m<span class="token punctuation">)</span><span class="token punctuation">;</span>
-                ctStrVal<span class="token punctuation">.</span><span class="token function">setV</span><span class="token punctuation">(</span>xString<span class="token punctuation">.</span><span class="token function">get</span><span class="token punctuation">(</span>m<span class="token punctuation">)</span><span class="token punctuation">)</span><span class="token punctuation">;</span>
-            <span class="token punctuation">}</span>
-        <span class="token punctuation">}</span>
-    <span class="token punctuation">}</span>
+    private static void setChartCatAxLabel(CTAxDataSource cttAxDataSource, List&lt;String&gt; xString) {
+        if (xString.size() == 1) {
+            cttAxDataSource.addNewStrRef().setF(xString.get(0));
+        } else {
+            CTStrData ctStrData = cttAxDataSource.addNewStrLit();
+            for (int m = 0, xlen = xString.size(); m &lt; xlen; m++) {
+                CTStrVal ctStrVal = ctStrData.addNewPt();
+                ctStrVal.setIdx((long) m);
+                ctStrVal.setV(xString.get(m));
+            }
+        }
+    }
 
-    <span class="token keyword">private</span> <span class="token keyword">static</span> <span class="token keyword">void</span> <span class="token function">setDataLabel</span><span class="token punctuation">(</span>CTBarChart ctBarChart<span class="token punctuation">)</span> <span class="token punctuation">{</span>
-        <span class="token function">setDLShowOpts</span><span class="token punctuation">(</span>ctBarChart<span class="token punctuation">.</span><span class="token function">addNewDLbls</span><span class="token punctuation">(</span><span class="token punctuation">)</span><span class="token punctuation">)</span><span class="token punctuation">;</span>
-    <span class="token punctuation">}</span>
+    private static void setDataLabel(CTBarChart ctBarChart) {
+        setDLShowOpts(ctBarChart.addNewDLbls());
+    }
 
-    <span class="token keyword">private</span> <span class="token keyword">static</span> <span class="token keyword">void</span> <span class="token function">setDataLabel</span><span class="token punctuation">(</span>CTLineChart ctLineChart<span class="token punctuation">)</span> <span class="token punctuation">{</span>
-        CTDLbls dlbls <span class="token operator">=</span> ctLineChart<span class="token punctuation">.</span><span class="token function">addNewDLbls</span><span class="token punctuation">(</span><span class="token punctuation">)</span><span class="token punctuation">;</span>
-        <span class="token function">setDLShowOpts</span><span class="token punctuation">(</span>dlbls<span class="token punctuation">)</span><span class="token punctuation">;</span>
-        <span class="token function">setDLPosition</span><span class="token punctuation">(</span>dlbls<span class="token punctuation">,</span> null<span class="token punctuation">)</span><span class="token punctuation">;</span>
-    <span class="token punctuation">}</span>
+    private static void setDataLabel(CTLineChart ctLineChart) {
+        CTDLbls dlbls = ctLineChart.addNewDLbls();
+        setDLShowOpts(dlbls);
+        setDLPosition(dlbls, null);
+    }
 
-    <span class="token comment" spellcheck="true">/**
+    /**
      * 设置散点图各图例的显示
-     */</span>
-    <span class="token keyword">private</span> <span class="token keyword">static</span> <span class="token keyword">void</span> <span class="token function">setDataLabel</span><span class="token punctuation">(</span>CTScatterChart scatterChart<span class="token punctuation">)</span> <span class="token punctuation">{</span>
-        CTDLbls ctdLbls <span class="token operator">=</span> scatterChart<span class="token punctuation">.</span><span class="token function">addNewDLbls</span><span class="token punctuation">(</span><span class="token punctuation">)</span><span class="token punctuation">;</span>
-        ctdLbls<span class="token punctuation">.</span><span class="token function">addNewShowVal</span><span class="token punctuation">(</span><span class="token punctuation">)</span><span class="token punctuation">.</span><span class="token function">setVal</span><span class="token punctuation">(</span><span class="token boolean">true</span><span class="token punctuation">)</span><span class="token punctuation">;</span>
-        ctdLbls<span class="token punctuation">.</span><span class="token function">addNewShowLegendKey</span><span class="token punctuation">(</span><span class="token punctuation">)</span><span class="token punctuation">.</span><span class="token function">setVal</span><span class="token punctuation">(</span><span class="token boolean">false</span><span class="token punctuation">)</span><span class="token punctuation">;</span>
-        ctdLbls<span class="token punctuation">.</span><span class="token function">addNewShowSerName</span><span class="token punctuation">(</span><span class="token punctuation">)</span><span class="token punctuation">.</span><span class="token function">setVal</span><span class="token punctuation">(</span><span class="token boolean">false</span><span class="token punctuation">)</span><span class="token punctuation">;</span>
-        ctdLbls<span class="token punctuation">.</span><span class="token function">addNewShowCatName</span><span class="token punctuation">(</span><span class="token punctuation">)</span><span class="token punctuation">.</span><span class="token function">setVal</span><span class="token punctuation">(</span><span class="token boolean">false</span><span class="token punctuation">)</span><span class="token punctuation">;</span>
-        ctdLbls<span class="token punctuation">.</span><span class="token function">addNewShowPercent</span><span class="token punctuation">(</span><span class="token punctuation">)</span><span class="token punctuation">.</span><span class="token function">setVal</span><span class="token punctuation">(</span><span class="token boolean">false</span><span class="token punctuation">)</span><span class="token punctuation">;</span>
-        ctdLbls<span class="token punctuation">.</span><span class="token function">addNewShowBubbleSize</span><span class="token punctuation">(</span><span class="token punctuation">)</span><span class="token punctuation">.</span><span class="token function">setVal</span><span class="token punctuation">(</span><span class="token boolean">false</span><span class="token punctuation">)</span><span class="token punctuation">;</span>
-    <span class="token punctuation">}</span>
+     */
+    private static void setDataLabel(CTScatterChart scatterChart) {
+        CTDLbls ctdLbls = scatterChart.addNewDLbls();
+        ctdLbls.addNewShowVal().setVal(true);
+        ctdLbls.addNewShowLegendKey().setVal(false);
+        ctdLbls.addNewShowSerName().setVal(false);
+        ctdLbls.addNewShowCatName().setVal(false);
+        ctdLbls.addNewShowPercent().setVal(false);
+        ctdLbls.addNewShowBubbleSize().setVal(false);
+    }
 
-    <span class="token keyword">private</span> <span class="token keyword">static</span> <span class="token keyword">void</span> <span class="token function">setDataLabel</span><span class="token punctuation">(</span>CTRadarChart ctRadarChart<span class="token punctuation">)</span> <span class="token punctuation">{</span>
-        <span class="token comment" spellcheck="true">// 分类标签等是否显示</span>
-        CTDLbls ctdLbls <span class="token operator">=</span> ctRadarChart<span class="token punctuation">.</span><span class="token function">addNewDLbls</span><span class="token punctuation">(</span><span class="token punctuation">)</span><span class="token punctuation">;</span>
-        ctdLbls<span class="token punctuation">.</span><span class="token function">addNewShowLegendKey</span><span class="token punctuation">(</span><span class="token punctuation">)</span><span class="token punctuation">.</span><span class="token function">setVal</span><span class="token punctuation">(</span><span class="token boolean">false</span><span class="token punctuation">)</span><span class="token punctuation">;</span>
-        ctdLbls<span class="token punctuation">.</span><span class="token function">addNewShowVal</span><span class="token punctuation">(</span><span class="token punctuation">)</span><span class="token punctuation">.</span><span class="token function">setVal</span><span class="token punctuation">(</span><span class="token boolean">false</span><span class="token punctuation">)</span><span class="token punctuation">;</span>
-        ctdLbls<span class="token punctuation">.</span><span class="token function">addNewShowCatName</span><span class="token punctuation">(</span><span class="token punctuation">)</span><span class="token punctuation">.</span><span class="token function">setVal</span><span class="token punctuation">(</span><span class="token boolean">false</span><span class="token punctuation">)</span><span class="token punctuation">;</span>
-        ctdLbls<span class="token punctuation">.</span><span class="token function">addNewShowSerName</span><span class="token punctuation">(</span><span class="token punctuation">)</span><span class="token punctuation">.</span><span class="token function">setVal</span><span class="token punctuation">(</span><span class="token boolean">false</span><span class="token punctuation">)</span><span class="token punctuation">;</span>
-        ctdLbls<span class="token punctuation">.</span><span class="token function">addNewShowPercent</span><span class="token punctuation">(</span><span class="token punctuation">)</span><span class="token punctuation">.</span><span class="token function">setVal</span><span class="token punctuation">(</span><span class="token boolean">false</span><span class="token punctuation">)</span><span class="token punctuation">;</span>
-        ctdLbls<span class="token punctuation">.</span><span class="token function">addNewShowBubbleSize</span><span class="token punctuation">(</span><span class="token punctuation">)</span><span class="token punctuation">.</span><span class="token function">setVal</span><span class="token punctuation">(</span><span class="token boolean">false</span><span class="token punctuation">)</span><span class="token punctuation">;</span>
-    <span class="token punctuation">}</span>
+    private static void setDataLabel(CTRadarChart ctRadarChart) {
+        // 分类标签等是否显示
+        CTDLbls ctdLbls = ctRadarChart.addNewDLbls();
+        ctdLbls.addNewShowLegendKey().setVal(false);
+        ctdLbls.addNewShowVal().setVal(false);
+        ctdLbls.addNewShowCatName().setVal(false);
+        ctdLbls.addNewShowSerName().setVal(false);
+        ctdLbls.addNewShowPercent().setVal(false);
+        ctdLbls.addNewShowBubbleSize().setVal(false);
+    }
 
-    <span class="token keyword">private</span> <span class="token keyword">static</span> <span class="token keyword">void</span> <span class="token function">setDLPosition</span><span class="token punctuation">(</span>CTDLbls dlbls<span class="token punctuation">,</span> STDLblPos<span class="token punctuation">.</span>Enum e<span class="token punctuation">)</span> <span class="token punctuation">{</span>
-        <span class="token keyword">if</span> <span class="token punctuation">(</span>e <span class="token operator">==</span> null<span class="token punctuation">)</span>
-            dlbls<span class="token punctuation">.</span><span class="token function">addNewDLblPos</span><span class="token punctuation">(</span><span class="token punctuation">)</span><span class="token punctuation">.</span><span class="token function">setVal</span><span class="token punctuation">(</span>STDLblPos<span class="token punctuation">.</span>T<span class="token punctuation">)</span><span class="token punctuation">;</span>
-        <span class="token keyword">else</span>
-            dlbls<span class="token punctuation">.</span><span class="token function">addNewDLblPos</span><span class="token punctuation">(</span><span class="token punctuation">)</span><span class="token punctuation">.</span><span class="token function">setVal</span><span class="token punctuation">(</span>e<span class="token punctuation">)</span><span class="token punctuation">;</span>
-    <span class="token punctuation">}</span>
+    private static void setDLPosition(CTDLbls dlbls, STDLblPos.Enum e) {
+        if (e == null)
+            dlbls.addNewDLblPos().setVal(STDLblPos.T);
+        else
+            dlbls.addNewDLblPos().setVal(e);
+    }
 
-    <span class="token keyword">private</span> <span class="token keyword">static</span> <span class="token keyword">void</span> <span class="token function">setDLShowOpts</span><span class="token punctuation">(</span>CTDLbls dlbls<span class="token punctuation">)</span> <span class="token punctuation">{</span>
-        <span class="token comment" spellcheck="true">// 添加图形示例的字符串</span>
-        dlbls<span class="token punctuation">.</span><span class="token function">addNewShowSerName</span><span class="token punctuation">(</span><span class="token punctuation">)</span><span class="token punctuation">.</span><span class="token function">setVal</span><span class="token punctuation">(</span><span class="token boolean">false</span><span class="token punctuation">)</span><span class="token punctuation">;</span>
-        <span class="token comment" spellcheck="true">// 添加x轴的坐标字符</span>
-        dlbls<span class="token punctuation">.</span><span class="token function">addNewShowCatName</span><span class="token punctuation">(</span><span class="token punctuation">)</span><span class="token punctuation">.</span><span class="token function">setVal</span><span class="token punctuation">(</span><span class="token boolean">false</span><span class="token punctuation">)</span><span class="token punctuation">;</span>
-        <span class="token comment" spellcheck="true">// 添加图形示例的图</span>
-        dlbls<span class="token punctuation">.</span><span class="token function">addNewShowLegendKey</span><span class="token punctuation">(</span><span class="token punctuation">)</span><span class="token punctuation">.</span><span class="token function">setVal</span><span class="token punctuation">(</span><span class="token boolean">false</span><span class="token punctuation">)</span><span class="token punctuation">;</span>
-        <span class="token comment" spellcheck="true">// 添加x对应y的---</span>
-        <span class="token comment" spellcheck="true">// dlbls.addNewShowVal().setVal(false);</span>
-    <span class="token punctuation">}</span>
+    private static void setDLShowOpts(CTDLbls dlbls) {
+        // 添加图形示例的字符串
+        dlbls.addNewShowSerName().setVal(false);
+        // 添加x轴的坐标字符
+        dlbls.addNewShowCatName().setVal(false);
+        // 添加图形示例的图
+        dlbls.addNewShowLegendKey().setVal(false);
+        // 添加x对应y的---
+        // dlbls.addNewShowVal().setVal(false);
+    }
 
-    <span class="token keyword">private</span> <span class="token keyword">static</span> <span class="token keyword">void</span> <span class="token function">setAxIds</span><span class="token punctuation">(</span>CTRadarChart ctRadarChart<span class="token punctuation">)</span> <span class="token punctuation">{</span>
-        ctRadarChart<span class="token punctuation">.</span><span class="token function">addNewAxId</span><span class="token punctuation">(</span><span class="token punctuation">)</span><span class="token punctuation">.</span><span class="token function">setVal</span><span class="token punctuation">(</span><span class="token number">123456</span><span class="token punctuation">)</span><span class="token punctuation">;</span>
-        ctRadarChart<span class="token punctuation">.</span><span class="token function">addNewAxId</span><span class="token punctuation">(</span><span class="token punctuation">)</span><span class="token punctuation">.</span><span class="token function">setVal</span><span class="token punctuation">(</span><span class="token number">123457</span><span class="token punctuation">)</span><span class="token punctuation">;</span>
-    <span class="token punctuation">}</span>
+    private static void setAxIds(CTRadarChart ctRadarChart) {
+        ctRadarChart.addNewAxId().setVal(123456);
+        ctRadarChart.addNewAxId().setVal(123457);
+    }
 
-    <span class="token keyword">private</span> <span class="token keyword">static</span> <span class="token keyword">void</span> <span class="token function">setAxIds</span><span class="token punctuation">(</span>CTBarChart ctBarChart<span class="token punctuation">)</span> <span class="token punctuation">{</span>
-        ctBarChart<span class="token punctuation">.</span><span class="token function">addNewAxId</span><span class="token punctuation">(</span><span class="token punctuation">)</span><span class="token punctuation">.</span><span class="token function">setVal</span><span class="token punctuation">(</span><span class="token number">123456</span><span class="token punctuation">)</span><span class="token punctuation">;</span>
-        ctBarChart<span class="token punctuation">.</span><span class="token function">addNewAxId</span><span class="token punctuation">(</span><span class="token punctuation">)</span><span class="token punctuation">.</span><span class="token function">setVal</span><span class="token punctuation">(</span><span class="token number">123457</span><span class="token punctuation">)</span><span class="token punctuation">;</span>
-    <span class="token punctuation">}</span>
+    private static void setAxIds(CTBarChart ctBarChart) {
+        ctBarChart.addNewAxId().setVal(123456);
+        ctBarChart.addNewAxId().setVal(123457);
+    }
 
-    <span class="token keyword">private</span> <span class="token keyword">static</span> <span class="token keyword">void</span> <span class="token function">setAxIds</span><span class="token punctuation">(</span>CTLineChart ctLineChart<span class="token punctuation">)</span> <span class="token punctuation">{</span>
-        ctLineChart<span class="token punctuation">.</span><span class="token function">addNewAxId</span><span class="token punctuation">(</span><span class="token punctuation">)</span><span class="token punctuation">.</span><span class="token function">setVal</span><span class="token punctuation">(</span><span class="token number">123456</span><span class="token punctuation">)</span><span class="token punctuation">;</span>
-        ctLineChart<span class="token punctuation">.</span><span class="token function">addNewAxId</span><span class="token punctuation">(</span><span class="token punctuation">)</span><span class="token punctuation">.</span><span class="token function">setVal</span><span class="token punctuation">(</span><span class="token number">123457</span><span class="token punctuation">)</span><span class="token punctuation">;</span>
-    <span class="token punctuation">}</span>
+    private static void setAxIds(CTLineChart ctLineChart) {
+        ctLineChart.addNewAxId().setVal(123456);
+        ctLineChart.addNewAxId().setVal(123457);
+    }
 
-    <span class="token keyword">private</span> <span class="token keyword">static</span> <span class="token keyword">void</span> <span class="token function">setAxIds</span><span class="token punctuation">(</span>CTScatterChart scatterChart<span class="token punctuation">)</span> <span class="token punctuation">{</span>
-        scatterChart<span class="token punctuation">.</span><span class="token function">addNewAxId</span><span class="token punctuation">(</span><span class="token punctuation">)</span><span class="token punctuation">.</span><span class="token function">setVal</span><span class="token punctuation">(</span><span class="token number">123456</span><span class="token punctuation">)</span><span class="token punctuation">;</span>
-        scatterChart<span class="token punctuation">.</span><span class="token function">addNewAxId</span><span class="token punctuation">(</span><span class="token punctuation">)</span><span class="token punctuation">.</span><span class="token function">setVal</span><span class="token punctuation">(</span><span class="token number">123457</span><span class="token punctuation">)</span><span class="token punctuation">;</span>
-    <span class="token punctuation">}</span>
+    private static void setAxIds(CTScatterChart scatterChart) {
+        scatterChart.addNewAxId().setVal(123456);
+        scatterChart.addNewAxId().setVal(123457);
+    }
 
-    <span class="token keyword">private</span> <span class="token keyword">static</span> <span class="token keyword">void</span> <span class="token function">setLegend</span><span class="token punctuation">(</span>CTChart ctChart<span class="token punctuation">)</span> <span class="token punctuation">{</span>
-        CTLegend ctLegend <span class="token operator">=</span> ctChart<span class="token punctuation">.</span><span class="token function">addNewLegend</span><span class="token punctuation">(</span><span class="token punctuation">)</span><span class="token punctuation">;</span>
-        ctLegend<span class="token punctuation">.</span><span class="token function">addNewLegendPos</span><span class="token punctuation">(</span><span class="token punctuation">)</span><span class="token punctuation">.</span><span class="token function">setVal</span><span class="token punctuation">(</span>STLegendPos<span class="token punctuation">.</span>B<span class="token punctuation">)</span><span class="token punctuation">;</span>
-        ctLegend<span class="token punctuation">.</span><span class="token function">addNewOverlay</span><span class="token punctuation">(</span><span class="token punctuation">)</span><span class="token punctuation">.</span><span class="token function">setVal</span><span class="token punctuation">(</span><span class="token boolean">false</span><span class="token punctuation">)</span><span class="token punctuation">;</span>
-    <span class="token punctuation">}</span>
+    private static void setLegend(CTChart ctChart) {
+        CTLegend ctLegend = ctChart.addNewLegend();
+        ctLegend.addNewLegendPos().setVal(STLegendPos.B);
+        ctLegend.addNewOverlay().setVal(false);
+    }
 
-    <span class="token keyword">private</span> <span class="token keyword">static</span> <span class="token keyword">void</span> <span class="token function">setCatAx</span><span class="token punctuation">(</span>CTPlotArea ctPlotArea<span class="token punctuation">)</span> <span class="token punctuation">{</span>
-        CTCatAx ctCatAx <span class="token operator">=</span> ctPlotArea<span class="token punctuation">.</span><span class="token function">addNewCatAx</span><span class="token punctuation">(</span><span class="token punctuation">)</span><span class="token punctuation">;</span>
-        ctCatAx<span class="token punctuation">.</span><span class="token function">addNewAxId</span><span class="token punctuation">(</span><span class="token punctuation">)</span><span class="token punctuation">.</span><span class="token function">setVal</span><span class="token punctuation">(</span><span class="token number">123456</span><span class="token punctuation">)</span><span class="token punctuation">;</span> <span class="token comment" spellcheck="true">// id of the cat axis</span>
-        CTScaling ctScaling <span class="token operator">=</span> ctCatAx<span class="token punctuation">.</span><span class="token function">addNewScaling</span><span class="token punctuation">(</span><span class="token punctuation">)</span><span class="token punctuation">;</span>
-        ctScaling<span class="token punctuation">.</span><span class="token function">addNewOrientation</span><span class="token punctuation">(</span><span class="token punctuation">)</span><span class="token punctuation">.</span><span class="token function">setVal</span><span class="token punctuation">(</span>STOrientation<span class="token punctuation">.</span>MIN_MAX<span class="token punctuation">)</span><span class="token punctuation">;</span>
-        ctCatAx<span class="token punctuation">.</span><span class="token function">addNewDelete</span><span class="token punctuation">(</span><span class="token punctuation">)</span><span class="token punctuation">.</span><span class="token function">setVal</span><span class="token punctuation">(</span><span class="token boolean">false</span><span class="token punctuation">)</span><span class="token punctuation">;</span>
-        ctCatAx<span class="token punctuation">.</span><span class="token function">addNewAxPos</span><span class="token punctuation">(</span><span class="token punctuation">)</span><span class="token punctuation">.</span><span class="token function">setVal</span><span class="token punctuation">(</span>STAxPos<span class="token punctuation">.</span>B<span class="token punctuation">)</span><span class="token punctuation">;</span>
-        ctCatAx<span class="token punctuation">.</span><span class="token function">addNewCrossAx</span><span class="token punctuation">(</span><span class="token punctuation">)</span><span class="token punctuation">.</span><span class="token function">setVal</span><span class="token punctuation">(</span><span class="token number">123457</span><span class="token punctuation">)</span><span class="token punctuation">;</span> <span class="token comment" spellcheck="true">// id of the val axis</span>
-        ctCatAx<span class="token punctuation">.</span><span class="token function">addNewTickLblPos</span><span class="token punctuation">(</span><span class="token punctuation">)</span><span class="token punctuation">.</span><span class="token function">setVal</span><span class="token punctuation">(</span>STTickLblPos<span class="token punctuation">.</span>NEXT_TO<span class="token punctuation">)</span><span class="token punctuation">;</span>
-    <span class="token punctuation">}</span>
+    private static void setCatAx(CTPlotArea ctPlotArea) {
+        CTCatAx ctCatAx = ctPlotArea.addNewCatAx();
+        ctCatAx.addNewAxId().setVal(123456); // id of the cat axis
+        CTScaling ctScaling = ctCatAx.addNewScaling();
+        ctScaling.addNewOrientation().setVal(STOrientation.MIN_MAX);
+        ctCatAx.addNewDelete().setVal(false);
+        ctCatAx.addNewAxPos().setVal(STAxPos.B);
+        ctCatAx.addNewCrossAx().setVal(123457); // id of the val axis
+        ctCatAx.addNewTickLblPos().setVal(STTickLblPos.NEXT_TO);
+    }
 
-    <span class="token keyword">private</span> <span class="token keyword">static</span> <span class="token keyword">void</span> <span class="token function">setScatterValAx</span><span class="token punctuation">(</span>CTPlotArea ctPlotArea<span class="token punctuation">)</span> <span class="token punctuation">{</span>
-        <span class="token comment" spellcheck="true">// 设置Y坐标</span>
-        CTValAx ctValAx <span class="token operator">=</span> ctPlotArea<span class="token punctuation">.</span><span class="token function">addNewValAx</span><span class="token punctuation">(</span><span class="token punctuation">)</span><span class="token punctuation">;</span>
-        ctValAx<span class="token punctuation">.</span><span class="token function">addNewAxId</span><span class="token punctuation">(</span><span class="token punctuation">)</span><span class="token punctuation">.</span><span class="token function">setVal</span><span class="token punctuation">(</span><span class="token number">123457</span><span class="token punctuation">)</span><span class="token punctuation">;</span>
-        CTScaling ctScaling1 <span class="token operator">=</span> ctValAx<span class="token punctuation">.</span><span class="token function">addNewScaling</span><span class="token punctuation">(</span><span class="token punctuation">)</span><span class="token punctuation">;</span>
-        ctScaling1<span class="token punctuation">.</span><span class="token function">addNewOrientation</span><span class="token punctuation">(</span><span class="token punctuation">)</span><span class="token punctuation">.</span><span class="token function">setVal</span><span class="token punctuation">(</span>MIN_MAX<span class="token punctuation">)</span><span class="token punctuation">;</span>
-        ctValAx<span class="token punctuation">.</span><span class="token function">addNewDelete</span><span class="token punctuation">(</span><span class="token punctuation">)</span><span class="token punctuation">.</span><span class="token function">setVal</span><span class="token punctuation">(</span><span class="token boolean">false</span><span class="token punctuation">)</span><span class="token punctuation">;</span>
-        ctValAx<span class="token punctuation">.</span><span class="token function">addNewAxPos</span><span class="token punctuation">(</span><span class="token punctuation">)</span><span class="token punctuation">.</span><span class="token function">setVal</span><span class="token punctuation">(</span>STAxPos<span class="token punctuation">.</span>B<span class="token punctuation">)</span><span class="token punctuation">;</span>
-        ctValAx<span class="token punctuation">.</span><span class="token function">addNewCrossAx</span><span class="token punctuation">(</span><span class="token punctuation">)</span><span class="token punctuation">.</span><span class="token function">setVal</span><span class="token punctuation">(</span><span class="token number">123456</span><span class="token punctuation">)</span><span class="token punctuation">;</span>
-        <span class="token comment" spellcheck="true">// Y轴的对比线</span>
-        CTShapeProperties ctShapeProperties <span class="token operator">=</span> ctValAx<span class="token punctuation">.</span><span class="token function">addNewMajorGridlines</span><span class="token punctuation">(</span><span class="token punctuation">)</span><span class="token punctuation">.</span><span class="token function">addNewSpPr</span><span class="token punctuation">(</span><span class="token punctuation">)</span><span class="token punctuation">;</span>
-        CTLineProperties ctLineProperties <span class="token operator">=</span> ctShapeProperties<span class="token punctuation">.</span><span class="token function">addNewLn</span><span class="token punctuation">(</span><span class="token punctuation">)</span><span class="token punctuation">;</span>
-        ctLineProperties<span class="token punctuation">.</span><span class="token function">setW</span><span class="token punctuation">(</span><span class="token number">9525</span><span class="token punctuation">)</span><span class="token punctuation">;</span>
-        ctLineProperties<span class="token punctuation">.</span><span class="token function">setCap</span><span class="token punctuation">(</span>STLineCap<span class="token punctuation">.</span>Enum<span class="token punctuation">.</span><span class="token function">forInt</span><span class="token punctuation">(</span><span class="token number">3</span><span class="token punctuation">)</span><span class="token punctuation">)</span><span class="token punctuation">;</span>
-        ctLineProperties<span class="token punctuation">.</span><span class="token function">setCmpd</span><span class="token punctuation">(</span>STCompoundLine<span class="token punctuation">.</span>Enum<span class="token punctuation">.</span><span class="token function">forInt</span><span class="token punctuation">(</span><span class="token number">1</span><span class="token punctuation">)</span><span class="token punctuation">)</span><span class="token punctuation">;</span>
-        ctLineProperties<span class="token punctuation">.</span><span class="token function">setAlgn</span><span class="token punctuation">(</span>STPenAlignment<span class="token punctuation">.</span>Enum<span class="token punctuation">.</span><span class="token function">forInt</span><span class="token punctuation">(</span><span class="token number">1</span><span class="token punctuation">)</span><span class="token punctuation">)</span><span class="token punctuation">;</span>
-        <span class="token comment" spellcheck="true">// 不显示Y轴上的坐标刻度线</span>
-        ctValAx<span class="token punctuation">.</span><span class="token function">addNewMajorTickMark</span><span class="token punctuation">(</span><span class="token punctuation">)</span><span class="token punctuation">.</span><span class="token function">setVal</span><span class="token punctuation">(</span>STTickMark<span class="token punctuation">.</span>NONE<span class="token punctuation">)</span><span class="token punctuation">;</span>
-        ctValAx<span class="token punctuation">.</span><span class="token function">addNewMinorTickMark</span><span class="token punctuation">(</span><span class="token punctuation">)</span><span class="token punctuation">.</span><span class="token function">setVal</span><span class="token punctuation">(</span>STTickMark<span class="token punctuation">.</span>NONE<span class="token punctuation">)</span><span class="token punctuation">;</span>
-        ctValAx<span class="token punctuation">.</span><span class="token function">addNewTickLblPos</span><span class="token punctuation">(</span><span class="token punctuation">)</span><span class="token punctuation">.</span><span class="token function">setVal</span><span class="token punctuation">(</span>NEXT_TO<span class="token punctuation">)</span><span class="token punctuation">;</span>
-    <span class="token punctuation">}</span>
+    private static void setScatterValAx(CTPlotArea ctPlotArea) {
+        // 设置Y坐标
+        CTValAx ctValAx = ctPlotArea.addNewValAx();
+        ctValAx.addNewAxId().setVal(123457);
+        CTScaling ctScaling1 = ctValAx.addNewScaling();
+        ctScaling1.addNewOrientation().setVal(MIN_MAX);
+        ctValAx.addNewDelete().setVal(false);
+        ctValAx.addNewAxPos().setVal(STAxPos.B);
+        ctValAx.addNewCrossAx().setVal(123456);
+        // Y轴的对比线
+        CTShapeProperties ctShapeProperties = ctValAx.addNewMajorGridlines().addNewSpPr();
+        CTLineProperties ctLineProperties = ctShapeProperties.addNewLn();
+        ctLineProperties.setW(9525);
+        ctLineProperties.setCap(STLineCap.Enum.forInt(3));
+        ctLineProperties.setCmpd(STCompoundLine.Enum.forInt(1));
+        ctLineProperties.setAlgn(STPenAlignment.Enum.forInt(1));
+        // 不显示Y轴上的坐标刻度线
+        ctValAx.addNewMajorTickMark().setVal(STTickMark.NONE);
+        ctValAx.addNewMinorTickMark().setVal(STTickMark.NONE);
+        ctValAx.addNewTickLblPos().setVal(NEXT_TO);
+    }
 
-    <span class="token keyword">private</span> <span class="token keyword">static</span> <span class="token keyword">void</span> <span class="token function">setRadarValAx</span><span class="token punctuation">(</span>CTPlotArea ctPlotArea<span class="token punctuation">)</span> <span class="token punctuation">{</span>
-        CTValAx ctValAx <span class="token operator">=</span> ctPlotArea<span class="token punctuation">.</span><span class="token function">addNewValAx</span><span class="token punctuation">(</span><span class="token punctuation">)</span><span class="token punctuation">;</span>
-        ctValAx<span class="token punctuation">.</span><span class="token function">addNewAxId</span><span class="token punctuation">(</span><span class="token punctuation">)</span><span class="token punctuation">.</span><span class="token function">setVal</span><span class="token punctuation">(</span><span class="token number">123457</span><span class="token punctuation">)</span><span class="token punctuation">;</span>
-        ctValAx<span class="token punctuation">.</span><span class="token function">addNewScaling</span><span class="token punctuation">(</span><span class="token punctuation">)</span><span class="token punctuation">.</span><span class="token function">addNewOrientation</span><span class="token punctuation">(</span><span class="token punctuation">)</span><span class="token punctuation">.</span><span class="token function">setVal</span><span class="token punctuation">(</span>MIN_MAX<span class="token punctuation">)</span><span class="token punctuation">;</span>
-        ctValAx<span class="token punctuation">.</span><span class="token function">addNewDelete</span><span class="token punctuation">(</span><span class="token punctuation">)</span><span class="token punctuation">.</span><span class="token function">setVal</span><span class="token punctuation">(</span><span class="token boolean">false</span><span class="token punctuation">)</span><span class="token punctuation">;</span>
-        ctValAx<span class="token punctuation">.</span><span class="token function">addNewAxPos</span><span class="token punctuation">(</span><span class="token punctuation">)</span><span class="token punctuation">.</span><span class="token function">setVal</span><span class="token punctuation">(</span>STAxPos<span class="token punctuation">.</span>L<span class="token punctuation">)</span><span class="token punctuation">;</span>
-        ctValAx<span class="token punctuation">.</span><span class="token function">addNewCrossAx</span><span class="token punctuation">(</span><span class="token punctuation">)</span><span class="token punctuation">.</span><span class="token function">setVal</span><span class="token punctuation">(</span><span class="token number">123456</span><span class="token punctuation">)</span><span class="token punctuation">;</span>
-        ctValAx<span class="token punctuation">.</span><span class="token function">addNewMajorTickMark</span><span class="token punctuation">(</span><span class="token punctuation">)</span><span class="token punctuation">.</span><span class="token function">setVal</span><span class="token punctuation">(</span>STTickMark<span class="token punctuation">.</span>NONE<span class="token punctuation">)</span><span class="token punctuation">;</span>
-        ctValAx<span class="token punctuation">.</span><span class="token function">addNewMinorTickMark</span><span class="token punctuation">(</span><span class="token punctuation">)</span><span class="token punctuation">.</span><span class="token function">setVal</span><span class="token punctuation">(</span>STTickMark<span class="token punctuation">.</span>NONE<span class="token punctuation">)</span><span class="token punctuation">;</span>
-        ctValAx<span class="token punctuation">.</span><span class="token function">addNewTickLblPos</span><span class="token punctuation">(</span><span class="token punctuation">)</span><span class="token punctuation">.</span><span class="token function">setVal</span><span class="token punctuation">(</span>NEXT_TO<span class="token punctuation">)</span><span class="token punctuation">;</span>
-        <span class="token comment" spellcheck="true">// 设置网格线</span>
-        CTShapeProperties ctShapeProperties <span class="token operator">=</span> ctValAx<span class="token punctuation">.</span><span class="token function">addNewMajorGridlines</span><span class="token punctuation">(</span><span class="token punctuation">)</span><span class="token punctuation">.</span><span class="token function">addNewSpPr</span><span class="token punctuation">(</span><span class="token punctuation">)</span><span class="token punctuation">;</span>
-        CTLineProperties ctLineProperties1 <span class="token operator">=</span> ctShapeProperties<span class="token punctuation">.</span><span class="token function">addNewLn</span><span class="token punctuation">(</span><span class="token punctuation">)</span><span class="token punctuation">;</span>
-        ctLineProperties1<span class="token punctuation">.</span><span class="token function">setW</span><span class="token punctuation">(</span><span class="token number">9525</span><span class="token punctuation">)</span><span class="token punctuation">;</span>
-        ctLineProperties1<span class="token punctuation">.</span><span class="token function">setCap</span><span class="token punctuation">(</span>STLineCap<span class="token punctuation">.</span>FLAT<span class="token punctuation">)</span><span class="token punctuation">;</span>
-        ctLineProperties1<span class="token punctuation">.</span><span class="token function">setCmpd</span><span class="token punctuation">(</span>STCompoundLine<span class="token punctuation">.</span>SNG<span class="token punctuation">)</span><span class="token punctuation">;</span>
-        ctLineProperties1<span class="token punctuation">.</span><span class="token function">setAlgn</span><span class="token punctuation">(</span>STPenAlignment<span class="token punctuation">.</span>CTR<span class="token punctuation">)</span><span class="token punctuation">;</span>
-        <span class="token comment" spellcheck="true">// 值的纵坐标线，不显示</span>
-        ctValAx<span class="token punctuation">.</span><span class="token function">addNewSpPr</span><span class="token punctuation">(</span><span class="token punctuation">)</span><span class="token punctuation">.</span><span class="token function">addNewLn</span><span class="token punctuation">(</span><span class="token punctuation">)</span><span class="token punctuation">.</span><span class="token function">addNewNoFill</span><span class="token punctuation">(</span><span class="token punctuation">)</span><span class="token punctuation">;</span>
-        <span class="token comment" spellcheck="true">// 值的纵坐标值，不显示</span>
-        ctValAx<span class="token punctuation">.</span><span class="token function">addNewTxPr</span><span class="token punctuation">(</span><span class="token punctuation">)</span><span class="token punctuation">.</span><span class="token function">addNewP</span><span class="token punctuation">(</span><span class="token punctuation">)</span><span class="token punctuation">.</span><span class="token function">addNewPPr</span><span class="token punctuation">(</span><span class="token punctuation">)</span><span class="token punctuation">.</span><span class="token function">addNewDefRPr</span><span class="token punctuation">(</span><span class="token punctuation">)</span><span class="token punctuation">.</span><span class="token function">addNewNoFill</span><span class="token punctuation">(</span><span class="token punctuation">)</span><span class="token punctuation">;</span>
-    <span class="token punctuation">}</span>
+    private static void setRadarValAx(CTPlotArea ctPlotArea) {
+        CTValAx ctValAx = ctPlotArea.addNewValAx();
+        ctValAx.addNewAxId().setVal(123457);
+        ctValAx.addNewScaling().addNewOrientation().setVal(MIN_MAX);
+        ctValAx.addNewDelete().setVal(false);
+        ctValAx.addNewAxPos().setVal(STAxPos.L);
+        ctValAx.addNewCrossAx().setVal(123456);
+        ctValAx.addNewMajorTickMark().setVal(STTickMark.NONE);
+        ctValAx.addNewMinorTickMark().setVal(STTickMark.NONE);
+        ctValAx.addNewTickLblPos().setVal(NEXT_TO);
+        // 设置网格线
+        CTShapeProperties ctShapeProperties = ctValAx.addNewMajorGridlines().addNewSpPr();
+        CTLineProperties ctLineProperties1 = ctShapeProperties.addNewLn();
+        ctLineProperties1.setW(9525);
+        ctLineProperties1.setCap(STLineCap.FLAT);
+        ctLineProperties1.setCmpd(STCompoundLine.SNG);
+        ctLineProperties1.setAlgn(STPenAlignment.CTR);
+        // 值的纵坐标线，不显示
+        ctValAx.addNewSpPr().addNewLn().addNewNoFill();
+        // 值的纵坐标值，不显示
+        ctValAx.addNewTxPr().addNewP().addNewPPr().addNewDefRPr().addNewNoFill();
+    }
 
-    <span class="token comment" spellcheck="true">// 不要y轴的标签，或者y轴尽可能的窄</span>
-    <span class="token keyword">private</span> <span class="token keyword">static</span> <span class="token keyword">void</span> <span class="token function">setValAx</span><span class="token punctuation">(</span>CTPlotArea ctPlotArea<span class="token punctuation">)</span> <span class="token punctuation">{</span>
-        CTValAx ctValAx <span class="token operator">=</span> ctPlotArea<span class="token punctuation">.</span><span class="token function">addNewValAx</span><span class="token punctuation">(</span><span class="token punctuation">)</span><span class="token punctuation">;</span>
-        ctValAx<span class="token punctuation">.</span><span class="token function">addNewAxId</span><span class="token punctuation">(</span><span class="token punctuation">)</span><span class="token punctuation">.</span><span class="token function">setVal</span><span class="token punctuation">(</span><span class="token number">123457</span><span class="token punctuation">)</span><span class="token punctuation">;</span> <span class="token comment" spellcheck="true">// id of the val axis</span>
-        CTScaling ctScaling <span class="token operator">=</span> ctValAx<span class="token punctuation">.</span><span class="token function">addNewScaling</span><span class="token punctuation">(</span><span class="token punctuation">)</span><span class="token punctuation">;</span>
-        ctScaling<span class="token punctuation">.</span><span class="token function">addNewOrientation</span><span class="token punctuation">(</span><span class="token punctuation">)</span><span class="token punctuation">.</span><span class="token function">setVal</span><span class="token punctuation">(</span>STOrientation<span class="token punctuation">.</span>MIN_MAX<span class="token punctuation">)</span><span class="token punctuation">;</span>
-        <span class="token comment" spellcheck="true">// 不现实y轴</span>
-<span class="token comment" spellcheck="true">//        ctValAx.addNewDelete().setVal(true);</span>
-        ctValAx<span class="token punctuation">.</span><span class="token function">addNewAxPos</span><span class="token punctuation">(</span><span class="token punctuation">)</span><span class="token punctuation">.</span><span class="token function">setVal</span><span class="token punctuation">(</span>STAxPos<span class="token punctuation">.</span>L<span class="token punctuation">)</span><span class="token punctuation">;</span>
-        ctValAx<span class="token punctuation">.</span><span class="token function">addNewCrossAx</span><span class="token punctuation">(</span><span class="token punctuation">)</span><span class="token punctuation">.</span><span class="token function">setVal</span><span class="token punctuation">(</span><span class="token number">123456</span><span class="token punctuation">)</span><span class="token punctuation">;</span> <span class="token comment" spellcheck="true">// id of the cat axis</span>
-        ctValAx<span class="token punctuation">.</span><span class="token function">addNewTickLblPos</span><span class="token punctuation">(</span><span class="token punctuation">)</span><span class="token punctuation">.</span><span class="token function">setVal</span><span class="token punctuation">(</span>STTickLblPos<span class="token punctuation">.</span>NEXT_TO<span class="token punctuation">)</span><span class="token punctuation">;</span>
-    <span class="token punctuation">}</span>
+    // 不要y轴的标签，或者y轴尽可能的窄
+    private static void setValAx(CTPlotArea ctPlotArea) {
+        CTValAx ctValAx = ctPlotArea.addNewValAx();
+        ctValAx.addNewAxId().setVal(123457); // id of the val axis
+        CTScaling ctScaling = ctValAx.addNewScaling();
+        ctScaling.addNewOrientation().setVal(STOrientation.MIN_MAX);
+        // 不现实y轴
+//        ctValAx.addNewDelete().setVal(true);
+        ctValAx.addNewAxPos().setVal(STAxPos.L);
+        ctValAx.addNewCrossAx().setVal(123456); // id of the cat axis
+        ctValAx.addNewTickLblPos().setVal(STTickLblPos.NEXT_TO);
+    }
 
-    <span class="token comment" spellcheck="true">// 图标标题</span>
-    <span class="token keyword">private</span> <span class="token keyword">static</span> <span class="token keyword">void</span> <span class="token function">setChartTitle</span><span class="token punctuation">(</span>XSSFChart xchart<span class="token punctuation">,</span> String titleStr<span class="token punctuation">)</span> <span class="token punctuation">{</span>
-        CTChart ctChart <span class="token operator">=</span> xchart<span class="token punctuation">.</span><span class="token function">getCTChart</span><span class="token punctuation">(</span><span class="token punctuation">)</span><span class="token punctuation">;</span>
+    // 图标标题
+    private static void setChartTitle(XSSFChart xchart, String titleStr) {
+        CTChart ctChart = xchart.getCTChart();
 
-        CTTitle title <span class="token operator">=</span> CTTitle<span class="token punctuation">.</span>Factory<span class="token punctuation">.</span><span class="token function">newInstance</span><span class="token punctuation">(</span><span class="token punctuation">)</span><span class="token punctuation">;</span>
-        CTTx cttx <span class="token operator">=</span> title<span class="token punctuation">.</span><span class="token function">addNewTx</span><span class="token punctuation">(</span><span class="token punctuation">)</span><span class="token punctuation">;</span>
-        CTStrData sd <span class="token operator">=</span> CTStrData<span class="token punctuation">.</span>Factory<span class="token punctuation">.</span><span class="token function">newInstance</span><span class="token punctuation">(</span><span class="token punctuation">)</span><span class="token punctuation">;</span>
-        CTStrVal str <span class="token operator">=</span> sd<span class="token punctuation">.</span><span class="token function">addNewPt</span><span class="token punctuation">(</span><span class="token punctuation">)</span><span class="token punctuation">;</span>
-        str<span class="token punctuation">.</span><span class="token function">setIdx</span><span class="token punctuation">(</span><span class="token number">123459</span><span class="token punctuation">)</span><span class="token punctuation">;</span>
-        str<span class="token punctuation">.</span><span class="token function">setV</span><span class="token punctuation">(</span>titleStr<span class="token punctuation">)</span><span class="token punctuation">;</span>
-        cttx<span class="token punctuation">.</span><span class="token function">addNewStrRef</span><span class="token punctuation">(</span><span class="token punctuation">)</span><span class="token punctuation">.</span><span class="token function">setStrCache</span><span class="token punctuation">(</span>sd<span class="token punctuation">)</span><span class="token punctuation">;</span>
+        CTTitle title = CTTitle.Factory.newInstance();
+        CTTx cttx = title.addNewTx();
+        CTStrData sd = CTStrData.Factory.newInstance();
+        CTStrVal str = sd.addNewPt();
+        str.setIdx(123459);
+        str.setV(titleStr);
+        cttx.addNewStrRef().setStrCache(sd);
 
-        ctChart<span class="token punctuation">.</span><span class="token function">setTitle</span><span class="token punctuation">(</span>title<span class="token punctuation">)</span><span class="token punctuation">;</span>
-    <span class="token punctuation">}</span>
-<span class="token punctuation">}</span>
+        ctChart.setTitle(title);
+    }
+}
 
 </code></pre>
 
@@ -800,8 +800,8 @@
         <div class="post-nav">
           <div class="post-nav-next post-nav-item">
             
-              <a href="/2018/09/01/POI/POI生成原生Excel-百分比堆叠柱状图/" rel="next" title="使用POI结合Excel的行列生成原生散点图(XY图)">
-                <i class="fa fa-chevron-left"></i> 使用POI结合Excel的行列生成原生散点图(XY图)
+              <a href="/2018/09/01/POI/POI生成原生Excel-雷达图/" rel="next" title="使用POI结合Excel的行列生成雷达图">
+                <i class="fa fa-chevron-left"></i> 使用POI结合Excel的行列生成雷达图
               </a>
             
           </div>
@@ -810,8 +810,8 @@
 
           <div class="post-nav-prev post-nav-item">
             
-              <a href="/2018/09/01/POI/POI生成原生Excel-簇状柱状图/" rel="prev" title="使用POI结合Excel的行列生成原生散点图(XY图)">
-                使用POI结合Excel的行列生成原生散点图(XY图) <i class="fa fa-chevron-right"></i>
+              <a href="/2018/09/01/POI/POI生成Excel-基础生成/" rel="prev" title="使用POI导出Excel">
+                使用POI导出Excel <i class="fa fa-chevron-right"></i>
               </a>
             
           </div>
@@ -893,7 +893,7 @@
               
                 <a href="/archives">
               
-                  <span class="site-state-item-count">224</span>
+                  <span class="site-state-item-count">237</span>
                   <span class="site-state-item-name">日志</span>
                 </a>
               </div>
@@ -915,7 +915,7 @@
               
               <div class="site-state-item site-state-tags">
                 <a href="/tags/index.html">
-                  <span class="site-state-item-count">21</span>
+                  <span class="site-state-item-count">22</span>
                   <span class="site-state-item-name">标签</span>
                 </a>
               </div>

@@ -393,31 +393,31 @@
 <p>SimpleGrantedAuthority 实现了 GrantedAuthority，这将允许任何用户 将 String 转换为 GrantedAuthority，在 Spring Security 中，所有的 AuthenticationProvider 都是用 SimpleGrantedAuthority 来填充 Authentication 对象。</p>
 <h2 id="二、Pre-Invocation-Handling-预处理"><a href="#二、Pre-Invocation-Handling-预处理" class="headerlink" title="二、Pre-Invocation Handling - 预处理"></a>二、Pre-Invocation Handling - 预处理</h2><p>Spring Security 提供了 拦截器，用于控制安全对象的访问，比如方法调用或 web 请求等。AccessDecisionMananger 决定了是否允许进行调用。</p>
 <h3 id="2-1-The-AccessDecisionManager"><a href="#2-1-The-AccessDecisionManager" class="headerlink" title="2.1 The AccessDecisionManager"></a>2.1 The AccessDecisionManager</h3><p>AccessDecisionManager 由 AbstractSecurityInterceptor 调用，负责做出最终的访问控制决策。接口包含三个方法：</p>
-<pre class=" language-java"><code class="language-java"><span class="token comment" spellcheck="true">/**
+<pre><code class="java">/**
  * 做出最终访问控制的决策
- */</span>
-<span class="token keyword">public</span> <span class="token keyword">interface</span> <span class="token class-name">AccessDecisionManager</span> <span class="token punctuation">{</span>
-    <span class="token comment" spellcheck="true">// decide 方法传递它所需要的所有信息，以便做出授权决策</span>
-    <span class="token keyword">void</span> <span class="token function">decide</span><span class="token punctuation">(</span>Authentication authentication<span class="token punctuation">,</span> Object secureObject<span class="token punctuation">,</span> Collection<span class="token operator">&lt;</span>ConfigAttribute<span class="token operator">></span> attrs<span class="token punctuation">)</span> <span class="token keyword">throws</span> AccessDeniedException<span class="token punctuation">;</span>
+ */
+public interface AccessDecisionManager {
+    // decide 方法传递它所需要的所有信息，以便做出授权决策
+    void decide(Authentication authentication, Object secureObject, Collection&lt;ConfigAttribute&gt; attrs) throws AccessDeniedException;
 
-    <span class="token comment" spellcheck="true">// 该方法用来确定 AccessDecisionManager 是否可以处理传入的 ConfigAttribute</span>
-    <span class="token keyword">boolean</span> <span class="token function">supports</span><span class="token punctuation">(</span>ConfigAttribute attribute<span class="token punctuation">)</span><span class="token punctuation">;</span>
+    // 该方法用来确定 AccessDecisionManager 是否可以处理传入的 ConfigAttribute
+    boolean supports(ConfigAttribute attribute);
 
-    <span class="token keyword">boolean</span> <span class="token function">supports</span><span class="token punctuation">(</span>Class <span class="token class-name">clazz</span><span class="token punctuation">)</span><span class="token punctuation">;</span>
-<span class="token punctuation">}</span>
+    boolean supports(Class clazz);
+}
 </code></pre>
 <h3 id="2-2-Voting-Based-AccessDecisionManager-Implementations-基于投票的辅助决策管理器的实现"><a href="#2-2-Voting-Based-AccessDecisionManager-Implementations-基于投票的辅助决策管理器的实现" class="headerlink" title="2.2 Voting-Based AccessDecisionManager Implementations - 基于投票的辅助决策管理器的实现"></a>2.2 Voting-Based AccessDecisionManager Implementations - 基于投票的辅助决策管理器的实现</h3><p>Spring Security 包含了几个基于投票的 AccessDecisionManager 实现。用户也可以实现自己的 AccessDecisionManager 来控制授权的所有方面。</p>
 <p><img src="https://docs.spring.io/spring-security/site/docs/5.0.5.RELEASE/reference/htmlsingle/images/access-decision-voting.png" alt="Access-Decision-Voting"></p>
 <p>使用这种方法，会对一系列的 AccessDecisionVoter 进行轮询，然后 AccessDecisionManager 根据投票结果来决定是否抛出 AccessDeniedException。</p>
 <p>AccessDecisionVoter 接口有以下三种方法：</p>
-<pre class=" language-java"><code class="language-java"><span class="token keyword">public</span> <span class="token keyword">interface</span> <span class="token class-name">AccessDecisionVoter</span> <span class="token punctuation">{</span>
-    <span class="token comment" spellcheck="true">// 返回结果: ACCESS_GRANTED = 1 允许访问; ACCESS_DENIED = -1 拒绝访问; ACCESS_ABSTAIN = 0 弃权;</span>
-    <span class="token keyword">int</span> <span class="token function">vote</span><span class="token punctuation">(</span>Authenticaiton authentication<span class="token punctuation">,</span> Object object<span class="token punctuation">,</span> Collection<span class="token operator">&lt;</span>ConfigAttribute<span class="token operator">></span> attrs<span class="token punctuation">)</span><span class="token punctuation">;</span>
+<pre><code class="java">public interface AccessDecisionVoter {
+    // 返回结果: ACCESS_GRANTED = 1 允许访问; ACCESS_DENIED = -1 拒绝访问; ACCESS_ABSTAIN = 0 弃权;
+    int vote(Authenticaiton authentication, Object object, Collection&lt;ConfigAttribute&gt; attrs);
 
-    <span class="token keyword">boolean</span> <span class="token function">supports</span><span class="token punctuation">(</span>ConfigAttribute attribute<span class="token punctuation">)</span><span class="token punctuation">;</span>
+    boolean supports(ConfigAttribute attribute);
 
-    <span class="token keyword">boolean</span> <span class="token function">supports</span><span class="token punctuation">(</span>Class <span class="token class-name">clazz</span><span class="token punctuation">)</span><span class="token punctuation">;</span>
-<span class="token punctuation">}</span>
+    boolean supports(Class clazz);
+}
 </code></pre>
 <p>Spring Security 提供了三种具体的访问决策管理器来记录选票。</p>
 <ol>
@@ -570,7 +570,7 @@
               
                 <a href="/archives">
               
-                  <span class="site-state-item-count">224</span>
+                  <span class="site-state-item-count">237</span>
                   <span class="site-state-item-name">日志</span>
                 </a>
               </div>
@@ -592,7 +592,7 @@
               
               <div class="site-state-item site-state-tags">
                 <a href="/tags/index.html">
-                  <span class="site-state-item-count">21</span>
+                  <span class="site-state-item-count">22</span>
                   <span class="site-state-item-name">标签</span>
                 </a>
               </div>

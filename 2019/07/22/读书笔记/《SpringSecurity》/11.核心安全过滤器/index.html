@@ -397,14 +397,14 @@
 <h2 id="SecurityContextPersistenceFilter"><a href="#SecurityContextPersistenceFilter" class="headerlink" title="SecurityContextPersistenceFilter"></a>SecurityContextPersistenceFilter</h2><p>SecurityContextPersistenceFilter 有两个主要任务，1.负责在 HTTP 请求之间存储 SecurityContext 内容，2. 在请求完成时清除 SecurityContextHolder。</p>
 <p>清除存储上下文的 ThreadLocal 是必不可少的，否则线程可能会被替换到 servlet 容器的线程池中，而特定用户的 SecurityContext 仍然附加在上面。这个线程如果在后面被用到，可能会使用错误的 credentials 执行操作。</p>
 <h2 id="SecurityContextRepository"><a href="#SecurityContextRepository" class="headerlink" title="SecurityContextRepository"></a>SecurityContextRepository</h2><p>从 Spring Security 3.0 开始，加载和存储上下文的方法都放在 SecurityContextRepository 的策略接口上：</p>
-<pre class=" language-java"><code class="language-java"><span class="token keyword">public</span> <span class="token keyword">interface</span> <span class="token class-name">SecurityContextRepository</span> <span class="token punctuation">{</span>
-    <span class="token comment" spellcheck="true">// HttpRequestResponseHolder 只是传入请求和响应对象的容易，允许使用包装类进行替换</span>
-    <span class="token comment" spellcheck="true">// 加载的 SecurityCOntext 将被传递给过滤器链</span>
-    SecurityContext <span class="token function">loadContext</span><span class="token punctuation">(</span>HttpRequestResponseHolder requestResponseHolder<span class="token punctuation">)</span><span class="token punctuation">;</span>
+<pre><code class="java">public interface SecurityContextRepository {
+    // HttpRequestResponseHolder 只是传入请求和响应对象的容易，允许使用包装类进行替换
+    // 加载的 SecurityCOntext 将被传递给过滤器链
+    SecurityContext loadContext(HttpRequestResponseHolder requestResponseHolder);
 
 
-    <span class="token keyword">void</span> <span class="token function">saveContext</span><span class="token punctuation">(</span>SecurityContext context<span class="token punctuation">,</span> HttpServletRequest request<span class="token punctuation">,</span> HttpServletResponse response<span class="token punctuation">)</span><span class="token punctuation">;</span>
-<span class="token punctuation">}</span>
+    void saveContext(SecurityContext context, HttpServletRequest request, HttpServletResponse response);
+}
 </code></pre>
 <p>默认由 HttpSessionSecurityContextRepository 来实现，它将 SecurityContext 存储在 HttpSession 中，参数名为 “SPRING_SECURITY_CONTEXT”。</p>
 <h2 id="UsernamePasswordAuthenticationFilter"><a href="#UsernamePasswordAuthenticationFilter" class="headerlink" title="UsernamePasswordAuthenticationFilter"></a>UsernamePasswordAuthenticationFilter</h2><p>这个过滤器是最常用的身份验证过滤器，也是最长被定制的过滤器，它包含了 form-login 元素所使用的实现。配置它需要三步：</p>
@@ -539,7 +539,7 @@
               
                 <a href="/archives">
               
-                  <span class="site-state-item-count">224</span>
+                  <span class="site-state-item-count">237</span>
                   <span class="site-state-item-name">日志</span>
                 </a>
               </div>
@@ -561,7 +561,7 @@
               
               <div class="site-state-item site-state-tags">
                 <a href="/tags/index.html">
-                  <span class="site-state-item-count">21</span>
+                  <span class="site-state-item-count">22</span>
                   <span class="site-state-item-name">标签</span>
                 </a>
               </div>

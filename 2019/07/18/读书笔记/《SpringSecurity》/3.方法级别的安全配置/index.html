@@ -389,51 +389,51 @@
 <p>可以针对单个 Bean 进行保护，也可以使用 AspectJ 风格的切入点跨服务层保护多个 Bean。</p>
 </blockquote>
 <h2 id="一、EnableGlobalMethodSecurity-注解"><a href="#一、EnableGlobalMethodSecurity-注解" class="headerlink" title="一、EnableGlobalMethodSecurity 注解"></a>一、EnableGlobalMethodSecurity 注解</h2><p>在任何 <code>@Configuration</code> 实例上使用 <code>@EnableGlobalMethodSecurity</code> 注释，启用基于注释的安全性。示例如下：</p>
-<pre class=" language-java"><code class="language-java"><span class="token annotation punctuation">@EnableGlobalMethodSecurity</span><span class="token punctuation">(</span>securedEnabled <span class="token operator">=</span> <span class="token boolean">true</span><span class="token punctuation">)</span>
-<span class="token annotation punctuation">@Configuration</span>
-<span class="token keyword">public</span> <span class="token keyword">class</span> <span class="token class-name">MethodSecurityConfig</span> <span class="token punctuation">{</span>
-    <span class="token comment" spellcheck="true">// ...</span>
-<span class="token punctuation">}</span>
+<pre><code class="java">@EnableGlobalMethodSecurity(securedEnabled = true)
+@Configuration
+public class MethodSecurityConfig {
+    // ...
+}
 </code></pre>
 <p>然后向方法添加注释，将相应地限制对该方法的访问。这些信息将会被传递给 AccessDecisionManager：</p>
-<pre class=" language-java"><code class="language-java"><span class="token keyword">public</span> <span class="token keyword">interface</span> <span class="token class-name">BankService</span> <span class="token punctuation">{</span>
-    <span class="token annotation punctuation">@Secured</span><span class="token punctuation">(</span><span class="token string">"IS_AUTHENTICATED_ANONYMOUSLY"</span><span class="token punctuation">)</span>
-    <span class="token keyword">public</span> Account <span class="token function">readAccount</span><span class="token punctuation">(</span>Long id<span class="token punctuation">)</span><span class="token punctuation">;</span>
+<pre><code class="java">public interface BankService {
+    @Secured(&quot;IS_AUTHENTICATED_ANONYMOUSLY&quot;)
+    public Account readAccount(Long id);
 
-    <span class="token annotation punctuation">@Secured</span><span class="token punctuation">(</span><span class="token string">"IS_AUTHENTICATED_ANONYMOUSLY"</span><span class="token punctuation">)</span>
-    <span class="token keyword">public</span> Account<span class="token punctuation">[</span><span class="token punctuation">]</span> <span class="token function">findAccounts</span><span class="token punctuation">(</span><span class="token punctuation">)</span><span class="token punctuation">;</span>
+    @Secured(&quot;IS_AUTHENTICATED_ANONYMOUSLY&quot;)
+    public Account[] findAccounts();
 
-    <span class="token annotation punctuation">@Secured</span><span class="token punctuation">(</span><span class="token string">"ROLE_TELLER"</span><span class="token punctuation">)</span>
-    <span class="token keyword">public</span> Account <span class="token function">post</span><span class="token punctuation">(</span>Account account<span class="token punctuation">,</span> <span class="token keyword">double</span> amount<span class="token punctuation">)</span><span class="token punctuation">;</span>
-<span class="token punctuation">}</span>
+    @Secured(&quot;ROLE_TELLER&quot;)
+    public Account post(Account account, double amount);
+}
 </code></pre>
 <p>或者使用 基于表达式的语法：</p>
-<pre class=" language-java"><code class="language-java"><span class="token annotation punctuation">@EnableGlobalMethodSecurity</span><span class="token punctuation">(</span>prePostEnabled <span class="token operator">=</span> <span class="token boolean">true</span><span class="token punctuation">)</span>
-<span class="token annotation punctuation">@Configuration</span>
-<span class="token keyword">public</span> <span class="token keyword">class</span> <span class="token class-name">MethodSecurityConfig</span> <span class="token punctuation">{</span>
-    <span class="token comment" spellcheck="true">// ...</span>
-<span class="token punctuation">}</span>
+<pre><code class="java">@EnableGlobalMethodSecurity(prePostEnabled = true)
+@Configuration
+public class MethodSecurityConfig {
+    // ...
+}
 </code></pre>
-<pre class=" language-java"><code class="language-java"><span class="token keyword">public</span> <span class="token keyword">interface</span> <span class="token class-name">BankService</span> <span class="token punctuation">{</span>
-    <span class="token annotation punctuation">@PreAuthorize</span><span class="token punctuation">(</span><span class="token string">"isAnnoymous()"</span><span class="token punctuation">)</span>
-    <span class="token keyword">public</span> Account <span class="token function">readAccount</span><span class="token punctuation">(</span>Long id<span class="token punctuation">)</span><span class="token punctuation">;</span>
+<pre><code class="java">public interface BankService {
+    @PreAuthorize(&quot;isAnnoymous()&quot;)
+    public Account readAccount(Long id);
 
-    <span class="token annotation punctuation">@PreAuthorize</span><span class="token punctuation">(</span><span class="token string">"isAnnoymous()"</span><span class="token punctuation">)</span>
-    <span class="token keyword">public</span> Account<span class="token punctuation">[</span><span class="token punctuation">]</span> <span class="token function">findAccounts</span><span class="token punctuation">(</span><span class="token punctuation">)</span><span class="token punctuation">;</span>
+    @PreAuthorize(&quot;isAnnoymous()&quot;)
+    public Account[] findAccounts();
 
-    <span class="token annotation punctuation">@PreAuthorize</span><span class="token punctuation">(</span><span class="token string">"hasAuthority('ROLE_TELLER')"</span><span class="token punctuation">)</span>
-    <span class="token keyword">public</span> Account <span class="token function">post</span><span class="token punctuation">(</span>Account account<span class="token punctuation">,</span> <span class="token keyword">double</span> amount<span class="token punctuation">)</span><span class="token punctuation">;</span>
-<span class="token punctuation">}</span>
+    @PreAuthorize(&quot;hasAuthority(&#39;ROLE_TELLER&#39;)&quot;)
+    public Account post(Account account, double amount);
+}
 </code></pre>
 <h2 id="二、自定义方法安全配置"><a href="#二、自定义方法安全配置" class="headerlink" title="二、自定义方法安全配置"></a>二、自定义方法安全配置</h2><p>如果需要执行比 @EnableGlobalMethodSecurity 注释提供的更复杂的操作，可以扩展 GlobalMethodSecurityConfiguration。</p>
-<pre class=" language-java"><code class="language-java"><span class="token annotation punctuation">@EnableGlobalMethodSecurity</span><span class="token punctuation">(</span>prePostEnabled <span class="token operator">=</span> <span class="token boolean">true</span><span class="token punctuation">)</span>
-<span class="token keyword">public</span> <span class="token keyword">class</span> <span class="token class-name">methodSecurityConfig</span> <span class="token keyword">extends</span> <span class="token class-name">GlobalMethodSecurityConfiguration</span> <span class="token punctuation">{</span>
-    <span class="token annotation punctuation">@Override</span>
-    <span class="token keyword">protected</span> MethodSecurityExpressionHandler <span class="token function">createExpressionHandler</span><span class="token punctuation">(</span><span class="token punctuation">)</span><span class="token punctuation">{</span>
-        <span class="token comment" spellcheck="true">// create and return custom handler</span>
-        <span class="token keyword">return</span> expressionHandler<span class="token punctuation">;</span>
-    <span class="token punctuation">}</span>
-<span class="token punctuation">}</span>
+<pre><code class="java">@EnableGlobalMethodSecurity(prePostEnabled = true)
+public class methodSecurityConfig extends GlobalMethodSecurityConfiguration {
+    @Override
+    protected MethodSecurityExpressionHandler createExpressionHandler(){
+        // create and return custom handler
+        return expressionHandler;
+    }
+}
 </code></pre>
 
       
@@ -558,7 +558,7 @@
               
                 <a href="/archives">
               
-                  <span class="site-state-item-count">224</span>
+                  <span class="site-state-item-count">237</span>
                   <span class="site-state-item-name">日志</span>
                 </a>
               </div>
@@ -580,7 +580,7 @@
               
               <div class="site-state-item site-state-tags">
                 <a href="/tags/index.html">
-                  <span class="site-state-item-count">21</span>
+                  <span class="site-state-item-count">22</span>
                   <span class="site-state-item-name">标签</span>
                 </a>
               </div>

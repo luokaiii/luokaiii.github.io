@@ -393,195 +393,195 @@
 <p>yarn add antd<br>yarn add redux</p>
 </blockquote>
 <h2 id="二、创建全局Store"><a href="#二、创建全局Store" class="headerlink" title="二、创建全局Store"></a>二、创建全局Store</h2><p>第一步：创建 store/reducer.js<br>reducer必须返回一个函数，state参数为存储的内容</p>
-<pre class=" language-javascript"><code class="language-javascript"><span class="token keyword">const</span> defaultState <span class="token operator">=</span> <span class="token punctuation">{</span> <span class="token comment" spellcheck="true">// state默认值</span>
-    inputValue<span class="token punctuation">:</span> <span class="token string">'123'</span><span class="token punctuation">,</span>
-    list<span class="token punctuation">:</span> <span class="token punctuation">[</span><span class="token number">1</span><span class="token punctuation">,</span><span class="token number">2</span><span class="token punctuation">,</span><span class="token number">3</span><span class="token punctuation">]</span>
-<span class="token punctuation">}</span>
+<pre><code class="javascript">const defaultState = { // state默认值
+    inputValue: &#39;123&#39;,
+    list: [1,2,3]
+}
 
-<span class="token keyword">export</span> <span class="token keyword">default</span> <span class="token punctuation">(</span>state <span class="token operator">=</span> defaultState<span class="token punctuation">,</span> action<span class="token punctuation">)</span> <span class="token operator">=</span><span class="token operator">></span> <span class="token punctuation">{</span>
-    <span class="token keyword">return</span> state<span class="token punctuation">;</span>
-<span class="token punctuation">}</span>
+export default (state = defaultState, action) =&gt; {
+    return state;
+}
 </code></pre>
 <p>第二步：创建 store/index.js<br>使用redux的 createStore 方法，使用之前创建的reducer作为参数，创建一个store</p>
-<pre class=" language-javascript"><code class="language-javascript"><span class="token keyword">import</span> <span class="token punctuation">{</span> createStore <span class="token punctuation">}</span> <span class="token keyword">from</span> <span class="token string">'redux'</span><span class="token punctuation">;</span>
-<span class="token keyword">import</span> reducer <span class="token keyword">from</span> <span class="token string">'./reducer'</span><span class="token punctuation">;</span>
+<pre><code class="javascript">import { createStore } from &#39;redux&#39;;
+import reducer from &#39;./reducer&#39;;
 
-<span class="token keyword">const</span> store <span class="token operator">=</span> <span class="token function">createStore</span><span class="token punctuation">(</span>reducer<span class="token punctuation">)</span><span class="token punctuation">;</span>
+const store = createStore(reducer);
 
-<span class="token keyword">export</span> <span class="token keyword">default</span> store<span class="token punctuation">;</span>
+export default store;
 </code></pre>
 <h2 id="使用与修改"><a href="#使用与修改" class="headerlink" title="使用与修改"></a>使用与修改</h2><p>一：使用redux的公共存储</p>
-<pre class=" language-javascript"><code class="language-javascript"><span class="token keyword">import</span> store <span class="token keyword">from</span> <span class="token string">'./store/index.js'</span>
-<span class="token comment" spellcheck="true">// import store from './store' // 可以缩写为这样</span>
+<pre><code class="javascript">import store from &#39;./store/index.js&#39;
+// import store from &#39;./store&#39; // 可以缩写为这样
 
-console<span class="token punctuation">.</span><span class="token function">log</span><span class="token punctuation">(</span>store<span class="token punctuation">.</span><span class="token function">getState</span><span class="token punctuation">(</span><span class="token punctuation">)</span><span class="token punctuation">)</span><span class="token punctuation">;</span> <span class="token comment" spellcheck="true">// 直接能打印出store中的内容</span>
+console.log(store.getState()); // 直接能打印出store中的内容
 </code></pre>
 <p>二：修改redux中的内容</p>
 <p>注意：redux的reducer只支持读取state，而不支持修改state。如果需要修改，请深拷贝原有state，修改新的newState，并将newState返回。</p>
-<pre class=" language-js"><code class="language-js"><span class="token keyword">const</span> defaultState <span class="token operator">=</span> <span class="token punctuation">{</span>
-    inputValue<span class="token punctuation">:</span> <span class="token string">'Hello React !'</span><span class="token punctuation">,</span>
-    list<span class="token punctuation">:</span> <span class="token punctuation">[</span><span class="token string">"1111"</span><span class="token punctuation">,</span><span class="token string">"2222"</span><span class="token punctuation">]</span>
-<span class="token punctuation">}</span>
+<pre><code class="js">const defaultState = {
+    inputValue: &#39;Hello React !&#39;,
+    list: [&quot;1111&quot;,&quot;2222&quot;]
+}
 
-<span class="token keyword">export</span> <span class="token keyword">default</span> <span class="token punctuation">(</span>state <span class="token operator">=</span> defaultState<span class="token punctuation">,</span> action<span class="token punctuation">)</span> <span class="token operator">=</span><span class="token operator">></span> <span class="token punctuation">{</span>
-    <span class="token keyword">if</span><span class="token punctuation">(</span>action<span class="token punctuation">.</span>type <span class="token operator">===</span> <span class="token string">'change_input_value'</span><span class="token punctuation">)</span><span class="token punctuation">{</span>
-        <span class="token keyword">const</span> newState <span class="token operator">=</span> JSON<span class="token punctuation">.</span><span class="token function">parse</span><span class="token punctuation">(</span>JSON<span class="token punctuation">.</span><span class="token function">stringify</span><span class="token punctuation">(</span>state<span class="token punctuation">)</span><span class="token punctuation">)</span><span class="token punctuation">;</span>
-        newState<span class="token punctuation">.</span>inputValue <span class="token operator">=</span> action<span class="token punctuation">.</span>value<span class="token punctuation">;</span>
-        <span class="token keyword">return</span> newState<span class="token punctuation">;</span>
-    <span class="token punctuation">}</span><span class="token keyword">else</span> <span class="token keyword">if</span><span class="token punctuation">(</span>action<span class="token punctuation">.</span>type <span class="token operator">===</span> <span class="token string">'add_list_item'</span><span class="token punctuation">)</span><span class="token punctuation">{</span>
-        <span class="token keyword">const</span> newState <span class="token operator">=</span> JSON<span class="token punctuation">.</span><span class="token function">parse</span><span class="token punctuation">(</span>JSON<span class="token punctuation">.</span><span class="token function">stringify</span><span class="token punctuation">(</span>state<span class="token punctuation">)</span><span class="token punctuation">)</span><span class="token punctuation">;</span>
-        newState<span class="token punctuation">.</span>list<span class="token punctuation">.</span><span class="token function">push</span><span class="token punctuation">(</span>state<span class="token punctuation">.</span>inputValue<span class="token punctuation">)</span><span class="token punctuation">;</span>
-        newState<span class="token punctuation">.</span>inputValue <span class="token operator">=</span> <span class="token string">''</span><span class="token punctuation">;</span>
-        <span class="token keyword">return</span> newState<span class="token punctuation">;</span>
-    <span class="token punctuation">}</span><span class="token keyword">else</span> <span class="token keyword">if</span><span class="token punctuation">(</span>action<span class="token punctuation">.</span>type <span class="token operator">===</span> <span class="token string">'del_list_item'</span><span class="token punctuation">)</span><span class="token punctuation">{</span>
-        <span class="token keyword">const</span> newState <span class="token operator">=</span> JSON<span class="token punctuation">.</span><span class="token function">parse</span><span class="token punctuation">(</span>JSON<span class="token punctuation">.</span><span class="token function">stringify</span><span class="token punctuation">(</span>state<span class="token punctuation">)</span><span class="token punctuation">)</span><span class="token punctuation">;</span>
-        newState<span class="token punctuation">.</span>list<span class="token punctuation">.</span><span class="token function">splice</span><span class="token punctuation">(</span>action<span class="token punctuation">.</span>index<span class="token punctuation">,</span><span class="token number">1</span><span class="token punctuation">)</span><span class="token punctuation">;</span>
-        <span class="token keyword">return</span> newState<span class="token punctuation">;</span>
-    <span class="token punctuation">}</span>
-    <span class="token keyword">return</span> state<span class="token punctuation">;</span>
-<span class="token punctuation">}</span>
+export default (state = defaultState, action) =&gt; {
+    if(action.type === &#39;change_input_value&#39;){
+        const newState = JSON.parse(JSON.stringify(state));
+        newState.inputValue = action.value;
+        return newState;
+    }else if(action.type === &#39;add_list_item&#39;){
+        const newState = JSON.parse(JSON.stringify(state));
+        newState.list.push(state.inputValue);
+        newState.inputValue = &#39;&#39;;
+        return newState;
+    }else if(action.type === &#39;del_list_item&#39;){
+        const newState = JSON.parse(JSON.stringify(state));
+        newState.list.splice(action.index,1);
+        return newState;
+    }
+    return state;
+}
 </code></pre>
 <p>三、监听store内容的修改</p>
-<pre class=" language-js"><code class="language-js">    <span class="token function">constructor</span><span class="token punctuation">(</span>props<span class="token punctuation">)</span> <span class="token punctuation">{</span>
-        <span class="token keyword">super</span><span class="token punctuation">(</span>props<span class="token punctuation">)</span><span class="token punctuation">;</span>
-        <span class="token keyword">this</span><span class="token punctuation">.</span>state <span class="token operator">=</span> store<span class="token punctuation">.</span><span class="token function">getState</span><span class="token punctuation">(</span><span class="token punctuation">)</span><span class="token punctuation">;</span>
-        <span class="token keyword">this</span><span class="token punctuation">.</span>handleStoreChange <span class="token operator">=</span> <span class="token keyword">this</span><span class="token punctuation">.</span>handleStoreChange<span class="token punctuation">.</span><span class="token function">bind</span><span class="token punctuation">(</span><span class="token keyword">this</span><span class="token punctuation">)</span><span class="token punctuation">;</span>
-        store<span class="token punctuation">.</span><span class="token function">subscribe</span><span class="token punctuation">(</span><span class="token keyword">this</span><span class="token punctuation">.</span>handleStoreChange<span class="token punctuation">)</span><span class="token punctuation">;</span>
-    <span class="token punctuation">}</span>
+<pre><code class="js">    constructor(props) {
+        super(props);
+        this.state = store.getState();
+        this.handleStoreChange = this.handleStoreChange.bind(this);
+        store.subscribe(this.handleStoreChange);
+    }
 
-    render <span class="token punctuation">(</span><span class="token punctuation">)</span> <span class="token punctuation">{</span>
-        <span class="token operator">...</span>
-    <span class="token punctuation">}</span>
+    render () {
+        ...
+    }
 
-    <span class="token function">handleStoreChange</span><span class="token punctuation">(</span><span class="token punctuation">)</span> <span class="token punctuation">{</span>
-        <span class="token keyword">this</span><span class="token punctuation">.</span><span class="token function">setState</span><span class="token punctuation">(</span>store<span class="token punctuation">.</span><span class="token function">getState</span><span class="token punctuation">(</span><span class="token punctuation">)</span><span class="token punctuation">)</span><span class="token punctuation">;</span>
-    <span class="token punctuation">}</span>
+    handleStoreChange() {
+        this.setState(store.getState());
+    }
 </code></pre>
-<h2 id="整体使用如下："><a href="#整体使用如下：" class="headerlink" title="整体使用如下："></a>整体使用如下：</h2><h3 id="src-TodoList-js"><a href="#src-TodoList-js" class="headerlink" title="src/TodoList.js"></a>src/TodoList.js</h3><pre class=" language-js"><code class="language-js"><span class="token keyword">import</span> React<span class="token punctuation">,</span> <span class="token punctuation">{</span> Component <span class="token punctuation">}</span> <span class="token keyword">from</span> <span class="token string">'react'</span><span class="token punctuation">;</span>
-<span class="token keyword">import</span> store <span class="token keyword">from</span> <span class="token string">'./store'</span><span class="token punctuation">;</span>
-<span class="token keyword">import</span> <span class="token string">'antd/dist/antd.css'</span><span class="token punctuation">;</span>
-<span class="token keyword">import</span> <span class="token punctuation">{</span> Input<span class="token punctuation">,</span> Button<span class="token punctuation">,</span>List <span class="token punctuation">}</span> <span class="token keyword">from</span> <span class="token string">'antd'</span><span class="token punctuation">;</span>
-<span class="token keyword">import</span> <span class="token punctuation">{</span>
-    getInputChangeAction<span class="token punctuation">,</span>
-    getAddItemAction<span class="token punctuation">,</span>
+<h2 id="整体使用如下："><a href="#整体使用如下：" class="headerlink" title="整体使用如下："></a>整体使用如下：</h2><h3 id="src-TodoList-js"><a href="#src-TodoList-js" class="headerlink" title="src/TodoList.js"></a>src/TodoList.js</h3><pre><code class="js">import React, { Component } from &#39;react&#39;;
+import store from &#39;./store&#39;;
+import &#39;antd/dist/antd.css&#39;;
+import { Input, Button,List } from &#39;antd&#39;;
+import {
+    getInputChangeAction,
+    getAddItemAction,
     getDeleteItemAction
-<span class="token punctuation">}</span> <span class="token keyword">from</span> <span class="token string">'./store/actionCreator'</span><span class="token punctuation">;</span>
+} from &#39;./store/actionCreator&#39;;
 
-<span class="token keyword">class</span> <span class="token class-name">TodoList</span> <span class="token keyword">extends</span> <span class="token class-name">Component</span> <span class="token punctuation">{</span>
+class TodoList extends Component {
 
-    <span class="token function">constructor</span><span class="token punctuation">(</span>props<span class="token punctuation">)</span> <span class="token punctuation">{</span>
-        <span class="token keyword">super</span><span class="token punctuation">(</span>props<span class="token punctuation">)</span><span class="token punctuation">;</span>
-        <span class="token keyword">this</span><span class="token punctuation">.</span>state <span class="token operator">=</span> store<span class="token punctuation">.</span><span class="token function">getState</span><span class="token punctuation">(</span><span class="token punctuation">)</span><span class="token punctuation">;</span>
-        <span class="token keyword">this</span><span class="token punctuation">.</span>handleInputChange <span class="token operator">=</span> <span class="token keyword">this</span><span class="token punctuation">.</span>handleInputChange<span class="token punctuation">.</span><span class="token function">bind</span><span class="token punctuation">(</span><span class="token keyword">this</span><span class="token punctuation">)</span><span class="token punctuation">;</span>
-        <span class="token keyword">this</span><span class="token punctuation">.</span>handleStoreChange <span class="token operator">=</span> <span class="token keyword">this</span><span class="token punctuation">.</span>handleStoreChange<span class="token punctuation">.</span><span class="token function">bind</span><span class="token punctuation">(</span><span class="token keyword">this</span><span class="token punctuation">)</span><span class="token punctuation">;</span>
-        <span class="token keyword">this</span><span class="token punctuation">.</span>handleBtnClick <span class="token operator">=</span> <span class="token keyword">this</span><span class="token punctuation">.</span>handleBtnClick<span class="token punctuation">.</span><span class="token function">bind</span><span class="token punctuation">(</span><span class="token keyword">this</span><span class="token punctuation">)</span><span class="token punctuation">;</span>
-        <span class="token keyword">this</span><span class="token punctuation">.</span>handleDeleteItem <span class="token operator">=</span> <span class="token keyword">this</span><span class="token punctuation">.</span>handleDeleteItem<span class="token punctuation">.</span><span class="token function">bind</span><span class="token punctuation">(</span><span class="token keyword">this</span><span class="token punctuation">)</span><span class="token punctuation">;</span>
-        store<span class="token punctuation">.</span><span class="token function">subscribe</span><span class="token punctuation">(</span><span class="token keyword">this</span><span class="token punctuation">.</span>handleStoreChange<span class="token punctuation">)</span><span class="token punctuation">;</span>
-    <span class="token punctuation">}</span>
+    constructor(props) {
+        super(props);
+        this.state = store.getState();
+        this.handleInputChange = this.handleInputChange.bind(this);
+        this.handleStoreChange = this.handleStoreChange.bind(this);
+        this.handleBtnClick = this.handleBtnClick.bind(this);
+        this.handleDeleteItem = this.handleDeleteItem.bind(this);
+        store.subscribe(this.handleStoreChange);
+    }
 
-    <span class="token function">render</span><span class="token punctuation">(</span><span class="token punctuation">)</span> <span class="token punctuation">{</span>
-        <span class="token keyword">return</span> <span class="token punctuation">(</span>
-            <span class="token operator">&lt;</span>div style<span class="token operator">=</span><span class="token punctuation">{</span><span class="token punctuation">{</span> marginTop<span class="token punctuation">:</span> <span class="token string">'10px'</span><span class="token punctuation">,</span> marginLeft<span class="token punctuation">:</span> <span class="token string">'10px'</span> <span class="token punctuation">}</span><span class="token punctuation">}</span><span class="token operator">></span>
-                <span class="token operator">&lt;</span>Input
-                    style<span class="token operator">=</span><span class="token punctuation">{</span><span class="token punctuation">{</span> width<span class="token punctuation">:</span> <span class="token string">'300px'</span><span class="token punctuation">,</span> marginRight<span class="token punctuation">:</span> <span class="token string">'10px'</span> <span class="token punctuation">}</span><span class="token punctuation">}</span>
-                    value<span class="token operator">=</span><span class="token punctuation">{</span><span class="token keyword">this</span><span class="token punctuation">.</span>state<span class="token punctuation">.</span>inputValue<span class="token punctuation">}</span>
-                    onChange<span class="token operator">=</span><span class="token punctuation">{</span><span class="token keyword">this</span><span class="token punctuation">.</span>handleInputChange<span class="token punctuation">}</span>
-                <span class="token operator">/</span><span class="token operator">></span>
-                <span class="token operator">&lt;</span>Button type<span class="token operator">=</span><span class="token string">'primary'</span> onClick<span class="token operator">=</span><span class="token punctuation">{</span><span class="token keyword">this</span><span class="token punctuation">.</span>handleBtnClick<span class="token punctuation">}</span><span class="token operator">></span>æ��äº¤<span class="token operator">&lt;</span><span class="token operator">/</span>Button<span class="token operator">></span>
-                <span class="token operator">&lt;</span>br<span class="token operator">/</span><span class="token operator">></span>
-                <span class="token operator">&lt;</span>List
-                    style<span class="token operator">=</span><span class="token punctuation">{</span><span class="token punctuation">{</span>width<span class="token punctuation">:</span><span class="token string">'300px'</span><span class="token punctuation">}</span><span class="token punctuation">}</span>
+    render() {
+        return (
+            &lt;div style={{ marginTop: '10px', marginLeft: '10px' }}&gt;
+                &lt;Input
+                    style={{ width: '300px', marginRight: '10px' }}
+                    value={this.state.inputValue}
+                    onChange={this.handleInputChange}
+                /&gt;
+                &lt;Button type=&#39;primary&#39; onClick={this.handleBtnClick}&gt;æ��äº¤&lt;/Button&gt;
+                &lt;br/&gt;
+                &lt;List
+                    style={{width:'300px'}}
                     bordered
-                    dataSource<span class="token operator">=</span><span class="token punctuation">{</span><span class="token keyword">this</span><span class="token punctuation">.</span>state<span class="token punctuation">.</span>list<span class="token punctuation">}</span>
-                    renderItem<span class="token operator">=</span><span class="token punctuation">{</span><span class="token punctuation">(</span>item<span class="token punctuation">,</span>index<span class="token punctuation">)</span> <span class="token operator">=</span><span class="token operator">></span> <span class="token punctuation">(</span>
-                        <span class="token operator">&lt;</span>List<span class="token punctuation">.</span>Item onClick<span class="token operator">=</span><span class="token punctuation">{</span><span class="token punctuation">(</span><span class="token punctuation">)</span> <span class="token operator">=</span><span class="token operator">></span> <span class="token keyword">this</span><span class="token punctuation">.</span><span class="token function">handleDeleteItem</span><span class="token punctuation">(</span>index<span class="token punctuation">)</span><span class="token punctuation">}</span><span class="token operator">></span><span class="token punctuation">{</span>item<span class="token punctuation">}</span><span class="token operator">&lt;</span><span class="token operator">/</span>List<span class="token punctuation">.</span>Item<span class="token operator">></span>
-                    <span class="token punctuation">)</span><span class="token punctuation">}</span>
-                <span class="token operator">/</span><span class="token operator">></span>
-            <span class="token operator">&lt;</span><span class="token operator">/</span>div<span class="token operator">></span>
-        <span class="token punctuation">)</span><span class="token punctuation">;</span>
-    <span class="token punctuation">}</span>
+                    dataSource={this.state.list}
+                    renderItem={(item,index) =&gt; (
+                        &lt;List.Item onClick={() =&gt; this.handleDeleteItem(index)}&gt;{item}&lt;/List.Item&gt;
+                    )}
+                /&gt;
+            &lt;/div&gt;
+        );
+    }
 
-    <span class="token function">handleInputChange</span><span class="token punctuation">(</span>e<span class="token punctuation">)</span> <span class="token punctuation">{</span>
-        <span class="token keyword">const</span> value <span class="token operator">=</span> e<span class="token punctuation">.</span>target<span class="token punctuation">.</span>value<span class="token punctuation">;</span>
-        <span class="token keyword">const</span> action <span class="token operator">=</span> <span class="token function">getInputChangeAction</span><span class="token punctuation">(</span>value<span class="token punctuation">)</span><span class="token punctuation">;</span>
-        store<span class="token punctuation">.</span><span class="token function">dispatch</span><span class="token punctuation">(</span>action<span class="token punctuation">)</span><span class="token punctuation">;</span>
-    <span class="token punctuation">}</span>
+    handleInputChange(e) {
+        const value = e.target.value;
+        const action = getInputChangeAction(value);
+        store.dispatch(action);
+    }
 
-    <span class="token function">handleStoreChange</span><span class="token punctuation">(</span><span class="token punctuation">)</span> <span class="token punctuation">{</span>
-        <span class="token keyword">this</span><span class="token punctuation">.</span><span class="token function">setState</span><span class="token punctuation">(</span>store<span class="token punctuation">.</span><span class="token function">getState</span><span class="token punctuation">(</span><span class="token punctuation">)</span><span class="token punctuation">)</span><span class="token punctuation">;</span>
-    <span class="token punctuation">}</span>
+    handleStoreChange() {
+        this.setState(store.getState());
+    }
 
-    <span class="token function">handleBtnClick</span><span class="token punctuation">(</span><span class="token punctuation">)</span> <span class="token punctuation">{</span>
-        <span class="token keyword">const</span> action <span class="token operator">=</span> <span class="token function">getAddItemAction</span><span class="token punctuation">(</span><span class="token punctuation">)</span><span class="token punctuation">;</span>
-        store<span class="token punctuation">.</span><span class="token function">dispatch</span><span class="token punctuation">(</span>action<span class="token punctuation">)</span><span class="token punctuation">;</span>
-    <span class="token punctuation">}</span>
+    handleBtnClick() {
+        const action = getAddItemAction();
+        store.dispatch(action);
+    }
 
-    <span class="token function">handleDeleteItem</span><span class="token punctuation">(</span>index<span class="token punctuation">)</span> <span class="token punctuation">{</span>
-        <span class="token keyword">const</span> action <span class="token operator">=</span> <span class="token function">getDeleteItemAction</span><span class="token punctuation">(</span>index<span class="token punctuation">)</span><span class="token punctuation">;</span>
-        store<span class="token punctuation">.</span><span class="token function">dispatch</span><span class="token punctuation">(</span>action<span class="token punctuation">)</span><span class="token punctuation">;</span>
-    <span class="token punctuation">}</span>
-<span class="token punctuation">}</span>
+    handleDeleteItem(index) {
+        const action = getDeleteItemAction(index);
+        store.dispatch(action);
+    }
+}
 
-<span class="token keyword">export</span> <span class="token keyword">default</span> TodoList<span class="token punctuation">;</span>
+export default TodoList;
 </code></pre>
-<h3 id="src-store-index-js"><a href="#src-store-index-js" class="headerlink" title="src/store/index.js"></a>src/store/index.js</h3><pre class=" language-js"><code class="language-js"><span class="token keyword">import</span> <span class="token punctuation">{</span> createStore <span class="token punctuation">}</span> <span class="token keyword">from</span> <span class="token string">'redux'</span><span class="token punctuation">;</span>
-<span class="token keyword">import</span> reducer <span class="token keyword">from</span> <span class="token string">'./reducer'</span><span class="token punctuation">;</span>
+<h3 id="src-store-index-js"><a href="#src-store-index-js" class="headerlink" title="src/store/index.js"></a>src/store/index.js</h3><pre><code class="js">import { createStore } from &#39;redux&#39;;
+import reducer from &#39;./reducer&#39;;
 
-<span class="token keyword">const</span> store <span class="token operator">=</span> <span class="token function">createStore</span><span class="token punctuation">(</span>
-    reducer<span class="token punctuation">,</span>
-    window<span class="token punctuation">.</span>__REDUX_DEVTOOLS_EXTENSION__ <span class="token operator">&amp;&amp;</span> window<span class="token punctuation">.</span><span class="token function">__REDUX_DEVTOOLS_EXTENSION__</span><span class="token punctuation">(</span><span class="token punctuation">)</span>
-<span class="token punctuation">)</span><span class="token punctuation">;</span>
+const store = createStore(
+    reducer,
+    window.__REDUX_DEVTOOLS_EXTENSION__ &amp;&amp; window.__REDUX_DEVTOOLS_EXTENSION__()
+);
 
-<span class="token keyword">export</span> <span class="token keyword">default</span> store<span class="token punctuation">;</span>
+export default store;
 </code></pre>
-<h3 id="src-store-reducer-js"><a href="#src-store-reducer-js" class="headerlink" title="src/store/reducer.js"></a>src/store/reducer.js</h3><pre class=" language-js"><code class="language-js"><span class="token keyword">const</span> defaultState <span class="token operator">=</span> <span class="token punctuation">{</span>
-    inputValue<span class="token punctuation">:</span> <span class="token string">'Hello React !'</span><span class="token punctuation">,</span>
-    list<span class="token punctuation">:</span> <span class="token punctuation">[</span><span class="token string">"1111"</span><span class="token punctuation">,</span><span class="token string">"2222"</span><span class="token punctuation">]</span>
-<span class="token punctuation">}</span>
+<h3 id="src-store-reducer-js"><a href="#src-store-reducer-js" class="headerlink" title="src/store/reducer.js"></a>src/store/reducer.js</h3><pre><code class="js">const defaultState = {
+    inputValue: &#39;Hello React !&#39;,
+    list: [&quot;1111&quot;,&quot;2222&quot;]
+}
 
-<span class="token keyword">export</span> <span class="token keyword">default</span> <span class="token punctuation">(</span>state <span class="token operator">=</span> defaultState<span class="token punctuation">,</span> action<span class="token punctuation">)</span> <span class="token operator">=</span><span class="token operator">></span> <span class="token punctuation">{</span>
-    <span class="token keyword">if</span><span class="token punctuation">(</span>action<span class="token punctuation">.</span>type <span class="token operator">===</span> <span class="token string">'change_input_value'</span><span class="token punctuation">)</span><span class="token punctuation">{</span>
-        <span class="token keyword">const</span> newState <span class="token operator">=</span> JSON<span class="token punctuation">.</span><span class="token function">parse</span><span class="token punctuation">(</span>JSON<span class="token punctuation">.</span><span class="token function">stringify</span><span class="token punctuation">(</span>state<span class="token punctuation">)</span><span class="token punctuation">)</span><span class="token punctuation">;</span>
-        newState<span class="token punctuation">.</span>inputValue <span class="token operator">=</span> action<span class="token punctuation">.</span>value<span class="token punctuation">;</span>
-        <span class="token keyword">return</span> newState<span class="token punctuation">;</span>
-    <span class="token punctuation">}</span><span class="token keyword">else</span> <span class="token keyword">if</span><span class="token punctuation">(</span>action<span class="token punctuation">.</span>type <span class="token operator">===</span> <span class="token string">'add_list_item'</span><span class="token punctuation">)</span><span class="token punctuation">{</span>
-        <span class="token keyword">const</span> newState <span class="token operator">=</span> JSON<span class="token punctuation">.</span><span class="token function">parse</span><span class="token punctuation">(</span>JSON<span class="token punctuation">.</span><span class="token function">stringify</span><span class="token punctuation">(</span>state<span class="token punctuation">)</span><span class="token punctuation">)</span><span class="token punctuation">;</span>
-        newState<span class="token punctuation">.</span>list<span class="token punctuation">.</span><span class="token function">push</span><span class="token punctuation">(</span>state<span class="token punctuation">.</span>inputValue<span class="token punctuation">)</span><span class="token punctuation">;</span>
-        newState<span class="token punctuation">.</span>inputValue <span class="token operator">=</span> <span class="token string">''</span><span class="token punctuation">;</span>
-        <span class="token keyword">return</span> newState<span class="token punctuation">;</span>
-    <span class="token punctuation">}</span><span class="token keyword">else</span> <span class="token keyword">if</span><span class="token punctuation">(</span>action<span class="token punctuation">.</span>type <span class="token operator">===</span> <span class="token string">'del_list_item'</span><span class="token punctuation">)</span><span class="token punctuation">{</span>
-        <span class="token keyword">const</span> newState <span class="token operator">=</span> JSON<span class="token punctuation">.</span><span class="token function">parse</span><span class="token punctuation">(</span>JSON<span class="token punctuation">.</span><span class="token function">stringify</span><span class="token punctuation">(</span>state<span class="token punctuation">)</span><span class="token punctuation">)</span><span class="token punctuation">;</span>
-        newState<span class="token punctuation">.</span>list<span class="token punctuation">.</span><span class="token function">splice</span><span class="token punctuation">(</span>action<span class="token punctuation">.</span>index<span class="token punctuation">,</span><span class="token number">1</span><span class="token punctuation">)</span><span class="token punctuation">;</span>
-        <span class="token keyword">return</span> newState<span class="token punctuation">;</span>
-    <span class="token punctuation">}</span>
-    <span class="token keyword">return</span> state<span class="token punctuation">;</span>
-<span class="token punctuation">}</span>
+export default (state = defaultState, action) =&gt; {
+    if(action.type === &#39;change_input_value&#39;){
+        const newState = JSON.parse(JSON.stringify(state));
+        newState.inputValue = action.value;
+        return newState;
+    }else if(action.type === &#39;add_list_item&#39;){
+        const newState = JSON.parse(JSON.stringify(state));
+        newState.list.push(state.inputValue);
+        newState.inputValue = &#39;&#39;;
+        return newState;
+    }else if(action.type === &#39;del_list_item&#39;){
+        const newState = JSON.parse(JSON.stringify(state));
+        newState.list.splice(action.index,1);
+        return newState;
+    }
+    return state;
+}
 </code></pre>
 <h3 id="src-store-actionTypes-js"><a href="#src-store-actionTypes-js" class="headerlink" title="src/store/actionTypes.js"></a>src/store/actionTypes.js</h3><p>将所有的 Action 类型提取为常量，统一管理。方便调试与代码定位。</p>
-<pre class=" language-js"><code class="language-js"><span class="token keyword">export</span> <span class="token keyword">const</span> CHANGE_INPUT_VALUE <span class="token operator">=</span> <span class="token string">'change_input_value'</span><span class="token punctuation">;</span>
-<span class="token keyword">export</span> <span class="token keyword">const</span> ADD_LIST_ITEM <span class="token operator">=</span> <span class="token string">'add_list_item'</span><span class="token punctuation">;</span>
-<span class="token keyword">export</span> <span class="token keyword">const</span> DEL_LIST_ITEM <span class="token operator">=</span> <span class="token string">'del_list_item'</span><span class="token punctuation">;</span>
+<pre><code class="js">export const CHANGE_INPUT_VALUE = &#39;change_input_value&#39;;
+export const ADD_LIST_ITEM = &#39;add_list_item&#39;;
+export const DEL_LIST_ITEM = &#39;del_list_item&#39;;
 </code></pre>
 <h3 id="src-store-actionCreator-js"><a href="#src-store-actionCreator-js" class="headerlink" title="src/store/actionCreator.js"></a>src/store/actionCreator.js</h3><p>将 Action 的创建统一管理，使用 Creator 提供创建 Action 的方法。使流程更加清晰</p>
-<pre class=" language-js"><code class="language-js"><span class="token keyword">import</span> <span class="token punctuation">{</span> 
-    CHANGE_INPUT_VALUE<span class="token punctuation">,</span>
-    ADD_LIST_ITEM<span class="token punctuation">,</span>
+<pre><code class="js">import { 
+    CHANGE_INPUT_VALUE,
+    ADD_LIST_ITEM,
     DEL_LIST_ITEM
-<span class="token punctuation">}</span> <span class="token keyword">from</span> <span class="token string">'./actionTypes'</span><span class="token punctuation">;</span>
+} from &#39;./actionTypes&#39;;
 
-<span class="token keyword">export</span> <span class="token keyword">const</span> getInputChangeAction <span class="token operator">=</span> <span class="token punctuation">(</span>value<span class="token punctuation">)</span> <span class="token operator">=</span><span class="token operator">></span> <span class="token punctuation">(</span><span class="token punctuation">{</span>
-    type<span class="token punctuation">:</span> CHANGE_INPUT_VALUE<span class="token punctuation">,</span>
-    value<span class="token punctuation">:</span> value
-<span class="token punctuation">}</span><span class="token punctuation">)</span><span class="token punctuation">;</span>
+export const getInputChangeAction = (value) =&gt; ({
+    type: CHANGE_INPUT_VALUE,
+    value: value
+});
 
-<span class="token keyword">export</span> <span class="token keyword">const</span> getAddItemAction <span class="token operator">=</span> <span class="token punctuation">(</span><span class="token punctuation">)</span> <span class="token operator">=</span><span class="token operator">></span> <span class="token punctuation">(</span><span class="token punctuation">{</span>
-    type<span class="token punctuation">:</span> ADD_LIST_ITEM
-<span class="token punctuation">}</span><span class="token punctuation">)</span><span class="token punctuation">;</span>
+export const getAddItemAction = () =&gt; ({
+    type: ADD_LIST_ITEM
+});
 
-<span class="token keyword">export</span> <span class="token keyword">const</span> getDeleteItemAction <span class="token operator">=</span> <span class="token punctuation">(</span>index<span class="token punctuation">)</span> <span class="token operator">=</span><span class="token operator">></span> <span class="token punctuation">(</span><span class="token punctuation">{</span>
-    type<span class="token punctuation">:</span> DEL_LIST_ITEM<span class="token punctuation">,</span>
-    index<span class="token punctuation">:</span> index
-<span class="token punctuation">}</span><span class="token punctuation">)</span><span class="token punctuation">;</span>
+export const getDeleteItemAction = (index) =&gt; ({
+    type: DEL_LIST_ITEM,
+    index: index
+});
 </code></pre>
 
       
@@ -706,7 +706,7 @@ console<span class="token punctuation">.</span><span class="token function">log<
               
                 <a href="/archives">
               
-                  <span class="site-state-item-count">224</span>
+                  <span class="site-state-item-count">237</span>
                   <span class="site-state-item-name">日志</span>
                 </a>
               </div>
@@ -728,7 +728,7 @@ console<span class="token punctuation">.</span><span class="token function">log<
               
               <div class="site-state-item site-state-tags">
                 <a href="/tags/index.html">
-                  <span class="site-state-item-count">21</span>
+                  <span class="site-state-item-count">22</span>
                   <span class="site-state-item-name">标签</span>
                 </a>
               </div>

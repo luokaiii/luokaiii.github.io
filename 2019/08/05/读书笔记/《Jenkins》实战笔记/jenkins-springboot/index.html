@@ -401,34 +401,34 @@
 <blockquote>
 <p>如果不是使用 Docker 做容器管理，此步可忽略。直接启动 Nginx 与 Jenkins 即可。</p>
 </blockquote>
-<pre class=" language-sh"><code class="language-sh">version: '3'
+<pre><code class="sh">version: &#39;3&#39;
 
 services:
   jenkins:
-    container_name: 'jenkins.ci'
-    image: 'jenkins/jenkins:lts'
+    container_name: &#39;jenkins.ci&#39;
+    image: &#39;jenkins/jenkins:lts&#39;
     #ports:  不对外暴露端口，直接使用nginx容器转到8080
-      #- '8080:8080'
-      #- '50000:50000'
+      #- &#39;8080:8080&#39;
+      #- &#39;50000:50000&#39;
     volumes:
-      - '/home/docker-images/jenkins/var/jenkins_home:/var/jenkins_home'
-      - '/home/docker-images/jenkins/html:/usr/share/jenkins/html' #挂载编译打包后的存放路径
+      - &#39;/home/docker-images/jenkins/var/jenkins_home:/var/jenkins_home&#39;
+      - &#39;/home/docker-images/jenkins/html:/usr/share/jenkins/html&#39; #挂载编译打包后的存放路径
   nginx:
-    container_name: 'nginx'
+    container_name: &#39;nginx&#39;
     depends_on:
       - jenkins
     image: nginx:alpine
     volumes:
-      - '/home/luokaiii/backstage_page/html:/usr/www/luokaiii/cn/html'
-      - '/home/docker-images/nginx/conf:/etc/nginx/conf.d'
-      - '/home/docker-images/nginx/cert:/etc/nginx/cert'
+      - &#39;/home/luokaiii/backstage_page/html:/usr/www/luokaiii/cn/html&#39;
+      - &#39;/home/docker-images/nginx/conf:/etc/nginx/conf.d&#39;
+      - &#39;/home/docker-images/nginx/cert:/etc/nginx/cert&#39;
     ports:
       - 80:80 # 对外统一使用80端口
       - 443:443
     restart: always
 
 </code></pre>
-<h2 id="二、nginx-conf"><a href="#二、nginx-conf" class="headerlink" title="二、nginx.conf"></a>二、nginx.conf</h2><pre class=" language-sh"><code class="language-sh">upstream apisupport {
+<h2 id="二、nginx-conf"><a href="#二、nginx-conf" class="headerlink" title="二、nginx.conf"></a>二、nginx.conf</h2><pre><code class="sh">upstream apisupport {
     # 自己部署的后端服务，因为是在容器访问外部服务，所以需要使用内网IP
     # 第二种方法是在 docker-compose 中将 jar 作为一个 service 连接
     server xxx.xx.xx.xxx:9000;
@@ -471,7 +471,7 @@ server {
     gzip_comp_level 9;
     gzip_types text/plain application/javascript application/x-javascript text/css application/xml text/javascript application/x-httpd-php image/jpeg image/gif image/png;
     gzip_vary on;
-    gzip_disable "MSIE [1-6]\.";
+    gzip_disable &quot;MSIE [1-6]\.&quot;;
 
     # 静态资源代理，在Jenkins部署前端项目的文章中，就是把前端静态文件部署在该目录下，直接由nginx代理即可。
     root /usr/www/luokaiii/cn/html;
@@ -581,8 +581,8 @@ server {
         <div class="post-nav">
           <div class="post-nav-next post-nav-item">
             
-              <a href="/2019/07/24/读书笔记/《SpringSecurity》/22.ExpressionControl/" rel="next" title="《Spring Security》第二十二章 Expression-Based Access Control - 基于表达式的访问控制">
-                <i class="fa fa-chevron-left"></i> 《Spring Security》第二十二章 Expression-Based Access Control - 基于表达式的访问控制
+              <a href="/2019/08/05/读书笔记/《Jenkins》实战笔记/jenkins-react/" rel="next" title="Jenkins 从零到有部署一个前端项目">
+                <i class="fa fa-chevron-left"></i> Jenkins 从零到有部署一个前端项目
               </a>
             
           </div>
@@ -591,8 +591,8 @@ server {
 
           <div class="post-nav-prev post-nav-item">
             
-              <a href="/2019/08/05/读书笔记/《Jenkins》实战笔记/jenkins-react/" rel="prev" title="Jenkins 从零到有部署一个前端项目">
-                Jenkins 从零到有部署一个前端项目 <i class="fa fa-chevron-right"></i>
+              <a href="/2019/08/19/leetcode/第一章-初级算法/数组/12寻找数组的中心索引/" rel="prev" title="">
+                 <i class="fa fa-chevron-right"></i>
               </a>
             
           </div>
@@ -674,7 +674,7 @@ server {
               
                 <a href="/archives">
               
-                  <span class="site-state-item-count">224</span>
+                  <span class="site-state-item-count">237</span>
                   <span class="site-state-item-name">日志</span>
                 </a>
               </div>
@@ -696,7 +696,7 @@ server {
               
               <div class="site-state-item site-state-tags">
                 <a href="/tags/index.html">
-                  <span class="site-state-item-count">21</span>
+                  <span class="site-state-item-count">22</span>
                   <span class="site-state-item-name">标签</span>
                 </a>
               </div>

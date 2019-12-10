@@ -389,7 +389,7 @@
 
       
         <h1 id="Docker部署全栈项目：四、MySQL-镜像"><a href="#Docker部署全栈项目：四、MySQL-镜像" class="headerlink" title="Docker部署全栈项目：四、MySQL 镜像"></a>Docker部署全栈项目：四、MySQL 镜像</h1><p>这里使用的是 MariaDB 镜像，与 MySQL 一样。</p>
-<h2 id="一、编写启动脚本"><a href="#一、编写启动脚本" class="headerlink" title="一、编写启动脚本"></a>一、编写启动脚本</h2><h2 id="1-start-sh"><a href="#1-start-sh" class="headerlink" title="1. start.sh"></a>1. start.sh</h2><pre class=" language-sh"><code class="language-sh">#!/bin/bash
+<h2 id="一、编写启动脚本"><a href="#一、编写启动脚本" class="headerlink" title="一、编写启动脚本"></a>一、编写启动脚本</h2><h2 id="1-start-sh"><a href="#1-start-sh" class="headerlink" title="1. start.sh"></a>1. start.sh</h2><pre><code class="sh">#!/bin/bash
 
 # 启动前先尝试停止该服务
 docker stop luokaiii-mysql
@@ -406,11 +406,11 @@ docker run --name luokaiii-mysql \ # 指定容器服务名称
         --collation-server=utf8mb4_unicode_ci
 </code></pre>
 <h3 id="2-conf-local-cnf"><a href="#2-conf-local-cnf" class="headerlink" title="2. conf/local.cnf"></a>2. conf/local.cnf</h3><p>指定 InnoDB 的刷新方法，否则会出现数据目录无法挂载的异常。当出现该异常后，请先清空 <code>./data</code> 目录。</p>
-<pre class=" language-cnf"><code class="language-cnf">[mysqld]
+<pre><code class="cnf">[mysqld]
 innodb_flush_method=O_DSYNC
 </code></pre>
 <p><img src="https://i.loli.net/2019/09/23/6EcOuQZePBIXRvq.png" alt="数据无法挂载，data目录未清空"></p>
-<h2 id="二、执行启动脚本"><a href="#二、执行启动脚本" class="headerlink" title="二、执行启动脚本"></a>二、执行启动脚本</h2><pre class=" language-sh"><code class="language-sh">$ cd /home/luokaiii/images/mysql   # 脚本和DB文件的存放位置
+<h2 id="二、执行启动脚本"><a href="#二、执行启动脚本" class="headerlink" title="二、执行启动脚本"></a>二、执行启动脚本</h2><pre><code class="sh">$ cd /home/luokaiii/images/mysql   # 脚本和DB文件的存放位置
 
 $ mkdir data   # 创建存储目录
 $ vim conf/local.cnf  # 编写配置文件，填入innodb_flush_method=O_DSYNC
@@ -565,7 +565,7 @@ $ ./start.sh   # 运行刚刚写的脚本
               
                 <a href="/archives">
               
-                  <span class="site-state-item-count">224</span>
+                  <span class="site-state-item-count">237</span>
                   <span class="site-state-item-name">日志</span>
                 </a>
               </div>
@@ -587,7 +587,7 @@ $ ./start.sh   # 运行刚刚写的脚本
               
               <div class="site-state-item site-state-tags">
                 <a href="/tags/index.html">
-                  <span class="site-state-item-count">21</span>
+                  <span class="site-state-item-count">22</span>
                   <span class="site-state-item-name">标签</span>
                 </a>
               </div>

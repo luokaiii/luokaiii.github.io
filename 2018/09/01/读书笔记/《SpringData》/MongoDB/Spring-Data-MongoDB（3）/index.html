@@ -384,134 +384,134 @@
       
 
       
-        <h1 id="Spring-Data-MongoDB-（三）-自定义converter"><a href="#Spring-Data-MongoDB-（三）-自定义converter" class="headerlink" title="Spring Data MongoDB （三） 自定义converter"></a>Spring Data MongoDB （三） 自定义converter</h1><pre class=" language-java"><code class="language-java"><span class="token keyword">package</span> com<span class="token punctuation">.</span>pgc<span class="token punctuation">.</span>diagnose<span class="token punctuation">.</span>config<span class="token punctuation">;</span>
+        <h1 id="Spring-Data-MongoDB-（三）-自定义converter"><a href="#Spring-Data-MongoDB-（三）-自定义converter" class="headerlink" title="Spring Data MongoDB （三） 自定义converter"></a>Spring Data MongoDB （三） 自定义converter</h1><pre><code class="java">package com.pgc.diagnose.config;
 
-<span class="token keyword">import</span> com<span class="token punctuation">.</span>mongodb<span class="token punctuation">.</span>MongoClient<span class="token punctuation">;</span>
-<span class="token keyword">import</span> org<span class="token punctuation">.</span>springframework<span class="token punctuation">.</span>beans<span class="token punctuation">.</span>factory<span class="token punctuation">.</span>annotation<span class="token punctuation">.</span>Autowired<span class="token punctuation">;</span>
-<span class="token keyword">import</span> org<span class="token punctuation">.</span>springframework<span class="token punctuation">.</span>beans<span class="token punctuation">.</span>factory<span class="token punctuation">.</span>annotation<span class="token punctuation">.</span>Value<span class="token punctuation">;</span>
-<span class="token keyword">import</span> org<span class="token punctuation">.</span>springframework<span class="token punctuation">.</span>boot<span class="token punctuation">.</span>autoconfigure<span class="token punctuation">.</span>EnableAutoConfiguration<span class="token punctuation">;</span>
-<span class="token keyword">import</span> org<span class="token punctuation">.</span>springframework<span class="token punctuation">.</span>boot<span class="token punctuation">.</span>autoconfigure<span class="token punctuation">.</span>mongo<span class="token punctuation">.</span>embedded<span class="token punctuation">.</span>EmbeddedMongoAutoConfiguration<span class="token punctuation">;</span>
-<span class="token keyword">import</span> org<span class="token punctuation">.</span>springframework<span class="token punctuation">.</span>context<span class="token punctuation">.</span>annotation<span class="token punctuation">.</span>Configuration<span class="token punctuation">;</span>
-<span class="token keyword">import</span> org<span class="token punctuation">.</span>springframework<span class="token punctuation">.</span>context<span class="token punctuation">.</span>annotation<span class="token punctuation">.</span>Profile<span class="token punctuation">;</span>
-<span class="token keyword">import</span> org<span class="token punctuation">.</span>springframework<span class="token punctuation">.</span>core<span class="token punctuation">.</span>convert<span class="token punctuation">.</span>converter<span class="token punctuation">.</span>Converter<span class="token punctuation">;</span>
-<span class="token keyword">import</span> org<span class="token punctuation">.</span>springframework<span class="token punctuation">.</span>data<span class="token punctuation">.</span>convert<span class="token punctuation">.</span>ReadingConverter<span class="token punctuation">;</span>
-<span class="token keyword">import</span> org<span class="token punctuation">.</span>springframework<span class="token punctuation">.</span>data<span class="token punctuation">.</span>mongodb<span class="token punctuation">.</span>config<span class="token punctuation">.</span>AbstractMongoConfiguration<span class="token punctuation">;</span>
-<span class="token keyword">import</span> org<span class="token punctuation">.</span>springframework<span class="token punctuation">.</span>data<span class="token punctuation">.</span>mongodb<span class="token punctuation">.</span>core<span class="token punctuation">.</span>convert<span class="token punctuation">.</span>CustomConversions<span class="token punctuation">;</span>
+import com.mongodb.MongoClient;
+import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.beans.factory.annotation.Value;
+import org.springframework.boot.autoconfigure.EnableAutoConfiguration;
+import org.springframework.boot.autoconfigure.mongo.embedded.EmbeddedMongoAutoConfiguration;
+import org.springframework.context.annotation.Configuration;
+import org.springframework.context.annotation.Profile;
+import org.springframework.core.convert.converter.Converter;
+import org.springframework.data.convert.ReadingConverter;
+import org.springframework.data.mongodb.config.AbstractMongoConfiguration;
+import org.springframework.data.mongodb.core.convert.CustomConversions;
 
-<span class="token keyword">import</span> java<span class="token punctuation">.</span>util<span class="token punctuation">.</span>ArrayList<span class="token punctuation">;</span>
-<span class="token keyword">import</span> java<span class="token punctuation">.</span>util<span class="token punctuation">.</span>List<span class="token punctuation">;</span>
+import java.util.ArrayList;
+import java.util.List;
 
-<span class="token annotation punctuation">@Configuration</span>
-<span class="token comment" spellcheck="true">//@EnableAutoConfiguration(exclude = {EmbeddedMongoAutoConfiguration.class})</span>
-<span class="token comment" spellcheck="true">//@Profile("!testing")</span>
-<span class="token keyword">public</span> <span class="token keyword">class</span> <span class="token class-name">MongoConfig</span> <span class="token keyword">extends</span> <span class="token class-name">AbstractMongoConfiguration</span> <span class="token punctuation">{</span>
+@Configuration
+//@EnableAutoConfiguration(exclude = {EmbeddedMongoAutoConfiguration.class})
+//@Profile(&quot;!testing&quot;)
+public class MongoConfig extends AbstractMongoConfiguration {
 
-    <span class="token annotation punctuation">@Value</span><span class="token punctuation">(</span><span class="token string">"${spring.data.mongodb.uri}"</span><span class="token punctuation">)</span>
-    <span class="token keyword">private</span> String host<span class="token punctuation">;</span>
+    @Value(&quot;${spring.data.mongodb.uri}&quot;)
+    private String host;
 
-    <span class="token annotation punctuation">@Override</span>
-    <span class="token keyword">public</span> MongoClient <span class="token function">mongoClient</span><span class="token punctuation">(</span><span class="token punctuation">)</span> <span class="token punctuation">{</span>
-        <span class="token keyword">return</span> <span class="token keyword">new</span> <span class="token class-name">MongoClient</span><span class="token punctuation">(</span><span class="token string">"127.0.0.1"</span><span class="token punctuation">,</span> <span class="token number">27017</span><span class="token punctuation">)</span><span class="token punctuation">;</span>
-    <span class="token punctuation">}</span>
+    @Override
+    public MongoClient mongoClient() {
+        return new MongoClient(&quot;127.0.0.1&quot;, 27017);
+    }
 
-    <span class="token annotation punctuation">@Override</span>
-    <span class="token keyword">protected</span> String <span class="token function">getDatabaseName</span><span class="token punctuation">(</span><span class="token punctuation">)</span> <span class="token punctuation">{</span>
-        <span class="token keyword">return</span> <span class="token string">"ch_node"</span><span class="token punctuation">;</span>
-    <span class="token punctuation">}</span>
+    @Override
+    protected String getDatabaseName() {
+        return &quot;ch_node&quot;;
+    }
 
-    <span class="token annotation punctuation">@Override</span>
-    <span class="token keyword">public</span> CustomConversions <span class="token function">customConversions</span><span class="token punctuation">(</span><span class="token punctuation">)</span> <span class="token punctuation">{</span>
-        List<span class="token operator">&lt;</span>Converter<span class="token operator">&lt;</span><span class="token operator">?</span><span class="token punctuation">,</span> <span class="token operator">?</span><span class="token operator">>></span> converters <span class="token operator">=</span> <span class="token keyword">new</span> <span class="token class-name">ArrayList</span><span class="token operator">&lt;</span><span class="token operator">></span><span class="token punctuation">(</span><span class="token punctuation">)</span><span class="token punctuation">;</span>
-        converters<span class="token punctuation">.</span><span class="token function">add</span><span class="token punctuation">(</span><span class="token keyword">new</span> <span class="token class-name">StringToPointConverter2</span><span class="token punctuation">(</span><span class="token punctuation">)</span><span class="token punctuation">)</span><span class="token punctuation">;</span>
-        <span class="token keyword">return</span> <span class="token keyword">new</span> <span class="token class-name">CustomConversions</span><span class="token punctuation">(</span>converters<span class="token punctuation">)</span><span class="token punctuation">;</span>
-    <span class="token punctuation">}</span>
-<span class="token punctuation">}</span>
-
-</code></pre>
-<pre class=" language-java"><code class="language-java"><span class="token keyword">package</span> com<span class="token punctuation">.</span>pgc<span class="token punctuation">.</span>diagnose<span class="token punctuation">.</span>config<span class="token punctuation">;</span>
-
-<span class="token keyword">import</span> com<span class="token punctuation">.</span>pgc<span class="token punctuation">.</span>common<span class="token punctuation">.</span>exception<span class="token punctuation">.</span>BadRequestException<span class="token punctuation">;</span>
-<span class="token keyword">import</span> com<span class="token punctuation">.</span>pgc<span class="token punctuation">.</span>diagnose<span class="token punctuation">.</span>model<span class="token punctuation">.</span>Point<span class="token punctuation">;</span>
-<span class="token keyword">import</span> org<span class="token punctuation">.</span>springframework<span class="token punctuation">.</span>core<span class="token punctuation">.</span>convert<span class="token punctuation">.</span>ConverterNotFoundException<span class="token punctuation">;</span>
-<span class="token keyword">import</span> org<span class="token punctuation">.</span>springframework<span class="token punctuation">.</span>core<span class="token punctuation">.</span>convert<span class="token punctuation">.</span>TypeDescriptor<span class="token punctuation">;</span>
-<span class="token keyword">import</span> org<span class="token punctuation">.</span>springframework<span class="token punctuation">.</span>core<span class="token punctuation">.</span>convert<span class="token punctuation">.</span>converter<span class="token punctuation">.</span>ConditionalGenericConverter<span class="token punctuation">;</span>
-<span class="token keyword">import</span> org<span class="token punctuation">.</span>springframework<span class="token punctuation">.</span>stereotype<span class="token punctuation">.</span>Component<span class="token punctuation">;</span>
-
-<span class="token keyword">import</span> java<span class="token punctuation">.</span>util<span class="token punctuation">.</span>Collections<span class="token punctuation">;</span>
-<span class="token keyword">import</span> java<span class="token punctuation">.</span>util<span class="token punctuation">.</span>Set<span class="token punctuation">;</span>
-
-<span class="token annotation punctuation">@Component</span>
-<span class="token keyword">public</span> <span class="token keyword">class</span> <span class="token class-name">StringToPointConverter</span> <span class="token keyword">implements</span> <span class="token class-name">ConditionalGenericConverter</span> <span class="token punctuation">{</span>
-
-    <span class="token annotation punctuation">@Override</span>
-    <span class="token keyword">public</span> <span class="token keyword">boolean</span> <span class="token function">matches</span><span class="token punctuation">(</span>TypeDescriptor sourceType<span class="token punctuation">,</span> TypeDescriptor targetType<span class="token punctuation">)</span> <span class="token punctuation">{</span>
-        <span class="token keyword">return</span> sourceType<span class="token punctuation">.</span><span class="token function">getType</span><span class="token punctuation">(</span><span class="token punctuation">)</span><span class="token punctuation">.</span><span class="token function">equals</span><span class="token punctuation">(</span>String<span class="token punctuation">.</span><span class="token keyword">class</span><span class="token punctuation">)</span> <span class="token operator">&amp;&amp;</span> targetType<span class="token punctuation">.</span><span class="token function">getType</span><span class="token punctuation">(</span><span class="token punctuation">)</span><span class="token punctuation">.</span><span class="token function">equals</span><span class="token punctuation">(</span>Point<span class="token punctuation">.</span><span class="token keyword">class</span><span class="token punctuation">)</span><span class="token punctuation">;</span>
-    <span class="token punctuation">}</span>
-
-    <span class="token annotation punctuation">@Override</span>
-    <span class="token keyword">public</span> Set<span class="token operator">&lt;</span>ConvertiblePair<span class="token operator">></span> <span class="token function">getConvertibleTypes</span><span class="token punctuation">(</span><span class="token punctuation">)</span> <span class="token punctuation">{</span>
-        <span class="token keyword">return</span> Collections<span class="token punctuation">.</span><span class="token function">singleton</span><span class="token punctuation">(</span><span class="token keyword">new</span> <span class="token class-name">ConvertiblePair</span><span class="token punctuation">(</span>String<span class="token punctuation">.</span><span class="token keyword">class</span><span class="token punctuation">,</span> Point<span class="token punctuation">.</span><span class="token keyword">class</span><span class="token punctuation">)</span><span class="token punctuation">)</span><span class="token punctuation">;</span>
-    <span class="token punctuation">}</span>
-
-    <span class="token annotation punctuation">@Override</span>
-    <span class="token keyword">public</span> Object <span class="token function">convert</span><span class="token punctuation">(</span>Object source<span class="token punctuation">,</span> TypeDescriptor sourceType<span class="token punctuation">,</span> TypeDescriptor targetType<span class="token punctuation">)</span> <span class="token punctuation">{</span>
-        String from <span class="token operator">=</span> <span class="token punctuation">(</span>String<span class="token punctuation">)</span> source<span class="token punctuation">;</span>
-
-        <span class="token keyword">if</span> <span class="token punctuation">(</span>from <span class="token operator">!=</span> null<span class="token punctuation">)</span><span class="token punctuation">{</span>
-            String<span class="token punctuation">[</span><span class="token punctuation">]</span> strings <span class="token operator">=</span> from<span class="token punctuation">.</span><span class="token function">split</span><span class="token punctuation">(</span><span class="token string">"#"</span><span class="token punctuation">)</span><span class="token punctuation">;</span>
-
-            <span class="token keyword">if</span> <span class="token punctuation">(</span>strings<span class="token punctuation">.</span>length <span class="token operator">==</span> <span class="token number">0</span> <span class="token operator">||</span> strings<span class="token punctuation">.</span>length <span class="token operator">></span> <span class="token number">2</span><span class="token punctuation">)</span>
-                <span class="token keyword">throw</span> <span class="token keyword">new</span> <span class="token class-name">BadRequestException</span><span class="token punctuation">(</span><span class="token string">"String 转 Point 失败！"</span><span class="token punctuation">)</span><span class="token punctuation">;</span>
-
-            <span class="token keyword">if</span> <span class="token punctuation">(</span>strings<span class="token punctuation">.</span>length <span class="token operator">==</span> <span class="token number">1</span><span class="token punctuation">)</span>
-                <span class="token keyword">return</span> Point<span class="token punctuation">.</span><span class="token function">build</span><span class="token punctuation">(</span>Point<span class="token punctuation">.</span>Track<span class="token punctuation">.</span><span class="token function">valueOf</span><span class="token punctuation">(</span>strings<span class="token punctuation">[</span><span class="token number">0</span><span class="token punctuation">]</span><span class="token punctuation">)</span><span class="token punctuation">)</span><span class="token punctuation">;</span>
-
-            <span class="token keyword">return</span> Point<span class="token punctuation">.</span><span class="token function">build</span><span class="token punctuation">(</span>Point<span class="token punctuation">.</span>Track<span class="token punctuation">.</span><span class="token function">valueOf</span><span class="token punctuation">(</span>strings<span class="token punctuation">[</span><span class="token number">0</span><span class="token punctuation">]</span><span class="token punctuation">)</span><span class="token punctuation">,</span> Point<span class="token punctuation">.</span>Industry<span class="token punctuation">.</span><span class="token function">valueOf</span><span class="token punctuation">(</span>strings<span class="token punctuation">[</span><span class="token number">1</span><span class="token punctuation">]</span><span class="token punctuation">)</span><span class="token punctuation">)</span><span class="token punctuation">;</span>
-        <span class="token punctuation">}</span>
-
-        <span class="token keyword">throw</span> <span class="token keyword">new</span> <span class="token class-name">ConverterNotFoundException</span><span class="token punctuation">(</span>sourceType<span class="token punctuation">,</span> targetType<span class="token punctuation">)</span><span class="token punctuation">;</span>
-    <span class="token punctuation">}</span>
-<span class="token punctuation">}</span>
+    @Override
+    public CustomConversions customConversions() {
+        List&lt;Converter&lt;?, ?&gt;&gt; converters = new ArrayList&lt;&gt;();
+        converters.add(new StringToPointConverter2());
+        return new CustomConversions(converters);
+    }
+}
 
 </code></pre>
-<pre class=" language-java"><code class="language-java"><span class="token keyword">package</span> com<span class="token punctuation">.</span>pgc<span class="token punctuation">.</span>diagnose<span class="token punctuation">.</span>config<span class="token punctuation">;</span>
+<pre><code class="java">package com.pgc.diagnose.config;
 
-<span class="token keyword">import</span> com<span class="token punctuation">.</span>pgc<span class="token punctuation">.</span>common<span class="token punctuation">.</span>exception<span class="token punctuation">.</span>BadRequestException<span class="token punctuation">;</span>
-<span class="token keyword">import</span> com<span class="token punctuation">.</span>pgc<span class="token punctuation">.</span>diagnose<span class="token punctuation">.</span>model<span class="token punctuation">.</span>Point<span class="token punctuation">;</span>
-<span class="token keyword">import</span> org<span class="token punctuation">.</span>springframework<span class="token punctuation">.</span>core<span class="token punctuation">.</span>convert<span class="token punctuation">.</span>converter<span class="token punctuation">.</span>Converter<span class="token punctuation">;</span>
-<span class="token keyword">import</span> org<span class="token punctuation">.</span>springframework<span class="token punctuation">.</span>stereotype<span class="token punctuation">.</span>Component<span class="token punctuation">;</span>
+import com.pgc.common.exception.BadRequestException;
+import com.pgc.diagnose.model.Point;
+import org.springframework.core.convert.ConverterNotFoundException;
+import org.springframework.core.convert.TypeDescriptor;
+import org.springframework.core.convert.converter.ConditionalGenericConverter;
+import org.springframework.stereotype.Component;
 
-<span class="token annotation punctuation">@Component</span>
-<span class="token keyword">public</span> <span class="token keyword">class</span> <span class="token class-name">StringToPointConverter2</span> <span class="token keyword">implements</span> <span class="token class-name">Converter</span><span class="token operator">&lt;</span>String<span class="token punctuation">,</span> Point<span class="token operator">></span> <span class="token punctuation">{</span>
-    <span class="token annotation punctuation">@Override</span>
-    <span class="token keyword">public</span> Point <span class="token function">convert</span><span class="token punctuation">(</span>String from<span class="token punctuation">)</span> <span class="token punctuation">{</span>
+import java.util.Collections;
+import java.util.Set;
 
-        <span class="token keyword">if</span> <span class="token punctuation">(</span>from <span class="token operator">!=</span> null<span class="token punctuation">)</span><span class="token punctuation">{</span>
-            String<span class="token punctuation">[</span><span class="token punctuation">]</span> strings <span class="token operator">=</span> from<span class="token punctuation">.</span><span class="token function">split</span><span class="token punctuation">(</span><span class="token string">"#"</span><span class="token punctuation">)</span><span class="token punctuation">;</span>
+@Component
+public class StringToPointConverter implements ConditionalGenericConverter {
 
-            <span class="token keyword">if</span> <span class="token punctuation">(</span>strings<span class="token punctuation">.</span>length <span class="token operator">==</span> <span class="token number">0</span> <span class="token operator">||</span> strings<span class="token punctuation">.</span>length <span class="token operator">></span> <span class="token number">2</span><span class="token punctuation">)</span>
-                <span class="token keyword">throw</span> <span class="token keyword">new</span> <span class="token class-name">BadRequestException</span><span class="token punctuation">(</span><span class="token string">"String 转 Point 失败！"</span><span class="token punctuation">)</span><span class="token punctuation">;</span>
+    @Override
+    public boolean matches(TypeDescriptor sourceType, TypeDescriptor targetType) {
+        return sourceType.getType().equals(String.class) &amp;&amp; targetType.getType().equals(Point.class);
+    }
 
-            <span class="token keyword">if</span> <span class="token punctuation">(</span>strings<span class="token punctuation">.</span>length <span class="token operator">==</span> <span class="token number">1</span><span class="token punctuation">)</span>
-                <span class="token keyword">return</span> Point<span class="token punctuation">.</span><span class="token function">build</span><span class="token punctuation">(</span>Point<span class="token punctuation">.</span>Track<span class="token punctuation">.</span><span class="token function">valueOf</span><span class="token punctuation">(</span>strings<span class="token punctuation">[</span><span class="token number">0</span><span class="token punctuation">]</span><span class="token punctuation">)</span><span class="token punctuation">)</span><span class="token punctuation">;</span>
+    @Override
+    public Set&lt;ConvertiblePair&gt; getConvertibleTypes() {
+        return Collections.singleton(new ConvertiblePair(String.class, Point.class));
+    }
 
-            <span class="token keyword">return</span> Point<span class="token punctuation">.</span><span class="token function">build</span><span class="token punctuation">(</span>Point<span class="token punctuation">.</span>Track<span class="token punctuation">.</span><span class="token function">valueOf</span><span class="token punctuation">(</span>strings<span class="token punctuation">[</span><span class="token number">0</span><span class="token punctuation">]</span><span class="token punctuation">)</span><span class="token punctuation">,</span> Point<span class="token punctuation">.</span>Industry<span class="token punctuation">.</span><span class="token function">valueOf</span><span class="token punctuation">(</span>strings<span class="token punctuation">[</span><span class="token number">1</span><span class="token punctuation">]</span><span class="token punctuation">)</span><span class="token punctuation">)</span><span class="token punctuation">;</span>
-        <span class="token punctuation">}</span>
+    @Override
+    public Object convert(Object source, TypeDescriptor sourceType, TypeDescriptor targetType) {
+        String from = (String) source;
 
-        <span class="token keyword">return</span> null<span class="token punctuation">;</span>
-    <span class="token punctuation">}</span>
-<span class="token punctuation">}</span>
+        if (from != null){
+            String[] strings = from.split(&quot;#&quot;);
+
+            if (strings.length == 0 || strings.length &gt; 2)
+                throw new BadRequestException(&quot;String 转 Point 失败！&quot;);
+
+            if (strings.length == 1)
+                return Point.build(Point.Track.valueOf(strings[0]));
+
+            return Point.build(Point.Track.valueOf(strings[0]), Point.Industry.valueOf(strings[1]));
+        }
+
+        throw new ConverterNotFoundException(sourceType, targetType);
+    }
+}
 
 </code></pre>
-<pre class=" language-java"><code class="language-java"><span class="token keyword">package</span> com<span class="token punctuation">.</span>pgc<span class="token punctuation">.</span>diagnose<span class="token punctuation">.</span>config<span class="token punctuation">;</span>
+<pre><code class="java">package com.pgc.diagnose.config;
 
-<span class="token keyword">import</span> com<span class="token punctuation">.</span>pgc<span class="token punctuation">.</span>common<span class="token punctuation">.</span>config<span class="token punctuation">.</span>WebConfig<span class="token punctuation">;</span>
-<span class="token keyword">import</span> org<span class="token punctuation">.</span>springframework<span class="token punctuation">.</span>context<span class="token punctuation">.</span>annotation<span class="token punctuation">.</span>Configuration<span class="token punctuation">;</span>
+import com.pgc.common.exception.BadRequestException;
+import com.pgc.diagnose.model.Point;
+import org.springframework.core.convert.converter.Converter;
+import org.springframework.stereotype.Component;
 
-<span class="token annotation punctuation">@Configuration</span>
-<span class="token keyword">public</span> <span class="token keyword">class</span> <span class="token class-name">DiagnoseAppWebConfig</span> <span class="token keyword">extends</span> <span class="token class-name">WebConfig</span> <span class="token punctuation">{</span>
+@Component
+public class StringToPointConverter2 implements Converter&lt;String, Point&gt; {
+    @Override
+    public Point convert(String from) {
 
-<span class="token punctuation">}</span>
+        if (from != null){
+            String[] strings = from.split(&quot;#&quot;);
+
+            if (strings.length == 0 || strings.length &gt; 2)
+                throw new BadRequestException(&quot;String 转 Point 失败！&quot;);
+
+            if (strings.length == 1)
+                return Point.build(Point.Track.valueOf(strings[0]));
+
+            return Point.build(Point.Track.valueOf(strings[0]), Point.Industry.valueOf(strings[1]));
+        }
+
+        return null;
+    }
+}
+
+</code></pre>
+<pre><code class="java">package com.pgc.diagnose.config;
+
+import com.pgc.common.config.WebConfig;
+import org.springframework.context.annotation.Configuration;
+
+@Configuration
+public class DiagnoseAppWebConfig extends WebConfig {
+
+}
 
 </code></pre>
 
@@ -544,8 +544,8 @@
         <div class="post-nav">
           <div class="post-nav-next post-nav-item">
             
-              <a href="/2018/09/01/SpringCloud/全链路监控/" rel="next" title="待学习">
-                <i class="fa fa-chevron-left"></i> 待学习
+              <a href="/2018/09/01/读书笔记/《SpringData》/MongoDB/Spring-Data-MongoDB（1）/" rel="next" title="SpringDataMongoDB(一)">
+                <i class="fa fa-chevron-left"></i> SpringDataMongoDB(一)
               </a>
             
           </div>
@@ -554,8 +554,8 @@
 
           <div class="post-nav-prev post-nav-item">
             
-              <a href="/2018/09/01/SpringBootWebsocket/SpringBoot消息机制(四)-ActiveMQ介绍/" rel="prev" title="SpringBoot消息机制(四)-ActiveMQ介绍">
-                SpringBoot消息机制(四)-ActiveMQ介绍 <i class="fa fa-chevron-right"></i>
+              <a href="/2018/09/01/POI/POI生成Excel-图表生成/" rel="prev" title="POI+XChart图形报告">
+                POI+XChart图形报告 <i class="fa fa-chevron-right"></i>
               </a>
             
           </div>
@@ -637,7 +637,7 @@
               
                 <a href="/archives">
               
-                  <span class="site-state-item-count">224</span>
+                  <span class="site-state-item-count">237</span>
                   <span class="site-state-item-name">日志</span>
                 </a>
               </div>
@@ -659,7 +659,7 @@
               
               <div class="site-state-item site-state-tags">
                 <a href="/tags/index.html">
-                  <span class="site-state-item-count">21</span>
+                  <span class="site-state-item-count">22</span>
                   <span class="site-state-item-name">标签</span>
                 </a>
               </div>

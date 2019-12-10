@@ -390,23 +390,23 @@
 <p>官网上的是 Spring Security 与原始的 Spring Test 环境的集成，这里就不做赘述了，我们使用的是 SpringBoot Test 环境</p>
 </blockquote>
 <h2 id="一、设置测试环境"><a href="#一、设置测试环境" class="headerlink" title="一、设置测试环境"></a>一、设置测试环境</h2><p>需要先引入 spring-security-test 依赖，这样就可以直接在 @SpringBootTest 中集成 Security 的测试环境，就是这么简单.</p>
-<pre class=" language-java"><code class="language-java"><span class="token annotation punctuation">@RunWith</span><span class="token punctuation">(</span>SpringRunner<span class="token punctuation">.</span><span class="token keyword">class</span><span class="token punctuation">)</span>
-<span class="token annotation punctuation">@SpringBootTest</span>
-<span class="token keyword">public</span> <span class="token keyword">class</span> <span class="token class-name">DemoTest</span> <span class="token punctuation">{</span>
-    <span class="token comment" spellcheck="true">// .. 一些 JUnit 单元测试方法</span>
-<span class="token punctuation">}</span>
+<pre><code class="java">@RunWith(SpringRunner.class)
+@SpringBootTest
+public class DemoTest {
+    // .. 一些 JUnit 单元测试方法
+}
 </code></pre>
 <h2 id="二、常用注解"><a href="#二、常用注解" class="headerlink" title="二、常用注解"></a>二、常用注解</h2><p>单元测试要尽量做到“单元”化，只测试一个具体的功能，而不用将MVC、DAO各层都测试一遍。</p>
 <p>因此这些注解可以帮助我们建立一个模拟的测试环境，使我们的测试代码只关注业务是否正常执行，代码是否正确。而不用考虑用户是否登陆，是否需要重新授权等问题。</p>
 <h3 id="1-WithMockUser"><a href="#1-WithMockUser" class="headerlink" title="1. @WithMockUser"></a>1. @WithMockUser</h3><p>在方法上使用一个模拟的用户，而不用真的去注册并登陆。</p>
 <p>该注解会 Mock 一个用户名为‘user’，密码为 ’password‘，角色为 ’ROLE_USER’ 的Authentication，并将其注入到 SecurityContext 中。</p>
-<pre class=" language-java"><code class="language-java"><span class="token annotation punctuation">@Test</span>
-<span class="token annotation punctuation">@WithMockUser</span>
-<span class="token keyword">public</span> <span class="token keyword">void</span> <span class="token function">getMessageByUser</span><span class="token punctuation">(</span><span class="token punctuation">)</span> <span class="token punctuation">{</span>
-    <span class="token comment" spellcheck="true">// 查询SecurityContext 上下文环境，可以取到 Mock 的模拟用户数据</span>
-    String username <span class="token operator">=</span> <span class="token punctuation">(</span><span class="token punctuation">(</span>UserDetails<span class="token punctuation">)</span>SecurityContextHolder<span class="token punctuation">.</span><span class="token function">getSecurityContext</span><span class="token punctuation">(</span><span class="token punctuation">)</span><span class="token punctuation">.</span><span class="token function">getAuthentication</span><span class="token punctuation">(</span><span class="token punctuation">)</span><span class="token punctuation">.</span><span class="token function">getPrincipal</span><span class="token punctuation">(</span><span class="token punctuation">)</span><span class="token punctuation">)</span><span class="token punctuation">.</span><span class="token function">getUsername</span><span class="token punctuation">(</span><span class="token punctuation">)</span><span class="token punctuation">;</span>
-    <span class="token comment" spellcheck="true">// ......</span>
-<span class="token punctuation">}</span>
+<pre><code class="java">@Test
+@WithMockUser
+public void getMessageByUser() {
+    // 查询SecurityContext 上下文环境，可以取到 Mock 的模拟用户数据
+    String username = ((UserDetails)SecurityContextHolder.getSecurityContext().getAuthentication().getPrincipal()).getUsername();
+    // ......
+}
 </code></pre>
 <blockquote>
 <p>思考：如果我们使用的是自定义的 CustomUserDetails 呢？比如扩展了 UserDetails 的属性，增加了 level 等级属性，那么将如何Mock并从上下文中获取呢？    –这将会在下一节“自定义注解”中说明</p>
@@ -414,37 +414,37 @@
 <h3 id="2-WithAnonymousUser"><a href="#2-WithAnonymousUser" class="headerlink" title="2. @WithAnonymousUser"></a>2. @WithAnonymousUser</h3><p>当需要用户登录，但是不需要用户的信息时，可以考虑以匿名用户的身份运行一些测试。这样会更加方便。</p>
 <h3 id="3-WithUserDetails"><a href="#3-WithUserDetails" class="headerlink" title="3. @WithUserDetails"></a>3. @WithUserDetails</h3><p>使用自定义的 UserDetailsService 来创建身份验证的主题，但是需要用户存在。在正常业务中，可能还涉及到数据库查询，如果包含数据库查询，还需要与业务逻辑的数据库隔离等等问题。</p>
 <p>自定义查找的用户名，以及自定义用来查找的 UserDetailsService。</p>
-<pre class=" language-java"><code class="language-java"><span class="token annotation punctuation">@WithUserDetails</span><span class="token punctuation">(</span>value <span class="token operator">=</span> <span class="token string">"customUsername"</span><span class="token punctuation">,</span> userDetailsServiceBeanName <span class="token operator">=</span> <span class="token string">"myUserDetailsService"</span><span class="token punctuation">)</span>
+<pre><code class="java">@WithUserDetails(value = &quot;customUsername&quot;, userDetailsServiceBeanName = &quot;myUserDetailsService&quot;)
 </code></pre>
 <h2 id="三、完整的测试案例"><a href="#三、完整的测试案例" class="headerlink" title="三、完整的测试案例"></a>三、完整的测试案例</h2><p>UserService 用户业务服务，提供一个创建用户的功能，并且在保存之前，记录当前创建人。</p>
-<pre class=" language-java"><code class="language-java"><span class="token comment" spellcheck="true">// 用户业务服务</span>
-<span class="token annotation punctuation">@Service</span>
-<span class="token keyword">public</span> <span class="token keyword">class</span> <span class="token class-name">UserService</span> <span class="token punctuation">{</span>
-    <span class="token comment" spellcheck="true">// 创建用户，并且指定创建人与创建时间</span>
-    <span class="token keyword">public</span> User <span class="token function">createUser</span><span class="token punctuation">(</span>User user<span class="token punctuation">)</span><span class="token punctuation">{</span>
-        <span class="token comment" spellcheck="true">// 从当前环境中取出当前主体的用户名</span>
-        String username <span class="token operator">=</span> <span class="token punctuation">(</span><span class="token punctuation">(</span>UserDetails<span class="token punctuation">)</span>SecurityContextHolder<span class="token punctuation">.</span><span class="token function">getSecurityContext</span><span class="token punctuation">(</span><span class="token punctuation">)</span><span class="token punctuation">.</span><span class="token function">getAuthentication</span><span class="token punctuation">(</span><span class="token punctuation">)</span><span class="token punctuation">.</span><span class="token function">getPrincipal</span><span class="token punctuation">(</span><span class="token punctuation">)</span><span class="token punctuation">)</span><span class="token punctuation">.</span><span class="token function">getUsername</span><span class="token punctuation">(</span><span class="token punctuation">)</span><span class="token punctuation">;</span>
-        <span class="token comment" spellcheck="true">// 保存新建用户的创建者、创建时间</span>
-        user<span class="token punctuation">.</span><span class="token function">setCreateUser</span><span class="token punctuation">(</span>username<span class="token punctuation">)</span><span class="token punctuation">;</span>
-        user<span class="token punctuation">.</span><span class="token function">setCreateDate</span><span class="token punctuation">(</span><span class="token keyword">new</span> <span class="token class-name">Date</span><span class="token punctuation">(</span><span class="token punctuation">)</span><span class="token punctuation">)</span><span class="token punctuation">;</span>
-        <span class="token keyword">return</span> <span class="token function">save</span><span class="token punctuation">(</span>user<span class="token punctuation">)</span><span class="token punctuation">;</span>
-    <span class="token punctuation">}</span>
-<span class="token punctuation">}</span>
+<pre><code class="java">// 用户业务服务
+@Service
+public class UserService {
+    // 创建用户，并且指定创建人与创建时间
+    public User createUser(User user){
+        // 从当前环境中取出当前主体的用户名
+        String username = ((UserDetails)SecurityContextHolder.getSecurityContext().getAuthentication().getPrincipal()).getUsername();
+        // 保存新建用户的创建者、创建时间
+        user.setCreateUser(username);
+        user.setCreateDate(new Date());
+        return save(user);
+    }
+}
 </code></pre>
 <p>测试用户在创建时，是否设置了创建人（即@WithMockUser 是否把用户注入了SecurityContext中）。</p>
-<pre class=" language-java"><code class="language-java"><span class="token annotation punctuation">@Runwith</span><span class="token punctuation">(</span>SpringRunner<span class="token punctuation">.</span><span class="token keyword">class</span><span class="token punctuation">)</span>
-<span class="token annotation punctuation">@SpringBootTest</span>
-<span class="token keyword">public</span> <span class="token keyword">class</span> <span class="token class-name">UserServiceTest</span> <span class="token punctuation">{</span>
-    <span class="token annotation punctuation">@Autowired</span>
-    UserService userService<span class="token punctuation">;</span>
+<pre><code class="java">@Runwith(SpringRunner.class)
+@SpringBootTest
+public class UserServiceTest {
+    @Autowired
+    UserService userService;
 
-    <span class="token annotation punctuation">@Test</span>
-    <span class="token annotation punctuation">@WithMockUser</span><span class="token punctuation">(</span>username <span class="token operator">=</span> <span class="token string">"admin"</span><span class="token punctuation">,</span> roles <span class="token operator">=</span> <span class="token punctuation">{</span><span class="token string">"ADMIN"</span><span class="token punctuation">,</span><span class="token string">"USER"</span><span class="token punctuation">}</span><span class="token punctuation">)</span>
-    <span class="token keyword">public</span> <span class="token keyword">void</span> <span class="token function">test</span><span class="token punctuation">(</span><span class="token punctuation">)</span><span class="token punctuation">{</span>
-        User user <span class="token operator">=</span> userService<span class="token punctuation">.</span><span class="token function">create</span><span class="token punctuation">(</span><span class="token keyword">new</span> <span class="token class-name">User</span><span class="token punctuation">(</span><span class="token string">"张三"</span><span class="token punctuation">)</span><span class="token punctuation">)</span><span class="token punctuation">;</span>
-        Assertions<span class="token punctuation">.</span><span class="token function">assertThat</span><span class="token punctuation">(</span>user<span class="token punctuation">.</span><span class="token function">getCreateUser</span><span class="token punctuation">(</span><span class="token punctuation">)</span><span class="token punctuation">)</span><span class="token punctuation">.</span><span class="token function">isEqualsTo</span><span class="token punctuation">(</span><span class="token string">"admin"</span><span class="token punctuation">)</span><span class="token punctuation">;</span>
-    <span class="token punctuation">}</span>
-<span class="token punctuation">}</span>
+    @Test
+    @WithMockUser(username = &quot;admin&quot;, roles = {&quot;ADMIN&quot;,&quot;USER&quot;})
+    public void test(){
+        User user = userService.create(new User(&quot;张三&quot;));
+        Assertions.assertThat(user.getCreateUser()).isEqualsTo(&quot;admin&quot;);
+    }
+}
 </code></pre>
 
       
@@ -569,7 +569,7 @@
               
                 <a href="/archives">
               
-                  <span class="site-state-item-count">224</span>
+                  <span class="site-state-item-count">237</span>
                   <span class="site-state-item-name">日志</span>
                 </a>
               </div>
@@ -591,7 +591,7 @@
               
               <div class="site-state-item site-state-tags">
                 <a href="/tags/index.html">
-                  <span class="site-state-item-count">21</span>
+                  <span class="site-state-item-count">22</span>
                   <span class="site-state-item-name">标签</span>
                 </a>
               </div>

@@ -386,29 +386,29 @@
       
         <h1 id="第十五章-CORS-HTTP请求控制"><a href="#第十五章-CORS-HTTP请求控制" class="headerlink" title="第十五章 CORS - HTTP请求控制"></a>第十五章 CORS - HTTP请求控制</h1><p>Spring 框架为 CORS 提供了一系列的支持。CORS 的处理在 Spring Security 之前，因为此时的请求不包含任何 cookie(JSESSIONID)。</p>
 <p>处理CORS 最简单的方法是使用 CorsFilter，通过配置一个 CorsConfigurationSource，可以将 CorsFilter 与 Spring Security 集成。</p>
-<pre class=" language-java"><code class="language-java"><span class="token annotation punctuation">@EnableWebSecurity</span>
-<span class="token keyword">public</span> <span class="token keyword">class</span> <span class="token class-name">WebSecurityConfig</span> <span class="token keyword">extends</span> <span class="token class-name">WebSecurityConfigurerAdapter</span> <span class="token punctuation">{</span>
+<pre><code class="java">@EnableWebSecurity
+public class WebSecurityConfig extends WebSecurityConfigurerAdapter {
 
-    <span class="token annotation punctuation">@Override</span>
-    <span class="token keyword">protected</span> <span class="token keyword">void</span> <span class="token function">config</span><span class="token punctuation">(</span>HttpSecurity http<span class="token punctuation">)</span> <span class="token keyword">throws</span> Exception <span class="token punctuation">{</span>
+    @Override
+    protected void config(HttpSecurity http) throws Exception {
         http
-            <span class="token comment" spellcheck="true">// 默认情况下使用名为 corsConfigurationSource 的bean</span>
-            <span class="token comment" spellcheck="true">// 这里可以省略指定 CorsConfigurationSOurce</span>
-            <span class="token punctuation">.</span><span class="token function">cors</span><span class="token punctuation">(</span><span class="token punctuation">)</span><span class="token punctuation">.</span><span class="token function">and</span><span class="token punctuation">(</span><span class="token punctuation">)</span>
-            <span class="token punctuation">.</span><span class="token punctuation">.</span><span class="token punctuation">.</span>
-    <span class="token punctuation">}</span>
+            // 默认情况下使用名为 corsConfigurationSource 的bean
+            // 这里可以省略指定 CorsConfigurationSOurce
+            .cors().and()
+            ...
+    }
 
-    <span class="token annotation punctuation">@Bean</span>
-    CorsConfigurationSource <span class="token function">corsConfigurationSource</span><span class="token punctuation">(</span><span class="token punctuation">)</span> <span class="token punctuation">{</span>
-        CorsConfiguration config <span class="token operator">=</span> <span class="token keyword">new</span> <span class="token class-name">CorsConfiguration</span><span class="token punctuation">(</span><span class="token punctuation">)</span><span class="token punctuation">;</span>
-        config<span class="token punctuation">.</span><span class="token function">setAllowedOrigins</span><span class="token punctuation">(</span>Arrays<span class="token punctuation">.</span><span class="token function">asList</span><span class="token punctuation">(</span><span class="token string">"https://example.com"</span><span class="token punctuation">)</span><span class="token punctuation">)</span><span class="token punctuation">;</span>
-        config<span class="token punctuation">.</span><span class="token function">setAllowedMethods</span><span class="token punctuation">(</span>Arrays<span class="token punctuation">.</span><span class="token function">asList</span><span class="token punctuation">(</span><span class="token string">"GET"</span><span class="token punctuation">,</span><span class="token string">"POST"</span><span class="token punctuation">)</span><span class="token punctuation">)</span><span class="token punctuation">;</span>
+    @Bean
+    CorsConfigurationSource corsConfigurationSource() {
+        CorsConfiguration config = new CorsConfiguration();
+        config.setAllowedOrigins(Arrays.asList(&quot;https://example.com&quot;));
+        config.setAllowedMethods(Arrays.asList(&quot;GET&quot;,&quot;POST&quot;));
 
-        UrlBasedCorsConfigurationSource source <span class="token operator">=</span> <span class="token keyword">new</span> <span class="token class-name">UrlBasedCorsConfigurationSource</span><span class="token punctuation">(</span><span class="token punctuation">)</span><span class="token punctuation">;</span>
-        source<span class="token punctuation">.</span><span class="token function">registerCorsConfiguration</span><span class="token punctuation">(</span><span class="token string">"/**"</span><span class="token punctuation">,</span> config<span class="token punctuation">)</span><span class="token punctuation">;</span>
-        <span class="token keyword">return</span> source<span class="token punctuation">;</span>
-    <span class="token punctuation">}</span>
-<span class="token punctuation">}</span>
+        UrlBasedCorsConfigurationSource source = new UrlBasedCorsConfigurationSource();
+        source.registerCorsConfiguration(&quot;/**&quot;, config);
+        return source;
+    }
+}
 </code></pre>
 
       
@@ -533,7 +533,7 @@
               
                 <a href="/archives">
               
-                  <span class="site-state-item-count">224</span>
+                  <span class="site-state-item-count">237</span>
                   <span class="site-state-item-name">日志</span>
                 </a>
               </div>
@@ -555,7 +555,7 @@
               
               <div class="site-state-item site-state-tags">
                 <a href="/tags/index.html">
-                  <span class="site-state-item-count">21</span>
+                  <span class="site-state-item-count">22</span>
                   <span class="site-state-item-name">标签</span>
                 </a>
               </div>

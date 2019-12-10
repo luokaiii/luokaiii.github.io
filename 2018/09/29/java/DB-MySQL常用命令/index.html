@@ -384,7 +384,7 @@
       
 
       
-        <h2 id="基本操作"><a href="#基本操作" class="headerlink" title="基本操作"></a>基本操作</h2><pre class=" language-mysql"><code class="language-mysql">/* Windows服务 */
+        <h2 id="基本操作"><a href="#基本操作" class="headerlink" title="基本操作"></a>基本操作</h2><pre><code class="mysql">/* Windows服务 */
 -- 启动 MySQL
     net start mysql
 -- 创建Windows 服务
@@ -396,7 +396,7 @@
 -- 显示系统变量信息
     SHOW VARIABLES
 </code></pre>
-<h2 id="数据库操作"><a href="#数据库操作" class="headerlink" title="数据库操作"></a>数据库操作</h2><pre class=" language-mysql"><code class="language-mysql">/* 数据库操作 */
+<h2 id="数据库操作"><a href="#数据库操作" class="headerlink" title="数据库操作"></a>数据库操作</h2><pre><code class="mysql">/* 数据库操作 */
 -- 查看当前数据库
     SELECT DATABASE();
 -- 显示当前时间、用户名、数据库版本
@@ -407,7 +407,7 @@
         CHARACTER SET charset_name
         COLLATE collation_name
 -- 查看已有库
-    SHOW DATABASES [ LIKE 'PATTERN' ]
+    SHOW DATABASES [ LIKE &#39;PATTERN&#39; ]
 -- 查看当前库信息
     SHOW CREATE DATABASE 数据库名
 -- 修改库的选项信息
@@ -416,7 +416,7 @@
     DROP DATABASE [ IF EXISTS ] 数据库名
         同时删除数据库相关的目录及目录内容
 </code></pre>
-<h2 id="表操作"><a href="#表操作" class="headerlink" title="表操作"></a>表操作</h2><pre class=" language-mysql"><code class="language-mysql">-- 创建表
+<h2 id="表操作"><a href="#表操作" class="headerlink" title="表操作"></a>表操作</h2><pre><code class="mysql">-- 创建表
     CREATE [TEMPORARY] TABLE [IF NOT EXISTS] [数据库名.]表名 (
         表的结构定义
     ) [表选项]
@@ -424,7 +424,7 @@
         - 最后一个字段后不能有都好
         - TEMPORARY 临时表，会话结束时表自动消失
         - 对于字段的定义：
-            字段名 数据类型 [NOT NULL|NULL] [DEFAULT default_value] [AUTO_INCREMENT] [UNIQUE [KEY] | PRIMARY [KEY]] [COMMENT 'string']
+            字段名 数据类型 [NOT NULL|NULL] [DEFAULT default_value] [AUTO_INCREMENT] [UNIQUE [KEY] | PRIMARY [KEY]] [COMMENT &#39;string&#39;]
 -- 表选项
     -- 字符集
         CHARSET = charset_name
@@ -443,20 +443,20 @@
     -- 自增起始数
         AUTO_INCREMENT = 行数
     -- 数据文件目录
-        DATA DIRECTORY = '目录'
+        DATA DIRECTORY = &#39;目录&#39;
     -- 索引文件目录
-        INDEX DIRECTORY = '目录'
+        INDEX DIRECTORY = &#39;目录&#39;
     -- 表注释
-        COMMENT = 'string'
+        COMMENT = &#39;string&#39;
     -- 分区选项
         PARTITION BY ...
 -- 查看所有表
-    SHOW TABLES [LIKE 'pattern']
+    SHOW TABLES [LIKE &#39;pattern&#39;]
     SHOW TABLES FROM 库名
 -- 查看表结构
     SHOW CREATE TABLE 表名
-    DESC 表名 / DESCRIBE 表名 / EXPLAIN 表名 / SHOW COLUMNS FROM 表名 [LIKE 'pattern']
-    SHOW TABLE STATUS [FROM db_name] [like 'pattern']
+    DESC 表名 / DESCRIBE 表名 / EXPLAIN 表名 / SHOW COLUMNS FROM 表名 [LIKE &#39;pattern&#39;]
+    SHOW TABLE STATUS [FROM db_name] [like &#39;pattern&#39;]
 -- 修改表
     -- 修改表本身的选项
         ALTER TABLE 表名 表的选项
@@ -497,7 +497,7 @@
 -- 分析表
     ANALYZE [LOCAL | NO_WRITE_TO_BINLOG] TABLE tb_name [,tb_name]...
 </code></pre>
-<h2 id="数据操作"><a href="#数据操作" class="headerlink" title="数据操作"></a>数据操作</h2><pre class=" language-mysql"><code class="language-mysql">-- 增
+<h2 id="数据操作"><a href="#数据操作" class="headerlink" title="数据操作"></a>数据操作</h2><pre><code class="mysql">-- 增
     INSERT [INTO] 表名 [(字段列表)] VALUES (值列表)[,(值列表),...]
         - 如果要插入的值列表包含所有字段并且顺序一致，则可以省略字段列表
         - 可同时插入多条数据记录
@@ -514,10 +514,10 @@
         - 其他子句可以不使用
         - 字段列表可以用*代替，表示所有字段
 </code></pre>
-<h2 id="字符集编码"><a href="#字符集编码" class="headerlink" title="字符集编码"></a>字符集编码</h2><pre class=" language-mysql"><code class="language-mysql">-- MySQL、数据库、表、字段均可设置编码
+<h2 id="字符集编码"><a href="#字符集编码" class="headerlink" title="字符集编码"></a>字符集编码</h2><pre><code class="mysql">-- MySQL、数据库、表、字段均可设置编码
 -- 数据编码与客户端编码无需一致
 -- 查看所有字符集编码项
-SHOW VARIABLES LIKE 'character_set_%'
+SHOW VARIABLES LIKE &#39;character_set_%&#39;
     character_set_client    -- 客户端向服务器发送数据时使用的编码
     character_set_results    -- 服务器端将结果返回给客户端所使用的编码
     character_set_connection-- 连接层编码
@@ -529,15 +529,15 @@ SET NAMES gbk;     -- 以上三个配置
 -- 校对集
     校对集用以排序
     -- 查看所有字符集
-    SHOW CHARACTER SET [LIKE 'pattern'] / SHOW CHARSET [LIKE 'pattern']
+    SHOW CHARACTER SET [LIKE &#39;pattern&#39;] / SHOW CHARSET [LIKE &#39;pattern&#39;]
     -- 查看所欲校对集
-    SHOW COLLATION [LIKE 'pattern']
+    SHOW COLLATION [LIKE &#39;pattern&#39;]
     -- 设置字符集编码
     CHARSET 字符集编码
     -- 设置校对集编码
     COLLATE 校对集编码
 </code></pre>
-<h2 id="数据类型（列类型）"><a href="#数据类型（列类型）" class="headerlink" title="数据类型（列类型）"></a>数据类型（列类型）</h2><pre class=" language-mysql"><code class="language-mysql">1. 数值类型
+<h2 id="数据类型（列类型）"><a href="#数据类型（列类型）" class="headerlink" title="数据类型（列类型）"></a>数据类型（列类型）</h2><pre><code class="mysql">1. 数值类型
 -- a.整型
     类型            字节        范围
     tinyint       1字节     -128~127 无符号位：0~255
@@ -548,7 +548,7 @@ SET NAMES gbk;     -- 以上三个配置
     int(M)         M表示总位数
     - 默认存在符号位，unsigned 属性修改
     - 显示宽度，如果某个数不够定义字段时设置的位数，则前面以0补填，zerofill 属性修改
-        例如：int(5) 插入'123',补填后为'00123'
+        例如：int(5) 插入&#39;123&#39;,补填后为&#39;00123&#39;
     - 在满足要求的情况下，越小越好
     - 1表示bool真，0表示bool假。常用 tinyint(1) 表示布尔型
 -- b.浮点型
@@ -622,8 +622,8 @@ SET NAMES gbk;     -- 以上三个配置
         - 空字符串错误值的索引值是0
 -- 集合
     set(val1,val2,val3....)
-        - CREATE TABLE tb(gener set('男','女','无'))
-        - INSERT INTO tb values ('男，女')
+        - CREATE TABLE tb(gener set(&#39;男&#39;,&#39;女&#39;,&#39;无&#39;))
+        - INSERT INTO tb values (&#39;男，女&#39;)
         - 最多可以有64个不同成员，以bigint存储，共8字节，采取位运算的形式
         - 当创建表时，SET 成员值的尾部空格将自动删除
 </code></pre>
@@ -658,8 +658,8 @@ SET NAMES gbk;     -- 以上三个配置
         <div class="post-nav">
           <div class="post-nav-next post-nav-item">
             
-              <a href="/2018/09/29/java/钩子函数/" rel="next" title="钩子函数">
-                <i class="fa fa-chevron-left"></i> 钩子函数
+              <a href="/2018/09/29/java/模拟Ping获取IP响应时间/" rel="next" title="模拟Ping">
+                <i class="fa fa-chevron-left"></i> 模拟Ping
               </a>
             
           </div>
@@ -668,8 +668,8 @@ SET NAMES gbk;     -- 以上三个配置
 
           <div class="post-nav-prev post-nav-item">
             
-              <a href="/2018/09/29/java/regex/" rel="prev" title="正则表达式">
-                正则表达式 <i class="fa fa-chevron-right"></i>
+              <a href="/2018/09/29/java/POI操作EXCEl/" rel="prev" title="通过 POI 将数据库中的数据上传至 OSS 对象存储">
+                通过 POI 将数据库中的数据上传至 OSS 对象存储 <i class="fa fa-chevron-right"></i>
               </a>
             
           </div>
@@ -751,7 +751,7 @@ SET NAMES gbk;     -- 以上三个配置
               
                 <a href="/archives">
               
-                  <span class="site-state-item-count">224</span>
+                  <span class="site-state-item-count">237</span>
                   <span class="site-state-item-name">日志</span>
                 </a>
               </div>
@@ -773,7 +773,7 @@ SET NAMES gbk;     -- 以上三个配置
               
               <div class="site-state-item site-state-tags">
                 <a href="/tags/index.html">
-                  <span class="site-state-item-count">21</span>
+                  <span class="site-state-item-count">22</span>
                   <span class="site-state-item-name">标签</span>
                 </a>
               </div>

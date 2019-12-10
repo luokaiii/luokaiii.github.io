@@ -412,204 +412,204 @@
 </ol>
 <p>命令模式的本质是对请求进行封装，一个请求对应一个命令，将发出命令的责任和执行命令的责任分隔开。</p>
 <h2 id="二、命令模式的关键-抽象命令类"><a href="#二、命令模式的关键-抽象命令类" class="headerlink" title="二、命令模式的关键 - 抽象命令类"></a>二、命令模式的关键 - 抽象命令类</h2><p>请求发送者只需要针对抽象命令类编程即可。</p>
-<pre class=" language-java"><code class="language-java"><span class="token comment" spellcheck="true">// 抽象命令类</span>
-<span class="token keyword">abstract</span> <span class="token keyword">class</span> <span class="token class-name">Command</span> <span class="token punctuation">{</span>
-    <span class="token comment" spellcheck="true">// 声明公共的执行方法</span>
-    <span class="token keyword">public</span> <span class="token keyword">abstract</span> <span class="token keyword">void</span> <span class="token function">execute</span><span class="token punctuation">(</span><span class="token punctuation">)</span><span class="token punctuation">;</span>
-<span class="token punctuation">}</span>
+<pre><code class="java">// 抽象命令类
+abstract class Command {
+    // 声明公共的执行方法
+    public abstract void execute();
+}
 </code></pre>
-<pre class=" language-java"><code class="language-java"><span class="token comment" spellcheck="true">// 请求发送者 - 调用者</span>
-<span class="token keyword">class</span> <span class="token class-name">Invoker</span> <span class="token punctuation">{</span>
-    <span class="token comment" spellcheck="true">// 请求发送者只需要针对 Command 编程即可，具体命令类在运行时指定</span>
-    <span class="token keyword">private</span> Command command<span class="token punctuation">;</span>
+<pre><code class="java">// 请求发送者 - 调用者
+class Invoker {
+    // 请求发送者只需要针对 Command 编程即可，具体命令类在运行时指定
+    private Command command;
 
-    <span class="token comment" spellcheck="true">// 通过构造函数或者setter方法注入Command</span>
-    <span class="token keyword">public</span> <span class="token function">Invoker</span><span class="token punctuation">(</span>Command command<span class="token punctuation">)</span><span class="token punctuation">{</span>
-        <span class="token keyword">this</span><span class="token punctuation">.</span>command <span class="token operator">=</span> command<span class="token punctuation">;</span>
-    <span class="token punctuation">}</span>
+    // 通过构造函数或者setter方法注入Command
+    public Invoker(Command command){
+        this.command = command;
+    }
 
-    <span class="token comment" spellcheck="true">// 用于调用命令类的 execute 方法</span>
-    <span class="token keyword">public</span> <span class="token keyword">void</span> <span class="token function">call</span><span class="token punctuation">(</span><span class="token punctuation">)</span><span class="token punctuation">{</span>
-        command<span class="token punctuation">.</span><span class="token function">execute</span><span class="token punctuation">(</span><span class="token punctuation">)</span><span class="token punctuation">;</span>
-    <span class="token punctuation">}</span>
-<span class="token punctuation">}</span>
+    // 用于调用命令类的 execute 方法
+    public void call(){
+        command.execute();
+    }
+}
 </code></pre>
-<pre class=" language-java"><code class="language-java"><span class="token comment" spellcheck="true">// 具体命令类</span>
-<span class="token keyword">class</span> <span class="token class-name">ConcreteCommand</span> <span class="token keyword">extends</span> <span class="token class-name">Command</span> <span class="token punctuation">{</span>
-    <span class="token comment" spellcheck="true">// 维持一个对请求接收者对象的引用</span>
-    <span class="token keyword">private</span> Receiver receiver<span class="token punctuation">;</span> <span class="token comment" spellcheck="true">// 如果需要多个接收者，可以将该对象改为List等集合对象</span>
+<pre><code class="java">// 具体命令类
+class ConcreteCommand extends Command {
+    // 维持一个对请求接收者对象的引用
+    private Receiver receiver; // 如果需要多个接收者，可以将该对象改为List等集合对象
 
-    <span class="token keyword">public</span> <span class="token keyword">void</span> <span class="token function">execute</span><span class="token punctuation">(</span><span class="token punctuation">)</span><span class="token punctuation">{</span>
-        <span class="token comment" spellcheck="true">// 调用请求接收者的业务处理方法</span>
-        receiver<span class="token punctuation">.</span><span class="token function">action</span><span class="token punctuation">(</span><span class="token punctuation">)</span><span class="token punctuation">;</span>
-    <span class="token punctuation">}</span>
-<span class="token punctuation">}</span>
+    public void execute(){
+        // 调用请求接收者的业务处理方法
+        receiver.action();
+    }
+}
 </code></pre>
-<pre class=" language-java"><code class="language-java"><span class="token keyword">class</span> <span class="token class-name">Receiver</span> <span class="token punctuation">{</span>
-    <span class="token keyword">public</span> <span class="token keyword">void</span> <span class="token function">action</span><span class="token punctuation">(</span><span class="token punctuation">)</span><span class="token punctuation">{</span>
-        <span class="token comment" spellcheck="true">// 具体操作</span>
-    <span class="token punctuation">}</span>
-<span class="token punctuation">}</span>
+<pre><code class="java">class Receiver {
+    public void action(){
+        // 具体操作
+    }
+}
 </code></pre>
-<h2 id="三、完整实现"><a href="#三、完整实现" class="headerlink" title="三、完整实现"></a>三、完整实现</h2><pre class=" language-java"><code class="language-java"><span class="token comment" spellcheck="true">// 功能键设计窗口类</span>
-<span class="token keyword">class</span> <span class="token class-name">FBSettingWindow</span><span class="token punctuation">{</span>
-    <span class="token comment" spellcheck="true">// 窗口标题</span>
-    <span class="token keyword">private</span> String title<span class="token punctuation">;</span>
-    <span class="token comment" spellcheck="true">// List集合，存储所有的功能按键</span>
-    <span class="token keyword">private</span> List<span class="token operator">&lt;</span>FunctionButton<span class="token operator">></span> functionButtons <span class="token operator">=</span> <span class="token keyword">new</span> <span class="token class-name">ArrayList</span><span class="token operator">&lt;</span><span class="token operator">></span><span class="token punctuation">(</span><span class="token punctuation">)</span><span class="token punctuation">;</span>
+<h2 id="三、完整实现"><a href="#三、完整实现" class="headerlink" title="三、完整实现"></a>三、完整实现</h2><pre><code class="java">// 功能键设计窗口类
+class FBSettingWindow{
+    // 窗口标题
+    private String title;
+    // List集合，存储所有的功能按键
+    private List&lt;FunctionButton&gt; functionButtons = new ArrayList&lt;&gt;();
 
-    <span class="token keyword">public</span> String <span class="token function">getTitle</span><span class="token punctuation">(</span><span class="token punctuation">)</span> <span class="token punctuation">{</span>
-        <span class="token keyword">return</span> title<span class="token punctuation">;</span>
-    <span class="token punctuation">}</span>
+    public String getTitle() {
+        return title;
+    }
 
-    <span class="token keyword">public</span> <span class="token keyword">void</span> <span class="token function">setTitle</span><span class="token punctuation">(</span>String title<span class="token punctuation">)</span> <span class="token punctuation">{</span>
-        <span class="token keyword">this</span><span class="token punctuation">.</span>title <span class="token operator">=</span> title<span class="token punctuation">;</span>
-    <span class="token punctuation">}</span>
+    public void setTitle(String title) {
+        this.title = title;
+    }
 
-    <span class="token keyword">public</span> <span class="token keyword">void</span> <span class="token function">addFunctionButton</span><span class="token punctuation">(</span>FunctionButton fb<span class="token punctuation">)</span><span class="token punctuation">{</span>
-        functionButtons<span class="token punctuation">.</span><span class="token function">add</span><span class="token punctuation">(</span>fb<span class="token punctuation">)</span><span class="token punctuation">;</span>
-    <span class="token punctuation">}</span>
+    public void addFunctionButton(FunctionButton fb){
+        functionButtons.add(fb);
+    }
 
-    <span class="token keyword">public</span> <span class="token keyword">void</span> <span class="token function">removeFunctionButton</span><span class="token punctuation">(</span>FunctionButton fb<span class="token punctuation">)</span><span class="token punctuation">{</span>
-        functionButtons<span class="token punctuation">.</span><span class="token function">remove</span><span class="token punctuation">(</span>fb<span class="token punctuation">)</span><span class="token punctuation">;</span>
-    <span class="token punctuation">}</span>
+    public void removeFunctionButton(FunctionButton fb){
+        functionButtons.remove(fb);
+    }
 
-    <span class="token comment" spellcheck="true">// 显示窗口及功能</span>
-    <span class="token keyword">public</span> <span class="token keyword">void</span> <span class="token function">display</span><span class="token punctuation">(</span><span class="token punctuation">)</span><span class="token punctuation">{</span>
-        System<span class="token punctuation">.</span>out<span class="token punctuation">.</span><span class="token function">println</span><span class="token punctuation">(</span><span class="token string">"显示窗口："</span><span class="token operator">+</span><span class="token keyword">this</span><span class="token punctuation">.</span>title<span class="token punctuation">)</span><span class="token punctuation">;</span>
-        System<span class="token punctuation">.</span>out<span class="token punctuation">.</span><span class="token function">println</span><span class="token punctuation">(</span><span class="token string">"显示功能键"</span><span class="token punctuation">)</span><span class="token punctuation">;</span>
-        <span class="token keyword">for</span> <span class="token punctuation">(</span>FunctionButton functionButton <span class="token operator">:</span> functionButtons<span class="token punctuation">)</span> <span class="token punctuation">{</span>
-            System<span class="token punctuation">.</span>out<span class="token punctuation">.</span><span class="token function">println</span><span class="token punctuation">(</span>functionButton<span class="token punctuation">.</span><span class="token function">getName</span><span class="token punctuation">(</span><span class="token punctuation">)</span><span class="token punctuation">)</span><span class="token punctuation">;</span>
-        <span class="token punctuation">}</span>
-    <span class="token punctuation">}</span>
-<span class="token punctuation">}</span>
+    // 显示窗口及功能
+    public void display(){
+        System.out.println(&quot;显示窗口：&quot;+this.title);
+        System.out.println(&quot;显示功能键&quot;);
+        for (FunctionButton functionButton : functionButtons) {
+            System.out.println(functionButton.getName());
+        }
+    }
+}
 
-<span class="token comment" spellcheck="true">// 功能按键 - 请求发送者</span>
-<span class="token keyword">class</span> <span class="token class-name">FunctionButton</span> <span class="token punctuation">{</span>
-    <span class="token comment" spellcheck="true">// 按键名称</span>
-    <span class="token keyword">private</span> String name<span class="token punctuation">;</span>
-    <span class="token comment" spellcheck="true">// 维持一个抽象命令的引用</span>
-    <span class="token keyword">private</span> Command command<span class="token punctuation">;</span>
+// 功能按键 - 请求发送者
+class FunctionButton {
+    // 按键名称
+    private String name;
+    // 维持一个抽象命令的引用
+    private Command command;
 
-    <span class="token keyword">public</span> String <span class="token function">getName</span><span class="token punctuation">(</span><span class="token punctuation">)</span> <span class="token punctuation">{</span>
-        <span class="token keyword">return</span> name<span class="token punctuation">;</span>
-    <span class="token punctuation">}</span>
+    public String getName() {
+        return name;
+    }
 
-    <span class="token keyword">public</span> Command <span class="token function">getCommand</span><span class="token punctuation">(</span><span class="token punctuation">)</span> <span class="token punctuation">{</span>
-        <span class="token keyword">return</span> command<span class="token punctuation">;</span>
-    <span class="token punctuation">}</span>
+    public Command getCommand() {
+        return command;
+    }
 
-    <span class="token keyword">public</span> <span class="token keyword">void</span> <span class="token function">setName</span><span class="token punctuation">(</span>String name<span class="token punctuation">)</span> <span class="token punctuation">{</span>
-        <span class="token keyword">this</span><span class="token punctuation">.</span>name <span class="token operator">=</span> name<span class="token punctuation">;</span>
-    <span class="token punctuation">}</span>
+    public void setName(String name) {
+        this.name = name;
+    }
 
-    <span class="token keyword">public</span> <span class="token keyword">void</span> <span class="token function">setCommand</span><span class="token punctuation">(</span>Command command<span class="token punctuation">)</span> <span class="token punctuation">{</span>
-        <span class="token keyword">this</span><span class="token punctuation">.</span>command <span class="token operator">=</span> command<span class="token punctuation">;</span>
-    <span class="token punctuation">}</span>
+    public void setCommand(Command command) {
+        this.command = command;
+    }
 
-    <span class="token keyword">public</span> <span class="token keyword">void</span> <span class="token function">onClick</span><span class="token punctuation">(</span><span class="token punctuation">)</span><span class="token punctuation">{</span>
-        System<span class="token punctuation">.</span>out<span class="token punctuation">.</span><span class="token function">println</span><span class="token punctuation">(</span><span class="token string">"点击按键："</span><span class="token punctuation">)</span><span class="token punctuation">;</span>
-        command<span class="token punctuation">.</span><span class="token function">execute</span><span class="token punctuation">(</span><span class="token punctuation">)</span><span class="token punctuation">;</span>
-    <span class="token punctuation">}</span>
-<span class="token punctuation">}</span>
+    public void onClick(){
+        System.out.println(&quot;点击按键：&quot;);
+        command.execute();
+    }
+}
 
-<span class="token comment" spellcheck="true">// 抽象命令类</span>
-<span class="token keyword">abstract</span> <span class="token keyword">class</span> <span class="token class-name">Command</span> <span class="token punctuation">{</span>
-    <span class="token keyword">public</span> <span class="token keyword">abstract</span> <span class="token keyword">void</span> <span class="token function">execute</span><span class="token punctuation">(</span><span class="token punctuation">)</span><span class="token punctuation">;</span>
-<span class="token punctuation">}</span>
+// 抽象命令类
+abstract class Command {
+    public abstract void execute();
+}
 
-<span class="token comment" spellcheck="true">// 帮助命令类 - 具体命令类</span>
-<span class="token keyword">class</span> <span class="token class-name">HelpCommand</span> <span class="token keyword">extends</span> <span class="token class-name">Command</span> <span class="token punctuation">{</span>
-    <span class="token keyword">private</span> HelpHandler helpHandler<span class="token punctuation">;</span>
+// 帮助命令类 - 具体命令类
+class HelpCommand extends Command {
+    private HelpHandler helpHandler;
 
-    <span class="token keyword">public</span> <span class="token function">HelpCommand</span><span class="token punctuation">(</span><span class="token punctuation">)</span> <span class="token punctuation">{</span>
-        helpHandler <span class="token operator">=</span> <span class="token keyword">new</span> <span class="token class-name">HelpHandler</span><span class="token punctuation">(</span><span class="token punctuation">)</span><span class="token punctuation">;</span>
-    <span class="token punctuation">}</span>
+    public HelpCommand() {
+        helpHandler = new HelpHandler();
+    }
 
-    <span class="token annotation punctuation">@Override</span>
-    <span class="token keyword">public</span> <span class="token keyword">void</span> <span class="token function">execute</span><span class="token punctuation">(</span><span class="token punctuation">)</span> <span class="token punctuation">{</span>
-        helpHandler<span class="token punctuation">.</span><span class="token function">action</span><span class="token punctuation">(</span><span class="token punctuation">)</span><span class="token punctuation">;</span>
-    <span class="token punctuation">}</span>
-<span class="token punctuation">}</span>
+    @Override
+    public void execute() {
+        helpHandler.action();
+    }
+}
 
-<span class="token comment" spellcheck="true">// 最小化命令类 - 具体命令类</span>
-<span class="token keyword">class</span> <span class="token class-name">MinimizeCommand</span> <span class="token keyword">extends</span> <span class="token class-name">Command</span> <span class="token punctuation">{</span>
-    <span class="token keyword">private</span> MinimizeHandler handler<span class="token punctuation">;</span>
+// 最小化命令类 - 具体命令类
+class MinimizeCommand extends Command {
+    private MinimizeHandler handler;
 
-    <span class="token keyword">public</span> <span class="token function">MinimizeCommand</span><span class="token punctuation">(</span><span class="token punctuation">)</span> <span class="token punctuation">{</span>
-        handler <span class="token operator">=</span> <span class="token keyword">new</span> <span class="token class-name">MinimizeHandler</span><span class="token punctuation">(</span><span class="token punctuation">)</span><span class="token punctuation">;</span>
-    <span class="token punctuation">}</span>
+    public MinimizeCommand() {
+        handler = new MinimizeHandler();
+    }
 
-    <span class="token annotation punctuation">@Override</span>
-    <span class="token keyword">public</span> <span class="token keyword">void</span> <span class="token function">execute</span><span class="token punctuation">(</span><span class="token punctuation">)</span> <span class="token punctuation">{</span>
-        handler<span class="token punctuation">.</span><span class="token function">action</span><span class="token punctuation">(</span><span class="token punctuation">)</span><span class="token punctuation">;</span>
-    <span class="token punctuation">}</span>
-<span class="token punctuation">}</span>
+    @Override
+    public void execute() {
+        handler.action();
+    }
+}
 
-<span class="token comment" spellcheck="true">// 帮助处理类 - 请求接收者</span>
-<span class="token keyword">class</span> <span class="token class-name">HelpHandler</span> <span class="token punctuation">{</span>
-    <span class="token keyword">public</span> <span class="token keyword">void</span> <span class="token function">action</span><span class="token punctuation">(</span><span class="token punctuation">)</span><span class="token punctuation">{</span>
-        System<span class="token punctuation">.</span>out<span class="token punctuation">.</span><span class="token function">println</span><span class="token punctuation">(</span><span class="token string">"显示文档"</span><span class="token punctuation">)</span><span class="token punctuation">;</span>
-    <span class="token punctuation">}</span>
-<span class="token punctuation">}</span>
+// 帮助处理类 - 请求接收者
+class HelpHandler {
+    public void action(){
+        System.out.println(&quot;显示文档&quot;);
+    }
+}
 
-<span class="token comment" spellcheck="true">// 最小化处理类 - 请求接收者</span>
-<span class="token keyword">class</span> <span class="token class-name">MinimizeHandler</span> <span class="token punctuation">{</span>
-    <span class="token keyword">public</span> <span class="token keyword">void</span> <span class="token function">action</span> <span class="token punctuation">(</span><span class="token punctuation">)</span><span class="token punctuation">{</span>
-        System<span class="token punctuation">.</span>out<span class="token punctuation">.</span><span class="token function">println</span><span class="token punctuation">(</span><span class="token string">"最小化！"</span><span class="token punctuation">)</span><span class="token punctuation">;</span>
-    <span class="token punctuation">}</span>
-<span class="token punctuation">}</span>
+// 最小化处理类 - 请求接收者
+class MinimizeHandler {
+    public void action (){
+        System.out.println(&quot;最小化！&quot;);
+    }
+}
 
-<span class="token keyword">public</span> <span class="token keyword">class</span> <span class="token class-name">CommandPattern</span> <span class="token punctuation">{</span>
-    <span class="token keyword">public</span> <span class="token keyword">static</span> <span class="token keyword">void</span> <span class="token function">main</span><span class="token punctuation">(</span>String<span class="token punctuation">[</span><span class="token punctuation">]</span> args<span class="token punctuation">)</span> <span class="token punctuation">{</span>
-        <span class="token keyword">final</span> FBSettingWindow window <span class="token operator">=</span> <span class="token keyword">new</span> <span class="token class-name">FBSettingWindow</span><span class="token punctuation">(</span><span class="token punctuation">)</span><span class="token punctuation">;</span>
-        window<span class="token punctuation">.</span><span class="token function">setTitle</span><span class="token punctuation">(</span><span class="token string">"功能键设置"</span><span class="token punctuation">)</span><span class="token punctuation">;</span>
+public class CommandPattern {
+    public static void main(String[] args) {
+        final FBSettingWindow window = new FBSettingWindow();
+        window.setTitle(&quot;功能键设置&quot;);
 
-        <span class="token keyword">final</span> FunctionButton button1 <span class="token operator">=</span> <span class="token keyword">new</span> <span class="token class-name">FunctionButton</span><span class="token punctuation">(</span><span class="token punctuation">)</span><span class="token punctuation">;</span>
-        button1<span class="token punctuation">.</span><span class="token function">setName</span><span class="token punctuation">(</span><span class="token string">"按钮1"</span><span class="token punctuation">)</span><span class="token punctuation">;</span>
-        <span class="token keyword">final</span> FunctionButton button2 <span class="token operator">=</span> <span class="token keyword">new</span> <span class="token class-name">FunctionButton</span><span class="token punctuation">(</span><span class="token punctuation">)</span><span class="token punctuation">;</span>
-        button2<span class="token punctuation">.</span><span class="token function">setName</span><span class="token punctuation">(</span><span class="token string">"按钮2"</span><span class="token punctuation">)</span><span class="token punctuation">;</span>
+        final FunctionButton button1 = new FunctionButton();
+        button1.setName(&quot;按钮1&quot;);
+        final FunctionButton button2 = new FunctionButton();
+        button2.setName(&quot;按钮2&quot;);
 
-        <span class="token keyword">final</span> HelpCommand helpCommand <span class="token operator">=</span> <span class="token keyword">new</span> <span class="token class-name">HelpCommand</span><span class="token punctuation">(</span><span class="token punctuation">)</span><span class="token punctuation">;</span>
-        <span class="token keyword">final</span> MinimizeCommand minimizeCommand <span class="token operator">=</span> <span class="token keyword">new</span> <span class="token class-name">MinimizeCommand</span><span class="token punctuation">(</span><span class="token punctuation">)</span><span class="token punctuation">;</span>
+        final HelpCommand helpCommand = new HelpCommand();
+        final MinimizeCommand minimizeCommand = new MinimizeCommand();
 
-        button1<span class="token punctuation">.</span><span class="token function">setCommand</span><span class="token punctuation">(</span>helpCommand<span class="token punctuation">)</span><span class="token punctuation">;</span>
-        button2<span class="token punctuation">.</span><span class="token function">setCommand</span><span class="token punctuation">(</span>minimizeCommand<span class="token punctuation">)</span><span class="token punctuation">;</span>
+        button1.setCommand(helpCommand);
+        button2.setCommand(minimizeCommand);
 
-        window<span class="token punctuation">.</span><span class="token function">addFunctionButton</span><span class="token punctuation">(</span>button1<span class="token punctuation">)</span><span class="token punctuation">;</span>
-        window<span class="token punctuation">.</span><span class="token function">addFunctionButton</span><span class="token punctuation">(</span>button2<span class="token punctuation">)</span><span class="token punctuation">;</span>
-        window<span class="token punctuation">.</span><span class="token function">display</span><span class="token punctuation">(</span><span class="token punctuation">)</span><span class="token punctuation">;</span>
+        window.addFunctionButton(button1);
+        window.addFunctionButton(button2);
+        window.display();
 
-        button1<span class="token punctuation">.</span><span class="token function">onClick</span><span class="token punctuation">(</span><span class="token punctuation">)</span><span class="token punctuation">;</span>
-        button2<span class="token punctuation">.</span><span class="token function">onClick</span><span class="token punctuation">(</span><span class="token punctuation">)</span><span class="token punctuation">;</span>
-    <span class="token punctuation">}</span>
-<span class="token punctuation">}</span>
+        button1.onClick();
+        button2.onClick();
+    }
+}
 </code></pre>
 <blockquote>
 <p>如果需要增加一个新的命令，只需要增加一个具体命令类，将命令类与具体的处理类进行关联，并注入到某个功能键即可。原有代码无需修改，符合“开闭原则”。</p>
 </blockquote>
 <h2 id="四、命令队列"><a href="#四、命令队列" class="headerlink" title="四、命令队列"></a>四、命令队列</h2><p>当我们点击一个按钮后，需要执行多次命令操作，且命令是可重用的。此时我们可以使用“命令队列”的方式来设计，此时，请求发送者不再维护单独的一个Command，而是一个CommandQueue，存储多个命令对象:</p>
-<pre class=" language-java"><code class="language-java"><span class="token keyword">class</span> <span class="token class-name">FunctionButton</span> <span class="token punctuation">{</span>
-    <span class="token keyword">private</span> String name<span class="token punctuation">;</span>
-    <span class="token keyword">private</span> CommandQueue commandQueue<span class="token punctuation">;</span>
-<span class="token punctuation">}</span>
-<span class="token keyword">class</span> <span class="token class-name">CommandQueue</span> <span class="token punctuation">{</span>
-    <span class="token keyword">private</span> List<span class="token operator">&lt;</span>Command<span class="token operator">></span> commands <span class="token operator">=</span> <span class="token keyword">new</span> <span class="token class-name">ArrayList</span><span class="token operator">&lt;</span><span class="token operator">></span><span class="token punctuation">(</span><span class="token punctuation">)</span><span class="token punctuation">;</span>
+<pre><code class="java">class FunctionButton {
+    private String name;
+    private CommandQueue commandQueue;
+}
+class CommandQueue {
+    private List&lt;Command&gt; commands = new ArrayList&lt;&gt;();
 
-    <span class="token keyword">public</span> <span class="token keyword">void</span> <span class="token function">addCommand</span><span class="token punctuation">(</span>Command command<span class="token punctuation">)</span><span class="token punctuation">{</span>
-        commands<span class="token punctuation">.</span><span class="token function">add</span><span class="token punctuation">(</span>command<span class="token punctuation">)</span><span class="token punctuation">;</span>
-    <span class="token punctuation">}</span>
+    public void addCommand(Command command){
+        commands.add(command);
+    }
 
-    <span class="token keyword">public</span> <span class="token keyword">void</span> <span class="token function">removeCommand</span><span class="token punctuation">(</span>Command command<span class="token punctuation">)</span><span class="token punctuation">{</span>
-        commands<span class="token punctuation">.</span><span class="token function">remove</span><span class="token punctuation">(</span>command<span class="token punctuation">)</span><span class="token punctuation">;</span>
-    <span class="token punctuation">}</span>
+    public void removeCommand(Command command){
+        commands.remove(command);
+    }
 
-    <span class="token keyword">public</span> <span class="token keyword">void</span> <span class="token function">display</span><span class="token punctuation">(</span><span class="token punctuation">)</span><span class="token punctuation">{</span>
-        <span class="token keyword">for</span><span class="token punctuation">(</span>Command cd<span class="token operator">:</span>commands<span class="token punctuation">)</span><span class="token punctuation">{</span>
-            cd<span class="token punctuation">.</span><span class="token function">execute</span><span class="token punctuation">(</span><span class="token punctuation">)</span><span class="token punctuation">;</span>
-        <span class="token punctuation">}</span>
-    <span class="token punctuation">}</span>
-<span class="token punctuation">}</span>
+    public void display(){
+        for(Command cd:commands){
+            cd.execute();
+        }
+    }
+}
 </code></pre>
 <blockquote>
 <p>命令队列类似于“批处理”的概念，可以对一组对象（命令）进行批量操作。如果请求接收者没有严格的先后次序，还可以通过多线程技术来并发调用对象的execute方法，从而提高程序执行效率。</p>
@@ -617,37 +617,37 @@
 <p>也可以通过保存对象的历史状态来实现撤销，如“备忘录模式”。</p>
 <p>我们可以在具体的Handler 中，保存上次执行时的状态，并提供一个方法以便恢复至保存的状态。</p>
 </blockquote>
-<pre class=" language-java"><code class="language-java"><span class="token keyword">class</span> <span class="token class-name">AdderHandler</span><span class="token punctuation">{</span>
-    <span class="token keyword">private</span> <span class="token keyword">int</span> number<span class="token punctuation">;</span>
+<pre><code class="java">class AdderHandler{
+    private int number;
 
-    <span class="token keyword">public</span> <span class="token keyword">int</span> <span class="token function">add</span><span class="token punctuation">(</span><span class="token keyword">int</span> i<span class="token punctuation">)</span><span class="token punctuation">{</span>
-        number <span class="token operator">+=</span> i<span class="token punctuation">;</span>
-        <span class="token keyword">return</span> number<span class="token punctuation">;</span>
-    <span class="token punctuation">}</span>
-<span class="token punctuation">}</span>
+    public int add(int i){
+        number += i;
+        return number;
+    }
+}
 
-<span class="token keyword">class</span> <span class="token class-name">AdderCommand</span> <span class="token keyword">extends</span> <span class="token class-name">Command</span> <span class="token punctuation">{</span>
-    <span class="token keyword">private</span> AdderHandler handler<span class="token punctuation">;</span>
-    <span class="token keyword">private</span> <span class="token keyword">int</span> history<span class="token punctuation">;</span>
+class AdderCommand extends Command {
+    private AdderHandler handler;
+    private int history;
 
-    <span class="token keyword">public</span> <span class="token function">AdderCommand</span><span class="token punctuation">(</span>AdderHandler handler<span class="token punctuation">)</span><span class="token punctuation">{</span>
-        <span class="token keyword">this</span><span class="token punctuation">.</span>handler <span class="token operator">=</span> handler<span class="token punctuation">;</span>
-    <span class="token punctuation">}</span>
+    public AdderCommand(AdderHandler handler){
+        this.handler = handler;
+    }
 
-    <span class="token annotation punctuation">@Override</span>
-    <span class="token keyword">public</span> <span class="token keyword">void</span> <span class="token function">add</span><span class="token punctuation">(</span><span class="token keyword">int</span> value<span class="token punctuation">)</span><span class="token punctuation">{</span>
-        <span class="token keyword">int</span> result <span class="token operator">=</span> handler<span class="token punctuation">.</span><span class="token function">add</span><span class="token punctuation">(</span>value<span class="token punctuation">)</span><span class="token punctuation">;</span>
-        history <span class="token operator">=</span> value<span class="token punctuation">;</span>
-        System<span class="token punctuation">.</span>out<span class="token punctuation">.</span><span class="token function">print</span><span class="token punctuation">(</span><span class="token string">"加法结果为："</span><span class="token operator">+</span>result<span class="token punctuation">)</span><span class="token punctuation">;</span>
-    <span class="token punctuation">}</span>
+    @Override
+    public void add(int value){
+        int result = handler.add(value);
+        history = value;
+        System.out.print(&quot;加法结果为：&quot;+result);
+    }
 
-    <span class="token annotation punctuation">@Override</span>
-    <span class="token keyword">public</span> <span class="token keyword">void</span> <span class="token function">undo</span><span class="token punctuation">(</span><span class="token punctuation">)</span><span class="token punctuation">{</span>
-        <span class="token comment" spellcheck="true">// 使用保存的状态实现撤销操作</span>
-        <span class="token keyword">int</span> result <span class="token operator">=</span> handler<span class="token punctuation">.</span><span class="token function">add</span><span class="token punctuation">(</span><span class="token operator">-</span>history<span class="token punctuation">)</span><span class="token punctuation">;</span>
-        System<span class="token punctuation">.</span>out<span class="token punctuation">.</span><span class="token function">print</span><span class="token punctuation">(</span><span class="token string">"撤销后的结果为："</span><span class="token operator">+</span>result<span class="token punctuation">)</span><span class="token punctuation">;</span>
-    <span class="token punctuation">}</span>
-<span class="token punctuation">}</span>
+    @Override
+    public void undo(){
+        // 使用保存的状态实现撤销操作
+        int result = handler.add(-history);
+        System.out.print(&quot;撤销后的结果为：&quot;+result);
+    }
+}
 </code></pre>
 <blockquote>
 <p>注，该撤销操作只能执行一次，如果需要执行多次，可以使用集合来保存 <code>histroy</code></p>
@@ -671,7 +671,7 @@
 <li>系统需要支持撤销、恢复操作</li>
 <li>系统需要在不同的时间指定请求、将请求排队和执行请求</li>
 </ol>
-<h2 id="八、练习"><a href="#八、练习" class="headerlink" title="八、练习"></a>八、练习</h2><pre class=" language-tex"><code class="language-tex"> 命令模式
+<h2 id="八、练习"><a href="#八、练习" class="headerlink" title="八、练习"></a>八、练习</h2><pre><code class="tex"> 命令模式
  Sunny软件公司欲开发一个基于Windows平台的公告板系统。
  该系统提供了一个主菜单(Menu)，
  在主菜单中包含了一些菜单项(MenuItem)，
@@ -684,7 +684,7 @@
  试使用命令模式设计该系统，
  以便降低MenuItem类与BoardScreen类之间的耦合度
 </code></pre>
-<pre class=" language-java"><code class="language-java"><span class="token comment" spellcheck="true">/**
+<pre><code class="java">/**
  * 命令模式
  * Sunny软件公司欲开发一个基于Windows平台的公告板系统。
  * 该系统提供了一个主菜单(Menu)，
@@ -697,155 +697,155 @@
  * 用于调用公告板系统界面类(BoardScreen)的open()、create()、edit()等方法。
  * 试使用命令模式设计该系统，
  * 以便降低MenuItem类与BoardScreen类之间的耦合度
- */</span>
-<span class="token comment" spellcheck="true">// 主菜单 - 类似于之前的窗口界面，包含多个按钮（菜单项）</span>
-<span class="token keyword">class</span> <span class="token class-name">Menu</span><span class="token punctuation">{</span>
-    <span class="token keyword">private</span> List<span class="token operator">&lt;</span>MenuItem<span class="token operator">></span> menuItems <span class="token operator">=</span> <span class="token keyword">new</span> <span class="token class-name">ArrayList</span><span class="token operator">&lt;</span><span class="token operator">></span><span class="token punctuation">(</span><span class="token punctuation">)</span><span class="token punctuation">;</span>
+ */
+// 主菜单 - 类似于之前的窗口界面，包含多个按钮（菜单项）
+class Menu{
+    private List&lt;MenuItem&gt; menuItems = new ArrayList&lt;&gt;();
 
-    <span class="token keyword">public</span> <span class="token keyword">void</span> <span class="token function">addItem</span><span class="token punctuation">(</span>MenuItem item<span class="token punctuation">)</span><span class="token punctuation">{</span>
-        menuItems<span class="token punctuation">.</span><span class="token function">add</span><span class="token punctuation">(</span>item<span class="token punctuation">)</span><span class="token punctuation">;</span>
-    <span class="token punctuation">}</span>
+    public void addItem(MenuItem item){
+        menuItems.add(item);
+    }
 
-    <span class="token keyword">public</span> <span class="token keyword">void</span> <span class="token function">display</span><span class="token punctuation">(</span><span class="token punctuation">)</span><span class="token punctuation">{</span>
-        System<span class="token punctuation">.</span>out<span class="token punctuation">.</span><span class="token function">println</span><span class="token punctuation">(</span><span class="token string">"------显示菜单:-----"</span><span class="token punctuation">)</span><span class="token punctuation">;</span>
-        <span class="token keyword">for</span> <span class="token punctuation">(</span>MenuItem menuItem <span class="token operator">:</span> menuItems<span class="token punctuation">)</span> <span class="token punctuation">{</span>
-            System<span class="token punctuation">.</span>out<span class="token punctuation">.</span><span class="token function">println</span><span class="token punctuation">(</span>menuItem<span class="token punctuation">.</span><span class="token function">getName</span><span class="token punctuation">(</span><span class="token punctuation">)</span><span class="token punctuation">)</span><span class="token punctuation">;</span>
-        <span class="token punctuation">}</span>
-    <span class="token punctuation">}</span>
-<span class="token punctuation">}</span>
+    public void display(){
+        System.out.println(&quot;------显示菜单:-----&quot;);
+        for (MenuItem menuItem : menuItems) {
+            System.out.println(menuItem.getName());
+        }
+    }
+}
 
-<span class="token comment" spellcheck="true">// 菜单项 - 请求发送者</span>
-<span class="token keyword">class</span> <span class="token class-name">MenuItem</span> <span class="token punctuation">{</span>
-    <span class="token keyword">private</span> String name<span class="token punctuation">;</span>
-    <span class="token keyword">private</span> Command command<span class="token punctuation">;</span>
+// 菜单项 - 请求发送者
+class MenuItem {
+    private String name;
+    private Command command;
 
-    <span class="token keyword">public</span> <span class="token function">MenuItem</span><span class="token punctuation">(</span>String name<span class="token punctuation">)</span><span class="token punctuation">{</span>
-        <span class="token keyword">this</span><span class="token punctuation">.</span>name <span class="token operator">=</span> name<span class="token punctuation">;</span>
-    <span class="token punctuation">}</span>
+    public MenuItem(String name){
+        this.name = name;
+    }
 
-    <span class="token keyword">public</span> String <span class="token function">getName</span><span class="token punctuation">(</span><span class="token punctuation">)</span> <span class="token punctuation">{</span>
-        <span class="token keyword">return</span> name<span class="token punctuation">;</span>
-    <span class="token punctuation">}</span>
+    public String getName() {
+        return name;
+    }
 
-    <span class="token keyword">public</span> <span class="token keyword">void</span> <span class="token function">setCommand</span><span class="token punctuation">(</span>Command command<span class="token punctuation">)</span><span class="token punctuation">{</span>
-        <span class="token keyword">this</span><span class="token punctuation">.</span>command <span class="token operator">=</span> command<span class="token punctuation">;</span>
-    <span class="token punctuation">}</span>
+    public void setCommand(Command command){
+        this.command = command;
+    }
 
-    <span class="token keyword">public</span> <span class="token keyword">void</span> <span class="token function">create</span><span class="token punctuation">(</span><span class="token punctuation">)</span><span class="token punctuation">{</span>
-        command<span class="token punctuation">.</span><span class="token function">create</span><span class="token punctuation">(</span><span class="token punctuation">)</span><span class="token punctuation">;</span>
-    <span class="token punctuation">}</span>
+    public void create(){
+        command.create();
+    }
 
-    <span class="token keyword">public</span> <span class="token keyword">void</span> <span class="token function">edit</span><span class="token punctuation">(</span><span class="token punctuation">)</span><span class="token punctuation">{</span>
-        command<span class="token punctuation">.</span><span class="token function">edit</span><span class="token punctuation">(</span><span class="token punctuation">)</span><span class="token punctuation">;</span>
-    <span class="token punctuation">}</span>
+    public void edit(){
+        command.edit();
+    }
 
-    <span class="token keyword">public</span> <span class="token keyword">void</span> <span class="token function">open</span><span class="token punctuation">(</span><span class="token punctuation">)</span><span class="token punctuation">{</span>
-        command<span class="token punctuation">.</span><span class="token function">open</span><span class="token punctuation">(</span><span class="token punctuation">)</span><span class="token punctuation">;</span>
-    <span class="token punctuation">}</span>
-<span class="token punctuation">}</span>
+    public void open(){
+        command.open();
+    }
+}
 
-<span class="token comment" spellcheck="true">// 抽象命令类</span>
-<span class="token keyword">abstract</span> <span class="token keyword">class</span> <span class="token class-name">Command</span> <span class="token punctuation">{</span>
-    <span class="token keyword">abstract</span> <span class="token keyword">void</span> <span class="token function">create</span><span class="token punctuation">(</span><span class="token punctuation">)</span><span class="token punctuation">;</span>
-    <span class="token keyword">abstract</span> <span class="token keyword">void</span> <span class="token function">edit</span><span class="token punctuation">(</span><span class="token punctuation">)</span><span class="token punctuation">;</span>
-    <span class="token keyword">abstract</span> <span class="token keyword">void</span> <span class="token function">open</span><span class="token punctuation">(</span><span class="token punctuation">)</span><span class="token punctuation">;</span>
-<span class="token punctuation">}</span>
+// 抽象命令类
+abstract class Command {
+    abstract void create();
+    abstract void edit();
+    abstract void open();
+}
 
-<span class="token comment" spellcheck="true">// 宏命令 - 一组命令的集合，宏命令一般不直接操作接收者，而是通过集合中的对象属性来操作</span>
-<span class="token keyword">class</span> <span class="token class-name">MacroCommand</span> <span class="token keyword">extends</span> <span class="token class-name">Command</span> <span class="token punctuation">{</span>
-    <span class="token keyword">private</span> List<span class="token operator">&lt;</span>Command<span class="token operator">></span> commands <span class="token operator">=</span> <span class="token keyword">new</span> <span class="token class-name">ArrayList</span><span class="token operator">&lt;</span><span class="token operator">></span><span class="token punctuation">(</span><span class="token punctuation">)</span><span class="token punctuation">;</span>
+// 宏命令 - 一组命令的集合，宏命令一般不直接操作接收者，而是通过集合中的对象属性来操作
+class MacroCommand extends Command {
+    private List&lt;Command&gt; commands = new ArrayList&lt;&gt;();
 
-    <span class="token keyword">public</span> <span class="token keyword">void</span> <span class="token function">addCommand</span><span class="token punctuation">(</span>Command command<span class="token punctuation">)</span><span class="token punctuation">{</span>
-        <span class="token keyword">this</span><span class="token punctuation">.</span>commands<span class="token punctuation">.</span><span class="token function">add</span><span class="token punctuation">(</span>command<span class="token punctuation">)</span><span class="token punctuation">;</span>
-    <span class="token punctuation">}</span>
+    public void addCommand(Command command){
+        this.commands.add(command);
+    }
 
-    <span class="token annotation punctuation">@Override</span>
-    <span class="token keyword">void</span> <span class="token function">create</span><span class="token punctuation">(</span><span class="token punctuation">)</span> <span class="token punctuation">{</span>
-        <span class="token keyword">for</span> <span class="token punctuation">(</span>Command command <span class="token operator">:</span> commands<span class="token punctuation">)</span> <span class="token punctuation">{</span>
-            command<span class="token punctuation">.</span><span class="token function">create</span><span class="token punctuation">(</span><span class="token punctuation">)</span><span class="token punctuation">;</span>
-        <span class="token punctuation">}</span>
-    <span class="token punctuation">}</span>
+    @Override
+    void create() {
+        for (Command command : commands) {
+            command.create();
+        }
+    }
 
-    <span class="token annotation punctuation">@Override</span>
-    <span class="token keyword">void</span> <span class="token function">edit</span><span class="token punctuation">(</span><span class="token punctuation">)</span> <span class="token punctuation">{</span>
-        <span class="token keyword">for</span> <span class="token punctuation">(</span>Command command <span class="token operator">:</span> commands<span class="token punctuation">)</span> <span class="token punctuation">{</span>
-            command<span class="token punctuation">.</span><span class="token function">edit</span><span class="token punctuation">(</span><span class="token punctuation">)</span><span class="token punctuation">;</span>
-        <span class="token punctuation">}</span>
-    <span class="token punctuation">}</span>
+    @Override
+    void edit() {
+        for (Command command : commands) {
+            command.edit();
+        }
+    }
 
-    <span class="token annotation punctuation">@Override</span>
-    <span class="token keyword">void</span> <span class="token function">open</span><span class="token punctuation">(</span><span class="token punctuation">)</span> <span class="token punctuation">{</span>
-        <span class="token keyword">for</span> <span class="token punctuation">(</span>Command command <span class="token operator">:</span> commands<span class="token punctuation">)</span> <span class="token punctuation">{</span>
-            command<span class="token punctuation">.</span><span class="token function">open</span><span class="token punctuation">(</span><span class="token punctuation">)</span><span class="token punctuation">;</span>
-        <span class="token punctuation">}</span>
-    <span class="token punctuation">}</span>
-<span class="token punctuation">}</span>
+    @Override
+    void open() {
+        for (Command command : commands) {
+            command.open();
+        }
+    }
+}
 
-<span class="token comment" spellcheck="true">// 具体命令类</span>
-<span class="token keyword">class</span> <span class="token class-name">BoardScreenCommand</span> <span class="token keyword">extends</span> <span class="token class-name">Command</span><span class="token punctuation">{</span>
-    <span class="token keyword">private</span> BoardScreenHandler handler<span class="token punctuation">;</span>
+// 具体命令类
+class BoardScreenCommand extends Command{
+    private BoardScreenHandler handler;
 
-    <span class="token keyword">public</span> <span class="token function">BoardScreenCommand</span><span class="token punctuation">(</span><span class="token punctuation">)</span><span class="token punctuation">{</span>
-        handler <span class="token operator">=</span> <span class="token keyword">new</span> <span class="token class-name">BoardScreenHandler</span><span class="token punctuation">(</span><span class="token punctuation">)</span><span class="token punctuation">;</span>
-    <span class="token punctuation">}</span>
+    public BoardScreenCommand(){
+        handler = new BoardScreenHandler();
+    }
 
-    <span class="token annotation punctuation">@Override</span>
-    <span class="token keyword">void</span> <span class="token function">create</span><span class="token punctuation">(</span><span class="token punctuation">)</span> <span class="token punctuation">{</span>
-        handler<span class="token punctuation">.</span><span class="token function">create</span><span class="token punctuation">(</span><span class="token punctuation">)</span><span class="token punctuation">;</span>
-    <span class="token punctuation">}</span>
+    @Override
+    void create() {
+        handler.create();
+    }
 
-    <span class="token annotation punctuation">@Override</span>
-    <span class="token keyword">void</span> <span class="token function">edit</span><span class="token punctuation">(</span><span class="token punctuation">)</span> <span class="token punctuation">{</span>
-        handler<span class="token punctuation">.</span><span class="token function">edit</span><span class="token punctuation">(</span><span class="token punctuation">)</span><span class="token punctuation">;</span>
-    <span class="token punctuation">}</span>
+    @Override
+    void edit() {
+        handler.edit();
+    }
 
-    <span class="token annotation punctuation">@Override</span>
-    <span class="token keyword">void</span> <span class="token function">open</span><span class="token punctuation">(</span><span class="token punctuation">)</span> <span class="token punctuation">{</span>
-        handler<span class="token punctuation">.</span><span class="token function">open</span><span class="token punctuation">(</span><span class="token punctuation">)</span><span class="token punctuation">;</span>
-    <span class="token punctuation">}</span>
-<span class="token punctuation">}</span>
+    @Override
+    void open() {
+        handler.open();
+    }
+}
 
-<span class="token comment" spellcheck="true">// 请求接收者，也就是具体的处理类</span>
-<span class="token keyword">class</span> <span class="token class-name">BoardScreenHandler</span> <span class="token punctuation">{</span>
-    <span class="token keyword">public</span> <span class="token keyword">void</span> <span class="token function">open</span><span class="token punctuation">(</span><span class="token punctuation">)</span><span class="token punctuation">{</span>
-        System<span class="token punctuation">.</span>out<span class="token punctuation">.</span><span class="token function">println</span><span class="token punctuation">(</span><span class="token string">"打开公告板"</span><span class="token punctuation">)</span><span class="token punctuation">;</span>
-    <span class="token punctuation">}</span>
-    <span class="token keyword">public</span> <span class="token keyword">void</span> <span class="token function">create</span><span class="token punctuation">(</span><span class="token punctuation">)</span><span class="token punctuation">{</span>
-        System<span class="token punctuation">.</span>out<span class="token punctuation">.</span><span class="token function">println</span><span class="token punctuation">(</span><span class="token string">"创建公告板"</span><span class="token punctuation">)</span><span class="token punctuation">;</span>
-    <span class="token punctuation">}</span>
-    <span class="token keyword">public</span> <span class="token keyword">void</span> <span class="token function">edit</span><span class="token punctuation">(</span><span class="token punctuation">)</span><span class="token punctuation">{</span>
-        System<span class="token punctuation">.</span>out<span class="token punctuation">.</span><span class="token function">println</span><span class="token punctuation">(</span><span class="token string">"修改公告板"</span><span class="token punctuation">)</span><span class="token punctuation">;</span>
-    <span class="token punctuation">}</span>
-<span class="token punctuation">}</span>
+// 请求接收者，也就是具体的处理类
+class BoardScreenHandler {
+    public void open(){
+        System.out.println(&quot;打开公告板&quot;);
+    }
+    public void create(){
+        System.out.println(&quot;创建公告板&quot;);
+    }
+    public void edit(){
+        System.out.println(&quot;修改公告板&quot;);
+    }
+}
 
-<span class="token keyword">public</span> <span class="token keyword">class</span> <span class="token class-name">CommandPattern</span> <span class="token punctuation">{</span>
-    <span class="token keyword">public</span> <span class="token keyword">static</span> <span class="token keyword">void</span> <span class="token function">main</span><span class="token punctuation">(</span>String<span class="token punctuation">[</span><span class="token punctuation">]</span> args<span class="token punctuation">)</span> <span class="token punctuation">{</span>
-        <span class="token keyword">final</span> Menu menu <span class="token operator">=</span> <span class="token keyword">new</span> <span class="token class-name">Menu</span><span class="token punctuation">(</span><span class="token punctuation">)</span><span class="token punctuation">;</span>
+public class CommandPattern {
+    public static void main(String[] args) {
+        final Menu menu = new Menu();
 
-        <span class="token keyword">final</span> MenuItem menuItem <span class="token operator">=</span> <span class="token keyword">new</span> <span class="token class-name">MenuItem</span><span class="token punctuation">(</span><span class="token string">"公告板管理"</span><span class="token punctuation">)</span><span class="token punctuation">;</span>
-        <span class="token keyword">final</span> MenuItem menuItem1 <span class="token operator">=</span> <span class="token keyword">new</span> <span class="token class-name">MenuItem</span><span class="token punctuation">(</span><span class="token string">"高噶"</span><span class="token punctuation">)</span><span class="token punctuation">;</span>
+        final MenuItem menuItem = new MenuItem(&quot;公告板管理&quot;);
+        final MenuItem menuItem1 = new MenuItem(&quot;高噶&quot;);
 
-        <span class="token keyword">final</span> Command command <span class="token operator">=</span> <span class="token keyword">new</span> <span class="token class-name">BoardScreenCommand</span><span class="token punctuation">(</span><span class="token punctuation">)</span><span class="token punctuation">;</span>
+        final Command command = new BoardScreenCommand();
 
-        <span class="token keyword">final</span> MacroCommand command1 <span class="token operator">=</span> <span class="token keyword">new</span> <span class="token class-name">MacroCommand</span><span class="token punctuation">(</span><span class="token punctuation">)</span><span class="token punctuation">;</span>
-        command1<span class="token punctuation">.</span><span class="token function">addCommand</span><span class="token punctuation">(</span>command<span class="token punctuation">)</span><span class="token punctuation">;</span>
-        command1<span class="token punctuation">.</span><span class="token function">addCommand</span><span class="token punctuation">(</span>command<span class="token punctuation">)</span><span class="token punctuation">;</span>
+        final MacroCommand command1 = new MacroCommand();
+        command1.addCommand(command);
+        command1.addCommand(command);
 
-        menuItem<span class="token punctuation">.</span><span class="token function">setCommand</span><span class="token punctuation">(</span>command<span class="token punctuation">)</span><span class="token punctuation">;</span>
-        menuItem1<span class="token punctuation">.</span><span class="token function">setCommand</span><span class="token punctuation">(</span>command1<span class="token punctuation">)</span><span class="token punctuation">;</span>
+        menuItem.setCommand(command);
+        menuItem1.setCommand(command1);
 
-        menu<span class="token punctuation">.</span><span class="token function">addItem</span><span class="token punctuation">(</span>menuItem<span class="token punctuation">)</span><span class="token punctuation">;</span>
-        menu<span class="token punctuation">.</span><span class="token function">addItem</span><span class="token punctuation">(</span>menuItem1<span class="token punctuation">)</span><span class="token punctuation">;</span>
+        menu.addItem(menuItem);
+        menu.addItem(menuItem1);
 
-        menu<span class="token punctuation">.</span><span class="token function">display</span><span class="token punctuation">(</span><span class="token punctuation">)</span><span class="token punctuation">;</span>
-        menuItem<span class="token punctuation">.</span><span class="token function">create</span><span class="token punctuation">(</span><span class="token punctuation">)</span><span class="token punctuation">;</span>
-        menuItem<span class="token punctuation">.</span><span class="token function">open</span><span class="token punctuation">(</span><span class="token punctuation">)</span><span class="token punctuation">;</span>
-        System<span class="token punctuation">.</span>out<span class="token punctuation">.</span><span class="token function">println</span><span class="token punctuation">(</span><span class="token string">"----宏命令执行------"</span><span class="token punctuation">)</span><span class="token punctuation">;</span>
-        menuItem1<span class="token punctuation">.</span><span class="token function">create</span><span class="token punctuation">(</span><span class="token punctuation">)</span><span class="token punctuation">;</span>
-        menuItem1<span class="token punctuation">.</span><span class="token function">edit</span><span class="token punctuation">(</span><span class="token punctuation">)</span><span class="token punctuation">;</span>
-        menuItem1<span class="token punctuation">.</span><span class="token function">open</span><span class="token punctuation">(</span><span class="token punctuation">)</span><span class="token punctuation">;</span>
-    <span class="token punctuation">}</span>
-<span class="token punctuation">}</span>
+        menu.display();
+        menuItem.create();
+        menuItem.open();
+        System.out.println(&quot;----宏命令执行------&quot;);
+        menuItem1.create();
+        menuItem1.edit();
+        menuItem1.open();
+    }
+}
 </code></pre>
 
       
@@ -970,7 +970,7 @@
               
                 <a href="/archives">
               
-                  <span class="site-state-item-count">224</span>
+                  <span class="site-state-item-count">237</span>
                   <span class="site-state-item-name">日志</span>
                 </a>
               </div>
@@ -992,7 +992,7 @@
               
               <div class="site-state-item site-state-tags">
                 <a href="/tags/index.html">
-                  <span class="site-state-item-count">21</span>
+                  <span class="site-state-item-count">22</span>
                   <span class="site-state-item-name">标签</span>
                 </a>
               </div>

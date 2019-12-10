@@ -436,26 +436,26 @@
 </li>
 <li><p>example by Mybatis Batch:</p>
 </li>
-<li><pre class=" language-java"><code class="language-java"><span class="token comment" spellcheck="true">// Java 代码</span>
-pst<span class="token punctuation">.</span><span class="token function">addBatch</span><span class="token punctuation">(</span><span class="token punctuation">)</span><span class="token punctuation">;</span>
-<span class="token keyword">if</span><span class="token punctuation">(</span>i <span class="token operator">></span> <span class="token number">0</span> <span class="token operator">&amp;&amp;</span> i<span class="token operator">%</span><span class="token number">1000</span> <span class="token operator">==</span> <span class="token number">0</span><span class="token punctuation">)</span><span class="token punctuation">{</span>
-    pst<span class="token punctuation">.</span><span class="token function">executeBatch</span><span class="token punctuation">(</span><span class="token punctuation">)</span><span class="token punctuation">;</span>
-    pst<span class="token punctuation">.</span><span class="token function">clearBatch</span><span class="token punctuation">(</span><span class="token punctuation">)</span><span class="token punctuation">;</span>
-<span class="token punctuation">}</span>
+<li><pre><code class="java">// Java 代码
+pst.addBatch();
+if(i &gt; 0 &amp;&amp; i%1000 == 0){
+    pst.executeBatch();
+    pst.clearBatch();
+}
 </code></pre>
 </li>
-<li><pre class=" language-xml"><code class="language-xml"><span class="token comment" spellcheck="true">&lt;!-- MyBatis SQL --></span>
-<span class="token tag"><span class="token tag"><span class="token punctuation">&lt;</span>insert</span> <span class="token attr-name">id</span><span class="token attr-value"><span class="token punctuation">=</span><span class="token punctuation">"</span>insertbatch<span class="token punctuation">"</span></span> <span class="token attr-name">parameterType</span><span class="token attr-value"><span class="token punctuation">=</span><span class="token punctuation">"</span>java.util.List<span class="token punctuation">"</span></span><span class="token punctuation">></span></span>
-    <span class="token tag"><span class="token tag"><span class="token punctuation">&lt;</span>selectKey</span> <span class="token attr-name">keyProperty</span><span class="token attr-value"><span class="token punctuation">=</span><span class="token punctuation">"</span>fetchTime<span class="token punctuation">"</span></span> <span class="token attr-name">order</span><span class="token attr-value"><span class="token punctuation">=</span><span class="token punctuation">"</span>BEFORE<span class="token punctuation">"</span></span> <span class="token attr-name">resultType</span><span class="token attr-value"><span class="token punctuation">=</span><span class="token punctuation">"</span>java.lang.String<span class="token punctuation">"</span></span><span class="token punctuation">></span></span>
+<li><pre><code class="xml">&lt;!-- MyBatis SQL --&gt;
+&lt;insert id=&quot;insertbatch&quot; parameterType=&quot;java.util.List&quot;&gt;
+    &lt;selectKey keyProperty=&quot;fetchTime&quot; order=&quot;BEFORE&quot; resultType=&quot;java.lang.String&quot;&gt;
         insert into tb_user (username,password)
         values
-        <span class="token tag"><span class="token tag"><span class="token punctuation">&lt;</span>foreach</span> <span class="token attr-name">collection</span><span class="token attr-value"><span class="token punctuation">=</span><span class="token punctuation">"</span>list<span class="token punctuation">"</span></span> <span class="token attr-name">item</span><span class="token attr-value"><span class="token punctuation">=</span><span class="token punctuation">"</span>item<span class="token punctuation">"</span></span> <span class="token attr-name">index</span><span class="token attr-value"><span class="token punctuation">=</span><span class="token punctuation">"</span>index<span class="token punctuation">"</span></span> <span class="token attr-name">separator</span><span class="token attr-value"><span class="token punctuation">=</span><span class="token punctuation">"</span>,<span class="token punctuation">"</span></span><span class="token punctuation">></span></span>
+        &lt;foreach collection=&quot;list&quot; item=&quot;item&quot; index=&quot;index&quot; separator=&quot;,&quot;&gt;
             (
                 #{item.username},#{item.password}
             )
-        <span class="token tag"><span class="token tag"><span class="token punctuation">&lt;/</span>foreach</span><span class="token punctuation">></span></span>
-    <span class="token tag"><span class="token tag"><span class="token punctuation">&lt;/</span>selectKey</span><span class="token punctuation">></span></span>
-<span class="token tag"><span class="token tag"><span class="token punctuation">&lt;/</span>insert</span><span class="token punctuation">></span></span>
+        &lt;/foreach&gt;
+    &lt;/selectKey&gt;
+&lt;/insert&gt;
 </code></pre>
 </li>
 </ol>
@@ -505,8 +505,8 @@ pst<span class="token punctuation">.</span><span class="token function">addBatch
 
           <div class="post-nav-prev post-nav-item">
             
-              <a href="/2019/06/21/读书笔记/《高性能MySQL》/11.MySQL常用命令/" rel="prev" title="《高性能MySQL》第六章 MySQL 中的存储引擎">
-                《高性能MySQL》第六章 MySQL 中的存储引擎 <i class="fa fa-chevron-right"></i>
+              <a href="/2019/06/21/读书笔记/《高性能MySQL》/20.数据库表结构实践/" rel="prev" title="《高性能MySQL》数据库表实践">
+                《高性能MySQL》数据库表实践 <i class="fa fa-chevron-right"></i>
               </a>
             
           </div>
@@ -588,7 +588,7 @@ pst<span class="token punctuation">.</span><span class="token function">addBatch
               
                 <a href="/archives">
               
-                  <span class="site-state-item-count">224</span>
+                  <span class="site-state-item-count">237</span>
                   <span class="site-state-item-name">日志</span>
                 </a>
               </div>
@@ -610,7 +610,7 @@ pst<span class="token punctuation">.</span><span class="token function">addBatch
               
               <div class="site-state-item site-state-tags">
                 <a href="/tags/index.html">
-                  <span class="site-state-item-count">21</span>
+                  <span class="site-state-item-count">22</span>
                   <span class="site-state-item-name">标签</span>
                 </a>
               </div>

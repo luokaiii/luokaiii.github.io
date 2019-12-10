@@ -385,47 +385,47 @@
 
       
         <h1 id="第十九章-WebSocket-Security"><a href="#第十九章-WebSocket-Security" class="headerlink" title="第十九章 WebSocket Security"></a>第十九章 WebSocket Security</h1><h2 id="一、WebSocket-Configuration"><a href="#一、WebSocket-Configuration" class="headerlink" title="一、WebSocket Configuration"></a>一、WebSocket Configuration</h2><p>Spring Security 4.0 通过 Spring Messaging 抽象引入了对  WebSocket 的授权支持。如果需要使用 Java 配置授权，只需要扩展 AbstractSecurityWebSocketMessageBrokerConfigurer，并配置 MessageSecurityMetadataSourceRegistry。如：</p>
-<pre class=" language-java"><code class="language-java"><span class="token comment" spellcheck="true">/**
+<pre><code class="java">/**
  * 1. 继承了 config 后，任何的入站 connect 消息都需要提供有效的 CSRF 令牌来实施同源策略
  * 2. SecurityContextHolder 由入站请求中的额 simpUser 头部属性中的用户填充
- */</span>
-<span class="token annotation punctuation">@Configuration</span>
-<span class="token keyword">public</span> <span class="token keyword">class</span> <span class="token class-name">WebSocketSecurityConfig</span> <span class="token keyword">extends</span> <span class="token class-name">AbstractSecurityWebSocketMessageBrokerConfigurer</span> <span class="token punctuation">{</span>
+ */
+@Configuration
+public class WebSocketSecurityConfig extends AbstractSecurityWebSocketMessageBrokerConfigurer {
 
-    <span class="token keyword">protected</span> <span class="token keyword">void</span> <span class="token function">configureInbound</span><span class="token punctuation">(</span>MessageSecurityMetadataSourceRegistry messages<span class="token punctuation">)</span> <span class="token punctuation">{</span>
-        <span class="token comment" spellcheck="true">// 任何以 "/user/" 开头的入站请求都需要 ROLE_USER 权限</span>
+    protected void configureInbound(MessageSecurityMetadataSourceRegistry messages) {
+        // 任何以 &quot;/user/&quot; 开头的入站请求都需要 ROLE_USER 权限
         messages
-            <span class="token punctuation">.</span><span class="token function">simpDestMatchers</span><span class="token punctuation">(</span><span class="token string">"/user/*"</span><span class="token punctuation">)</span><span class="token punctuation">.</span><span class="token function">authenticated</span><span class="token punctuation">(</span><span class="token punctuation">)</span><span class="token punctuation">;</span>
-    <span class="token punctuation">}</span>
-<span class="token punctuation">}</span>
+            .simpDestMatchers(&quot;/user/*&quot;).authenticated();
+    }
+}
 </code></pre>
 <p>也可以使用 XML 的方式进行配置，如下：</p>
-<pre class=" language-xml"><code class="language-xml"><span class="token tag"><span class="token tag"><span class="token punctuation">&lt;</span>websocket-message-broker</span><span class="token punctuation">></span></span>
-    <span class="token tag"><span class="token tag"><span class="token punctuation">&lt;</span>intercept-message</span> <span class="token attr-name">pattern</span><span class="token attr-value"><span class="token punctuation">=</span><span class="token punctuation">"</span>/user/**<span class="token punctuation">"</span></span> <span class="token attr-name">access</span><span class="token attr-value"><span class="token punctuation">=</span><span class="token punctuation">"</span>hasRole(<span class="token punctuation">'</span>USER<span class="token punctuation">'</span>)<span class="token punctuation">"</span></span> <span class="token punctuation">/></span></span>
-<span class="token tag"><span class="token tag"><span class="token punctuation">&lt;/</span>websocket-message-broker</span><span class="token punctuation">></span></span>
+<pre><code class="xml">&lt;websocket-message-broker&gt;
+    &lt;intercept-message pattern=&quot;/user/**&quot; access=&quot;hasRole(&#39;USER&#39;)&quot; /&gt;
+&lt;/websocket-message-broker&gt;
 </code></pre>
 <h2 id="二、-WebSocket-Authentication-WebSocket-认证"><a href="#二、-WebSocket-Authentication-WebSocket-认证" class="headerlink" title="二、 WebSocket Authentication - WebSocket 认证"></a>二、 WebSocket Authentication - WebSocket 认证</h2><p>在创建与重连 WebSocket 连接时，在 HTTP 请求中发现的相同的认证信息。这意味着 HttpServletRequest 上的主体将会被移交给 websocket。</p>
 <h2 id="三、WebSocket-Authorization-WebSocket-授权"><a href="#三、WebSocket-Authorization-WebSocket-授权" class="headerlink" title="三、WebSocket Authorization - WebSocket 授权"></a>三、WebSocket Authorization - WebSocket 授权</h2><p>授权配置实例如下：</p>
-<pre class=" language-java"><code class="language-java"><span class="token annotation punctuation">@Configuration</span>
-<span class="token keyword">public</span> <span class="token keyword">class</span> <span class="token class-name">WebSocketSecurityConfig</span> <span class="token keyword">extends</span> <span class="token class-name">AbstractSecurityWebSocketMessageBrokerConfigurer</span> <span class="token punctuation">{</span>
+<pre><code class="java">@Configuration
+public class WebSocketSecurityConfig extends AbstractSecurityWebSocketMessageBrokerConfigurer {
 
-    <span class="token annotation punctuation">@Override</span>
-    <span class="token keyword">protected</span> <span class="token keyword">void</span> <span class="token function">configureInbound</span><span class="token punctuation">(</span>MessageSecurityMetadataSourceRegistry messages<span class="token punctuation">)</span> <span class="token punctuation">{</span>
+    @Override
+    protected void configureInbound(MessageSecurityMetadataSourceRegistry messages) {
         messages
-            <span class="token comment" spellcheck="true">// 任何没有 destination 的消息都需要身份验证</span>
-            <span class="token punctuation">.</span><span class="token function">nullDestMatcher</span><span class="token punctuation">(</span><span class="token punctuation">)</span><span class="token punctuation">.</span><span class="token function">authenticated</span><span class="token punctuation">(</span><span class="token punctuation">)</span>
-            <span class="token comment" spellcheck="true">// 任何人都可以订阅 /user/queue/errors</span>
-            <span class="token punctuation">.</span><span class="token function">simpSubscribeDestMatchers</span><span class="token punctuation">(</span><span class="token string">"/user/queue/errors"</span><span class="token punctuation">)</span><span class="token punctuation">.</span><span class="token function">permitAll</span><span class="token punctuation">(</span><span class="token punctuation">)</span>
-            <span class="token comment" spellcheck="true">// 任何以 /app/ 开头的 destination 消息都需要 ROLE_USER 角色</span>
-            <span class="token punctuation">.</span><span class="token function">simpDestMatchers</span><span class="token punctuation">(</span><span class="token string">"/app/**"</span><span class="token punctuation">)</span><span class="token punctuation">.</span><span class="token function">hasRole</span><span class="token punctuation">(</span><span class="token string">"USER"</span><span class="token punctuation">)</span>
-            <span class="token comment" spellcheck="true">// 任何以 /user/ 或 /topc/friends 开头的 SUBSCRIBE 订阅都需要 ROLE_USER 角色</span>
-            <span class="token punctuation">.</span><span class="token function">simpSubscribeDestMatchers</span><span class="token punctuation">(</span><span class="token string">"/user/**"</span><span class="token punctuation">,</span><span class="token string">"/topic/friends/*"</span><span class="token punctuation">)</span><span class="token punctuation">.</span><span class="token function">hasRole</span><span class="token punctuation">(</span><span class="token string">"USER"</span><span class="token punctuation">)</span>
-            <span class="token comment" spellcheck="true">// 任何其他 MESSAGE 或 SUBSCRIBE 类型的消息都将被拒绝</span>
-            <span class="token punctuation">.</span><span class="token function">simpTypeMatchers</span><span class="token punctuation">(</span>MESSAGE<span class="token punctuation">,</span> SUBSCRIBE<span class="token punctuation">)</span><span class="token punctuation">.</span><span class="token function">denyAll</span><span class="token punctuation">(</span><span class="token punctuation">)</span>
-            <span class="token comment" spellcheck="true">// 任何其他消息都将被拒绝(这样做，可以确保不会遗漏任何消息)</span>
-            <span class="token punctuation">.</span><span class="token function">anyMessage</span><span class="token punctuation">(</span><span class="token punctuation">)</span><span class="token punctuation">.</span><span class="token function">denyAll</span><span class="token punctuation">(</span><span class="token punctuation">)</span><span class="token punctuation">;</span>
-    <span class="token punctuation">}</span>
-<span class="token punctuation">}</span>
+            // 任何没有 destination 的消息都需要身份验证
+            .nullDestMatcher().authenticated()
+            // 任何人都可以订阅 /user/queue/errors
+            .simpSubscribeDestMatchers(&quot;/user/queue/errors&quot;).permitAll()
+            // 任何以 /app/ 开头的 destination 消息都需要 ROLE_USER 角色
+            .simpDestMatchers(&quot;/app/**&quot;).hasRole(&quot;USER&quot;)
+            // 任何以 /user/ 或 /topc/friends 开头的 SUBSCRIBE 订阅都需要 ROLE_USER 角色
+            .simpSubscribeDestMatchers(&quot;/user/**&quot;,&quot;/topic/friends/*&quot;).hasRole(&quot;USER&quot;)
+            // 任何其他 MESSAGE 或 SUBSCRIBE 类型的消息都将被拒绝
+            .simpTypeMatchers(MESSAGE, SUBSCRIBE).denyAll()
+            // 任何其他消息都将被拒绝(这样做，可以确保不会遗漏任何消息)
+            .anyMessage().denyAll();
+    }
+}
 </code></pre>
 <h2 id="四、WebSocket-Authorization-Notes"><a href="#四、WebSocket-Authorization-Notes" class="headerlink" title="四、WebSocket Authorization Notes"></a>四、WebSocket Authorization Notes</h2><h3 id="1-WebSocket-Authorization-on-Message-Types"><a href="#1-WebSocket-Authorization-on-Message-Types" class="headerlink" title="1. WebSocket Authorization on Message Types"></a>1. WebSocket Authorization on Message Types</h3><p>WebSocket 授权说明，一般情况下，我们只希望客户端订阅 “/topic/system/notifications”，而不希望客户端向该 destination 发送消息。</p>
 <p>如果我们允许客户端向 “/topic/system/notifications” 发送消息，那么客户端就可以直接向所有的订阅端点发送消息，并模拟系统。</p>
@@ -439,14 +439,14 @@
 <h3 id="1-Adding-CSRF-to-Stomp-Headers"><a href="#1-Adding-CSRF-to-Stomp-Headers" class="headerlink" title="1. Adding CSRF to Stomp Headers"></a>1. Adding CSRF to Stomp Headers</h3><p>默认情况下，Spring Security 要求在任何 connect 消息中使用 CSRF 令牌，这确保只有访问 CSRF 令牌的站点才能连接。</p>
 <p>但是 SockJS 不允许这些，因此我们必须在 Stomp 头文件中包含 token。</p>
 <h3 id="2-Disable-CSRF-within-WebSockets"><a href="#2-Disable-CSRF-within-WebSockets" class="headerlink" title="2. Disable CSRF within WebSockets"></a>2. Disable CSRF within WebSockets</h3><p>如果允许其他域访问站点，可以禁用 SpringSecurity 的保护，配置如下：</p>
-<pre class=" language-java"><code class="language-java"><span class="token annotation punctuation">@Configuration</span>
-<span class="token keyword">public</span> <span class="token keyword">class</span> <span class="token class-name">WebSocketSecurityConfig</span> <span class="token keyword">extends</span> <span class="token class-name">AbstractSecurityWebSocketMessageBrokerConfigurer</span> <span class="token punctuation">{</span>
+<pre><code class="java">@Configuration
+public class WebSocketSecurityConfig extends AbstractSecurityWebSocketMessageBrokerConfigurer {
 
-    <span class="token annotation punctuation">@Override</span>
-    <span class="token keyword">protected</span> <span class="token keyword">boolean</span> <span class="token function">smaeOriginDesabled</span><span class="token punctuation">(</span><span class="token punctuation">)</span> <span class="token punctuation">{</span>
-        <span class="token keyword">return</span> <span class="token boolean">true</span><span class="token punctuation">;</span>
-    <span class="token punctuation">}</span>
-<span class="token punctuation">}</span>
+    @Override
+    protected boolean smaeOriginDesabled() {
+        return true;
+    }
+}
 </code></pre>
 
       
@@ -571,7 +571,7 @@
               
                 <a href="/archives">
               
-                  <span class="site-state-item-count">224</span>
+                  <span class="site-state-item-count">237</span>
                   <span class="site-state-item-name">日志</span>
                 </a>
               </div>
@@ -593,7 +593,7 @@
               
               <div class="site-state-item site-state-tags">
                 <a href="/tags/index.html">
-                  <span class="site-state-item-count">21</span>
+                  <span class="site-state-item-count">22</span>
                   <span class="site-state-item-name">标签</span>
                 </a>
               </div>

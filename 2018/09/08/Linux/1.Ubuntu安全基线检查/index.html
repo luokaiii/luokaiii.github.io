@@ -387,17 +387,17 @@
         <h1 id="Ubuntu安全基线检查"><a href="#Ubuntu安全基线检查" class="headerlink" title="Ubuntu安全基线检查"></a>Ubuntu安全基线检查</h1><p>来自于阿里云云安全中心于 2019/07/22 发送的一条安全漏洞检查，其中关于账户、文件等方面的安全检查及修改建议。</p>
 <h2 id="一、设置密码失效时间"><a href="#一、设置密码失效时间" class="headerlink" title="一、设置密码失效时间"></a>一、设置密码失效时间</h2><h3 id="描述"><a href="#描述" class="headerlink" title="描述"></a>描述</h3><p>设置密码失效时间，强制定期修改密码，减少密码被泄露和猜测风险，使用非密码登录(如密钥对)方式可以忽略。</p>
 <h3 id="加固建议"><a href="#加固建议" class="headerlink" title="加固建议"></a>加固建议</h3><p>在 /etc/login.defs 中将 PASS_MAX_DAYS 参数设置为 60-180 之间，如：</p>
-<pre class=" language-shell"><code class="language-shell">PASS_MAX_DAYS 90
+<pre><code class="shell">PASS_MAX_DAYS 90
 </code></pre>
 <p>需同时执行命令设置 root 密码失效时间：</p>
-<pre class=" language-shell"><code class="language-shell">chage --maxdays 90 root
+<pre><code class="shell">chage --maxdays 90 root
 </code></pre>
 <h2 id="二、设置密码修改最小间隔时间"><a href="#二、设置密码修改最小间隔时间" class="headerlink" title="二、设置密码修改最小间隔时间"></a>二、设置密码修改最小间隔时间</h2><h3 id="描述-1"><a href="#描述-1" class="headerlink" title="描述"></a>描述</h3><p>设置密码修改最小间隔时间，限制密码更改过于频繁</p>
 <h3 id="加固建议-1"><a href="#加固建议-1" class="headerlink" title="加固建议"></a>加固建议</h3><p>在 /etc/login.defs 中将 PASS_MIN_DAYS 参数设置为 7-14 之间，建议为7：</p>
-<pre class=" language-shell"><code class="language-shell">PASS_MIN_DAYS 7
+<pre><code class="shell">PASS_MIN_DAYS 7
 </code></pre>
 <p>需同时执行命令为 root 用户设置：</p>
-<pre class=" language-shell"><code class="language-shell">chage --mindays 7 root
+<pre><code class="shell">chage --mindays 7 root
 </code></pre>
 <h2 id="三、密码复杂度检查"><a href="#三、密码复杂度检查" class="headerlink" title="三、密码复杂度检查"></a>三、密码复杂度检查</h2><h3 id="描述-2"><a href="#描述-2" class="headerlink" title="描述"></a>描述</h3><p>检查密码长度和密码是否使用多种字符类型</p>
 <h3 id="加固建议-2"><a href="#加固建议-2" class="headerlink" title="加固建议"></a>加固建议</h3><ol>
@@ -416,7 +416,7 @@
 <h3 id="加固建议-3"><a href="#加固建议-3" class="headerlink" title="加固建议"></a>加固建议</h3><p>编辑 <code>/etc/pam.d/common-password</code>，在 <code>password [success=1 default=ignore] pam_unix.so</code> 开头的这一行增加配置 remember 设置为 5-24 之间，如在行末尾加上 remember=5</p>
 <h2 id="五、设置用户权限配置文件的权限"><a href="#五、设置用户权限配置文件的权限" class="headerlink" title="五、设置用户权限配置文件的权限"></a>五、设置用户权限配置文件的权限</h2><h3 id="描述-4"><a href="#描述-4" class="headerlink" title="描述"></a>描述</h3><p>设置用户权限配置文件的权限</p>
 <h3 id="加固建议-4"><a href="#加固建议-4" class="headerlink" title="加固建议"></a>加固建议</h3><p>执行如下5条命令</p>
-<pre class=" language-shell"><code class="language-shell">chown root:root /etc/passwd /etc/shadow /etc/group /etc/gshadow
+<pre><code class="shell">chown root:root /etc/passwd /etc/shadow /etc/group /etc/gshadow
 chmod 0644 /etc/group
 chmod 0644 /etc/passwd
 chmod 0400 /etc/shadow
@@ -424,40 +424,40 @@ chmod 0400 /etc/gshadow
 </code></pre>
 <h2 id="六、设置SSH空闲超时退出时间"><a href="#六、设置SSH空闲超时退出时间" class="headerlink" title="六、设置SSH空闲超时退出时间"></a>六、设置SSH空闲超时退出时间</h2><h3 id="描述-5"><a href="#描述-5" class="headerlink" title="描述"></a>描述</h3><p>设置SSH空闲超时退出时间，可降低未授权用户访问其他用户 ssh 会话的风险</p>
 <h3 id="加固建议-5"><a href="#加固建议-5" class="headerlink" title="加固建议"></a>加固建议</h3><p>编辑 <code>/etc/ssh/sshd_config</code>，将 ClientAliveInterval 设置为300到900，即5-15分钟，将ClientAliveCountMax 设置为0-3之间。</p>
-<pre class=" language-shell"><code class="language-shell">ClientAliveInterval 600
+<pre><code class="shell">ClientAliveInterval 600
 ClientAliveCountMax 2
 </code></pre>
 <h3 id="七、检查系统空密码账户"><a href="#七、检查系统空密码账户" class="headerlink" title="七、检查系统空密码账户"></a>七、检查系统空密码账户</h3><h3 id="描述-6"><a href="#描述-6" class="headerlink" title="描述"></a>描述</h3><p>检查系统空密码账户</p>
 <h3 id="加固建议-6"><a href="#加固建议-6" class="headerlink" title="加固建议"></a>加固建议</h3><p>为用户设置一个非空密码，或者执行 <code>passwd -l &lt;username&gt;</code> 锁定用户</p>
 <h2 id="八、禁止SSH空密码用户登录"><a href="#八、禁止SSH空密码用户登录" class="headerlink" title="八、禁止SSH空密码用户登录"></a>八、禁止SSH空密码用户登录</h2><h3 id="描述-7"><a href="#描述-7" class="headerlink" title="描述"></a>描述</h3><p>禁止SSH空密码用户登录</p>
 <h3 id="加固建议-7"><a href="#加固建议-7" class="headerlink" title="加固建议"></a>加固建议</h3><p>编辑文件 <code>/etc/ssh/sshd_config</code>，将 PermitEmptyPasswords 配置为 no：</p>
-<pre class=" language-shell"><code class="language-shell">PermitEmptyPasswords no
+<pre><code class="shell">PermitEmptyPasswords no
 </code></pre>
 <h2 id="九、确保密码到期警告天数为7或更多"><a href="#九、确保密码到期警告天数为7或更多" class="headerlink" title="九、确保密码到期警告天数为7或更多"></a>九、确保密码到期警告天数为7或更多</h2><h3 id="描述-8"><a href="#描述-8" class="headerlink" title="描述"></a>描述</h3><p>确保密码到期警告天数为7或更多</p>
 <h3 id="加固建议-8"><a href="#加固建议-8" class="headerlink" title="加固建议"></a>加固建议</h3><p>在 /etc/login.defs 中将 PASS_WARN_AGE 参数设置为 7-14之间，建议为7：</p>
-<pre class=" language-shell"><code class="language-shell">PASS_WARN_AGE 7
+<pre><code class="shell">PASS_WARN_AGE 7
 </code></pre>
 <p>同时执行命令使root用户设置生效：</p>
-<pre class=" language-shell"><code class="language-shell">chage --warndays 7 root
+<pre><code class="shell">chage --warndays 7 root
 </code></pre>
 <h2 id="十、确保SSH-MaxAuthTries设置为3到6之间"><a href="#十、确保SSH-MaxAuthTries设置为3到6之间" class="headerlink" title="十、确保SSH MaxAuthTries设置为3到6之间"></a>十、确保SSH MaxAuthTries设置为3到6之间</h2><h3 id="描述-9"><a href="#描述-9" class="headerlink" title="描述"></a>描述</h3><p>设置较低的Max AuthTrimes参数将降低SSH服务器被暴力攻击成功的风险。</p>
 <h3 id="加固建议-9"><a href="#加固建议-9" class="headerlink" title="加固建议"></a>加固建议</h3><p>在/etc/ssh/sshd_config中取消MaxAuthTries注释符号#，设置最大密码尝试失败次数3-6，建议为4：</p>
-<pre class=" language-shell"><code class="language-shell">MaxAuthTries 4
+<pre><code class="shell">MaxAuthTries 4
 </code></pre>
 <h2 id="十一、SSHD强制使用V2安全协议"><a href="#十一、SSHD强制使用V2安全协议" class="headerlink" title="十一、SSHD强制使用V2安全协议"></a>十一、SSHD强制使用V2安全协议</h2><h3 id="描述-10"><a href="#描述-10" class="headerlink" title="描述"></a>描述</h3><p>SSHD强制使用V2安全协议</p>
 <p>类型：SSH服务配置</p>
 <h3 id="加固建议-10"><a href="#加固建议-10" class="headerlink" title="加固建议"></a>加固建议</h3><p>编辑 /etc/ssh/sshd_config 文件以按如下方式设置参数：</p>
-<pre class=" language-shell"><code class="language-shell">Protocol 2
+<pre><code class="shell">Protocol 2
 </code></pre>
 <h2 id="十二、确保SSH-LogLevel设置为INFO"><a href="#十二、确保SSH-LogLevel设置为INFO" class="headerlink" title="十二、确保SSH LogLevel设置为INFO"></a>十二、确保SSH LogLevel设置为INFO</h2><h3 id="描述-11"><a href="#描述-11" class="headerlink" title="描述"></a>描述</h3><p>确保SSH LogLevel设置为INFO,记录登录和注销活动</p>
 <p>类型：服务配置</p>
 <h3 id="加固建议-11"><a href="#加固建议-11" class="headerlink" title="加固建议"></a>加固建议</h3><p>编辑 /etc/ssh/sshd_config 文件以按如下方式设置参数(取消注释):</p>
-<pre class=" language-shell"><code class="language-shell">LogLevel INFO
+<pre><code class="shell">LogLevel INFO
 </code></pre>
 <h2 id="十三、访问控制配置文件的权限设置"><a href="#十三、访问控制配置文件的权限设置" class="headerlink" title="十三、访问控制配置文件的权限设置"></a>十三、访问控制配置文件的权限设置</h2><h3 id="描述-12"><a href="#描述-12" class="headerlink" title="描述"></a>描述</h3><p>访问控制配置文件的权限设置</p>
 <p>类型：文件权限</p>
 <h3 id="加固建议-12"><a href="#加固建议-12" class="headerlink" title="加固建议"></a>加固建议</h3><p>运行以下4条命令：</p>
-<pre class=" language-shell"><code class="language-shell">chown root:root /etc/hosts.allow 
+<pre><code class="shell">chown root:root /etc/hosts.allow 
 chown root:root /etc/hosts.deny 
 chmod 644 /etc/hosts.deny
 chmod 644 /etc/hosts.allow
@@ -471,7 +471,7 @@ chmod 644 /etc/hosts.allow
 <h2 id="十六、确保rsyslog服务已启用"><a href="#十六、确保rsyslog服务已启用" class="headerlink" title="十六、确保rsyslog服务已启用"></a>十六、确保rsyslog服务已启用</h2><h3 id="描述-15"><a href="#描述-15" class="headerlink" title="描述"></a>描述</h3><p>确保rsyslog服务已启用，记录日志用于审计</p>
 <p>类型：安全审计</p>
 <h3 id="加固建议-15"><a href="#加固建议-15" class="headerlink" title="加固建议"></a>加固建议</h3><p>运行以下命令启用rsyslog服务：</p>
-<pre class=" language-shell"><code class="language-shell">service rsyslog start
+<pre><code class="shell">service rsyslog start
 </code></pre>
 
       
@@ -503,8 +503,8 @@ chmod 644 /etc/hosts.allow
         <div class="post-nav">
           <div class="post-nav-next post-nav-item">
             
-              <a href="/2018/09/01/SpringBootWebsocket/SpringBoot消息机制(二)-Stomp协议/" rel="next" title="SpringBoot消息机制(二)-Stomp协议">
-                <i class="fa fa-chevron-left"></i> SpringBoot消息机制(二)-Stomp协议
+              <a href="/2018/09/08/Linux/Ubuntu搭建SS服务器/" rel="next" title="Ubuntu搭建SS服务器">
+                <i class="fa fa-chevron-left"></i> Ubuntu搭建SS服务器
               </a>
             
           </div>
@@ -596,7 +596,7 @@ chmod 644 /etc/hosts.allow
               
                 <a href="/archives">
               
-                  <span class="site-state-item-count">224</span>
+                  <span class="site-state-item-count">237</span>
                   <span class="site-state-item-name">日志</span>
                 </a>
               </div>
@@ -618,7 +618,7 @@ chmod 644 /etc/hosts.allow
               
               <div class="site-state-item site-state-tags">
                 <a href="/tags/index.html">
-                  <span class="site-state-item-count">21</span>
+                  <span class="site-state-item-count">22</span>
                   <span class="site-state-item-name">标签</span>
                 </a>
               </div>

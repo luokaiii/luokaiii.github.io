@@ -387,56 +387,56 @@
         <h1 id="第十章-SpringSecurity中的过滤器链"><a href="#第十章-SpringSecurity中的过滤器链" class="headerlink" title="第十章 SpringSecurity中的过滤器链"></a>第十章 SpringSecurity中的过滤器链</h1><p>Spring Security 的 web 基础完全是基于标准的 servlet 过滤器的，它在内部不使用 servlet 或任何基于 servlet 的框架(如SpringMVC)，因此它与任何特定的 web 技术都没有特别强的关联。</p>
 <p>Spring Security 不关心请求是来自于 浏览器、web服务器、HttpInvoker 还是 ajax应用。</p>
 <p>在 Spring Security 的 HttpSecurityBuilder 类的 addFilter(Filter filter) 上，存在这样一段注解：</p>
-<pre class=" language-java"><code class="language-java">    <span class="token comment" spellcheck="true">/**
+<pre><code class="java">    /**
      * Adds a {@link Filter} that must be an instance of or extend one of the Filters
      * provided within the Security framework. The method ensures that the ordering of the
      * Filters is automatically taken care of.
      *
      * The ordering of the Filters is:
      *
-     * &lt;ul>
-     * &lt;li>{@link ChannelProcessingFilter}&lt;/li>
-     * &lt;li>{@link ConcurrentSessionFilter}&lt;/li>
-     * &lt;li>{@link SecurityContextPersistenceFilter}&lt;/li>
-     * &lt;li>{@link LogoutFilter}&lt;/li>
-     * &lt;li>{@link X509AuthenticationFilter}&lt;/li>
-     * &lt;li>{@link AbstractPreAuthenticatedProcessingFilter}&lt;/li>
-     * &lt;li>&lt;a href="{@docRoot}/org/springframework/security/cas/web/CasAuthenticationFilter.html">CasAuthenticationFilter&lt;/a>&lt;/li>
-     * &lt;li>{@link UsernamePasswordAuthenticationFilter}&lt;/li>
-     * &lt;li>{@link ConcurrentSessionFilter}&lt;/li>
-     * &lt;li>{@link OpenIDAuthenticationFilter}&lt;/li>
-     * &lt;li>{@link org.springframework.security.web.authentication.ui.DefaultLoginPageGeneratingFilter}&lt;/li>
-     * &lt;li>{@link ConcurrentSessionFilter}&lt;/li>
-     * &lt;li>{@link DigestAuthenticationFilter}&lt;/li>
-     * &lt;li>{@link BasicAuthenticationFilter}&lt;/li>
-     * &lt;li>{@link RequestCacheAwareFilter}&lt;/li>
-     * &lt;li>{@link SecurityContextHolderAwareRequestFilter}&lt;/li>
-     * &lt;li>{@link JaasApiIntegrationFilter}&lt;/li>
-     * &lt;li>{@link RememberMeAuthenticationFilter}&lt;/li>
-     * &lt;li>{@link AnonymousAuthenticationFilter}&lt;/li>
-     * &lt;li>{@link SessionManagementFilter}&lt;/li>
-     * &lt;li>{@link ExceptionTranslationFilter}&lt;/li>
-     * &lt;li>{@link FilterSecurityInterceptor}&lt;/li>
-     * &lt;li>{@link SwitchUserFilter}&lt;/li>
-     * &lt;/ul>
+     * &lt;ul&gt;
+     * &lt;li&gt;{@link ChannelProcessingFilter}&lt;/li&gt;
+     * &lt;li&gt;{@link ConcurrentSessionFilter}&lt;/li&gt;
+     * &lt;li&gt;{@link SecurityContextPersistenceFilter}&lt;/li&gt;
+     * &lt;li&gt;{@link LogoutFilter}&lt;/li&gt;
+     * &lt;li&gt;{@link X509AuthenticationFilter}&lt;/li&gt;
+     * &lt;li&gt;{@link AbstractPreAuthenticatedProcessingFilter}&lt;/li&gt;
+     * &lt;li&gt;&lt;a href=&quot;{@docRoot}/org/springframework/security/cas/web/CasAuthenticationFilter.html&quot;&gt;CasAuthenticationFilter&lt;/a&gt;&lt;/li&gt;
+     * &lt;li&gt;{@link UsernamePasswordAuthenticationFilter}&lt;/li&gt;
+     * &lt;li&gt;{@link ConcurrentSessionFilter}&lt;/li&gt;
+     * &lt;li&gt;{@link OpenIDAuthenticationFilter}&lt;/li&gt;
+     * &lt;li&gt;{@link org.springframework.security.web.authentication.ui.DefaultLoginPageGeneratingFilter}&lt;/li&gt;
+     * &lt;li&gt;{@link ConcurrentSessionFilter}&lt;/li&gt;
+     * &lt;li&gt;{@link DigestAuthenticationFilter}&lt;/li&gt;
+     * &lt;li&gt;{@link BasicAuthenticationFilter}&lt;/li&gt;
+     * &lt;li&gt;{@link RequestCacheAwareFilter}&lt;/li&gt;
+     * &lt;li&gt;{@link SecurityContextHolderAwareRequestFilter}&lt;/li&gt;
+     * &lt;li&gt;{@link JaasApiIntegrationFilter}&lt;/li&gt;
+     * &lt;li&gt;{@link RememberMeAuthenticationFilter}&lt;/li&gt;
+     * &lt;li&gt;{@link AnonymousAuthenticationFilter}&lt;/li&gt;
+     * &lt;li&gt;{@link SessionManagementFilter}&lt;/li&gt;
+     * &lt;li&gt;{@link ExceptionTranslationFilter}&lt;/li&gt;
+     * &lt;li&gt;{@link FilterSecurityInterceptor}&lt;/li&gt;
+     * &lt;li&gt;{@link SwitchUserFilter}&lt;/li&gt;
+     * &lt;/ul&gt;
      *
      * @param filter the {@link Filter} to add
      * @return the {@link HttpSecurity} for further customizations
-     */</span>
-    H <span class="token function">addFilter</span><span class="token punctuation">(</span>Filter filter<span class="token punctuation">)</span><span class="token punctuation">;</span>
+     */
+    H addFilter(Filter filter);
 </code></pre>
 <h3 id="DelegatingFilterProxy"><a href="#DelegatingFilterProxy" class="headerlink" title="DelegatingFilterProxy"></a>DelegatingFilterProxy</h3><p>在 Spring Security 中，过滤器类也是在应用上下文中定义的 Bean，因此能够充分利用 Spring 的依赖注入工具和生命周期接口。</p>
 <p>DelegatingFilterProxy 提供了 web.xml 和应用程序上下文之间的关联。</p>
-<pre class=" language-xml"><code class="language-xml"><span class="token comment" spellcheck="true">&lt;!-- 当使用DelegatingFilterProxy时，可以在 web.xml 中看到如下内容 --></span>
-<span class="token tag"><span class="token tag"><span class="token punctuation">&lt;</span>filter</span><span class="token punctuation">></span></span>
-    <span class="token tag"><span class="token tag"><span class="token punctuation">&lt;</span>filter-name</span><span class="token punctuation">></span></span>myFilter<span class="token tag"><span class="token tag"><span class="token punctuation">&lt;/</span>filter-name</span><span class="token punctuation">></span></span>
-    <span class="token tag"><span class="token tag"><span class="token punctuation">&lt;</span>filter-class</span><span class="token punctuation">></span></span>org.springframework.web.filter.DelegatingFilterProxy<span class="token tag"><span class="token tag"><span class="token punctuation">&lt;/</span>filter-class</span><span class="token punctuation">></span></span>
-<span class="token tag"><span class="token tag"><span class="token punctuation">&lt;/</span>filter</span><span class="token punctuation">></span></span>
+<pre><code class="xml">&lt;!-- 当使用DelegatingFilterProxy时，可以在 web.xml 中看到如下内容 --&gt;
+&lt;filter&gt;
+    &lt;filter-name&gt;myFilter&lt;/filter-name&gt;
+    &lt;filter-class&gt;org.springframework.web.filter.DelegatingFilterProxy&lt;/filter-class&gt;
+&lt;/filter&gt;
 
-<span class="token tag"><span class="token tag"><span class="token punctuation">&lt;</span>filter-mapping</span><span class="token punctuation">></span></span>
-    <span class="token tag"><span class="token tag"><span class="token punctuation">&lt;</span>filter-name</span><span class="token punctuation">></span></span>myFilter<span class="token tag"><span class="token tag"><span class="token punctuation">&lt;/</span>filter-name</span><span class="token punctuation">></span></span>
-    <span class="token tag"><span class="token tag"><span class="token punctuation">&lt;</span>url-pattern</span><span class="token punctuation">></span></span>/*<span class="token tag"><span class="token tag"><span class="token punctuation">&lt;/</span>url-pattern</span><span class="token punctuation">></span></span>
-<span class="token tag"><span class="token tag"><span class="token punctuation">&lt;/</span>filter-mapping</span><span class="token punctuation">></span></span>
+&lt;filter-mapping&gt;
+    &lt;filter-name&gt;myFilter&lt;/filter-name&gt;
+    &lt;url-pattern&gt;/*&lt;/url-pattern&gt;
+&lt;/filter-mapping&gt;
 </code></pre>
 <h3 id="Filter-Ordering-过滤器的顺序"><a href="#Filter-Ordering-过滤器的顺序" class="headerlink" title="Filter Ordering 过滤器的顺序"></a>Filter Ordering 过滤器的顺序</h3><ol>
 <li>ChannelProcessingFilter<ol>
@@ -604,7 +604,7 @@
               
                 <a href="/archives">
               
-                  <span class="site-state-item-count">224</span>
+                  <span class="site-state-item-count">237</span>
                   <span class="site-state-item-name">日志</span>
                 </a>
               </div>
@@ -626,7 +626,7 @@
               
               <div class="site-state-item site-state-tags">
                 <a href="/tags/index.html">
-                  <span class="site-state-item-count">21</span>
+                  <span class="site-state-item-count">22</span>
                   <span class="site-state-item-name">标签</span>
                 </a>
               </div>

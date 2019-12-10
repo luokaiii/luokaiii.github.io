@@ -393,7 +393,7 @@
 </li>
 <li><p>解决方法：进入项目目录，输入：</p>
 </li>
-<li><pre class=" language-shell"><code class="language-shell">git config --global credential.helper store
+<li><pre><code class="shell">git config --global credential.helper store
 </code></pre>
 </li>
 <li><p>再重新pull一次，输入密码之后，以后就不用输入密码了</p>
@@ -412,7 +412,7 @@
 </li>
 <li><p>但是我们需要后台执行 ，用到 nohup</p>
 </li>
-<li><pre class=" language-shell"><code class="language-shell">nohup /usr/local/node/bin/node /www/im/chat.js >> /usr/local/node/output.log 2>&1 &
+<li><pre><code class="shell">nohup /usr/local/node/bin/node /www/im/chat.js &gt;&gt; /usr/local/node/output.log 2&gt;&amp;1 &amp;
 </code></pre>
 </li>
 <li><p>第二种，是将 jar包注册为服务，通过service stop等方法启动停止</p>
@@ -425,12 +425,12 @@
 </li>
 <li><p>安装yarn，注意，17.0以上的ubuntu需要先卸载cmdtest</p>
 <ol>
-<li><pre class=" language-java"><code class="language-java">sudo apt remove cmdtest
+<li><pre><code class="java">sudo apt remove cmdtest
 </code></pre>
 </li>
-<li><pre class=" language-java"><code class="language-java">curl <span class="token operator">-</span>sS https<span class="token operator">:</span><span class="token operator">/</span><span class="token operator">/</span>dl<span class="token punctuation">.</span>yarnpkg<span class="token punctuation">.</span>com<span class="token operator">/</span>debian<span class="token operator">/</span>pubkey<span class="token punctuation">.</span>gpg <span class="token operator">|</span> sudo apt<span class="token operator">-</span>key add <span class="token operator">-</span>
-echo <span class="token string">"deb https://dl.yarnpkg.com/debian/ stable main"</span> <span class="token operator">|</span> sudo tee <span class="token operator">/</span>etc<span class="token operator">/</span>apt<span class="token operator">/</span>sources<span class="token punctuation">.</span>list<span class="token punctuation">.</span>d<span class="token operator">/</span>yarn<span class="token punctuation">.</span>list
-sudo apt<span class="token operator">-</span>get update <span class="token operator">&amp;&amp;</span> sudo apt<span class="token operator">-</span>get install yarn
+<li><pre><code class="java">curl -sS https://dl.yarnpkg.com/debian/pubkey.gpg | sudo apt-key add -
+echo &quot;deb https://dl.yarnpkg.com/debian/ stable main&quot; | sudo tee /etc/apt/sources.list.d/yarn.list
+sudo apt-get update &amp;&amp; sudo apt-get install yarn
 </code></pre>
 </li>
 </ol>
@@ -439,19 +439,19 @@ sudo apt<span class="token operator">-</span>get update <span class="token opera
 </li>
 </ol>
 <p>重启：</p>
-<pre class=" language-java"><code class="language-java">#<span class="token operator">!</span><span class="token operator">/</span>bin<span class="token operator">/</span>bash
-ps <span class="token operator">-</span>ef <span class="token operator">|</span> grep <span class="token string">"/opt/hifox/PGC/teacherApp/teacherapp-0.0.1-SNAPSHOT.jar"</span> <span class="token operator">|</span> grep <span class="token operator">-</span>v grep <span class="token operator">|</span> awk <span class="token string">'{print $2}'</span> <span class="token operator">|</span> xargs kill <span class="token operator">-</span><span class="token number">15</span>
+<pre><code class="java">#!/bin/bash
+ps -ef | grep &quot;/opt/hifox/PGC/teacherApp/teacherapp-0.0.1-SNAPSHOT.jar&quot; | grep -v grep | awk &#39;{print $2}&#39; | xargs kill -15
 
-pid<span class="token operator">=</span>`ps <span class="token operator">-</span>ef <span class="token operator">|</span> grep <span class="token string">"/opt/hifox/PGC/teacherApp/teacherapp-0.0.1-SNAPSHOT.jar"</span> <span class="token operator">|</span> grep <span class="token operator">-</span>v grep <span class="token operator">|</span> awk <span class="token string">'{print $2}'</span>` 
-<span class="token keyword">while</span><span class="token punctuation">(</span> <span class="token operator">!</span> test <span class="token operator">-</span>z $pid<span class="token punctuation">)</span>
-<span class="token keyword">do</span>
- sleep <span class="token number">1</span>
- pid<span class="token operator">=</span>`ps <span class="token operator">-</span>ef <span class="token operator">|</span> grep <span class="token string">"/opt/hifox/PGC/teacherApp/teacherapp-0.0.1-SNAPSHOT.jar"</span> <span class="token operator">|</span> grep <span class="token operator">-</span>v grep <span class="token operator">|</span> awk <span class="token string">'{print $2}'</span>`
-echo <span class="token operator">-</span>n <span class="token string">"*"</span> 
+pid=`ps -ef | grep &quot;/opt/hifox/PGC/teacherApp/teacherapp-0.0.1-SNAPSHOT.jar&quot; | grep -v grep | awk &#39;{print $2}&#39;` 
+while( ! test -z $pid)
+do
+ sleep 1
+ pid=`ps -ef | grep &quot;/opt/hifox/PGC/teacherApp/teacherapp-0.0.1-SNAPSHOT.jar&quot; | grep -v grep | awk &#39;{print $2}&#39;`
+echo -n &quot;*&quot; 
 
 done
 
-nohup java <span class="token operator">-</span>jar teacherapp<span class="token operator">-</span><span class="token number">0.0</span><span class="token punctuation">.</span><span class="token number">1</span><span class="token operator">-</span>SNAPSHOT<span class="token punctuation">.</span>jar <span class="token operator">></span><span class="token operator">/</span>dev<span class="token operator">/</span>null <span class="token number">2</span><span class="token operator">></span><span class="token operator">&amp;</span><span class="token number">1</span> <span class="token operator">&amp;</span>
+nohup java -jar teacherapp-0.0.1-SNAPSHOT.jar &gt;/dev/null 2&gt;&amp;1 &amp;
 </code></pre>
 <p>以外部配置文件启动jar<br>   加载properties优先级：</p>
 <pre><code>        1. jar包同级目录下，config目录下的application.properties
@@ -503,8 +503,8 @@ nohup java <span class="token operator">-</span>jar teacherapp<span class="token
 
           <div class="post-nav-prev post-nav-item">
             
-              <a href="/2018/09/08/Linux/Ubuntu搭建SS服务器/" rel="prev" title="Ubuntu搭建SS服务器">
-                Ubuntu搭建SS服务器 <i class="fa fa-chevron-right"></i>
+              <a href="/2018/09/08/Linux/开发环境的初始化/" rel="prev" title="Linux开发环境初始化">
+                Linux开发环境初始化 <i class="fa fa-chevron-right"></i>
               </a>
             
           </div>
@@ -586,7 +586,7 @@ nohup java <span class="token operator">-</span>jar teacherapp<span class="token
               
                 <a href="/archives">
               
-                  <span class="site-state-item-count">224</span>
+                  <span class="site-state-item-count">237</span>
                   <span class="site-state-item-name">日志</span>
                 </a>
               </div>
@@ -608,7 +608,7 @@ nohup java <span class="token operator">-</span>jar teacherapp<span class="token
               
               <div class="site-state-item site-state-tags">
                 <a href="/tags/index.html">
-                  <span class="site-state-item-count">21</span>
+                  <span class="site-state-item-count">22</span>
                   <span class="site-state-item-name">标签</span>
                 </a>
               </div>

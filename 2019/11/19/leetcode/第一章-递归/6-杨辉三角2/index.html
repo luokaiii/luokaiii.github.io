@@ -81,19 +81,19 @@
 
 
 
-<meta name="description" content="杨辉三角2给定一个非负索引 k，其中 k ≤ 33，返回杨辉三角的第 k 行。  在杨辉三角中，每个数是它左上方和右上方的数的和。 示例: 输入: 3 输出: [1,3,3,1] 进阶： 你可以优化你的算法到 O(k) 空间复杂度吗？">
+<meta name="description" content="杨辉三角II给定一个非负索引 k，其中 k ≤ 33，返回杨辉三角的第 k 行。  在杨辉三角中，每个数是它左上方和右上方的数的和。 示例: 输入: 3 输出: [1,3,3,1]  进阶： 你可以优化你的算法到 O(k) 空间复杂度吗？ 解题// 只保存前一行的数据，用于计算下一行 public static List&amp;lt;Integer&amp;gt; getRow(int rowIndex) {">
 <meta name="keywords" content="帅">
 <meta property="og:type" content="article">
 <meta property="og:title" content="罗凯的博客">
 <meta property="og:url" content="http://luokaiii.github.io/2019/11/19/leetcode/第一章-递归/6-杨辉三角2/index.html">
 <meta property="og:site_name" content="罗凯的博客">
-<meta property="og:description" content="杨辉三角2给定一个非负索引 k，其中 k ≤ 33，返回杨辉三角的第 k 行。  在杨辉三角中，每个数是它左上方和右上方的数的和。 示例: 输入: 3 输出: [1,3,3,1] 进阶： 你可以优化你的算法到 O(k) 空间复杂度吗？">
+<meta property="og:description" content="杨辉三角II给定一个非负索引 k，其中 k ≤ 33，返回杨辉三角的第 k 行。  在杨辉三角中，每个数是它左上方和右上方的数的和。 示例: 输入: 3 输出: [1,3,3,1]  进阶： 你可以优化你的算法到 O(k) 空间复杂度吗？ 解题// 只保存前一行的数据，用于计算下一行 public static List&amp;lt;Integer&amp;gt; getRow(int rowIndex) {">
 <meta property="og:locale" content="zh-Hans">
 <meta property="og:image" content="https://upload.wikimedia.org/wikipedia/commons/0/0d/PascalTriangleAnimated2.gif">
-<meta property="og:updated_time" content="2019-11-19T05:36:22.956Z">
+<meta property="og:updated_time" content="2019-12-02T06:02:10.050Z">
 <meta name="twitter:card" content="summary">
 <meta name="twitter:title" content="罗凯的博客">
-<meta name="twitter:description" content="杨辉三角2给定一个非负索引 k，其中 k ≤ 33，返回杨辉三角的第 k 行。  在杨辉三角中，每个数是它左上方和右上方的数的和。 示例: 输入: 3 输出: [1,3,3,1] 进阶： 你可以优化你的算法到 O(k) 空间复杂度吗？">
+<meta name="twitter:description" content="杨辉三角II给定一个非负索引 k，其中 k ≤ 33，返回杨辉三角的第 k 行。  在杨辉三角中，每个数是它左上方和右上方的数的和。 示例: 输入: 3 输出: [1,3,3,1]  进阶： 你可以优化你的算法到 O(k) 空间复杂度吗？ 解题// 只保存前一行的数据，用于计算下一行 public static List&amp;lt;Integer&amp;gt; getRow(int rowIndex) {">
 <meta name="twitter:image" content="https://upload.wikimedia.org/wikipedia/commons/0/0d/PascalTriangleAnimated2.gif">
 
 
@@ -364,14 +364,36 @@
       
 
       
-        <h1 id="杨辉三角2"><a href="#杨辉三角2" class="headerlink" title="杨辉三角2"></a>杨辉三角2</h1><p>给定一个非负索引 <em>k</em>，其中 <em>k</em> ≤ 33，返回杨辉三角的第 <em>k</em> 行。</p>
+        <h1 id="杨辉三角II"><a href="#杨辉三角II" class="headerlink" title="杨辉三角II"></a>杨辉三角II</h1><p>给定一个非负索引 k，其中 k ≤ 33，返回杨辉三角的第 k 行。</p>
 <p><img src="https://upload.wikimedia.org/wikipedia/commons/0/0d/PascalTriangleAnimated2.gif" alt="帕斯卡三角形"></p>
 <p>在杨辉三角中，每个数是它左上方和右上方的数的和。</p>
 <p><strong>示例:</strong></p>
-<pre><code>输入: 3
+<pre><code class="txt">输入: 3
 输出: [1,3,3,1]
-</code></pre><p><strong>进阶：</strong></p>
-<p>你可以优化你的算法到 <em>O</em>(<em>k</em>) 空间复杂度吗？</p>
+</code></pre>
+<p><strong>进阶：</strong></p>
+<p>你可以优化你的算法到 O(k) 空间复杂度吗？</p>
+<h2 id="解题"><a href="#解题" class="headerlink" title="解题"></a>解题</h2><pre><code class="java">// 只保存前一行的数据，用于计算下一行
+public static List&lt;Integer&gt; getRow(int rowIndex) {
+    List&lt;Integer&gt; pre = new ArrayList&lt;&gt;();
+    List&lt;Integer&gt; curr = new ArrayList&lt;&gt;();
+    for (int i = 0; i &lt;= rowIndex; i++) {
+        curr = new ArrayList&lt;&gt;();
+
+        for (int j = 0; j &lt;= i; j++) {
+            if (j == 0 || j == i) {
+                curr.add(1);
+            } else {
+                curr.add(pre.get(j - 1) + pre.get(j));
+            }
+        }
+
+        pre = curr;
+    }
+    return curr;
+}
+</code></pre>
+<p>来源：力扣（LeetCode）<br>链接：<a href="https://leetcode-cn.com/problems/pascals-triangle-ii" target="_blank" rel="noopener">https://leetcode-cn.com/problems/pascals-triangle-ii</a><br>著作权归领扣网络所有。商业转载请联系官方授权，非商业转载请注明出处。</p>
 
       
     </div>
@@ -489,7 +511,7 @@
               
                 <a href="/archives">
               
-                  <span class="site-state-item-count">224</span>
+                  <span class="site-state-item-count">237</span>
                   <span class="site-state-item-name">日志</span>
                 </a>
               </div>
@@ -511,7 +533,7 @@
               
               <div class="site-state-item site-state-tags">
                 <a href="/tags/index.html">
-                  <span class="site-state-item-count">21</span>
+                  <span class="site-state-item-count">22</span>
                   <span class="site-state-item-name">标签</span>
                 </a>
               </div>
@@ -551,7 +573,7 @@
             
 
             
-              <div class="post-toc-content"><ol class="nav"><li class="nav-item nav-level-1"><a class="nav-link" href="#杨辉三角2"><span class="nav-number">1.</span> <span class="nav-text">杨辉三角2</span></a></li></ol></div>
+              <div class="post-toc-content"><ol class="nav"><li class="nav-item nav-level-1"><a class="nav-link" href="#杨辉三角II"><span class="nav-number">1.</span> <span class="nav-text">杨辉三角II</span></a><ol class="nav-child"><li class="nav-item nav-level-2"><a class="nav-link" href="#解题"><span class="nav-number">1.1.</span> <span class="nav-text">解题</span></a></li></ol></li></ol></div>
             
 
           </div>

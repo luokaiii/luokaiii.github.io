@@ -405,81 +405,81 @@
 <li>根目录下存在 <code>build.gradle</code> 文件，即证明项目创建成功</li>
 <li>使用 Gradle Wrapper，能够不安装 Gradle 也能运行 gradle。(如果你是使用IDEA创建的项目，应该会默认使用 Gradle Wrapper)</li>
 </ol>
-<h2 id="二、添加-SpringBoot-依赖"><a href="#二、添加-SpringBoot-依赖" class="headerlink" title="二、添加 SpringBoot 依赖"></a>二、添加 SpringBoot 依赖</h2><h3 id="1-在-build-gradle-中配置-SpringBoot-插件"><a href="#1-在-build-gradle-中配置-SpringBoot-插件" class="headerlink" title="1. 在 build.gradle 中配置 SpringBoot 插件:"></a>1. 在 <code>build.gradle</code> 中配置 SpringBoot 插件:</h3><pre class=" language-java"><code class="language-java">buildscript <span class="token punctuation">{</span>
-    ext <span class="token punctuation">{</span>
-        <span class="token comment" spellcheck="true">// 指定 SpringBoot 的版本</span>
-        springBootVersion <span class="token operator">=</span> <span class="token string">'2.0.5.RELEASE'</span>
-    <span class="token punctuation">}</span>
-    repositories <span class="token punctuation">{</span>
-        <span class="token function">mavenCentral</span><span class="token punctuation">(</span><span class="token punctuation">)</span>
-    <span class="token punctuation">}</span>
-    dependencies <span class="token punctuation">{</span>
-        <span class="token comment" spellcheck="true">// SpringBoot的默认版本</span>
-        <span class="token function">classpath</span><span class="token punctuation">(</span><span class="token string">"org.springframework.boot:spring-boot-gradle-plugin:${springBootVersion}"</span><span class="token punctuation">)</span>
-    <span class="token punctuation">}</span>
-<span class="token punctuation">}</span>
+<h2 id="二、添加-SpringBoot-依赖"><a href="#二、添加-SpringBoot-依赖" class="headerlink" title="二、添加 SpringBoot 依赖"></a>二、添加 SpringBoot 依赖</h2><h3 id="1-在-build-gradle-中配置-SpringBoot-插件"><a href="#1-在-build-gradle-中配置-SpringBoot-插件" class="headerlink" title="1. 在 build.gradle 中配置 SpringBoot 插件:"></a>1. 在 <code>build.gradle</code> 中配置 SpringBoot 插件:</h3><pre><code class="java">buildscript {
+    ext {
+        // 指定 SpringBoot 的版本
+        springBootVersion = &#39;2.0.5.RELEASE&#39;
+    }
+    repositories {
+        mavenCentral()
+    }
+    dependencies {
+        // SpringBoot的默认版本
+        classpath(&quot;org.springframework.boot:spring-boot-gradle-plugin:${springBootVersion}&quot;)
+    }
+}
 
-apply plugin<span class="token operator">:</span> <span class="token string">'java'</span>
-apply plugin<span class="token operator">:</span> <span class="token string">'eclipse'</span>
-apply plugin<span class="token operator">:</span> <span class="token string">'org.springframework.boot'</span>
-apply plugin<span class="token operator">:</span> <span class="token string">'io.spring.dependency-management'</span>
+apply plugin: &#39;java&#39;
+apply plugin: &#39;eclipse&#39;
+apply plugin: &#39;org.springframework.boot&#39;
+apply plugin: &#39;io.spring.dependency-management&#39;
 
-group <span class="token operator">=</span> <span class="token string">'com.example'</span>
-version <span class="token operator">=</span> <span class="token string">'0.0.1-SNAPSHOT'</span>
-sourceCompatibility <span class="token operator">=</span> <span class="token number">1.8</span>
-targetCompatibility <span class="token operator">=</span> <span class="token number">1.8</span>
+group = &#39;com.example&#39;
+version = &#39;0.0.1-SNAPSHOT&#39;
+sourceCompatibility = 1.8
+targetCompatibility = 1.8
 
-repositories <span class="token punctuation">{</span>
-    <span class="token function">mavenCentral</span><span class="token punctuation">(</span><span class="token punctuation">)</span>
-<span class="token punctuation">}</span>
+repositories {
+    mavenCentral()
+}
 
 
-dependencies <span class="token punctuation">{</span>
-    <span class="token comment" spellcheck="true">// SpringBoot依赖</span>
-    <span class="token function">implementation</span><span class="token punctuation">(</span><span class="token string">'org.springframework.boot:spring-boot-starter'</span><span class="token punctuation">)</span>
-    <span class="token comment" spellcheck="true">// Web依赖</span>
-    <span class="token function">compile</span><span class="token punctuation">(</span><span class="token string">"org.springframework.boot:spring-boot-starter-web"</span><span class="token punctuation">)</span>
-    <span class="token comment" spellcheck="true">// 测试依赖</span>
-    <span class="token function">testImplementation</span><span class="token punctuation">(</span><span class="token string">'org.springframework.boot:spring-boot-starter-test'</span><span class="token punctuation">)</span>
-<span class="token punctuation">}</span>
+dependencies {
+    // SpringBoot依赖
+    implementation(&#39;org.springframework.boot:spring-boot-starter&#39;)
+    // Web依赖
+    compile(&quot;org.springframework.boot:spring-boot-starter-web&quot;)
+    // 测试依赖
+    testImplementation(&#39;org.springframework.boot:spring-boot-starter-test&#39;)
+}
 </code></pre>
 <h3 id="2-创建启动文件-Run-java"><a href="#2-创建启动文件-Run-java" class="headerlink" title="2. 创建启动文件 Run.java"></a>2. 创建启动文件 <code>Run.java</code></h3><p>该类是 SpringBoot 程序的入口。</p>
-<pre class=" language-java"><code class="language-java"><span class="token annotation punctuation">@SpringBootApplication</span>
-<span class="token keyword">public</span> <span class="token keyword">class</span> <span class="token class-name">Run</span><span class="token punctuation">{</span>
-    <span class="token keyword">public</span> <span class="token keyword">static</span> <span class="token keyword">void</span> <span class="token function">main</span><span class="token punctuation">(</span>String<span class="token punctuation">[</span><span class="token punctuation">]</span> args<span class="token punctuation">)</span><span class="token punctuation">{</span>
-        SpringApplication<span class="token punctuation">.</span><span class="token function">run</span><span class="token punctuation">(</span>Application<span class="token punctuation">.</span>java<span class="token punctuation">)</span><span class="token punctuation">;</span>
-    <span class="token punctuation">}</span>
-<span class="token punctuation">}</span>
+<pre><code class="java">@SpringBootApplication
+public class Run{
+    public static void main(String[] args){
+        SpringApplication.run(Application.java);
+    }
+}
 </code></pre>
-<h3 id="3-创建Controller接口"><a href="#3-创建Controller接口" class="headerlink" title="3. 创建Controller接口"></a>3. 创建Controller接口</h3><pre class=" language-java"><code class="language-java"><span class="token annotation punctuation">@RestController</span>
-<span class="token keyword">public</span> <span class="token keyword">class</span> <span class="token class-name">HelloController</span> <span class="token punctuation">{</span>
+<h3 id="3-创建Controller接口"><a href="#3-创建Controller接口" class="headerlink" title="3. 创建Controller接口"></a>3. 创建Controller接口</h3><pre><code class="java">@RestController
+public class HelloController {
 
-    <span class="token annotation punctuation">@GetMapping</span><span class="token punctuation">(</span><span class="token string">"/"</span><span class="token punctuation">)</span>
-    <span class="token keyword">public</span> String <span class="token function">hello</span><span class="token punctuation">(</span><span class="token punctuation">)</span><span class="token punctuation">{</span>
-        <span class="token keyword">return</span> <span class="token string">"Hello [Spring Boot + Docker] World! "</span><span class="token punctuation">;</span>
-    <span class="token punctuation">}</span>
-<span class="token punctuation">}</span>
+    @GetMapping(&quot;/&quot;)
+    public String hello(){
+        return &quot;Hello [Spring Boot + Docker] World! &quot;;
+    }
+}
 </code></pre>
-<h3 id="4-启动测试"><a href="#4-启动测试" class="headerlink" title="4. 启动测试"></a>4. 启动测试</h3><pre class=" language-java"><code class="language-java"><span class="token punctuation">.</span>/gradlew bootRun
+<h3 id="4-启动测试"><a href="#4-启动测试" class="headerlink" title="4. 启动测试"></a>4. 启动测试</h3><pre><code class="java">./gradlew bootRun
 </code></pre>
 <p>使用浏览器或者 Postman 打开 <code>localhost:8080</code>，即可看到 <code>Hello World页面</code> 了。</p>
 <h2 id="三、生成IDE工程文件"><a href="#三、生成IDE工程文件" class="headerlink" title="三、生成IDE工程文件"></a>三、生成IDE工程文件</h2><p>我们可以通过 Gradle 的 <code>IDE插件</code> 一键式的生成 IDE 工程文件，然后在 IDE 中直接打开这样的工程文件。这样，所有人都能够使用相同的 IDE 配置。</p>
 <p>在 <code>build.gradle</code> 中配置：</p>
-<pre class=" language-java"><code class="language-java">apply plugin<span class="token operator">:</span> <span class="token string">'idea'</span>
-apply plugin<span class="token operator">:</span> <span class="token string">'eclipse'</span>
+<pre><code class="java">apply plugin: &#39;idea&#39;
+apply plugin: &#39;eclipse&#39;
 </code></pre>
 <p>然后执行：</p>
-<pre class=" language-java"><code class="language-java"><span class="token punctuation">.</span>/gradlew idea
-<span class="token punctuation">.</span>/gradlew eclipse
+<pre><code class="java">./gradlew idea
+./gradlew eclipse
 </code></pre>
 <p>此时会分别生成后缀为 ipr 的 <code>IDEA 工程文件</code>，和 <code>.project工程文件</code>，分别对应着 IDEA 工程和 Eclipse 工程。</p>
 <pre><code>请注意，所有IDE工程文件都不应该提交到代码库，对于Git来说应该将这些文件注册到.gitignore文件中。各个开发者拿到代码后需要各自运行./graldlw idea或./gradlew eclipse命令以生成本地工程文件。
 </code></pre><h2 id="四、调试模式"><a href="#四、调试模式" class="headerlink" title="四、调试模式"></a>四、调试模式</h2><p>第一种方式,直接运行命令：</p>
-<pre class=" language-java"><code class="language-java"><span class="token punctuation">.</span>/gradlew bootRun <span class="token operator">--</span>debug<span class="token operator">-</span>jvm
+<pre><code class="java">./gradlew bootRun --debug-jvm
 </code></pre>
 <p>第二种方式，在 build.gradle 中添加：</p>
-<pre class=" language-java"><code class="language-java">apply plugin<span class="token operator">:</span> <span class="token string">'application'</span>
-applicationDefaultJvmArgs <span class="token operator">=</span> <span class="token punctuation">[</span><span class="token string">"-agentlib:jdwp=transport=dt_socket,server=y,suspend=n,address=5005"</span><span class="token punctuation">]</span>
+<pre><code class="java">apply plugin: &#39;application&#39;
+applicationDefaultJvmArgs = [&quot;-agentlib:jdwp=transport=dt_socket,server=y,suspend=n,address=5005&quot;]
 </code></pre>
 <p>然后运行 <code>./gradlew bootRun</code></p>
 <p>这两种方式都会使程序监听 5005端口。但是第一种方式会暂停以等待调试客户端的连接，然后启动 SpringBoot；而第二种方式程序不会暂停，而是直接启动整个程序。</p>
@@ -527,8 +527,8 @@ applicationDefaultJvmArgs <span class="token operator">=</span> <span class="tok
         <div class="post-nav">
           <div class="post-nav-next post-nav-item">
             
-              <a href="/2018/10/11/java/GC算法/" rel="next" title="GC算法、垃圾收集器">
-                <i class="fa fa-chevron-left"></i> GC算法、垃圾收集器
+              <a href="/2018/10/11/SpringBoot/2.SpringBoot的三种启动方式/" rel="next" title="使用Gradle构建SpringBoot项目">
+                <i class="fa fa-chevron-left"></i> 使用Gradle构建SpringBoot项目
               </a>
             
           </div>
@@ -537,8 +537,8 @@ applicationDefaultJvmArgs <span class="token operator">=</span> <span class="tok
 
           <div class="post-nav-prev post-nav-item">
             
-              <a href="/2018/10/11/SpringBoot/2.SpringBoot的三种启动方式/" rel="prev" title="使用Gradle构建SpringBoot项目">
-                使用Gradle构建SpringBoot项目 <i class="fa fa-chevron-right"></i>
+              <a href="/2018/10/22/SpringBoot/SpringBoot参考指南/" rel="prev" title="SpringBoot 参考指南">
+                SpringBoot 参考指南 <i class="fa fa-chevron-right"></i>
               </a>
             
           </div>
@@ -620,7 +620,7 @@ applicationDefaultJvmArgs <span class="token operator">=</span> <span class="tok
               
                 <a href="/archives">
               
-                  <span class="site-state-item-count">224</span>
+                  <span class="site-state-item-count">237</span>
                   <span class="site-state-item-name">日志</span>
                 </a>
               </div>
@@ -642,7 +642,7 @@ applicationDefaultJvmArgs <span class="token operator">=</span> <span class="tok
               
               <div class="site-state-item site-state-tags">
                 <a href="/tags/index.html">
-                  <span class="site-state-item-count">21</span>
+                  <span class="site-state-item-count">22</span>
                   <span class="site-state-item-name">标签</span>
                 </a>
               </div>

@@ -386,25 +386,25 @@
       
         <h1 id="第九章-组合模式-树形结构的处理"><a href="#第九章-组合模式-树形结构的处理" class="headerlink" title="第九章 组合模式 - 树形结构的处理"></a>第九章 组合模式 - 树形结构的处理</h1><h2 id="一、杀毒软件的框架结构"><a href="#一、杀毒软件的框架结构" class="headerlink" title="一、杀毒软件的框架结构"></a>一、杀毒软件的框架结构</h2><h3 id="1-介绍"><a href="#1-介绍" class="headerlink" title="1. 介绍"></a>1. 介绍</h3><p>开发一个杀毒软件，既可以对某个文件夹（Folder）杀毒，也可以对指定文件（File）进行杀毒。</p>
 <h3 id="2-面向对象的解法"><a href="#2-面向对象的解法" class="headerlink" title="2. 面向对象的解法"></a>2. 面向对象的解法</h3><p>按照面向对象的设计思路，应该在 Folder 中包含图像、文本等文件类型的集合，以及文件夹的集合。</p>
-<pre class=" language-java"><code class="language-java"><span class="token keyword">class</span> <span class="token class-name">ImageFile</span> <span class="token punctuation">{</span>
-    <span class="token comment" spellcheck="true">// image property</span>
-<span class="token punctuation">}</span>
+<pre><code class="java">class ImageFile {
+    // image property
+}
 
-<span class="token keyword">class</span> <span class="token class-name">TextFile</span> <span class="token punctuation">{</span>
-    <span class="token comment" spellcheck="true">// text property</span>
-<span class="token punctuation">}</span>
+class TextFile {
+    // text property
+}
 
-<span class="token keyword">class</span> <span class="token class-name">Folder</span> <span class="token punctuation">{</span>
-    List<span class="token operator">&lt;</span>ImageFile<span class="token operator">></span> images <span class="token operator">=</span> <span class="token keyword">new</span> <span class="token class-name">ArrayList</span><span class="token operator">&lt;</span><span class="token operator">></span><span class="token punctuation">(</span><span class="token punctuation">)</span><span class="token punctuation">;</span>
-    List<span class="token operator">&lt;</span>TextFile<span class="token operator">></span> texts <span class="token operator">=</span> <span class="token keyword">new</span> <span class="token class-name">ArrayList</span><span class="token operator">&lt;</span><span class="token operator">></span><span class="token punctuation">(</span><span class="token punctuation">)</span><span class="token punctuation">;</span>
-    List<span class="token operator">&lt;</span>Folder<span class="token operator">></span> folders <span class="token operator">=</span> <span class="token keyword">new</span> <span class="token class-name">ArrayList</span><span class="token operator">&lt;</span><span class="token operator">></span><span class="token punctuation">(</span><span class="token punctuation">)</span><span class="token punctuation">;</span>
+class Folder {
+    List&lt;ImageFile&gt; images = new ArrayList&lt;&gt;();
+    List&lt;TextFile&gt; texts = new ArrayList&lt;&gt;();
+    List&lt;Folder&gt; folders = new ArrayList&lt;&gt;();
 
-    <span class="token keyword">void</span> <span class="token function">addFolder</span><span class="token punctuation">(</span><span class="token punctuation">)</span><span class="token punctuation">;</span>
-    <span class="token keyword">void</span> <span class="token function">addImage</span><span class="token punctuation">(</span><span class="token punctuation">)</span><span class="token punctuation">;</span>
-    <span class="token keyword">void</span> <span class="token function">addText</span><span class="token punctuation">(</span><span class="token punctuation">)</span><span class="token punctuation">;</span>
+    void addFolder();
+    void addImage();
+    void addText();
 
-    <span class="token comment" spellcheck="true">// ... remove/find etc.</span>
-<span class="token punctuation">}</span>
+    // ... remove/find etc.
+}
 </code></pre>
 <h3 id="3-存在的问题"><a href="#3-存在的问题" class="headerlink" title="3. 存在的问题"></a>3. 存在的问题</h3><ol>
 <li>Folder 的设计和实现十分复杂，需要定义多个集合存储不同类型的成员，且需要针对不同成员提供各自的 增删改查方法，存在大量冗余代码，系统维护困难</li>
@@ -432,145 +432,145 @@
 </ol>
 </li>
 </ol>
-<h2 id="三、-完整解决方案"><a href="#三、-完整解决方案" class="headerlink" title="三、 完整解决方案"></a>三、 完整解决方案</h2><pre class=" language-java"><code class="language-java"><span class="token comment" spellcheck="true">// 组合模式</span>
-<span class="token keyword">abstract</span> <span class="token keyword">class</span> <span class="token class-name">AbstractFile</span> <span class="token punctuation">{</span>
-    <span class="token keyword">public</span> <span class="token keyword">abstract</span> <span class="token keyword">void</span> <span class="token function">add</span><span class="token punctuation">(</span>AbstractFile file<span class="token punctuation">)</span><span class="token punctuation">;</span>
+<h2 id="三、-完整解决方案"><a href="#三、-完整解决方案" class="headerlink" title="三、 完整解决方案"></a>三、 完整解决方案</h2><pre><code class="java">// 组合模式
+abstract class AbstractFile {
+    public abstract void add(AbstractFile file);
 
-    <span class="token keyword">public</span> <span class="token keyword">abstract</span> <span class="token keyword">void</span> <span class="token function">remove</span><span class="token punctuation">(</span>AbstractFile file<span class="token punctuation">)</span><span class="token punctuation">;</span>
+    public abstract void remove(AbstractFile file);
 
-    <span class="token keyword">public</span> <span class="token keyword">abstract</span> AbstractFile <span class="token function">getChild</span><span class="token punctuation">(</span><span class="token keyword">int</span> i<span class="token punctuation">)</span><span class="token punctuation">;</span>
+    public abstract AbstractFile getChild(int i);
 
-    <span class="token keyword">public</span> <span class="token keyword">abstract</span> <span class="token keyword">void</span> <span class="token function">killVirus</span><span class="token punctuation">(</span><span class="token punctuation">)</span><span class="token punctuation">;</span>
-<span class="token punctuation">}</span>
+    public abstract void killVirus();
+}
 
-<span class="token keyword">class</span> <span class="token class-name">ImageFile</span> <span class="token keyword">extends</span> <span class="token class-name">AbstractFile</span> <span class="token punctuation">{</span>
-    <span class="token keyword">private</span> String name<span class="token punctuation">;</span>
+class ImageFile extends AbstractFile {
+    private String name;
 
-    <span class="token keyword">public</span> <span class="token function">ImageFile</span><span class="token punctuation">(</span>String name<span class="token punctuation">)</span> <span class="token punctuation">{</span>
-        <span class="token keyword">this</span><span class="token punctuation">.</span>name <span class="token operator">=</span> name<span class="token punctuation">;</span>
-    <span class="token punctuation">}</span>
+    public ImageFile(String name) {
+        this.name = name;
+    }
 
-    <span class="token annotation punctuation">@Override</span>
-    <span class="token keyword">public</span> <span class="token keyword">void</span> <span class="token function">add</span><span class="token punctuation">(</span>AbstractFile file<span class="token punctuation">)</span> <span class="token punctuation">{</span>
-        System<span class="token punctuation">.</span>out<span class="token punctuation">.</span><span class="token function">println</span><span class="token punctuation">(</span><span class="token string">"不支持该方法！"</span><span class="token punctuation">)</span><span class="token punctuation">;</span>
-    <span class="token punctuation">}</span>
+    @Override
+    public void add(AbstractFile file) {
+        System.out.println(&quot;不支持该方法！&quot;);
+    }
 
-    <span class="token annotation punctuation">@Override</span>
-    <span class="token keyword">public</span> <span class="token keyword">void</span> <span class="token function">remove</span><span class="token punctuation">(</span>AbstractFile file<span class="token punctuation">)</span> <span class="token punctuation">{</span>
-        System<span class="token punctuation">.</span>out<span class="token punctuation">.</span><span class="token function">println</span><span class="token punctuation">(</span><span class="token string">"不支持该方法！"</span><span class="token punctuation">)</span><span class="token punctuation">;</span>
-    <span class="token punctuation">}</span>
+    @Override
+    public void remove(AbstractFile file) {
+        System.out.println(&quot;不支持该方法！&quot;);
+    }
 
-    <span class="token annotation punctuation">@Override</span>
-    <span class="token keyword">public</span> AbstractFile <span class="token function">getChild</span><span class="token punctuation">(</span><span class="token keyword">int</span> i<span class="token punctuation">)</span> <span class="token punctuation">{</span>
-        System<span class="token punctuation">.</span>out<span class="token punctuation">.</span><span class="token function">println</span><span class="token punctuation">(</span><span class="token string">"不支持该方法！"</span><span class="token punctuation">)</span><span class="token punctuation">;</span>
-        <span class="token keyword">return</span> null<span class="token punctuation">;</span>
-    <span class="token punctuation">}</span>
+    @Override
+    public AbstractFile getChild(int i) {
+        System.out.println(&quot;不支持该方法！&quot;);
+        return null;
+    }
 
-    <span class="token annotation punctuation">@Override</span>
-    <span class="token keyword">public</span> <span class="token keyword">void</span> <span class="token function">killVirus</span><span class="token punctuation">(</span><span class="token punctuation">)</span> <span class="token punctuation">{</span>
-        System<span class="token punctuation">.</span>out<span class="token punctuation">.</span><span class="token function">println</span><span class="token punctuation">(</span><span class="token string">"对图像进行["</span> <span class="token operator">+</span> name <span class="token operator">+</span> <span class="token string">"]杀毒"</span><span class="token punctuation">)</span><span class="token punctuation">;</span>
-    <span class="token punctuation">}</span>
-<span class="token punctuation">}</span>
+    @Override
+    public void killVirus() {
+        System.out.println(&quot;对图像进行[&quot; + name + &quot;]杀毒&quot;);
+    }
+}
 
-<span class="token keyword">class</span> <span class="token class-name">TextFile</span> <span class="token keyword">extends</span> <span class="token class-name">AbstractFile</span> <span class="token punctuation">{</span>
-    <span class="token keyword">private</span> String name<span class="token punctuation">;</span>
+class TextFile extends AbstractFile {
+    private String name;
 
-    <span class="token keyword">public</span> <span class="token function">TextFile</span><span class="token punctuation">(</span>String name<span class="token punctuation">)</span> <span class="token punctuation">{</span>
-        <span class="token keyword">this</span><span class="token punctuation">.</span>name <span class="token operator">=</span> name<span class="token punctuation">;</span>
-    <span class="token punctuation">}</span>
+    public TextFile(String name) {
+        this.name = name;
+    }
 
-    <span class="token annotation punctuation">@Override</span>
-    <span class="token keyword">public</span> <span class="token keyword">void</span> <span class="token function">add</span><span class="token punctuation">(</span>AbstractFile file<span class="token punctuation">)</span> <span class="token punctuation">{</span>
-        System<span class="token punctuation">.</span>out<span class="token punctuation">.</span><span class="token function">println</span><span class="token punctuation">(</span><span class="token string">"不支持该方法！"</span><span class="token punctuation">)</span><span class="token punctuation">;</span>
-    <span class="token punctuation">}</span>
+    @Override
+    public void add(AbstractFile file) {
+        System.out.println(&quot;不支持该方法！&quot;);
+    }
 
-    <span class="token annotation punctuation">@Override</span>
-    <span class="token keyword">public</span> <span class="token keyword">void</span> <span class="token function">remove</span><span class="token punctuation">(</span>AbstractFile file<span class="token punctuation">)</span> <span class="token punctuation">{</span>
-        System<span class="token punctuation">.</span>out<span class="token punctuation">.</span><span class="token function">println</span><span class="token punctuation">(</span><span class="token string">"不支持该方法！"</span><span class="token punctuation">)</span><span class="token punctuation">;</span>
-    <span class="token punctuation">}</span>
+    @Override
+    public void remove(AbstractFile file) {
+        System.out.println(&quot;不支持该方法！&quot;);
+    }
 
-    <span class="token annotation punctuation">@Override</span>
-    <span class="token keyword">public</span> AbstractFile <span class="token function">getChild</span><span class="token punctuation">(</span><span class="token keyword">int</span> i<span class="token punctuation">)</span> <span class="token punctuation">{</span>
-        System<span class="token punctuation">.</span>out<span class="token punctuation">.</span><span class="token function">println</span><span class="token punctuation">(</span><span class="token string">"不支持该方法！"</span><span class="token punctuation">)</span><span class="token punctuation">;</span>
-        <span class="token keyword">return</span> null<span class="token punctuation">;</span>
-    <span class="token punctuation">}</span>
+    @Override
+    public AbstractFile getChild(int i) {
+        System.out.println(&quot;不支持该方法！&quot;);
+        return null;
+    }
 
-    <span class="token annotation punctuation">@Override</span>
-    <span class="token keyword">public</span> <span class="token keyword">void</span> <span class="token function">killVirus</span><span class="token punctuation">(</span><span class="token punctuation">)</span> <span class="token punctuation">{</span>
-        System<span class="token punctuation">.</span>out<span class="token punctuation">.</span><span class="token function">println</span><span class="token punctuation">(</span><span class="token string">"对文本进行["</span> <span class="token operator">+</span> name <span class="token operator">+</span> <span class="token string">"]杀毒"</span><span class="token punctuation">)</span><span class="token punctuation">;</span>
-    <span class="token punctuation">}</span>
-<span class="token punctuation">}</span>
+    @Override
+    public void killVirus() {
+        System.out.println(&quot;对文本进行[&quot; + name + &quot;]杀毒&quot;);
+    }
+}
 
-<span class="token keyword">class</span> <span class="token class-name">Folder</span> <span class="token keyword">extends</span> <span class="token class-name">AbstractFile</span> <span class="token punctuation">{</span>
-    <span class="token keyword">private</span> List<span class="token operator">&lt;</span>AbstractFile<span class="token operator">></span> files <span class="token operator">=</span> <span class="token keyword">new</span> <span class="token class-name">ArrayList</span><span class="token operator">&lt;</span><span class="token operator">></span><span class="token punctuation">(</span><span class="token punctuation">)</span><span class="token punctuation">;</span>
-    <span class="token keyword">private</span> String name<span class="token punctuation">;</span>
+class Folder extends AbstractFile {
+    private List&lt;AbstractFile&gt; files = new ArrayList&lt;&gt;();
+    private String name;
 
-    <span class="token keyword">public</span> <span class="token function">Folder</span><span class="token punctuation">(</span>String name<span class="token punctuation">)</span> <span class="token punctuation">{</span>
-        <span class="token keyword">this</span><span class="token punctuation">.</span>name <span class="token operator">=</span> name<span class="token punctuation">;</span>
-    <span class="token punctuation">}</span>
+    public Folder(String name) {
+        this.name = name;
+    }
 
-    <span class="token annotation punctuation">@Override</span>
-    <span class="token keyword">public</span> <span class="token keyword">void</span> <span class="token function">add</span><span class="token punctuation">(</span>AbstractFile file<span class="token punctuation">)</span> <span class="token punctuation">{</span>
-        files<span class="token punctuation">.</span><span class="token function">add</span><span class="token punctuation">(</span>file<span class="token punctuation">)</span><span class="token punctuation">;</span>
-    <span class="token punctuation">}</span>
+    @Override
+    public void add(AbstractFile file) {
+        files.add(file);
+    }
 
-    <span class="token annotation punctuation">@Override</span>
-    <span class="token keyword">public</span> <span class="token keyword">void</span> <span class="token function">remove</span><span class="token punctuation">(</span>AbstractFile file<span class="token punctuation">)</span> <span class="token punctuation">{</span>
-        files<span class="token punctuation">.</span><span class="token function">remove</span><span class="token punctuation">(</span>file<span class="token punctuation">)</span><span class="token punctuation">;</span>
-    <span class="token punctuation">}</span>
+    @Override
+    public void remove(AbstractFile file) {
+        files.remove(file);
+    }
 
-    <span class="token annotation punctuation">@Override</span>
-    <span class="token keyword">public</span> AbstractFile <span class="token function">getChild</span><span class="token punctuation">(</span><span class="token keyword">int</span> i<span class="token punctuation">)</span> <span class="token punctuation">{</span>
-        <span class="token keyword">return</span> files<span class="token punctuation">.</span><span class="token function">get</span><span class="token punctuation">(</span>i<span class="token punctuation">)</span><span class="token punctuation">;</span>
-    <span class="token punctuation">}</span>
+    @Override
+    public AbstractFile getChild(int i) {
+        return files.get(i);
+    }
 
-    <span class="token annotation punctuation">@Override</span>
-    <span class="token keyword">public</span> <span class="token keyword">void</span> <span class="token function">killVirus</span><span class="token punctuation">(</span><span class="token punctuation">)</span> <span class="token punctuation">{</span>
-        System<span class="token punctuation">.</span>out<span class="token punctuation">.</span><span class="token function">println</span><span class="token punctuation">(</span><span class="token string">"对文件夹["</span> <span class="token operator">+</span> name <span class="token operator">+</span> <span class="token string">"]进行杀毒"</span><span class="token punctuation">)</span><span class="token punctuation">;</span>
-        <span class="token keyword">for</span> <span class="token punctuation">(</span>AbstractFile file <span class="token operator">:</span> files<span class="token punctuation">)</span> <span class="token punctuation">{</span>
-            file<span class="token punctuation">.</span><span class="token function">killVirus</span><span class="token punctuation">(</span><span class="token punctuation">)</span><span class="token punctuation">;</span>
-        <span class="token punctuation">}</span>
-    <span class="token punctuation">}</span>
-<span class="token punctuation">}</span>
+    @Override
+    public void killVirus() {
+        System.out.println(&quot;对文件夹[&quot; + name + &quot;]进行杀毒&quot;);
+        for (AbstractFile file : files) {
+            file.killVirus();
+        }
+    }
+}
 
-<span class="token keyword">public</span> <span class="token keyword">class</span> <span class="token class-name">CompositePattern</span> <span class="token punctuation">{</span>
-    <span class="token keyword">public</span> <span class="token keyword">static</span> <span class="token keyword">void</span> <span class="token function">main</span><span class="token punctuation">(</span>String<span class="token punctuation">[</span><span class="token punctuation">]</span> args<span class="token punctuation">)</span> <span class="token punctuation">{</span>
-        AbstractFile folder1 <span class="token operator">=</span> <span class="token keyword">new</span> <span class="token class-name">Folder</span><span class="token punctuation">(</span><span class="token string">"图像文件夹"</span><span class="token punctuation">)</span><span class="token punctuation">;</span>
-        AbstractFile folder2 <span class="token operator">=</span> <span class="token keyword">new</span> <span class="token class-name">Folder</span><span class="token punctuation">(</span><span class="token string">"文本文件夹"</span><span class="token punctuation">)</span><span class="token punctuation">;</span>
+public class CompositePattern {
+    public static void main(String[] args) {
+        AbstractFile folder1 = new Folder(&quot;图像文件夹&quot;);
+        AbstractFile folder2 = new Folder(&quot;文本文件夹&quot;);
 
-        AbstractFile file1 <span class="token operator">=</span> <span class="token keyword">new</span> <span class="token class-name">ImageFile</span><span class="token punctuation">(</span><span class="token string">"图片一"</span><span class="token punctuation">)</span><span class="token punctuation">;</span>
-        AbstractFile file2 <span class="token operator">=</span> <span class="token keyword">new</span> <span class="token class-name">ImageFile</span><span class="token punctuation">(</span><span class="token string">"图片二"</span><span class="token punctuation">)</span><span class="token punctuation">;</span>
+        AbstractFile file1 = new ImageFile(&quot;图片一&quot;);
+        AbstractFile file2 = new ImageFile(&quot;图片二&quot;);
 
-        AbstractFile file3 <span class="token operator">=</span> <span class="token keyword">new</span> <span class="token class-name">ImageFile</span><span class="token punctuation">(</span><span class="token string">"文本一"</span><span class="token punctuation">)</span><span class="token punctuation">;</span>
-        AbstractFile file4 <span class="token operator">=</span> <span class="token keyword">new</span> <span class="token class-name">ImageFile</span><span class="token punctuation">(</span><span class="token string">"文本二"</span><span class="token punctuation">)</span><span class="token punctuation">;</span>
+        AbstractFile file3 = new ImageFile(&quot;文本一&quot;);
+        AbstractFile file4 = new ImageFile(&quot;文本二&quot;);
 
-        folder1<span class="token punctuation">.</span><span class="token function">add</span><span class="token punctuation">(</span>file1<span class="token punctuation">)</span><span class="token punctuation">;</span>
-        folder1<span class="token punctuation">.</span><span class="token function">add</span><span class="token punctuation">(</span>file2<span class="token punctuation">)</span><span class="token punctuation">;</span>
+        folder1.add(file1);
+        folder1.add(file2);
 
-        folder2<span class="token punctuation">.</span><span class="token function">add</span><span class="token punctuation">(</span>file3<span class="token punctuation">)</span><span class="token punctuation">;</span>
-        folder2<span class="token punctuation">.</span><span class="token function">add</span><span class="token punctuation">(</span>file4<span class="token punctuation">)</span><span class="token punctuation">;</span>
-        folder2<span class="token punctuation">.</span><span class="token function">add</span><span class="token punctuation">(</span>folder1<span class="token punctuation">)</span><span class="token punctuation">;</span>
+        folder2.add(file3);
+        folder2.add(file4);
+        folder2.add(folder1);
 
-        folder2<span class="token punctuation">.</span><span class="token function">killVirus</span><span class="token punctuation">(</span><span class="token punctuation">)</span><span class="token punctuation">;</span>
-    <span class="token punctuation">}</span>
-<span class="token punctuation">}</span>
+        folder2.killVirus();
+    }
+}
 </code></pre>
 <h2 id="四、透明组合模式和安全组合模式"><a href="#四、透明组合模式和安全组合模式" class="headerlink" title="四、透明组合模式和安全组合模式"></a>四、透明组合模式和安全组合模式</h2><p>通过引入 组合模式，该杀毒软件具有良好的可扩展性，在新增文件类型时，只需要新增一个文件类继承 AbstractFile 即可。</p>
 <p>但是 Abstract 中声明了大量用于管理和访问成员构件的方法，如 add() remove() 等方法，提供对应的错误提示和异常处理。</p>
 <p>解决方案一：将叶子构件的add()、remove() 方法移至AbstractFile中，提供默认实现：</p>
-<pre class=" language-java"><code class="language-java"><span class="token keyword">abstract</span> <span class="token keyword">class</span> <span class="token class-name">AbstractFile</span> <span class="token punctuation">{</span>
-    <span class="token keyword">public</span> <span class="token keyword">void</span> <span class="token function">add</span><span class="token punctuation">(</span>AbstractFile file<span class="token punctuation">)</span><span class="token punctuation">{</span>
-        System<span class="token punctuation">.</span>out<span class="token punctuation">.</span><span class="token function">println</span><span class="token punctuation">(</span><span class="token string">"对不起，不支持该方法！"</span><span class="token punctuation">)</span>
-    <span class="token punctuation">}</span>
-    <span class="token keyword">public</span> <span class="token keyword">void</span> <span class="token function">remove</span><span class="token punctuation">(</span>AbstractFile file<span class="token punctuation">)</span><span class="token punctuation">{</span>
-        System<span class="token punctuation">.</span>out<span class="token punctuation">.</span><span class="token function">println</span><span class="token punctuation">(</span><span class="token string">"对不起，不支持该方法！"</span><span class="token punctuation">)</span>
-    <span class="token punctuation">}</span>
-    <span class="token keyword">public</span> AbstractFile <span class="token function">getChild</span><span class="token punctuation">(</span><span class="token keyword">int</span> i<span class="token punctuation">)</span><span class="token punctuation">{</span>
-        System<span class="token punctuation">.</span>out<span class="token punctuation">.</span><span class="token function">println</span><span class="token punctuation">(</span><span class="token string">"对不起，不支持该方法！"</span><span class="token punctuation">)</span>
-    <span class="token punctuation">}</span>
+<pre><code class="java">abstract class AbstractFile {
+    public void add(AbstractFile file){
+        System.out.println(&quot;对不起，不支持该方法！&quot;)
+    }
+    public void remove(AbstractFile file){
+        System.out.println(&quot;对不起，不支持该方法！&quot;)
+    }
+    public AbstractFile getChild(int i){
+        System.out.println(&quot;对不起，不支持该方法！&quot;)
+    }
 
-    <span class="token keyword">public</span> <span class="token keyword">abstract</span> <span class="token keyword">void</span> <span class="token function">killVirus</span><span class="token punctuation">(</span><span class="token punctuation">)</span><span class="token punctuation">;</span>
-<span class="token punctuation">}</span>
+    public abstract void killVirus();
+}
 </code></pre>
 <p>解决方案二：不提供 add()、remove() 等抽象方法，由具体需要的子构件自己提供。但是会导致客户端不得不使用容器类本身来声明容器构件对象，否则无法访问其中新增的方法。客户端代码无法通过容器构件的抽象构件来定义。</p>
 <h3 id="1-透明组合模式"><a href="#1-透明组合模式" class="headerlink" title="1. 透明组合模式"></a>1. 透明组合模式</h3><p>上面的解决方案一，就是透明组合模式的实现。由抽象构件提供子构件方法的默认实现。</p>
@@ -595,89 +595,89 @@
 <h2 id="六、练习"><a href="#六、练习" class="headerlink" title="六、练习"></a>六、练习</h2><blockquote>
 <p>Sunny软件公司欲开发一个界面控件库，界面控件分为两大类，一类是单元控件，例如按钮、文本框等，一类是容器控件，例如窗体、中间面板等，试用组合模式设计该界面控件库。</p>
 </blockquote>
-<pre class=" language-java"><code class="language-java"><span class="token comment" spellcheck="true">/**
+<pre><code class="java">/**
  * 组合模式：
  * Sunny软件公司欲开发一个界面控件库，
  * 界面控件分为两大类，一类是单元控件，例如按钮、文本框等，
  * 一类是容器控件，例如窗体、中间面板等，
  * 试用组合模式设计该界面控件库。
- */</span>
-<span class="token keyword">abstract</span> <span class="token keyword">class</span> <span class="token class-name">UI</span> <span class="token punctuation">{</span>
-    <span class="token keyword">abstract</span> <span class="token keyword">void</span> <span class="token function">display</span><span class="token punctuation">(</span><span class="token punctuation">)</span><span class="token punctuation">;</span>
+ */
+abstract class UI {
+    abstract void display();
 
-    <span class="token keyword">void</span> <span class="token function">add</span><span class="token punctuation">(</span>UI ui<span class="token punctuation">)</span><span class="token punctuation">{</span>
-        System<span class="token punctuation">.</span>out<span class="token punctuation">.</span><span class="token function">println</span><span class="token punctuation">(</span><span class="token string">"不支持该方法"</span><span class="token punctuation">)</span><span class="token punctuation">;</span>
-    <span class="token punctuation">}</span>
-<span class="token punctuation">}</span>
+    void add(UI ui){
+        System.out.println(&quot;不支持该方法&quot;);
+    }
+}
 
-<span class="token keyword">class</span> <span class="token class-name">ButtonUI</span> <span class="token keyword">extends</span> <span class="token class-name">UI</span> <span class="token punctuation">{</span>
-    <span class="token annotation punctuation">@Override</span>
-    <span class="token keyword">void</span> <span class="token function">display</span><span class="token punctuation">(</span><span class="token punctuation">)</span> <span class="token punctuation">{</span>
-        System<span class="token punctuation">.</span>out<span class="token punctuation">.</span><span class="token function">println</span><span class="token punctuation">(</span><span class="token string">"显示按钮"</span><span class="token punctuation">)</span><span class="token punctuation">;</span>
-    <span class="token punctuation">}</span>
-<span class="token punctuation">}</span>
+class ButtonUI extends UI {
+    @Override
+    void display() {
+        System.out.println(&quot;显示按钮&quot;);
+    }
+}
 
-<span class="token keyword">class</span> <span class="token class-name">InputUI</span> <span class="token keyword">extends</span> <span class="token class-name">UI</span> <span class="token punctuation">{</span>
-    <span class="token annotation punctuation">@Override</span>
-    <span class="token keyword">void</span> <span class="token function">display</span><span class="token punctuation">(</span><span class="token punctuation">)</span> <span class="token punctuation">{</span>
-        System<span class="token punctuation">.</span>out<span class="token punctuation">.</span><span class="token function">println</span><span class="token punctuation">(</span><span class="token string">"显示输入框"</span><span class="token punctuation">)</span><span class="token punctuation">;</span>
-    <span class="token punctuation">}</span>
-<span class="token punctuation">}</span>
+class InputUI extends UI {
+    @Override
+    void display() {
+        System.out.println(&quot;显示输入框&quot;);
+    }
+}
 
-<span class="token keyword">class</span> <span class="token class-name">Window</span> <span class="token keyword">extends</span> <span class="token class-name">UI</span><span class="token punctuation">{</span>
-    List<span class="token operator">&lt;</span>UI<span class="token operator">></span> uis <span class="token operator">=</span> <span class="token keyword">new</span> <span class="token class-name">ArrayList</span><span class="token operator">&lt;</span><span class="token operator">></span><span class="token punctuation">(</span><span class="token punctuation">)</span><span class="token punctuation">;</span>
+class Window extends UI{
+    List&lt;UI&gt; uis = new ArrayList&lt;&gt;();
 
-    <span class="token annotation punctuation">@Override</span>
-    <span class="token keyword">void</span> <span class="token function">display</span><span class="token punctuation">(</span><span class="token punctuation">)</span> <span class="token punctuation">{</span>
-        System<span class="token punctuation">.</span>out<span class="token punctuation">.</span><span class="token function">println</span><span class="token punctuation">(</span><span class="token string">"--开始显示窗口--"</span><span class="token punctuation">)</span><span class="token punctuation">;</span>
-        <span class="token keyword">for</span> <span class="token punctuation">(</span>UI ui <span class="token operator">:</span> uis<span class="token punctuation">)</span> <span class="token punctuation">{</span>
-            ui<span class="token punctuation">.</span><span class="token function">display</span><span class="token punctuation">(</span><span class="token punctuation">)</span><span class="token punctuation">;</span>
-        <span class="token punctuation">}</span>
-    <span class="token punctuation">}</span>
+    @Override
+    void display() {
+        System.out.println(&quot;--开始显示窗口--&quot;);
+        for (UI ui : uis) {
+            ui.display();
+        }
+    }
 
-    <span class="token annotation punctuation">@Override</span>
-    <span class="token keyword">void</span> <span class="token function">add</span><span class="token punctuation">(</span>UI ui<span class="token punctuation">)</span> <span class="token punctuation">{</span>
-        uis<span class="token punctuation">.</span><span class="token function">add</span><span class="token punctuation">(</span>ui<span class="token punctuation">)</span><span class="token punctuation">;</span>
-    <span class="token punctuation">}</span>
-<span class="token punctuation">}</span>
+    @Override
+    void add(UI ui) {
+        uis.add(ui);
+    }
+}
 
-<span class="token keyword">class</span> <span class="token class-name">Dashboard</span> <span class="token keyword">extends</span> <span class="token class-name">UI</span> <span class="token punctuation">{</span>
-    List<span class="token operator">&lt;</span>UI<span class="token operator">></span> uis <span class="token operator">=</span> <span class="token keyword">new</span> <span class="token class-name">ArrayList</span><span class="token operator">&lt;</span><span class="token operator">></span><span class="token punctuation">(</span><span class="token punctuation">)</span><span class="token punctuation">;</span>
+class Dashboard extends UI {
+    List&lt;UI&gt; uis = new ArrayList&lt;&gt;();
 
-    <span class="token annotation punctuation">@Override</span>
-    <span class="token keyword">void</span> <span class="token function">display</span><span class="token punctuation">(</span><span class="token punctuation">)</span> <span class="token punctuation">{</span>
-        System<span class="token punctuation">.</span>out<span class="token punctuation">.</span><span class="token function">println</span><span class="token punctuation">(</span><span class="token string">"--开始显示面板--"</span><span class="token punctuation">)</span><span class="token punctuation">;</span>
-        <span class="token keyword">for</span> <span class="token punctuation">(</span>UI ui <span class="token operator">:</span> uis<span class="token punctuation">)</span> <span class="token punctuation">{</span>
-            ui<span class="token punctuation">.</span><span class="token function">display</span><span class="token punctuation">(</span><span class="token punctuation">)</span><span class="token punctuation">;</span>
-        <span class="token punctuation">}</span>
-    <span class="token punctuation">}</span>
+    @Override
+    void display() {
+        System.out.println(&quot;--开始显示面板--&quot;);
+        for (UI ui : uis) {
+            ui.display();
+        }
+    }
 
-    <span class="token annotation punctuation">@Override</span>
-    <span class="token keyword">void</span> <span class="token function">add</span><span class="token punctuation">(</span>UI ui<span class="token punctuation">)</span> <span class="token punctuation">{</span>
-        uis<span class="token punctuation">.</span><span class="token function">add</span><span class="token punctuation">(</span>ui<span class="token punctuation">)</span><span class="token punctuation">;</span>
-    <span class="token punctuation">}</span>
-<span class="token punctuation">}</span>
+    @Override
+    void add(UI ui) {
+        uis.add(ui);
+    }
+}
 
-<span class="token keyword">public</span> <span class="token keyword">class</span> <span class="token class-name">CompositePattern</span> <span class="token punctuation">{</span>
-    <span class="token keyword">public</span> <span class="token keyword">static</span> <span class="token keyword">void</span> <span class="token function">main</span><span class="token punctuation">(</span>String<span class="token punctuation">[</span><span class="token punctuation">]</span> args<span class="token punctuation">)</span> <span class="token punctuation">{</span>
-        <span class="token keyword">final</span> UI ui1 <span class="token operator">=</span> <span class="token keyword">new</span> <span class="token class-name">ButtonUI</span><span class="token punctuation">(</span><span class="token punctuation">)</span><span class="token punctuation">;</span>
-        <span class="token keyword">final</span> UI ui2 <span class="token operator">=</span> <span class="token keyword">new</span> <span class="token class-name">ButtonUI</span><span class="token punctuation">(</span><span class="token punctuation">)</span><span class="token punctuation">;</span>
-        <span class="token keyword">final</span> UI ui3 <span class="token operator">=</span> <span class="token keyword">new</span> <span class="token class-name">InputUI</span><span class="token punctuation">(</span><span class="token punctuation">)</span><span class="token punctuation">;</span>
-        <span class="token keyword">final</span> UI ui4 <span class="token operator">=</span> <span class="token keyword">new</span> <span class="token class-name">InputUI</span><span class="token punctuation">(</span><span class="token punctuation">)</span><span class="token punctuation">;</span>
+public class CompositePattern {
+    public static void main(String[] args) {
+        final UI ui1 = new ButtonUI();
+        final UI ui2 = new ButtonUI();
+        final UI ui3 = new InputUI();
+        final UI ui4 = new InputUI();
 
-        <span class="token keyword">final</span> UI window <span class="token operator">=</span> <span class="token keyword">new</span> <span class="token class-name">Window</span><span class="token punctuation">(</span><span class="token punctuation">)</span><span class="token punctuation">;</span>
-        <span class="token keyword">final</span> UI dashboard <span class="token operator">=</span> <span class="token keyword">new</span> <span class="token class-name">Dashboard</span><span class="token punctuation">(</span><span class="token punctuation">)</span><span class="token punctuation">;</span>
+        final UI window = new Window();
+        final UI dashboard = new Dashboard();
 
-        dashboard<span class="token punctuation">.</span><span class="token function">add</span><span class="token punctuation">(</span>ui1<span class="token punctuation">)</span><span class="token punctuation">;</span>
-        dashboard<span class="token punctuation">.</span><span class="token function">add</span><span class="token punctuation">(</span>ui4<span class="token punctuation">)</span><span class="token punctuation">;</span>
-        window<span class="token punctuation">.</span><span class="token function">add</span><span class="token punctuation">(</span>ui1<span class="token punctuation">)</span><span class="token punctuation">;</span>
-        window<span class="token punctuation">.</span><span class="token function">add</span><span class="token punctuation">(</span>ui3<span class="token punctuation">)</span><span class="token punctuation">;</span>
-        window<span class="token punctuation">.</span><span class="token function">add</span><span class="token punctuation">(</span>ui2<span class="token punctuation">)</span><span class="token punctuation">;</span>
-        window<span class="token punctuation">.</span><span class="token function">add</span><span class="token punctuation">(</span>dashboard<span class="token punctuation">)</span><span class="token punctuation">;</span>
+        dashboard.add(ui1);
+        dashboard.add(ui4);
+        window.add(ui1);
+        window.add(ui3);
+        window.add(ui2);
+        window.add(dashboard);
 
-        window<span class="token punctuation">.</span><span class="token function">display</span><span class="token punctuation">(</span><span class="token punctuation">)</span><span class="token punctuation">;</span>
-    <span class="token punctuation">}</span>
-<span class="token punctuation">}</span>
+        window.display();
+    }
+}
 
 </code></pre>
 
@@ -803,7 +803,7 @@
               
                 <a href="/archives">
               
-                  <span class="site-state-item-count">224</span>
+                  <span class="site-state-item-count">237</span>
                   <span class="site-state-item-name">日志</span>
                 </a>
               </div>
@@ -825,7 +825,7 @@
               
               <div class="site-state-item site-state-tags">
                 <a href="/tags/index.html">
-                  <span class="site-state-item-count">21</span>
+                  <span class="site-state-item-count">22</span>
                   <span class="site-state-item-name">标签</span>
                 </a>
               </div>

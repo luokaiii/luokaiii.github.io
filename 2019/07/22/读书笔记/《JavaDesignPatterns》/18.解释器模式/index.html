@@ -417,212 +417,212 @@
 </li>
 </ol>
 <h3 id="3-核心类的设计"><a href="#3-核心类的设计" class="headerlink" title="3. 核心类的设计"></a>3. 核心类的设计</h3><h4 id="抽象表达式类"><a href="#抽象表达式类" class="headerlink" title="抽象表达式类"></a>抽象表达式类</h4><p>在解释器模式中，每一种终结符和非终结符都有一个具体类与之对应，正因为使用类来表示每一条文法规则，所以系统将具有较好的灵活性和可扩展性。</p>
-<pre class=" language-java"><code class="language-java"><span class="token keyword">abstract</span> <span class="token keyword">class</span> <span class="token class-name">AbstractExpression</span> <span class="token punctuation">{</span>
-    <span class="token keyword">public</span> <span class="token keyword">abstract</span> <span class="token keyword">void</span> <span class="token function">interpret</span><span class="token punctuation">(</span>Context ctx<span class="token punctuation">)</span><span class="token punctuation">;</span>
-<span class="token punctuation">}</span>
+<pre><code class="java">abstract class AbstractExpression {
+    public abstract void interpret(Context ctx);
+}
 </code></pre>
 <h4 id="终结符表达式"><a href="#终结符表达式" class="headerlink" title="终结符表达式"></a>终结符表达式</h4><p>终结符表达式主要是对终结符元素的处理。</p>
-<pre class=" language-java"><code class="language-java"><span class="token keyword">class</span> <span class="token class-name">TerminalExpression</span> <span class="token keyword">extends</span> <span class="token class-name">AbstractExpression</span> <span class="token punctuation">{</span>
-    <span class="token keyword">public</span> <span class="token keyword">void</span> <span class="token function">interpre</span><span class="token punctuation">(</span>Context ctx<span class="token punctuation">)</span> <span class="token punctuation">{</span>
-        <span class="token comment" spellcheck="true">// 终结符表达式的解释操作</span>
-    <span class="token punctuation">}</span>
-<span class="token punctuation">}</span>
+<pre><code class="java">class TerminalExpression extends AbstractExpression {
+    public void interpre(Context ctx) {
+        // 终结符表达式的解释操作
+    }
+}
 </code></pre>
 <h4 id="非终结符表达式"><a href="#非终结符表达式" class="headerlink" title="非终结符表达式"></a>非终结符表达式</h4><p>非终结符表达式将表达式组合成更加复杂的结构，对于包含两个操作元素的非终结符表达式类，其典型代码如下：</p>
-<pre class=" language-java"><code class="language-java"><span class="token keyword">class</span> <span class="token class-name">NonterminalExpression</span> <span class="token keyword">extends</span> <span class="token class-name">AbstractExpression</span> <span class="token punctuation">{</span>
-    <span class="token keyword">private</span> AbstractExpression left<span class="token punctuation">;</span>
-    <span class="token keyword">private</span> AbstractExpression right<span class="token punctuation">;</span>
+<pre><code class="java">class NonterminalExpression extends AbstractExpression {
+    private AbstractExpression left;
+    private AbstractExpression right;
 
-    <span class="token keyword">public</span> <span class="token function">NonterminalExpression</span><span class="token punctuation">(</span>AbstractExpression left<span class="token punctuation">,</span> AbstractExpression right<span class="token punctuation">)</span> <span class="token punctuation">{</span>
-        <span class="token keyword">this</span><span class="token punctuation">.</span>left <span class="token operator">=</span> left<span class="token punctuation">;</span>
-        <span class="token keyword">this</span><span class="token punctuation">.</span>right <span class="token operator">=</span> right<span class="token punctuation">;</span>
-    <span class="token punctuation">}</span>
+    public NonterminalExpression(AbstractExpression left, AbstractExpression right) {
+        this.left = left;
+        this.right = right;
+    }
 
-    <span class="token keyword">public</span> <span class="token keyword">void</span> <span class="token function">interpret</span><span class="token punctuation">(</span>Context ctx<span class="token punctuation">)</span> <span class="token punctuation">{</span>
-        <span class="token comment" spellcheck="true">// 递归调用每一个组成部分的 interpret() 方法</span>
-        <span class="token comment" spellcheck="true">// 在递归调用时指定组成部分的连接方式，即非终结符的功能</span>
-    <span class="token punctuation">}</span>
-<span class="token punctuation">}</span>
+    public void interpret(Context ctx) {
+        // 递归调用每一个组成部分的 interpret() 方法
+        // 在递归调用时指定组成部分的连接方式，即非终结符的功能
+    }
+}
 </code></pre>
 <h4 id="上下文类"><a href="#上下文类" class="headerlink" title="上下文类"></a>上下文类</h4><p>环境类Context， 用于存储一些全局信息，通常在Context中包含了一个 HashMap 或者 ArrayList 等类型的集合对象。</p>
-<pre class=" language-java"><code class="language-java"><span class="token keyword">class</span> <span class="token class-name">Context</span> <span class="token punctuation">{</span>
-    <span class="token keyword">private</span> HashMap map <span class="token operator">=</span> <span class="token keyword">new</span> <span class="token class-name">HashMap</span><span class="token punctuation">(</span><span class="token punctuation">)</span><span class="token punctuation">;</span>
-    <span class="token keyword">public</span> <span class="token keyword">void</span> <span class="token function">assign</span><span class="token punctuation">(</span>String key<span class="token punctuation">,</span> String value<span class="token punctuation">)</span><span class="token punctuation">{</span>
-        <span class="token comment" spellcheck="true">// 往环境中设值</span>
-    <span class="token punctuation">}</span>
+<pre><code class="java">class Context {
+    private HashMap map = new HashMap();
+    public void assign(String key, String value){
+        // 往环境中设值
+    }
 
-    <span class="token keyword">public</span> String <span class="token function">lookup</span><span class="token punctuation">(</span>String key<span class="token punctuation">)</span> <span class="token punctuation">{</span>
-        <span class="token comment" spellcheck="true">// 获取存储在环境中的值</span>
-    <span class="token punctuation">}</span>
-<span class="token punctuation">}</span>
+    public String lookup(String key) {
+        // 获取存储在环境中的值
+    }
+}
 </code></pre>
 <blockquote>
 <p>系统可以根据西药来决定是否需要环境类</p>
 </blockquote>
-<h2 id="三、完整实现"><a href="#三、完整实现" class="headerlink" title="三、完整实现"></a>三、完整实现</h2><pre class=" language-java"><code class="language-java"><span class="token comment" spellcheck="true">// 抽象表达式</span>
-<span class="token keyword">abstract</span> <span class="token keyword">class</span> <span class="token class-name">AbstractNode</span> <span class="token punctuation">{</span>
-    <span class="token keyword">public</span> <span class="token keyword">abstract</span> String <span class="token function">interpret</span><span class="token punctuation">(</span><span class="token punctuation">)</span><span class="token punctuation">;</span>
-<span class="token punctuation">}</span>
+<h2 id="三、完整实现"><a href="#三、完整实现" class="headerlink" title="三、完整实现"></a>三、完整实现</h2><pre><code class="java">// 抽象表达式
+abstract class AbstractNode {
+    public abstract String interpret();
+}
 
-<span class="token comment" spellcheck="true">// And解释 - 非终结符表达式</span>
-<span class="token keyword">class</span> <span class="token class-name">AndNode</span> <span class="token keyword">extends</span> <span class="token class-name">AbstractNode</span> <span class="token punctuation">{</span>
-    <span class="token keyword">private</span> AbstractNode left<span class="token punctuation">;</span>
-    <span class="token keyword">private</span> AbstractNode right<span class="token punctuation">;</span>
+// And解释 - 非终结符表达式
+class AndNode extends AbstractNode {
+    private AbstractNode left;
+    private AbstractNode right;
 
-    <span class="token keyword">public</span> <span class="token function">AndNode</span><span class="token punctuation">(</span>AbstractNode left<span class="token punctuation">,</span> AbstractNode right<span class="token punctuation">)</span><span class="token punctuation">{</span>
-        <span class="token keyword">this</span><span class="token punctuation">.</span>left <span class="token operator">=</span> left<span class="token punctuation">;</span>
-        <span class="token keyword">this</span><span class="token punctuation">.</span>right <span class="token operator">=</span> right<span class="token punctuation">;</span>
-    <span class="token punctuation">}</span>
+    public AndNode(AbstractNode left, AbstractNode right){
+        this.left = left;
+        this.right = right;
+    }
 
-    <span class="token comment" spellcheck="true">// And 表达式的解释操作</span>
-    <span class="token keyword">public</span> String <span class="token function">interpret</span><span class="token punctuation">(</span><span class="token punctuation">)</span><span class="token punctuation">{</span>
-        <span class="token keyword">return</span> left<span class="token punctuation">.</span><span class="token function">interpret</span><span class="token punctuation">(</span><span class="token punctuation">)</span> <span class="token operator">+</span> <span class="token string">"再"</span> <span class="token operator">+</span> right<span class="token punctuation">.</span><span class="token function">interpret</span><span class="token punctuation">(</span><span class="token punctuation">)</span><span class="token punctuation">;</span>
-    <span class="token punctuation">}</span>
-<span class="token punctuation">}</span>
+    // And 表达式的解释操作
+    public String interpret(){
+        return left.interpret() + &quot;再&quot; + right.interpret();
+    }
+}
 
-<span class="token comment" spellcheck="true">// 简单句子解释 - 非终结符表达式</span>
-<span class="token keyword">class</span> <span class="token class-name">SentenceNode</span> <span class="token keyword">extends</span> <span class="token class-name">AbstractNode</span> <span class="token punctuation">{</span>
-    <span class="token keyword">private</span> AbstractNode direction<span class="token punctuation">;</span>
-    <span class="token keyword">private</span> AbstractNode action<span class="token punctuation">;</span>
-    <span class="token keyword">private</span> AbstractNode distance<span class="token punctuation">;</span>
+// 简单句子解释 - 非终结符表达式
+class SentenceNode extends AbstractNode {
+    private AbstractNode direction;
+    private AbstractNode action;
+    private AbstractNode distance;
 
-    <span class="token keyword">public</span> <span class="token function">SentenceNode</span><span class="token punctuation">(</span>AbstractNode direction<span class="token punctuation">,</span> AbstractNode action<span class="token punctuation">,</span> AbstractNode distance<span class="token punctuation">)</span> <span class="token punctuation">{</span>
-        <span class="token keyword">this</span><span class="token punctuation">.</span>direction <span class="token operator">=</span> direction<span class="token punctuation">;</span>
-        <span class="token keyword">this</span><span class="token punctuation">.</span>action <span class="token operator">=</span> action<span class="token punctuation">;</span>
-        <span class="token keyword">this</span><span class="token punctuation">.</span>distance <span class="token operator">=</span> distance<span class="token punctuation">;</span>
-    <span class="token punctuation">}</span>
+    public SentenceNode(AbstractNode direction, AbstractNode action, AbstractNode distance) {
+        this.direction = direction;
+        this.action = action;
+        this.distance = distance;
+    }
 
-    <span class="token keyword">public</span> String <span class="token function">interpret</span><span class="token punctuation">(</span><span class="token punctuation">)</span><span class="token punctuation">{</span>
-        <span class="token keyword">return</span> direction<span class="token punctuation">.</span><span class="token function">interpret</span><span class="token punctuation">(</span><span class="token punctuation">)</span> <span class="token operator">+</span> action<span class="token punctuation">.</span><span class="token function">interpret</span><span class="token punctuation">(</span><span class="token punctuation">)</span> <span class="token operator">+</span> distance<span class="token punctuation">.</span><span class="token function">interpret</span><span class="token punctuation">(</span><span class="token punctuation">)</span><span class="token punctuation">;</span>
-    <span class="token punctuation">}</span>
-<span class="token punctuation">}</span>
+    public String interpret(){
+        return direction.interpret() + action.interpret() + distance.interpret();
+    }
+}
 
-<span class="token comment" spellcheck="true">// 方向解释 - 终结符表达式</span>
-<span class="token keyword">class</span> <span class="token class-name">DirectionNode</span> <span class="token keyword">extends</span> <span class="token class-name">AbstractNode</span> <span class="token punctuation">{</span>
-    <span class="token keyword">private</span> String direction<span class="token punctuation">;</span>
+// 方向解释 - 终结符表达式
+class DirectionNode extends AbstractNode {
+    private String direction;
 
-    <span class="token keyword">public</span> <span class="token function">Direction</span><span class="token punctuation">(</span>String direction<span class="token punctuation">)</span> <span class="token punctuation">{</span>
-        <span class="token keyword">this</span><span class="token punctuation">.</span>direction <span class="token operator">=</span> direction<span class="token punctuation">;</span>
-    <span class="token punctuation">}</span>
+    public Direction(String direction) {
+        this.direction = direction;
+    }
 
-    <span class="token keyword">public</span> String <span class="token function">interpret</span><span class="token punctuation">(</span><span class="token punctuation">)</span> <span class="token punctuation">{</span>
-        <span class="token keyword">switch</span><span class="token punctuation">(</span>direction<span class="token punctuation">)</span><span class="token punctuation">{</span>
-            <span class="token keyword">case</span> <span class="token string">"up"</span><span class="token operator">:</span>
-                <span class="token keyword">return</span> <span class="token string">"向上"</span><span class="token punctuation">;</span>
-            <span class="token keyword">case</span> <span class="token string">"down"</span><span class="token operator">:</span>
-                <span class="token keyword">return</span> <span class="token string">"向下"</span><span class="token punctuation">;</span>
-            <span class="token keyword">case</span> <span class="token string">"left"</span><span class="token operator">:</span>
-                <span class="token keyword">return</span> <span class="token string">"向左"</span><span class="token punctuation">;</span>
-            <span class="token keyword">case</span> <span class="token string">"right"</span><span class="token operator">:</span>
-                <span class="token keyword">return</span> <span class="token string">"向右"</span><span class="token punctuation">;</span>
-            <span class="token keyword">default</span><span class="token operator">:</span>
-                <span class="token keyword">return</span> <span class="token string">"无效指令"</span>'
-        <span class="token punctuation">}</span>
-    <span class="token punctuation">}</span>
-<span class="token punctuation">}</span>
+    public String interpret() {
+        switch(direction){
+            case &quot;up&quot;:
+                return &quot;向上&quot;;
+            case &quot;down&quot;:
+                return &quot;向下&quot;;
+            case &quot;left&quot;:
+                return &quot;向左&quot;;
+            case &quot;right&quot;:
+                return &quot;向右&quot;;
+            default:
+                return &quot;无效指令&quot;&#39;
+        }
+    }
+}
 
-<span class="token comment" spellcheck="true">// 动作解释 - 终结符表达式</span>
-<span class="token keyword">class</span> <span class="token class-name">ActionNode</span> <span class="token keyword">extends</span> <span class="token class-name">AbstractNode</span> <span class="token punctuation">{</span>
-    <span class="token keyword">private</span> String action<span class="token punctuation">;</span>
+// 动作解释 - 终结符表达式
+class ActionNode extends AbstractNode {
+    private String action;
 
-    <span class="token keyword">public</span> <span class="token function">ActionNode</span><span class="token punctuation">(</span>String action<span class="token punctuation">)</span> <span class="token punctuation">{</span>
-        <span class="token keyword">this</span><span class="token punctuation">.</span>action <span class="token operator">=</span> action<span class="token punctuation">;</span>
-    <span class="token punctuation">}</span>
+    public ActionNode(String action) {
+        this.action = action;
+    }
 
-    <span class="token keyword">public</span> String <span class="token function">interpret</span><span class="token punctuation">(</span><span class="token punctuation">)</span> <span class="token punctuation">{</span>
-        <span class="token keyword">switch</span><span class="token punctuation">(</span>action<span class="token punctuation">)</span> <span class="token punctuation">{</span>
-            <span class="token keyword">case</span> <span class="token string">"move"</span><span class="token operator">:</span>
-                <span class="token keyword">return</span> <span class="token string">"移动"</span><span class="token punctuation">;</span>
-            <span class="token keyword">case</span> <span class="token string">"run"</span><span class="token operator">:</span>
-                <span class="token keyword">return</span> <span class="token string">"快速移动"</span><span class="token punctuation">;</span>
-            <span class="token keyword">default</span><span class="token operator">:</span>
-                <span class="token keyword">return</span> <span class="token string">"无效指令"</span><span class="token punctuation">;</span>
-        <span class="token punctuation">}</span>
-    <span class="token punctuation">}</span>
-<span class="token punctuation">}</span>
+    public String interpret() {
+        switch(action) {
+            case &quot;move&quot;:
+                return &quot;移动&quot;;
+            case &quot;run&quot;:
+                return &quot;快速移动&quot;;
+            default:
+                return &quot;无效指令&quot;;
+        }
+    }
+}
 
-<span class="token comment" spellcheck="true">// 距离解释 - 终结符表达式</span>
-<span class="token keyword">class</span> <span class="token class-name">DistanceNode</span> <span class="token keyword">extends</span> <span class="token class-name">AbstractNode</span> <span class="token punctuation">{</span>
-    <span class="token keyword">private</span> String distance<span class="token punctuation">;</span>
+// 距离解释 - 终结符表达式
+class DistanceNode extends AbstractNode {
+    private String distance;
 
-    <span class="token keyword">public</span> <span class="token function">DistanceNode</span><span class="token punctuation">(</span>String distance<span class="token punctuation">)</span> <span class="token punctuation">{</span>
-        <span class="token keyword">this</span><span class="token punctuation">.</span>distance <span class="token operator">=</span> distance<span class="token punctuation">;</span>
-    <span class="token punctuation">}</span>
+    public DistanceNode(String distance) {
+        this.distance = distance;
+    }
 
-    <span class="token keyword">public</span> String <span class="token function">interpret</span><span class="token punctuation">(</span><span class="token punctuation">)</span> <span class="token punctuation">{</span>
-        <span class="token keyword">return</span> distance<span class="token punctuation">;</span>
-    <span class="token punctuation">}</span>
-<span class="token punctuation">}</span>
+    public String interpret() {
+        return distance;
+    }
+}
 
-<span class="token comment" spellcheck="true">// 指令处理类 - 工具类</span>
-<span class="token comment" spellcheck="true">/**
+// 指令处理类 - 工具类
+/**
  * 工具类用于对输入指令进行处理，将指令分隔为字符串数组
  * 将第一二三个单词组成一个句子，并存入栈中
  * 如果发现单词 “and”，则将 “and” 后的第一二三个单词组成一个新的句子作为右表达式，并从栈中取出原先的句子作为左表达式，然后组合成一个And节点存入栈中
  * 依次类推，直到整个指令解析结束
- */</span>
-<span class="token keyword">class</span> <span class="token class-name">InstructionHandler</span> <span class="token punctuation">{</span>
-    <span class="token keyword">private</span> String instruction<span class="token punctuation">;</span>
-    <span class="token keyword">private</span> AbstractNode node<span class="token punctuation">;</span>
+ */
+class InstructionHandler {
+    private String instruction;
+    private AbstractNode node;
 
-    <span class="token keyword">public</span> <span class="token keyword">void</span> <span class="token function">handle</span><span class="token punctuation">(</span>String instruction<span class="token punctuation">)</span> <span class="token punctuation">{</span>
-        AbstractNode left <span class="token operator">=</span> null<span class="token punctuation">;</span>
-        AbstractNode right <span class="token operator">=</span> null<span class="token punctuation">;</span>
+    public void handle(String instruction) {
+        AbstractNode left = null;
+        AbstractNode right = null;
 
-        AbstractNode direction <span class="token operator">=</span> null<span class="token punctuation">;</span>
-        AbstractNode action <span class="token operator">=</span> null<span class="token punctuation">;</span>
-        AbstractNode distance <span class="token operator">=</span> null<span class="token punctuation">;</span>
+        AbstractNode direction = null;
+        AbstractNode action = null;
+        AbstractNode distance = null;
 
-        <span class="token comment" spellcheck="true">// 声明一个栈对象用于存储抽象语法树</span>
-        Stack stack <span class="token operator">=</span> <span class="token keyword">new</span> <span class="token class-name">Stack</span><span class="token punctuation">(</span><span class="token punctuation">)</span><span class="token punctuation">;</span>
-        <span class="token comment" spellcheck="true">// 以空格分隔指令字符串</span>
-        String<span class="token punctuation">[</span><span class="token punctuation">]</span> words <span class="token operator">=</span> instruction<span class="token punctuation">.</span><span class="token function">split</span><span class="token punctuation">(</span><span class="token string">" "</span><span class="token punctuation">)</span><span class="token punctuation">;</span>
+        // 声明一个栈对象用于存储抽象语法树
+        Stack stack = new Stack();
+        // 以空格分隔指令字符串
+        String[] words = instruction.split(&quot; &quot;);
 
-        <span class="token keyword">for</span><span class="token punctuation">(</span><span class="token keyword">int</span> i <span class="token operator">=</span> <span class="token number">0</span><span class="token punctuation">;</span>i <span class="token operator">&lt;</span> words<span class="token punctuation">.</span>length<span class="token punctuation">;</span> i<span class="token operator">++</span><span class="token punctuation">)</span><span class="token punctuation">{</span>
-            <span class="token comment" spellcheck="true">// 如果遇到 and，则将后三个单词作为三个终结符表达式连成一个简单句子，并作为右表达式</span>
-            <span class="token comment" spellcheck="true">// 从栈顶弹出之前的表达式作为 and 的左表达式，最后将and压入栈中</span>
-            <span class="token keyword">if</span><span class="token punctuation">(</span>words<span class="token punctuation">[</span>i<span class="token punctuation">]</span><span class="token punctuation">.</span><span class="token function">equalsIgnoreCase</span><span class="token punctuation">(</span><span class="token string">"and"</span><span class="token punctuation">)</span><span class="token punctuation">)</span><span class="token punctuation">{</span>
-                <span class="token comment" spellcheck="true">// 弹出栈顶表达式作为左表达式</span>
-                left <span class="token operator">=</span> <span class="token punctuation">(</span>AbstractNode<span class="token punctuation">)</span> stack<span class="token punctuation">.</span><span class="token function">pop</span><span class="token punctuation">(</span><span class="token punctuation">)</span><span class="token punctuation">;</span>
-                direction <span class="token operator">=</span> <span class="token keyword">new</span> <span class="token class-name">DirectionNode</span><span class="token punctuation">(</span>words<span class="token punctuation">[</span><span class="token operator">++</span>i<span class="token punctuation">]</span><span class="token punctuation">)</span><span class="token punctuation">;</span>
-                action <span class="token operator">=</span> <span class="token keyword">new</span> <span class="token class-name">ActionNode</span><span class="token punctuation">(</span>words<span class="token punctuation">[</span><span class="token operator">++</span>i<span class="token punctuation">]</span><span class="token punctuation">)</span><span class="token punctuation">;</span>
-                distance <span class="token operator">=</span> <span class="token keyword">new</span> <span class="token class-name">DistanceNode</span><span class="token punctuation">(</span>words<span class="token punctuation">[</span><span class="token operator">++</span>i<span class="token punctuation">]</span><span class="token punctuation">)</span><span class="token punctuation">;</span>
-                <span class="token comment" spellcheck="true">// 右表达式</span>
-                right <span class="token operator">=</span> <span class="token keyword">new</span> <span class="token class-name">SentenceNode</span><span class="token punctuation">(</span>direction<span class="token punctuation">,</span> action<span class="token punctuation">,</span> distance<span class="token punctuation">)</span><span class="token punctuation">;</span> 
-                <span class="token comment" spellcheck="true">// 将新表达式压入栈中</span>
-                stack<span class="token punctuation">.</span><span class="token function">push</span><span class="token punctuation">(</span><span class="token keyword">new</span> <span class="token class-name">AndNode</span><span class="token punctuation">(</span>left<span class="token punctuation">,</span> right<span class="token punctuation">)</span><span class="token punctuation">)</span><span class="token punctuation">;</span>
-            <span class="token punctuation">}</span>
-            <span class="token comment" spellcheck="true">// 如果是从头开始解释，则将前三个单词组成一个简单句子并压入栈中</span>
-            <span class="token keyword">else</span> <span class="token punctuation">{</span>
-                direction <span class="token operator">=</span> <span class="token keyword">new</span> <span class="token class-name">DirectionNode</span><span class="token punctuation">(</span>words<span class="token punctuation">[</span>i<span class="token punctuation">]</span><span class="token punctuation">)</span><span class="token punctuation">;</span>
-                action <span class="token operator">=</span> <span class="token keyword">new</span> <span class="token class-name">ActionNode</span><span class="token punctuation">(</span>words<span class="token punctuation">[</span><span class="token operator">++</span>i<span class="token punctuation">]</span><span class="token punctuation">)</span><span class="token punctuation">;</span>
-                distance <span class="token operator">=</span> <span class="token keyword">new</span> <span class="token class-name">DistanceNode</span><span class="token punctuation">(</span>words<span class="token punctuation">[</span><span class="token operator">++</span>i<span class="token punctuation">]</span><span class="token punctuation">)</span><span class="token punctuation">;</span>
-                left <span class="token operator">=</span> <span class="token keyword">new</span> <span class="token class-name">SentenceNode</span><span class="token punctuation">(</span>direction<span class="token punctuation">,</span> action<span class="token punctuation">,</span> distance<span class="token punctuation">)</span><span class="token punctuation">;</span>
-                stack<span class="token punctuation">.</span><span class="token function">push</span><span class="token punctuation">(</span>left<span class="token punctuation">)</span><span class="token punctuation">;</span>
-            <span class="token punctuation">}</span>
-        <span class="token punctuation">}</span>
+        for(int i = 0;i &lt; words.length; i++){
+            // 如果遇到 and，则将后三个单词作为三个终结符表达式连成一个简单句子，并作为右表达式
+            // 从栈顶弹出之前的表达式作为 and 的左表达式，最后将and压入栈中
+            if(words[i].equalsIgnoreCase(&quot;and&quot;)){
+                // 弹出栈顶表达式作为左表达式
+                left = (AbstractNode) stack.pop();
+                direction = new DirectionNode(words[++i]);
+                action = new ActionNode(words[++i]);
+                distance = new DistanceNode(words[++i]);
+                // 右表达式
+                right = new SentenceNode(direction, action, distance); 
+                // 将新表达式压入栈中
+                stack.push(new AndNode(left, right));
+            }
+            // 如果是从头开始解释，则将前三个单词组成一个简单句子并压入栈中
+            else {
+                direction = new DirectionNode(words[i]);
+                action = new ActionNode(words[++i]);
+                distance = new DistanceNode(words[++i]);
+                left = new SentenceNode(direction, action, distance);
+                stack.push(left);
+            }
+        }
 
-        <span class="token keyword">this</span><span class="token punctuation">.</span>node <span class="token operator">=</span> <span class="token punctuation">(</span>AbstractNode<span class="token punctuation">)</span>stack<span class="token punctuation">.</span><span class="token function">pop</span><span class="token punctuation">(</span><span class="token punctuation">)</span><span class="token punctuation">;</span>
-    <span class="token punctuation">}</span>
+        this.node = (AbstractNode)stack.pop();
+    }
 
-    <span class="token keyword">public</span> String <span class="token function">output</span><span class="token punctuation">(</span><span class="token punctuation">)</span><span class="token punctuation">{</span>
-        <span class="token comment" spellcheck="true">// 解释表达式</span>
-        String result <span class="token operator">=</span> node<span class="token punctuation">.</span><span class="token function">interpret</span><span class="token punctuation">(</span><span class="token punctuation">)</span><span class="token punctuation">;</span>
-        <span class="token keyword">return</span> result<span class="token punctuation">;</span>
-    <span class="token punctuation">}</span>
-<span class="token punctuation">}</span>
+    public String output(){
+        // 解释表达式
+        String result = node.interpret();
+        return result;
+    }
+}
 
-<span class="token comment" spellcheck="true">// 客户端 - 测试类</span>
-<span class="token keyword">class</span> <span class="token class-name">Client</span> <span class="token punctuation">{</span>
-    <span class="token keyword">public</span> <span class="token keyword">static</span> <span class="token keyword">void</span> <span class="token function">main</span><span class="token punctuation">(</span>String<span class="token punctuation">[</span><span class="token punctuation">]</span> args<span class="token punctuation">)</span> <span class="token punctuation">{</span>
-        String instruction <span class="token operator">=</span> <span class="token string">"up move 5 and down run 10 and left move 5"</span><span class="token punctuation">;</span>
-        InstructionHandler handler <span class="token operator">=</span> <span class="token keyword">new</span> <span class="token class-name">InstructionHandler</span><span class="token punctuation">(</span><span class="token punctuation">)</span><span class="token punctuation">;</span>
-        handler<span class="token punctuation">.</span><span class="token function">handle</span><span class="token punctuation">(</span>instruction<span class="token punctuation">)</span><span class="token punctuation">;</span>
-        String outString<span class="token punctuation">;</span>
-        outString <span class="token operator">=</span> handler<span class="token punctuation">.</span><span class="token function">output</span><span class="token punctuation">(</span><span class="token punctuation">)</span><span class="token punctuation">;</span>
-        System<span class="token punctuation">.</span>out<span class="token punctuation">.</span><span class="token function">println</span><span class="token punctuation">(</span>outString<span class="token punctuation">)</span><span class="token punctuation">;</span>
-    <span class="token punctuation">}</span>
-<span class="token punctuation">}</span>
+// 客户端 - 测试类
+class Client {
+    public static void main(String[] args) {
+        String instruction = &quot;up move 5 and down run 10 and left move 5&quot;;
+        InstructionHandler handler = new InstructionHandler();
+        handler.handle(instruction);
+        String outString;
+        outString = handler.output();
+        System.out.println(outString);
+    }
+}
 </code></pre>
 <h3 id="四、Context的作用"><a href="#四、Context的作用" class="headerlink" title="四、Context的作用"></a>四、Context的作用</h3><p>在解释器模式中，环境类Context用于存储解释器之外的一些全局信息，它通常作为参数被传递到所有表达式的解释方法 interpret() 中，可以在 Context 对象中存储访问表达式解释器的状态，向表达式解释器提供一些全局的、公共的数据，此外还可以在 Context 中增加一些所有表达式解释器都共有的功能，减轻解释器的职责。</p>
 <h2 id="五、总结"><a href="#五、总结" class="headerlink" title="五、总结"></a>五、总结</h2><h3 id="优点"><a href="#优点" class="headerlink" title="优点"></a>优点</h3><ol>
@@ -644,9 +644,9 @@
 <h2 id="六、练习"><a href="#六、练习" class="headerlink" title="六、练习"></a>六、练习</h2><blockquote>
 <p>Sunny软件公司欲为数据库备份和同步开发一套简单的数据库同步指令，通过指令可以对数据库中的数据和结构进行备份，例如，输入指令“COPY VIEW FROM srcDB TO desDB”表示将数据库srcDB中的所有视图(View)对象都拷贝至数据库desDB；输入指令“MOVE TABLE Student FROM srcDB TO esDB”表示将数据库srcDB中的Student表移动至数据库desDB。试使用解释器模式来设计并实现该数据库同步指令。</p>
 </blockquote>
-<pre class=" language-java"><code class="language-java"><span class="token keyword">import</span> java<span class="token punctuation">.</span>util<span class="token punctuation">.</span>Stack<span class="token punctuation">;</span>
+<pre><code class="java">import java.util.Stack;
 
-<span class="token comment" spellcheck="true">/**
+/**
  * 解释器模式
  * Sunny软件公司欲为数据库备份和同步开发一套简单的数据库同步指令，
  * 通过指令可以对数据库中的数据和结构进行备份，
@@ -656,187 +656,187 @@
  * 输入指令“MOVE TABLE Student FROM srcDB TO esDB”
  * 表示将数据库srcDB中的Student表移动至数据库desDB。
  * 试使用解释器模式来设计并实现该数据库同步指令。
- */</span>
-<span class="token comment" spellcheck="true">// 抽象指令</span>
-<span class="token keyword">abstract</span> <span class="token keyword">class</span> <span class="token class-name">AbstractOrder</span> <span class="token punctuation">{</span>
-    <span class="token comment" spellcheck="true">// 抽象公共方法，用于解释具体的指令</span>
-    <span class="token keyword">abstract</span> String <span class="token function">interpret</span><span class="token punctuation">(</span><span class="token punctuation">)</span><span class="token punctuation">;</span>
-<span class="token punctuation">}</span>
+ */
+// 抽象指令
+abstract class AbstractOrder {
+    // 抽象公共方法，用于解释具体的指令
+    abstract String interpret();
+}
 
-<span class="token comment" spellcheck="true">// 从。。到。。 指令 - 非终结符表达式</span>
-<span class="token keyword">class</span> <span class="token class-name">FromOrder</span> <span class="token keyword">extends</span> <span class="token class-name">AbstractOrder</span> <span class="token punctuation">{</span>
-    <span class="token keyword">private</span> AbstractOrder first<span class="token punctuation">;</span>
-    <span class="token keyword">private</span> AbstractOrder second<span class="token punctuation">;</span>
+// 从。。到。。 指令 - 非终结符表达式
+class FromOrder extends AbstractOrder {
+    private AbstractOrder first;
+    private AbstractOrder second;
 
-    <span class="token keyword">public</span> <span class="token function">FromOrder</span><span class="token punctuation">(</span>AbstractOrder first<span class="token punctuation">,</span> AbstractOrder second<span class="token punctuation">)</span> <span class="token punctuation">{</span>
-        <span class="token keyword">this</span><span class="token punctuation">.</span>first <span class="token operator">=</span> first<span class="token punctuation">;</span>
-        <span class="token keyword">this</span><span class="token punctuation">.</span>second <span class="token operator">=</span> second<span class="token punctuation">;</span>
-    <span class="token punctuation">}</span>
+    public FromOrder(AbstractOrder first, AbstractOrder second) {
+        this.first = first;
+        this.second = second;
+    }
 
-    <span class="token annotation punctuation">@Override</span>
-    String <span class="token function">interpret</span><span class="token punctuation">(</span><span class="token punctuation">)</span> <span class="token punctuation">{</span>
-        <span class="token keyword">return</span> <span class="token string">"从"</span> <span class="token operator">+</span> first<span class="token punctuation">.</span><span class="token function">interpret</span><span class="token punctuation">(</span><span class="token punctuation">)</span> <span class="token operator">+</span> <span class="token string">"到"</span> <span class="token operator">+</span> second<span class="token punctuation">.</span><span class="token function">interpret</span><span class="token punctuation">(</span><span class="token punctuation">)</span><span class="token punctuation">;</span>
-    <span class="token punctuation">}</span>
-<span class="token punctuation">}</span>
+    @Override
+    String interpret() {
+        return &quot;从&quot; + first.interpret() + &quot;到&quot; + second.interpret();
+    }
+}
 
-<span class="token comment" spellcheck="true">// 视图指令 - 终结符表达式</span>
-<span class="token keyword">class</span> <span class="token class-name">ViewOrder</span> <span class="token keyword">extends</span> <span class="token class-name">AbstractOrder</span> <span class="token punctuation">{</span>
-    <span class="token keyword">private</span> String view<span class="token punctuation">;</span>
+// 视图指令 - 终结符表达式
+class ViewOrder extends AbstractOrder {
+    private String view;
 
-    <span class="token keyword">public</span> <span class="token function">ViewOrder</span><span class="token punctuation">(</span><span class="token punctuation">)</span> <span class="token punctuation">{</span>
-    <span class="token punctuation">}</span>
+    public ViewOrder() {
+    }
 
-    <span class="token keyword">public</span> <span class="token function">ViewOrder</span><span class="token punctuation">(</span>String view<span class="token punctuation">)</span> <span class="token punctuation">{</span>
-        <span class="token keyword">this</span><span class="token punctuation">.</span>view <span class="token operator">=</span> view<span class="token punctuation">;</span>
-    <span class="token punctuation">}</span>
+    public ViewOrder(String view) {
+        this.view = view;
+    }
 
-    <span class="token annotation punctuation">@Override</span>
-    String <span class="token function">interpret</span><span class="token punctuation">(</span><span class="token punctuation">)</span> <span class="token punctuation">{</span>
-        <span class="token keyword">if</span> <span class="token punctuation">(</span>view <span class="token operator">==</span> null<span class="token punctuation">)</span> <span class="token punctuation">{</span>
-            <span class="token keyword">return</span> <span class="token string">"[所有视图]"</span><span class="token punctuation">;</span>
-        <span class="token punctuation">}</span>
-        <span class="token keyword">return</span> <span class="token string">"[视图:"</span> <span class="token operator">+</span> view <span class="token operator">+</span> <span class="token string">"]"</span><span class="token punctuation">;</span>
-    <span class="token punctuation">}</span>
-<span class="token punctuation">}</span>
+    @Override
+    String interpret() {
+        if (view == null) {
+            return &quot;[所有视图]&quot;;
+        }
+        return &quot;[视图:&quot; + view + &quot;]&quot;;
+    }
+}
 
-<span class="token comment" spellcheck="true">// 表格指令 - 终结符表达式</span>
-<span class="token keyword">class</span> <span class="token class-name">TableOrder</span> <span class="token keyword">extends</span> <span class="token class-name">AbstractOrder</span> <span class="token punctuation">{</span>
-    <span class="token keyword">private</span> String table<span class="token punctuation">;</span>
+// 表格指令 - 终结符表达式
+class TableOrder extends AbstractOrder {
+    private String table;
 
-    <span class="token keyword">public</span> <span class="token function">TableOrder</span><span class="token punctuation">(</span><span class="token punctuation">)</span> <span class="token punctuation">{</span>
-    <span class="token punctuation">}</span>
+    public TableOrder() {
+    }
 
-    <span class="token keyword">public</span> <span class="token function">TableOrder</span><span class="token punctuation">(</span>String table<span class="token punctuation">)</span> <span class="token punctuation">{</span>
-        <span class="token keyword">this</span><span class="token punctuation">.</span>table <span class="token operator">=</span> table<span class="token punctuation">;</span>
-    <span class="token punctuation">}</span>
+    public TableOrder(String table) {
+        this.table = table;
+    }
 
-    <span class="token annotation punctuation">@Override</span>
-    String <span class="token function">interpret</span><span class="token punctuation">(</span><span class="token punctuation">)</span> <span class="token punctuation">{</span>
-        <span class="token keyword">if</span> <span class="token punctuation">(</span>table <span class="token operator">==</span> null<span class="token punctuation">)</span> <span class="token punctuation">{</span>
-            <span class="token keyword">return</span> <span class="token string">"[所有表格]"</span><span class="token punctuation">;</span>
-        <span class="token punctuation">}</span>
-        <span class="token keyword">return</span> <span class="token string">"["</span> <span class="token operator">+</span> table <span class="token operator">+</span> <span class="token string">"表]"</span><span class="token punctuation">;</span>
-    <span class="token punctuation">}</span>
-<span class="token punctuation">}</span>
+    @Override
+    String interpret() {
+        if (table == null) {
+            return &quot;[所有表格]&quot;;
+        }
+        return &quot;[&quot; + table + &quot;表]&quot;;
+    }
+}
 
-<span class="token comment" spellcheck="true">// 数据库名称指令 - 终结符表达式</span>
-<span class="token keyword">class</span> <span class="token class-name">DBOrder</span> <span class="token keyword">extends</span> <span class="token class-name">AbstractOrder</span> <span class="token punctuation">{</span>
-    <span class="token keyword">private</span> String name<span class="token punctuation">;</span>
+// 数据库名称指令 - 终结符表达式
+class DBOrder extends AbstractOrder {
+    private String name;
 
-    <span class="token keyword">public</span> <span class="token function">DBOrder</span><span class="token punctuation">(</span>String name<span class="token punctuation">)</span> <span class="token punctuation">{</span>
-        <span class="token keyword">this</span><span class="token punctuation">.</span>name <span class="token operator">=</span> name<span class="token punctuation">;</span>
-    <span class="token punctuation">}</span>
+    public DBOrder(String name) {
+        this.name = name;
+    }
 
-    <span class="token annotation punctuation">@Override</span>
-    String <span class="token function">interpret</span><span class="token punctuation">(</span><span class="token punctuation">)</span> <span class="token punctuation">{</span>
-        <span class="token keyword">return</span> <span class="token string">"[数据库:"</span> <span class="token operator">+</span> name <span class="token operator">+</span> <span class="token string">"]"</span><span class="token punctuation">;</span>
-    <span class="token punctuation">}</span>
-<span class="token punctuation">}</span>
+    @Override
+    String interpret() {
+        return &quot;[数据库:&quot; + name + &quot;]&quot;;
+    }
+}
 
-<span class="token comment" spellcheck="true">// 备份指令 - 终结符表达式</span>
-<span class="token keyword">class</span> <span class="token class-name">CopyOrder</span> <span class="token keyword">extends</span> <span class="token class-name">AbstractOrder</span> <span class="token punctuation">{</span>
-    <span class="token annotation punctuation">@Override</span>
-    String <span class="token function">interpret</span><span class="token punctuation">(</span><span class="token punctuation">)</span> <span class="token punctuation">{</span>
-        <span class="token keyword">return</span> <span class="token string">"拷贝"</span><span class="token punctuation">;</span>
-    <span class="token punctuation">}</span>
-<span class="token punctuation">}</span>
+// 备份指令 - 终结符表达式
+class CopyOrder extends AbstractOrder {
+    @Override
+    String interpret() {
+        return &quot;拷贝&quot;;
+    }
+}
 
-<span class="token comment" spellcheck="true">// 移动指令 - 终结符表达式</span>
-<span class="token keyword">class</span> <span class="token class-name">MoveOrder</span> <span class="token keyword">extends</span> <span class="token class-name">AbstractOrder</span> <span class="token punctuation">{</span>
-    <span class="token annotation punctuation">@Override</span>
-    String <span class="token function">interpret</span><span class="token punctuation">(</span><span class="token punctuation">)</span> <span class="token punctuation">{</span>
-        <span class="token keyword">return</span> <span class="token string">"移动"</span><span class="token punctuation">;</span>
-    <span class="token punctuation">}</span>
-<span class="token punctuation">}</span>
+// 移动指令 - 终结符表达式
+class MoveOrder extends AbstractOrder {
+    @Override
+    String interpret() {
+        return &quot;移动&quot;;
+    }
+}
 
-<span class="token comment" spellcheck="true">// 句子解释(Copy/Move FromOder) - 非终结符表达式</span>
-<span class="token keyword">class</span> <span class="token class-name">SentenceOrder</span> <span class="token keyword">extends</span> <span class="token class-name">AbstractOrder</span> <span class="token punctuation">{</span>
-    <span class="token keyword">private</span> AbstractOrder direction<span class="token punctuation">;</span>
-    <span class="token keyword">private</span> AbstractOrder action<span class="token punctuation">;</span>
-    <span class="token keyword">private</span> AbstractOrder distance<span class="token punctuation">;</span>
+// 句子解释(Copy/Move FromOder) - 非终结符表达式
+class SentenceOrder extends AbstractOrder {
+    private AbstractOrder direction;
+    private AbstractOrder action;
+    private AbstractOrder distance;
 
-    <span class="token keyword">public</span> <span class="token function">SentenceOrder</span><span class="token punctuation">(</span>AbstractOrder direction<span class="token punctuation">,</span> AbstractOrder action<span class="token punctuation">,</span> AbstractOrder distance<span class="token punctuation">)</span> <span class="token punctuation">{</span>
-        <span class="token keyword">this</span><span class="token punctuation">.</span>direction <span class="token operator">=</span> direction<span class="token punctuation">;</span>
-        <span class="token keyword">this</span><span class="token punctuation">.</span>action <span class="token operator">=</span> action<span class="token punctuation">;</span>
-        <span class="token keyword">this</span><span class="token punctuation">.</span>distance <span class="token operator">=</span> distance<span class="token punctuation">;</span>
-    <span class="token punctuation">}</span>
+    public SentenceOrder(AbstractOrder direction, AbstractOrder action, AbstractOrder distance) {
+        this.direction = direction;
+        this.action = action;
+        this.distance = distance;
+    }
 
-    <span class="token annotation punctuation">@Override</span>
-    String <span class="token function">interpret</span><span class="token punctuation">(</span><span class="token punctuation">)</span> <span class="token punctuation">{</span>
-        <span class="token keyword">return</span> direction<span class="token punctuation">.</span><span class="token function">interpret</span><span class="token punctuation">(</span><span class="token punctuation">)</span> <span class="token operator">+</span> action<span class="token punctuation">.</span><span class="token function">interpret</span><span class="token punctuation">(</span><span class="token punctuation">)</span> <span class="token operator">+</span> distance<span class="token punctuation">.</span><span class="token function">interpret</span><span class="token punctuation">(</span><span class="token punctuation">)</span><span class="token punctuation">;</span>
-    <span class="token punctuation">}</span>
-<span class="token punctuation">}</span>
+    @Override
+    String interpret() {
+        return direction.interpret() + action.interpret() + distance.interpret();
+    }
+}
 
-<span class="token comment" spellcheck="true">// 指令工具类</span>
-<span class="token keyword">class</span> <span class="token class-name">InstructionHandler</span> <span class="token punctuation">{</span>
-    <span class="token keyword">private</span> String instruction<span class="token punctuation">;</span>     <span class="token comment" spellcheck="true">// 输入的指令字符串</span>
-    <span class="token keyword">private</span> AbstractOrder order<span class="token punctuation">;</span>    <span class="token comment" spellcheck="true">// 字符串转换后的指令</span>
+// 指令工具类
+class InstructionHandler {
+    private String instruction;     // 输入的指令字符串
+    private AbstractOrder order;    // 字符串转换后的指令
 
-    <span class="token keyword">public</span> <span class="token keyword">void</span> <span class="token function">handle</span><span class="token punctuation">(</span>String instruction<span class="token punctuation">)</span> <span class="token punctuation">{</span>
-        AbstractOrder direction<span class="token punctuation">;</span>     <span class="token comment" spellcheck="true">// sentence 指令的 direction</span>
-        AbstractOrder action<span class="token punctuation">;</span>    <span class="token comment" spellcheck="true">// sentence 指令的 action</span>
-        AbstractOrder distance<span class="token punctuation">;</span>    <span class="token comment" spellcheck="true">// sentence 指令的 distance</span>
+    public void handle(String instruction) {
+        AbstractOrder direction;     // sentence 指令的 direction
+        AbstractOrder action;    // sentence 指令的 action
+        AbstractOrder distance;    // sentence 指令的 distance
 
-        <span class="token comment" spellcheck="true">// 使用栈来保存表达式</span>
-        Stack<span class="token operator">&lt;</span>AbstractOrder<span class="token operator">></span> stack <span class="token operator">=</span> <span class="token keyword">new</span> <span class="token class-name">Stack</span><span class="token operator">&lt;</span><span class="token operator">></span><span class="token punctuation">(</span><span class="token punctuation">)</span><span class="token punctuation">;</span>
+        // 使用栈来保存表达式
+        Stack&lt;AbstractOrder&gt; stack = new Stack&lt;&gt;();
 
-        <span class="token comment" spellcheck="true">// 将输入的指令字符串按照 空格 拆分</span>
-        <span class="token keyword">final</span> String<span class="token punctuation">[</span><span class="token punctuation">]</span> words <span class="token operator">=</span> instruction<span class="token punctuation">.</span><span class="token function">split</span><span class="token punctuation">(</span><span class="token string">" "</span><span class="token punctuation">)</span><span class="token punctuation">;</span>
+        // 将输入的指令字符串按照 空格 拆分
+        final String[] words = instruction.split(&quot; &quot;);
 
-        <span class="token keyword">for</span> <span class="token punctuation">(</span><span class="token keyword">int</span> i <span class="token operator">=</span> <span class="token number">0</span><span class="token punctuation">;</span> i <span class="token operator">&lt;</span> words<span class="token punctuation">.</span>length<span class="token punctuation">;</span> i<span class="token operator">++</span><span class="token punctuation">)</span> <span class="token punctuation">{</span>
-            <span class="token keyword">final</span> String word <span class="token operator">=</span> words<span class="token punctuation">[</span>i<span class="token punctuation">]</span><span class="token punctuation">;</span>
+        for (int i = 0; i &lt; words.length; i++) {
+            final String word = words[i];
 
-            <span class="token comment" spellcheck="true">// 如果为 from 指令，则解析 From [DB] TO [DB]</span>
-            <span class="token keyword">switch</span> <span class="token punctuation">(</span>word<span class="token punctuation">.</span><span class="token function">toLowerCase</span><span class="token punctuation">(</span><span class="token punctuation">)</span><span class="token punctuation">)</span> <span class="token punctuation">{</span>
-                <span class="token keyword">case</span> <span class="token string">"from"</span><span class="token operator">:</span>
-                    String f <span class="token operator">=</span> words<span class="token punctuation">[</span><span class="token operator">++</span>i<span class="token punctuation">]</span><span class="token punctuation">;</span>
-                    <span class="token operator">++</span>i<span class="token punctuation">;</span>
-                    String s <span class="token operator">=</span> words<span class="token punctuation">[</span><span class="token operator">++</span>i<span class="token punctuation">]</span><span class="token punctuation">;</span>
-                    stack<span class="token punctuation">.</span><span class="token function">push</span><span class="token punctuation">(</span><span class="token keyword">new</span> <span class="token class-name">FromOrder</span><span class="token punctuation">(</span><span class="token keyword">new</span> <span class="token class-name">DBOrder</span><span class="token punctuation">(</span>f<span class="token punctuation">)</span><span class="token punctuation">,</span> <span class="token keyword">new</span> <span class="token class-name">DBOrder</span><span class="token punctuation">(</span>s<span class="token punctuation">)</span><span class="token punctuation">)</span><span class="token punctuation">)</span><span class="token punctuation">;</span>
-                    <span class="token keyword">break</span><span class="token punctuation">;</span>
-                <span class="token keyword">case</span> <span class="token string">"copy"</span><span class="token operator">:</span>
-                    stack<span class="token punctuation">.</span><span class="token function">push</span><span class="token punctuation">(</span><span class="token keyword">new</span> <span class="token class-name">CopyOrder</span><span class="token punctuation">(</span><span class="token punctuation">)</span><span class="token punctuation">)</span><span class="token punctuation">;</span>
-                    <span class="token keyword">break</span><span class="token punctuation">;</span>
-                <span class="token keyword">case</span> <span class="token string">"move"</span><span class="token operator">:</span>
-                    stack<span class="token punctuation">.</span><span class="token function">push</span><span class="token punctuation">(</span><span class="token keyword">new</span> <span class="token class-name">MoveOrder</span><span class="token punctuation">(</span><span class="token punctuation">)</span><span class="token punctuation">)</span><span class="token punctuation">;</span>
-                    <span class="token keyword">break</span><span class="token punctuation">;</span>
-                <span class="token keyword">case</span> <span class="token string">"view"</span><span class="token operator">:</span>
-                    <span class="token keyword">if</span> <span class="token punctuation">(</span><span class="token operator">!</span>words<span class="token punctuation">[</span>i <span class="token operator">+</span> <span class="token number">1</span><span class="token punctuation">]</span><span class="token punctuation">.</span><span class="token function">equalsIgnoreCase</span><span class="token punctuation">(</span><span class="token string">"from"</span><span class="token punctuation">)</span><span class="token punctuation">)</span>
-                        stack<span class="token punctuation">.</span><span class="token function">push</span><span class="token punctuation">(</span><span class="token keyword">new</span> <span class="token class-name">ViewOrder</span><span class="token punctuation">(</span>words<span class="token punctuation">[</span><span class="token operator">++</span>i<span class="token punctuation">]</span><span class="token punctuation">)</span><span class="token punctuation">)</span><span class="token punctuation">;</span>
-                    <span class="token keyword">else</span>
-                        stack<span class="token punctuation">.</span><span class="token function">push</span><span class="token punctuation">(</span><span class="token keyword">new</span> <span class="token class-name">ViewOrder</span><span class="token punctuation">(</span><span class="token punctuation">)</span><span class="token punctuation">)</span><span class="token punctuation">;</span>
-                    <span class="token keyword">break</span><span class="token punctuation">;</span>
-                <span class="token keyword">case</span> <span class="token string">"table"</span><span class="token operator">:</span>
-                    <span class="token keyword">if</span> <span class="token punctuation">(</span><span class="token operator">!</span>words<span class="token punctuation">[</span>i <span class="token operator">+</span> <span class="token number">1</span><span class="token punctuation">]</span><span class="token punctuation">.</span><span class="token function">equalsIgnoreCase</span><span class="token punctuation">(</span><span class="token string">"from"</span><span class="token punctuation">)</span><span class="token punctuation">)</span>
-                        stack<span class="token punctuation">.</span><span class="token function">push</span><span class="token punctuation">(</span><span class="token keyword">new</span> <span class="token class-name">TableOrder</span><span class="token punctuation">(</span>words<span class="token punctuation">[</span><span class="token operator">++</span>i<span class="token punctuation">]</span><span class="token punctuation">)</span><span class="token punctuation">)</span><span class="token punctuation">;</span>
-                    <span class="token keyword">else</span>
-                        stack<span class="token punctuation">.</span><span class="token function">push</span><span class="token punctuation">(</span><span class="token keyword">new</span> <span class="token class-name">TableOrder</span><span class="token punctuation">(</span><span class="token punctuation">)</span><span class="token punctuation">)</span><span class="token punctuation">;</span>
-                    <span class="token keyword">break</span><span class="token punctuation">;</span>
-                <span class="token keyword">default</span><span class="token operator">:</span>
-                    <span class="token keyword">throw</span> <span class="token keyword">new</span> <span class="token class-name">RuntimeException</span><span class="token punctuation">(</span><span class="token string">"无效指令"</span><span class="token punctuation">)</span><span class="token punctuation">;</span>
-            <span class="token punctuation">}</span>
-        <span class="token punctuation">}</span>
-        distance <span class="token operator">=</span> stack<span class="token punctuation">.</span><span class="token function">pop</span><span class="token punctuation">(</span><span class="token punctuation">)</span><span class="token punctuation">;</span>
-        action <span class="token operator">=</span> stack<span class="token punctuation">.</span><span class="token function">pop</span><span class="token punctuation">(</span><span class="token punctuation">)</span><span class="token punctuation">;</span>
-        direction <span class="token operator">=</span> stack<span class="token punctuation">.</span><span class="token function">pop</span><span class="token punctuation">(</span><span class="token punctuation">)</span><span class="token punctuation">;</span>
-        <span class="token comment" spellcheck="true">// order 最终是一个解释类表达式</span>
-        order <span class="token operator">=</span> <span class="token keyword">new</span> <span class="token class-name">SentenceOrder</span><span class="token punctuation">(</span>direction<span class="token punctuation">,</span> action<span class="token punctuation">,</span> distance<span class="token punctuation">)</span><span class="token punctuation">;</span>
-    <span class="token punctuation">}</span>
+            // 如果为 from 指令，则解析 From [DB] TO [DB]
+            switch (word.toLowerCase()) {
+                case &quot;from&quot;:
+                    String f = words[++i];
+                    ++i;
+                    String s = words[++i];
+                    stack.push(new FromOrder(new DBOrder(f), new DBOrder(s)));
+                    break;
+                case &quot;copy&quot;:
+                    stack.push(new CopyOrder());
+                    break;
+                case &quot;move&quot;:
+                    stack.push(new MoveOrder());
+                    break;
+                case &quot;view&quot;:
+                    if (!words[i + 1].equalsIgnoreCase(&quot;from&quot;))
+                        stack.push(new ViewOrder(words[++i]));
+                    else
+                        stack.push(new ViewOrder());
+                    break;
+                case &quot;table&quot;:
+                    if (!words[i + 1].equalsIgnoreCase(&quot;from&quot;))
+                        stack.push(new TableOrder(words[++i]));
+                    else
+                        stack.push(new TableOrder());
+                    break;
+                default:
+                    throw new RuntimeException(&quot;无效指令&quot;);
+            }
+        }
+        distance = stack.pop();
+        action = stack.pop();
+        direction = stack.pop();
+        // order 最终是一个解释类表达式
+        order = new SentenceOrder(direction, action, distance);
+    }
 
-    <span class="token keyword">public</span> String <span class="token function">output</span><span class="token punctuation">(</span><span class="token punctuation">)</span> <span class="token punctuation">{</span>
-        <span class="token keyword">return</span> order<span class="token punctuation">.</span><span class="token function">interpret</span><span class="token punctuation">(</span><span class="token punctuation">)</span><span class="token punctuation">;</span>
-    <span class="token punctuation">}</span>
-<span class="token punctuation">}</span>
+    public String output() {
+        return order.interpret();
+    }
+}
 
-<span class="token keyword">public</span> <span class="token keyword">class</span> <span class="token class-name">InterpretPattern</span> <span class="token punctuation">{</span>
-    <span class="token keyword">public</span> <span class="token keyword">static</span> <span class="token keyword">void</span> <span class="token function">main</span><span class="token punctuation">(</span>String<span class="token punctuation">[</span><span class="token punctuation">]</span> args<span class="token punctuation">)</span> <span class="token punctuation">{</span>
-        String order <span class="token operator">=</span> <span class="token string">"MOVE TABLE Student FROM srcDB TO esDB"</span><span class="token punctuation">;</span>
-        <span class="token keyword">final</span> InstructionHandler handler <span class="token operator">=</span> <span class="token keyword">new</span> <span class="token class-name">InstructionHandler</span><span class="token punctuation">(</span><span class="token punctuation">)</span><span class="token punctuation">;</span>
-        handler<span class="token punctuation">.</span><span class="token function">handle</span><span class="token punctuation">(</span>order<span class="token punctuation">)</span><span class="token punctuation">;</span>
-        <span class="token keyword">final</span> String output <span class="token operator">=</span> handler<span class="token punctuation">.</span><span class="token function">output</span><span class="token punctuation">(</span><span class="token punctuation">)</span><span class="token punctuation">;</span>
-        System<span class="token punctuation">.</span>out<span class="token punctuation">.</span><span class="token function">println</span><span class="token punctuation">(</span>output<span class="token punctuation">)</span><span class="token punctuation">;</span>
-    <span class="token punctuation">}</span>
-<span class="token punctuation">}</span>
+public class InterpretPattern {
+    public static void main(String[] args) {
+        String order = &quot;MOVE TABLE Student FROM srcDB TO esDB&quot;;
+        final InstructionHandler handler = new InstructionHandler();
+        handler.handle(order);
+        final String output = handler.output();
+        System.out.println(output);
+    }
+}
 
 </code></pre>
 
@@ -962,7 +962,7 @@
               
                 <a href="/archives">
               
-                  <span class="site-state-item-count">224</span>
+                  <span class="site-state-item-count">237</span>
                   <span class="site-state-item-name">日志</span>
                 </a>
               </div>
@@ -984,7 +984,7 @@
               
               <div class="site-state-item site-state-tags">
                 <a href="/tags/index.html">
-                  <span class="site-state-item-count">21</span>
+                  <span class="site-state-item-count">22</span>
                   <span class="site-state-item-name">标签</span>
                 </a>
               </div>

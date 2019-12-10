@@ -387,14 +387,14 @@
       
 
       
-        <h1 id="在Linux环境下初始化Java开发环境-Ubuntu16-0"><a href="#在Linux环境下初始化Java开发环境-Ubuntu16-0" class="headerlink" title="在Linux环境下初始化Java开发环境(Ubuntu16.0)"></a>在Linux环境下初始化Java开发环境(Ubuntu16.0)</h1><h2 id="一、安装-JDK"><a href="#一、安装-JDK" class="headerlink" title="一、安装 JDK"></a>一、安装 JDK</h2><pre class=" language-java"><code class="language-java">安装 OpenJdk ：
-sudo apt<span class="token operator">-</span>get update     <span class="token comment" spellcheck="true">//更新软件包列表</span>
-sudo apt<span class="token operator">-</span>get install openjdk<span class="token operator">-</span><span class="token number">8</span><span class="token operator">-</span>jdk      <span class="token comment" spellcheck="true">//安装openjdk-8-jdk</span>
-java <span class="token operator">-</span>version       <span class="token comment" spellcheck="true">//查看 java 版本</span>
+        <h1 id="在Linux环境下初始化Java开发环境-Ubuntu16-0"><a href="#在Linux环境下初始化Java开发环境-Ubuntu16-0" class="headerlink" title="在Linux环境下初始化Java开发环境(Ubuntu16.0)"></a>在Linux环境下初始化Java开发环境(Ubuntu16.0)</h1><h2 id="一、安装-JDK"><a href="#一、安装-JDK" class="headerlink" title="一、安装 JDK"></a>一、安装 JDK</h2><pre><code class="java">安装 OpenJdk ：
+sudo apt-get update     //更新软件包列表
+sudo apt-get install openjdk-8-jdk      //安装openjdk-8-jdk
+java -version       //查看 java 版本
 </code></pre>
 <p>安装完后的 jdk 和 jre 放在”/usr/lib/jvm/java-8…”</p>
 <h2 id="二、安装-Tomcat"><a href="#二、安装-Tomcat" class="headerlink" title="二、安装 Tomcat"></a>二、安装 Tomcat</h2><ol>
-<li>到官网下载最新的 tomcat：使用 wget 命令下载<pre class=" language-js"><code class="language-js"> http<span class="token punctuation">:</span><span class="token operator">/</span><span class="token operator">/</span>mirror<span class="token punctuation">.</span>bit<span class="token punctuation">.</span>edu<span class="token punctuation">.</span>cn<span class="token operator">/</span>apache<span class="token operator">/</span>tomcat<span class="token operator">/</span>tomcat<span class="token number">-8</span><span class="token operator">/</span>v8<span class="token number">.5</span><span class="token punctuation">.</span><span class="token number">31</span><span class="token operator">/</span>bin<span class="token operator">/</span>apache<span class="token operator">-</span>tomcat<span class="token number">-8.5</span><span class="token punctuation">.</span><span class="token number">31</span><span class="token punctuation">.</span>tar<span class="token punctuation">.</span>gz
+<li>到官网下载最新的 tomcat：使用 wget 命令下载<pre><code class="js"> http://mirror.bit.edu.cn/apache/tomcat/tomcat-8/v8.5.31/bin/apache-tomcat-8.5.31.tar.gz
 </code></pre>
 </li>
 <li>解压 tomcat：<ol>
@@ -404,24 +404,24 @@ java <span class="token operator">-</span>version       <span class="token comme
 </li>
 <li><p>配置 tomcat：</p>
 <ol>
-<li>将解压后的文件夹修改文件夹 apache-tomcat… 为 tomcat:<pre class=" language-js"><code class="language-js"> mv apache<span class="token operator">-</span>tomcat<span class="token operator">...</span> tomcat  <span class="token comment" spellcheck="true">//mv命令可以进行移动也可以进行文件名的修改</span>
+<li>将解压后的文件夹修改文件夹 apache-tomcat… 为 tomcat:<pre><code class="js"> mv apache-tomcat... tomcat  //mv命令可以进行移动也可以进行文件名的修改
 </code></pre>
 </li>
-<li>将 tomcat 目录 复制到指定目录：<pre class=" language-js"><code class="language-js"> sudo cp <span class="token operator">-</span>r tomcat <span class="token operator">/</span>opt
+<li>将 tomcat 目录 复制到指定目录：<pre><code class="js"> sudo cp -r tomcat /opt
 </code></pre>
 </li>
-<li>进入 tomcat 目录：<pre class=" language-js"><code class="language-js"> cd <span class="token operator">/</span>opt<span class="token operator">/</span>tomcat
+<li>进入 tomcat 目录：<pre><code class="js"> cd /opt/tomcat
 </code></pre>
 </li>
-<li>打开启动的脚本文件<pre class=" language-js"><code class="language-js"> sudo vi <span class="token punctuation">.</span><span class="token operator">/</span>bin<span class="token operator">/</span>startup<span class="token punctuation">.</span>sh
+<li>打开启动的脚本文件<pre><code class="js"> sudo vi ./bin/startup.sh
 </code></pre>
 </li>
 <li><p>添加 jdk 和 jre 变量</p>
-<pre class=" language-js"><code class="language-js"> JAVA_HOME<span class="token operator">=</span><span class="token operator">/</span>usr<span class="token operator">/</span>lib<span class="token operator">/</span>jvm<span class="token operator">/</span>java<span class="token number">-8</span><span class="token operator">-</span>openjdk<span class="token operator">-</span>amd64
- JRE_HOME<span class="token operator">=</span><span class="token operator">/</span>usr<span class="token operator">/</span>lib<span class="token operator">/</span>jvm<span class="token operator">/</span>java<span class="token number">-8</span><span class="token operator">-</span>openjdk<span class="token operator">-</span>amd64<span class="token operator">/</span>jre
- CLASS_PATH<span class="token operator">=</span><span class="token punctuation">.</span><span class="token punctuation">:</span>$JAVA_HOME<span class="token operator">/</span>lib<span class="token operator">/</span>dt<span class="token punctuation">.</span>jar<span class="token punctuation">:</span>$JAVA_HOME<span class="token operator">/</span>lib<span class="token operator">/</span>tools<span class="token punctuation">.</span>jar<span class="token punctuation">:</span>$JRE_HOME<span class="token operator">/</span>lib
- PATH<span class="token operator">=</span>$JAVA_HOME<span class="token operator">/</span>bin<span class="token punctuation">:</span>$JRE_HOME<span class="token operator">/</span>bin<span class="token punctuation">:</span>$PATH
- TOMCAT_HOME<span class="token operator">=</span><span class="token operator">/</span>opt<span class="token operator">/</span>apache<span class="token operator">-</span>tomcat<span class="token number">-8.5</span><span class="token punctuation">.</span><span class="token number">32</span>
+<pre><code class="js"> JAVA_HOME=/usr/lib/jvm/java-8-openjdk-amd64
+ JRE_HOME=/usr/lib/jvm/java-8-openjdk-amd64/jre
+ CLASS_PATH=.:$JAVA_HOME/lib/dt.jar:$JAVA_HOME/lib/tools.jar:$JRE_HOME/lib
+ PATH=$JAVA_HOME/bin:$JRE_HOME/bin:$PATH
+ TOMCAT_HOME=/opt/apache-tomcat-8.5.32
 </code></pre>
 <p> 注意：这里的目录以真实存在的为主</p>
 </li>
@@ -437,109 +437,109 @@ java <span class="token operator">-</span>version       <span class="token comme
 <h2 id="三、安装-Git"><a href="#三、安装-Git" class="headerlink" title="三、安装 Git"></a>三、安装 Git</h2><pre><code>sudo apt-get install git-core
 除安装之外，其他命令同 Windows 下。
 </code></pre><h2 id="四、安装-MySQL-服务"><a href="#四、安装-MySQL-服务" class="headerlink" title="四、安装 MySQL 服务"></a>四、安装 MySQL 服务</h2><ol>
-<li>安装 mysql<pre class=" language-shell"><code class="language-shell"> sudo apt-get install mysql-server
+<li>安装 mysql<pre><code class="shell"> sudo apt-get install mysql-server
  sudo apt install mysql-client
  sudo apt install libmysqlclient-dev
 </code></pre>
 </li>
 <li><p>测试是否安装成功</p>
-<pre class=" language-shell"><code class="language-shell"> sudo netstat -tap | grep mysql
+<pre><code class="shell"> sudo netstat -tap | grep mysql
 </code></pre>
 <p> 安装成功之后，显示下图：</p>
 <p> <img src="http://static.zybuluo.com/xiangwanpeng/p81fqgz0k1782qpwbrtnhmce/image_1b6gfob7m1u4f2i0av11afd92m9.png" alt="安装成功后显示的图片"></p>
 </li>
 <li><p>测试 进入 mysql 服务</p>
-<pre class=" language-shell"><code class="language-shell"> mysql -uroot -p
+<pre><code class="shell"> mysql -uroot -p
 </code></pre>
 </li>
 <li><p>设置 mysql 允许远程访问</p>
-<pre class=" language-shell"><code class="language-shell"> sudo vi /etc/mysql/mysql.conf.d/mysqld.cnf
+<pre><code class="shell"> sudo vi /etc/mysql/mysql.conf.d/mysqld.cnf
 </code></pre>
 <p> <img src="http://static.zybuluo.com/xiangwanpeng/sl82tvc6dyqod7j2cnw4qi5b/image_1b6ggmf7h1d6b17o11iha1j1nhtem.png" alt="shell图"></p>
 <pre><code> 将其中的 bind-address = 127.0.0.1 注释掉
  :wq 保存退出
 </code></pre></li>
-<li>进入 mysql 服务，执行授权命令：<pre class=" language-shell"><code class="language-shell"> grant all on *.* to root@'%' identified by '密码' with grant option;
+<li>进入 mysql 服务，执行授权命令：<pre><code class="shell"> grant all on *.* to root@&#39;%&#39; identified by &#39;密码&#39; with grant option;
  flush privileges;
 </code></pre>
 </li>
-<li>退出并重启 mysql 服务<pre class=" language-shell"><code class="language-shell"> service mysql restart
+<li>退出并重启 mysql 服务<pre><code class="shell"> service mysql restart
 </code></pre>
 </li>
 <li>远程连接测试</li>
 </ol>
 <h2 id="四-2、卸载-MySQL-服务"><a href="#四-2、卸载-MySQL-服务" class="headerlink" title="四-2、卸载 MySQL 服务"></a>四-2、卸载 MySQL 服务</h2><ol>
-<li>查看mysql安装了哪些依赖<pre class=" language-js"><code class="language-js"> dpkg <span class="token operator">--</span>list <span class="token operator">|</span> grep mysql
+<li>查看mysql安装了哪些依赖<pre><code class="js"> dpkg --list | grep mysql
 </code></pre>
 </li>
-<li>卸载 mysql-common 包<pre class=" language-js"><code class="language-js"> sudo apt<span class="token operator">-</span><span class="token keyword">get</span> remove mysql<span class="token operator">-</span>common
+<li>卸载 mysql-common 包<pre><code class="js"> sudo apt-get remove mysql-common
 </code></pre>
 </li>
-<li>具体看版本<pre class=" language-js"><code class="language-js"> sudo apt<span class="token operator">-</span><span class="token keyword">get</span> autoremove <span class="token operator">--</span>purge mysql<span class="token operator">-</span>server<span class="token number">-5.0</span>
+<li>具体看版本<pre><code class="js"> sudo apt-get autoremove --purge mysql-server-5.0
 </code></pre>
 </li>
 <li>再次查看 ，同 1</li>
-<li>清除残留数据：<pre class=" language-js"><code class="language-js"> dpkg <span class="token operator">-</span>l <span class="token operator">|</span>grep <span class="token operator">^</span>rc<span class="token operator">|</span>awk <span class="token string">'{print $2}'</span> <span class="token operator">|</span>sudo xargs dpkg <span class="token operator">-</span>P
+<li>清除残留数据：<pre><code class="js"> dpkg -l |grep ^rc|awk &#39;{print $2}&#39; |sudo xargs dpkg -P
 </code></pre>
 </li>
 </ol>
 <h2 id="五、安装-MongoDB"><a href="#五、安装-MongoDB" class="headerlink" title="五、安装 MongoDB"></a>五、安装 MongoDB</h2><h3 id="1-安装-MongoDB"><a href="#1-安装-MongoDB" class="headerlink" title="1. 安装 MongoDB"></a>1. 安装 MongoDB</h3><ol>
-<li>导入软件源的公钥<pre class=" language-js"><code class="language-js"> sudo apt<span class="token operator">-</span>key adv <span class="token operator">--</span>keyserver hkp<span class="token punctuation">:</span><span class="token operator">/</span><span class="token operator">/</span>keyserver<span class="token punctuation">.</span>ubuntu<span class="token punctuation">.</span>com<span class="token punctuation">:</span><span class="token number">80</span> <span class="token operator">--</span>recv EA312927
+<li>导入软件源的公钥<pre><code class="js"> sudo apt-key adv --keyserver hkp://keyserver.ubuntu.com:80 --recv EA312927
 </code></pre>
 </li>
-<li>为 mongodb 创建软件源 list 文件<pre class=" language-js"><code class="language-js"> echo <span class="token string">"deb http://repo.mongodb.org/apt/ubuntu xenial/mongodb-org/3.2 multiverse"</span> <span class="token operator">|</span> sudo tee <span class="token operator">/</span>etc<span class="token operator">/</span>apt<span class="token operator">/</span>sources<span class="token punctuation">.</span>list<span class="token punctuation">.</span>d<span class="token operator">/</span>mongodb<span class="token operator">-</span>org<span class="token number">-3.2</span><span class="token punctuation">.</span>list
+<li>为 mongodb 创建软件源 list 文件<pre><code class="js"> echo &quot;deb http://repo.mongodb.org/apt/ubuntu xenial/mongodb-org/3.2 multiverse&quot; | sudo tee /etc/apt/sources.list.d/mongodb-org-3.2.list
 </code></pre>
 </li>
-<li>更新本地包数据库<pre class=" language-js"><code class="language-js"> sudo apt<span class="token operator">-</span><span class="token keyword">get</span> update
+<li>更新本地包数据库<pre><code class="js"> sudo apt-get update
 </code></pre>
 </li>
-<li>安装 MongoDB 包<pre class=" language-js"><code class="language-js"> sudo apt<span class="token operator">-</span><span class="token keyword">get</span> install <span class="token operator">-</span>y mongodb<span class="token operator">-</span>org
+<li>安装 MongoDB 包<pre><code class="js"> sudo apt-get install -y mongodb-org
 </code></pre>
 </li>
 <li><p>配置启动文件</p>
 <ol>
 <li>打开或者创建 <code>/lib/systemd/system/mongod.service</code></li>
 <li><p>加入以下配置：</p>
-<pre class=" language-js"><code class="language-js"><span class="token punctuation">[</span>Unit<span class="token punctuation">]</span>
-Description<span class="token operator">=</span>High<span class="token operator">-</span>performance<span class="token punctuation">,</span> schema<span class="token operator">-</span>free document<span class="token operator">-</span>oriented database
-After<span class="token operator">=</span>network<span class="token punctuation">.</span>target
-Documentation<span class="token operator">=</span>https<span class="token punctuation">:</span><span class="token operator">/</span><span class="token operator">/</span>docs<span class="token punctuation">.</span>mongodb<span class="token punctuation">.</span>org<span class="token operator">/</span>manual
+<pre><code class="js">[Unit]
+Description=High-performance, schema-free document-oriented database
+After=network.target
+Documentation=https://docs.mongodb.org/manual
 
-<span class="token punctuation">[</span>Service<span class="token punctuation">]</span>
-User<span class="token operator">=</span>mongodb
-Group<span class="token operator">=</span>mongodb
-ExecStart<span class="token operator">=</span><span class="token operator">/</span>usr<span class="token operator">/</span>bin<span class="token operator">/</span>mongod <span class="token operator">--</span>quiet <span class="token operator">--</span>config <span class="token operator">/</span>etc<span class="token operator">/</span>mongod<span class="token punctuation">.</span>conf
+[Service]
+User=mongodb
+Group=mongodb
+ExecStart=/usr/bin/mongod --quiet --config /etc/mongod.conf
 
-<span class="token punctuation">[</span>Install<span class="token punctuation">]</span>
-WantedBy<span class="token operator">=</span>multi<span class="token operator">-</span>user<span class="token punctuation">.</span>target
+[Install]
+WantedBy=multi-user.target
 </code></pre>
 </li>
 </ol>
 </li>
-<li>启动停止<pre class=" language-js"><code class="language-js"> sudo service mongod start
+<li>启动停止<pre><code class="js"> sudo service mongod start
  sudo service mongod stop
  sudo service mongod restart
 </code></pre>
 </li>
-<li>卸载mongodb<pre class=" language-js"><code class="language-js"> sudo service mongod stop        <span class="token comment" spellcheck="true">// 停止mongodb</span>
- sudo apt<span class="token operator">-</span><span class="token keyword">get</span> purge mongodb<span class="token operator">-</span>org<span class="token operator">*</span> <span class="token comment" spellcheck="true">// 卸载软件</span>
- sudo rm <span class="token operator">-</span>r <span class="token operator">/</span><span class="token keyword">var</span><span class="token operator">/</span>log<span class="token operator">/</span>mongodb     <span class="token comment" spellcheck="true">// 删除日志文件和数据库</span>
- sudo rm <span class="token operator">-</span>r <span class="token operator">/</span><span class="token keyword">var</span><span class="token operator">/</span>lib<span class="token operator">/</span>mongodb
+<li>卸载mongodb<pre><code class="js"> sudo service mongod stop        // 停止mongodb
+ sudo apt-get purge mongodb-org* // 卸载软件
+ sudo rm -r /var/log/mongodb     // 删除日志文件和数据库
+ sudo rm -r /var/lib/mongodb
 </code></pre>
 </li>
 </ol>
 <h3 id="3-配置-MongoDB"><a href="#3-配置-MongoDB" class="headerlink" title="3. 配置 MongoDB"></a>3. 配置 MongoDB</h3><ol>
-<li>进入 MongoDB<pre class=" language-js"><code class="language-js"> mongo
+<li>进入 MongoDB<pre><code class="js"> mongo
 </code></pre>
 </li>
-<li>切换到admin数据库<pre class=" language-js"><code class="language-js"> use admin
+<li>切换到admin数据库<pre><code class="js"> use admin
 </code></pre>
 </li>
-<li>创建一个管理员用户<pre class=" language-js"><code class="language-js"> db<span class="token punctuation">.</span><span class="token function">createUser</span><span class="token punctuation">(</span><span class="token punctuation">{</span>user<span class="token punctuation">:</span><span class="token string">'admin'</span><span class="token punctuation">,</span>pwd<span class="token punctuation">:</span><span class="token string">'123456'</span><span class="token punctuation">,</span>roles<span class="token punctuation">:</span><span class="token punctuation">[</span><span class="token punctuation">{</span>role<span class="token punctuation">:</span><span class="token string">'userAdminAnyDatabase'</span><span class="token punctuation">,</span>db<span class="token punctuation">:</span><span class="token string">'admin'</span><span class="token punctuation">}</span><span class="token punctuation">]</span><span class="token punctuation">}</span><span class="token punctuation">)</span>
+<li>创建一个管理员用户<pre><code class="js"> db.createUser({user:&#39;admin&#39;,pwd:&#39;123456&#39;,roles:[{role:&#39;userAdminAnyDatabase&#39;,db:&#39;admin&#39;}]})
 </code></pre>
 </li>
-<li>打开登录认证<pre class=" language-js"><code class="language-js"> security<span class="token punctuation">:</span>
-     authorization<span class="token punctuation">:</span>enabled
+<li>打开登录认证<pre><code class="js"> security:
+     authorization:enabled
 </code></pre>
  启用登录后，需要使用 db.auth(‘admin’,’123456’)认证后，才能操作</li>
 <li><p>启用远程连接</p>
@@ -610,8 +610,8 @@ WantedBy<span class="token operator">=</span>multi<span class="token operator">-
         <div class="post-nav">
           <div class="post-nav-next post-nav-item">
             
-              <a href="/2018/09/08/Linux/Ubuntu搭建SS服务器/" rel="next" title="Ubuntu搭建SS服务器">
-                <i class="fa fa-chevron-left"></i> Ubuntu搭建SS服务器
+              <a href="/2018/09/08/Linux/Linux下后台运行Jar/" rel="next" title="Linux后台部署Jar">
+                <i class="fa fa-chevron-left"></i> Linux后台部署Jar
               </a>
             
           </div>
@@ -703,7 +703,7 @@ WantedBy<span class="token operator">=</span>multi<span class="token operator">-
               
                 <a href="/archives">
               
-                  <span class="site-state-item-count">224</span>
+                  <span class="site-state-item-count">237</span>
                   <span class="site-state-item-name">日志</span>
                 </a>
               </div>
@@ -725,7 +725,7 @@ WantedBy<span class="token operator">=</span>multi<span class="token operator">-
               
               <div class="site-state-item site-state-tags">
                 <a href="/tags/index.html">
-                  <span class="site-state-item-count">21</span>
+                  <span class="site-state-item-count">22</span>
                   <span class="site-state-item-name">标签</span>
                 </a>
               </div>

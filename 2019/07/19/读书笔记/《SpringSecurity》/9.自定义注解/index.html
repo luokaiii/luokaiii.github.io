@@ -388,35 +388,35 @@
 <h2 id="一、-WithMockUser-存在的问题"><a href="#一、-WithMockUser-存在的问题" class="headerlink" title="一、@WithMockUser 存在的问题"></a>一、@WithMockUser 存在的问题</h2><p>大部分情况下，我们使用都不是 UserDetails 对象，而是 UserDetails 的自定义实现。</p>
 <p>且 @WithUserDetails 注解还需要查询数据库，并且要求用户存在。</p>
 <h2 id="二、解决方案"><a href="#二、解决方案" class="headerlink" title="二、解决方案"></a>二、解决方案</h2><p>我们可以通过模仿 @WithMockUser 注解，创建自己的 @WithMockSutomUser注解。并通过实现 WithSecurityContextFactory 来使用自己的注解。</p>
-<h3 id="1-WithMockSutomUser"><a href="#1-WithMockSutomUser" class="headerlink" title="1. @WithMockSutomUser"></a>1. @WithMockSutomUser</h3><pre class=" language-java"><code class="language-java"><span class="token annotation punctuation">@Retention</span><span class="token punctuation">(</span>RetentionPolicy<span class="token punctuation">.</span>RUNTIME<span class="token punctuation">)</span>
-<span class="token annotation punctuation">@WithSecurityContext</span><span class="token punctuation">(</span>factory <span class="token operator">=</span> WithMockCustomUserSecurityContextFactory<span class="token punctuation">.</span><span class="token keyword">class</span><span class="token punctuation">)</span>
-<span class="token keyword">public</span> @<span class="token keyword">interface</span> <span class="token class-name">WithMockCustomUser</span> <span class="token punctuation">{</span>
+<h3 id="1-WithMockSutomUser"><a href="#1-WithMockSutomUser" class="headerlink" title="1. @WithMockSutomUser"></a>1. @WithMockSutomUser</h3><pre><code class="java">@Retention(RetentionPolicy.RUNTIME)
+@WithSecurityContext(factory = WithMockCustomUserSecurityContextFactory.class)
+public @interface WithMockCustomUser {
 
-    String <span class="token function">username</span><span class="token punctuation">(</span><span class="token punctuation">)</span> <span class="token keyword">default</span> <span class="token string">"rob"</span><span class="token punctuation">;</span>
+    String username() default &quot;rob&quot;;
 
-    String <span class="token function">name</span><span class="token punctuation">(</span><span class="token punctuation">)</span> <span class="token keyword">default</span> <span class="token string">"Rob Winch"</span><span class="token punctuation">;</span>
-<span class="token punctuation">}</span>
+    String name() default &quot;Rob Winch&quot;;
+}
 </code></pre>
-<h3 id="2-WithMockCustomUserSecurityContextFactory"><a href="#2-WithMockCustomUserSecurityContextFactory" class="headerlink" title="2. WithMockCustomUserSecurityContextFactory"></a>2. WithMockCustomUserSecurityContextFactory</h3><pre class=" language-java"><code class="language-java"><span class="token keyword">final</span> <span class="token keyword">class</span> <span class="token class-name">WithUserDetailsSecurityContextFactory</span>
-    <span class="token keyword">implements</span> <span class="token class-name">WithSecurityContextFactory</span><span class="token operator">&lt;</span>WithUserDetails<span class="token operator">></span> <span class="token punctuation">{</span>
+<h3 id="2-WithMockCustomUserSecurityContextFactory"><a href="#2-WithMockCustomUserSecurityContextFactory" class="headerlink" title="2. WithMockCustomUserSecurityContextFactory"></a>2. WithMockCustomUserSecurityContextFactory</h3><pre><code class="java">final class WithUserDetailsSecurityContextFactory
+    implements WithSecurityContextFactory&lt;WithUserDetails&gt; {
 
-    <span class="token keyword">private</span> UserDetailsService userDetailsService<span class="token punctuation">;</span>
+    private UserDetailsService userDetailsService;
 
-    <span class="token annotation punctuation">@Autowired</span>
-    <span class="token keyword">public</span> <span class="token function">WithUserDetailsSecurityContextFactory</span><span class="token punctuation">(</span>UserDetailsService userDetailsService<span class="token punctuation">)</span> <span class="token punctuation">{</span>
-        <span class="token keyword">this</span><span class="token punctuation">.</span>userDetailsService <span class="token operator">=</span> userDetailsService<span class="token punctuation">;</span>
-    <span class="token punctuation">}</span>
+    @Autowired
+    public WithUserDetailsSecurityContextFactory(UserDetailsService userDetailsService) {
+        this.userDetailsService = userDetailsService;
+    }
 
-    <span class="token keyword">public</span> SecurityContext <span class="token function">createSecurityContext</span><span class="token punctuation">(</span>WithUserDetails withUser<span class="token punctuation">)</span> <span class="token punctuation">{</span>
-        String username <span class="token operator">=</span> withUser<span class="token punctuation">.</span><span class="token function">value</span><span class="token punctuation">(</span><span class="token punctuation">)</span><span class="token punctuation">;</span>
-        Assert<span class="token punctuation">.</span><span class="token function">hasLength</span><span class="token punctuation">(</span>username<span class="token punctuation">,</span> <span class="token string">"value() must be non-empty String"</span><span class="token punctuation">)</span><span class="token punctuation">;</span>
-        UserDetails principal <span class="token operator">=</span> userDetailsService<span class="token punctuation">.</span><span class="token function">loadUserByUsername</span><span class="token punctuation">(</span>username<span class="token punctuation">)</span><span class="token punctuation">;</span>
-        Authentication authentication <span class="token operator">=</span> <span class="token keyword">new</span> <span class="token class-name">UsernamePasswordAuthenticationToken</span><span class="token punctuation">(</span>principal<span class="token punctuation">,</span> principal<span class="token punctuation">.</span><span class="token function">getPassword</span><span class="token punctuation">(</span><span class="token punctuation">)</span><span class="token punctuation">,</span> principal<span class="token punctuation">.</span><span class="token function">getAuthorities</span><span class="token punctuation">(</span><span class="token punctuation">)</span><span class="token punctuation">)</span><span class="token punctuation">;</span>
-        SecurityContext context <span class="token operator">=</span> SecurityContextHolder<span class="token punctuation">.</span><span class="token function">createEmptyContext</span><span class="token punctuation">(</span><span class="token punctuation">)</span><span class="token punctuation">;</span>
-        context<span class="token punctuation">.</span><span class="token function">setAuthentication</span><span class="token punctuation">(</span>authentication<span class="token punctuation">)</span><span class="token punctuation">;</span>
-        <span class="token keyword">return</span> context<span class="token punctuation">;</span>
-    <span class="token punctuation">}</span>
-<span class="token punctuation">}</span>
+    public SecurityContext createSecurityContext(WithUserDetails withUser) {
+        String username = withUser.value();
+        Assert.hasLength(username, &quot;value() must be non-empty String&quot;);
+        UserDetails principal = userDetailsService.loadUserByUsername(username);
+        Authentication authentication = new UsernamePasswordAuthenticationToken(principal, principal.getPassword(), principal.getAuthorities());
+        SecurityContext context = SecurityContextHolder.createEmptyContext();
+        context.setAuthentication(authentication);
+        return context;
+    }
+}
 </code></pre>
 <blockquote>
 <p>现在，我们使用新的注解来测试类或方法，Spring Security 的 WithSecurityContextTestExecutionListener 将确保我们的 SecurityContext 得到了适当的填充。</p>
@@ -544,7 +544,7 @@
               
                 <a href="/archives">
               
-                  <span class="site-state-item-count">224</span>
+                  <span class="site-state-item-count">237</span>
                   <span class="site-state-item-name">日志</span>
                 </a>
               </div>
@@ -566,7 +566,7 @@
               
               <div class="site-state-item site-state-tags">
                 <a href="/tags/index.html">
-                  <span class="site-state-item-count">21</span>
+                  <span class="site-state-item-count">22</span>
                   <span class="site-state-item-name">标签</span>
                 </a>
               </div>

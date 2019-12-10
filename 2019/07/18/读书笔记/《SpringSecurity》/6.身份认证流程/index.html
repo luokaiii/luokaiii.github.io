@@ -396,50 +396,50 @@
 <li>访问受保护资源时，通过上下文信息验证权限</li>
 </ol>
 <p>以下示例来自于 <code>Spring Security Reference</code>，演示了一个简单的迷你认证环境。</p>
-<h3 id="模拟身份认证"><a href="#模拟身份认证" class="headerlink" title="模拟身份认证"></a>模拟身份认证</h3><pre class=" language-java"><code class="language-java"><span class="token keyword">public</span> <span class="token keyword">class</span> <span class="token class-name">AuthenticationExample</span> <span class="token punctuation">{</span>
-<span class="token keyword">private</span> <span class="token keyword">static</span> AuthenticationManager am <span class="token operator">=</span> <span class="token keyword">new</span> <span class="token class-name">SampleAuthenticationManager</span><span class="token punctuation">(</span><span class="token punctuation">)</span><span class="token punctuation">;</span>
+<h3 id="模拟身份认证"><a href="#模拟身份认证" class="headerlink" title="模拟身份认证"></a>模拟身份认证</h3><pre><code class="java">public class AuthenticationExample {
+private static AuthenticationManager am = new SampleAuthenticationManager();
 
-<span class="token keyword">public</span> <span class="token keyword">static</span> <span class="token keyword">void</span> <span class="token function">main</span><span class="token punctuation">(</span>String<span class="token punctuation">[</span><span class="token punctuation">]</span> args<span class="token punctuation">)</span> <span class="token keyword">throws</span> Exception <span class="token punctuation">{</span>
-    BufferedReader in <span class="token operator">=</span> <span class="token keyword">new</span> <span class="token class-name">BufferedReader</span><span class="token punctuation">(</span><span class="token keyword">new</span> <span class="token class-name">InputStreamReader</span><span class="token punctuation">(</span>System<span class="token punctuation">.</span>in<span class="token punctuation">)</span><span class="token punctuation">)</span><span class="token punctuation">;</span>
+public static void main(String[] args) throws Exception {
+    BufferedReader in = new BufferedReader(new InputStreamReader(System.in));
 
-    <span class="token keyword">while</span><span class="token punctuation">(</span><span class="token boolean">true</span><span class="token punctuation">)</span> <span class="token punctuation">{</span>
-        <span class="token comment" spellcheck="true">// 1. 接收用户名与密码</span>
-    System<span class="token punctuation">.</span>out<span class="token punctuation">.</span><span class="token function">println</span><span class="token punctuation">(</span><span class="token string">"Please enter your username:"</span><span class="token punctuation">)</span><span class="token punctuation">;</span>
-    String name <span class="token operator">=</span> in<span class="token punctuation">.</span><span class="token function">readLine</span><span class="token punctuation">(</span><span class="token punctuation">)</span><span class="token punctuation">;</span>
-    System<span class="token punctuation">.</span>out<span class="token punctuation">.</span><span class="token function">println</span><span class="token punctuation">(</span><span class="token string">"Please enter your password:"</span><span class="token punctuation">)</span><span class="token punctuation">;</span>
-    String password <span class="token operator">=</span> in<span class="token punctuation">.</span><span class="token function">readLine</span><span class="token punctuation">(</span><span class="token punctuation">)</span><span class="token punctuation">;</span>
-    <span class="token keyword">try</span> <span class="token punctuation">{</span>
-        <span class="token comment" spellcheck="true">// 2. 生成 token</span>
-        Authentication request <span class="token operator">=</span> <span class="token keyword">new</span> <span class="token class-name">UsernamePasswordAuthenticationToken</span><span class="token punctuation">(</span>name<span class="token punctuation">,</span> password<span class="token punctuation">)</span><span class="token punctuation">;</span>
-        <span class="token comment" spellcheck="true">// 3. 验证 token 是否正确</span>
-        Authentication result <span class="token operator">=</span> am<span class="token punctuation">.</span><span class="token function">authenticate</span><span class="token punctuation">(</span>request<span class="token punctuation">)</span><span class="token punctuation">;</span>
-        <span class="token comment" spellcheck="true">// 4. 将认证主题注入上下文</span>
-        SecurityContextHolder<span class="token punctuation">.</span><span class="token function">getContext</span><span class="token punctuation">(</span><span class="token punctuation">)</span><span class="token punctuation">.</span><span class="token function">setAuthentication</span><span class="token punctuation">(</span>result<span class="token punctuation">)</span><span class="token punctuation">;</span>
-        <span class="token keyword">break</span><span class="token punctuation">;</span>
-    <span class="token punctuation">}</span> <span class="token keyword">catch</span><span class="token punctuation">(</span>AuthenticationException e<span class="token punctuation">)</span> <span class="token punctuation">{</span>
-        System<span class="token punctuation">.</span>out<span class="token punctuation">.</span><span class="token function">println</span><span class="token punctuation">(</span><span class="token string">"Authentication failed: "</span> <span class="token operator">+</span> e<span class="token punctuation">.</span><span class="token function">getMessage</span><span class="token punctuation">(</span><span class="token punctuation">)</span><span class="token punctuation">)</span><span class="token punctuation">;</span>
-    <span class="token punctuation">}</span>
-    <span class="token punctuation">}</span>
-    System<span class="token punctuation">.</span>out<span class="token punctuation">.</span><span class="token function">println</span><span class="token punctuation">(</span><span class="token string">"Successfully authenticated. Security context contains: "</span> <span class="token operator">+</span>
-            SecurityContextHolder<span class="token punctuation">.</span><span class="token function">getContext</span><span class="token punctuation">(</span><span class="token punctuation">)</span><span class="token punctuation">.</span><span class="token function">getAuthentication</span><span class="token punctuation">(</span><span class="token punctuation">)</span><span class="token punctuation">)</span><span class="token punctuation">;</span>
-<span class="token punctuation">}</span>
-<span class="token punctuation">}</span>
+    while(true) {
+        // 1. 接收用户名与密码
+    System.out.println(&quot;Please enter your username:&quot;);
+    String name = in.readLine();
+    System.out.println(&quot;Please enter your password:&quot;);
+    String password = in.readLine();
+    try {
+        // 2. 生成 token
+        Authentication request = new UsernamePasswordAuthenticationToken(name, password);
+        // 3. 验证 token 是否正确
+        Authentication result = am.authenticate(request);
+        // 4. 将认证主题注入上下文
+        SecurityContextHolder.getContext().setAuthentication(result);
+        break;
+    } catch(AuthenticationException e) {
+        System.out.println(&quot;Authentication failed: &quot; + e.getMessage());
+    }
+    }
+    System.out.println(&quot;Successfully authenticated. Security context contains: &quot; +
+            SecurityContextHolder.getContext().getAuthentication());
+}
+}
 
-<span class="token keyword">class</span> <span class="token class-name">SampleAuthenticationManager</span> <span class="token keyword">implements</span> <span class="token class-name">AuthenticationManager</span> <span class="token punctuation">{</span>
-<span class="token keyword">static</span> <span class="token keyword">final</span> List<span class="token operator">&lt;</span>GrantedAuthority<span class="token operator">></span> AUTHORITIES <span class="token operator">=</span> <span class="token keyword">new</span> <span class="token class-name">ArrayList</span><span class="token operator">&lt;</span>GrantedAuthority<span class="token operator">></span><span class="token punctuation">(</span><span class="token punctuation">)</span><span class="token punctuation">;</span>
+class SampleAuthenticationManager implements AuthenticationManager {
+static final List&lt;GrantedAuthority&gt; AUTHORITIES = new ArrayList&lt;GrantedAuthority&gt;();
 
-<span class="token keyword">static</span> <span class="token punctuation">{</span>
-    AUTHORITIES<span class="token punctuation">.</span><span class="token function">add</span><span class="token punctuation">(</span><span class="token keyword">new</span> <span class="token class-name">SimpleGrantedAuthority</span><span class="token punctuation">(</span><span class="token string">"ROLE_USER"</span><span class="token punctuation">)</span><span class="token punctuation">)</span><span class="token punctuation">;</span>
-<span class="token punctuation">}</span>
+static {
+    AUTHORITIES.add(new SimpleGrantedAuthority(&quot;ROLE_USER&quot;));
+}
 
-<span class="token keyword">public</span> Authentication <span class="token function">authenticate</span><span class="token punctuation">(</span>Authentication auth<span class="token punctuation">)</span> <span class="token keyword">throws</span> AuthenticationException <span class="token punctuation">{</span>
-    <span class="token keyword">if</span> <span class="token punctuation">(</span>auth<span class="token punctuation">.</span><span class="token function">getName</span><span class="token punctuation">(</span><span class="token punctuation">)</span><span class="token punctuation">.</span><span class="token function">equals</span><span class="token punctuation">(</span>auth<span class="token punctuation">.</span><span class="token function">getCredentials</span><span class="token punctuation">(</span><span class="token punctuation">)</span><span class="token punctuation">)</span><span class="token punctuation">)</span> <span class="token punctuation">{</span>
-    <span class="token keyword">return</span> <span class="token keyword">new</span> <span class="token class-name">UsernamePasswordAuthenticationToken</span><span class="token punctuation">(</span>auth<span class="token punctuation">.</span><span class="token function">getName</span><span class="token punctuation">(</span><span class="token punctuation">)</span><span class="token punctuation">,</span>
-        auth<span class="token punctuation">.</span><span class="token function">getCredentials</span><span class="token punctuation">(</span><span class="token punctuation">)</span><span class="token punctuation">,</span> AUTHORITIES<span class="token punctuation">)</span><span class="token punctuation">;</span>
-    <span class="token punctuation">}</span>
-    <span class="token keyword">throw</span> <span class="token keyword">new</span> <span class="token class-name">BadCredentialsException</span><span class="token punctuation">(</span><span class="token string">"Bad Credentials"</span><span class="token punctuation">)</span><span class="token punctuation">;</span>
-<span class="token punctuation">}</span>
-<span class="token punctuation">}</span>
+public Authentication authenticate(Authentication auth) throws AuthenticationException {
+    if (auth.getName().equals(auth.getCredentials())) {
+    return new UsernamePasswordAuthenticationToken(auth.getName(),
+        auth.getCredentials(), AUTHORITIES);
+    }
+    throw new BadCredentialsException(&quot;Bad Credentials&quot;);
+}
+}
 </code></pre>
 <p>通常情况下，这个流程是由 Spring Security 内部执行的，但是这大致显示了 Spring Security 通过 username、password 构建一个 SecurityContext 的过程。</p>
 <h3 id="直接设置-SecurityContextHolder"><a href="#直接设置-SecurityContextHolder" class="headerlink" title="直接设置 SecurityContextHolder"></a>直接设置 SecurityContextHolder</h3><p>如果你需要在一个已经拥有身份认证的系统（如自定义了过滤器或MVC控制器、拥有自己的认证系统等）中，接入 Spring Security 环境。</p>
@@ -583,7 +583,7 @@
               
                 <a href="/archives">
               
-                  <span class="site-state-item-count">224</span>
+                  <span class="site-state-item-count">237</span>
                   <span class="site-state-item-name">日志</span>
                 </a>
               </div>
@@ -605,7 +605,7 @@
               
               <div class="site-state-item site-state-tags">
                 <a href="/tags/index.html">
-                  <span class="site-state-item-count">21</span>
+                  <span class="site-state-item-count">22</span>
                   <span class="site-state-item-name">标签</span>
                 </a>
               </div>

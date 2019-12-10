@@ -1,0 +1,918 @@
+<!DOCTYPE html>
+
+
+
+  
+
+
+<html class="theme-next pisces use-motion" lang="zh-Hans">
+<head>
+  <meta charset="UTF-8"/>
+<meta http-equiv="X-UA-Compatible" content="IE=edge" />
+<meta name="viewport" content="width=device-width, initial-scale=1, maximum-scale=1"/>
+<meta name="theme-color" content="#222">
+
+
+
+
+
+
+
+
+
+<meta http-equiv="Cache-Control" content="no-transform" />
+<meta http-equiv="Cache-Control" content="no-siteapp" />
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+  
+  
+  <link href="/lib/fancybox/source/jquery.fancybox.css?v=2.1.5" rel="stylesheet" type="text/css" />
+
+
+
+
+
+
+
+<link href="/lib/font-awesome/css/font-awesome.min.css?v=4.6.2" rel="stylesheet" type="text/css" />
+
+<link href="/css/main.css?v=5.1.4" rel="stylesheet" type="text/css" />
+
+
+  <link rel="apple-touch-icon" sizes="180x180" href="/images/apple-touch-icon-next.png?v=5.1.4">
+
+
+  <link rel="icon" type="image/png" sizes="32x32" href="/images/favicon-32x32-next.png?v=5.1.4">
+
+
+  <link rel="icon" type="image/png" sizes="16x16" href="/images/favicon-16x16-next.png?v=5.1.4">
+
+
+  <link rel="mask-icon" href="/images/logo.svg?v=5.1.4" color="#222">
+
+
+
+
+
+  <meta name="keywords" content="RabbitMQ," />
+
+
+
+
+
+  <link rel="alternate" href="/atom.xml" title="罗凯的博客" type="application/atom+xml" />
+
+
+
+
+
+
+<meta name="description" content="三、Publish/Subscribe 发布订阅模式Publish/Subscribe：同时向多个消费者发送消息 上一章中介绍的工作队列，是以每一个任务都只有一个工作者接收并消费为前提的。 发布订阅模式与普通的 工作队列 最大的区别在于：  工作队列，以每个消息只能够被一个消费者消费为前提 发布订阅，则能将单个消息传递给多个订阅者 本章以一个简单的日志系统为例，一个程序发出日志消息，另一个程序接收">
+<meta name="keywords" content="RabbitMQ">
+<meta property="og:type" content="article">
+<meta property="og:title" content="RabbitMQ发布订阅模式、交换器类型">
+<meta property="og:url" content="http://luokaiii.github.io/2019/12/09/MessageQueue/RocketMQ/4.PublishSubscribe/index.html">
+<meta property="og:site_name" content="罗凯的博客">
+<meta property="og:description" content="三、Publish/Subscribe 发布订阅模式Publish/Subscribe：同时向多个消费者发送消息 上一章中介绍的工作队列，是以每一个任务都只有一个工作者接收并消费为前提的。 发布订阅模式与普通的 工作队列 最大的区别在于：  工作队列，以每个消息只能够被一个消费者消费为前提 发布订阅，则能将单个消息传递给多个订阅者 本章以一个简单的日志系统为例，一个程序发出日志消息，另一个程序接收">
+<meta property="og:locale" content="zh-Hans">
+<meta property="og:image" content="https://i.loli.net/2019/12/09/UFPm3paNlkVCQHM.png">
+<meta property="og:image" content="https://i.loli.net/2019/12/09/FSkrX8oV26CuGpv.png">
+<meta property="og:image" content="https://i.loli.net/2019/12/09/kEMZ4TDyw37zSYL.png">
+<meta property="og:updated_time" content="2019-12-09T10:07:14.605Z">
+<meta name="twitter:card" content="summary">
+<meta name="twitter:title" content="RabbitMQ发布订阅模式、交换器类型">
+<meta name="twitter:description" content="三、Publish/Subscribe 发布订阅模式Publish/Subscribe：同时向多个消费者发送消息 上一章中介绍的工作队列，是以每一个任务都只有一个工作者接收并消费为前提的。 发布订阅模式与普通的 工作队列 最大的区别在于：  工作队列，以每个消息只能够被一个消费者消费为前提 发布订阅，则能将单个消息传递给多个订阅者 本章以一个简单的日志系统为例，一个程序发出日志消息，另一个程序接收">
+<meta name="twitter:image" content="https://i.loli.net/2019/12/09/UFPm3paNlkVCQHM.png">
+
+
+
+<script type="text/javascript" id="hexo.configurations">
+  var NexT = window.NexT || {};
+  var CONFIG = {
+    root: '/',
+    scheme: 'Pisces',
+    version: '5.1.4',
+    sidebar: {"position":"right","display":"always","offset":12,"b2t":false,"scrollpercent":false,"onmobile":false},
+    fancybox: true,
+    tabs: true,
+    motion: {"enable":true,"async":false,"transition":{"post_block":"fadeIn","post_header":"slideDownIn","post_body":"slideDownIn","coll_header":"slideLeftIn","sidebar":"slideUpIn"}},
+    duoshuo: {
+      userId: '0',
+      author: '博主'
+    },
+    algolia: {
+      applicationID: '',
+      apiKey: '',
+      indexName: '',
+      hits: {"per_page":5},
+      labels: {"input_placeholder":"Search for Posts","hits_empty":"We didn't find any results for the search: ${query}","hits_stats":"${hits} results found in ${time} ms"}
+    }
+  };
+</script>
+
+
+
+  <link rel="canonical" href="http://luokaiii.github.io/2019/12/09/MessageQueue/RocketMQ/4.PublishSubscribe/"/>
+
+
+
+
+
+  <title>RabbitMQ发布订阅模式、交换器类型 | 罗凯的博客</title>
+  
+
+
+
+
+
+
+
+
+</head>
+
+<body itemscope itemtype="http://schema.org/WebPage" lang="zh-Hans">
+
+  
+  
+    
+  
+
+  <div class="container sidebar-position-right page-post-detail">
+    <div class="headband"></div>
+
+    <header id="header" class="header" itemscope itemtype="http://schema.org/WPHeader">
+      <div class="header-inner"><div class="site-brand-wrapper">
+  <div class="site-meta ">
+    
+
+    <div class="custom-logo-site-title">
+      <a href="/"  class="brand" rel="start">
+        <span class="logo-line-before"><i></i></span>
+        <span class="site-title">罗凯的博客</span>
+        <span class="logo-line-after"><i></i></span>
+      </a>
+    </div>
+      
+        <p class="site-subtitle">l u o k a i</p>
+      
+  </div>
+
+  <div class="site-nav-toggle">
+    <button>
+      <span class="btn-bar"></span>
+      <span class="btn-bar"></span>
+      <span class="btn-bar"></span>
+    </button>
+  </div>
+</div>
+
+<nav class="site-nav">
+  
+
+  
+    <ul id="menu" class="menu">
+      
+        
+        <li class="menu-item menu-item-home">
+          <a href="/" rel="section">
+            
+              <i class="menu-item-icon fa fa-fw fa-home"></i> <br />
+            
+            首页
+          </a>
+        </li>
+      
+        
+        <li class="menu-item menu-item-archives">
+          <a href="/archives" rel="section">
+            
+              <i class="menu-item-icon fa fa-fw fa-question-circle"></i> <br />
+            
+            归档
+          </a>
+        </li>
+      
+        
+        <li class="menu-item menu-item-about">
+          <a href="/about" rel="section">
+            
+              <i class="menu-item-icon fa fa-fw fa-question-circle"></i> <br />
+            
+            关于
+          </a>
+        </li>
+      
+        
+        <li class="menu-item menu-item-tags">
+          <a href="/tags" rel="section">
+            
+              <i class="menu-item-icon fa fa-fw fa-question-circle"></i> <br />
+            
+            标签
+          </a>
+        </li>
+      
+        
+        <li class="menu-item menu-item-categories">
+          <a href="/categories/" rel="section">
+            
+              <i class="menu-item-icon fa fa-fw fa-th"></i> <br />
+            
+            分类
+          </a>
+        </li>
+      
+        
+        <li class="menu-item menu-item-schedule">
+          <a href="/schedule" rel="section">
+            
+              <i class="menu-item-icon fa fa-fw fa-question-circle"></i> <br />
+            
+            日程表
+          </a>
+        </li>
+      
+        
+        <li class="menu-item menu-item-sitemap">
+          <a href="/sitemap.xml" rel="section">
+            
+              <i class="menu-item-icon fa fa-fw fa-sitemap"></i> <br />
+            
+            站点地图
+          </a>
+        </li>
+      
+        
+        <li class="menu-item menu-item-commonweal">
+          <a href="/404/" rel="section">
+            
+              <i class="menu-item-icon fa fa-fw fa-heartbeat"></i> <br />
+            
+            公益404
+          </a>
+        </li>
+      
+
+      
+    </ul>
+  
+
+  
+</nav>
+
+
+
+ </div>
+    </header>
+
+    <main id="main" class="main">
+      <div class="main-inner">
+        <div class="content-wrap">
+          <div id="content" class="content">
+            
+
+  <div id="posts" class="posts-expand">
+    
+
+  
+
+  
+  
+  
+
+  <article class="post post-type-normal" itemscope itemtype="http://schema.org/Article">
+  
+  
+  
+  <div class="post-block">
+    <link itemprop="mainEntityOfPage" href="http://luokaiii.github.io/2019/12/09/MessageQueue/RocketMQ/4.PublishSubscribe/">
+
+    <span hidden itemprop="author" itemscope itemtype="http://schema.org/Person">
+      <meta itemprop="name" content="koral">
+      <meta itemprop="description" content="">
+      <meta itemprop="image" content="https://upload-images.jianshu.io/upload_images/13603359-6aa0d85db5eaa03e.gif">
+    </span>
+
+    <span hidden itemprop="publisher" itemscope itemtype="http://schema.org/Organization">
+      <meta itemprop="name" content="罗凯的博客">
+    </span>
+
+    
+      <header class="post-header">
+
+        
+        
+          <h1 class="post-title" itemprop="name headline">RabbitMQ发布订阅模式、交换器类型</h1>
+        
+
+        <div class="post-meta">
+          <span class="post-time">
+            
+              <span class="post-meta-item-icon">
+                <i class="fa fa-calendar-o"></i>
+              </span>
+              
+                <span class="post-meta-item-text">发表于</span>
+              
+              <time title="创建于" itemprop="dateCreated datePublished" datetime="2019-12-09T16:00:00+08:00">
+                2019-12-09
+              </time>
+            
+
+            
+
+            
+          </span>
+
+          
+
+          
+            
+          
+
+          
+          
+
+          
+
+          
+
+          
+
+        </div>
+      </header>
+    
+
+    
+    
+    
+    <div class="post-body" itemprop="articleBody">
+
+      
+      
+
+      
+        <h1 id="三、Publish-Subscribe-发布订阅模式"><a href="#三、Publish-Subscribe-发布订阅模式" class="headerlink" title="三、Publish/Subscribe 发布订阅模式"></a>三、Publish/Subscribe 发布订阅模式</h1><p>Publish/Subscribe：同时向多个消费者发送消息</p>
+<p>上一章中介绍的工作队列，是以每一个任务都只有一个工作者接收并消费为前提的。</p>
+<p><strong>发布订阅模式</strong>与普通的 <strong>工作队列</strong> 最大的区别在于：</p>
+<ul>
+<li>工作队列，以每个消息只能够被一个消费者消费为前提</li>
+<li><p>发布订阅，则能将单个消息传递给多个订阅者</p>
+<p>本章以一个简单的日志系统为例，一个程序发出日志消息，另一个程序接收并打印这些消息。</p>
+</li>
+</ul>
+<p>在日志系统中，有两个接收程序用于接收消息，一个接收器将日志导出到磁盘，另一个接收器展示日志到屏幕上。</p>
+<blockquote>
+<p>本质上，已发布的日志消息将被广播到所有的接收者。</p>
+</blockquote>
+<p><img src="https://i.loli.net/2019/12/09/UFPm3paNlkVCQHM.png" alt="发布订阅模式"></p>
+<h2 id="一、Exchanges-交换器"><a href="#一、Exchanges-交换器" class="headerlink" title="一、Exchanges 交换器"></a>一、Exchanges 交换器</h2><p>在之前的模式中，<strong>生产者</strong>产生消息并发送到<strong>消息队列</strong>上，由<strong>消息队列</strong>将消息按照顺序分配给<strong>消费者</strong>们。</p>
+<p>而实际上，生产者在很多时候都不知道消息是否会被传递到任何队列。</p>
+<p>因此，生产者通过向 <strong>Exchange(交换器)</strong> 发送消息，并由它将消息推送到队列中。交换器必须确切地知道如何处理它接收到的消息，是否应该将它添加到特定队列中？是否应该将它附加到许多队列中？或者应该丢弃它。其规则由交换器类型定义。</p>
+<h3 id="1-1-可用的交换类型"><a href="#1-1-可用的交换类型" class="headerlink" title="1.1 可用的交换类型"></a>1.1 可用的交换类型</h3><ul>
+<li><strong>direct 直接交换器</strong><ul>
+<li>默认的 Exchange，<strong>完全根据 RoutingKey 来路由消息</strong></li>
+<li><img src="https://i.loli.net/2019/12/09/FSkrX8oV26CuGpv.png" alt="完全匹配RoutingKey"></li>
+<li>设置 Exchange 和 Queue 的 Binding 时需要指定 RoutingKey(一般为 QueueName)，发消息时也指定一样的 RoutingKey，消息就会被路由到对应的 Queue</li>
+<li>场景：如只将 Error 级别的日志写入磁盘的 Queue，可以使用指定的 RoutingKey 将写入磁盘文件的 Queue 绑定到 Direct Exchange 上</li>
+</ul>
+</li>
+<li><strong>topic 主题交换器</strong><ul>
+<li>与 Direct Exchange 类似，都是通过 RoutingKey 来路由消息</li>
+<li>区别在于 Topic Exchange 支持<strong>模糊匹配 RoutingKey</strong></li>
+<li><img src="https://i.loli.net/2019/12/09/kEMZ4TDyw37zSYL.png" alt="Topic Exchange"></li>
+<li>* 表示匹配一个单词，#表示匹配没有或多个单词</li>
+<li>场景：如根据日志级别和消息来源，分别记录日志：则可以将<strong>日志来源 [user.*]</strong> 的消息绑定到 Topic Exchange 上，<strong>日志级别 [*.info]</strong> 的消息绑定到另一个 Exchange 上</li>
+</ul>
+</li>
+<li><strong>headers 头文件交换器</strong><ul>
+<li>忽略 RoutingKey，而根据消息中的 Headers 和创建绑定关系时指定的 Arguments 来匹配路由</li>
+<li><strong>性能较差，且Direct Exchange 完全可以替代它</strong></li>
+</ul>
+</li>
+<li><strong>fanout 扇形交换器</strong><ul>
+<li><strong>忽略 RoutingKey 的设置</strong>，直接将 Message 广播到所有绑定的 Queue</li>
+<li>场景：日志系统，定义了两个 Queue 来存储消息，一个用于打印日志，一个用于写入磁盘日志文件。我们希望 Exchange 中的每一条消息都会被同时转发到两个 Queue 中</li>
+</ul>
+</li>
+</ul>
+<h3 id="1-2-声明交换器"><a href="#1-2-声明交换器" class="headerlink" title="1.2 声明交换器"></a>1.2 声明交换器</h3><p>以扇形交换器为例：</p>
+<pre><code class="java">// 参数分别为：交换器名称、交换器类型
+channel.exchangeDeclare(&quot;logs&quot;,BuiltinExchangeType.FANOUT);
+</code></pre>
+<blockquote>
+<p>当手动创建一个队列时，后台会自动将这个队列绑定到一个名称为<strong>空的 Direct Exchange</strong> 上，绑定 RoutingKey 与 队列名称相同。</p>
+</blockquote>
+<p><strong>生产者向交换器发送消息：</strong></p>
+<pre><code class="java">// 参数：
+// 1. 交换器的名称，空字符串表示缺省或无名交换器；如果存在，则使用 routingKey 指定的名称将消息路由到队列
+// 2. RoutingKey，可以是完整的队列名称，也可以带有匹配字符，且交换器为 fanout 类型时，会忽略该属性
+// 3. 消息持久化方式
+// 4. 消息主体
+channel.basicPublish(&quot;logs&quot;, &quot;hello&quot;, null, message.getBytes());
+</code></pre>
+<h2 id="二、临时队列"><a href="#二、临时队列" class="headerlink" title="二、临时队列"></a>二、临时队列</h2><h3 id="2-1-声明队列"><a href="#2-1-声明队列" class="headerlink" title="2.1 声明队列"></a>2.1 声明队列</h3><p>之前我们声明队列时，使用的是下面的方法：</p>
+<pre><code class="java">channel.queueDeclare(&quot;hello&quot;, true, false, false, null);
+</code></pre>
+<p>分别指定了队列的名称、是否持久化、是否独占、是否自动删除、以及其它构造参数。</p>
+<h3 id="2-2-临时队列"><a href="#2-2-临时队列" class="headerlink" title="2.2 临时队列"></a>2.2 临时队列</h3><p>但是对于日志系统来说，每当连接到 Rabbit 时，我们需要一个新的、空的队列；其次，当我们一旦断开消费者的连接后，队列应该被自动删除。</p>
+<p>则我们可以通过 <code>queueDeclare()</code> 方法，创建一个非持久的、独占的、自动删除的队列，并生成一个名称:</p>
+<pre><code class="java">// 返回的队列名称类似于：amq.gen-JzTY20BRgKO-HjmUJj0wLg
+String queueName = channel.queueDeclare().getQueue();
+</code></pre>
+<h2 id="三、Bindings-绑定"><a href="#三、Bindings-绑定" class="headerlink" title="三、Bindings 绑定"></a>三、Bindings 绑定</h2><p>上面已经创建了一个 fanout 扇形交换器和 一个队列，现在需要告诉交换器向队列发送消息。</p>
+<p>交换器与队列之间的关系称为绑定。</p>
+<pre><code class="java">// 参数
+// 1. queueName 队列名称
+// 2. exchange 交换器名称
+// 3. routingKey 路由
+channel.queueBind(queueName, &quot;logs&quot;, &quot;&quot;);
+</code></pre>
+<h2 id="四、完整代码"><a href="#四、完整代码" class="headerlink" title="四、完整代码"></a>四、完整代码</h2><h3 id="4-1-生产者"><a href="#4-1-生产者" class="headerlink" title="4.1 生产者"></a>4.1 生产者</h3><pre><code class="java">import com.rabbitmq.client.*;
+
+import java.io.IOException;
+import java.util.concurrent.TimeoutException;
+
+public class Publisher {
+
+    public static void main(String[] args) {
+        // 连接服务器
+        final ConnectionFactory factory = new ConnectionFactory();
+        factory.setHost(&quot;localhost&quot;);
+        try (Connection connection = factory.newConnection();
+             Channel channel = connection.createChannel()) {
+            // 声明一个扇形交换器
+            channel.exchangeDeclare(&quot;logs&quot;, BuiltinExchangeType.FANOUT);
+
+            // 声明一个临时队列
+            final String queueName = channel.queueDeclare().getQueue();
+
+            // 绑定交换器与队列
+            channel.queueBind(queueName, &quot;logs&quot;, &quot;&quot;);
+
+            // 发送消息
+            String message = &quot;日志：线上服务没有问题&quot;;
+            channel.basicPublish(&quot;logs&quot;, &quot;&quot;, MessageProperties.PERSISTENT_TEXT_PLAIN, message.getBytes());
+            System.out.println(&quot;[x] sent:&quot; + message);
+        } catch (TimeoutException | IOException e) {
+            e.printStackTrace();
+        }
+    }
+}
+</code></pre>
+<h3 id="4-2-订阅者"><a href="#4-2-订阅者" class="headerlink" title="4.2 订阅者"></a>4.2 订阅者</h3><pre><code class="java">import com.rabbitmq.client.*;
+
+import java.io.IOException;
+import java.nio.charset.StandardCharsets;
+import java.util.concurrent.TimeoutException;
+
+public class Subscribes {
+
+    public static void main(String[] args) throws IOException, TimeoutException {
+        final ConnectionFactory factory = new ConnectionFactory();
+        factory.setHost(&quot;localhost&quot;);
+
+        final Connection connection = factory.newConnection();
+        final Channel channel = connection.createChannel();
+
+        // 声明交换器
+        channel.exchangeDeclare(&quot;logs&quot;, BuiltinExchangeType.FANOUT);
+
+        // 声明一个临时队列
+        final String queueName = channel.queueDeclare().getQueue();
+
+        // 绑定交换器与队列
+        channel.queueBind(queueName, &quot;logs&quot;, &quot;&quot;);
+
+        System.out.println(&quot;[1] Waiting for messages. To exit press CTRL+C&quot;);
+
+        DeliverCallback callback = (consumerTag, message) -&gt; {
+            String msg = new String(message.getBody(), StandardCharsets.UTF_8);
+            System.out.println(&quot;[1] 接收消息: &quot; + msg);
+        };
+
+        // 使用消息回调，缓冲消息
+        channel.basicConsume(queueName, true, callback, consumerTag -&gt; {
+        });
+    }
+}
+</code></pre>
+<h3 id="4-3-注意事项"><a href="#4-3-注意事项" class="headerlink" title="4.3 注意事项"></a>4.3 注意事项</h3><ol>
+<li>与之前的任务队列不同的是，发布订阅模式要求<strong>发布者在广播消息时，消费者必须在线才能接收</strong></li>
+</ol>
+<h2 id="五、参考资料"><a href="#五、参考资料" class="headerlink" title="五、参考资料"></a>五、参考资料</h2><ul>
+<li><a href="https://www.rabbitmq.com/tutorials/tutorial-three-java.html" target="_blank" rel="noopener">RabbitMQ tutorials - Publish/Subscribe</a></li>
+</ul>
+
+      
+    </div>
+    
+    
+    
+
+    
+
+    
+
+    
+
+    <footer class="post-footer">
+      
+        <div class="post-tags">
+          
+            <a href="/tags/RabbitMQ/" rel="tag"># RabbitMQ</a>
+          
+        </div>
+      
+
+      
+      
+      
+
+      
+        <div class="post-nav">
+          <div class="post-nav-next post-nav-item">
+            
+              <a href="/2019/12/09/MessageQueue/RocketMQ/3.WorkQueues/" rel="next" title="RabbitMQ工作队列、消息持久化">
+                <i class="fa fa-chevron-left"></i> RabbitMQ工作队列、消息持久化
+              </a>
+            
+          </div>
+
+          <span class="post-nav-divider"></span>
+
+          <div class="post-nav-prev post-nav-item">
+            
+              <a href="/2019/12/09/MessageQueue/RocketMQ/6.Topics/" rel="prev" title="RabbitMQ主题消息">
+                RabbitMQ主题消息 <i class="fa fa-chevron-right"></i>
+              </a>
+            
+          </div>
+        </div>
+      
+
+      
+      
+    </footer>
+  </div>
+  
+  
+  
+  </article>
+
+
+
+    <div class="post-spread">
+      
+    </div>
+  </div>
+
+
+          </div>
+          
+
+
+          
+
+  
+
+
+
+        </div>
+        
+          
+  
+  <div class="sidebar-toggle">
+    <div class="sidebar-toggle-line-wrap">
+      <span class="sidebar-toggle-line sidebar-toggle-line-first"></span>
+      <span class="sidebar-toggle-line sidebar-toggle-line-middle"></span>
+      <span class="sidebar-toggle-line sidebar-toggle-line-last"></span>
+    </div>
+  </div>
+
+  <aside id="sidebar" class="sidebar">
+    
+    <div class="sidebar-inner">
+
+      
+
+      
+        <ul class="sidebar-nav motion-element">
+          <li class="sidebar-nav-toc sidebar-nav-active" data-target="post-toc-wrap">
+            文章目录
+          </li>
+          <li class="sidebar-nav-overview" data-target="site-overview-wrap">
+            站点概览
+          </li>
+        </ul>
+      
+
+      <section class="site-overview-wrap sidebar-panel">
+        <div class="site-overview">
+          <div class="site-author motion-element" itemprop="author" itemscope itemtype="http://schema.org/Person">
+            
+              <img class="site-author-image" itemprop="image"
+                src="https://upload-images.jianshu.io/upload_images/13603359-6aa0d85db5eaa03e.gif"
+                alt="koral" />
+            
+              <p class="site-author-name" itemprop="name">koral</p>
+              <p class="site-description motion-element" itemprop="description">如果我16岁，我可以悄悄的说我好喜欢你，如果我26岁，我可以大声告诉你我很爱你，可惜我6岁，我什么都给不了你，我还要上小学。</p>
+          </div>
+
+          <nav class="site-state motion-element">
+
+            
+              <div class="site-state-item site-state-posts">
+              
+                <a href="/archives">
+              
+                  <span class="site-state-item-count">237</span>
+                  <span class="site-state-item-name">日志</span>
+                </a>
+              </div>
+            
+
+            
+              
+              
+              <div class="site-state-item site-state-categories">
+                <a href="/categories/index.html">
+                  <span class="site-state-item-count">19</span>
+                  <span class="site-state-item-name">分类</span>
+                </a>
+              </div>
+            
+
+            
+              
+              
+              <div class="site-state-item site-state-tags">
+                <a href="/tags/index.html">
+                  <span class="site-state-item-count">22</span>
+                  <span class="site-state-item-name">标签</span>
+                </a>
+              </div>
+            
+
+          </nav>
+
+          
+            <div class="feed-link motion-element">
+              <a href="/atom.xml" rel="alternate">
+                <i class="fa fa-rss"></i>
+                RSS
+              </a>
+            </div>
+          
+
+          
+
+          
+          
+
+          
+          
+
+          
+
+        </div>
+      </section>
+
+      
+      <!--noindex-->
+        <section class="post-toc-wrap motion-element sidebar-panel sidebar-panel-active">
+          <div class="post-toc">
+
+            
+              
+            
+
+            
+              <div class="post-toc-content"><ol class="nav"><li class="nav-item nav-level-1"><a class="nav-link" href="#三、Publish-Subscribe-发布订阅模式"><span class="nav-number">1.</span> <span class="nav-text">三、Publish/Subscribe 发布订阅模式</span></a><ol class="nav-child"><li class="nav-item nav-level-2"><a class="nav-link" href="#一、Exchanges-交换器"><span class="nav-number">1.1.</span> <span class="nav-text">一、Exchanges 交换器</span></a><ol class="nav-child"><li class="nav-item nav-level-3"><a class="nav-link" href="#1-1-可用的交换类型"><span class="nav-number">1.1.1.</span> <span class="nav-text">1.1 可用的交换类型</span></a></li><li class="nav-item nav-level-3"><a class="nav-link" href="#1-2-声明交换器"><span class="nav-number">1.1.2.</span> <span class="nav-text">1.2 声明交换器</span></a></li></ol></li><li class="nav-item nav-level-2"><a class="nav-link" href="#二、临时队列"><span class="nav-number">1.2.</span> <span class="nav-text">二、临时队列</span></a><ol class="nav-child"><li class="nav-item nav-level-3"><a class="nav-link" href="#2-1-声明队列"><span class="nav-number">1.2.1.</span> <span class="nav-text">2.1 声明队列</span></a></li><li class="nav-item nav-level-3"><a class="nav-link" href="#2-2-临时队列"><span class="nav-number">1.2.2.</span> <span class="nav-text">2.2 临时队列</span></a></li></ol></li><li class="nav-item nav-level-2"><a class="nav-link" href="#三、Bindings-绑定"><span class="nav-number">1.3.</span> <span class="nav-text">三、Bindings 绑定</span></a></li><li class="nav-item nav-level-2"><a class="nav-link" href="#四、完整代码"><span class="nav-number">1.4.</span> <span class="nav-text">四、完整代码</span></a><ol class="nav-child"><li class="nav-item nav-level-3"><a class="nav-link" href="#4-1-生产者"><span class="nav-number">1.4.1.</span> <span class="nav-text">4.1 生产者</span></a></li><li class="nav-item nav-level-3"><a class="nav-link" href="#4-2-订阅者"><span class="nav-number">1.4.2.</span> <span class="nav-text">4.2 订阅者</span></a></li><li class="nav-item nav-level-3"><a class="nav-link" href="#4-3-注意事项"><span class="nav-number">1.4.3.</span> <span class="nav-text">4.3 注意事项</span></a></li></ol></li><li class="nav-item nav-level-2"><a class="nav-link" href="#五、参考资料"><span class="nav-number">1.5.</span> <span class="nav-text">五、参考资料</span></a></li></ol></li></ol></div>
+            
+
+          </div>
+        </section>
+      <!--/noindex-->
+      
+
+      
+
+    </div>
+  </aside>
+
+
+        
+      </div>
+    </main>
+
+    <footer id="footer" class="footer">
+      <div class="footer-inner">
+        <div class="copyright">&copy; <span itemprop="copyrightYear">2019</span>
+  <span class="with-love">
+    <i class="fa fa-user"></i>
+  </span>
+  <span class="author" itemprop="copyrightHolder">koral</span>
+
+  
+</div>
+
+
+  <div class="powered-by">由 <a class="theme-link" target="_blank" href="https://hexo.io">Hexo</a> 强力驱动</div>
+
+
+
+  <span class="post-meta-divider">|</span>
+
+
+
+  <div class="theme-info">主题 &mdash; <a class="theme-link" target="_blank" href="https://github.com/iissnan/hexo-theme-next">NexT.Pisces</a> v5.1.4</div>
+
+
+
+
+        
+
+
+
+
+
+
+
+        
+      </div>
+    </footer>
+
+    
+      <div class="back-to-top">
+        <i class="fa fa-arrow-up"></i>
+        
+      </div>
+    
+
+    
+
+  </div>
+
+  
+
+<script type="text/javascript">
+  if (Object.prototype.toString.call(window.Promise) !== '[object Function]') {
+    window.Promise = null;
+  }
+</script>
+
+
+
+
+
+
+
+
+
+  
+
+
+
+
+
+
+
+
+
+
+
+
+  
+  
+    <script type="text/javascript" src="/lib/jquery/index.js?v=2.1.3"></script>
+  
+
+  
+  
+    <script type="text/javascript" src="/lib/fastclick/lib/fastclick.min.js?v=1.0.6"></script>
+  
+
+  
+  
+    <script type="text/javascript" src="/lib/jquery_lazyload/jquery.lazyload.js?v=1.9.7"></script>
+  
+
+  
+  
+    <script type="text/javascript" src="/lib/velocity/velocity.min.js?v=1.2.1"></script>
+  
+
+  
+  
+    <script type="text/javascript" src="/lib/velocity/velocity.ui.min.js?v=1.2.1"></script>
+  
+
+  
+  
+    <script type="text/javascript" src="/lib/fancybox/source/jquery.fancybox.pack.js?v=2.1.5"></script>
+  
+
+
+  
+
+
+  <script type="text/javascript" src="/js/src/utils.js?v=5.1.4"></script>
+
+  <script type="text/javascript" src="/js/src/motion.js?v=5.1.4"></script>
+
+
+
+  
+  
+
+
+  <script type="text/javascript" src="/js/src/affix.js?v=5.1.4"></script>
+
+  <script type="text/javascript" src="/js/src/schemes/pisces.js?v=5.1.4"></script>
+
+
+
+  
+  <script type="text/javascript" src="/js/src/scrollspy.js?v=5.1.4"></script>
+<script type="text/javascript" src="/js/src/post-details.js?v=5.1.4"></script>
+
+
+
+  
+
+
+  <script type="text/javascript" src="/js/src/bootstrap.js?v=5.1.4"></script>
+
+
+
+  
+
+
+  
+
+
+
+
+	
+
+
+
+
+
+  
+
+
+
+
+
+  
+
+
+
+
+
+
+
+
+
+
+
+
+  
+
+
+
+
+
+  
+
+  
+
+  
+
+  
+  
+
+  
+
+  
+
+  
+
+</body>
+</html>

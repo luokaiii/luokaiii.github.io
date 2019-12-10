@@ -436,61 +436,61 @@
 </ol>
 </li>
 </ol>
-<h3 id="2-3-具体实践"><a href="#2-3-具体实践" class="headerlink" title="2.3 具体实践"></a>2.3 具体实践</h3><pre class=" language-java"><code class="language-java"><span class="token comment" spellcheck="true">/**
+<h3 id="2-3-具体实践"><a href="#2-3-具体实践" class="headerlink" title="2.3 具体实践"></a>2.3 具体实践</h3><pre><code class="java">/**
  * 手机游戏软件
  * 针对 Symbian、Android、WindowsPhone 等多个智能手机平台，
  * 提供不同的游戏操作控制和游戏界面控制
- */</span>
-<span class="token keyword">public</span> <span class="token keyword">class</span> <span class="token class-name">Gaming</span> <span class="token punctuation">{</span>
-    <span class="token comment" spellcheck="true">// 抽象产品类</span>
-    <span class="token keyword">interface</span> <span class="token class-name">Operation</span><span class="token punctuation">{</span><span class="token punctuation">}</span>
-    <span class="token comment" spellcheck="true">// 具体产品类</span>
-    <span class="token keyword">class</span> <span class="token class-name">SymbianOperation</span> <span class="token keyword">implements</span> <span class="token class-name">Operation</span><span class="token punctuation">{</span><span class="token punctuation">}</span>
-    <span class="token keyword">class</span> <span class="token class-name">AndroidOperation</span> <span class="token keyword">implements</span> <span class="token class-name">Operation</span><span class="token punctuation">{</span><span class="token punctuation">}</span>
-    <span class="token keyword">class</span> <span class="token class-name">WindowsPhoneOperation</span> <span class="token keyword">implements</span> <span class="token class-name">Operation</span><span class="token punctuation">{</span><span class="token punctuation">}</span>
+ */
+public class Gaming {
+    // 抽象产品类
+    interface Operation{}
+    // 具体产品类
+    class SymbianOperation implements Operation{}
+    class AndroidOperation implements Operation{}
+    class WindowsPhoneOperation implements Operation{}
 
-    <span class="token keyword">interface</span> <span class="token class-name">HML</span><span class="token punctuation">{</span><span class="token punctuation">}</span>
-    <span class="token keyword">class</span> <span class="token class-name">SymbianHML</span> <span class="token keyword">implements</span> <span class="token class-name">HML</span><span class="token punctuation">{</span><span class="token punctuation">}</span>
-    <span class="token keyword">class</span> <span class="token class-name">AndroidHML</span> <span class="token keyword">implements</span> <span class="token class-name">HML</span><span class="token punctuation">{</span><span class="token punctuation">}</span>
-    <span class="token keyword">class</span> <span class="token class-name">WindowsPhoneHML</span> <span class="token keyword">implements</span> <span class="token class-name">HML</span><span class="token punctuation">{</span><span class="token punctuation">}</span>
+    interface HML{}
+    class SymbianHML implements HML{}
+    class AndroidHML implements HML{}
+    class WindowsPhoneHML implements HML{}
 
-    <span class="token comment" spellcheck="true">// 抽象工厂类</span>
-    <span class="token keyword">interface</span> <span class="token class-name">Factory</span><span class="token punctuation">{</span>
-        Operation <span class="token function">getOperation</span><span class="token punctuation">(</span><span class="token punctuation">)</span><span class="token punctuation">;</span>
-        HML <span class="token function">getHML</span><span class="token punctuation">(</span><span class="token punctuation">)</span><span class="token punctuation">;</span>
-    <span class="token punctuation">}</span>
-    <span class="token comment" spellcheck="true">// 具体工厂类</span>
-    <span class="token keyword">class</span> <span class="token class-name">SymbianFactory</span> <span class="token keyword">implements</span> <span class="token class-name">Factory</span><span class="token punctuation">{</span>
-        <span class="token annotation punctuation">@Override</span>
-        <span class="token keyword">public</span> Operation <span class="token function">getOperation</span><span class="token punctuation">(</span><span class="token punctuation">)</span> <span class="token punctuation">{</span>
-            <span class="token keyword">return</span> <span class="token keyword">new</span> <span class="token class-name">SymbianOperation</span><span class="token punctuation">(</span><span class="token punctuation">)</span><span class="token punctuation">;</span>
-        <span class="token punctuation">}</span>
-        <span class="token annotation punctuation">@Override</span>
-        <span class="token keyword">public</span> HML <span class="token function">getHML</span><span class="token punctuation">(</span><span class="token punctuation">)</span> <span class="token punctuation">{</span>
-            <span class="token keyword">return</span> <span class="token keyword">new</span> <span class="token class-name">SymbianHML</span><span class="token punctuation">(</span><span class="token punctuation">)</span><span class="token punctuation">;</span>
-        <span class="token punctuation">}</span>
-    <span class="token punctuation">}</span>
-    <span class="token keyword">class</span> <span class="token class-name">AndroidFactory</span> <span class="token keyword">implements</span> <span class="token class-name">Factory</span><span class="token punctuation">{</span>
-        <span class="token annotation punctuation">@Override</span>
-        <span class="token keyword">public</span> Operation <span class="token function">getOperation</span><span class="token punctuation">(</span><span class="token punctuation">)</span> <span class="token punctuation">{</span>
-            <span class="token keyword">return</span> <span class="token keyword">new</span> <span class="token class-name">AndroidOperation</span><span class="token punctuation">(</span><span class="token punctuation">)</span><span class="token punctuation">;</span>
-        <span class="token punctuation">}</span>
-        <span class="token annotation punctuation">@Override</span>
-        <span class="token keyword">public</span> HML <span class="token function">getHML</span><span class="token punctuation">(</span><span class="token punctuation">)</span> <span class="token punctuation">{</span>
-            <span class="token keyword">return</span> <span class="token keyword">new</span> <span class="token class-name">AndroidHML</span><span class="token punctuation">(</span><span class="token punctuation">)</span><span class="token punctuation">;</span>
-        <span class="token punctuation">}</span>
-    <span class="token punctuation">}</span>
-    <span class="token keyword">class</span> <span class="token class-name">WindowsPhoneFactory</span> <span class="token keyword">implements</span> <span class="token class-name">Factory</span><span class="token punctuation">{</span>
-        <span class="token annotation punctuation">@Override</span>
-        <span class="token keyword">public</span> Operation <span class="token function">getOperation</span><span class="token punctuation">(</span><span class="token punctuation">)</span> <span class="token punctuation">{</span>
-            <span class="token keyword">return</span> <span class="token keyword">new</span> <span class="token class-name">WindowsPhoneOperation</span><span class="token punctuation">(</span><span class="token punctuation">)</span><span class="token punctuation">;</span>
-        <span class="token punctuation">}</span>
-        <span class="token annotation punctuation">@Override</span>
-        <span class="token keyword">public</span> HML <span class="token function">getHML</span><span class="token punctuation">(</span><span class="token punctuation">)</span> <span class="token punctuation">{</span>
-            <span class="token keyword">return</span> <span class="token keyword">new</span> <span class="token class-name">WindowsPhoneHML</span><span class="token punctuation">(</span><span class="token punctuation">)</span><span class="token punctuation">;</span>
-        <span class="token punctuation">}</span>
-    <span class="token punctuation">}</span>
-<span class="token punctuation">}</span>
+    // 抽象工厂类
+    interface Factory{
+        Operation getOperation();
+        HML getHML();
+    }
+    // 具体工厂类
+    class SymbianFactory implements Factory{
+        @Override
+        public Operation getOperation() {
+            return new SymbianOperation();
+        }
+        @Override
+        public HML getHML() {
+            return new SymbianHML();
+        }
+    }
+    class AndroidFactory implements Factory{
+        @Override
+        public Operation getOperation() {
+            return new AndroidOperation();
+        }
+        @Override
+        public HML getHML() {
+            return new AndroidHML();
+        }
+    }
+    class WindowsPhoneFactory implements Factory{
+        @Override
+        public Operation getOperation() {
+            return new WindowsPhoneOperation();
+        }
+        @Override
+        public HML getHML() {
+            return new WindowsPhoneHML();
+        }
+    }
+}
 </code></pre>
 <h2 id="三、“开闭原则”的倾斜性"><a href="#三、“开闭原则”的倾斜性" class="headerlink" title="三、“开闭原则”的倾斜性"></a>三、“开闭原则”的倾斜性</h2><p>在抽象工厂模式中，增加新的产品族很方便（如增加Winter类型的界面），但是增加新的产品等级结构很麻烦（如增加单选框类型的产品，需要修改抽象工厂及其所有的具体工厂），这种性质被称为“开闭原则”的倾斜性。</p>
 <p>“开闭原则”要求系统对扩展开发，对修改封闭，通过扩展达到增强其功能的目的，对于设计多个产品族与多个产品等级结构的系统，其功能增强包括两方面：</p>
@@ -552,8 +552,8 @@
 
           <div class="post-nav-prev post-nav-item">
             
-              <a href="/2019/06/27/读书笔记/《JavaDesignPatterns》/7.原型模式/" rel="prev" title="《Java Design Patterns》第五章 原型模式 - 对象的克隆">
-                《Java Design Patterns》第五章 原型模式 - 对象的克隆 <i class="fa fa-chevron-right"></i>
+              <a href="/2019/06/26/读书笔记/《JavaDesignPatterns》/3.简单工厂模式/" rel="prev" title="《Java Design Patterns》第一章 简单工厂模式">
+                《Java Design Patterns》第一章 简单工厂模式 <i class="fa fa-chevron-right"></i>
               </a>
             
           </div>
@@ -635,7 +635,7 @@
               
                 <a href="/archives">
               
-                  <span class="site-state-item-count">224</span>
+                  <span class="site-state-item-count">237</span>
                   <span class="site-state-item-name">日志</span>
                 </a>
               </div>
@@ -657,7 +657,7 @@
               
               <div class="site-state-item site-state-tags">
                 <a href="/tags/index.html">
-                  <span class="site-state-item-count">21</span>
+                  <span class="site-state-item-count">22</span>
                   <span class="site-state-item-name">标签</span>
                 </a>
               </div>

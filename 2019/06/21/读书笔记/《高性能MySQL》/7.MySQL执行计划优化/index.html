@@ -395,12 +395,12 @@
 <li>查询扫描的数据行数</li>
 </ol>
 <h2 id="二、执行计划中的内容"><a href="#二、执行计划中的内容" class="headerlink" title="二、执行计划中的内容"></a>二、执行计划中的内容</h2><p>以下面的查询SQL 为例，解释执行计划中输出内容的含义</p>
-<pre class=" language-sql"><code class="language-sql"><span class="token keyword">EXPLAIN</span>
-<span class="token keyword">SELECT</span> customer_id<span class="token punctuation">,</span>title<span class="token punctuation">,</span>content 
-<span class="token keyword">FROM</span> <span class="token punctuation">`</span>product_comment<span class="token punctuation">`</span>
-<span class="token keyword">WHERE</span> audit_status <span class="token operator">=</span> <span class="token number">1</span>
-<span class="token operator">AND</span> product_id <span class="token operator">=</span> <span class="token number">199726</span>
-<span class="token keyword">LIMIT</span> <span class="token number">0</span><span class="token punctuation">,</span><span class="token number">5</span>
+<pre><code class="sql">EXPLAIN
+SELECT customer_id,title,content 
+FROM `product_comment`
+WHERE audit_status = 1
+AND product_id = 199726
+LIMIT 0,5
 </code></pre>
 <ul>
 <li>id: 1<ul>
@@ -487,14 +487,14 @@
 </li>
 </ul>
 <p>通过上面的查询语句，以及索引的设计规范，应该在 where 语句查询的部分设置索引，这里使用联合索引。</p>
-<pre class=" language-SQL"><code class="language-SQL">-- 查询表中，audit_status和product_id 的区分度，应该将区分度高的列放在联合索引的左侧
+<pre><code class="SQL">-- 查询表中，audit_status和product_id 的区分度，应该将区分度高的列放在联合索引的左侧
 SELECT COUNT(DISTINCT audit_status)/COUNT(*) AS audit_rate,
 COUNT(DISTINCT product_id)/COUNT(*) AS product_rate
 FROM product_comment;
 </code></pre>
 <p>假设 product_rate = 0.8 ，audit_rate = 0.2，则联合索引应该设计为：</p>
-<pre class=" language-sql"><code class="language-sql"><span class="token keyword">CREATE</span> <span class="token keyword">INDEX</span> idx_productID_auditStatus
-<span class="token keyword">ON</span> product_comment<span class="token punctuation">(</span>product_id<span class="token punctuation">,</span>audit_status<span class="token punctuation">)</span><span class="token punctuation">;</span>
+<pre><code class="sql">CREATE INDEX idx_productID_auditStatus
+ON product_comment(product_id,audit_status);
 </code></pre>
 <h2 id="执行计划的限制"><a href="#执行计划的限制" class="headerlink" title="执行计划的限制"></a>执行计划的限制</h2><ol>
 <li>无法展示存储过程、触发器、UDF 对查询的影响</li>
@@ -533,8 +533,8 @@ FROM product_comment;
         <div class="post-nav">
           <div class="post-nav-next post-nav-item">
             
-              <a href="/2019/06/21/读书笔记/《高性能MySQL》/5.设计数据库分区表/" rel="next" title="《高性能MySQL》第五章 设计数据库分区表">
-                <i class="fa fa-chevron-left"></i> 《高性能MySQL》第五章 设计数据库分区表
+              <a href="/2019/06/21/读书笔记/《高性能MySQL》/11.MySQL常用命令/" rel="next" title="《高性能MySQL》第六章 MySQL 中的存储引擎">
+                <i class="fa fa-chevron-left"></i> 《高性能MySQL》第六章 MySQL 中的存储引擎
               </a>
             
           </div>
@@ -626,7 +626,7 @@ FROM product_comment;
               
                 <a href="/archives">
               
-                  <span class="site-state-item-count">224</span>
+                  <span class="site-state-item-count">237</span>
                   <span class="site-state-item-name">日志</span>
                 </a>
               </div>
@@ -648,7 +648,7 @@ FROM product_comment;
               
               <div class="site-state-item site-state-tags">
                 <a href="/tags/index.html">
-                  <span class="site-state-item-count">21</span>
+                  <span class="site-state-item-count">22</span>
                   <span class="site-state-item-name">标签</span>
                 </a>
               </div>

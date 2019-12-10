@@ -427,75 +427,75 @@
 </ol>
 </li>
 </ol>
-<h3 id="2-3-具体实现"><a href="#2-3-具体实现" class="headerlink" title="2.3 具体实现"></a>2.3 具体实现</h3><pre class=" language-java"><code class="language-java"><span class="token comment" spellcheck="true">// 桥接模式</span>
-<span class="token keyword">public</span> <span class="token keyword">class</span> <span class="token class-name">BridgePattern</span> <span class="token punctuation">{</span>
+<h3 id="2-3-具体实现"><a href="#2-3-具体实现" class="headerlink" title="2.3 具体实现"></a>2.3 具体实现</h3><pre><code class="java">// 桥接模式
+public class BridgePattern {
 
-    <span class="token comment" spellcheck="true">// 像素矩阵类：辅助类，各种格式的文件最终都被转化为像素矩阵，不同的操作系统提供不同的方式显示像素矩阵</span>
-    <span class="token keyword">static</span> <span class="token keyword">class</span> <span class="token class-name">Matrix</span> <span class="token punctuation">{</span>
+    // 像素矩阵类：辅助类，各种格式的文件最终都被转化为像素矩阵，不同的操作系统提供不同的方式显示像素矩阵
+    static class Matrix {
 
-    <span class="token punctuation">}</span>
+    }
 
-    <span class="token comment" spellcheck="true">// 抽象图像类：抽象类</span>
-    <span class="token keyword">static</span> <span class="token keyword">abstract</span> <span class="token keyword">class</span> <span class="token class-name">Image</span> <span class="token punctuation">{</span>
-        <span class="token keyword">protected</span> ImageImp imp<span class="token punctuation">;</span>
+    // 抽象图像类：抽象类
+    static abstract class Image {
+        protected ImageImp imp;
 
-        <span class="token keyword">public</span> <span class="token keyword">void</span> <span class="token function">setImp</span><span class="token punctuation">(</span>ImageImp imp<span class="token punctuation">)</span> <span class="token punctuation">{</span>
-            <span class="token keyword">this</span><span class="token punctuation">.</span>imp <span class="token operator">=</span> imp<span class="token punctuation">;</span>
-        <span class="token punctuation">}</span>
+        public void setImp(ImageImp imp) {
+            this.imp = imp;
+        }
 
-        <span class="token keyword">public</span> <span class="token keyword">abstract</span> <span class="token keyword">void</span> <span class="token function">parseFile</span><span class="token punctuation">(</span>String fileName<span class="token punctuation">)</span><span class="token punctuation">;</span>
-    <span class="token punctuation">}</span>
+        public abstract void parseFile(String fileName);
+    }
 
-    <span class="token comment" spellcheck="true">// JPG格式图像：扩充抽象类</span>
-    <span class="token keyword">static</span> <span class="token keyword">class</span> <span class="token class-name">JPGImage</span> <span class="token keyword">extends</span> <span class="token class-name">Image</span> <span class="token punctuation">{</span>
-        <span class="token annotation punctuation">@Override</span>
-        <span class="token keyword">public</span> <span class="token keyword">void</span> <span class="token function">parseFile</span><span class="token punctuation">(</span>String fileName<span class="token punctuation">)</span> <span class="token punctuation">{</span>
-            <span class="token keyword">final</span> Matrix matrix <span class="token operator">=</span> <span class="token keyword">new</span> <span class="token class-name">Matrix</span><span class="token punctuation">(</span><span class="token punctuation">)</span><span class="token punctuation">;</span>
-            imp<span class="token punctuation">.</span><span class="token function">doPaint</span><span class="token punctuation">(</span>matrix<span class="token punctuation">)</span><span class="token punctuation">;</span>
-            System<span class="token punctuation">.</span>out<span class="token punctuation">.</span><span class="token function">println</span><span class="token punctuation">(</span>fileName <span class="token operator">+</span> <span class="token string">",格式为JPG"</span><span class="token punctuation">)</span><span class="token punctuation">;</span>
-        <span class="token punctuation">}</span>
-    <span class="token punctuation">}</span>
+    // JPG格式图像：扩充抽象类
+    static class JPGImage extends Image {
+        @Override
+        public void parseFile(String fileName) {
+            final Matrix matrix = new Matrix();
+            imp.doPaint(matrix);
+            System.out.println(fileName + &quot;,格式为JPG&quot;);
+        }
+    }
 
-    <span class="token comment" spellcheck="true">// PNG格式图像：扩充抽象类</span>
-    <span class="token keyword">static</span> <span class="token keyword">class</span> <span class="token class-name">PNGImage</span> <span class="token keyword">extends</span> <span class="token class-name">Image</span> <span class="token punctuation">{</span>
-        <span class="token annotation punctuation">@Override</span>
-        <span class="token keyword">public</span> <span class="token keyword">void</span> <span class="token function">parseFile</span><span class="token punctuation">(</span>String fileName<span class="token punctuation">)</span> <span class="token punctuation">{</span>
-            <span class="token keyword">final</span> Matrix matrix <span class="token operator">=</span> <span class="token keyword">new</span> <span class="token class-name">Matrix</span><span class="token punctuation">(</span><span class="token punctuation">)</span><span class="token punctuation">;</span>
-            imp<span class="token punctuation">.</span><span class="token function">doPaint</span><span class="token punctuation">(</span>matrix<span class="token punctuation">)</span><span class="token punctuation">;</span>
-            System<span class="token punctuation">.</span>out<span class="token punctuation">.</span><span class="token function">println</span><span class="token punctuation">(</span>fileName <span class="token operator">+</span> <span class="token string">",格式为PNG"</span><span class="token punctuation">)</span><span class="token punctuation">;</span>
-        <span class="token punctuation">}</span>
-    <span class="token punctuation">}</span>
+    // PNG格式图像：扩充抽象类
+    static class PNGImage extends Image {
+        @Override
+        public void parseFile(String fileName) {
+            final Matrix matrix = new Matrix();
+            imp.doPaint(matrix);
+            System.out.println(fileName + &quot;,格式为PNG&quot;);
+        }
+    }
 
-    <span class="token comment" spellcheck="true">// 抽象操作系统实现类：实现类接口</span>
-    <span class="token keyword">static</span> <span class="token keyword">interface</span> <span class="token class-name">ImageImp</span> <span class="token punctuation">{</span>
-        <span class="token keyword">public</span> <span class="token keyword">void</span> <span class="token function">doPaint</span><span class="token punctuation">(</span>Matrix m<span class="token punctuation">)</span><span class="token punctuation">;</span> <span class="token comment" spellcheck="true">// 显示像素矩阵 m</span>
-    <span class="token punctuation">}</span>
+    // 抽象操作系统实现类：实现类接口
+    static interface ImageImp {
+        public void doPaint(Matrix m); // 显示像素矩阵 m
+    }
 
-    <span class="token comment" spellcheck="true">// Windows 操作系统实现类：具体实现类</span>
-    <span class="token keyword">static</span> <span class="token keyword">class</span> <span class="token class-name">WindowsImp</span> <span class="token keyword">implements</span> <span class="token class-name">ImageImp</span> <span class="token punctuation">{</span>
-        <span class="token annotation punctuation">@Override</span>
-        <span class="token keyword">public</span> <span class="token keyword">void</span> <span class="token function">doPaint</span><span class="token punctuation">(</span>Matrix m<span class="token punctuation">)</span> <span class="token punctuation">{</span>
-            <span class="token comment" spellcheck="true">// 调用Windows系统的绘制函数，绘制像素矩阵</span>
-            System<span class="token punctuation">.</span>out<span class="token punctuation">.</span><span class="token function">println</span><span class="token punctuation">(</span><span class="token string">"在Windows操作系统中显示图像"</span><span class="token punctuation">)</span><span class="token punctuation">;</span>
-        <span class="token punctuation">}</span>
-    <span class="token punctuation">}</span>
+    // Windows 操作系统实现类：具体实现类
+    static class WindowsImp implements ImageImp {
+        @Override
+        public void doPaint(Matrix m) {
+            // 调用Windows系统的绘制函数，绘制像素矩阵
+            System.out.println(&quot;在Windows操作系统中显示图像&quot;);
+        }
+    }
 
-    <span class="token comment" spellcheck="true">// Linux 操作系统实现类：具体实现类</span>
-    <span class="token keyword">static</span> <span class="token keyword">class</span> <span class="token class-name">LinuxImp</span> <span class="token keyword">implements</span> <span class="token class-name">ImageImp</span> <span class="token punctuation">{</span>
-        <span class="token annotation punctuation">@Override</span>
-        <span class="token keyword">public</span> <span class="token keyword">void</span> <span class="token function">doPaint</span><span class="token punctuation">(</span>Matrix m<span class="token punctuation">)</span> <span class="token punctuation">{</span>
-            <span class="token comment" spellcheck="true">// 调用Linux系统的绘制函数，绘制像素矩阵</span>
-            System<span class="token punctuation">.</span>out<span class="token punctuation">.</span><span class="token function">println</span><span class="token punctuation">(</span><span class="token string">"在Linux操作系统中显示图像"</span><span class="token punctuation">)</span><span class="token punctuation">;</span>
-        <span class="token punctuation">}</span>
-    <span class="token punctuation">}</span>
+    // Linux 操作系统实现类：具体实现类
+    static class LinuxImp implements ImageImp {
+        @Override
+        public void doPaint(Matrix m) {
+            // 调用Linux系统的绘制函数，绘制像素矩阵
+            System.out.println(&quot;在Linux操作系统中显示图像&quot;);
+        }
+    }
 
-    <span class="token keyword">public</span> <span class="token keyword">static</span> <span class="token keyword">void</span> <span class="token function">main</span><span class="token punctuation">(</span>String<span class="token punctuation">[</span><span class="token punctuation">]</span> args<span class="token punctuation">)</span> <span class="token punctuation">{</span>
-        Image img <span class="token operator">=</span> <span class="token keyword">new</span> <span class="token class-name">PNGImage</span><span class="token punctuation">(</span><span class="token punctuation">)</span><span class="token punctuation">;</span>
-        ImageImp imp <span class="token operator">=</span> <span class="token keyword">new</span> <span class="token class-name">WindowsImp</span><span class="token punctuation">(</span><span class="token punctuation">)</span><span class="token punctuation">;</span>
-        img<span class="token punctuation">.</span><span class="token function">setImp</span><span class="token punctuation">(</span>imp<span class="token punctuation">)</span><span class="token punctuation">;</span>
-        img<span class="token punctuation">.</span><span class="token function">parseFile</span><span class="token punctuation">(</span><span class="token string">"死了都要爱.jpg"</span><span class="token punctuation">)</span><span class="token punctuation">;</span>
-    <span class="token punctuation">}</span>
-<span class="token punctuation">}</span>
+    public static void main(String[] args) {
+        Image img = new PNGImage();
+        ImageImp imp = new WindowsImp();
+        img.setImp(imp);
+        img.parseFile(&quot;死了都要爱.jpg&quot;);
+    }
+}
 </code></pre>
 <h2 id="三、总结"><a href="#三、总结" class="headerlink" title="三、总结"></a>三、总结</h2><p>在使用桥接模式时，我们应该先识别出一个类所具有的两个独立变化的维度，将它们设计为两个独立的继承等级结构，为两个维度都提供抽象层，并建立抽象耦合。通常情况下，我们将具有两个独立变化维度的类的一些普通业务方法，和与之关系最密切的维度设计为“抽象类”层次结构（抽象部分），而将另一个维度设计为“实现类”层次结构（实现部分）。</p>
 <p>如毛笔，由于型号是固有的维度，可以设计为抽象毛笔类，在该类中声明并部分实现毛笔的业务方法，将各种型号的毛笔作为子类。将颜色作为毛笔的另一个维度。</p>
@@ -518,66 +518,66 @@
 <h2 id="四、扩展"><a href="#四、扩展" class="headerlink" title="四、扩展"></a>四、扩展</h2><blockquote>
 <p>开发一个数据转换工具，可以将数据库中的数据转换成多种文件格式，例如txt、xml、pdf等格式，同时该工具需要支持多种不同的数据库。试使用桥接模式对其进行设计。</p>
 </blockquote>
-<pre class=" language-java"><code class="language-java"><span class="token comment" spellcheck="true">// 桥接模式</span>
-<span class="token keyword">public</span> <span class="token keyword">class</span> <span class="token class-name">BridgePattern</span> <span class="token punctuation">{</span>
+<pre><code class="java">// 桥接模式
+public class BridgePattern {
 
-    <span class="token comment" spellcheck="true">// 数据库抽象类</span>
-    <span class="token keyword">static</span> <span class="token keyword">abstract</span> <span class="token keyword">class</span> <span class="token class-name">Database</span> <span class="token punctuation">{</span>
-        <span class="token keyword">protected</span> FileFormat fileFormat<span class="token punctuation">;</span>
+    // 数据库抽象类
+    static abstract class Database {
+        protected FileFormat fileFormat;
 
-        <span class="token keyword">public</span> <span class="token keyword">void</span> <span class="token function">setFileFormat</span><span class="token punctuation">(</span>FileFormat fileFormat<span class="token punctuation">)</span> <span class="token punctuation">{</span>
-            <span class="token keyword">this</span><span class="token punctuation">.</span>fileFormat <span class="token operator">=</span> fileFormat<span class="token punctuation">;</span>
-        <span class="token punctuation">}</span>
+        public void setFileFormat(FileFormat fileFormat) {
+            this.fileFormat = fileFormat;
+        }
 
-        <span class="token keyword">public</span> <span class="token keyword">abstract</span> <span class="token keyword">void</span> <span class="token function">transition</span><span class="token punctuation">(</span><span class="token punctuation">)</span><span class="token punctuation">;</span>
-    <span class="token punctuation">}</span>
+        public abstract void transition();
+    }
 
-    <span class="token comment" spellcheck="true">// Oracle 数据库 - 抽象扩展类</span>
-    <span class="token keyword">static</span> <span class="token keyword">class</span> <span class="token class-name">OracleDatabase</span> <span class="token keyword">extends</span> <span class="token class-name">Database</span> <span class="token punctuation">{</span>
-        <span class="token annotation punctuation">@Override</span>
-        <span class="token keyword">public</span> <span class="token keyword">void</span> <span class="token function">transition</span><span class="token punctuation">(</span><span class="token punctuation">)</span> <span class="token punctuation">{</span>
-            System<span class="token punctuation">.</span>out<span class="token punctuation">.</span><span class="token function">println</span><span class="token punctuation">(</span><span class="token string">"Oracle数据库"</span><span class="token punctuation">)</span><span class="token punctuation">;</span>
-            fileFormat<span class="token punctuation">.</span><span class="token function">file</span><span class="token punctuation">(</span><span class="token punctuation">)</span><span class="token punctuation">;</span>
-        <span class="token punctuation">}</span>
-    <span class="token punctuation">}</span>
+    // Oracle 数据库 - 抽象扩展类
+    static class OracleDatabase extends Database {
+        @Override
+        public void transition() {
+            System.out.println(&quot;Oracle数据库&quot;);
+            fileFormat.file();
+        }
+    }
 
-    <span class="token comment" spellcheck="true">// Microsoft 数据库 - 抽象扩展类</span>
-    <span class="token keyword">static</span> <span class="token keyword">class</span> <span class="token class-name">MCDatabase</span> <span class="token keyword">extends</span> <span class="token class-name">Database</span> <span class="token punctuation">{</span>
-        <span class="token annotation punctuation">@Override</span>
-        <span class="token keyword">public</span> <span class="token keyword">void</span> <span class="token function">transition</span><span class="token punctuation">(</span><span class="token punctuation">)</span> <span class="token punctuation">{</span>
-            System<span class="token punctuation">.</span>out<span class="token punctuation">.</span><span class="token function">println</span><span class="token punctuation">(</span><span class="token string">"Microsoft数据库"</span><span class="token punctuation">)</span><span class="token punctuation">;</span>
-            fileFormat<span class="token punctuation">.</span><span class="token function">file</span><span class="token punctuation">(</span><span class="token punctuation">)</span><span class="token punctuation">;</span>
-        <span class="token punctuation">}</span>
-    <span class="token punctuation">}</span>
+    // Microsoft 数据库 - 抽象扩展类
+    static class MCDatabase extends Database {
+        @Override
+        public void transition() {
+            System.out.println(&quot;Microsoft数据库&quot;);
+            fileFormat.file();
+        }
+    }
 
-    <span class="token comment" spellcheck="true">// 文件格式 - 实现类接口</span>
-    <span class="token keyword">interface</span> <span class="token class-name">FileFormat</span> <span class="token punctuation">{</span>
-        <span class="token keyword">void</span> <span class="token function">file</span><span class="token punctuation">(</span><span class="token punctuation">)</span><span class="token punctuation">;</span>
-    <span class="token punctuation">}</span>
+    // 文件格式 - 实现类接口
+    interface FileFormat {
+        void file();
+    }
 
-    <span class="token comment" spellcheck="true">// txt 文件 - 具体实现类</span>
-    <span class="token keyword">static</span> <span class="token keyword">class</span> <span class="token class-name">TxtFileFormat</span> <span class="token keyword">implements</span> <span class="token class-name">FileFormat</span> <span class="token punctuation">{</span>
-        <span class="token annotation punctuation">@Override</span>
-        <span class="token keyword">public</span> <span class="token keyword">void</span> <span class="token function">file</span><span class="token punctuation">(</span><span class="token punctuation">)</span> <span class="token punctuation">{</span>
-            System<span class="token punctuation">.</span>out<span class="token punctuation">.</span><span class="token function">println</span><span class="token punctuation">(</span><span class="token string">"TXT 格式文本输出"</span><span class="token punctuation">)</span><span class="token punctuation">;</span>
-        <span class="token punctuation">}</span>
-    <span class="token punctuation">}</span>
+    // txt 文件 - 具体实现类
+    static class TxtFileFormat implements FileFormat {
+        @Override
+        public void file() {
+            System.out.println(&quot;TXT 格式文本输出&quot;);
+        }
+    }
 
-    <span class="token comment" spellcheck="true">// pdf 文件 - 具体实现类</span>
-    <span class="token keyword">static</span> <span class="token keyword">class</span> <span class="token class-name">PDFFileFormat</span> <span class="token keyword">implements</span> <span class="token class-name">FileFormat</span> <span class="token punctuation">{</span>
-        <span class="token annotation punctuation">@Override</span>
-        <span class="token keyword">public</span> <span class="token keyword">void</span> <span class="token function">file</span><span class="token punctuation">(</span><span class="token punctuation">)</span> <span class="token punctuation">{</span>
-            System<span class="token punctuation">.</span>out<span class="token punctuation">.</span><span class="token function">println</span><span class="token punctuation">(</span><span class="token string">"PDF 格式文本输出"</span><span class="token punctuation">)</span><span class="token punctuation">;</span>
-        <span class="token punctuation">}</span>
-    <span class="token punctuation">}</span>
+    // pdf 文件 - 具体实现类
+    static class PDFFileFormat implements FileFormat {
+        @Override
+        public void file() {
+            System.out.println(&quot;PDF 格式文本输出&quot;);
+        }
+    }
 
-    <span class="token keyword">public</span> <span class="token keyword">static</span> <span class="token keyword">void</span> <span class="token function">main</span><span class="token punctuation">(</span>String<span class="token punctuation">[</span><span class="token punctuation">]</span> args<span class="token punctuation">)</span> <span class="token punctuation">{</span>
-        Database db <span class="token operator">=</span> <span class="token keyword">new</span> <span class="token class-name">OracleDatabase</span><span class="token punctuation">(</span><span class="token punctuation">)</span><span class="token punctuation">;</span>
-        FileFormat ff <span class="token operator">=</span> <span class="token keyword">new</span> <span class="token class-name">TxtFileFormat</span><span class="token punctuation">(</span><span class="token punctuation">)</span><span class="token punctuation">;</span>
-        db<span class="token punctuation">.</span><span class="token function">setFileFormat</span><span class="token punctuation">(</span>ff<span class="token punctuation">)</span><span class="token punctuation">;</span>
-        db<span class="token punctuation">.</span><span class="token function">transition</span><span class="token punctuation">(</span><span class="token punctuation">)</span><span class="token punctuation">;</span>
-    <span class="token punctuation">}</span>
-<span class="token punctuation">}</span>
+    public static void main(String[] args) {
+        Database db = new OracleDatabase();
+        FileFormat ff = new TxtFileFormat();
+        db.setFileFormat(ff);
+        db.transition();
+    }
+}
 </code></pre>
 
       
@@ -702,7 +702,7 @@
               
                 <a href="/archives">
               
-                  <span class="site-state-item-count">224</span>
+                  <span class="site-state-item-count">237</span>
                   <span class="site-state-item-name">日志</span>
                 </a>
               </div>
@@ -724,7 +724,7 @@
               
               <div class="site-state-item site-state-tags">
                 <a href="/tags/index.html">
-                  <span class="site-state-item-count">21</span>
+                  <span class="site-state-item-count">22</span>
                   <span class="site-state-item-name">标签</span>
                 </a>
               </div>

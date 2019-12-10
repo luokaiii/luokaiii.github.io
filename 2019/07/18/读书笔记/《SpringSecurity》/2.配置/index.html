@@ -386,21 +386,21 @@
       
         <h1 id="第二章-Java配置SpringSecurity"><a href="#第二章-Java配置SpringSecurity" class="headerlink" title="第二章 Java配置SpringSecurity"></a>第二章 Java配置SpringSecurity</h1><p>从 Spring 3.1 以后，Spring框架支持了对 Java 配置的支持，所以这里就不再细述 XML 的配置方式了。感兴趣的可以直接 <a href="https://docs.spring.io/spring-security/site/docs/5.0.5.RELEASE/reference/htmlsingle/#ns-config" target="_blank" rel="noopener">查看 SpringSecurity 文档</a>，里面详细描述了 Java Configuration 对应的XML Configuration。</p>
 <p>Spring Security 提供了许多 Java Configuration 的 Samples 示例，详见 <a href="https://github.com/spring-projects/spring-security/tree/master/samples/javaconfig" target="_blank" rel="noopener">Samples</a>。</p>
-<h2 id="一、创建-Spring-Security-Java-配置"><a href="#一、创建-Spring-Security-Java-配置" class="headerlink" title="一、创建 Spring Security Java 配置"></a>一、创建 Spring Security Java 配置</h2><pre class=" language-java"><code class="language-java"><span class="token annotation punctuation">@EnableWebSecurity</span>
-<span class="token keyword">public</span> <span class="token keyword">class</span> <span class="token class-name">WebSecurityConfig</span> <span class="token keyword">implements</span> <span class="token class-name">WebMvcConfigurer</span> <span class="token punctuation">{</span>
-    <span class="token annotation punctuation">@Bean</span>
-    <span class="token keyword">public</span> UserDetailsService <span class="token function">userDetailsService</span><span class="token punctuation">(</span><span class="token punctuation">)</span> <span class="token keyword">throws</span> Exception <span class="token punctuation">{</span>
-        InMemoryUserDetailsManager manager <span class="token operator">=</span> <span class="token keyword">new</span> <span class="token class-name">InMemoryUserDetailsManager</span><span class="token punctuation">(</span><span class="token punctuation">)</span><span class="token punctuation">;</span>           
-        manager<span class="token punctuation">.</span><span class="token function">createUser</span><span class="token punctuation">(</span>
-            User<span class="token punctuation">.</span><span class="token function">withDefaultPasswordEncoder</span><span class="token punctuation">(</span><span class="token punctuation">)</span>
-                <span class="token punctuation">.</span><span class="token function">username</span><span class="token punctuation">(</span><span class="token string">"user"</span><span class="token punctuation">)</span>
-                <span class="token punctuation">.</span><span class="token function">password</span><span class="token punctuation">(</span><span class="token string">"password"</span><span class="token punctuation">)</span>
-                <span class="token punctuation">.</span><span class="token function">roles</span><span class="token punctuation">(</span><span class="token string">"USER"</span><span class="token punctuation">)</span>
-                <span class="token punctuation">.</span><span class="token function">build</span><span class="token punctuation">(</span><span class="token punctuation">)</span>
-        <span class="token punctuation">)</span><span class="token punctuation">;</span>
-        <span class="token keyword">return</span> manager<span class="token punctuation">;</span>
-    <span class="token punctuation">}</span>
-<span class="token punctuation">}</span>
+<h2 id="一、创建-Spring-Security-Java-配置"><a href="#一、创建-Spring-Security-Java-配置" class="headerlink" title="一、创建 Spring Security Java 配置"></a>一、创建 Spring Security Java 配置</h2><pre><code class="java">@EnableWebSecurity
+public class WebSecurityConfig implements WebMvcConfigurer {
+    @Bean
+    public UserDetailsService userDetailsService() throws Exception {
+        InMemoryUserDetailsManager manager = new InMemoryUserDetailsManager();           
+        manager.createUser(
+            User.withDefaultPasswordEncoder()
+                .username(&quot;user&quot;)
+                .password(&quot;password&quot;)
+                .roles(&quot;USER&quot;)
+                .build()
+        );
+        return manager;
+    }
+}
 </code></pre>
 <p>查看 <code>@EnableWebSecurity</code> 的代码，可以发现其引入了 <code>WebSecurityConfiguration.class</code> 的配置类。</p>
 <p>该配置创建了一个 <code>SpringSecurityFilterChain</code> 的过滤器，负责应用程序内部的所有安全（如保护应用的URL、验证提交的用户名密码、重定向至登录表单等等）。</p>
@@ -429,54 +429,54 @@
 </li>
 </ol>
 <h2 id="二、HttpSecurity-配置"><a href="#二、HttpSecurity-配置" class="headerlink" title="二、HttpSecurity 配置"></a>二、HttpSecurity 配置</h2><p>在开启 Java 配置之后，会默认开启所有路径的验证、表单登录、退出支持等等操作，但是我们并没有提供配置，这是因为 WebSecurityConfigurerAdapter 提供了一个默认的 <code>configure(HttpSecurity http)</code> 配置，如下所示：</p>
-<pre class=" language-java"><code class="language-java">    <span class="token comment" spellcheck="true">/**
+<pre><code class="java">    /**
      * Override this method to configure the {@link HttpSecurity}. Typically subclasses
      * should not invoke this method by calling super as it may override their
      * configuration. The default configuration is:
      *
-     * &lt;pre>
+     * &lt;pre&gt;
      * http.authorizeRequests().anyRequest().authenticated().and().formLogin().and().httpBasic();
-     * &lt;/pre>
+     * &lt;/pre&gt;
      *
      * @param http the {@link HttpSecurity} to modify
      * @throws Exception if an error occurs
-     */</span>
-    <span class="token comment" spellcheck="true">// @formatter:off</span>
-    <span class="token keyword">protected</span> <span class="token keyword">void</span> <span class="token function">configure</span><span class="token punctuation">(</span>HttpSecurity http<span class="token punctuation">)</span> <span class="token keyword">throws</span> Exception <span class="token punctuation">{</span>
-        logger<span class="token punctuation">.</span><span class="token function">debug</span><span class="token punctuation">(</span><span class="token string">"Using default configure(HttpSecurity). If subclassed this will potentially override subclass configure(HttpSecurity)."</span><span class="token punctuation">)</span><span class="token punctuation">;</span>
+     */
+    // @formatter:off
+    protected void configure(HttpSecurity http) throws Exception {
+        logger.debug(&quot;Using default configure(HttpSecurity). If subclassed this will potentially override subclass configure(HttpSecurity).&quot;);
 
         http
-            <span class="token punctuation">.</span><span class="token function">authorizeRequests</span><span class="token punctuation">(</span><span class="token punctuation">)</span>
-                <span class="token punctuation">.</span><span class="token function">anyRequest</span><span class="token punctuation">(</span><span class="token punctuation">)</span><span class="token punctuation">.</span><span class="token function">authenticated</span><span class="token punctuation">(</span><span class="token punctuation">)</span> <span class="token comment" spellcheck="true">// 配置对应用程序的所有请求都需要身份验证</span>
-                <span class="token punctuation">.</span><span class="token function">and</span><span class="token punctuation">(</span><span class="token punctuation">)</span>
-            <span class="token punctuation">.</span><span class="token function">formLogin</span><span class="token punctuation">(</span><span class="token punctuation">)</span><span class="token punctuation">.</span><span class="token function">and</span><span class="token punctuation">(</span><span class="token punctuation">)</span> <span class="token comment" spellcheck="true">// 开启表单登录</span>
-            <span class="token punctuation">.</span><span class="token function">httpBasic</span><span class="token punctuation">(</span><span class="token punctuation">)</span><span class="token punctuation">;</span>  <span class="token comment" spellcheck="true">// 允许使用 Http Basic 方式登录</span>
-    <span class="token punctuation">}</span>
+            .authorizeRequests()
+                .anyRequest().authenticated() // 配置对应用程序的所有请求都需要身份验证
+                .and()
+            .formLogin().and() // 开启表单登录
+            .httpBasic();  // 允许使用 Http Basic 方式登录
+    }
 </code></pre>
 <h2 id="三、Java-配置和表单登录"><a href="#三、Java-配置和表单登录" class="headerlink" title="三、Java 配置和表单登录"></a>三、Java 配置和表单登录</h2><p>一般情况下，我们会使用自己定义的登录页面，而不是SpringSecurity默认提供的登录页面。因此，我们可以修改 HttpSecurity 的配置：</p>
-<pre class=" language-java"><code class="language-java"><span class="token keyword">protected</span> <span class="token keyword">void</span> <span class="token function">configure</span><span class="token punctuation">(</span>HttpSecurity http<span class="token punctuation">)</span> <span class="token keyword">throws</span> Exception <span class="token punctuation">{</span>
+<pre><code class="java">protected void configure(HttpSecurity http) throws Exception {
     http
-        <span class="token punctuation">.</span><span class="token function">authorizeRequests</span><span class="token punctuation">(</span><span class="token punctuation">)</span>
-        <span class="token punctuation">.</span><span class="token function">anyRequest</span><span class="token punctuation">(</span><span class="token punctuation">)</span><span class="token punctuation">.</span><span class="token function">authenticated</span><span class="token punctuation">(</span><span class="token punctuation">)</span>
-        <span class="token punctuation">.</span><span class="token function">and</span><span class="token punctuation">(</span><span class="token punctuation">)</span>
-        <span class="token punctuation">.</span><span class="token function">formLogin</span><span class="token punctuation">(</span><span class="token punctuation">)</span>
-            <span class="token punctuation">.</span><span class="token function">loginPage</span><span class="token punctuation">(</span><span class="token string">"/login"</span><span class="token punctuation">)</span> <span class="token comment" spellcheck="true">// 指定登录页位置</span>
-            <span class="token punctuation">.</span><span class="token function">permitAll</span><span class="token punctuation">(</span><span class="token punctuation">)</span><span class="token punctuation">;</span>  <span class="token comment" spellcheck="true">// 允许所有用户访问基于表单登录关联的所有url权限</span>
-<span class="token punctuation">}</span>
+        .authorizeRequests()
+        .anyRequest().authenticated()
+        .and()
+        .formLogin()
+            .loginPage(&quot;/login&quot;) // 指定登录页位置
+            .permitAll();  // 允许所有用户访问基于表单登录关联的所有url权限
+}
 </code></pre>
 <h2 id="四、授权请求"><a href="#四、授权请求" class="headerlink" title="四、授权请求"></a>四、授权请求</h2><p>默认情况下， HttpSecurity选择拦截所有的请求，并且只要有身份认证即可访问。我们可以通过 <code>http.authorizeRequest()</code> 方法添加多个子类来指定 url 的自定义需求。</p>
-<pre class=" language-java"><code class="language-java"><span class="token keyword">protected</span> <span class="token keyword">void</span> <span class="token function">configure</span><span class="token punctuation">(</span>HttpSecurity http<span class="token punctuation">)</span> <span class="token keyword">throws</span> Exception <span class="token punctuation">{</span>
+<pre><code class="java">protected void configure(HttpSecurity http) throws Exception {
     http
-        <span class="token punctuation">.</span><span class="token function">authorizeRequests</span><span class="token punctuation">(</span><span class="token punctuation">)</span>    <span class="token comment" spellcheck="true">// 按照子类的顺序进行匹配</span>
-            <span class="token punctuation">.</span><span class="token function">antMatcher</span><span class="token punctuation">(</span><span class="token string">"/resources/**"</span><span class="token punctuation">,</span><span class="token string">"signup"</span><span class="token punctuation">,</span><span class="token string">"/about"</span><span class="token punctuation">)</span><span class="token punctuation">.</span><span class="token function">permitAll</span><span class="token punctuation">(</span><span class="token punctuation">)</span> <span class="token comment" spellcheck="true">// 允许指定路径无需认证</span>
-            <span class="token punctuation">.</span><span class="token function">antMatcher</span><span class="token punctuation">(</span><span class="token string">"/admin/**"</span><span class="token punctuation">)</span><span class="token punctuation">.</span><span class="token function">hasRole</span><span class="token punctuation">(</span><span class="token string">"ADMIN"</span><span class="token punctuation">)</span>    <span class="token comment" spellcheck="true">// 指定路径需要 ADMIN 权限</span>
-            <span class="token punctuation">.</span><span class="token function">antMatcher</span><span class="token punctuation">(</span><span class="token string">"/db/**"</span><span class="token punctuation">)</span><span class="token punctuation">.</span><span class="token function">access</span><span class="token punctuation">(</span><span class="token string">"hasRole('ADMIN') and hasRole('DBA')"</span><span class="token punctuation">)</span> <span class="token comment" spellcheck="true">// 使用 hasRole 表达式，这样不需要 ROLE 前缀</span>
-            <span class="token punctuation">.</span><span class="token function">anyRequest</span><span class="token punctuation">(</span><span class="token punctuation">)</span><span class="token punctuation">.</span><span class="token function">authenticated</span><span class="token punctuation">(</span><span class="token punctuation">)</span> <span class="token comment" spellcheck="true">// 其他所有请求都需要身份验证</span>
-            <span class="token punctuation">.</span><span class="token function">and</span><span class="token punctuation">(</span><span class="token punctuation">)</span>
-        <span class="token punctuation">.</span><span class="token function">formLogin</span><span class="token punctuation">(</span><span class="token punctuation">)</span>
-            <span class="token punctuation">.</span><span class="token function">loginPage</span><span class="token punctuation">(</span><span class="token string">"/login"</span><span class="token punctuation">)</span>
-            <span class="token punctuation">.</span><span class="token function">permitAll</span><span class="token punctuation">(</span><span class="token punctuation">)</span><span class="token punctuation">;</span>
-<span class="token punctuation">}</span>
+        .authorizeRequests()    // 按照子类的顺序进行匹配
+            .antMatcher(&quot;/resources/**&quot;,&quot;signup&quot;,&quot;/about&quot;).permitAll() // 允许指定路径无需认证
+            .antMatcher(&quot;/admin/**&quot;).hasRole(&quot;ADMIN&quot;)    // 指定路径需要 ADMIN 权限
+            .antMatcher(&quot;/db/**&quot;).access(&quot;hasRole(&#39;ADMIN&#39;) and hasRole(&#39;DBA&#39;)&quot;) // 使用 hasRole 表达式，这样不需要 ROLE 前缀
+            .anyRequest().authenticated() // 其他所有请求都需要身份验证
+            .and()
+        .formLogin()
+            .loginPage(&quot;/login&quot;)
+            .permitAll();
+}
 </code></pre>
 <h2 id="五、登出处理"><a href="#五、登出处理" class="headerlink" title="五、登出处理"></a>五、登出处理</h2><p>在使用 <code>WebSecurityConfigurerAdapter</code> 时，将会自动开启注销功能，访问 <code>/logout</code> 后会执行如下操作使用户注销：</p>
 <ol>
@@ -486,26 +486,26 @@
 <li>跳转到 “/login?logout”</li>
 </ol>
 <p>或者，也可以自定义注销需求：</p>
-<pre class=" language-java"><code class="language-java"><span class="token keyword">protected</span> <span class="token keyword">void</span> <span class="token function">configure</span><span class="token punctuation">(</span>HttpSecurity http<span class="token punctuation">)</span> <span class="token keyword">throws</span> Exception <span class="token punctuation">{</span>
+<pre><code class="java">protected void configure(HttpSecurity http) throws Exception {
     http
-        <span class="token punctuation">.</span><span class="token function">authorizeRequests</span><span class="token punctuation">(</span><span class="token punctuation">)</span>
-            <span class="token punctuation">.</span><span class="token function">antMatcher</span><span class="token punctuation">(</span><span class="token string">"/resources/**"</span><span class="token punctuation">,</span><span class="token string">"signup"</span><span class="token punctuation">,</span><span class="token string">"/about"</span><span class="token punctuation">)</span><span class="token punctuation">.</span><span class="token function">permitAll</span><span class="token punctuation">(</span><span class="token punctuation">)</span>
-            <span class="token punctuation">.</span><span class="token function">antMatcher</span><span class="token punctuation">(</span><span class="token string">"/admin/**"</span><span class="token punctuation">)</span><span class="token punctuation">.</span><span class="token function">hasRole</span><span class="token punctuation">(</span><span class="token string">"ADMIN"</span><span class="token punctuation">)</span>
-            <span class="token punctuation">.</span><span class="token function">antMatcher</span><span class="token punctuation">(</span><span class="token string">"/db/**"</span><span class="token punctuation">)</span><span class="token punctuation">.</span><span class="token function">access</span><span class="token punctuation">(</span><span class="token string">"hasRole('ADMIN') and hasRole('DBA')"</span><span class="token punctuation">)</span>
-            <span class="token punctuation">.</span><span class="token function">anyRequest</span><span class="token punctuation">(</span><span class="token punctuation">)</span><span class="token punctuation">.</span><span class="token function">authenticated</span><span class="token punctuation">(</span><span class="token punctuation">)</span>
-            <span class="token punctuation">.</span><span class="token function">and</span><span class="token punctuation">(</span><span class="token punctuation">)</span>
-        <span class="token punctuation">.</span><span class="token function">formLogin</span><span class="token punctuation">(</span><span class="token punctuation">)</span>
-            <span class="token punctuation">.</span><span class="token function">loginPage</span><span class="token punctuation">(</span><span class="token string">"/login"</span><span class="token punctuation">)</span>
-            <span class="token punctuation">.</span><span class="token function">permitAll</span><span class="token punctuation">(</span><span class="token punctuation">)</span>
-            <span class="token punctuation">.</span><span class="token function">and</span><span class="token punctuation">(</span><span class="token punctuation">)</span>
-        <span class="token punctuation">.</span><span class="token function">logout</span><span class="token punctuation">(</span><span class="token punctuation">)</span>                                <span class="token comment" spellcheck="true">// 提供注销支持</span>
-            <span class="token punctuation">.</span><span class="token function">logoutUrl</span><span class="token punctuation">(</span><span class="token string">"/my/logout"</span><span class="token punctuation">)</span>            <span class="token comment" spellcheck="true">// 触发注销操作的 url，如果开启了 CSRF保护，则此请求需要是POST</span>
-            <span class="token punctuation">.</span><span class="token function">logoutSuccessUrl</span><span class="token punctuation">(</span><span class="token string">"/my/index"</span><span class="token punctuation">)</span>         <span class="token comment" spellcheck="true">// 注销后要重定向的URL，默认为 /login?logout</span>
-            <span class="token punctuation">.</span><span class="token function">logoutSuccessHandler</span><span class="token punctuation">(</span>logoutSuccessHandler<span class="token punctuation">)</span>    <span class="token comment" spellcheck="true">// 自定义登出成功处理器</span>
-            <span class="token punctuation">.</span><span class="token function">invalidateHttpSession</span><span class="token punctuation">(</span><span class="token boolean">true</span><span class="token punctuation">)</span>        <span class="token comment" spellcheck="true">// 在注销时是否需要使 HttpSession 无效</span>
-            <span class="token punctuation">.</span><span class="token function">addLogoutHandler</span><span class="token punctuation">(</span>logoutHandler<span class="token punctuation">)</span>    <span class="token comment" spellcheck="true">// 添加登出处理器</span>
-            <span class="token punctuation">.</span><span class="token function">deleteCookies</span><span class="token punctuation">(</span>cookieNamesToClear<span class="token punctuation">)</span><span class="token punctuation">;</span>    <span class="token comment" spellcheck="true">// 注销成功时删除指定的 cookie，这是一种显式添加 CookieClearingLogoutHandler 的方式</span>
-<span class="token punctuation">}</span>
+        .authorizeRequests()
+            .antMatcher(&quot;/resources/**&quot;,&quot;signup&quot;,&quot;/about&quot;).permitAll()
+            .antMatcher(&quot;/admin/**&quot;).hasRole(&quot;ADMIN&quot;)
+            .antMatcher(&quot;/db/**&quot;).access(&quot;hasRole(&#39;ADMIN&#39;) and hasRole(&#39;DBA&#39;)&quot;)
+            .anyRequest().authenticated()
+            .and()
+        .formLogin()
+            .loginPage(&quot;/login&quot;)
+            .permitAll()
+            .and()
+        .logout()                                // 提供注销支持
+            .logoutUrl(&quot;/my/logout&quot;)            // 触发注销操作的 url，如果开启了 CSRF保护，则此请求需要是POST
+            .logoutSuccessUrl(&quot;/my/index&quot;)         // 注销后要重定向的URL，默认为 /login?logout
+            .logoutSuccessHandler(logoutSuccessHandler)    // 自定义登出成功处理器
+            .invalidateHttpSession(true)        // 在注销时是否需要使 HttpSession 无效
+            .addLogoutHandler(logoutHandler)    // 添加登出处理器
+            .deleteCookies(cookieNamesToClear);    // 注销成功时删除指定的 cookie，这是一种显式添加 CookieClearingLogoutHandler 的方式
+}
 </code></pre>
 <h3 id="5-1-LogoutHandler-登出处理器"><a href="#5-1-LogoutHandler-登出处理器" class="headerlink" title="5.1 LogoutHandler 登出处理器"></a>5.1 LogoutHandler 登出处理器</h3><p>LogoutHandler 实现能够参与注销处理的类，通过调用它们来执行必要的清理，且不会引发异常。各种实现如下：</p>
 <ol>
@@ -533,76 +533,76 @@
 <li>单点登出</li>
 </ol>
 <h2 id="六、WebFlux-Security"><a href="#六、WebFlux-Security" class="headerlink" title="六、WebFlux Security"></a>六、WebFlux Security</h2><p>关于 Spring-WebFlux 具体是什么，可以详见 <a href="https://blog.csdn.net/get_set/article/details/79480233" target="_blank" rel="noopener">《Spring-WebFlux》</a>。</p>
-<pre class=" language-java"><code class="language-java"><span class="token annotation punctuation">@EnableWebFluxSecurity</span>
-<span class="token keyword">public</span> <span class="token keyword">class</span> <span class="token class-name">HelloWebfluxSecurityConfig</span> <span class="token punctuation">{</span>
-    <span class="token annotation punctuation">@Bean</span>
-    <span class="token keyword">public</span> SecurityWebFilterChain <span class="token function">spirngSecurityFilterChain</span><span class="token punctuation">(</span>ServerHttpSecurity http<span class="token punctuation">)</span> <span class="token punctuation">{</span>
+<pre><code class="java">@EnableWebFluxSecurity
+public class HelloWebfluxSecurityConfig {
+    @Bean
+    public SecurityWebFilterChain spirngSecurityFilterChain(ServerHttpSecurity http) {
         http
-            <span class="token punctuation">.</span><span class="token function">authorizeExchange</span><span class="token punctuation">(</span><span class="token punctuation">)</span>
-                <span class="token punctuation">.</span><span class="token function">anyExchange</span><span class="token punctuation">(</span><span class="token punctuation">)</span><span class="token punctuation">.</span><span class="token function">authenticated</span><span class="token punctuation">(</span><span class="token punctuation">)</span>
-                <span class="token punctuation">.</span><span class="token function">and</span><span class="token punctuation">(</span><span class="token punctuation">)</span>
-            <span class="token punctuation">.</span><span class="token function">httpBasic</span><span class="token punctuation">(</span><span class="token punctuation">)</span>
-                <span class="token punctuation">.</span><span class="token function">and</span><span class="token punctuation">(</span><span class="token punctuation">)</span>
-            <span class="token punctuation">.</span><span class="token function">formLogin</span><span class="token punctuation">(</span><span class="token punctuation">)</span><span class="token punctuation">;</span>
-    <span class="token punctuation">}</span>
-<span class="token punctuation">}</span>
+            .authorizeExchange()
+                .anyExchange().authenticated()
+                .and()
+            .httpBasic()
+                .and()
+            .formLogin();
+    }
+}
 </code></pre>
 <h2 id="七、OAuth-2-0"><a href="#七、OAuth-2-0" class="headerlink" title="七、OAuth 2.0"></a>七、OAuth 2.0</h2><p>TODO：<a href="https://docs.spring.io/spring-security/site/docs/5.0.5.RELEASE/reference/htmlsingle/#jc-oauth2login" target="_blank" rel="noopener">@see</a></p>
 <h2 id="八、Authentication-认证"><a href="#八、Authentication-认证" class="headerlink" title="八、Authentication 认证"></a>八、Authentication 认证</h2><h3 id="8-1-内存认证-In-Memory-Authentication"><a href="#8-1-内存认证-In-Memory-Authentication" class="headerlink" title="8.1 内存认证(In-Memory Authentication)"></a>8.1 内存认证(In-Memory Authentication)</h3><p>直接在内存中配置多个用户，示例如下：</p>
-<pre class=" language-java"><code class="language-java"><span class="token annotation punctuation">@Bean</span>
-<span class="token keyword">public</span> UserDetailsService <span class="token function">userDetailsService</span><span class="token punctuation">(</span><span class="token punctuation">)</span> <span class="token keyword">throws</span> Exception <span class="token punctuation">{</span>
-    UserBuilder user <span class="token operator">=</span> User<span class="token punctuation">.</span><span class="token function">withDefaultPasswordEncoder</span><span class="token punctuation">(</span><span class="token punctuation">)</span><span class="token punctuation">;</span>
-    InMemoryUserDetailsManager manager <span class="token operator">=</span> <span class="token keyword">new</span> <span class="token class-name">InMemoryUserDetailsManager</span><span class="token punctuation">(</span><span class="token punctuation">)</span><span class="token punctuation">;</span>
-    manager<span class="token punctuation">.</span><span class="token function">createUser</span><span class="token punctuation">(</span>users<span class="token punctuation">.</span><span class="token function">username</span><span class="token punctuation">(</span><span class="token string">"user"</span><span class="token punctuation">)</span><span class="token punctuation">.</span><span class="token function">password</span><span class="token punctuation">(</span><span class="token string">"password"</span><span class="token punctuation">)</span><span class="token punctuation">.</span><span class="token function">roles</span><span class="token punctuation">(</span><span class="token string">"USER"</span><span class="token punctuation">)</span><span class="token punctuation">.</span><span class="token function">build</span><span class="token punctuation">(</span><span class="token punctuation">)</span><span class="token punctuation">)</span><span class="token punctuation">;</span>
-    manager<span class="token punctuation">.</span><span class="token function">createUser</span><span class="token punctuation">(</span>users<span class="token punctuation">.</span><span class="token function">username</span><span class="token punctuation">(</span><span class="token string">"admin"</span><span class="token punctuation">)</span><span class="token punctuation">.</span><span class="token function">password</span><span class="token punctuation">(</span><span class="token string">"password"</span><span class="token punctuation">)</span><span class="token punctuation">.</span><span class="token function">roles</span><span class="token punctuation">(</span><span class="token string">"ADMIN"</span><span class="token punctuation">)</span><span class="token punctuation">.</span><span class="token function">build</span><span class="token punctuation">(</span><span class="token punctuation">)</span><span class="token punctuation">)</span><span class="token punctuation">;</span>
-    <span class="token keyword">return</span> manager<span class="token punctuation">;</span>
-<span class="token punctuation">}</span>
+<pre><code class="java">@Bean
+public UserDetailsService userDetailsService() throws Exception {
+    UserBuilder user = User.withDefaultPasswordEncoder();
+    InMemoryUserDetailsManager manager = new InMemoryUserDetailsManager();
+    manager.createUser(users.username(&quot;user&quot;).password(&quot;password&quot;).roles(&quot;USER&quot;).build());
+    manager.createUser(users.username(&quot;admin&quot;).password(&quot;password&quot;).roles(&quot;ADMIN&quot;).build());
+    return manager;
+}
 </code></pre>
-<h3 id="8-2-JDBC认证"><a href="#8-2-JDBC认证" class="headerlink" title="8.2 JDBC认证"></a>8.2 JDBC认证</h3><pre class=" language-java"><code class="language-java"><span class="token annotation punctuation">@Autowired</span>
-<span class="token keyword">private</span> DataSource dataSource<span class="token punctuation">;</span>
+<h3 id="8-2-JDBC认证"><a href="#8-2-JDBC认证" class="headerlink" title="8.2 JDBC认证"></a>8.2 JDBC认证</h3><pre><code class="java">@Autowired
+private DataSource dataSource;
 
-<span class="token annotation punctuation">@Autowired</span>
-<span class="token keyword">public</span> <span class="token keyword">void</span> <span class="token function">configureGlobal</span><span class="token punctuation">(</span>AuthenticationManagerBuilder auth<span class="token punctuation">)</span> <span class="token keyword">throws</span> Exception <span class="token punctuation">{</span>
-    UserBuilder user <span class="token operator">=</span> User<span class="token punctuation">.</span><span class="token function">withDefaultPasswordEncoder</span><span class="token punctuation">(</span><span class="token punctuation">)</span><span class="token punctuation">;</span>
+@Autowired
+public void configureGlobal(AuthenticationManagerBuilder auth) throws Exception {
+    UserBuilder user = User.withDefaultPasswordEncoder();
     auth
-        <span class="token punctuation">.</span><span class="token function">jdbcAuthentication</span><span class="token punctuation">(</span><span class="token punctuation">)</span>
-        <span class="token punctuation">.</span><span class="token function">dataSource</span><span class="token punctuation">(</span>dataSource<span class="token punctuation">)</span>
-        <span class="token punctuation">.</span><span class="token function">withDefaultSchema</span><span class="token punctuation">(</span><span class="token punctuation">)</span>
-        <span class="token punctuation">.</span><span class="token function">withUser</span><span class="token punctuation">(</span>users<span class="token punctuation">.</span><span class="token function">username</span><span class="token punctuation">(</span><span class="token string">"user"</span><span class="token punctuation">)</span><span class="token punctuation">.</span><span class="token function">password</span><span class="token punctuation">(</span><span class="token string">"password"</span><span class="token punctuation">)</span><span class="token punctuation">.</span><span class="token function">roles</span><span class="token punctuation">(</span><span class="token string">"USER"</span><span class="token punctuation">)</span><span class="token punctuation">)</span>
-        <span class="token punctuation">.</span><span class="token function">withUser</span><span class="token punctuation">(</span>users<span class="token punctuation">.</span><span class="token function">username</span><span class="token punctuation">(</span><span class="token string">"admin"</span><span class="token punctuation">)</span><span class="token punctuation">.</span><span class="token function">password</span><span class="token punctuation">(</span><span class="token string">"password"</span><span class="token punctuation">)</span><span class="token punctuation">.</span><span class="token function">roles</span><span class="token punctuation">(</span><span class="token string">"ADMIN"</span><span class="token punctuation">)</span><span class="token punctuation">)</span><span class="token punctuation">;</span>
-<span class="token punctuation">}</span>
+        .jdbcAuthentication()
+        .dataSource(dataSource)
+        .withDefaultSchema()
+        .withUser(users.username(&quot;user&quot;).password(&quot;password&quot;).roles(&quot;USER&quot;))
+        .withUser(users.username(&quot;admin&quot;).password(&quot;password&quot;).roles(&quot;ADMIN&quot;));
+}
 </code></pre>
 <blockquote>
 <p>其他如：LDAP认证、AuthenticationProvider、UseDetailsService不再赘述。</p>
 </blockquote>
-<h2 id="九、多重-HttpSecurity-配置"><a href="#九、多重-HttpSecurity-配置" class="headerlink" title="九、多重 HttpSecurity 配置"></a>九、多重 HttpSecurity 配置</h2><pre class=" language-java"><code class="language-java"><span class="token annotation punctuation">@EnableWebSecurity</span>
-<span class="token keyword">public</span> <span class="token keyword">class</span> <span class="token class-name">MultiHttpSecurityConfig</span> <span class="token punctuation">{</span>
-    <span class="token annotation punctuation">@Configuration</span>
-    <span class="token annotation punctuation">@Order</span><span class="token punctuation">(</span><span class="token number">1</span><span class="token punctuation">)</span>
-    <span class="token keyword">public</span> <span class="token keyword">static</span> <span class="token keyword">class</span> <span class="token class-name">ApiWebSecurityConfigurationAdapter</span> <span class="token keyword">extends</span> <span class="token class-name">WebSecurityConfigurerAdapter</span> <span class="token punctuation">{</span>
-        <span class="token keyword">protected</span> <span class="token keyword">void</span> <span class="token function">configure</span><span class="token punctuation">(</span>HttpSecurity http<span class="token punctuation">)</span> <span class="token keyword">throws</span> Exception <span class="token punctuation">{</span>
+<h2 id="九、多重-HttpSecurity-配置"><a href="#九、多重-HttpSecurity-配置" class="headerlink" title="九、多重 HttpSecurity 配置"></a>九、多重 HttpSecurity 配置</h2><pre><code class="java">@EnableWebSecurity
+public class MultiHttpSecurityConfig {
+    @Configuration
+    @Order(1)
+    public static class ApiWebSecurityConfigurationAdapter extends WebSecurityConfigurerAdapter {
+        protected void configure(HttpSecurity http) throws Exception {
             http
-                <span class="token punctuation">.</span><span class="token function">antMatch</span><span class="token punctuation">(</span><span class="token string">"/api/**"</span><span class="token punctuation">)</span>
-                <span class="token punctuation">.</span><span class="token function">authorizeRequests</span><span class="token punctuation">(</span><span class="token punctuation">)</span>
-                    <span class="token punctuation">.</span><span class="token function">anyRequest</span><span class="token punctuation">(</span><span class="token punctuation">)</span><span class="token punctuation">.</span><span class="token function">hasRole</span><span class="token punctuation">(</span><span class="token string">"ADMIN"</span><span class="token punctuation">)</span>
-                    <span class="token punctuation">.</span><span class="token function">and</span><span class="token punctuation">(</span><span class="token punctuation">)</span>
-                <span class="token punctuation">.</span><span class="token function">httpBasic</span><span class="token punctuation">(</span><span class="token punctuation">)</span><span class="token punctuation">;</span>
-        <span class="token punctuation">}</span>
-    <span class="token punctuation">}</span>
+                .antMatch(&quot;/api/**&quot;)
+                .authorizeRequests()
+                    .anyRequest().hasRole(&quot;ADMIN&quot;)
+                    .and()
+                .httpBasic();
+        }
+    }
 
-    <span class="token annotation punctuation">@Configuration</span>
-    <span class="token keyword">public</span> <span class="token keyword">static</span> <span class="token keyword">class</span> <span class="token class-name">FormLoginWebSecurityConfigurerAdapter</span> <span class="token keyword">extends</span> <span class="token class-name">WebSecurityConfigurerAdapter</span> <span class="token punctuation">{</span>
+    @Configuration
+    public static class FormLoginWebSecurityConfigurerAdapter extends WebSecurityConfigurerAdapter {
 
-        <span class="token annotation punctuation">@Override</span>
-        <span class="token keyword">protected</span> <span class="token keyword">void</span> <span class="token function">configure</span><span class="token punctuation">(</span>HttpSecurity http<span class="token punctuation">)</span> <span class="token keyword">throws</span> Exception <span class="token punctuation">{</span>
+        @Override
+        protected void configure(HttpSecurity http) throws Exception {
             http
-                <span class="token punctuation">.</span><span class="token function">authorizeRequests</span><span class="token punctuation">(</span><span class="token punctuation">)</span>
-                    <span class="token punctuation">.</span><span class="token function">anyRequest</span><span class="token punctuation">(</span><span class="token punctuation">)</span><span class="token punctuation">.</span><span class="token function">authenticated</span><span class="token punctuation">(</span><span class="token punctuation">)</span>
-                    <span class="token punctuation">.</span><span class="token function">and</span><span class="token punctuation">(</span><span class="token punctuation">)</span>
-                <span class="token punctuation">.</span><span class="token function">formLogin</span><span class="token punctuation">(</span><span class="token punctuation">)</span><span class="token punctuation">;</span>
-        <span class="token punctuation">}</span>
-    <span class="token punctuation">}</span>
-<span class="token punctuation">}</span>
+                .authorizeRequests()
+                    .anyRequest().authenticated()
+                    .and()
+                .formLogin();
+        }
+    }
+}
 </code></pre>
 <p>如果请求的url以 /api/ 开头，将使用 <code>ApiWebSecurityConfigurationAdapter</code> 配置。其他请求使用 <code>FormLoginWebSecurityConfigurerAdapter</code> 配置。</p>
 
@@ -728,7 +728,7 @@
               
                 <a href="/archives">
               
-                  <span class="site-state-item-count">224</span>
+                  <span class="site-state-item-count">237</span>
                   <span class="site-state-item-name">日志</span>
                 </a>
               </div>
@@ -750,7 +750,7 @@
               
               <div class="site-state-item site-state-tags">
                 <a href="/tags/index.html">
-                  <span class="site-state-item-count">21</span>
+                  <span class="site-state-item-count">22</span>
                   <span class="site-state-item-name">标签</span>
                 </a>
               </div>

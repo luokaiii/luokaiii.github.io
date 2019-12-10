@@ -394,40 +394,40 @@
 <li>添加 React-Redux 依赖</li>
 </ol>
 <h2 id="一、使用Provider标签"><a href="#一、使用Provider标签" class="headerlink" title="一、使用Provider标签"></a>一、使用Provider标签</h2><p>React Redux 提供了 <code>&lt;Provider/&gt;</code> 标签，使Redux Store 可以用于被包含的程序组件内。</p>
-<pre class=" language-js"><code class="language-js"><span class="token keyword">import</span> React <span class="token keyword">from</span> <span class="token string">'react'</span>
-<span class="token keyword">import</span> ReactDOM <span class="token keyword">from</span> <span class="token string">'react-dom'</span>
+<pre><code class="js">import React from &#39;react&#39;
+import ReactDOM from &#39;react-dom&#39;
 
-<span class="token keyword">import</span> <span class="token punctuation">{</span> Provider <span class="token punctuation">}</span> <span class="token keyword">from</span> <span class="token string">'react-redux'</span>
-<span class="token keyword">import</span> store <span class="token keyword">from</span> <span class="token string">'./store'</span>
+import { Provider } from &#39;react-redux&#39;
+import store from &#39;./store&#39;
 
-<span class="token keyword">import</span> App <span class="token keyword">from</span> <span class="token string">'./App'</span>
+import App from &#39;./App&#39;
 
-<span class="token keyword">const</span> rootElement <span class="token operator">=</span> document<span class="token punctuation">.</span><span class="token function">getElementById</span><span class="token punctuation">(</span><span class="token string">'root'</span><span class="token punctuation">)</span>
-ReactDOM<span class="token punctuation">.</span><span class="token function">render</span><span class="token punctuation">(</span>
-  <span class="token operator">&lt;</span>Provider store<span class="token operator">=</span><span class="token punctuation">{</span>store<span class="token punctuation">}</span><span class="token operator">></span>
-    <span class="token operator">&lt;</span>App <span class="token operator">/</span><span class="token operator">></span>
-  <span class="token operator">&lt;</span><span class="token operator">/</span>Provider<span class="token operator">></span><span class="token punctuation">,</span>
+const rootElement = document.getElementById(&#39;root&#39;)
+ReactDOM.render(
+  &lt;Provider store={store}&gt;
+    &lt;App /&gt;
+  &lt;/Provider&gt;,
   rootElement
-<span class="token punctuation">)</span>
+)
 </code></pre>
 <h2 id="二、组件连接Store"><a href="#二、组件连接Store" class="headerlink" title="二、组件连接Store"></a>二、组件连接Store</h2><p>React Redux 提供了 connect 将组件连接到 store。</p>
-<pre class=" language-js"><code class="language-js"><span class="token keyword">import</span> <span class="token punctuation">{</span> connect <span class="token punctuation">}</span> <span class="token keyword">from</span> <span class="token string">'react-redux'</span>
-<span class="token keyword">import</span> <span class="token punctuation">{</span> increment<span class="token punctuation">,</span> decrement<span class="token punctuation">,</span> reset <span class="token punctuation">}</span> <span class="token keyword">from</span> <span class="token string">'./actionCreators'</span>
+<pre><code class="js">import { connect } from &#39;react-redux&#39;
+import { increment, decrement, reset } from &#39;./actionCreators&#39;
 
-<span class="token comment" spellcheck="true">// const Counter = ...</span>
+// const Counter = ...
 
-<span class="token keyword">const</span> mapStateToProps <span class="token operator">=</span> <span class="token punctuation">(</span>state <span class="token comment" spellcheck="true">/*, ownProps*/</span><span class="token punctuation">)</span> <span class="token operator">=</span><span class="token operator">></span> <span class="token punctuation">{</span>
-  <span class="token keyword">return</span> <span class="token punctuation">{</span>
-    counter<span class="token punctuation">:</span> state<span class="token punctuation">.</span>counter
-  <span class="token punctuation">}</span>
-<span class="token punctuation">}</span>
+const mapStateToProps = (state /*, ownProps*/) =&gt; {
+  return {
+    counter: state.counter
+  }
+}
 
-<span class="token keyword">const</span> mapDispatchToProps <span class="token operator">=</span> <span class="token punctuation">{</span> increment<span class="token punctuation">,</span> decrement<span class="token punctuation">,</span> reset <span class="token punctuation">}</span>
+const mapDispatchToProps = { increment, decrement, reset }
 
-<span class="token keyword">export</span> <span class="token keyword">default</span> <span class="token function">connect</span><span class="token punctuation">(</span>
-  mapStateToProps<span class="token punctuation">,</span>
+export default connect(
+  mapStateToProps,
   mapDispatchToProps
-<span class="token punctuation">)</span><span class="token punctuation">(</span>Counter<span class="token punctuation">)</span>
+)(Counter)
 </code></pre>
 <h2 id="三、拆分Reducer-js"><a href="#三、拆分Reducer-js" class="headerlink" title="三、拆分Reducer.js"></a>三、拆分Reducer.js</h2><p>当Reducer中需要接收的action过多，且各个组件都有自己的action、reducer、constants时，可以将reducer.js分散到各个组件模块中。在总的reducer中使用 combineReducers ，将各个子reducer连接起来。</p>
 
@@ -553,7 +553,7 @@ ReactDOM<span class="token punctuation">.</span><span class="token function">ren
               
                 <a href="/archives">
               
-                  <span class="site-state-item-count">224</span>
+                  <span class="site-state-item-count">237</span>
                   <span class="site-state-item-name">日志</span>
                 </a>
               </div>
@@ -575,7 +575,7 @@ ReactDOM<span class="token punctuation">.</span><span class="token function">ren
               
               <div class="site-state-item site-state-tags">
                 <a href="/tags/index.html">
-                  <span class="site-state-item-count">21</span>
+                  <span class="site-state-item-count">22</span>
                   <span class="site-state-item-name">标签</span>
                 </a>
               </div>

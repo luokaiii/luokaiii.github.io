@@ -81,19 +81,19 @@
 
 
 
-<meta name="description" content="Docker部署全栈项目：七、Docker-Compose完整的 docker-compose.yml 如下： version: &apos;3&apos;  services:   mongo:     container_name: &apos;luokaiii-mongo&apos;     image: &apos;mongo:4.0.12&apos;     volumes:       - mongodata:/data/db     envi">
+<meta name="description" content="Docker部署全栈项目：七、Docker-Compose完整的 docker-compose.yml 如下： version: &amp;#39;3&amp;#39;  services:   mongo:     container_name: &amp;#39;luokaiii-mongo&amp;#39;     image: &amp;#39;mongo:4.0.12&amp;#39;     volumes:       - mon">
 <meta name="keywords" content="java,docker">
 <meta property="og:type" content="article">
 <meta property="og:title" content="Docker部署全栈：六、部署Nginx和React">
 <meta property="og:url" content="http://luokaiii.github.io/2019/09/24/读书笔记/《Docker全栈项目部署》/7.Docker-Compose/index.html">
 <meta property="og:site_name" content="罗凯的博客">
-<meta property="og:description" content="Docker部署全栈项目：七、Docker-Compose完整的 docker-compose.yml 如下： version: &apos;3&apos;  services:   mongo:     container_name: &apos;luokaiii-mongo&apos;     image: &apos;mongo:4.0.12&apos;     volumes:       - mongodata:/data/db     envi">
+<meta property="og:description" content="Docker部署全栈项目：七、Docker-Compose完整的 docker-compose.yml 如下： version: &amp;#39;3&amp;#39;  services:   mongo:     container_name: &amp;#39;luokaiii-mongo&amp;#39;     image: &amp;#39;mongo:4.0.12&amp;#39;     volumes:       - mon">
 <meta property="og:locale" content="zh-Hans">
 <meta property="og:image" content="https://i.loli.net/2019/09/24/sGQzv4oBC9cyTN2.png">
 <meta property="og:updated_time" content="2019-09-25T08:01:59.758Z">
 <meta name="twitter:card" content="summary">
 <meta name="twitter:title" content="Docker部署全栈：六、部署Nginx和React">
-<meta name="twitter:description" content="Docker部署全栈项目：七、Docker-Compose完整的 docker-compose.yml 如下： version: &apos;3&apos;  services:   mongo:     container_name: &apos;luokaiii-mongo&apos;     image: &apos;mongo:4.0.12&apos;     volumes:       - mongodata:/data/db     envi">
+<meta name="twitter:description" content="Docker部署全栈项目：七、Docker-Compose完整的 docker-compose.yml 如下： version: &amp;#39;3&amp;#39;  services:   mongo:     container_name: &amp;#39;luokaiii-mongo&amp;#39;     image: &amp;#39;mongo:4.0.12&amp;#39;     volumes:       - mon">
 <meta name="twitter:image" content="https://i.loli.net/2019/09/24/sGQzv4oBC9cyTN2.png">
 
 
@@ -387,12 +387,12 @@
 
       
         <h1 id="Docker部署全栈项目：七、Docker-Compose"><a href="#Docker部署全栈项目：七、Docker-Compose" class="headerlink" title="Docker部署全栈项目：七、Docker-Compose"></a>Docker部署全栈项目：七、Docker-Compose</h1><p>完整的 <code>docker-compose.yml</code> 如下：</p>
-<pre class=" language-yml"><code class="language-yml">version: '3'
+<pre><code class="yml">version: &#39;3&#39;
 
 services:
   mongo:
-    container_name: 'luokaiii-mongo'
-    image: 'mongo:4.0.12'
+    container_name: &#39;luokaiii-mongo&#39;
+    image: &#39;mongo:4.0.12&#39;
     volumes:
       - mongodata:/data/db
     environment:
@@ -400,49 +400,49 @@ services:
       MONGO_INITDB_ROOT_PASSWORD: password
     restart: always
     expose:
-      - '27017'
+      - &#39;27017&#39;
   mariadb:
-    container_name: 'luokaiii-mysql'
-    image: 'mariadb:10.4.8'
+    container_name: &#39;luokaiii-mysql&#39;
+    image: &#39;mariadb:10.4.8&#39;
     volumes:
-      - './mysql/data/:/var/lib/mysql'
-      - './mysql/conf/local.cnf:/etc/mysql/conf.d/local.cnf'
+      - &#39;./mysql/data/:/var/lib/mysql&#39;
+      - &#39;./mysql/conf/local.cnf:/etc/mysql/conf.d/local.cnf&#39;
     environment:
       MYSQL_ROOT_PASSWORD: password
       MYSQL_DATABASE: db_user
-    command: ['mysqld', '--character-set-server=utf8mb4', '--collation-server=utf8mb4_unicode_ci']
+    command: [&#39;mysqld&#39;, &#39;--character-set-server=utf8mb4&#39;, &#39;--collation-server=utf8mb4_unicode_ci&#39;]
     restart: always
     expose:
-      - '3306'
+      - &#39;3306&#39;
   redis:
-    container_name: 'luokaiii-redis'
-    image: 'redis:4.0.14'
+    container_name: &#39;luokaiii-redis&#39;
+    image: &#39;redis:4.0.14&#39;
     volumes:
-      - './redis/data:/data'
+      - &#39;./redis/data:/data&#39;
     command: redis-server --requirepass password
     restart: always
     expose:
-      - '6379'
+      - &#39;6379&#39;
   api:
-    container_name: 'luokaiii-api'
+    container_name: &#39;luokaiii-api&#39;
     depends_on:
       - mongo
       - redis
       - mariadb
-    image: 'luokaiii-api:latest'
+    image: &#39;luokaiii-api:latest&#39;
     ports:
-      - '8080:8080'
+      - &#39;8080:8080&#39;
     restart: always
   nginx:
-    container_name: 'luokaiii-nginx'
+    container_name: &#39;luokaiii-nginx&#39;
     depends_on:
       - api
-    image: 'nginx:alpine'
+    image: &#39;nginx:alpine&#39;
     volumes:
-      - './nginx/conf:/etc/nginx/conf.d'
-      - './nginx/html:/usr/www/luokaiii/cn/html'
+      - &#39;./nginx/conf:/etc/nginx/conf.d&#39;
+      - &#39;./nginx/html:/usr/www/luokaiii/cn/html&#39;
     ports:
-      - '80:80'
+      - &#39;80:80&#39;
     restart: always
 volumes:
   mongodata:
@@ -491,8 +491,8 @@ volumes:
         <div class="post-nav">
           <div class="post-nav-next post-nav-item">
             
-              <a href="/2019/09/24/读书笔记/《Docker全栈项目部署》/8.DC命令/" rel="next" title="Docker部署全栈：七、DockerCompose命令">
-                <i class="fa fa-chevron-left"></i> Docker部署全栈：七、DockerCompose命令
+              <a href="/2019/09/24/读书笔记/《Docker全栈项目部署》/9.Docker版本升级/" rel="next" title="Docker部署全栈：八、Docker升级">
+                <i class="fa fa-chevron-left"></i> Docker部署全栈：八、Docker升级
               </a>
             
           </div>
@@ -584,7 +584,7 @@ volumes:
               
                 <a href="/archives">
               
-                  <span class="site-state-item-count">224</span>
+                  <span class="site-state-item-count">237</span>
                   <span class="site-state-item-name">日志</span>
                 </a>
               </div>
@@ -606,7 +606,7 @@ volumes:
               
               <div class="site-state-item site-state-tags">
                 <a href="/tags/index.html">
-                  <span class="site-state-item-count">21</span>
+                  <span class="site-state-item-count">22</span>
                   <span class="site-state-item-name">标签</span>
                 </a>
               </div>

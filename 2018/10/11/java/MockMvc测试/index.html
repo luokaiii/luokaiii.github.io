@@ -384,50 +384,50 @@
       
 
       
-        <h1 id="SpringMVC测试框架"><a href="#SpringMVC测试框架" class="headerlink" title="SpringMVC测试框架"></a>SpringMVC测试框架</h1><h3 id="基于RESTful风格的SpringMVC的测试，我们可以测试完整的Spring-MVC流程，即从URL请求到控制器处理，再到视图渲染都可以测试。"><a href="#基于RESTful风格的SpringMVC的测试，我们可以测试完整的Spring-MVC流程，即从URL请求到控制器处理，再到视图渲染都可以测试。" class="headerlink" title="基于RESTful风格的SpringMVC的测试，我们可以测试完整的Spring MVC流程，即从URL请求到控制器处理，再到视图渲染都可以测试。"></a>基于RESTful风格的SpringMVC的测试，我们可以测试完整的Spring MVC流程，即从URL请求到控制器处理，再到视图渲染都可以测试。</h3><h2 id="快速入门-这个方法中包含了大多数的常见情况："><a href="#快速入门-这个方法中包含了大多数的常见情况：" class="headerlink" title="快速入门-这个方法中包含了大多数的常见情况："></a>快速入门-这个方法中包含了大多数的常见情况：</h2><pre class=" language-java"><code class="language-java">    <span class="token annotation punctuation">@RunWith</span><span class="token punctuation">(</span>SpringRunner<span class="token punctuation">.</span><span class="token keyword">class</span><span class="token punctuation">)</span>
-    <span class="token annotation punctuation">@SpringBootTest</span>
-    <span class="token annotation punctuation">@AutoConfigureMockMvc</span>
-    <span class="token keyword">public</span> <span class="token keyword">class</span> <span class="token class-name">CourseControllerTest</span> <span class="token punctuation">{</span>
+        <h1 id="SpringMVC测试框架"><a href="#SpringMVC测试框架" class="headerlink" title="SpringMVC测试框架"></a>SpringMVC测试框架</h1><h3 id="基于RESTful风格的SpringMVC的测试，我们可以测试完整的Spring-MVC流程，即从URL请求到控制器处理，再到视图渲染都可以测试。"><a href="#基于RESTful风格的SpringMVC的测试，我们可以测试完整的Spring-MVC流程，即从URL请求到控制器处理，再到视图渲染都可以测试。" class="headerlink" title="基于RESTful风格的SpringMVC的测试，我们可以测试完整的Spring MVC流程，即从URL请求到控制器处理，再到视图渲染都可以测试。"></a>基于RESTful风格的SpringMVC的测试，我们可以测试完整的Spring MVC流程，即从URL请求到控制器处理，再到视图渲染都可以测试。</h3><h2 id="快速入门-这个方法中包含了大多数的常见情况："><a href="#快速入门-这个方法中包含了大多数的常见情况：" class="headerlink" title="快速入门-这个方法中包含了大多数的常见情况："></a>快速入门-这个方法中包含了大多数的常见情况：</h2><pre><code class="java">    @RunWith(SpringRunner.class)
+    @SpringBootTest
+    @AutoConfigureMockMvc
+    public class CourseControllerTest {
 
-        <span class="token annotation punctuation">@Autowired</span>
-        <span class="token keyword">private</span> MockMvc mockMvc<span class="token punctuation">;</span>
+        @Autowired
+        private MockMvc mockMvc;
 
-        <span class="token comment" spellcheck="true">//ObjectMapper是一个可以重复使用的对象</span>
-        <span class="token annotation punctuation">@Autowired</span>
-        <span class="token keyword">private</span> ObjectMapper mapper<span class="token punctuation">;</span>
+        //ObjectMapper是一个可以重复使用的对象
+        @Autowired
+        private ObjectMapper mapper;
 
-        <span class="token annotation punctuation">@Test</span>
-        <span class="token keyword">public</span> <span class="token keyword">void</span> <span class="token function">courseListTest</span><span class="token punctuation">(</span><span class="token punctuation">)</span> <span class="token keyword">throws</span> Exception<span class="token punctuation">{</span>
-            mockMvc<span class="token punctuation">.</span><span class="token function">perform</span><span class="token punctuation">(</span>MockMvcRequestBuilders<span class="token punctuation">.</span><span class="token function">get</span><span class="token punctuation">(</span><span class="token string">"/course"</span><span class="token punctuation">)</span><span class="token punctuation">)</span>
-                <span class="token punctuation">.</span><span class="token function">andExpect</span><span class="token punctuation">(</span>MockMvcResultMatchers<span class="token punctuation">.</span><span class="token function">status</span><span class="token punctuation">(</span><span class="token punctuation">)</span><span class="token punctuation">.</span><span class="token function">isOk</span><span class="token punctuation">(</span><span class="token punctuation">)</span><span class="token punctuation">)</span><span class="token punctuation">;</span>
-        <span class="token punctuation">}</span>
+        @Test
+        public void courseListTest() throws Exception{
+            mockMvc.perform(MockMvcRequestBuilders.get(&quot;/course&quot;))
+                .andExpect(MockMvcResultMatchers.status().isOk());
+        }
 
-        <span class="token annotation punctuation">@Test</span>
-        <span class="token keyword">public</span> <span class="token keyword">void</span> <span class="token function">createTest</span><span class="token punctuation">(</span><span class="token punctuation">)</span> <span class="token keyword">throws</span> Exception<span class="token punctuation">{</span>
-            String json <span class="token operator">=</span> <span class="token string">"{\"name\":\"Mock测试\",\"classHour\":\"4课时\",\"id\":\"rn:practice:Course:5af27fa5d34f435e581e5bbf\"}"</span><span class="token punctuation">;</span>
-            <span class="token comment" spellcheck="true">//将json格式字符串转换成Course对象里的属性值</span>
-            Course course <span class="token operator">=</span> mapper<span class="token punctuation">.</span><span class="token function">readValue</span><span class="token punctuation">(</span>json<span class="token punctuation">,</span>Course<span class="token punctuation">.</span><span class="token keyword">class</span><span class="token punctuation">)</span><span class="token punctuation">;</span>
-            <span class="token comment" spellcheck="true">//perform,执行一个RequestBuilders请求，会自动执行SpringMVC的流程并映射到相应的控制器执行处理</span>
-            mockMvc<span class="token punctuation">.</span><span class="token function">perform</span><span class="token punctuation">(</span>
-                    <span class="token comment" spellcheck="true">//构造一个post请求</span>
-                    MockMvcRequestBuilders<span class="token punctuation">.</span><span class="token function">post</span><span class="token punctuation">(</span><span class="token string">"/course"</span><span class="token punctuation">)</span>
-                    <span class="token punctuation">.</span><span class="token function">contentType</span><span class="token punctuation">(</span>MediaType<span class="token punctuation">.</span>APPLICATION_JSON_UTF8<span class="token punctuation">)</span>
-                    <span class="token comment" spellcheck="true">//使用writeValueAsString()方法来获取对象的JSON字符串表示</span>
-                    <span class="token punctuation">.</span><span class="token function">content</span><span class="token punctuation">(</span>mapper<span class="token punctuation">.</span><span class="token function">writeValueAsString</span><span class="token punctuation">(</span>course<span class="token punctuation">)</span><span class="token punctuation">)</span><span class="token punctuation">)</span>
-            <span class="token comment" spellcheck="true">//andExpect，添加ResultMathcers验证规则，验证控制器执行完成后结果是否正确，【这是一个断言】</span>
-            <span class="token punctuation">.</span><span class="token function">andExpect</span><span class="token punctuation">(</span>MockMvcResultMatchers<span class="token punctuation">.</span><span class="token function">status</span><span class="token punctuation">(</span><span class="token punctuation">)</span><span class="token punctuation">.</span><span class="token function">is</span><span class="token punctuation">(</span><span class="token number">200</span><span class="token punctuation">)</span><span class="token punctuation">)</span>
+        @Test
+        public void createTest() throws Exception{
+            String json = &quot;{\&quot;name\&quot;:\&quot;Mock测试\&quot;,\&quot;classHour\&quot;:\&quot;4课时\&quot;,\&quot;id\&quot;:\&quot;rn:practice:Course:5af27fa5d34f435e581e5bbf\&quot;}&quot;;
+            //将json格式字符串转换成Course对象里的属性值
+            Course course = mapper.readValue(json,Course.class);
+            //perform,执行一个RequestBuilders请求，会自动执行SpringMVC的流程并映射到相应的控制器执行处理
+            mockMvc.perform(
+                    //构造一个post请求
+                    MockMvcRequestBuilders.post(&quot;/course&quot;)
+                    .contentType(MediaType.APPLICATION_JSON_UTF8)
+                    //使用writeValueAsString()方法来获取对象的JSON字符串表示
+                    .content(mapper.writeValueAsString(course)))
+            //andExpect，添加ResultMathcers验证规则，验证控制器执行完成后结果是否正确，【这是一个断言】
+            .andExpect(MockMvcResultMatchers.status().is(200))
 
-            <span class="token punctuation">.</span><span class="token function">andExpect</span><span class="token punctuation">(</span>MockMvcResultMatchers<span class="token punctuation">.</span><span class="token function">content</span><span class="token punctuation">(</span><span class="token punctuation">)</span><span class="token punctuation">.</span><span class="token function">contentType</span><span class="token punctuation">(</span>MediaType<span class="token punctuation">.</span>APPLICATION_JSON_UTF8<span class="token punctuation">)</span><span class="token punctuation">)</span>
+            .andExpect(MockMvcResultMatchers.content().contentType(MediaType.APPLICATION_JSON_UTF8))
 
-            <span class="token comment" spellcheck="true">//假定返回的结果中，"name" 值为 "Mock测试2",如果不是的话，会抛出异常java.lang.AssertionError，并给出期望值和实际值</span>
-            <span class="token punctuation">.</span><span class="token function">andExpect</span><span class="token punctuation">(</span>MockMvcResultMatchers<span class="token punctuation">.</span><span class="token function">jsonPath</span><span class="token punctuation">(</span><span class="token string">"$.name"</span><span class="token punctuation">)</span><span class="token punctuation">.</span><span class="token function">value</span><span class="token punctuation">(</span><span class="token string">"Mock测试2"</span><span class="token punctuation">)</span><span class="token punctuation">)</span>
+            //假定返回的结果中，&quot;name&quot; 值为 &quot;Mock测试2&quot;,如果不是的话，会抛出异常java.lang.AssertionError，并给出期望值和实际值
+            .andExpect(MockMvcResultMatchers.jsonPath(&quot;$.name&quot;).value(&quot;Mock测试2&quot;))
 
-            <span class="token comment" spellcheck="true">//添加ResultHandler结果处理器，比如调试时 打印结果(print方法)到控制台</span>
-            <span class="token punctuation">.</span><span class="token function">andDo</span><span class="token punctuation">(</span><span class="token function">print</span><span class="token punctuation">(</span><span class="token punctuation">)</span><span class="token punctuation">)</span>
+            //添加ResultHandler结果处理器，比如调试时 打印结果(print方法)到控制台
+            .andDo(print())
 
-            <span class="token comment" spellcheck="true">//返回相应的MvcResult</span>
-            <span class="token punctuation">.</span><span class="token function">andReturn</span><span class="token punctuation">(</span><span class="token punctuation">)</span><span class="token punctuation">;</span>
-    <span class="token punctuation">}</span>
+            //返回相应的MvcResult
+            .andReturn();
+    }
 </code></pre>
 <h2 id="原理："><a href="#原理：" class="headerlink" title="原理："></a>原理：</h2><h2 id="一-MockMvcBuilder"><a href="#一-MockMvcBuilder" class="headerlink" title="一 MockMvcBuilder"></a>一 MockMvcBuilder</h2><p>MockMvcBuilder是用来构造MockMvc的构造器，其主要有两个实现：StandaloneMockMvcBuilder和DefaultMockMvcBuilder，分别对应两种测试方式，即独立安装和集成Web环境测试（此种方式并不会集成真正的web环境，而是通过相应的Mock API进行模拟测试，无须启动服务器）。对于我们来说直接使用静态工厂MockMvcBuilders创建即可。</p>
 <h3 id="1-集成Web环境方式"><a href="#1-集成Web环境方式" class="headerlink" title="1.集成Web环境方式"></a>1.集成Web环境方式</h3><pre><code>MockMvcBuilders.webAppContextSetup(WebApplicationContext context)：指定WebApplicationContext，将会从该上下文获取相应的控制器并得到相应的MockMvc；
@@ -667,8 +667,8 @@ mockMvc.perform(get(&quot;/user/1&quot;))
         <div class="post-nav">
           <div class="post-nav-next post-nav-item">
             
-              <a href="/2018/09/30/SpringBoot/OSS-阿里云文件上传/" rel="next" title="基于阿里云OSS的文件上传服务">
-                <i class="fa fa-chevron-left"></i> 基于阿里云OSS的文件上传服务
+              <a href="/2018/09/30/SpringBoot/SpringBoot/" rel="next" title="SpringBoot QA">
+                <i class="fa fa-chevron-left"></i> SpringBoot QA
               </a>
             
           </div>
@@ -760,7 +760,7 @@ mockMvc.perform(get(&quot;/user/1&quot;))
               
                 <a href="/archives">
               
-                  <span class="site-state-item-count">224</span>
+                  <span class="site-state-item-count">237</span>
                   <span class="site-state-item-name">日志</span>
                 </a>
               </div>
@@ -782,7 +782,7 @@ mockMvc.perform(get(&quot;/user/1&quot;))
               
               <div class="site-state-item site-state-tags">
                 <a href="/tags/index.html">
-                  <span class="site-state-item-count">21</span>
+                  <span class="site-state-item-count">22</span>
                   <span class="site-state-item-name">标签</span>
                 </a>
               </div>

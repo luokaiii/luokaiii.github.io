@@ -385,65 +385,65 @@
 
       
         <h1 id="POI生成Excel工具类"><a href="#POI生成Excel工具类" class="headerlink" title="POI生成Excel工具类"></a>POI生成Excel工具类</h1><p>该工具类中，包含：创建表格（带默认样式）、自定义样式（通过重写 setDefaultStyle和setFirstCellStyle）、合并单元格、宽度自适应等。</p>
-<pre class=" language-java"><code class="language-java"><span class="token comment" spellcheck="true">/**
+<pre><code class="java">/**
  * Excel操作工具类
- */</span>
-<span class="token keyword">public</span> <span class="token keyword">class</span> <span class="token class-name">ExcelTools</span> <span class="token punctuation">{</span>
+ */
+public class ExcelTools {
 
-    <span class="token comment" spellcheck="true">/**
+    /**
      * 默认的样式， 垂直水平居中、默认换行
-     */</span>
-    <span class="token keyword">private</span> XSSFCellStyle defaultStyle<span class="token punctuation">;</span>
+     */
+    private XSSFCellStyle defaultStyle;
 
-    <span class="token comment" spellcheck="true">/**
+    /**
      * 默认的行首样式
-     */</span>
-    <span class="token keyword">private</span> XSSFCellStyle firstCellStyle<span class="token punctuation">;</span>
+     */
+    private XSSFCellStyle firstCellStyle;
 
-    <span class="token keyword">private</span> <span class="token keyword">static</span> SimpleDateFormat sdf <span class="token operator">=</span> <span class="token keyword">new</span> <span class="token class-name">SimpleDateFormat</span><span class="token punctuation">(</span><span class="token string">"yyyy.MM.dd hh:mm"</span><span class="token punctuation">)</span><span class="token punctuation">;</span>
+    private static SimpleDateFormat sdf = new SimpleDateFormat(&quot;yyyy.MM.dd hh:mm&quot;);
 
-    <span class="token keyword">public</span> XSSFWorkbook <span class="token function">createWorkbook</span><span class="token punctuation">(</span><span class="token punctuation">)</span> <span class="token punctuation">{</span>
-        XSSFWorkbook workbook <span class="token operator">=</span> <span class="token keyword">new</span> <span class="token class-name">XSSFWorkbook</span><span class="token punctuation">(</span><span class="token punctuation">)</span><span class="token punctuation">;</span>
+    public XSSFWorkbook createWorkbook() {
+        XSSFWorkbook workbook = new XSSFWorkbook();
 
-        XSSFFont defaultFont <span class="token operator">=</span> workbook<span class="token punctuation">.</span><span class="token function">createFont</span><span class="token punctuation">(</span><span class="token punctuation">)</span><span class="token punctuation">;</span>
-        defaultFont<span class="token punctuation">.</span><span class="token function">setColor</span><span class="token punctuation">(</span>IndexedColors<span class="token punctuation">.</span>BLACK<span class="token punctuation">.</span><span class="token function">getIndex</span><span class="token punctuation">(</span><span class="token punctuation">)</span><span class="token punctuation">)</span><span class="token punctuation">;</span>
-        defaultFont<span class="token punctuation">.</span><span class="token function">setFontHeight</span><span class="token punctuation">(</span><span class="token number">11</span><span class="token punctuation">)</span><span class="token punctuation">;</span>
-        defaultFont<span class="token punctuation">.</span><span class="token function">setFontName</span><span class="token punctuation">(</span><span class="token string">"微软雅黑 Light"</span><span class="token punctuation">)</span><span class="token punctuation">;</span>
+        XSSFFont defaultFont = workbook.createFont();
+        defaultFont.setColor(IndexedColors.BLACK.getIndex());
+        defaultFont.setFontHeight(11);
+        defaultFont.setFontName(&quot;微软雅黑 Light&quot;);
 
-        XSSFCellStyle defaultStyle <span class="token operator">=</span> workbook<span class="token punctuation">.</span><span class="token function">createCellStyle</span><span class="token punctuation">(</span><span class="token punctuation">)</span><span class="token punctuation">;</span>
-        defaultStyle<span class="token punctuation">.</span><span class="token function">setWrapText</span><span class="token punctuation">(</span><span class="token boolean">true</span><span class="token punctuation">)</span><span class="token punctuation">;</span>
-        defaultStyle<span class="token punctuation">.</span><span class="token function">setAlignment</span><span class="token punctuation">(</span>HorizontalAlignment<span class="token punctuation">.</span>CENTER<span class="token punctuation">)</span><span class="token punctuation">;</span>
-        defaultStyle<span class="token punctuation">.</span><span class="token function">setVerticalAlignment</span><span class="token punctuation">(</span>VerticalAlignment<span class="token punctuation">.</span>CENTER<span class="token punctuation">)</span><span class="token punctuation">;</span>
-        defaultStyle<span class="token punctuation">.</span><span class="token function">setFont</span><span class="token punctuation">(</span>defaultFont<span class="token punctuation">)</span><span class="token punctuation">;</span>
+        XSSFCellStyle defaultStyle = workbook.createCellStyle();
+        defaultStyle.setWrapText(true);
+        defaultStyle.setAlignment(HorizontalAlignment.CENTER);
+        defaultStyle.setVerticalAlignment(VerticalAlignment.CENTER);
+        defaultStyle.setFont(defaultFont);
 
-        XSSFFont font <span class="token operator">=</span> workbook<span class="token punctuation">.</span><span class="token function">createFont</span><span class="token punctuation">(</span><span class="token punctuation">)</span><span class="token punctuation">;</span>
-        font<span class="token punctuation">.</span><span class="token function">setColor</span><span class="token punctuation">(</span>IndexedColors<span class="token punctuation">.</span>WHITE<span class="token punctuation">.</span><span class="token function">getIndex</span><span class="token punctuation">(</span><span class="token punctuation">)</span><span class="token punctuation">)</span><span class="token punctuation">;</span>
-        font<span class="token punctuation">.</span><span class="token function">setFontHeight</span><span class="token punctuation">(</span><span class="token number">11</span><span class="token punctuation">)</span><span class="token punctuation">;</span>
-        font<span class="token punctuation">.</span><span class="token function">setFontName</span><span class="token punctuation">(</span><span class="token string">"微软雅黑 Light"</span><span class="token punctuation">)</span><span class="token punctuation">;</span>
+        XSSFFont font = workbook.createFont();
+        font.setColor(IndexedColors.WHITE.getIndex());
+        font.setFontHeight(11);
+        font.setFontName(&quot;微软雅黑 Light&quot;);
 
-        XSSFCellStyle firstCellStyle <span class="token operator">=</span> workbook<span class="token punctuation">.</span><span class="token function">createCellStyle</span><span class="token punctuation">(</span><span class="token punctuation">)</span><span class="token punctuation">;</span>
-        firstCellStyle<span class="token punctuation">.</span><span class="token function">setAlignment</span><span class="token punctuation">(</span>HorizontalAlignment<span class="token punctuation">.</span>CENTER<span class="token punctuation">)</span><span class="token punctuation">;</span>
-        firstCellStyle<span class="token punctuation">.</span><span class="token function">setVerticalAlignment</span><span class="token punctuation">(</span>VerticalAlignment<span class="token punctuation">.</span>CENTER<span class="token punctuation">)</span><span class="token punctuation">;</span>
-        firstCellStyle<span class="token punctuation">.</span><span class="token function">setFillForegroundColor</span><span class="token punctuation">(</span>IndexedColors<span class="token punctuation">.</span>LIGHT_BLUE<span class="token punctuation">.</span><span class="token function">getIndex</span><span class="token punctuation">(</span><span class="token punctuation">)</span><span class="token punctuation">)</span><span class="token punctuation">;</span>
-        firstCellStyle<span class="token punctuation">.</span><span class="token function">setFillPattern</span><span class="token punctuation">(</span>FillPatternType<span class="token punctuation">.</span>SOLID_FOREGROUND<span class="token punctuation">)</span><span class="token punctuation">;</span>
-        firstCellStyle<span class="token punctuation">.</span><span class="token function">setFont</span><span class="token punctuation">(</span>font<span class="token punctuation">)</span><span class="token punctuation">;</span>
-        firstCellStyle<span class="token punctuation">.</span><span class="token function">setBorderBottom</span><span class="token punctuation">(</span>BorderStyle<span class="token punctuation">.</span>THIN<span class="token punctuation">)</span><span class="token punctuation">;</span>
-        firstCellStyle<span class="token punctuation">.</span><span class="token function">setBottomBorderColor</span><span class="token punctuation">(</span>IndexedColors<span class="token punctuation">.</span>LIGHT_BLUE<span class="token punctuation">.</span><span class="token function">getIndex</span><span class="token punctuation">(</span><span class="token punctuation">)</span><span class="token punctuation">)</span><span class="token punctuation">;</span>
-        firstCellStyle<span class="token punctuation">.</span><span class="token function">setLeftBorderColor</span><span class="token punctuation">(</span>IndexedColors<span class="token punctuation">.</span>LIGHT_BLUE<span class="token punctuation">.</span><span class="token function">getIndex</span><span class="token punctuation">(</span><span class="token punctuation">)</span><span class="token punctuation">)</span><span class="token punctuation">;</span>
-        firstCellStyle<span class="token punctuation">.</span><span class="token function">setRightBorderColor</span><span class="token punctuation">(</span>IndexedColors<span class="token punctuation">.</span>LIGHT_BLUE<span class="token punctuation">.</span><span class="token function">getIndex</span><span class="token punctuation">(</span><span class="token punctuation">)</span><span class="token punctuation">)</span><span class="token punctuation">;</span>
+        XSSFCellStyle firstCellStyle = workbook.createCellStyle();
+        firstCellStyle.setAlignment(HorizontalAlignment.CENTER);
+        firstCellStyle.setVerticalAlignment(VerticalAlignment.CENTER);
+        firstCellStyle.setFillForegroundColor(IndexedColors.LIGHT_BLUE.getIndex());
+        firstCellStyle.setFillPattern(FillPatternType.SOLID_FOREGROUND);
+        firstCellStyle.setFont(font);
+        firstCellStyle.setBorderBottom(BorderStyle.THIN);
+        firstCellStyle.setBottomBorderColor(IndexedColors.LIGHT_BLUE.getIndex());
+        firstCellStyle.setLeftBorderColor(IndexedColors.LIGHT_BLUE.getIndex());
+        firstCellStyle.setRightBorderColor(IndexedColors.LIGHT_BLUE.getIndex());
 
-        <span class="token function">setDefaultStyle</span><span class="token punctuation">(</span>defaultStyle<span class="token punctuation">)</span><span class="token punctuation">;</span>
-        <span class="token function">setFirstCellStyle</span><span class="token punctuation">(</span>firstCellStyle<span class="token punctuation">)</span><span class="token punctuation">;</span>
+        setDefaultStyle(defaultStyle);
+        setFirstCellStyle(firstCellStyle);
 
-        <span class="token keyword">return</span> workbook<span class="token punctuation">;</span>
-    <span class="token punctuation">}</span>
+        return workbook;
+    }
 
-    <span class="token comment" spellcheck="true">// 创建页</span>
-    <span class="token keyword">public</span> XSSFSheet <span class="token function">createSheet</span><span class="token punctuation">(</span>XSSFWorkbook workbook<span class="token punctuation">,</span> String sheetName<span class="token punctuation">)</span> <span class="token punctuation">{</span>
-        <span class="token keyword">return</span> workbook<span class="token punctuation">.</span><span class="token function">createSheet</span><span class="token punctuation">(</span>sheetName<span class="token punctuation">)</span><span class="token punctuation">;</span>
-    <span class="token punctuation">}</span>
+    // 创建页
+    public XSSFSheet createSheet(XSSFWorkbook workbook, String sheetName) {
+        return workbook.createSheet(sheetName);
+    }
 
-    <span class="token comment" spellcheck="true">/**
+    /**
      * 创建表格
      *
      * @param sheet           页 @NotNull
@@ -455,71 +455,71 @@
      * @param cellRangeList   需要合并的单元格
      * @param customRowStyle  自定义样式,key 对应行，value 对应样式
      * @param customColWidth  自定义宽度自适应
-     */</span>
-    <span class="token annotation punctuation">@SuppressWarnings</span><span class="token punctuation">(</span><span class="token string">"unchecked"</span><span class="token punctuation">)</span>
-    <span class="token keyword">public</span> <span class="token keyword">void</span> <span class="token function">createTable</span><span class="token punctuation">(</span>XSSFSheet sheet<span class="token punctuation">,</span> String<span class="token punctuation">[</span><span class="token punctuation">]</span> titles<span class="token punctuation">,</span> Object<span class="token punctuation">[</span><span class="token punctuation">]</span><span class="token punctuation">[</span><span class="token punctuation">]</span> content<span class="token punctuation">,</span>
-                            Integer rowNumber<span class="token punctuation">,</span> Integer colNumber<span class="token punctuation">,</span>
-                            <span class="token keyword">boolean</span> customRowHeight<span class="token punctuation">,</span>
-                            List<span class="token operator">&lt;</span>CellRange<span class="token operator">></span> cellRangeList<span class="token punctuation">,</span>
-                            Map<span class="token operator">&lt;</span>Integer<span class="token punctuation">,</span> XSSFCellStyle<span class="token operator">></span> customRowStyle<span class="token punctuation">,</span>
-                            Map<span class="token operator">&lt;</span>Integer<span class="token punctuation">,</span> Integer<span class="token operator">></span> customColWidth<span class="token punctuation">)</span> <span class="token punctuation">{</span>
-        <span class="token comment" spellcheck="true">// 首行填充</span>
-        <span class="token function">setFirstRow</span><span class="token punctuation">(</span>sheet<span class="token punctuation">,</span> titles<span class="token punctuation">,</span> <span class="token function">getFirstCellStyle</span><span class="token punctuation">(</span><span class="token punctuation">)</span><span class="token punctuation">,</span> rowNumber<span class="token punctuation">,</span> colNumber<span class="token punctuation">)</span><span class="token punctuation">;</span>
-        rowNumber<span class="token operator">++</span><span class="token punctuation">;</span>
-        <span class="token comment" spellcheck="true">// 设置单元格宽度</span>
-        <span class="token function">autoWidth</span><span class="token punctuation">(</span>sheet<span class="token punctuation">,</span> titles<span class="token punctuation">,</span> colNumber<span class="token punctuation">,</span> customColWidth<span class="token punctuation">)</span><span class="token punctuation">;</span>
-        <span class="token comment" spellcheck="true">// 填充数据</span>
-        <span class="token keyword">for</span> <span class="token punctuation">(</span><span class="token keyword">int</span> i <span class="token operator">=</span> <span class="token number">0</span><span class="token punctuation">;</span> i <span class="token operator">&lt;</span> content<span class="token punctuation">.</span>length<span class="token punctuation">;</span> i<span class="token operator">++</span><span class="token punctuation">)</span> <span class="token punctuation">{</span>
-            Object<span class="token punctuation">[</span><span class="token punctuation">]</span> rowContent <span class="token operator">=</span> content<span class="token punctuation">[</span>i<span class="token punctuation">]</span><span class="token punctuation">;</span>
-            XSSFRow row <span class="token operator">=</span> sheet<span class="token punctuation">.</span><span class="token function">getRow</span><span class="token punctuation">(</span>rowNumber <span class="token operator">+</span> i<span class="token punctuation">)</span> <span class="token operator">==</span> null <span class="token operator">?</span> sheet<span class="token punctuation">.</span><span class="token function">createRow</span><span class="token punctuation">(</span>rowNumber <span class="token operator">+</span> i<span class="token punctuation">)</span> <span class="token operator">:</span> sheet<span class="token punctuation">.</span><span class="token function">getRow</span><span class="token punctuation">(</span>rowNumber <span class="token operator">+</span> i<span class="token punctuation">)</span><span class="token punctuation">;</span>
-            row<span class="token punctuation">.</span><span class="token function">setHeight</span><span class="token punctuation">(</span>customRowHeight <span class="token operator">?</span> <span class="token punctuation">(</span><span class="token keyword">short</span><span class="token punctuation">)</span> <span class="token number">800</span> <span class="token operator">:</span> <span class="token operator">-</span><span class="token number">1</span><span class="token punctuation">)</span><span class="token punctuation">;</span>
-            XSSFCellStyle cellStyle <span class="token operator">=</span> customRowStyle <span class="token operator">==</span> null <span class="token operator">||</span> customRowStyle<span class="token punctuation">.</span><span class="token function">get</span><span class="token punctuation">(</span>rowNumber <span class="token operator">+</span> i<span class="token punctuation">)</span> <span class="token operator">==</span> null <span class="token operator">?</span>
-                    <span class="token function">getDefaultStyle</span><span class="token punctuation">(</span><span class="token punctuation">)</span> <span class="token operator">:</span> customRowStyle<span class="token punctuation">.</span><span class="token function">get</span><span class="token punctuation">(</span>rowNumber <span class="token operator">+</span> i<span class="token punctuation">)</span><span class="token punctuation">;</span>
-            <span class="token keyword">for</span> <span class="token punctuation">(</span><span class="token keyword">int</span> j <span class="token operator">=</span> <span class="token number">0</span><span class="token punctuation">;</span> j <span class="token operator">&lt;</span> rowContent<span class="token punctuation">.</span>length<span class="token punctuation">;</span> j<span class="token operator">++</span><span class="token punctuation">)</span> <span class="token punctuation">{</span>
-                Object colContent <span class="token operator">=</span> rowContent<span class="token punctuation">[</span>j<span class="token punctuation">]</span><span class="token punctuation">;</span>
-                XSSFCell cell <span class="token operator">=</span> row<span class="token punctuation">.</span><span class="token function">createCell</span><span class="token punctuation">(</span>colNumber <span class="token operator">+</span> j<span class="token punctuation">)</span><span class="token punctuation">;</span>
-                <span class="token comment" spellcheck="true">// 如果是基本数据类型，则转换为字符串填充; 日期转换输出; List转String输出</span>
-                <span class="token keyword">if</span> <span class="token punctuation">(</span>colContent <span class="token keyword">instanceof</span> <span class="token class-name">Integer</span> <span class="token operator">||</span> colContent <span class="token keyword">instanceof</span> <span class="token class-name">Double</span>
-                        <span class="token operator">||</span> colContent <span class="token keyword">instanceof</span> <span class="token class-name">String</span> <span class="token operator">||</span> colContent <span class="token keyword">instanceof</span> <span class="token class-name">Float</span>
-                        <span class="token operator">||</span> colContent <span class="token keyword">instanceof</span> <span class="token class-name">Character</span> <span class="token operator">||</span> colContent <span class="token keyword">instanceof</span> <span class="token class-name">Byte</span>
-                        <span class="token operator">||</span> colContent <span class="token keyword">instanceof</span> <span class="token class-name">Short</span> <span class="token operator">||</span> colContent <span class="token keyword">instanceof</span> <span class="token class-name">Boolean</span>
-                        <span class="token operator">||</span> colContent <span class="token keyword">instanceof</span> <span class="token class-name">Long</span><span class="token punctuation">)</span>
-                    cell<span class="token punctuation">.</span><span class="token function">setCellValue</span><span class="token punctuation">(</span>String<span class="token punctuation">.</span><span class="token function">valueOf</span><span class="token punctuation">(</span>colContent<span class="token punctuation">)</span><span class="token punctuation">)</span><span class="token punctuation">;</span>
-                <span class="token keyword">else</span> <span class="token keyword">if</span> <span class="token punctuation">(</span>colContent <span class="token keyword">instanceof</span> <span class="token class-name">Date</span><span class="token punctuation">)</span>
-                    cell<span class="token punctuation">.</span><span class="token function">setCellValue</span><span class="token punctuation">(</span>sdf<span class="token punctuation">.</span><span class="token function">format</span><span class="token punctuation">(</span>colContent<span class="token punctuation">)</span><span class="token punctuation">)</span><span class="token punctuation">;</span>
-                <span class="token keyword">else</span> <span class="token keyword">if</span> <span class="token punctuation">(</span>colContent <span class="token keyword">instanceof</span> <span class="token class-name">Iterable</span><span class="token punctuation">)</span>
-                    cell<span class="token punctuation">.</span><span class="token function">setCellValue</span><span class="token punctuation">(</span><span class="token keyword">new</span> <span class="token class-name">XSSFRichTextString</span><span class="token punctuation">(</span>String<span class="token punctuation">.</span><span class="token function">join</span><span class="token punctuation">(</span><span class="token string">" \n "</span><span class="token punctuation">,</span> <span class="token punctuation">(</span>Iterable<span class="token punctuation">)</span> colContent<span class="token punctuation">)</span><span class="token punctuation">)</span><span class="token punctuation">)</span><span class="token punctuation">;</span>
-                <span class="token keyword">else</span>
-                    cell<span class="token punctuation">.</span><span class="token function">setCellValue</span><span class="token punctuation">(</span><span class="token string">" - "</span><span class="token punctuation">)</span><span class="token punctuation">;</span>
-                <span class="token comment" spellcheck="true">// 单元格样式</span>
-                cell<span class="token punctuation">.</span><span class="token function">setCellStyle</span><span class="token punctuation">(</span>cellStyle<span class="token punctuation">)</span><span class="token punctuation">;</span>
-            <span class="token punctuation">}</span>
-        <span class="token punctuation">}</span>
+     */
+    @SuppressWarnings(&quot;unchecked&quot;)
+    public void createTable(XSSFSheet sheet, String[] titles, Object[][] content,
+                            Integer rowNumber, Integer colNumber,
+                            boolean customRowHeight,
+                            List&lt;CellRange&gt; cellRangeList,
+                            Map&lt;Integer, XSSFCellStyle&gt; customRowStyle,
+                            Map&lt;Integer, Integer&gt; customColWidth) {
+        // 首行填充
+        setFirstRow(sheet, titles, getFirstCellStyle(), rowNumber, colNumber);
+        rowNumber++;
+        // 设置单元格宽度
+        autoWidth(sheet, titles, colNumber, customColWidth);
+        // 填充数据
+        for (int i = 0; i &lt; content.length; i++) {
+            Object[] rowContent = content[i];
+            XSSFRow row = sheet.getRow(rowNumber + i) == null ? sheet.createRow(rowNumber + i) : sheet.getRow(rowNumber + i);
+            row.setHeight(customRowHeight ? (short) 800 : -1);
+            XSSFCellStyle cellStyle = customRowStyle == null || customRowStyle.get(rowNumber + i) == null ?
+                    getDefaultStyle() : customRowStyle.get(rowNumber + i);
+            for (int j = 0; j &lt; rowContent.length; j++) {
+                Object colContent = rowContent[j];
+                XSSFCell cell = row.createCell(colNumber + j);
+                // 如果是基本数据类型，则转换为字符串填充; 日期转换输出; List转String输出
+                if (colContent instanceof Integer || colContent instanceof Double
+                        || colContent instanceof String || colContent instanceof Float
+                        || colContent instanceof Character || colContent instanceof Byte
+                        || colContent instanceof Short || colContent instanceof Boolean
+                        || colContent instanceof Long)
+                    cell.setCellValue(String.valueOf(colContent));
+                else if (colContent instanceof Date)
+                    cell.setCellValue(sdf.format(colContent));
+                else if (colContent instanceof Iterable)
+                    cell.setCellValue(new XSSFRichTextString(String.join(&quot; \n &quot;, (Iterable) colContent)));
+                else
+                    cell.setCellValue(&quot; - &quot;);
+                // 单元格样式
+                cell.setCellStyle(cellStyle);
+            }
+        }
 
-        <span class="token comment" spellcheck="true">// 合并单元格</span>
-        <span class="token function">mergeRegion</span><span class="token punctuation">(</span>sheet<span class="token punctuation">,</span> cellRangeList<span class="token punctuation">)</span><span class="token punctuation">;</span>
-    <span class="token punctuation">}</span>
+        // 合并单元格
+        mergeRegion(sheet, cellRangeList);
+    }
 
-    <span class="token comment" spellcheck="true">/**
+    /**
      * 合并单元格
-     */</span>
-    <span class="token keyword">public</span> <span class="token keyword">static</span> <span class="token keyword">void</span> <span class="token function">mergeRegion</span><span class="token punctuation">(</span>XSSFSheet sheet<span class="token punctuation">,</span> List<span class="token operator">&lt;</span>CellRange<span class="token operator">></span> cellRangeList<span class="token punctuation">)</span> <span class="token punctuation">{</span>
-        <span class="token keyword">if</span> <span class="token punctuation">(</span>cellRangeList <span class="token operator">==</span> null<span class="token punctuation">)</span> <span class="token keyword">return</span><span class="token punctuation">;</span>
-        <span class="token keyword">for</span> <span class="token punctuation">(</span>CellRange cellRange <span class="token operator">:</span> cellRangeList<span class="token punctuation">)</span> <span class="token punctuation">{</span>
-            sheet<span class="token punctuation">.</span><span class="token function">addMergedRegion</span><span class="token punctuation">(</span><span class="token keyword">new</span> <span class="token class-name">CellRangeAddress</span><span class="token punctuation">(</span>cellRange<span class="token punctuation">.</span><span class="token function">getFirstRow</span><span class="token punctuation">(</span><span class="token punctuation">)</span><span class="token punctuation">,</span> cellRange<span class="token punctuation">.</span><span class="token function">getLastRow</span><span class="token punctuation">(</span><span class="token punctuation">)</span><span class="token punctuation">,</span> cellRange<span class="token punctuation">.</span><span class="token function">getFirstCol</span><span class="token punctuation">(</span><span class="token punctuation">)</span><span class="token punctuation">,</span> cellRange<span class="token punctuation">.</span><span class="token function">getLastCol</span><span class="token punctuation">(</span><span class="token punctuation">)</span><span class="token punctuation">)</span><span class="token punctuation">)</span><span class="token punctuation">;</span>
-        <span class="token punctuation">}</span>
-    <span class="token punctuation">}</span>
+     */
+    public static void mergeRegion(XSSFSheet sheet, List&lt;CellRange&gt; cellRangeList) {
+        if (cellRangeList == null) return;
+        for (CellRange cellRange : cellRangeList) {
+            sheet.addMergedRegion(new CellRangeAddress(cellRange.getFirstRow(), cellRange.getLastRow(), cellRange.getFirstCol(), cellRange.getLastCol()));
+        }
+    }
 
-    <span class="token comment" spellcheck="true">/**
+    /**
      * 无需定制样式和宽度的表格
-     */</span>
-    <span class="token keyword">public</span> <span class="token keyword">void</span> <span class="token function">createTable</span><span class="token punctuation">(</span>XSSFSheet sheet<span class="token punctuation">,</span> String<span class="token punctuation">[</span><span class="token punctuation">]</span> titles<span class="token punctuation">,</span> Object<span class="token punctuation">[</span><span class="token punctuation">]</span><span class="token punctuation">[</span><span class="token punctuation">]</span> content<span class="token punctuation">,</span>
-                            Integer rowNumber<span class="token punctuation">,</span> Integer colNumber<span class="token punctuation">)</span> <span class="token punctuation">{</span>
-        <span class="token function">createTable</span><span class="token punctuation">(</span>sheet<span class="token punctuation">,</span> titles<span class="token punctuation">,</span> content<span class="token punctuation">,</span> rowNumber<span class="token punctuation">,</span> colNumber<span class="token punctuation">,</span> <span class="token boolean">true</span><span class="token punctuation">,</span> null<span class="token punctuation">,</span> null<span class="token punctuation">,</span> null<span class="token punctuation">)</span><span class="token punctuation">;</span>
-    <span class="token punctuation">}</span>
+     */
+    public void createTable(XSSFSheet sheet, String[] titles, Object[][] content,
+                            Integer rowNumber, Integer colNumber) {
+        createTable(sheet, titles, content, rowNumber, colNumber, true, null, null, null);
+    }
 
 
-    <span class="token comment" spellcheck="true">/**
+    /**
      * 填充首行数据
      * 默认按照标题的长度设置单元格宽度
      *
@@ -528,78 +528,78 @@
      * @param headerStyle 首行样式
      * @param rowNum      起始行
      * @param colNum      起始列
-     */</span>
-    <span class="token keyword">public</span> <span class="token keyword">static</span> <span class="token keyword">void</span> <span class="token function">setFirstRow</span><span class="token punctuation">(</span>XSSFSheet sheet<span class="token punctuation">,</span> String<span class="token punctuation">[</span><span class="token punctuation">]</span> cellTitles<span class="token punctuation">,</span> XSSFCellStyle headerStyle<span class="token punctuation">,</span> <span class="token keyword">int</span> rowNum<span class="token punctuation">,</span> <span class="token keyword">int</span> colNum<span class="token punctuation">)</span> <span class="token punctuation">{</span>
-        <span class="token keyword">final</span> XSSFRow row <span class="token operator">=</span> sheet<span class="token punctuation">.</span><span class="token function">getRow</span><span class="token punctuation">(</span>rowNum<span class="token punctuation">)</span> <span class="token operator">==</span> null <span class="token operator">?</span> sheet<span class="token punctuation">.</span><span class="token function">createRow</span><span class="token punctuation">(</span>rowNum<span class="token punctuation">)</span> <span class="token operator">:</span> sheet<span class="token punctuation">.</span><span class="token function">getRow</span><span class="token punctuation">(</span>rowNum<span class="token punctuation">)</span><span class="token punctuation">;</span>
-        row<span class="token punctuation">.</span><span class="token function">setHeight</span><span class="token punctuation">(</span><span class="token punctuation">(</span><span class="token keyword">short</span><span class="token punctuation">)</span> <span class="token number">800</span><span class="token punctuation">)</span><span class="token punctuation">;</span>
+     */
+    public static void setFirstRow(XSSFSheet sheet, String[] cellTitles, XSSFCellStyle headerStyle, int rowNum, int colNum) {
+        final XSSFRow row = sheet.getRow(rowNum) == null ? sheet.createRow(rowNum) : sheet.getRow(rowNum);
+        row.setHeight((short) 800);
 
-        <span class="token keyword">for</span> <span class="token punctuation">(</span>String cellName <span class="token operator">:</span> cellTitles<span class="token punctuation">)</span> <span class="token punctuation">{</span>
-            <span class="token keyword">final</span> Cell cell <span class="token operator">=</span> row<span class="token punctuation">.</span><span class="token function">createCell</span><span class="token punctuation">(</span>colNum<span class="token operator">++</span><span class="token punctuation">)</span><span class="token punctuation">;</span>
-            cell<span class="token punctuation">.</span><span class="token function">setCellValue</span><span class="token punctuation">(</span>cellName<span class="token punctuation">)</span><span class="token punctuation">;</span>
-            cell<span class="token punctuation">.</span><span class="token function">setCellStyle</span><span class="token punctuation">(</span>headerStyle<span class="token punctuation">)</span><span class="token punctuation">;</span>
-        <span class="token punctuation">}</span>
-    <span class="token punctuation">}</span>
+        for (String cellName : cellTitles) {
+            final Cell cell = row.createCell(colNum++);
+            cell.setCellValue(cellName);
+            cell.setCellStyle(headerStyle);
+        }
+    }
 
-    <span class="token comment" spellcheck="true">/**
+    /**
      * 宽度自适应
      *
      * @param sheet       页
      * @param strings     行首
      * @param colNumber   起始列
      * @param customWidth 自定义宽度
-     */</span>
-    <span class="token keyword">public</span> <span class="token keyword">static</span> <span class="token keyword">void</span> <span class="token function">autoWidth</span><span class="token punctuation">(</span>Sheet sheet<span class="token punctuation">,</span> String<span class="token punctuation">[</span><span class="token punctuation">]</span> strings<span class="token punctuation">,</span> Integer colNumber<span class="token punctuation">,</span> Map<span class="token operator">&lt;</span>Integer<span class="token punctuation">,</span> Integer<span class="token operator">></span> customWidth<span class="token punctuation">)</span> <span class="token punctuation">{</span>
-        <span class="token keyword">for</span> <span class="token punctuation">(</span><span class="token keyword">int</span> s <span class="token operator">=</span> <span class="token number">0</span><span class="token punctuation">;</span> s <span class="token operator">&lt;</span> strings<span class="token punctuation">.</span>length<span class="token punctuation">;</span> s<span class="token operator">++</span><span class="token punctuation">)</span> <span class="token punctuation">{</span>
-            <span class="token keyword">int</span> col <span class="token operator">=</span> colNumber <span class="token operator">+</span> s<span class="token punctuation">;</span>
-            <span class="token keyword">if</span> <span class="token punctuation">(</span>customWidth <span class="token operator">!=</span> null <span class="token operator">&amp;&amp;</span> customWidth<span class="token punctuation">.</span><span class="token function">keySet</span><span class="token punctuation">(</span><span class="token punctuation">)</span><span class="token punctuation">.</span><span class="token function">contains</span><span class="token punctuation">(</span>col<span class="token punctuation">)</span><span class="token punctuation">)</span> <span class="token punctuation">{</span>
-                sheet<span class="token punctuation">.</span><span class="token function">setColumnWidth</span><span class="token punctuation">(</span>col<span class="token punctuation">,</span> customWidth<span class="token punctuation">.</span><span class="token function">get</span><span class="token punctuation">(</span>col<span class="token punctuation">)</span><span class="token punctuation">)</span><span class="token punctuation">;</span>
-            <span class="token punctuation">}</span> <span class="token keyword">else</span> <span class="token punctuation">{</span>
-                sheet<span class="token punctuation">.</span><span class="token function">autoSizeColumn</span><span class="token punctuation">(</span>col<span class="token punctuation">,</span> <span class="token boolean">true</span><span class="token punctuation">)</span><span class="token punctuation">;</span>
-                sheet<span class="token punctuation">.</span><span class="token function">setColumnWidth</span><span class="token punctuation">(</span>col<span class="token punctuation">,</span> sheet<span class="token punctuation">.</span><span class="token function">getColumnWidth</span><span class="token punctuation">(</span>col<span class="token punctuation">)</span> <span class="token operator">*</span> <span class="token number">17</span> <span class="token operator">/</span> <span class="token number">10</span><span class="token punctuation">)</span><span class="token punctuation">;</span>
-            <span class="token punctuation">}</span>
-        <span class="token punctuation">}</span>
-    <span class="token punctuation">}</span>
+     */
+    public static void autoWidth(Sheet sheet, String[] strings, Integer colNumber, Map&lt;Integer, Integer&gt; customWidth) {
+        for (int s = 0; s &lt; strings.length; s++) {
+            int col = colNumber + s;
+            if (customWidth != null &amp;&amp; customWidth.keySet().contains(col)) {
+                sheet.setColumnWidth(col, customWidth.get(col));
+            } else {
+                sheet.autoSizeColumn(col, true);
+                sheet.setColumnWidth(col, sheet.getColumnWidth(col) * 17 / 10);
+            }
+        }
+    }
 
-    <span class="token keyword">public</span> XSSFCellStyle <span class="token function">getDefaultStyle</span><span class="token punctuation">(</span><span class="token punctuation">)</span> <span class="token punctuation">{</span>
-        <span class="token keyword">return</span> defaultStyle<span class="token punctuation">;</span>
-    <span class="token punctuation">}</span>
+    public XSSFCellStyle getDefaultStyle() {
+        return defaultStyle;
+    }
 
-    <span class="token keyword">public</span> <span class="token keyword">void</span> <span class="token function">setDefaultStyle</span><span class="token punctuation">(</span>XSSFCellStyle defaultStyle<span class="token punctuation">)</span> <span class="token punctuation">{</span>
-        <span class="token keyword">this</span><span class="token punctuation">.</span>defaultStyle <span class="token operator">=</span> defaultStyle<span class="token punctuation">;</span>
-    <span class="token punctuation">}</span>
+    public void setDefaultStyle(XSSFCellStyle defaultStyle) {
+        this.defaultStyle = defaultStyle;
+    }
 
-    <span class="token keyword">public</span> XSSFCellStyle <span class="token function">getFirstCellStyle</span><span class="token punctuation">(</span><span class="token punctuation">)</span> <span class="token punctuation">{</span>
-        <span class="token keyword">return</span> firstCellStyle<span class="token punctuation">;</span>
-    <span class="token punctuation">}</span>
+    public XSSFCellStyle getFirstCellStyle() {
+        return firstCellStyle;
+    }
 
-    <span class="token keyword">public</span> <span class="token keyword">void</span> <span class="token function">setFirstCellStyle</span><span class="token punctuation">(</span>XSSFCellStyle firstCellStyle<span class="token punctuation">)</span> <span class="token punctuation">{</span>
-        <span class="token keyword">this</span><span class="token punctuation">.</span>firstCellStyle <span class="token operator">=</span> firstCellStyle<span class="token punctuation">;</span>
-    <span class="token punctuation">}</span>
-<span class="token punctuation">}</span>
+    public void setFirstCellStyle(XSSFCellStyle firstCellStyle) {
+        this.firstCellStyle = firstCellStyle;
+    }
+}
 </code></pre>
 <p>合并单元格的对象：</p>
-<pre class=" language-java"><code class="language-java"><span class="token comment" spellcheck="true">/**
+<pre><code class="java">/**
  * 需要合并的单元格
- */</span>
-<span class="token annotation punctuation">@Setter</span>
-<span class="token annotation punctuation">@Getter</span>
-<span class="token keyword">public</span> <span class="token keyword">class</span> <span class="token class-name">CellRange</span> <span class="token punctuation">{</span>
-    <span class="token keyword">private</span> Integer firstRow<span class="token punctuation">;</span>
-    <span class="token keyword">private</span> Integer lastRow<span class="token punctuation">;</span>
-    <span class="token keyword">private</span> Integer firstCol<span class="token punctuation">;</span>
-    <span class="token keyword">private</span> Integer lastCol<span class="token punctuation">;</span>
+ */
+@Setter
+@Getter
+public class CellRange {
+    private Integer firstRow;
+    private Integer lastRow;
+    private Integer firstCol;
+    private Integer lastCol;
 
-    <span class="token keyword">private</span> <span class="token function">CellRange</span><span class="token punctuation">(</span>Integer firstRow<span class="token punctuation">,</span> Integer lastRow<span class="token punctuation">,</span> Integer firstCol<span class="token punctuation">,</span> Integer lastCol<span class="token punctuation">)</span> <span class="token punctuation">{</span>
-        <span class="token keyword">this</span><span class="token punctuation">.</span>firstRow <span class="token operator">=</span> firstRow<span class="token punctuation">;</span>
-        <span class="token keyword">this</span><span class="token punctuation">.</span>lastRow <span class="token operator">=</span> lastRow<span class="token punctuation">;</span>
-        <span class="token keyword">this</span><span class="token punctuation">.</span>firstCol <span class="token operator">=</span> firstCol<span class="token punctuation">;</span>
-        <span class="token keyword">this</span><span class="token punctuation">.</span>lastCol <span class="token operator">=</span> lastCol<span class="token punctuation">;</span>
-    <span class="token punctuation">}</span>
+    private CellRange(Integer firstRow, Integer lastRow, Integer firstCol, Integer lastCol) {
+        this.firstRow = firstRow;
+        this.lastRow = lastRow;
+        this.firstCol = firstCol;
+        this.lastCol = lastCol;
+    }
 
-    <span class="token keyword">public</span> <span class="token keyword">static</span> CellRange <span class="token function">build</span><span class="token punctuation">(</span>Integer firstRow<span class="token punctuation">,</span> Integer lastRow<span class="token punctuation">,</span> Integer firstCol<span class="token punctuation">,</span> Integer lastCol<span class="token punctuation">)</span> <span class="token punctuation">{</span>
-        <span class="token keyword">return</span> <span class="token keyword">new</span> <span class="token class-name">CellRange</span><span class="token punctuation">(</span>firstRow<span class="token punctuation">,</span> lastRow<span class="token punctuation">,</span> firstCol<span class="token punctuation">,</span> lastCol<span class="token punctuation">)</span><span class="token punctuation">;</span>
-    <span class="token punctuation">}</span>
-<span class="token punctuation">}</span>
+    public static CellRange build(Integer firstRow, Integer lastRow, Integer firstCol, Integer lastCol) {
+        return new CellRange(firstRow, lastRow, firstCol, lastCol);
+    }
+}
 </code></pre>
 
       
@@ -631,8 +631,8 @@
         <div class="post-nav">
           <div class="post-nav-next post-nav-item">
             
-              <a href="/2017/05/26/java/Java成神之路/" rel="next" title="Java成神之路">
-                <i class="fa fa-chevron-left"></i> Java成神之路
+              <a href="/2018/09/01/POI/POI生成Excel-图表生成/" rel="next" title="POI+XChart图形报告">
+                <i class="fa fa-chevron-left"></i> POI+XChart图形报告
               </a>
             
           </div>
@@ -641,8 +641,8 @@
 
           <div class="post-nav-prev post-nav-item">
             
-              <a href="/2018/09/01/SpringBootWebsocket/SpringBoot消息机制(五)-SpringBoot整合ActiveMQ/" rel="prev" title="SpringBoot消息机制(五)-SpringBoot整合ActiveMQ">
-                SpringBoot消息机制(五)-SpringBoot整合ActiveMQ <i class="fa fa-chevron-right"></i>
+              <a href="/2018/09/01/POI/POI生成原生Excel-雷达图/" rel="prev" title="使用POI结合Excel的行列生成雷达图">
+                使用POI结合Excel的行列生成雷达图 <i class="fa fa-chevron-right"></i>
               </a>
             
           </div>
@@ -724,7 +724,7 @@
               
                 <a href="/archives">
               
-                  <span class="site-state-item-count">224</span>
+                  <span class="site-state-item-count">237</span>
                   <span class="site-state-item-name">日志</span>
                 </a>
               </div>
@@ -746,7 +746,7 @@
               
               <div class="site-state-item site-state-tags">
                 <a href="/tags/index.html">
-                  <span class="site-state-item-count">21</span>
+                  <span class="site-state-item-count">22</span>
                   <span class="site-state-item-name">标签</span>
                 </a>
               </div>

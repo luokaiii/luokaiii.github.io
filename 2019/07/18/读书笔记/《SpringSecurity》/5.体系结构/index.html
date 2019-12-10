@@ -387,28 +387,28 @@
         <h1 id="第五章-SpringSecurity-中的核心组件"><a href="#第五章-SpringSecurity-中的核心组件" class="headerlink" title="第五章 SpringSecurity 中的核心组件"></a>第五章 SpringSecurity 中的核心组件</h1><p>通过前四章简单介绍了下 SpringSecurity 的命名空间配置和Java 配置，已经可以简单一个基于 Spring Security 的应用程序。</p>
 <p>下面，将会研究其中一些在整个框架中使用的中心接口、类和抽象概念，了解它们如何协同工作，以支持 Spring Security 中的身份验证和访问控制。</p>
 <h2 id="一、SecurityContextHolder"><a href="#一、SecurityContextHolder" class="headerlink" title="一、SecurityContextHolder"></a>一、SecurityContextHolder</h2><p>Spring-Security-Core 中对 SecurityContextHolder 的介绍如下：</p>
-<pre class=" language-html"><code class="language-html">Associates a given {@link SecurityContext} with the current execution thread.
+<pre><code class="html">Associates a given {@link SecurityContext} with the current execution thread.
 将给定的{@link SecurityContext}与当前执行线程关联。
 </code></pre>
 <p>SecurityContextHolder 用于存储应用程序当前Security 上下文的地方，其中包含当前使用应用程序的主体的细节。</p>
 <p>默认情况下，SecurityContextHolder 使用ThreadLocal 来存储这些细节，如果在处理完当前主体的请求之后清除线程，那么这种方式就是非常安全的。</p>
 <p>一般没有必要修改SecurityContextHolder 的默认值，但是 SpringSecurity 提供了修改的途径。</p>
-<h2 id="二、SecurityContext"><a href="#二、SecurityContext" class="headerlink" title="二、SecurityContext"></a>二、SecurityContext</h2><pre class=" language-html"><code class="language-html">Interface defining the minimum security information associated with the current thread of execution.
+<h2 id="二、SecurityContext"><a href="#二、SecurityContext" class="headerlink" title="二、SecurityContext"></a>二、SecurityContext</h2><pre><code class="html">Interface defining the minimum security information associated with the current thread of execution.
 </code></pre>
 <p>与安全信息相关的抽象接口，用来获取或设置 <code>Authentication</code> 。</p>
 <h2 id="三、Authentication"><a href="#三、Authentication" class="headerlink" title="三、Authentication"></a>三、Authentication</h2><p>实现了 <code>Principal</code> 与序列化的接口，包含了当前请求的主体信息。通常是保存在 <code>SecurityContext</code> 中。</p>
 <p>获取方法如下：</p>
-<pre class=" language-java"><code class="language-java"><span class="token keyword">public</span> String <span class="token function">getUsernameBySecurityContext</span><span class="token punctuation">(</span><span class="token punctuation">)</span><span class="token punctuation">{</span>
-    Object principal <span class="token operator">=</span> SecurityContextHolder<span class="token punctuation">.</span><span class="token function">getContext</span><span class="token punctuation">(</span><span class="token punctuation">)</span><span class="token punctuation">.</span><span class="token function">getAuthentication</span><span class="token punctuation">(</span><span class="token punctuation">)</span><span class="token punctuation">.</span><span class="token function">getPrincipal</span><span class="token punctuation">(</span><span class="token punctuation">)</span><span class="token punctuation">;</span>
-    String username<span class="token punctuation">;</span>
-    <span class="token keyword">if</span><span class="token punctuation">(</span>prinicpal <span class="token keyword">instanceof</span> <span class="token class-name">UserDetails</span><span class="token punctuation">)</span><span class="token punctuation">{</span>
-        username <span class="token operator">=</span> <span class="token punctuation">(</span><span class="token punctuation">(</span>UserDetails<span class="token punctuation">)</span>principal<span class="token punctuation">)</span><span class="token punctuation">.</span><span class="token function">getUsername</span><span class="token punctuation">(</span><span class="token punctuation">)</span><span class="token punctuation">;</span>
+<pre><code class="java">public String getUsernameBySecurityContext(){
+    Object principal = SecurityContextHolder.getContext().getAuthentication().getPrincipal();
+    String username;
+    if(prinicpal instanceof UserDetails){
+        username = ((UserDetails)principal).getUsername();
 
-    <span class="token punctuation">}</span><span class="token keyword">else</span> <span class="token punctuation">{</span>
-        username <span class="token operator">=</span> principal<span class="token punctuation">.</span><span class="token function">toString</span><span class="token punctuation">(</span><span class="token punctuation">)</span><span class="token punctuation">;</span>
-    <span class="token punctuation">}</span>
-    <span class="token keyword">return</span> username<span class="token punctuation">;</span>
-<span class="token punctuation">}</span>
+    }else {
+        username = principal.toString();
+    }
+    return username;
+}
 </code></pre>
 <h2 id="四、GrantedAuthority"><a href="#四、GrantedAuthority" class="headerlink" title="四、GrantedAuthority"></a>四、GrantedAuthority</h2><p>除了用户主体之外，身份验证还提供了一额外的方法 getAuthorities()，该方法返回一个 GrantedAuthority 对象数组。</p>
 <p>GrantedAuthority 通常为“角色”，用于配置 web授权、方法授权、域对象授权等。该属性通常由 UserDetailsService 加载给 UserDetails。</p>
@@ -417,81 +417,81 @@
 <p>UserDetails 是 SpringSecurity 的核心接口，可以通过继承 UserDetails 来实现自定义的方法与属性。</p>
 <h3 id="扩展UserDetails"><a href="#扩展UserDetails" class="headerlink" title="扩展UserDetails"></a>扩展UserDetails</h3><p>通过自定义 UserDetails 的实现，我们可以将其作为数据库实体与Authentication 的适配者。</p>
 <p>数据库实体 User：</p>
-<pre class=" language-java"><code class="language-java"><span class="token annotation punctuation">@Data</span>
-<span class="token annotation punctuation">@Document</span><span class="token punctuation">(</span>collection <span class="token operator">=</span> <span class="token string">"db_user"</span><span class="token punctuation">)</span>
-<span class="token keyword">class</span> <span class="token class-name">User</span><span class="token punctuation">{</span>
-    <span class="token annotation punctuation">@Id</span>
-    <span class="token keyword">private</span> String id<span class="token punctuation">;</span>
-    <span class="token keyword">private</span> String username<span class="token punctuation">;</span>
-    <span class="token keyword">private</span> String password<span class="token punctuation">;</span>
-    <span class="token keyword">private</span> String<span class="token punctuation">[</span><span class="token punctuation">]</span> roles<span class="token punctuation">;</span>
-<span class="token punctuation">}</span>
+<pre><code class="java">@Data
+@Document(collection = &quot;db_user&quot;)
+class User{
+    @Id
+    private String id;
+    private String username;
+    private String password;
+    private String[] roles;
+}
 </code></pre>
 <p>适配器实体 CustomUserDetails：</p>
-<pre class=" language-java"><code class="language-java"><span class="token annotation punctuation">@EqualsAndHashCode</span><span class="token punctuation">(</span>callSuper <span class="token operator">=</span> <span class="token boolean">true</span><span class="token punctuation">)</span>
-<span class="token annotation punctuation">@Data</span>
-<span class="token keyword">public</span> <span class="token keyword">class</span> <span class="token class-name">CustomUserDetails</span> <span class="token keyword">extends</span> <span class="token class-name">User</span> <span class="token keyword">implements</span> <span class="token class-name">UserDetails</span> <span class="token punctuation">{</span>
+<pre><code class="java">@EqualsAndHashCode(callSuper = true)
+@Data
+public class CustomUserDetails extends User implements UserDetails {
 
-    <span class="token annotation punctuation">@Override</span>
-    <span class="token keyword">public</span> Collection<span class="token operator">&lt;</span><span class="token operator">?</span> <span class="token keyword">extends</span> <span class="token class-name">GrantedAuthority</span><span class="token operator">></span> <span class="token function">getAuthorities</span><span class="token punctuation">(</span><span class="token punctuation">)</span> <span class="token punctuation">{</span>
-        <span class="token keyword">return</span> AuthorityUtils<span class="token punctuation">.</span><span class="token function">createAuthorityList</span><span class="token punctuation">(</span><span class="token keyword">super</span><span class="token punctuation">.</span><span class="token function">getRoles</span><span class="token punctuation">(</span><span class="token punctuation">)</span><span class="token punctuation">)</span><span class="token punctuation">;</span>
-    <span class="token punctuation">}</span>
+    @Override
+    public Collection&lt;? extends GrantedAuthority&gt; getAuthorities() {
+        return AuthorityUtils.createAuthorityList(super.getRoles());
+    }
 
-    <span class="token annotation punctuation">@Override</span>
-    <span class="token keyword">public</span> String <span class="token function">getPassword</span><span class="token punctuation">(</span><span class="token punctuation">)</span> <span class="token punctuation">{</span>
-        <span class="token keyword">return</span> <span class="token keyword">super</span><span class="token punctuation">.</span><span class="token function">getPassword</span><span class="token punctuation">(</span><span class="token punctuation">)</span><span class="token punctuation">;</span>
-    <span class="token punctuation">}</span>
+    @Override
+    public String getPassword() {
+        return super.getPassword();
+    }
 
-    <span class="token annotation punctuation">@Override</span>
-    <span class="token keyword">public</span> String <span class="token function">getUsername</span><span class="token punctuation">(</span><span class="token punctuation">)</span> <span class="token punctuation">{</span>
-        <span class="token keyword">return</span> <span class="token keyword">super</span><span class="token punctuation">.</span><span class="token function">getUsername</span><span class="token punctuation">(</span><span class="token punctuation">)</span><span class="token punctuation">;</span>
-    <span class="token punctuation">}</span>
+    @Override
+    public String getUsername() {
+        return super.getUsername();
+    }
 
-    <span class="token annotation punctuation">@Override</span>
-    <span class="token keyword">public</span> <span class="token keyword">boolean</span> <span class="token function">isAccountNonExpired</span><span class="token punctuation">(</span><span class="token punctuation">)</span> <span class="token punctuation">{</span>
-        <span class="token keyword">return</span> <span class="token boolean">false</span><span class="token punctuation">;</span>
-    <span class="token punctuation">}</span>
+    @Override
+    public boolean isAccountNonExpired() {
+        return false;
+    }
 
-    <span class="token annotation punctuation">@Override</span>
-    <span class="token keyword">public</span> <span class="token keyword">boolean</span> <span class="token function">isAccountNonLocked</span><span class="token punctuation">(</span><span class="token punctuation">)</span> <span class="token punctuation">{</span>
-        <span class="token keyword">return</span> <span class="token boolean">false</span><span class="token punctuation">;</span>
-    <span class="token punctuation">}</span>
+    @Override
+    public boolean isAccountNonLocked() {
+        return false;
+    }
 
-    <span class="token annotation punctuation">@Override</span>
-    <span class="token keyword">public</span> <span class="token keyword">boolean</span> <span class="token function">isCredentialsNonExpired</span><span class="token punctuation">(</span><span class="token punctuation">)</span> <span class="token punctuation">{</span>
-        <span class="token keyword">return</span> <span class="token boolean">false</span><span class="token punctuation">;</span>
-    <span class="token punctuation">}</span>
+    @Override
+    public boolean isCredentialsNonExpired() {
+        return false;
+    }
 
-    <span class="token annotation punctuation">@Override</span>
-    <span class="token keyword">public</span> <span class="token keyword">boolean</span> <span class="token function">isEnabled</span><span class="token punctuation">(</span><span class="token punctuation">)</span> <span class="token punctuation">{</span>
-        <span class="token keyword">return</span> <span class="token boolean">false</span><span class="token punctuation">;</span>
-    <span class="token punctuation">}</span>
-<span class="token punctuation">}</span>
+    @Override
+    public boolean isEnabled() {
+        return false;
+    }
+}
 </code></pre>
 <p>这样，我们就可以通过 CustomUserDetails 在 User 与 Authentication 之间相互转换，实现数据库认证 SpringSecurity。</p>
 <p>那么 UserDetails 对象是从哪里创建的呢？就是下面的 UserDetailsService 类。</p>
 <h2 id="六、UserDetailsService"><a href="#六、UserDetailsService" class="headerlink" title="六、UserDetailsService"></a>六、UserDetailsService</h2><p>UserDetailsService 只有一个特殊方法，接收一个 string 的用户名参数，并返回一个 UserDetails。</p>
-<pre class=" language-java"><code class="language-java">UserDetails <span class="token function">loadUserByUsername</span><span class="token punctuation">(</span>String username<span class="token punctuation">)</span> <span class="token keyword">throws</span> UsernameNotFoundException<span class="token punctuation">;</span>
+<pre><code class="java">UserDetails loadUserByUsername(String username) throws UsernameNotFoundException;
 </code></pre>
 <p>通过自定义实现 UserDetailsService，返回自己的 CustomUserDetails 对象。</p>
-<pre class=" language-java"><code class="language-java"><span class="token annotation punctuation">@Service</span>
-<span class="token keyword">public</span> <span class="token keyword">class</span> <span class="token class-name">CustomUserDetailsService</span> <span class="token keyword">implements</span> <span class="token class-name">UserDetailsService</span> <span class="token punctuation">{</span>
+<pre><code class="java">@Service
+public class CustomUserDetailsService implements UserDetailsService {
 
-    <span class="token annotation punctuation">@Autowired</span>
-    <span class="token keyword">private</span> UserService userService<span class="token punctuation">;</span>
+    @Autowired
+    private UserService userService;
 
-    <span class="token annotation punctuation">@Override</span>
-    <span class="token keyword">public</span> UserDetails <span class="token function">loadUserByUsername</span><span class="token punctuation">(</span>String username<span class="token punctuation">)</span> <span class="token keyword">throws</span> UsernameNotFoundException <span class="token punctuation">{</span>
-        User user <span class="token operator">=</span> userService<span class="token punctuation">.</span><span class="token function">findByUsername</span><span class="token punctuation">(</span>username<span class="token punctuation">)</span><span class="token punctuation">;</span>
-        <span class="token keyword">if</span><span class="token punctuation">(</span>user <span class="token operator">==</span> null<span class="token punctuation">)</span>
-            <span class="token keyword">throw</span> <span class="token keyword">new</span> <span class="token class-name">UsernameNotFoundException</span><span class="token punctuation">(</span><span class="token string">"user not found"</span><span class="token punctuation">)</span><span class="token punctuation">;</span>
+    @Override
+    public UserDetails loadUserByUsername(String username) throws UsernameNotFoundException {
+        User user = userService.findByUsername(username);
+        if(user == null)
+            throw new UsernameNotFoundException(&quot;user not found&quot;);
 
-        <span class="token keyword">final</span> CustomUserDetails userDetails <span class="token operator">=</span> <span class="token keyword">new</span> <span class="token class-name">CustomUserDetails</span><span class="token punctuation">(</span><span class="token punctuation">)</span><span class="token punctuation">;</span>
-        BeanUtils<span class="token punctuation">.</span><span class="token function">copyProperties</span><span class="token punctuation">(</span>user<span class="token punctuation">,</span>userDetails<span class="token punctuation">)</span><span class="token punctuation">;</span>
-        <span class="token comment" spellcheck="true">// todo 一些其他附加属性等</span>
-        <span class="token keyword">return</span> userDetails<span class="token punctuation">;</span>
-    <span class="token punctuation">}</span>
-<span class="token punctuation">}</span>
+        final CustomUserDetails userDetails = new CustomUserDetails();
+        BeanUtils.copyProperties(user,userDetails);
+        // todo 一些其他附加属性等
+        return userDetails;
+    }
+}
 </code></pre>
 
       
@@ -616,7 +616,7 @@
               
                 <a href="/archives">
               
-                  <span class="site-state-item-count">224</span>
+                  <span class="site-state-item-count">237</span>
                   <span class="site-state-item-name">日志</span>
                 </a>
               </div>
@@ -638,7 +638,7 @@
               
               <div class="site-state-item site-state-tags">
                 <a href="/tags/index.html">
-                  <span class="site-state-item-count">21</span>
+                  <span class="site-state-item-count">22</span>
                   <span class="site-state-item-name">标签</span>
                 </a>
               </div>

@@ -81,19 +81,19 @@
 
 
 
-<meta name="description" content="第十二章 享元模式在Java开发或者面试过程中，经常会遇到一个面试题： String a = new String(&quot;abc&quot;);  String b = new String(&quot;abc&quot;); 问：a == b ?  答案是肯定的，因为JVM在创建一个字符串后，会将其存储在 字符串池 中，下次new时会先去 字符串池 中查询是否已经存在。然后将引用地址返回。 这就是一个典型的 享元模式 案例。 一">
+<meta name="description" content="第十二章 享元模式在Java开发或者面试过程中，经常会遇到一个面试题： String a = new String(&amp;quot;abc&amp;quot;);  String b = new String(&amp;quot;abc&amp;quot;); 问：a == b ?  答案是肯定的，因为JVM在创建一个字符串后，会将其存储在 字符串池 中，下次new时会先去 字符串池 中查询是否已经存在。然后将引用地址返回。">
 <meta name="keywords" content="读书笔记">
 <meta property="og:type" content="article">
 <meta property="og:title" content="《Java Design Patterns》第十二章 享元模式">
 <meta property="og:url" content="http://luokaiii.github.io/2019/07/12/读书笔记/《JavaDesignPatterns》/14.享元模式/index.html">
 <meta property="og:site_name" content="罗凯的博客">
-<meta property="og:description" content="第十二章 享元模式在Java开发或者面试过程中，经常会遇到一个面试题： String a = new String(&quot;abc&quot;);  String b = new String(&quot;abc&quot;); 问：a == b ?  答案是肯定的，因为JVM在创建一个字符串后，会将其存储在 字符串池 中，下次new时会先去 字符串池 中查询是否已经存在。然后将引用地址返回。 这就是一个典型的 享元模式 案例。 一">
+<meta property="og:description" content="第十二章 享元模式在Java开发或者面试过程中，经常会遇到一个面试题： String a = new String(&amp;quot;abc&amp;quot;);  String b = new String(&amp;quot;abc&amp;quot;); 问：a == b ?  答案是肯定的，因为JVM在创建一个字符串后，会将其存储在 字符串池 中，下次new时会先去 字符串池 中查询是否已经存在。然后将引用地址返回。">
 <meta property="og:locale" content="zh-Hans">
 <meta property="og:image" content="https://i.loli.net/2019/07/12/5d28459ba725023617.png">
 <meta property="og:updated_time" content="2019-09-25T07:55:22.148Z">
 <meta name="twitter:card" content="summary">
 <meta name="twitter:title" content="《Java Design Patterns》第十二章 享元模式">
-<meta name="twitter:description" content="第十二章 享元模式在Java开发或者面试过程中，经常会遇到一个面试题： String a = new String(&quot;abc&quot;);  String b = new String(&quot;abc&quot;); 问：a == b ?  答案是肯定的，因为JVM在创建一个字符串后，会将其存储在 字符串池 中，下次new时会先去 字符串池 中查询是否已经存在。然后将引用地址返回。 这就是一个典型的 享元模式 案例。 一">
+<meta name="twitter:description" content="第十二章 享元模式在Java开发或者面试过程中，经常会遇到一个面试题： String a = new String(&amp;quot;abc&amp;quot;);  String b = new String(&amp;quot;abc&amp;quot;); 问：a == b ?  答案是肯定的，因为JVM在创建一个字符串后，会将其存储在 字符串池 中，下次new时会先去 字符串池 中查询是否已经存在。然后将引用地址返回。">
 <meta name="twitter:image" content="https://i.loli.net/2019/07/12/5d28459ba725023617.png">
 
 
@@ -387,9 +387,9 @@
 
       
         <h1 id="第十二章-享元模式"><a href="#第十二章-享元模式" class="headerlink" title="第十二章 享元模式"></a>第十二章 享元模式</h1><p>在Java开发或者面试过程中，经常会遇到一个面试题：</p>
-<pre class=" language-java"><code class="language-java">String a <span class="token operator">=</span> <span class="token keyword">new</span> <span class="token class-name">String</span><span class="token punctuation">(</span><span class="token string">"abc"</span><span class="token punctuation">)</span><span class="token punctuation">;</span> 
-String b <span class="token operator">=</span> <span class="token keyword">new</span> <span class="token class-name">String</span><span class="token punctuation">(</span><span class="token string">"abc"</span><span class="token punctuation">)</span><span class="token punctuation">;</span>
-问：a <span class="token operator">==</span> b <span class="token operator">?</span>
+<pre><code class="java">String a = new String(&quot;abc&quot;); 
+String b = new String(&quot;abc&quot;);
+问：a == b ?
 </code></pre>
 <p>答案是肯定的，因为JVM在创建一个字符串后，会将其存储在 字符串池 中，下次new时会先去 字符串池 中查询是否已经存在。然后将引用地址返回。</p>
 <p>这就是一个典型的 <code>享元模式</code> 案例。</p>
@@ -427,114 +427,114 @@ String b <span class="token operator">=</span> <span class="token keyword">new</
 </ol>
 </li>
 </ol>
-<h2 id="三、享元模式的核心"><a href="#三、享元模式的核心" class="headerlink" title="三、享元模式的核心"></a>三、享元模式的核心</h2><h3 id="1-享元工厂类"><a href="#1-享元工厂类" class="headerlink" title="1. 享元工厂类"></a>1. 享元工厂类</h3><pre class=" language-java"><code class="language-java"><span class="token keyword">class</span> <span class="token class-name">FlyweightFactory</span> <span class="token punctuation">{</span>
-    <span class="token comment" spellcheck="true">// 定义享元池</span>
-    <span class="token keyword">private</span> Map<span class="token operator">&lt;</span>String<span class="token punctuation">,</span>Flyweight<span class="token operator">></span> flyweights <span class="token operator">=</span> <span class="token keyword">new</span> <span class="token class-name">HashMap</span><span class="token punctuation">(</span><span class="token punctuation">)</span><span class="token punctuation">;</span>
+<h2 id="三、享元模式的核心"><a href="#三、享元模式的核心" class="headerlink" title="三、享元模式的核心"></a>三、享元模式的核心</h2><h3 id="1-享元工厂类"><a href="#1-享元工厂类" class="headerlink" title="1. 享元工厂类"></a>1. 享元工厂类</h3><pre><code class="java">class FlyweightFactory {
+    // 定义享元池
+    private Map&lt;String,Flyweight&gt; flyweights = new HashMap();
 
-    <span class="token keyword">public</span> Flyweight <span class="token function">getFlyweight</span><span class="token punctuation">(</span>String key<span class="token punctuation">)</span><span class="token punctuation">{</span>
-        <span class="token comment" spellcheck="true">// 对象存在，则直接从享元池中取</span>
-        <span class="token keyword">if</span><span class="token punctuation">(</span>flyweights<span class="token punctuation">.</span><span class="token function">containsKey</span><span class="token punctuation">(</span>key<span class="token punctuation">)</span><span class="token punctuation">)</span><span class="token punctuation">{</span>
-            <span class="token keyword">return</span> flyweights<span class="token punctuation">.</span><span class="token function">get</span><span class="token punctuation">(</span>key<span class="token punctuation">)</span><span class="token punctuation">;</span>
-        <span class="token punctuation">}</span>
-        <span class="token comment" spellcheck="true">// 不存在，则创建一个享元对象，并放入享元池中返回</span>
-        <span class="token keyword">else</span> <span class="token punctuation">{</span>
-            Flyweight fy <span class="token operator">=</span> <span class="token keyword">new</span> <span class="token class-name">ConcreteFlyweight</span><span class="token punctuation">(</span><span class="token punctuation">)</span><span class="token punctuation">;</span>
-            flyweights<span class="token punctuation">.</span><span class="token function">put</span><span class="token punctuation">(</span>key<span class="token punctuation">,</span>fy<span class="token punctuation">)</span><span class="token punctuation">;</span>
-            <span class="token keyword">return</span> fy<span class="token punctuation">;</span>
-        <span class="token punctuation">}</span>
-    <span class="token punctuation">}</span>
-<span class="token punctuation">}</span>
+    public Flyweight getFlyweight(String key){
+        // 对象存在，则直接从享元池中取
+        if(flyweights.containsKey(key)){
+            return flyweights.get(key);
+        }
+        // 不存在，则创建一个享元对象，并放入享元池中返回
+        else {
+            Flyweight fy = new ConcreteFlyweight();
+            flyweights.put(key,fy);
+            return fy;
+        }
+    }
+}
 </code></pre>
 <h3 id="2-享元类"><a href="#2-享元类" class="headerlink" title="2. 享元类"></a>2. 享元类</h3><p>享元类将内部状态和外部状态分开处理，通常将内部状态作为享元类的成员变量，而外部状态通过注入的方式添加到享元模式中。</p>
-<pre class=" language-java"><code class="language-java"><span class="token keyword">class</span> <span class="token class-name">Flyweight</span> <span class="token punctuation">{</span>
-    <span class="token comment" spellcheck="true">// 内部状态，与享元对象的内部状态一致</span>
-    <span class="token keyword">private</span> String intrinsicState<span class="token punctuation">;</span>
+<pre><code class="java">class Flyweight {
+    // 内部状态，与享元对象的内部状态一致
+    private String intrinsicState;
 
-    <span class="token keyword">public</span> <span class="token function">Flyweight</span><span class="token punctuation">(</span>String intrinsicState<span class="token punctuation">)</span><span class="token punctuation">{</span>
-        <span class="token keyword">this</span><span class="token punctuation">.</span>intrinsicState <span class="token operator">=</span> intrinsicState<span class="token punctuation">;</span>
-    <span class="token punctuation">}</span>
+    public Flyweight(String intrinsicState){
+        this.intrinsicState = intrinsicState;
+    }
 
-    <span class="token comment" spellcheck="true">// 外部状态，在使用时由外部设置，不保存在享元对象中。</span>
-    <span class="token comment" spellcheck="true">// 即使是同一个享元对象，每次使用时也可以传入不同的外部状态</span>
-    <span class="token keyword">public</span> <span class="token keyword">void</span> <span class="token function">operation</span><span class="token punctuation">(</span>String extrinsicState<span class="token punctuation">)</span><span class="token punctuation">{</span>
-        <span class="token punctuation">.</span><span class="token punctuation">.</span><span class="token punctuation">.</span><span class="token punctuation">.</span><span class="token punctuation">.</span><span class="token punctuation">.</span><span class="token punctuation">.</span>
-    <span class="token punctuation">}</span>
-<span class="token punctuation">}</span>
+    // 外部状态，在使用时由外部设置，不保存在享元对象中。
+    // 即使是同一个享元对象，每次使用时也可以传入不同的外部状态
+    public void operation(String extrinsicState){
+        .......
+    }
+}
 </code></pre>
-<h2 id="四、完整实现"><a href="#四、完整实现" class="headerlink" title="四、完整实现"></a>四、完整实现</h2><pre class=" language-java"><code class="language-java"><span class="token comment" spellcheck="true">/**
+<h2 id="四、完整实现"><a href="#四、完整实现" class="headerlink" title="四、完整实现"></a>四、完整实现</h2><pre><code class="java">/**
  * 享元模式
- */</span>
-<span class="token comment" spellcheck="true">// 围棋棋子类 - 抽象享元类</span>
-<span class="token keyword">abstract</span> <span class="token keyword">class</span> <span class="token class-name">IgoChessman</span> <span class="token punctuation">{</span>
-    <span class="token comment" spellcheck="true">// 抽象内部状态</span>
-    <span class="token keyword">public</span> <span class="token keyword">abstract</span> String <span class="token function">getColor</span><span class="token punctuation">(</span><span class="token punctuation">)</span><span class="token punctuation">;</span>
+ */
+// 围棋棋子类 - 抽象享元类
+abstract class IgoChessman {
+    // 抽象内部状态
+    public abstract String getColor();
 
-    <span class="token comment" spellcheck="true">// 在方法调用时，注入外部状态</span>
-    <span class="token keyword">public</span> <span class="token keyword">void</span> <span class="token function">display</span><span class="token punctuation">(</span>Integer x<span class="token punctuation">,</span> Integer y<span class="token punctuation">)</span> <span class="token punctuation">{</span>
-        System<span class="token punctuation">.</span>out<span class="token punctuation">.</span><span class="token function">println</span><span class="token punctuation">(</span><span class="token string">"棋子颜色:"</span> <span class="token operator">+</span> <span class="token function">getColor</span><span class="token punctuation">(</span><span class="token punctuation">)</span> <span class="token operator">+</span> <span class="token string">"，当前棋子位置为："</span> <span class="token operator">+</span> x <span class="token operator">+</span> <span class="token string">","</span> <span class="token operator">+</span> y<span class="token punctuation">)</span><span class="token punctuation">;</span>
-    <span class="token punctuation">}</span>
-<span class="token punctuation">}</span>
+    // 在方法调用时，注入外部状态
+    public void display(Integer x, Integer y) {
+        System.out.println(&quot;棋子颜色:&quot; + getColor() + &quot;，当前棋子位置为：&quot; + x + &quot;,&quot; + y);
+    }
+}
 
-<span class="token comment" spellcheck="true">// 黑色棋子类 - 具体享元类</span>
-<span class="token keyword">class</span> <span class="token class-name">BlackIgoChessman</span> <span class="token keyword">extends</span> <span class="token class-name">IgoChessman</span> <span class="token punctuation">{</span>
-    <span class="token annotation punctuation">@Override</span>
-    <span class="token keyword">public</span> String <span class="token function">getColor</span><span class="token punctuation">(</span><span class="token punctuation">)</span> <span class="token punctuation">{</span>
-        <span class="token keyword">return</span> <span class="token string">"黑色"</span><span class="token punctuation">;</span>
-    <span class="token punctuation">}</span>
-<span class="token punctuation">}</span>
+// 黑色棋子类 - 具体享元类
+class BlackIgoChessman extends IgoChessman {
+    @Override
+    public String getColor() {
+        return &quot;黑色&quot;;
+    }
+}
 
-<span class="token comment" spellcheck="true">// 白色棋子类 - 具体享元类</span>
-<span class="token keyword">class</span> <span class="token class-name">WhiteIgoChessman</span> <span class="token keyword">extends</span> <span class="token class-name">IgoChessman</span> <span class="token punctuation">{</span>
-    <span class="token annotation punctuation">@Override</span>
-    <span class="token keyword">public</span> String <span class="token function">getColor</span><span class="token punctuation">(</span><span class="token punctuation">)</span> <span class="token punctuation">{</span>
-        <span class="token keyword">return</span> <span class="token string">"白色"</span><span class="token punctuation">;</span>
-    <span class="token punctuation">}</span>
-<span class="token punctuation">}</span>
+// 白色棋子类 - 具体享元类
+class WhiteIgoChessman extends IgoChessman {
+    @Override
+    public String getColor() {
+        return &quot;白色&quot;;
+    }
+}
 
-<span class="token comment" spellcheck="true">// 围棋棋子工厂类 - 享元工厂类，使用单例模式进行设计</span>
-<span class="token keyword">class</span> <span class="token class-name">IgoChessmanFactory</span> <span class="token punctuation">{</span>
-    <span class="token keyword">private</span> <span class="token keyword">static</span> IgoChessmanFactory instance <span class="token operator">=</span> <span class="token keyword">new</span> <span class="token class-name">IgoChessmanFactory</span><span class="token punctuation">(</span><span class="token punctuation">)</span><span class="token punctuation">;</span>
-    <span class="token keyword">private</span> <span class="token keyword">static</span> Hashtable<span class="token operator">&lt;</span>String<span class="token punctuation">,</span> IgoChessman<span class="token operator">></span> ht<span class="token punctuation">;</span> <span class="token comment" spellcheck="true">// 使用 Hashtable 来存储享元对象，充当享元池</span>
+// 围棋棋子工厂类 - 享元工厂类，使用单例模式进行设计
+class IgoChessmanFactory {
+    private static IgoChessmanFactory instance = new IgoChessmanFactory();
+    private static Hashtable&lt;String, IgoChessman&gt; ht; // 使用 Hashtable 来存储享元对象，充当享元池
 
-    <span class="token keyword">private</span> <span class="token function">IgoChessmanFactory</span><span class="token punctuation">(</span><span class="token punctuation">)</span> <span class="token punctuation">{</span>
-        ht <span class="token operator">=</span> <span class="token keyword">new</span> <span class="token class-name">Hashtable</span><span class="token operator">&lt;</span><span class="token operator">></span><span class="token punctuation">(</span><span class="token punctuation">)</span><span class="token punctuation">;</span>
-        IgoChessman black <span class="token operator">=</span> <span class="token keyword">new</span> <span class="token class-name">BlackIgoChessman</span><span class="token punctuation">(</span><span class="token punctuation">)</span><span class="token punctuation">;</span>
-        IgoChessman white <span class="token operator">=</span> <span class="token keyword">new</span> <span class="token class-name">WhiteIgoChessman</span><span class="token punctuation">(</span><span class="token punctuation">)</span><span class="token punctuation">;</span>
-        ht<span class="token punctuation">.</span><span class="token function">put</span><span class="token punctuation">(</span><span class="token string">"b"</span><span class="token punctuation">,</span> black<span class="token punctuation">)</span><span class="token punctuation">;</span>
-        ht<span class="token punctuation">.</span><span class="token function">put</span><span class="token punctuation">(</span><span class="token string">"w"</span><span class="token punctuation">,</span> white<span class="token punctuation">)</span><span class="token punctuation">;</span>
-    <span class="token punctuation">}</span>
+    private IgoChessmanFactory() {
+        ht = new Hashtable&lt;&gt;();
+        IgoChessman black = new BlackIgoChessman();
+        IgoChessman white = new WhiteIgoChessman();
+        ht.put(&quot;b&quot;, black);
+        ht.put(&quot;w&quot;, white);
+    }
 
-    <span class="token comment" spellcheck="true">// 返回享元工厂类的唯一实例</span>
-    <span class="token keyword">public</span> <span class="token keyword">static</span> IgoChessmanFactory <span class="token function">getInstance</span><span class="token punctuation">(</span><span class="token punctuation">)</span> <span class="token punctuation">{</span>
-        <span class="token keyword">return</span> instance<span class="token punctuation">;</span>
-    <span class="token punctuation">}</span>
+    // 返回享元工厂类的唯一实例
+    public static IgoChessmanFactory getInstance() {
+        return instance;
+    }
 
-    <span class="token comment" spellcheck="true">// 通过key来获取存储在 Hashtable 中的享元对象</span>
-    <span class="token keyword">public</span> IgoChessman <span class="token function">getIgoChessman</span><span class="token punctuation">(</span>String color<span class="token punctuation">)</span> <span class="token punctuation">{</span>
-        <span class="token keyword">return</span> ht<span class="token punctuation">.</span><span class="token function">get</span><span class="token punctuation">(</span>color<span class="token punctuation">)</span><span class="token punctuation">;</span>
-    <span class="token punctuation">}</span>
-<span class="token punctuation">}</span>
+    // 通过key来获取存储在 Hashtable 中的享元对象
+    public IgoChessman getIgoChessman(String color) {
+        return ht.get(color);
+    }
+}
 
-<span class="token keyword">public</span> <span class="token keyword">class</span> <span class="token class-name">FlyweightPattern</span> <span class="token punctuation">{</span>
-    <span class="token keyword">public</span> <span class="token keyword">static</span> <span class="token keyword">void</span> <span class="token function">main</span><span class="token punctuation">(</span>String<span class="token punctuation">[</span><span class="token punctuation">]</span> args<span class="token punctuation">)</span> <span class="token punctuation">{</span>
-        <span class="token comment" spellcheck="true">// 获取享元工厂对象</span>
-        IgoChessmanFactory factory <span class="token operator">=</span> IgoChessmanFactory<span class="token punctuation">.</span><span class="token function">getInstance</span><span class="token punctuation">(</span><span class="token punctuation">)</span><span class="token punctuation">;</span>
+public class FlyweightPattern {
+    public static void main(String[] args) {
+        // 获取享元工厂对象
+        IgoChessmanFactory factory = IgoChessmanFactory.getInstance();
 
-        <span class="token comment" spellcheck="true">// 通过享元工厂获取棋子</span>
-        IgoChessman black1 <span class="token operator">=</span> factory<span class="token punctuation">.</span><span class="token function">getIgoChessman</span><span class="token punctuation">(</span><span class="token string">"b"</span><span class="token punctuation">)</span><span class="token punctuation">;</span>
-        IgoChessman black2 <span class="token operator">=</span> factory<span class="token punctuation">.</span><span class="token function">getIgoChessman</span><span class="token punctuation">(</span><span class="token string">"b"</span><span class="token punctuation">)</span><span class="token punctuation">;</span>
-        IgoChessman black3 <span class="token operator">=</span> factory<span class="token punctuation">.</span><span class="token function">getIgoChessman</span><span class="token punctuation">(</span><span class="token string">"b"</span><span class="token punctuation">)</span><span class="token punctuation">;</span>
+        // 通过享元工厂获取棋子
+        IgoChessman black1 = factory.getIgoChessman(&quot;b&quot;);
+        IgoChessman black2 = factory.getIgoChessman(&quot;b&quot;);
+        IgoChessman black3 = factory.getIgoChessman(&quot;b&quot;);
 
-        IgoChessman white1 <span class="token operator">=</span> factory<span class="token punctuation">.</span><span class="token function">getIgoChessman</span><span class="token punctuation">(</span><span class="token string">"w"</span><span class="token punctuation">)</span><span class="token punctuation">;</span>
-        IgoChessman white2 <span class="token operator">=</span> factory<span class="token punctuation">.</span><span class="token function">getIgoChessman</span><span class="token punctuation">(</span><span class="token string">"w"</span><span class="token punctuation">)</span><span class="token punctuation">;</span>
+        IgoChessman white1 = factory.getIgoChessman(&quot;w&quot;);
+        IgoChessman white2 = factory.getIgoChessman(&quot;w&quot;);
 
-        black1<span class="token punctuation">.</span><span class="token function">display</span><span class="token punctuation">(</span><span class="token number">1</span><span class="token punctuation">,</span><span class="token number">2</span><span class="token punctuation">)</span><span class="token punctuation">;</span>
-        black2<span class="token punctuation">.</span><span class="token function">display</span><span class="token punctuation">(</span><span class="token number">2</span><span class="token punctuation">,</span><span class="token number">3</span><span class="token punctuation">)</span><span class="token punctuation">;</span>
-        black3<span class="token punctuation">.</span><span class="token function">display</span><span class="token punctuation">(</span><span class="token number">3</span><span class="token punctuation">,</span><span class="token number">4</span><span class="token punctuation">)</span><span class="token punctuation">;</span>
-        white1<span class="token punctuation">.</span><span class="token function">display</span><span class="token punctuation">(</span><span class="token number">4</span><span class="token punctuation">,</span><span class="token number">5</span><span class="token punctuation">)</span><span class="token punctuation">;</span>
-        white2<span class="token punctuation">.</span><span class="token function">display</span><span class="token punctuation">(</span><span class="token number">2</span><span class="token punctuation">,</span><span class="token number">2</span><span class="token punctuation">)</span><span class="token punctuation">;</span>
-    <span class="token punctuation">}</span>
-<span class="token punctuation">}</span>
+        black1.display(1,2);
+        black2.display(2,3);
+        black3.display(3,4);
+        white1.display(4,5);
+        white2.display(2,2);
+    }
+}
 </code></pre>
 <h2 id="五、单纯享元模式与复合享元模式"><a href="#五、单纯享元模式与复合享元模式" class="headerlink" title="五、单纯享元模式与复合享元模式"></a>五、单纯享元模式与复合享元模式</h2><h3 id="5-1-单纯享元模式"><a href="#5-1-单纯享元模式" class="headerlink" title="5.1 单纯享元模式"></a>5.1 单纯享元模式</h3><p>单纯享元模式中，所有具体享元类都是可以共享的，不存在非共享具体享元类。</p>
 <h3 id="5-2-复合享元模式"><a href="#5-2-复合享元模式" class="headerlink" title="5.2 复合享元模式"></a>5.2 复合享元模式</h3><p>将一些单纯享元对象使用组合模式进行组合，形成复合享元对象。复合享元对象本身不能共享，但是可以将组合后的享元对象分解为单纯享元对象，进行共享。</p>
@@ -560,82 +560,82 @@ String b <span class="token operator">=</span> <span class="token keyword">new</
 </ol>
 <h2 id="八、练习"><a href="#八、练习" class="headerlink" title="八、练习"></a>八、练习</h2><blockquote>
 <p>Sunny软件公司欲开发一个多功能文档编辑器，在文本文档中可以插入图片、动画、视频等多媒体资料，为了节约系统资源，相同的图片、动画和视频在同一个文档中只需保存一份，但是可以多次重复出现，而且它们每次出现时位置和大小均可不同。试使用享元模式设计该文档编辑器。</p>
-<pre class=" language-java"><code class="language-java"><span class="token comment" spellcheck="true">// 抽象享元类 - 声明公共方法，向外界提供内部数据，由外界提供外部数据</span>
-<span class="token keyword">abstract</span> <span class="token keyword">class</span> <span class="token class-name">Flyweight</span> <span class="token punctuation">{</span>
-    <span class="token keyword">public</span> <span class="token keyword">abstract</span> String <span class="token function">type</span><span class="token punctuation">(</span><span class="token punctuation">)</span><span class="token punctuation">;</span>
+<pre><code class="java">// 抽象享元类 - 声明公共方法，向外界提供内部数据，由外界提供外部数据
+abstract class Flyweight {
+    public abstract String type();
 
-    <span class="token keyword">public</span> <span class="token keyword">void</span> <span class="token function">insert</span><span class="token punctuation">(</span>String location<span class="token punctuation">,</span> String size<span class="token punctuation">)</span> <span class="token punctuation">{</span>
-        System<span class="token punctuation">.</span>out<span class="token punctuation">.</span><span class="token function">println</span><span class="token punctuation">(</span><span class="token string">"插入类型："</span> <span class="token operator">+</span> <span class="token function">type</span><span class="token punctuation">(</span><span class="token punctuation">)</span> <span class="token operator">+</span> <span class="token string">"，位置："</span> <span class="token operator">+</span> location <span class="token operator">+</span> <span class="token string">"，大小："</span> <span class="token operator">+</span> size<span class="token punctuation">)</span><span class="token punctuation">;</span>
-    <span class="token punctuation">}</span>
-<span class="token punctuation">}</span>
+    public void insert(String location, String size) {
+        System.out.println(&quot;插入类型：&quot; + type() + &quot;，位置：&quot; + location + &quot;，大小：&quot; + size);
+    }
+}
 
-<span class="token comment" spellcheck="true">// 具体享元类 - 实现抽象方法，内部数据的状态与对象状态一致，内部状态不能被修改</span>
-<span class="token keyword">class</span> <span class="token class-name">Picture</span> <span class="token keyword">extends</span> <span class="token class-name">Flyweight</span> <span class="token punctuation">{</span>
-    <span class="token annotation punctuation">@Override</span>
-    <span class="token keyword">public</span> String <span class="token function">type</span><span class="token punctuation">(</span><span class="token punctuation">)</span> <span class="token punctuation">{</span>
-        <span class="token keyword">return</span> <span class="token string">"图片类型"</span><span class="token punctuation">;</span>
-    <span class="token punctuation">}</span>
-<span class="token punctuation">}</span>
+// 具体享元类 - 实现抽象方法，内部数据的状态与对象状态一致，内部状态不能被修改
+class Picture extends Flyweight {
+    @Override
+    public String type() {
+        return &quot;图片类型&quot;;
+    }
+}
 
-<span class="token keyword">class</span> <span class="token class-name">Cartoon</span> <span class="token keyword">extends</span> <span class="token class-name">Flyweight</span> <span class="token punctuation">{</span>
-    <span class="token annotation punctuation">@Override</span>
-    <span class="token keyword">public</span> String <span class="token function">type</span><span class="token punctuation">(</span><span class="token punctuation">)</span> <span class="token punctuation">{</span>
-        <span class="token keyword">return</span> <span class="token string">"动画类型"</span><span class="token punctuation">;</span>
-    <span class="token punctuation">}</span>
-<span class="token punctuation">}</span>
+class Cartoon extends Flyweight {
+    @Override
+    public String type() {
+        return &quot;动画类型&quot;;
+    }
+}
 
-<span class="token keyword">class</span> <span class="token class-name">Video</span> <span class="token keyword">extends</span> <span class="token class-name">Flyweight</span> <span class="token punctuation">{</span>
-    <span class="token annotation punctuation">@Override</span>
-    <span class="token keyword">public</span> String <span class="token function">type</span><span class="token punctuation">(</span><span class="token punctuation">)</span> <span class="token punctuation">{</span>
-        <span class="token keyword">return</span> <span class="token string">"视频类型"</span><span class="token punctuation">;</span>
-    <span class="token punctuation">}</span>
-<span class="token punctuation">}</span>
+class Video extends Flyweight {
+    @Override
+    public String type() {
+        return &quot;视频类型&quot;;
+    }
+}
 
-<span class="token keyword">class</span> <span class="token class-name">FlyweightFactory</span> <span class="token punctuation">{</span>
+class FlyweightFactory {
 
-    <span class="token comment" spellcheck="true">// 使用单例模式，维持单一的工厂对象</span>
-    <span class="token keyword">private</span> <span class="token keyword">static</span> FlyweightFactory factory <span class="token operator">=</span> <span class="token keyword">new</span> <span class="token class-name">FlyweightFactory</span><span class="token punctuation">(</span><span class="token punctuation">)</span><span class="token punctuation">;</span>
+    // 使用单例模式，维持单一的工厂对象
+    private static FlyweightFactory factory = new FlyweightFactory();
 
-    <span class="token keyword">private</span> Map<span class="token operator">&lt;</span>String<span class="token punctuation">,</span> Flyweight<span class="token operator">></span> map <span class="token operator">=</span> <span class="token keyword">new</span> <span class="token class-name">HashMap</span><span class="token operator">&lt;</span><span class="token operator">></span><span class="token punctuation">(</span><span class="token punctuation">)</span><span class="token punctuation">;</span>
+    private Map&lt;String, Flyweight&gt; map = new HashMap&lt;&gt;();
 
-    <span class="token keyword">private</span> <span class="token function">FlyweightFactory</span><span class="token punctuation">(</span><span class="token punctuation">)</span> <span class="token punctuation">{</span>
-        Flyweight picture <span class="token operator">=</span> <span class="token keyword">new</span> <span class="token class-name">Picture</span><span class="token punctuation">(</span><span class="token punctuation">)</span><span class="token punctuation">;</span>
-        Flyweight cartoon <span class="token operator">=</span> <span class="token keyword">new</span> <span class="token class-name">Cartoon</span><span class="token punctuation">(</span><span class="token punctuation">)</span><span class="token punctuation">;</span>
-        Flyweight video <span class="token operator">=</span> <span class="token keyword">new</span> <span class="token class-name">Video</span><span class="token punctuation">(</span><span class="token punctuation">)</span><span class="token punctuation">;</span>
-        map<span class="token punctuation">.</span><span class="token function">put</span><span class="token punctuation">(</span><span class="token string">"picture"</span><span class="token punctuation">,</span> picture<span class="token punctuation">)</span><span class="token punctuation">;</span>
-        map<span class="token punctuation">.</span><span class="token function">put</span><span class="token punctuation">(</span><span class="token string">"cartoon"</span><span class="token punctuation">,</span> cartoon<span class="token punctuation">)</span><span class="token punctuation">;</span>
-        map<span class="token punctuation">.</span><span class="token function">put</span><span class="token punctuation">(</span><span class="token string">"video"</span><span class="token punctuation">,</span> video<span class="token punctuation">)</span><span class="token punctuation">;</span>
-    <span class="token punctuation">}</span>
+    private FlyweightFactory() {
+        Flyweight picture = new Picture();
+        Flyweight cartoon = new Cartoon();
+        Flyweight video = new Video();
+        map.put(&quot;picture&quot;, picture);
+        map.put(&quot;cartoon&quot;, cartoon);
+        map.put(&quot;video&quot;, video);
+    }
 
-    <span class="token comment" spellcheck="true">// 静态工厂方法 - 返回工厂对象</span>
-    <span class="token keyword">public</span> <span class="token keyword">static</span> FlyweightFactory <span class="token function">getInstance</span><span class="token punctuation">(</span><span class="token punctuation">)</span><span class="token punctuation">{</span>
-        <span class="token keyword">return</span> factory<span class="token punctuation">;</span>
-    <span class="token punctuation">}</span>
+    // 静态工厂方法 - 返回工厂对象
+    public static FlyweightFactory getInstance(){
+        return factory;
+    }
 
-    <span class="token keyword">public</span> Flyweight <span class="token function">getFlyweight</span><span class="token punctuation">(</span>String key<span class="token punctuation">)</span> <span class="token punctuation">{</span>
-        <span class="token keyword">if</span><span class="token punctuation">(</span>map<span class="token punctuation">.</span><span class="token function">containsKey</span><span class="token punctuation">(</span>key<span class="token punctuation">)</span><span class="token punctuation">)</span><span class="token punctuation">{</span>
-            <span class="token keyword">return</span> map<span class="token punctuation">.</span><span class="token function">get</span><span class="token punctuation">(</span>key<span class="token punctuation">)</span><span class="token punctuation">;</span>
-        <span class="token punctuation">}</span>
-        <span class="token keyword">throw</span> <span class="token keyword">new</span> <span class="token class-name">RuntimeException</span><span class="token punctuation">(</span><span class="token string">"flyweight cann't support"</span><span class="token punctuation">)</span><span class="token punctuation">;</span>
-    <span class="token punctuation">}</span>
-<span class="token punctuation">}</span>
+    public Flyweight getFlyweight(String key) {
+        if(map.containsKey(key)){
+            return map.get(key);
+        }
+        throw new RuntimeException(&quot;flyweight cann&#39;t support&quot;);
+    }
+}
 
-<span class="token keyword">public</span> <span class="token keyword">class</span> <span class="token class-name">FlyweightPattern</span> <span class="token punctuation">{</span>
-    <span class="token keyword">public</span> <span class="token keyword">static</span> <span class="token keyword">void</span> <span class="token function">main</span><span class="token punctuation">(</span>String<span class="token punctuation">[</span><span class="token punctuation">]</span> args<span class="token punctuation">)</span> <span class="token punctuation">{</span>
-        <span class="token keyword">final</span> FlyweightFactory factory <span class="token operator">=</span> FlyweightFactory<span class="token punctuation">.</span><span class="token function">getInstance</span><span class="token punctuation">(</span><span class="token punctuation">)</span><span class="token punctuation">;</span>
-        Flyweight picture1 <span class="token operator">=</span> factory<span class="token punctuation">.</span><span class="token function">getFlyweight</span><span class="token punctuation">(</span><span class="token string">"picture"</span><span class="token punctuation">)</span><span class="token punctuation">;</span>
-        Flyweight picture2 <span class="token operator">=</span> factory<span class="token punctuation">.</span><span class="token function">getFlyweight</span><span class="token punctuation">(</span><span class="token string">"picture"</span><span class="token punctuation">)</span><span class="token punctuation">;</span>
-        Flyweight cartoon1 <span class="token operator">=</span> factory<span class="token punctuation">.</span><span class="token function">getFlyweight</span><span class="token punctuation">(</span><span class="token string">"cartoon"</span><span class="token punctuation">)</span><span class="token punctuation">;</span>
-        Flyweight cartoon2 <span class="token operator">=</span> factory<span class="token punctuation">.</span><span class="token function">getFlyweight</span><span class="token punctuation">(</span><span class="token string">"cartoon"</span><span class="token punctuation">)</span><span class="token punctuation">;</span>
-        Flyweight video <span class="token operator">=</span> factory<span class="token punctuation">.</span><span class="token function">getFlyweight</span><span class="token punctuation">(</span><span class="token string">"video"</span><span class="token punctuation">)</span><span class="token punctuation">;</span>
+public class FlyweightPattern {
+    public static void main(String[] args) {
+        final FlyweightFactory factory = FlyweightFactory.getInstance();
+        Flyweight picture1 = factory.getFlyweight(&quot;picture&quot;);
+        Flyweight picture2 = factory.getFlyweight(&quot;picture&quot;);
+        Flyweight cartoon1 = factory.getFlyweight(&quot;cartoon&quot;);
+        Flyweight cartoon2 = factory.getFlyweight(&quot;cartoon&quot;);
+        Flyweight video = factory.getFlyweight(&quot;video&quot;);
 
-        picture1<span class="token punctuation">.</span><span class="token function">insert</span><span class="token punctuation">(</span><span class="token string">"/Pic 下"</span><span class="token punctuation">,</span><span class="token string">"273KB"</span><span class="token punctuation">)</span><span class="token punctuation">;</span>
-        picture2<span class="token punctuation">.</span><span class="token function">insert</span><span class="token punctuation">(</span><span class="token string">"/Pic 下"</span><span class="token punctuation">,</span><span class="token string">"1.23MB"</span><span class="token punctuation">)</span><span class="token punctuation">;</span>
-        cartoon1<span class="token punctuation">.</span><span class="token function">insert</span><span class="token punctuation">(</span><span class="token string">"/cartoon 下"</span><span class="token punctuation">,</span><span class="token string">"80MB"</span><span class="token punctuation">)</span><span class="token punctuation">;</span>
-        cartoon2<span class="token punctuation">.</span><span class="token function">insert</span><span class="token punctuation">(</span><span class="token string">"/cartoon 下"</span><span class="token punctuation">,</span><span class="token string">"81MB"</span><span class="token punctuation">)</span><span class="token punctuation">;</span>
-        video<span class="token punctuation">.</span><span class="token function">insert</span><span class="token punctuation">(</span><span class="token string">"/video 下"</span><span class="token punctuation">,</span><span class="token string">"1.3GB"</span><span class="token punctuation">)</span><span class="token punctuation">;</span>
-    <span class="token punctuation">}</span>
-<span class="token punctuation">}</span>
+        picture1.insert(&quot;/Pic 下&quot;,&quot;273KB&quot;);
+        picture2.insert(&quot;/Pic 下&quot;,&quot;1.23MB&quot;);
+        cartoon1.insert(&quot;/cartoon 下&quot;,&quot;80MB&quot;);
+        cartoon2.insert(&quot;/cartoon 下&quot;,&quot;81MB&quot;);
+        video.insert(&quot;/video 下&quot;,&quot;1.3GB&quot;);
+    }
+}
 </code></pre>
 </blockquote>
 <p><img src="https://i.loli.net/2019/07/12/5d28459ba725023617.png" alt="运行结果"></p>
@@ -762,7 +762,7 @@ String b <span class="token operator">=</span> <span class="token keyword">new</
               
                 <a href="/archives">
               
-                  <span class="site-state-item-count">224</span>
+                  <span class="site-state-item-count">237</span>
                   <span class="site-state-item-name">日志</span>
                 </a>
               </div>
@@ -784,7 +784,7 @@ String b <span class="token operator">=</span> <span class="token keyword">new</
               
               <div class="site-state-item site-state-tags">
                 <a href="/tags/index.html">
-                  <span class="site-state-item-count">21</span>
+                  <span class="site-state-item-count">22</span>
                   <span class="site-state-item-name">标签</span>
                 </a>
               </div>

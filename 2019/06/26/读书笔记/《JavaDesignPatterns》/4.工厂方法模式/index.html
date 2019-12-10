@@ -386,38 +386,38 @@
       
         <h1 id="第二章-工厂方法模式"><a href="#第二章-工厂方法模式" class="headerlink" title="第二章 工厂方法模式"></a>第二章 工厂方法模式</h1><p>工厂方法模式又称为工厂模式、虚拟构造模式或多态工厂模式，是一种类创建型模式。</p>
 <h2 id="一、设计一个日志记录器"><a href="#一、设计一个日志记录器" class="headerlink" title="一、设计一个日志记录器"></a>一、设计一个日志记录器</h2><p>设计一个日志记录器，可以通过多种途径保存系统的运行日志，如文件记录或数据库记录等。</p>
-<h3 id="1-1-简单模式实现"><a href="#1-1-简单模式实现" class="headerlink" title="1.1 简单模式实现"></a>1.1 简单模式实现</h3><pre class=" language-java"><code class="language-java"><span class="token comment" spellcheck="true">// 抽象产品类</span>
-<span class="token keyword">interface</span> <span class="token class-name">Logger</span><span class="token punctuation">{</span>
-    <span class="token keyword">void</span> <span class="token function">writeLog</span><span class="token punctuation">(</span><span class="token punctuation">)</span><span class="token punctuation">;</span>
-<span class="token punctuation">}</span>
-<span class="token comment" spellcheck="true">// 具体产品类</span>
-<span class="token keyword">class</span> <span class="token class-name">FileLogger</span> <span class="token keyword">implements</span> <span class="token class-name">Logger</span><span class="token punctuation">{</span>
-    <span class="token annotation punctuation">@Override</span>
-    <span class="token keyword">void</span> <span class="token function">writeLog</span><span class="token punctuation">(</span><span class="token punctuation">)</span><span class="token punctuation">{</span>
-        System<span class="token punctuation">.</span>out<span class="token punctuation">.</span><span class="token function">println</span><span class="token punctuation">(</span><span class="token string">"文件日志记录"</span><span class="token punctuation">)</span><span class="token punctuation">;</span>
-    <span class="token punctuation">}</span>
-<span class="token punctuation">}</span>
-<span class="token keyword">class</span> <span class="token class-name">DatabaseLogger</span> <span class="token keyword">implements</span> <span class="token class-name">Logger</span><span class="token punctuation">{</span>
-    <span class="token annotation punctuation">@Override</span>
-    <span class="token keyword">void</span> <span class="token function">writeLog</span><span class="token punctuation">(</span><span class="token punctuation">)</span><span class="token punctuation">{</span>
-        System<span class="token punctuation">.</span>out<span class="token punctuation">.</span><span class="token function">println</span><span class="token punctuation">(</span><span class="token string">"数据库日志记录"</span><span class="token punctuation">)</span><span class="token punctuation">;</span>
-    <span class="token punctuation">}</span>
-<span class="token punctuation">}</span>
-<span class="token comment" spellcheck="true">// 工厂类</span>
-<span class="token keyword">class</span> <span class="token class-name">LoggerFactory</span><span class="token punctuation">{</span>
-    <span class="token keyword">public</span> <span class="token keyword">static</span> Logger <span class="token function">createLogger</span><span class="token punctuation">(</span>String type<span class="token punctuation">)</span><span class="token punctuation">{</span>
-        <span class="token keyword">switch</span><span class="token punctuation">(</span>type<span class="token punctuation">)</span><span class="token punctuation">{</span>
-            <span class="token keyword">case</span> <span class="token string">"file"</span><span class="token operator">:</span>
-                <span class="token comment" spellcheck="true">// 创建文件、初始化文件日志、等其他操作</span>
-                <span class="token keyword">return</span> <span class="token keyword">new</span> <span class="token class-name">FileLogger</span><span class="token punctuation">(</span><span class="token punctuation">)</span><span class="token punctuation">;</span>
-            <span class="token keyword">case</span> <span class="token string">"db"</span><span class="token operator">:</span>
-                <span class="token comment" spellcheck="true">// 连接数据库、创建数据库日志、等其他操作</span>
-                <span class="token keyword">return</span> <span class="token keyword">new</span> <span class="token class-name">DatabaseLogger</span><span class="token punctuation">(</span><span class="token punctuation">)</span><span class="token punctuation">;</span>
-            <span class="token keyword">default</span><span class="token operator">:</span>
-                <span class="token keyword">throw</span> <span class="token keyword">new</span> <span class="token class-name">UnSupportOperationException</span><span class="token punctuation">(</span><span class="token punctuation">)</span><span class="token punctuation">;</span>
-        <span class="token punctuation">}</span>
-    <span class="token punctuation">}</span>
-<span class="token punctuation">}</span>
+<h3 id="1-1-简单模式实现"><a href="#1-1-简单模式实现" class="headerlink" title="1.1 简单模式实现"></a>1.1 简单模式实现</h3><pre><code class="java">// 抽象产品类
+interface Logger{
+    void writeLog();
+}
+// 具体产品类
+class FileLogger implements Logger{
+    @Override
+    void writeLog(){
+        System.out.println(&quot;文件日志记录&quot;);
+    }
+}
+class DatabaseLogger implements Logger{
+    @Override
+    void writeLog(){
+        System.out.println(&quot;数据库日志记录&quot;);
+    }
+}
+// 工厂类
+class LoggerFactory{
+    public static Logger createLogger(String type){
+        switch(type){
+            case &quot;file&quot;:
+                // 创建文件、初始化文件日志、等其他操作
+                return new FileLogger();
+            case &quot;db&quot;:
+                // 连接数据库、创建数据库日志、等其他操作
+                return new DatabaseLogger();
+            default:
+                throw new UnSupportOperationException();
+        }
+    }
+}
 </code></pre>
 <h3 id="1-2-缺陷与问题"><a href="#1-2-缺陷与问题" class="headerlink" title="1.2 缺陷与问题"></a>1.2 缺陷与问题</h3><p>虽然简单工厂模式实现了对象的创建和使用分离，但是仍然存在以下问题：</p>
 <ol>
@@ -441,59 +441,59 @@
 <p>在抽象工厂中声明工厂方法，有具体工厂类来创建子类，不同的具体工厂可以创建不同的具体产品。</p>
 <p>在实际使用中，还可以在具体工厂中做一些初始化工作，如资源加载、环境配置等工作。</p>
 <p>而客户端只需针对抽象工厂编程即可。</p>
-<h2 id="三、解决方案"><a href="#三、解决方案" class="headerlink" title="三、解决方案"></a>三、解决方案</h2><pre class=" language-java"><code class="language-java"><span class="token comment" spellcheck="true">// 抽象产品类</span>
-<span class="token keyword">interface</span> <span class="token class-name">Logger</span><span class="token punctuation">{</span>
-    <span class="token keyword">void</span> <span class="token function">writeLog</span><span class="token punctuation">(</span><span class="token punctuation">)</span><span class="token punctuation">;</span>
-<span class="token punctuation">}</span>
-<span class="token comment" spellcheck="true">// 具体产品类</span>
-<span class="token keyword">class</span> <span class="token class-name">FileLogger</span> <span class="token keyword">implements</span> <span class="token class-name">Logger</span><span class="token punctuation">{</span>
-    <span class="token annotation punctuation">@Override</span>
-    <span class="token keyword">void</span> <span class="token function">writeLog</span><span class="token punctuation">(</span><span class="token punctuation">)</span><span class="token punctuation">{</span>
-        System<span class="token punctuation">.</span>out<span class="token punctuation">.</span><span class="token function">println</span><span class="token punctuation">(</span><span class="token string">"文件日志记录"</span><span class="token punctuation">)</span><span class="token punctuation">;</span>
-    <span class="token punctuation">}</span>
-<span class="token punctuation">}</span>
-<span class="token keyword">class</span> <span class="token class-name">DatabaseLogger</span> <span class="token keyword">implements</span> <span class="token class-name">Logger</span><span class="token punctuation">{</span>
-    <span class="token annotation punctuation">@Override</span>
-    <span class="token keyword">void</span> <span class="token function">writeLog</span><span class="token punctuation">(</span><span class="token punctuation">)</span><span class="token punctuation">{</span>
-        System<span class="token punctuation">.</span>out<span class="token punctuation">.</span><span class="token function">println</span><span class="token punctuation">(</span><span class="token string">"数据库日志记录"</span><span class="token punctuation">)</span><span class="token punctuation">;</span>
-    <span class="token punctuation">}</span>
-<span class="token punctuation">}</span>
-<span class="token comment" spellcheck="true">// 抽象工厂类</span>
-interfact Factory<span class="token punctuation">{</span>
-    Logger <span class="token function">createLogger</span><span class="token punctuation">(</span><span class="token punctuation">)</span><span class="token punctuation">;</span>
-<span class="token punctuation">}</span>
-<span class="token comment" spellcheck="true">// 具体工厂类</span>
-<span class="token keyword">class</span> <span class="token class-name">FileLoggerFactory</span> implement Factory <span class="token punctuation">{</span>
-    <span class="token annotation punctuation">@Override</span>
-    <span class="token keyword">public</span> Logger <span class="token function">createLogger</span><span class="token punctuation">(</span><span class="token punctuation">)</span><span class="token punctuation">{</span>
-        <span class="token comment" spellcheck="true">// 初始化环境等</span>
-        <span class="token keyword">return</span>  <span class="token keyword">new</span> <span class="token class-name">FileLogger</span><span class="token punctuation">(</span><span class="token punctuation">)</span><span class="token punctuation">;</span>
-    <span class="token punctuation">}</span>
-<span class="token punctuation">}</span>
-<span class="token keyword">class</span> <span class="token class-name">DatabaseLoggerFactory</span> implement Factory <span class="token punctuation">{</span>
-    <span class="token annotation punctuation">@Override</span>
-    <span class="token keyword">public</span> Logger <span class="token function">createLogger</span><span class="token punctuation">(</span><span class="token punctuation">)</span><span class="token punctuation">{</span>
-        <span class="token comment" spellcheck="true">// 初始化环境等</span>
-        <span class="token keyword">return</span>  <span class="token keyword">new</span> <span class="token class-name">DatabaseLogger</span><span class="token punctuation">(</span><span class="token punctuation">)</span><span class="token punctuation">;</span>
-    <span class="token punctuation">}</span>
-<span class="token punctuation">}</span>
-<span class="token comment" spellcheck="true">// 测试</span>
-<span class="token keyword">public</span> <span class="token keyword">static</span> <span class="token keyword">void</span> <span class="token function">main</span><span class="token punctuation">(</span>String<span class="token punctuation">[</span><span class="token punctuation">]</span> args<span class="token punctuation">)</span><span class="token punctuation">{</span>
-    Factory factory <span class="token operator">=</span> <span class="token keyword">new</span> <span class="token class-name">FileLoggerFactory</span><span class="token punctuation">(</span><span class="token punctuation">)</span><span class="token punctuation">;</span>
-    Logger logger <span class="token operator">=</span> factory<span class="token punctuation">.</span><span class="token function">createLogger</span><span class="token punctuation">(</span><span class="token punctuation">)</span><span class="token punctuation">;</span>
-    logger<span class="token punctuation">.</span><span class="token function">writeLog</span><span class="token punctuation">(</span><span class="token punctuation">)</span><span class="token punctuation">;</span>
-<span class="token punctuation">}</span>
+<h2 id="三、解决方案"><a href="#三、解决方案" class="headerlink" title="三、解决方案"></a>三、解决方案</h2><pre><code class="java">// 抽象产品类
+interface Logger{
+    void writeLog();
+}
+// 具体产品类
+class FileLogger implements Logger{
+    @Override
+    void writeLog(){
+        System.out.println(&quot;文件日志记录&quot;);
+    }
+}
+class DatabaseLogger implements Logger{
+    @Override
+    void writeLog(){
+        System.out.println(&quot;数据库日志记录&quot;);
+    }
+}
+// 抽象工厂类
+interfact Factory{
+    Logger createLogger();
+}
+// 具体工厂类
+class FileLoggerFactory implement Factory {
+    @Override
+    public Logger createLogger(){
+        // 初始化环境等
+        return  new FileLogger();
+    }
+}
+class DatabaseLoggerFactory implement Factory {
+    @Override
+    public Logger createLogger(){
+        // 初始化环境等
+        return  new DatabaseLogger();
+    }
+}
+// 测试
+public static void main(String[] args){
+    Factory factory = new FileLoggerFactory();
+    Logger logger = factory.createLogger();
+    logger.writeLog();
+}
 </code></pre>
 <h2 id="四、扩展"><a href="#四、扩展" class="headerlink" title="四、扩展"></a>四、扩展</h2><p>使用 反射与配置文件 扩展系统。</p>
 <p>为了让系统拥有更好的灵活性和可扩展性，在客户端代码汇总不使用new关键字来创建工厂对象，而是将具体工厂类的类名存储在配置文件中，通过读取配置文件获取类名字符串，再使用 Java反射机制，根据类名字符串来生成对象。</p>
 <h2 id="五、隐藏工厂方法"><a href="#五、隐藏工厂方法" class="headerlink" title="五、隐藏工厂方法"></a>五、隐藏工厂方法</h2><p>为了进一步简化客户端的使用，还可以对客户端隐藏工厂方法，在抽象工厂中直接调用产品类的业务方法。</p>
-<pre class=" language-java"><code class="language-java"><span class="token keyword">abstract</span> <span class="token keyword">class</span> <span class="token class-name">Factory</span><span class="token punctuation">{</span>
-    <span class="token keyword">public</span> <span class="token keyword">void</span> <span class="token function">writeLog</span><span class="token punctuation">(</span><span class="token punctuation">)</span><span class="token punctuation">{</span>
-        Logger logger <span class="token operator">=</span> <span class="token keyword">this</span><span class="token punctuation">.</span><span class="token function">createLogger</span><span class="token punctuation">(</span><span class="token punctuation">)</span><span class="token punctuation">;</span>
-        logger<span class="token punctuation">.</span><span class="token function">writeLog</span><span class="token punctuation">(</span><span class="token punctuation">)</span><span class="token punctuation">;</span>
-    <span class="token punctuation">}</span>
-    <span class="token keyword">abstract</span> Logger <span class="token function">createLogger</span><span class="token punctuation">(</span><span class="token punctuation">)</span><span class="token punctuation">;</span>
-<span class="token punctuation">}</span>
+<pre><code class="java">abstract class Factory{
+    public void writeLog(){
+        Logger logger = this.createLogger();
+        logger.writeLog();
+    }
+    abstract Logger createLogger();
+}
 </code></pre>
 <p>这样，客户端直接调用抽象工厂的方法即可调用具体的产品业务方法。</p>
 <h2 id="六、工厂方法模式总结"><a href="#六、工厂方法模式总结" class="headerlink" title="六、工厂方法模式总结"></a>六、工厂方法模式总结</h2><h3 id="优点"><a href="#优点" class="headerlink" title="优点"></a>优点</h3><ol>
@@ -546,8 +546,8 @@ interfact Factory<span class="token punctuation">{</span>
         <div class="post-nav">
           <div class="post-nav-next post-nav-item">
             
-              <a href="/2019/06/26/读书笔记/《JavaDesignPatterns》/3.简单工厂模式/" rel="next" title="《Java Design Patterns》第一章 简单工厂模式">
-                <i class="fa fa-chevron-left"></i> 《Java Design Patterns》第一章 简单工厂模式
+              <a href="/2019/06/25/读书笔记/《JavaDesignPatterns》/2.面向对象设计原则/" rel="next" title="《Java Design Patterns》7大原则">
+                <i class="fa fa-chevron-left"></i> 《Java Design Patterns》7大原则
               </a>
             
           </div>
@@ -639,7 +639,7 @@ interfact Factory<span class="token punctuation">{</span>
               
                 <a href="/archives">
               
-                  <span class="site-state-item-count">224</span>
+                  <span class="site-state-item-count">237</span>
                   <span class="site-state-item-name">日志</span>
                 </a>
               </div>
@@ -661,7 +661,7 @@ interfact Factory<span class="token punctuation">{</span>
               
               <div class="site-state-item site-state-tags">
                 <a href="/tags/index.html">
-                  <span class="site-state-item-count">21</span>
+                  <span class="site-state-item-count">22</span>
                   <span class="site-state-item-name">标签</span>
                 </a>
               </div>

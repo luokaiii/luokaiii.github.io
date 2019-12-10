@@ -81,18 +81,18 @@
 
 
 
-<meta name="description" content="Spring Session Redis在 SpringBoot web 应用程序中，使用 Spring Session 来支持 HttpSession。 1. 添加依赖&amp;lt;dependencies&amp;gt;     ......     &amp;lt;dependency&amp;gt;         &amp;lt;groupId&amp;gt;org.springframework.session&amp;lt;/groupId&amp;gt;">
+<meta name="description" content="Spring Session Redis在 SpringBoot web 应用程序中，使用 Spring Session 来支持 HttpSession。 1. 添加依赖&amp;lt;dependencies&amp;gt;     ......     &amp;lt;dependency&amp;gt;         &amp;lt;groupId&amp;gt;org.springframework.session&amp;lt;/group">
 <meta name="keywords" content="Spring Session">
 <meta property="og:type" content="article">
 <meta property="og:title" content="《Spring Session》一、Spring Session Redis">
 <meta property="og:url" content="http://luokaiii.github.io/2019/09/26/读书笔记/《SpringSession》/1_RedisSession/index.html">
 <meta property="og:site_name" content="罗凯的博客">
-<meta property="og:description" content="Spring Session Redis在 SpringBoot web 应用程序中，使用 Spring Session 来支持 HttpSession。 1. 添加依赖&amp;lt;dependencies&amp;gt;     ......     &amp;lt;dependency&amp;gt;         &amp;lt;groupId&amp;gt;org.springframework.session&amp;lt;/groupId&amp;gt;">
+<meta property="og:description" content="Spring Session Redis在 SpringBoot web 应用程序中，使用 Spring Session 来支持 HttpSession。 1. 添加依赖&amp;lt;dependencies&amp;gt;     ......     &amp;lt;dependency&amp;gt;         &amp;lt;groupId&amp;gt;org.springframework.session&amp;lt;/group">
 <meta property="og:locale" content="zh-Hans">
 <meta property="og:updated_time" content="2019-09-26T02:08:13.467Z">
 <meta name="twitter:card" content="summary">
 <meta name="twitter:title" content="《Spring Session》一、Spring Session Redis">
-<meta name="twitter:description" content="Spring Session Redis在 SpringBoot web 应用程序中，使用 Spring Session 来支持 HttpSession。 1. 添加依赖&amp;lt;dependencies&amp;gt;     ......     &amp;lt;dependency&amp;gt;         &amp;lt;groupId&amp;gt;org.springframework.session&amp;lt;/groupId&amp;gt;">
+<meta name="twitter:description" content="Spring Session Redis在 SpringBoot web 应用程序中，使用 Spring Session 来支持 HttpSession。 1. 添加依赖&amp;lt;dependencies&amp;gt;     ......     &amp;lt;dependency&amp;gt;         &amp;lt;groupId&amp;gt;org.springframework.session&amp;lt;/group">
 
 
 
@@ -385,29 +385,29 @@
 
       
         <h1 id="Spring-Session-Redis"><a href="#Spring-Session-Redis" class="headerlink" title="Spring Session Redis"></a>Spring Session Redis</h1><p>在 SpringBoot web 应用程序中，使用 Spring Session 来支持 HttpSession。</p>
-<h3 id="1-添加依赖"><a href="#1-添加依赖" class="headerlink" title="1. 添加依赖"></a>1. 添加依赖</h3><pre class=" language-xml"><code class="language-xml"><span class="token tag"><span class="token tag"><span class="token punctuation">&lt;</span>dependencies</span><span class="token punctuation">></span></span>
+<h3 id="1-添加依赖"><a href="#1-添加依赖" class="headerlink" title="1. 添加依赖"></a>1. 添加依赖</h3><pre><code class="xml">&lt;dependencies&gt;
     ......
-    <span class="token tag"><span class="token tag"><span class="token punctuation">&lt;</span>dependency</span><span class="token punctuation">></span></span>
-        <span class="token tag"><span class="token tag"><span class="token punctuation">&lt;</span>groupId</span><span class="token punctuation">></span></span>org.springframework.session<span class="token tag"><span class="token tag"><span class="token punctuation">&lt;/</span>groupId</span><span class="token punctuation">></span></span>
-        <span class="token tag"><span class="token tag"><span class="token punctuation">&lt;</span>artifactId</span><span class="token punctuation">></span></span>spring-session-data-redis<span class="token tag"><span class="token tag"><span class="token punctuation">&lt;/</span>artifactId</span><span class="token punctuation">></span></span>
-    <span class="token tag"><span class="token tag"><span class="token punctuation">&lt;/</span>dependency</span><span class="token punctuation">></span></span>
-<span class="token tag"><span class="token tag"><span class="token punctuation">&lt;/</span>dependencies</span><span class="token punctuation">></span></span>
+    &lt;dependency&gt;
+        &lt;groupId&gt;org.springframework.session&lt;/groupId&gt;
+        &lt;artifactId&gt;spring-session-data-redis&lt;/artifactId&gt;
+    &lt;/dependency&gt;
+&lt;/dependencies&gt;
 </code></pre>
 <p>Spring Boot 为 Spring Session 提供了依赖管理，所以不需要声明依赖的版本。</p>
-<h3 id="2-修改配置"><a href="#2-修改配置" class="headerlink" title="2. 修改配置"></a>2. 修改配置</h3><pre class=" language-properties"><code class="language-properties"><span class="token comment" spellcheck="true"># Session 的存储方式</span>
-<span class="token attr-name">spring.session.store-type</span><span class="token punctuation">=</span><span class="token attr-value">redis</span>
+<h3 id="2-修改配置"><a href="#2-修改配置" class="headerlink" title="2. 修改配置"></a>2. 修改配置</h3><pre><code class="properties"># Session 的存储方式
+spring.session.store-type=redis
 
-<span class="token comment" spellcheck="true"># Session 会话超时时间 / 秒</span>
-<span class="token attr-name">server.servlet.session.timeout</span><span class="token punctuation">=</span><span class="token attr-value">600</span>
-<span class="token comment" spellcheck="true"># Session 的刷新策略</span>
-<span class="token attr-name">spring.session.redis.flush-mode</span><span class="token punctuation">=</span><span class="token attr-value">on-save</span>
-<span class="token comment" spellcheck="true"># 用于存储会话的键名</span>
-<span class="token attr-name">spring.session.redis.namespace</span><span class="token punctuation">=</span><span class="token attr-value">spring:session</span>
+# Session 会话超时时间 / 秒
+server.servlet.session.timeout=600
+# Session 的刷新策略
+spring.session.redis.flush-mode=on-save
+# 用于存储会话的键名
+spring.session.redis.namespace=spring:session
 
-<span class="token comment" spellcheck="true"># 连接 Redis</span>
-<span class="token attr-name">spring.redis.host</span><span class="token punctuation">=</span><span class="token attr-value">localhost</span>
-<span class="token attr-name">spring.redis.port</span><span class="token punctuation">=</span><span class="token attr-value">6379</span>
-<span class="token attr-name">spring.redis.password</span><span class="token punctuation">=</span><span class="token attr-value">password</span>
+# 连接 Redis
+spring.redis.host=localhost
+spring.redis.port=6379
+spring.redis.password=password
 </code></pre>
 <blockquote>
 <p><code>spring.session.store-type=redis</code> 相当于手动添加注解 <code>@EnableRedisHttpSession</code>。此操作将会创建一个名为 <code>SpringSessionRepositoryFilter</code> 的过滤器，拦截并替换 SpringSession 支持的 HttpSession 实现。</p>
@@ -542,7 +542,7 @@
               
                 <a href="/archives">
               
-                  <span class="site-state-item-count">224</span>
+                  <span class="site-state-item-count">237</span>
                   <span class="site-state-item-name">日志</span>
                 </a>
               </div>
@@ -564,7 +564,7 @@
               
               <div class="site-state-item site-state-tags">
                 <a href="/tags/index.html">
-                  <span class="site-state-item-count">21</span>
+                  <span class="site-state-item-count">22</span>
                   <span class="site-state-item-name">标签</span>
                 </a>
               </div>
