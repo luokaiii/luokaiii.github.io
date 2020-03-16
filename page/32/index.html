@@ -7,280 +7,7 @@
     error: '复制错误',
     noSupport: '浏览器不支持'
   }
-} </script></head><body><i class="fa fa-arrow-right" id="toggle-sidebar" aria-hidden="true"></i><div id="sidebar" data-display="false"><div class="author-info"><div class="author-info__avatar text-center"><img src="/img/avatar.png"></div><div class="author-info__name text-center">koral</div><div class="author-info__description text-center">描述</div><hr><div class="author-info-articles"><a class="author-info-articles__archives article-meta" href="/archives"><span class="pull-left">文章</span><span class="pull-right">241</span></a><a class="author-info-articles__tags article-meta" href="/tags"><span class="pull-left">标签</span><span class="pull-right">22</span></a><a class="author-info-articles__categories article-meta" href="/categories"><span class="pull-left">分类</span><span class="pull-right">19</span></a></div></div></div><nav class="no-bg" id="nav"><div id="page-header"><span class="pull-left"> <a id="site-name" href="/">凯</a></span><i class="fa fa-bars toggle-menu pull-right" aria-hidden="true"></i><span class="pull-right menus">   <a class="site-page" href="/">Home</a><a class="site-page" href="/archives">Archives</a><a class="site-page" href="/tags">Tags</a><a class="site-page" href="/categories">Categories</a></span><span class="pull-right"></span></div><div id="site-info"><div id="site-title">凯</div><div id="site-sub-title">凯</div></div></nav><div id="content-outer"><div class="layout" id="content-inner"><div class="recent-post-item article-container"><a class="article-title" href="/2019/06/26/读书笔记/《JavaDesignPatterns》/3.简单工厂模式/">《Java Design Patterns》第一章 简单工厂模式</a><time class="post-meta__date"><i class="fa fa-calendar" aria-hidden="true"></i> 2019-06-26</time><span class="article-meta"><span class="article-meta__separator">|</span><i class="fa fa-inbox article-meta__icon" aria-hidden="true"></i><a class="article-meta__categories" href="/categories/设计模式/">设计模式</a></span><span class="article-meta tags"><span class="article-meta__separator">|</span><i class="fa fa-tag article-meta__icon" aria-hidden="true"></i><a class="article-meta__tags" href="/tags/读书笔记/">读书笔记</a></span><div class="content"><h1 id="第一章-简单工厂模式"><a href="#第一章-简单工厂模式" class="headerlink" title="第一章 简单工厂模式"></a>第一章 简单工厂模式</h1><h2 id="一、设计图表库"><a href="#一、设计图表库" class="headerlink" title="一、设计图表库"></a>一、设计图表库</h2><p>设计一个图表库，用于为系统提供各种不同外观的图表，如柱状图、饼状图、折线图等。</p>
-<h3 id="1-1-初步设计"><a href="#1-1-初步设计" class="headerlink" title="1.1 初步设计"></a>1.1 初步设计</h3><pre><code class="java">public class Chart {
-
-    private String type; // 图表类型
-
-    public Chart(Object[][] data, String type) {
-        this.type = type;
-        if (type.equalsIgnoreCase(&quot;histogram&quot;)) {
-            // 初始化柱状图
-        }
-        if (type.equalsIgnoreCase(&quot;pie&quot;)) {
-            // 初始化饼状图
-        }
-        if (type.equalsIgnoreCase(&quot;line&quot;)) {
-            // 初始化折线图
-        }
-    }
-
-    public void display() {
-        if (type.equalsIgnoreCase(&quot;histogram&quot;)) {
-            // 显示柱状图
-        }
-        if (type.equalsIgnoreCase(&quot;pie&quot;)) {
-            // 显示饼状图
-        }
-        if (type.equalsIgnoreCase(&quot;line&quot;)) {
-            // 显示折线图
-        }
-    }
-}</code></pre>
-<h3 id="1-2-存在的问题"><a href="#1-2-存在的问题" class="headerlink" title="1.2 存在的问题"></a>1.2 存在的问题</h3><p>该类在设计时存在如下几个问题：</p>
-<ol>
-<li>Chart 类中包含许多 if…else 代码块，代码冗长，难以阅读、维护和测试；大量的条件判断还将影响系统的性能</li>
-<li>Chart 类职责过重，负责初始化和显示所有图表对象。违反了“单一职责原则”，不利于类的重用和维护；而且将大量的对象初始化代码写在构造函数中，在初始化对象时需要条件判断，降低了对象创建的效率</li>
-<li>违反了“开闭原则”，当需要增加新类型的图表时，必须修改 Chart 对象的代码</li>
-<li>客户端只能通过 new 关键字来直接创建 Chart 对象，与客户端耦合度较高，对象的创建和使用无法分离</li>
-<li>客户端中缺少其它初始化设置，如果在客户端对图表的颜色、高度等进行设置，则会在每次创建对象时都会出现，导致代码的重复</li>
-</ol>
-<h3 id="1-3-解决思路"><a href="#1-3-解决思路" class="headerlink" title="1.3 解决思路"></a>1.3 解决思路</h3><p>引入工厂类，进行抽象与拆分</p>
-<h2 id="二、简单工厂模式"><a href="#二、简单工厂模式" class="headerlink" title="二、简单工厂模式"></a>二、简单工厂模式</h2><h3 id="2-1-设计流程"><a href="#2-1-设计流程" class="headerlink" title="2.1 设计流程"></a>2.1 设计流程</h3><ol>
-<li>将需要创建的各种不同对象的相关代码封装到不同的类中，这些类称为具体产品类</li>
-<li>将它们公共的代码进行抽象和提取后封装在一个抽象产品类中，每个具体产品类都是抽象产品类的子类</li>
-<li>提供一个工厂类用于创建各种产品，在工厂类中提供一个创建产品的工厂方法，该方法可以根据所传入的参数不同创建不同的具体对象</li>
-<li>客户端只需调用工厂类的方法并传入相应的参数即可得到一个产品对象</li>
-</ol>
-<h3 id="2-2-简单工厂模式模式的定义"><a href="#2-2-简单工厂模式模式的定义" class="headerlink" title="2.2 简单工厂模式模式的定义"></a>2.2 简单工厂模式模式的定义</h3><p>定义一个工厂类，可以根据参数的不同返回不同类的实例，被创建的实例通常都具有共同的父类。因为在简单工厂模式中用于创建实例的方法是静态方法，<br>因此简单工厂模式又被称为静态工厂模式，属于类创建型模式。</p>
-<h3 id="2-3-简单工厂模式中的几个角色"><a href="#2-3-简单工厂模式中的几个角色" class="headerlink" title="2.3 简单工厂模式中的几个角色"></a>2.3 简单工厂模式中的几个角色</h3><ol>
-<li>Factory（工厂角色）<ol>
-<li>即工厂类，是简单工厂模式的核心，负责实现创建所有产品实例的内部逻辑；</li>
-<li>工厂类可以被外界直接调用，创建所需的产品对象；</li>
-<li>在工厂类中提供了静态的工厂方法，返回类型为抽象产品类；</li>
-</ol>
-</li>
-<li>Product（抽象产品角色）<ol>
-<li>是工厂类所创建的对象的父类，封装各产品对象的公共方法</li>
-<li>抽象产品类的引入，提供了系统的灵活性，使得在工厂类只需定义一个通用的工厂方法，因为所创建的具体产品对象都是其子类对象</li>
-</ol>
-</li>
-<li>ConcreteProduct（具体产品角色）<ol>
-<li>是简单工厂模式的创建目标，所有被创建的对象都充当这个角色的某个类的实例。</li>
-<li>每个具体产品角色都继承了抽象产品角色，需要实现在抽象产品中声明的抽象方法</li>
-</ol>
-</li>
-</ol>
-<h2 id="三、具体实现"><a href="#三、具体实现" class="headerlink" title="三、具体实现"></a>三、具体实现</h2><h3 id="3-1-产品抽象类"><a href="#3-1-产品抽象类" class="headerlink" title="3.1 产品抽象类"></a>3.1 产品抽象类</h3><pre><code class="java">/**
- * 使用简单工厂模式时，需要先对产品类进行重构
- * 根据实际情况设计一个产品层次结构，将所有产品类公共的代码移至抽象类，并声明一些抽象方法供具体产品类类实现
- */
-public interface Chart {
-    void display();
-}</code></pre>
-<h3 id="3-2-具体产品类"><a href="#3-2-具体产品类" class="headerlink" title="3.2 具体产品类"></a>3.2 具体产品类</h3><pre><code class="java">/**
- * 具体产品类实现了抽象产品类中声明的抽象业务方法，不同的具体产品类可以提供不同的实现
- */
-public class HistogramChart implements Chart {
-    public HistogramChart() {
-        System.out.println(&quot;生成柱状图&quot;);
-    }
-
-    @Override
-    public void display() {
-        System.out.println(&quot;显示柱状图&quot;);
-    }
-}
-
-public class LineChart implements Chart {
-    public LineChart() {
-        System.out.println(&quot;生成折线图&quot;);
-    }
-
-    @Override
-    public void display() {
-        System.out.println(&quot;显示折线图&quot;);
-    }
-}
-
-public class PieChart implements Chart {
-    public PieChart() {
-        System.out.println(&quot;生成饼状图&quot;);
-    }
-
-    @Override
-    public void display() {
-        System.out.println(&quot;显示饼状图&quot;);
-    }
-}</code></pre>
-<h3 id="3-3-工厂方法类"><a href="#3-3-工厂方法类" class="headerlink" title="3.3 工厂方法类"></a>3.3 工厂方法类</h3><pre><code class="java">/**
- * 简单工厂模式的核心就是工厂类
- * 通过工厂类的静态工厂方法来创建具体产品对象，而非直接通过new来创建产品对象
- */
-public class ChartFactory {
-    public static Chart getChart(String type) {
-        switch (type) {
-            case &quot;histogram&quot;:
-                return new HistogramChart();
-            case &quot;pic&quot;:
-                return new PieChart();
-            case &quot;line&quot;:
-                return new LineChart();
-            default:
-                return null;
-        }
-    }
-}</code></pre>
-<h3 id="3-4-客户端测试"><a href="#3-4-客户端测试" class="headerlink" title="3.4 客户端测试"></a>3.4 客户端测试</h3><pre><code class="java">/**
- * 客户端测试代码
- */
-public class DemoTest {
-    public static void main(String[] args) {
-        Chart pie = ChartFactory.getChart(&quot;pie&quot;);
-        pie.display();
-    }
-}</code></pre>
-<h2 id="四、总结"><a href="#四、总结" class="headerlink" title="四、总结"></a>四、总结</h2><p>简单工厂模式提供了专门的工厂类用于创建对象，将对象的创建和对象的使用分离。</p>
-<h3 id="4-1-优点"><a href="#4-1-优点" class="headerlink" title="4.1 优点"></a>4.1 优点</h3><ol>
-<li>工厂类包含必要的判断逻辑，可以决定何时创建哪一个实例。免除客户端直接创建产品对象的职责，而仅仅“消费”产品。实现了对象创建和使用的分离</li>
-<li>客户端无需知道所创建的具体产品类的类名，只需要知道具体参数即可。</li>
-<li>可以将具体参数引入配置文件，在不修改客户端代码的情况下增删具体产品类，在一定程序上提供了系统灵活度。</li>
-</ol>
-<h3 id="4-2-缺点"><a href="#4-2-缺点" class="headerlink" title="4.2 缺点"></a>4.2 缺点</h3><ol>
-<li>工厂类的职责过重，集中了所有产品的创建逻辑。一旦工厂类出现问题，整个系统都会受到影响</li>
-<li>使用简单工厂模式势必会增加系统中类的个数，增加了系统的复杂度和理解难度</li>
-<li>系统拓展难度，新增产品时必须修改工厂逻辑，在产品类型较多时，可能造成工厂逻辑过于复杂，不利于系统扩展和维护</li>
-<li>简单工厂模式由于使用了静态工厂方法，造成工厂角色无法形成基于继承的等级结构</li>
-</ol>
-<h3 id="4-3-适用场景"><a href="#4-3-适用场景" class="headerlink" title="4.3 适用场景"></a>4.3 适用场景</h3><ol>
-<li>工厂类负责创建的对象较少，因为需要创建的对象较少，不会造成工厂方法中的业务逻辑太过复杂</li>
-<li>客户端只知道传入工厂类的参数，对于如何创建对象并不关心</li>
-</ol>
-</div><hr></div><div class="recent-post-item article-container"><a class="article-title" href="/2019/06/26/读书笔记/《JavaDesignPatterns》/5.抽象工厂模式/">《Java Design Patterns》第三章 抽象工厂模式</a><time class="post-meta__date"><i class="fa fa-calendar" aria-hidden="true"></i> 2019-06-26</time><span class="article-meta"><span class="article-meta__separator">|</span><i class="fa fa-inbox article-meta__icon" aria-hidden="true"></i><a class="article-meta__categories" href="/categories/设计模式/">设计模式</a></span><span class="article-meta tags"><span class="article-meta__separator">|</span><i class="fa fa-tag article-meta__icon" aria-hidden="true"></i><a class="article-meta__tags" href="/tags/读书笔记/">读书笔记</a></span><div class="content"><h1 id="第三章-抽象工厂模式"><a href="#第三章-抽象工厂模式" class="headerlink" title="第三章 抽象工厂模式"></a>第三章 抽象工厂模式</h1><p>在工厂方法模式中，通过引入工厂等级结构，解决了 简单工厂模式 中工厂类过于庞大，职责过重的问题。但是由于工厂方法模式中的每一个工厂只生产一类产品，导致系统中存在大量工厂类，增加系统开销。</p>
-<p>因此我们需要将一些相关的产品组成一个“产品族”，由同一个工厂生产。</p>
-<h2 id="一、抽象工厂模式"><a href="#一、抽象工厂模式" class="headerlink" title="一、抽象工厂模式"></a>一、抽象工厂模式</h2><h3 id="1-1-设计一款界面皮肤库"><a href="#1-1-设计一款界面皮肤库" class="headerlink" title="1.1 设计一款界面皮肤库"></a>1.1 设计一款界面皮肤库</h3><p>设计一款界面皮肤库，可以通过菜单来选择皮肤，不同的皮肤将提供视觉效果不同的按钮、文本框、组合框等。</p>
-<p>按照之前的 <code>工厂方法模式</code> 设计，如下：</p>
-<p><img src="https://i.loli.net/2019/07/04/5d1d5ce8d1f3176430.jpg" alt="工厂方法模式.jpg"></p>
-<p>当我们需要增加 Winter风格 的按钮时，只需要继承抽象工厂并生产出对应的按钮即可。该系统具备良好的灵活性和可扩展性，开发可以在不修改现有代码的基础上增加新的皮肤。</p>
-<h3 id="1-2-缺陷与问题"><a href="#1-2-缺陷与问题" class="headerlink" title="1.2 缺陷与问题"></a>1.2 缺陷与问题</h3><p>该设计模式提供了大量的工厂来创建具体的界面组件，可以灵活的配置风格，但是存在以下问题：</p>
-<ol>
-<li>新增产品时，需要同时新增一个具体工厂类，类的个数成对增加，会增大系统的开销</li>
-<li>由于某一种风格的按钮、文本框、组合框通常都是一起使用的，但是因为其工厂方法分离，可能会导致使用时的选择失误</li>
-</ol>
-<h3 id="1-3-解决方案"><a href="#1-3-解决方案" class="headerlink" title="1.3 解决方案"></a>1.3 解决方案</h3><p>将一组产品类定义为一个“产品族”（如按钮、文本框、组合框统称为一个产品族），将之前一个产品对应一个具体工厂的模式改为-一个产品族对应一个产品工厂（如Spring风格工厂，能够生产Spring风格按钮、Spring风格文本框、Spring风格组合框）。</p>
-<h3 id="1-4-产品等级结构与产品族"><a href="#1-4-产品等级结构与产品族" class="headerlink" title="1.4 产品等级结构与产品族"></a>1.4 产品等级结构与产品族</h3><ol>
-<li>产品等级结构<ol>
-<li>在<code>1.3 解决方案</code> 中，抽象工厂与Spring风格工厂、Summer风格工厂之间的关系构成了一个产品等级结构</li>
-<li>抽象工厂类是父类，具体工厂类是子类</li>
-<li>产品等级扩展，只需要继续实现子类即可（如新增Winter风格工厂，用于生产Winter风格的按钮、文本框、组合框）</li>
-</ol>
-</li>
-<li>产品族：<ol>
-<li>即各个具体工厂生产的产品统称（如Spring风格工厂，能够生产Spring风格按钮、Spring风格文本框、Spring风格组合框）</li>
-</ol>
-</li>
-</ol>
-<p>当系统所提供的工厂生产的具体产品并不是一个简单的对象，而是位于多个不同产品等级结构、属于不同类型的具体产品时就可以使用抽象工厂模式。</p>
-<h2 id="二、抽象工厂模式"><a href="#二、抽象工厂模式" class="headerlink" title="二、抽象工厂模式"></a>二、抽象工厂模式</h2><h3 id="2-1-概述"><a href="#2-1-概述" class="headerlink" title="2.1 概述"></a>2.1 概述</h3><p>抽象工厂模式：提供一个创建一系列相关或互相依赖对象的接口，而无须指定它们具体的类。</p>
-<p>抽象工厂模式又称为 Kit模式，属于对象创建型模式。</p>
-<p>在抽象工厂模式中，每一个具体工厂都提供多个工厂方法，用于生产多种不同类型的产品。这些产品构成了一个产品族。</p>
-<p><img src="https://i.loli.net/2019/07/04/5d1d63c564e9523844.jpg" alt="抽象工厂模式"></p>
-<p>从图中可以看出，如果需要新增其他风格的按钮、文本框，只需要新增一个具体工厂，由该工厂的多个工厂方法产出具体的产品。</p>
-<p>同时，缺点也很明显，如果我们想新增图片类型产品，必须同时修改抽象工厂及其所有的具体工厂。</p>
-<h3 id="2-2-抽象工厂模式中的几个角色"><a href="#2-2-抽象工厂模式中的几个角色" class="headerlink" title="2.2 抽象工厂模式中的几个角色"></a>2.2 抽象工厂模式中的几个角色</h3><ol>
-<li>AbstractFactory - 抽象工厂<ol>
-<li>声明了一组用于创建一族产品的方法，每一个方法对应一种产品</li>
-</ol>
-</li>
-<li>ConcreteFactory - 具体工厂<ol>
-<li>实现了在抽象工厂中声明的创建产品的方法，生成一组具体产品，这些产品构成一个产品族</li>
-</ol>
-</li>
-<li>AbstractProduct - 抽象产品<ol>
-<li>每种产品的抽象对象</li>
-</ol>
-</li>
-<li>ConcreteProduct 具体产品<ol>
-<li>由具体工厂生产的具体产品对象</li>
-</ol>
-</li>
-</ol>
-<h3 id="2-3-具体实践"><a href="#2-3-具体实践" class="headerlink" title="2.3 具体实践"></a>2.3 具体实践</h3><pre><code class="java">/**
- * 手机游戏软件
- * 针对 Symbian、Android、WindowsPhone 等多个智能手机平台，
- * 提供不同的游戏操作控制和游戏界面控制
- */
-public class Gaming {
-    // 抽象产品类
-    interface Operation{}
-    // 具体产品类
-    class SymbianOperation implements Operation{}
-    class AndroidOperation implements Operation{}
-    class WindowsPhoneOperation implements Operation{}
-
-    interface HML{}
-    class SymbianHML implements HML{}
-    class AndroidHML implements HML{}
-    class WindowsPhoneHML implements HML{}
-
-    // 抽象工厂类
-    interface Factory{
-        Operation getOperation();
-        HML getHML();
-    }
-    // 具体工厂类
-    class SymbianFactory implements Factory{
-        @Override
-        public Operation getOperation() {
-            return new SymbianOperation();
-        }
-        @Override
-        public HML getHML() {
-            return new SymbianHML();
-        }
-    }
-    class AndroidFactory implements Factory{
-        @Override
-        public Operation getOperation() {
-            return new AndroidOperation();
-        }
-        @Override
-        public HML getHML() {
-            return new AndroidHML();
-        }
-    }
-    class WindowsPhoneFactory implements Factory{
-        @Override
-        public Operation getOperation() {
-            return new WindowsPhoneOperation();
-        }
-        @Override
-        public HML getHML() {
-            return new WindowsPhoneHML();
-        }
-    }
-}</code></pre>
-<h2 id="三、“开闭原则”的倾斜性"><a href="#三、“开闭原则”的倾斜性" class="headerlink" title="三、“开闭原则”的倾斜性"></a>三、“开闭原则”的倾斜性</h2><p>在抽象工厂模式中，增加新的产品族很方便（如增加Winter类型的界面），但是增加新的产品等级结构很麻烦（如增加单选框类型的产品，需要修改抽象工厂及其所有的具体工厂），这种性质被称为“开闭原则”的倾斜性。</p>
-<p>“开闭原则”要求系统对扩展开发，对修改封闭，通过扩展达到增强其功能的目的，对于设计多个产品族与多个产品等级结构的系统，其功能增强包括两方面：</p>
-<ol>
-<li>增加产品族，很好地支持了“开闭原则”，只需新增具体产品和新增一个具体工厂即可</li>
-<li>增加产品等级结构：违背了“开闭原则”，因为需要修改所有的抽象工厂与具体工厂才能实现扩展</li>
-</ol>
-<h2 id="四、总结"><a href="#四、总结" class="headerlink" title="四、总结"></a>四、总结</h2><h3 id="优点"><a href="#优点" class="headerlink" title="优点"></a>优点</h3><ol>
-<li>抽象工厂模式隔离了具体类的生成，使客户不需要知道何时被创建</li>
-<li>当一个产品族中的多个对象被设计为一起工作时，它能够保证客户端始终只使用一个产品族对象</li>
-<li>增加新的产品族很方便，无须修改已有系统，符合“开闭原则”</li>
-</ol>
-<h3 id="缺点"><a href="#缺点" class="headerlink" title="缺点"></a>缺点</h3><ol>
-<li>增加新的产品等级结构时，违背了“开闭原则”</li>
-</ol>
-<h3 id="适用场景"><a href="#适用场景" class="headerlink" title="适用场景"></a>适用场景</h3><ol>
-<li>系统不依赖于产品类的具体创建、组合及表达的细节</li>
-<li>系统中有多于一个的产品族，且每次只使用其中某一个产品族</li>
-<li>同一个产品族的产品配合使用</li>
-<li>产品等级结构稳定，设计完成后，不再修改系统中新的产品等级结构</li>
-</ol>
-</div><hr></div><div class="recent-post-item article-container"><a class="article-title" href="/2019/06/25/读书笔记/《JavaDesignPatterns》/2.面向对象设计原则/">《Java Design Patterns》7大原则</a><time class="post-meta__date"><i class="fa fa-calendar" aria-hidden="true"></i> 2019-06-25</time><span class="article-meta"><span class="article-meta__separator">|</span><i class="fa fa-inbox article-meta__icon" aria-hidden="true"></i><a class="article-meta__categories" href="/categories/设计模式/">设计模式</a></span><span class="article-meta tags"><span class="article-meta__separator">|</span><i class="fa fa-tag article-meta__icon" aria-hidden="true"></i><a class="article-meta__tags" href="/tags/读书笔记/">读书笔记</a></span><div class="content"><h1 id="面向对象设计原则"><a href="#面向对象设计原则" class="headerlink" title="面向对象设计原则"></a>面向对象设计原则</h1><table>
+} </script></head><body><i class="fa fa-arrow-right" id="toggle-sidebar" aria-hidden="true"></i><div id="sidebar" data-display="false"><div class="author-info"><div class="author-info__avatar text-center"><img src="/img/avatar.png"></div><div class="author-info__name text-center">koral</div><div class="author-info__description text-center">描述</div><hr><div class="author-info-articles"><a class="author-info-articles__archives article-meta" href="/archives"><span class="pull-left">文章</span><span class="pull-right">239</span></a><a class="author-info-articles__tags article-meta" href="/tags"><span class="pull-left">标签</span><span class="pull-right">22</span></a><a class="author-info-articles__categories article-meta" href="/categories"><span class="pull-left">分类</span><span class="pull-right">21</span></a></div></div></div><nav class="no-bg" id="nav"><div id="page-header"><span class="pull-left"> <a id="site-name" href="/">凯</a></span><i class="fa fa-bars toggle-menu pull-right" aria-hidden="true"></i><span class="pull-right menus">   <a class="site-page" href="/">首页</a><a class="site-page" href="/archives">归档</a><a class="site-page" href="/tags">标签</a><a class="site-page" href="/categories">分类</a><a class="site-page" href="/about">关于我</a></span><span class="pull-right"></span></div><div id="site-info"><div id="site-title">凯</div><div id="site-sub-title">凯</div></div></nav><div id="content-outer"><div class="layout" id="content-inner"><div class="recent-post-item article-container"><a class="article-title" href="/2019/06/25/读书笔记/《JavaDesignPatterns》/2.面向对象设计原则/">《Java Design Patterns》7大原则</a><time class="post-meta__date"><i class="fa fa-calendar" aria-hidden="true"></i> 2019-06-25</time><span class="article-meta"><span class="article-meta__separator">|</span><i class="fa fa-inbox article-meta__icon" aria-hidden="true"></i><a class="article-meta__categories" href="/categories/设计模式/">设计模式</a></span><span class="article-meta tags"><span class="article-meta__separator">|</span><i class="fa fa-tag article-meta__icon" aria-hidden="true"></i><a class="article-meta__tags" href="/tags/读书笔记/">读书笔记</a></span><div class="content"><h1 id="面向对象设计原则"><a href="#面向对象设计原则" class="headerlink" title="面向对象设计原则"></a>面向对象设计原则</h1><table>
 <thead>
 <tr>
 <th>设计原则名称</th>
@@ -402,7 +129,137 @@ public class Gaming {
 <li>中介者模式</li>
 <li>解释器模式</li>
 </ol>
-</div><hr></div><div class="recent-post-item article-container"><a class="article-title" href="/2019/06/24/读书笔记/《JavaDesignPatterns》/0.目录/">《Java Design Patterns》读书笔记 - 目录</a><span class="article-meta"><i class="fa fa-thumb-tack article-meta__icon sticky"></i><span class="sticky">置顶</span><span class="article-meta__separator" style="margin-right: 0.3rem">|</span></span><time class="post-meta__date"><i class="fa fa-calendar" aria-hidden="true"></i> 2019-06-24</time><span class="article-meta"><span class="article-meta__separator">|</span><i class="fa fa-inbox article-meta__icon" aria-hidden="true"></i><a class="article-meta__categories" href="/categories/设计模式/">设计模式</a></span><span class="article-meta tags"><span class="article-meta__separator">|</span><i class="fa fa-tag article-meta__icon" aria-hidden="true"></i><a class="article-meta__tags" href="/tags/读书笔记/">读书笔记</a></span><div class="content"><p><img src="https://i.loli.net/2019/07/04/5d1dc031039b536890.png" alt="设计模式"></p></div><a class="more" href="/2019/06/24/读书笔记/《JavaDesignPatterns》/0.目录/#more">阅读更多</a><hr></div><nav id="pagination"><div class="pagination"><a class="extend prev" rel="prev" href="/page/31/"><i class="fa fa-chevron-left"></i></a><a class="page-number" href="/">1</a><span class="space">&hellip;</span><a class="page-number" href="/page/31/">31</a><span class="page-number current">32</span><a class="page-number" href="/page/33/">33</a><span class="space">&hellip;</span><a class="page-number" href="/page/49/">49</a><a class="extend next" rel="next" href="/page/33/"><i class="fa fa-chevron-right"></i></a></div></nav></div></div><footer><div class="layout" id="footer"><div class="copyright">&copy;2013 - 2020 By koral</div><div class="framework-info"><span>驱动 - </span><a href="http://hexo.io"><span>Hexo</span></a><span class="footer-separator">|</span><span>主题 - </span><a href="https://github.com/Molunerfinn/hexo-theme-melody"><span>Melody</span></a></div><div class="busuanzi"><script async src="//busuanzi.ibruce.info/busuanzi/2.3/busuanzi.pure.mini.js"></script><span id="busuanzi_container_site_uv"><i class="fa fa-user"></i><span id="busuanzi_value_site_uv"></span><span></span></span><span class="footer-separator">|</span><span id="busuanzi_container_site_pv"><i class="fa fa-eye"></i><span id="busuanzi_value_site_pv"></span><span></span></span></div></div></footer><i class="fa fa-arrow-up" id="go-up" aria-hidden="true"></i><script src="https://cdn.jsdelivr.net/npm/animejs@latest/anime.min.js"></script><script src="https://cdn.jsdelivr.net/npm/jquery@latest/dist/jquery.min.js"></script><script src="https://cdn.jsdelivr.net/npm/@fancyapps/fancybox@latest/dist/jquery.fancybox.min.js"></script><script src="https://cdn.jsdelivr.net/npm/velocity-animate@latest/velocity.min.js"></script><script src="https://cdn.jsdelivr.net/npm/velocity-ui-pack@latest/velocity.ui.min.js"></script><script src="/js/utils.js?version=1.7.0"></script><script src="/js/fancybox.js?version=1.7.0"></script><script src="/js/sidebar.js?version=1.7.0"></script><script src="/js/copy.js?version=1.7.0"></script><script src="/js/fireworks.js?version=1.7.0"></script><script src="/js/transition.js?version=1.7.0"></script><script src="/js/scroll.js?version=1.7.0"></script><script src="/js/head.js?version=1.7.0"></script><script>if(/Android|webOS|iPhone|iPod|iPad|BlackBerry/i.test(navigator.userAgent)) {
+</div><hr></div><div class="recent-post-item article-container"><a class="article-title" href="/2019/06/24/读书笔记/《JavaDesignPatterns》/1.常用设计模式一览/">《Java Design Patterns》常用设计模式一览</a><time class="post-meta__date"><i class="fa fa-calendar" aria-hidden="true"></i> 2019-06-24</time><span class="article-meta"><span class="article-meta__separator">|</span><i class="fa fa-inbox article-meta__icon" aria-hidden="true"></i><a class="article-meta__categories" href="/categories/设计模式/">设计模式</a></span><span class="article-meta tags"><span class="article-meta__separator">|</span><i class="fa fa-tag article-meta__icon" aria-hidden="true"></i><a class="article-meta__tags" href="/tags/读书笔记/">读书笔记</a></span><div class="content"><h1 id="常用设计模式一览表"><a href="#常用设计模式一览表" class="headerlink" title="常用设计模式一览表"></a>常用设计模式一览表</h1><table>
+<thead>
+<tr>
+<th>类型</th>
+<th>模式名称</th>
+<th>英文名</th>
+</tr>
+</thead>
+<tbody><tr>
+<td>创建型模式</td>
+<td>单例模式</td>
+<td>Single Pattern</td>
+</tr>
+<tr>
+<td>Creational Pattern</td>
+<td>简单工厂模式</td>
+<td>Simple Factory Pattern</td>
+</tr>
+<tr>
+<td></td>
+<td>工厂方法模式</td>
+<td>Factory Method Pattern</td>
+</tr>
+<tr>
+<td></td>
+<td>抽象工厂模式</td>
+<td>Abstract Factory Pattern</td>
+</tr>
+<tr>
+<td></td>
+<td>原型模式</td>
+<td>Prototype Pattern</td>
+</tr>
+<tr>
+<td></td>
+<td>建造者模式</td>
+<td>Builder Pattern</td>
+</tr>
+<tr>
+<td>结构型模式</td>
+<td>适配器模式</td>
+<td>Adapter Pattern</td>
+</tr>
+<tr>
+<td>Structural Pattern</td>
+<td>桥接模式</td>
+<td>Bridge Pattern</td>
+</tr>
+<tr>
+<td></td>
+<td>组合模式</td>
+<td>Composite Pattern</td>
+</tr>
+<tr>
+<td></td>
+<td>装饰模式</td>
+<td>Decorator Pattern</td>
+</tr>
+<tr>
+<td></td>
+<td>外观模式</td>
+<td>Facade Pattern</td>
+</tr>
+<tr>
+<td></td>
+<td>享元模式</td>
+<td>Flyweight Pattern</td>
+</tr>
+<tr>
+<td></td>
+<td>代理模式</td>
+<td>Proxy Pattern</td>
+</tr>
+<tr>
+<td>行为型模式</td>
+<td>责任链模式</td>
+<td>Chain Of Responsibility Pattern</td>
+</tr>
+<tr>
+<td>Behavioral Pattern</td>
+<td>命令模式</td>
+<td>Command Pattern</td>
+</tr>
+<tr>
+<td></td>
+<td>解释器模式</td>
+<td>Interpreter Pattern</td>
+</tr>
+<tr>
+<td></td>
+<td>迭代器模式</td>
+<td>Iterator Pattern</td>
+</tr>
+<tr>
+<td></td>
+<td>中介者模式</td>
+<td>Mediator Pattern</td>
+</tr>
+<tr>
+<td></td>
+<td>备忘录模式</td>
+<td>Memento Pattern</td>
+</tr>
+<tr>
+<td></td>
+<td>观察者模式</td>
+<td>Observer Pattern</td>
+</tr>
+<tr>
+<td></td>
+<td>状态模式</td>
+<td>State Pattern</td>
+</tr>
+<tr>
+<td></td>
+<td>策略模式</td>
+<td>Strategy Pattern</td>
+</tr>
+<tr>
+<td></td>
+<td>模板方法模式</td>
+<td>Template Method Pattern</td>
+</tr>
+<tr>
+<td></td>
+<td>访问者模式</td>
+<td>Visitor Pattern</td>
+</tr>
+</tbody></table>
+</div><hr></div><div class="recent-post-item article-container"><a class="article-title" href="/2019/06/24/读书笔记/《JavaDesignPatterns》/0.目录/">《Java Design Patterns》读书笔记 - 目录</a><span class="article-meta"><i class="fa fa-thumb-tack article-meta__icon sticky"></i><span class="sticky">置顶</span><span class="article-meta__separator" style="margin-right: 0.3rem">|</span></span><time class="post-meta__date"><i class="fa fa-calendar" aria-hidden="true"></i> 2019-06-24</time><span class="article-meta"><span class="article-meta__separator">|</span><i class="fa fa-inbox article-meta__icon" aria-hidden="true"></i><a class="article-meta__categories" href="/categories/设计模式/">设计模式</a></span><span class="article-meta tags"><span class="article-meta__separator">|</span><i class="fa fa-tag article-meta__icon" aria-hidden="true"></i><a class="article-meta__tags" href="/tags/读书笔记/">读书笔记</a></span><div class="content"><p><img src="https://i.loli.net/2019/07/04/5d1dc031039b536890.png" alt="设计模式"></p></div><a class="more" href="/2019/06/24/读书笔记/《JavaDesignPatterns》/0.目录/#more">阅读更多</a><hr></div><div class="recent-post-item article-container"><a class="article-title" href="/2019/06/23/读书笔记/《高性能MySQL》/10.MySQL架构拆分/">《高性能MySQL》第十章 MySQL 架构拆分</a><time class="post-meta__date"><i class="fa fa-calendar" aria-hidden="true"></i> 2019-06-23</time><span class="article-meta"><span class="article-meta__separator">|</span><i class="fa fa-inbox article-meta__icon" aria-hidden="true"></i><a class="article-meta__categories" href="/categories/读书笔记/">读书笔记</a><i class="fa fa-angle-right" aria-hidden="true"></i><i class="fa fa-inbox article-meta__icon" aria-hidden="true"></i><a class="article-meta__categories" href="/categories/读书笔记/高性能MySQL/">高性能MySQL</a></span><div class="content"><h1 id="第十章-MySQL-架构拆分"><a href="#第十章-MySQL-架构拆分" class="headerlink" title="第十章 MySQL 架构拆分"></a>第十章 MySQL 架构拆分</h1><h2 id="一、MySQL-主从复制架构"><a href="#一、MySQL-主从复制架构" class="headerlink" title="一、MySQL 主从复制架构"></a>一、MySQL 主从复制架构</h2><h2 id="二、MySQL-读写分离"><a href="#二、MySQL-读写分离" class="headerlink" title="二、MySQL 读写分离"></a>二、MySQL 读写分离</h2><h3 id="1-读服务器的负载均衡"><a href="#1-读服务器的负载均衡" class="headerlink" title="1. 读服务器的负载均衡"></a>1. 读服务器的负载均衡</h3><p>LVS</p>
+<h3 id="2-keepalived-进行写-vip-迁移"><a href="#2-keepalived-进行写-vip-迁移" class="headerlink" title="2. keepalived 进行写 vip 迁移"></a>2. keepalived 进行写 vip 迁移</h3><h3 id="三、使用-MaxScale-解决读压力大的问题"><a href="#三、使用-MaxScale-解决读压力大的问题" class="headerlink" title="三、使用 MaxScale 解决读压力大的问题"></a>三、使用 MaxScale 解决读压力大的问题</h3></div><hr></div><nav id="pagination"><div class="pagination"><a class="extend prev" rel="prev" href="/page/31/"><i class="fa fa-chevron-left"></i></a><a class="page-number" href="/">1</a><span class="space">&hellip;</span><a class="page-number" href="/page/31/">31</a><span class="page-number current">32</span><a class="page-number" href="/page/33/">33</a><span class="space">&hellip;</span><a class="page-number" href="/page/48/">48</a><a class="extend next" rel="next" href="/page/33/"><i class="fa fa-chevron-right"></i></a></div></nav></div></div><footer><div class="layout" id="footer"><div class="copyright">&copy;2013 - 2020 By koral</div><div class="framework-info"><span>驱动 - </span><a href="http://hexo.io"><span>Hexo</span></a><span class="footer-separator">|</span><span>主题 - </span><a href="https://github.com/Molunerfinn/hexo-theme-melody"><span>Melody</span></a></div><div class="busuanzi"><script async src="//busuanzi.ibruce.info/busuanzi/2.3/busuanzi.pure.mini.js"></script><span id="busuanzi_container_site_uv"><i class="fa fa-user"></i><span id="busuanzi_value_site_uv"></span><span></span></span><span class="footer-separator">|</span><span id="busuanzi_container_site_pv"><i class="fa fa-eye"></i><span id="busuanzi_value_site_pv"></span><span></span></span></div></div></footer><i class="fa fa-arrow-up" id="go-up" aria-hidden="true"></i><script src="https://cdn.jsdelivr.net/npm/animejs@latest/anime.min.js"></script><script src="https://cdn.jsdelivr.net/npm/jquery@latest/dist/jquery.min.js"></script><script src="https://cdn.jsdelivr.net/npm/@fancyapps/fancybox@latest/dist/jquery.fancybox.min.js"></script><script src="https://cdn.jsdelivr.net/npm/velocity-animate@latest/velocity.min.js"></script><script src="https://cdn.jsdelivr.net/npm/velocity-ui-pack@latest/velocity.ui.min.js"></script><script src="/js/utils.js?version=1.7.0"></script><script src="/js/fancybox.js?version=1.7.0"></script><script src="/js/sidebar.js?version=1.7.0"></script><script src="/js/copy.js?version=1.7.0"></script><script src="/js/fireworks.js?version=1.7.0"></script><script src="/js/transition.js?version=1.7.0"></script><script src="/js/scroll.js?version=1.7.0"></script><script src="/js/head.js?version=1.7.0"></script><script>if(/Android|webOS|iPhone|iPod|iPad|BlackBerry/i.test(navigator.userAgent)) {
   $('#nav').addClass('is-mobile')
   $('footer').addClass('is-mobile')
   $('#top-container').addClass('is-mobile')

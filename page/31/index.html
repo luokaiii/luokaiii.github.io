@@ -7,142 +7,61 @@
     error: '复制错误',
     noSupport: '浏览器不支持'
   }
-} </script></head><body><i class="fa fa-arrow-right" id="toggle-sidebar" aria-hidden="true"></i><div id="sidebar" data-display="false"><div class="author-info"><div class="author-info__avatar text-center"><img src="/img/avatar.png"></div><div class="author-info__name text-center">koral</div><div class="author-info__description text-center">描述</div><hr><div class="author-info-articles"><a class="author-info-articles__archives article-meta" href="/archives"><span class="pull-left">文章</span><span class="pull-right">241</span></a><a class="author-info-articles__tags article-meta" href="/tags"><span class="pull-left">标签</span><span class="pull-right">22</span></a><a class="author-info-articles__categories article-meta" href="/categories"><span class="pull-left">分类</span><span class="pull-right">19</span></a></div></div></div><nav class="no-bg" id="nav"><div id="page-header"><span class="pull-left"> <a id="site-name" href="/">凯</a></span><i class="fa fa-bars toggle-menu pull-right" aria-hidden="true"></i><span class="pull-right menus">   <a class="site-page" href="/">Home</a><a class="site-page" href="/archives">Archives</a><a class="site-page" href="/tags">Tags</a><a class="site-page" href="/categories">Categories</a></span><span class="pull-right"></span></div><div id="site-info"><div id="site-title">凯</div><div id="site-sub-title">凯</div></div></nav><div id="content-outer"><div class="layout" id="content-inner"><div class="recent-post-item article-container"><a class="article-title" href="/2019/07/01/分布式/SpringBoot/Sso单点登录/">无题</a><time class="post-meta__date"><i class="fa fa-calendar" aria-hidden="true"></i> 2019-07-01</time><div class="content"><h1 id="单点登录"><a href="#单点登录" class="headerlink" title="单点登录"></a>单点登录</h1><h2 id="一、单点登录机制"><a href="#一、单点登录机制" class="headerlink" title="一、单点登录机制"></a>一、单点登录机制</h2><pre><code>web 应用采用的是 b/s 架构，以 http 作为通信协议。而 http 是无状态协议，浏览器每一次请求，服务器都会独立处理，不与之前或者之后的请求产生关联。</code></pre><p><img src="https://images2015.cnblogs.com/blog/797930/201611/797930-20161129155231912-1627010726.png" alt></p>
-<pre><code>在三次请求、响应对之间没有任何联系。这同时也意味着，任何用户都能通过浏览器访问服务器资源，如果想保护服务器的某些资源，必须限制浏览器请求；要限制浏览器请求，必须鉴别浏览器请求，响应合法请求；要鉴别浏览器请求，必须清楚浏览器请求状态。既然http协议无状态，就需要服务器和浏览器共同维护一个状态，这就是会话机制。</code></pre><h2 id="二、会话机制"><a href="#二、会话机制" class="headerlink" title="二、会话机制"></a>二、会话机制</h2><pre><code>浏览器第一次请求服务器，服务器创建一个会话，并将会话 id 作为响应的一部分发送给浏览器，浏览器存储会话 id ，并在后续的第二次和第三次请求中带上会话 id ，服务器取得请求中的会话 id 就知道是不是同一个用户了。</code></pre><blockquote>
-<p>  服务器在内存中保存会话对象，浏览器怎么保存会话 id 呢？  </p>
-</blockquote>
-<pre><code>1.请求参数：将会话 id 作为每一次请求的参数，服务器接收请求自然能解析参数获得会话 id ，并借此判断是否来自同一会话，很明显不靠谱。
-
-2.cookie：是浏览器用来存储少量数据的一种机制，数据以&quot; key/value&quot;形式存储，浏览器发送 http 请求时自动附带 cookie 信息。</code></pre><p><img src="https://images2015.cnblogs.com/blog/797930/201611/797930-20161129155234443-99011212.png" alt></p>
-<pre><code>tomcat会话机制中也实现了cookie，访问tomcat服务器时，浏览器中可以看到一个名为“JSESSIONID” 的cookie，这就是 tomcat 会话机制维护的会话 id 。</code></pre><h2 id="三、登录状态"><a href="#三、登录状态" class="headerlink" title="三、登录状态"></a>三、登录状态</h2><pre><code>我们假设浏览器第一次请求服务器需要输入用户名与密码来验证身份，服务器拿到用户名密码去数据库比对，正确的话说明当持有这个会话的用户是合法用户，应该将这个会话标记为“已授权”或者“一登录”之类的状态，既然是会话的状态，自然要保存在会话对象中，tomcat在会话对象那个中的登录状态如下：
-
-    HttpSession session = request.getSession();
-    session.setAttribution(&quot;isLogin&quot;,true);
-再次访问时，tomcat会在会话对象中查看登录状态。
-每次请求受保护资源时都会检查会话对象中的登录状态，只有 isLogin 时才能访问，登录机制因此实现。</code></pre><p><img src="https://images2015.cnblogs.com/blog/797930/201611/797930-20161129155235693-1708276896.png" alt></p>
-<h2 id="四、多系统的复杂性"><a href="#四、多系统的复杂性" class="headerlink" title="四、多系统的复杂性"></a>四、多系统的复杂性</h2><pre><code>web系统由原始的单系统发展成为如今由多系统组成的应用群，面对多个系统，用户不可能以一个个登录再一个个注销。
-而且由多系统组成的应用群，复杂性应该由系统内部承担，而不是用户。无论web系统内部多么复杂，对用户而言，都是一个统一的整体。
-
-虽然cookie是解决单系统登录的核心，但是cookie的限制在于cookie的域，浏览器发送 http 请求时会自动携带与该域匹配的 cookie ，而不是所有 cookie。
-
-在早些年，很多登录系统就采用同域名共享 cookie 的方式，将 web 应用群中所有子系统的域名统一在一个顶级域名下，然后将它们的 cookie 域设置为“baidu.com”。这样做虽然可行，但并不好。共享 cookie 的方式存在众多局限：首先，应用群域名得统一；其次，应用群各系统使用的技术(至少是 web 服务器)要相同，不然 cookie 的key值不相同（例如 tomcat 的是 JSESSIONID），无法维持会话，共享 cookie 的方式是无法实现跨语言技术平台登录的，比如 java、php、.net 系统之间；第三，cookie本身并不安全。
-
-因此，我们需要一种全新的登录方式来实现多系统应用群的登录，这就是单点登录。</code></pre><h2 id="五、单点登录"><a href="#五、单点登录" class="headerlink" title="五、单点登录"></a>五、单点登录</h2><pre><code>单点登录(Single Sign On)，指在多系统应用群中登录一个系统，便可在其他所有系统中得到授权而无需再次登录，包括单点登录与单点注销两部分。</code></pre><p><img src="http://images2015.cnblogs.com/blog/797930/201611/797930-20161129155238365-788619473.png" alt></p>
-<h3 id="1-登录"><a href="#1-登录" class="headerlink" title="1.登录"></a>1.登录</h3><pre><code>对比单系统登录，sso 需要一个独立的认证中心，只有认证中心能接受用户的用户名密码等安全信息，其他系统不提供登录入口，只接受认证中心的间接授权。
-
-间接授权通过令牌实现，sso 认证中心验证用户的用户名密码没问题，创建授权令牌吗，在跳转过程中，授权令牌作为参数发送给各个子系统，子系统拿到令牌，即通过了授权，可以借此创建局部会话，局部会话登录方式与单系统的登录方式相同。
-这个过程就是单点登录的原理。</code></pre><p><img src="https://images2015.cnblogs.com/blog/797930/201612/797930-20161203152650974-276822362.png" alt></p>
-<p>简要描述</p>
-<ol>
-<li>用户访问系统1的受保护资源，系统1发现用户未登录，跳转至sso认证中心，并将自己的地址作为参数</li>
-<li>sso认证中心发现用户未登录，将用户引导至登录页面</li>
-<li>用户输入用户名密码提交登录申请</li>
-<li>sso认证中心校验用户信息，创建用户与sso认证中心之间的会话，称为全局会话，同时创建授权令牌</li>
-<li>sso认证中心带着令牌跳转会最初的请求地址（系统1）</li>
-<li>系统1拿到令牌，去sso认证中心校验令牌是否有效</li>
-<li>sso认证中心校验令牌，返回有效，注册系统1</li>
-<li>系统1使用该令牌创建与用户的会话，称为局部会话，返回受保护资源</li>
-<li>用户访问系统2的受保护资源</li>
-<li>系统2发现用户未登录，跳转至sso认证中心，并将自己的地址作为参数</li>
-<li>sso认证中心发现用户已登录，跳转回系统2的地址，并附上令牌</li>
-<li>系统2拿到令牌，去sso认证中心校验令牌是否有效</li>
-<li>sso认证中心校验令牌，返回有效，注册系统2</li>
-<li>系统2使用该令牌创建与用户的局部会话，返回受保护资源</li>
+} </script></head><body><i class="fa fa-arrow-right" id="toggle-sidebar" aria-hidden="true"></i><div id="sidebar" data-display="false"><div class="author-info"><div class="author-info__avatar text-center"><img src="/img/avatar.png"></div><div class="author-info__name text-center">koral</div><div class="author-info__description text-center">描述</div><hr><div class="author-info-articles"><a class="author-info-articles__archives article-meta" href="/archives"><span class="pull-left">文章</span><span class="pull-right">239</span></a><a class="author-info-articles__tags article-meta" href="/tags"><span class="pull-left">标签</span><span class="pull-right">22</span></a><a class="author-info-articles__categories article-meta" href="/categories"><span class="pull-left">分类</span><span class="pull-right">21</span></a></div></div></div><nav class="no-bg" id="nav"><div id="page-header"><span class="pull-left"> <a id="site-name" href="/">凯</a></span><i class="fa fa-bars toggle-menu pull-right" aria-hidden="true"></i><span class="pull-right menus">   <a class="site-page" href="/">首页</a><a class="site-page" href="/archives">归档</a><a class="site-page" href="/tags">标签</a><a class="site-page" href="/categories">分类</a><a class="site-page" href="/about">关于我</a></span><span class="pull-right"></span></div><div id="site-info"><div id="site-title">凯</div><div id="site-sub-title">凯</div></div></nav><div id="content-outer"><div class="layout" id="content-inner"><div class="recent-post-item article-container"><a class="article-title" href="/2019/06/27/读书笔记/《JavaDesignPatterns》/7.原型模式/">《Java Design Patterns》第五章 原型模式 - 对象的克隆</a><time class="post-meta__date"><i class="fa fa-calendar" aria-hidden="true"></i> 2019-06-27</time><span class="article-meta"><span class="article-meta__separator">|</span><i class="fa fa-inbox article-meta__icon" aria-hidden="true"></i><a class="article-meta__categories" href="/categories/设计模式/">设计模式</a></span><span class="article-meta tags"><span class="article-meta__separator">|</span><i class="fa fa-tag article-meta__icon" aria-hidden="true"></i><a class="article-meta__tags" href="/tags/读书笔记/">读书笔记</a></span><div class="content"><h1 id="第五章-原型模式-对象的克隆"><a href="#第五章-原型模式-对象的克隆" class="headerlink" title="第五章 原型模式 - 对象的克隆"></a>第五章 原型模式 - 对象的克隆</h1><p>原型模式：使用原型实例指定创建对象的种类，并且通过拷贝这些原型创建新的对象。属于一种对象创建型模式。</p>
+<h2 id="一、概述"><a href="#一、概述" class="headerlink" title="一、概述"></a>一、概述</h2><h3 id="1-1-原理"><a href="#1-1-原理" class="headerlink" title="1.1 原理"></a>1.1 原理</h3><p>原型模式的工作原理很简单：将一个原型对象传给那个要发动创建的对象，这个要发动创建的对象通过请求原型对象拷贝自己来实现创建过程。由于在软件系统中我们经常会遇到需要创建多个相同或者相似对象的情况，因此原型模式在真实开发中的使用频率还是非常高的。原型模式是一种“另类”的创建型模式，创建克隆对象的工厂就是原型类自身，工厂方法由克隆方法来实现。</p>
+<h3 id="1-2-原型模式中的几个角色"><a href="#1-2-原型模式中的几个角色" class="headerlink" title="1.2 原型模式中的几个角色"></a>1.2 原型模式中的几个角色</h3><ol>
+<li>Prototype - 抽象原型类<ol>
+<li>声明克隆方法的接口，是所有具体原型类的公共父类</li>
 </ol>
-<h3 id="2-注销"><a href="#2-注销" class="headerlink" title="2.注销"></a>2.注销</h3><pre><code>单点登录的注销，在一个子系统中注销，所有子系统的会话都将被销毁：
-sso认证中心一直坚挺全局会话的状态，一旦全局会话销毁，监听器将通知所有注册系统执行注销操作　　</code></pre><p><img src="https://images2015.cnblogs.com/blog/797930/201611/797930-20161129155243068-1378377736.png" alt></p>
-<p>简要说明</p>
-<ol>
-<li>用户向系统1发起注销请求</li>
-<li>系统1根据用户与系统1建立的会话id拿到令牌，向sso认证中心发起注销请求</li>
-<li>sso认证中心校验令牌有效，销毁全局会话，同时取出所有用此令牌注册的系统地址</li>
-<li>sso认证中心向所有注册系统发起注销请求</li>
-<li>各注册系统接收sso认证中心的注销请求，销毁局部会话</li>
-<li>sso认证中心引导用户至登录页面</li>
+</li>
+<li>ConcretePrototype - 具体原型类<ol>
+<li>实现抽象原型类中声明的克隆方法，在克隆方法中返回自己的一个克隆对象</li>
 </ol>
-<h2 id="六、部署图"><a href="#六、部署图" class="headerlink" title="六、部署图"></a>六、部署图</h2><pre><code>单点登录涉及 sso 认证中心与众子系统，子系统与 sso 认证中心需要通信以交换令牌、校验令牌及发起注销请求，因而子系统必须集成 sso 的客户端，sso 认证中心则是 sso 服务端，整个单点定了公路过程实质是 sso 客户端与服务端通信的过程。</code></pre><p><img src="https://images2015.cnblogs.com/blog/797930/201611/797930-20161129155244646-2067469767.png" alt title="图片"></p>
-<pre><code>sso 认证中心与 sso 客户端通信方式有多种，例如 webservice、rpc、restful api等
+</li>
+<li>Client - 客户类<ol>
+<li>让一个原型对象克隆自身从而创建一个新的对象，在客户类中只需要直接实例化或通过工厂方法等方式创建一个原型对象，再通过调用该对象的克隆方法即可得到多个相同的对象。</li>
+</ol>
+</li>
+</ol>
+<h3 id="1-3-案例"><a href="#1-3-案例" class="headerlink" title="1.3 案例"></a>1.3 案例</h3><pre><code class="java">@Getter
+@Setter
+class WeeklyLog implements Clonealbe{
+    private String name;
+    private String date;
+    private String content;
 
-sso采用客户端/服务端架构，我们先看sso-client与sso-server要实现的功能（下面：sso认证中心=sso-server）</code></pre><p>　　sso-client</p>
-<p>拦截子系统未登录用户请求，跳转至sso认证中心<br>接收并存储sso认证中心发送的令牌<br>与sso-server通信，校验令牌的有效性<br>建立局部会话<br>拦截用户注销请求，向sso认证中心发送注销请求<br>接收sso认证中心发出的注销请求，销毁局部会话<br>　　sso-server</p>
-<p>验证用户的登录信息<br>创建全局会话<br>创建授权令牌<br>与sso-client通信发送令牌<br>校验sso-client令牌有效性<br>系统注册<br>接收sso-client注销请求，注销所有会话<br>　　接下来，我们按照原理来一步步实现sso吧！</p>
-<p>1、sso-client拦截未登录请求<br>　　java拦截请求的方式有servlet、filter、listener三种方式，我们采用filter。在sso-client中新建LoginFilter.java类并实现Filter接口，在doFilter()方法中加入对未登录用户的拦截</p>
-<p>public void doFilter(ServletRequest request, ServletResponse response, FilterChain chain) throws IOException, ServletException {<br>    HttpServletRequest req = (HttpServletRequest) request;<br>    HttpServletResponse res = (HttpServletResponse) response;<br>    HttpSession session = req.getSession();</p>
-<pre><code>if (session.getAttribute(&quot;isLogin&quot;)) {
-    chain.doFilter(request, response);
-    return;
-}
-//跳转至sso认证中心
-res.sendRedirect(&quot;sso-server-url-with-system-url&quot;);</code></pre><p>}<br>2、sso-server拦截未登录请求<br>　　拦截从sso-client跳转至sso认证中心的未登录请求，跳转至登录页面，这个过程与sso-client完全一样</p>
-<p>3、sso-server验证用户登录信息<br>　　用户在登录页面输入用户名密码，请求登录，sso认证中心校验用户信息，校验成功，将会话状态标记为“已登录”</p>
-<p>@RequestMapping(“/login”)<br>public String login(String username, String password, HttpServletRequest req) {<br>    this.checkLoginInfo(username, password);<br>    req.getSession().setAttribute(“isLogin”, true);<br>    return “success”;<br>}<br>4、sso-server创建授权令牌<br>　　授权令牌是一串随机字符，以什么样的方式生成都没有关系，只要不重复、不易伪造即可，下面是一个例子</p>
-<p>String token = UUID.randomUUID().toString();<br>5、sso-client取得令牌并校验<br>　　sso认证中心登录后，跳转回子系统并附上令牌，子系统（sso-client）取得令牌，然后去sso认证中心校验，在LoginFilter.java的doFilter()中添加几行</p>
-<p>// 请求附带token参数<br>String token = req.getParameter(“token”);<br>if (token != null) {<br>    // 去sso认证中心校验token<br>    boolean verifyResult = this.verify(“sso-server-verify-url”, token);<br>    if (!verifyResult) {<br>        res.sendRedirect(“sso-server-url”);<br>        return;<br>    }<br>    chain.doFilter(request, response);<br>}<br>　　verify()方法使用httpClient实现，这里仅简略介绍，httpClient详细使用方法请参考官方文档</p>
-<p>HttpPost httpPost = new HttpPost(“sso-server-verify-url-with-token”);<br>HttpResponse httpResponse = httpClient.execute(httpPost);<br>6、sso-server接收并处理校验令牌请求<br>　　用户在sso认证中心登录成功后，sso-server创建授权令牌并存储该令牌，所以，sso-server对令牌的校验就是去查找这个令牌是否存在以及是否过期，令牌校验成功后sso-server将发送校验请求的系统注册到sso认证中心（就是存储起来的意思）</p>
-<p>　　令牌与注册系统地址通常存储在key-value数据库（如redis）中，redis可以为key设置有效时间也就是令牌的有效期。redis运行在内存中，速度非常快，正好sso-server不需要持久化任何数据。</p>
-<p>　　令牌与注册系统地址可以用下图描述的结构存储在redis中，可能你会问，为什么要存储这些系统的地址？如果不存储，注销的时候就麻烦了，用户向sso认证中心提交注销请求，sso认证中心注销全局会话，但不知道哪些系统用此全局会话建立了自己的局部会话，也不知道要向哪些子系统发送注销请求注销局部会话</p>
-<p><img src="https://images2015.cnblogs.com/blog/797930/201611/797930-20161129155245506-1069288802.png" alt></p>
-<p>7、sso-client校验令牌成功创建局部会话<br>　　令牌校验成功后，sso-client将当前局部会话标记为“已登录”，修改LoginFilter.java，添加几行</p>
-<p>if (verifyResult) {<br>    session.setAttribute(“isLogin”, true);<br>}<br>　　sso-client还需将当前会话id与令牌绑定，表示这个会话的登录状态与令牌相关，此关系可以用java的hashmap保存，保存的数据用来处理sso认证中心发来的注销请求</p>
-<p>8、注销过程<br>　　用户向子系统发送带有“logout”参数的请求（注销请求），sso-client拦截器拦截该请求，向sso认证中心发起注销请求</p>
-<p>String logout = req.getParameter(“logout”);<br>if (logout != null) {<br>    this.ssoServer.logout(token);<br>}<br>　　sso认证中心也用同样的方式识别出sso-client的请求是注销请求（带有“logout”参数），sso认证中心注销全局会话</p>
-<p>@RequestMapping(“/logout”)<br>public String logout(HttpServletRequest req) {<br>    HttpSession session = req.getSession();<br>    if (session != null) {<br>        session.invalidate();//触发LogoutListener<br>    }<br>    return “redirect:/“;<br>}<br>　　sso认证中心有一个全局会话的监听器，一旦全局会话注销，将通知所有注册系统注销</p>
-<p>1<br>2<br>3<br>4<br>5<br>6<br>7<br>8<br>public class LogoutListener implements HttpSessionListener {<br>    @Override<br>    public void sessionCreated(HttpSessionEvent event) {}<br>    @Override<br>    public void sessionDestroyed(HttpSessionEvent event) {<br>        //通过httpClient向所有注册系统发送注销请求<br>    }<br>}</p>
-</div><hr></div><div class="recent-post-item article-container"><a class="article-title" href="/2019/07/01/分布式/SpringBoot/SpringBoot常用Listener/">无题</a><time class="post-meta__date"><i class="fa fa-calendar" aria-hidden="true"></i> 2019-07-01</time><div class="content"><h1 id="SpringBoot-的几种常见监听器"><a href="#SpringBoot-的几种常见监听器" class="headerlink" title="SpringBoot 的几种常见监听器"></a>SpringBoot 的几种常见监听器</h1><p>例如：在Web项目启动时，需要执行一段代码，该写在哪里呢？<br>解决方法：注册监听器监听 ServletContext 创建的钩子函数，并重写自己的实现</p>
-<h2 id="1-创建Listener"><a href="#1-创建Listener" class="headerlink" title="1. 创建Listener"></a>1. 创建Listener</h2><pre><code class="java">@WebListener
-public class InitDemo implements ServletContextListener {
-
-    @Override
-    public void contextInitialized(ServletContextEvent sce) {
-        System.out.println(&quot;Web Initialized!&quot;);
-    }
-
-    @Override
-    public void contextDestroyed(ServletContextEvent sce) {
-        System.out.println(&quot;Web Destroyed!&quot;);
+    publci WeekLog clone(){
+        Object obj = null;
+        try{
+            obj = super.clone();
+            return (WeekLog)obj;
+        } catch (CloneNotSupportedException e){
+            System.out.println(&quot;不支持复制&quot;);
+            return null;
+        }
     }
 }</code></pre>
+<h2 id="二、浅克隆与深克隆"><a href="#二、浅克隆与深克隆" class="headerlink" title="二、浅克隆与深克隆"></a>二、浅克隆与深克隆</h2><h3 id="2-1-浅克隆"><a href="#2-1-浅克隆" class="headerlink" title="2.1 浅克隆"></a>2.1 浅克隆</h3><p>在浅克隆中，如果原型对象的成员是值类型，将复制一份给克隆对象；如果原型对象的成员变量是引用类型，则将引用对象的地址复制一份给克隆对象。也就是说，原型对象的引用类型变量与克隆对象中的变量指向同一内存地址。</p>
+<p>即值类型成员变量会被复制，但是引用成员变量不会。</p>
+<h3 id="2-2-深克隆"><a href="#2-2-深克隆" class="headerlink" title="2.2 深克隆"></a>2.2 深克隆</h3><p>在深克隆中，无论原型对象的成员变量是值类型还是引用类型，都将复制一份给克隆对象。</p>
+<p>如果需要实现深克隆，可以通过序列化（Serialization）等方式实现：将对象写入到流，再从流中读出。</p>
 <blockquote>
-<p>使用 @WebListener 注册声明类为监听器</p>
+<p>Java语言提供的 Cloneable 接口和 Serializable 接口都是空接口，也称为标识接口。标识接口无任何方法定义，只提供告诉JRE这些接口的实现类是否支持克隆、序列化等功能。</p>
 </blockquote>
-<h2 id="2-添加-servlet-扫描"><a href="#2-添加-servlet-扫描" class="headerlink" title="2. 添加 servlet 扫描"></a>2. 添加 servlet 扫描</h2><pre><code class="java">@SpringBootApplication
-@ServletComponentScan(basePackages = &quot;com.test.*&quot;)
-public class App {
-    public static void main(String[] args){
-        SpringApplication.run(App.class,args);
-    }
-}</code></pre>
-<h2 id="3-测试"><a href="#3-测试" class="headerlink" title="3. 测试"></a>3. 测试</h2><p>启动项目，可在堆栈信息中找到对应的输出</p>
-<h2 id="4-常见监听器接口"><a href="#4-常见监听器接口" class="headerlink" title="4. 常见监听器接口"></a>4. 常见监听器接口</h2><ol>
-<li>ServletContextListener - 监听 ServletContext 对象的创建及销毁<ol>
-<li>contextInitialized(ServletContextEventsce) - web应用程序初始化进程正在启动的通知</li>
-<li>contextDestroyed(ServletContextEvent sce) - 通知servlet上下文即将关闭。所有servlet和过滤器之前已经被销毁()</li>
+<h2 id="三、总结"><a href="#三、总结" class="headerlink" title="三、总结"></a>三、总结</h2><h3 id="优点"><a href="#优点" class="headerlink" title="优点"></a>优点</h3><ol>
+<li>当创建新对象较为复杂时，可以使用原型模式简化对象的创建过程，复制一个已有实例以提高新实例的创建效率</li>
+<li>扩展性较好，由于在原型模式中提供了抽象原型类，在客户端可以针对抽象原型类进行编程，而将具体原型类写在配置文件中</li>
+<li>原型模式提供了简化的创建结构，工厂方法模式需要与产品等级结构对应的工厂等级结构，而原型模式则直接通过封装在原型类中的克隆方法实现</li>
+<li>深克隆方式可以保存对象的状态</li>
 </ol>
-</li>
-<li>HttpSessionListener - 监听 session 对象的创建及销毁<ol>
-<li>sessionCreated(HttpSessionEvent se) - 创建会话的通知</li>
-<li>sessionDestroyed(HttpSessionEvent se) - 会话即将失效的通知</li>
+<h3 id="缺点"><a href="#缺点" class="headerlink" title="缺点"></a>缺点</h3><ol>
+<li>需要每个类配置一个克隆方法，且位于类内部，当对类进行改造时需要修改源码，违反了“开闭原则”</li>
+<li>实现深克隆时较为复杂，对象的每一层子对象都需要进行深克隆</li>
 </ol>
-</li>
-<li>ServletRequestListener - 监听 request 对象的创建及销毁<ol>
-<li>requestDestroyed(ServletRequestEvent src) - 请求将超出web应用程序的范围</li>
-<li>requestInitialized(ServletRequestEvent src) - 请求将进入web应用程序的范围</li>
-</ol>
-</li>
-<li>ServletContextAttributeListener - 监听 servletContext 对象中属性的变化<ol>
-<li>attributeAdded(ServletContextAttributeEvent scae) - 通知servlet上下文中添加了一个新属性。在添加属性后调用</li>
-<li>attributeRemoved(ServletContextAttributeEvent scae) - 从servlet上下文中删除现有属性的通知。删除属性后调用</li>
-<li>attributeReplaced(ServletContextAttributeEvent scae) - 通知servlet上下文上的属性已被替换。替换属性后调用。</li>
-</ol>
-</li>
-<li>HttpSessionAttributeListener - 监听 session 对象中属性的改变<ol>
-<li>同 ServletContextAttributeListener</li>
-</ol>
-</li>
-<li>ServletRequestAttributeListener - 监听request 对象中属性的改变<ol>
-<li>同 ServletContextAttributeListener</li>
-</ol>
-</li>
+<h3 id="适用场景"><a href="#适用场景" class="headerlink" title="适用场景"></a>适用场景</h3><ol>
+<li>创建新对象成本较大（如初始化时间长、占用CPU资源多或网络资源占用多），新对象能够通过原型模式进行复制，复制相似对象再进行修改</li>
+<li>可以通过原型模式+备忘录模式，来实现保存对象的状态</li>
+<li>避免使用工厂模式来创建对象</li>
 </ol>
 </div><hr></div><div class="recent-post-item article-container"><a class="article-title" href="/2019/06/27/读书笔记/《JavaDesignPatterns》/6.单例模式/">《Java Design Patterns》第四章 单例模式 - 确保对象的唯一性</a><time class="post-meta__date"><i class="fa fa-calendar" aria-hidden="true"></i> 2019-06-27</time><span class="article-meta"><span class="article-meta__separator">|</span><i class="fa fa-inbox article-meta__icon" aria-hidden="true"></i><a class="article-meta__categories" href="/categories/设计模式/">设计模式</a></span><span class="article-meta tags"><span class="article-meta__separator">|</span><i class="fa fa-tag article-meta__icon" aria-hidden="true"></i><a class="article-meta__tags" href="/tags/读书笔记/">读书笔记</a></span><div class="content"><h1 id="第四章-单例模式-确保对象的唯一性"><a href="#第四章-单例模式-确保对象的唯一性" class="headerlink" title="第四章 单例模式 - 确保对象的唯一性"></a>第四章 单例模式 - 确保对象的唯一性</h1><p>单例模式用于确保对象的唯一性，为了确保系统中某一个类只有一个唯一实例，当这个唯一实例创建后，无法再创建一个同类型的其他对象。</p>
 <h2 id="一、概述"><a href="#一、概述" class="headerlink" title="一、概述"></a>一、概述</h2><p>单例模式：确保一个类只有一个实例，而且自行实例化并向整个系统提供这个实例，这个类称为单例类，它提供全局访问的方法。属于对象创建型模式。</p>
@@ -261,62 +180,6 @@ public class App {
 <h3 id="适用场景"><a href="#适用场景" class="headerlink" title="适用场景"></a>适用场景</h3><ol>
 <li>系统只需要一个实例对象。如资源消耗过大的对象、资源管理器等只能实例一次的对象</li>
 <li>客户调用类的单个实例只允许使用一个公共访问点，不能通过其他途径访问该实例。</li>
-</ol>
-</div><hr></div><div class="recent-post-item article-container"><a class="article-title" href="/2019/06/27/读书笔记/《JavaDesignPatterns》/7.原型模式/">《Java Design Patterns》第五章 原型模式 - 对象的克隆</a><time class="post-meta__date"><i class="fa fa-calendar" aria-hidden="true"></i> 2019-06-27</time><span class="article-meta"><span class="article-meta__separator">|</span><i class="fa fa-inbox article-meta__icon" aria-hidden="true"></i><a class="article-meta__categories" href="/categories/设计模式/">设计模式</a></span><span class="article-meta tags"><span class="article-meta__separator">|</span><i class="fa fa-tag article-meta__icon" aria-hidden="true"></i><a class="article-meta__tags" href="/tags/读书笔记/">读书笔记</a></span><div class="content"><h1 id="第五章-原型模式-对象的克隆"><a href="#第五章-原型模式-对象的克隆" class="headerlink" title="第五章 原型模式 - 对象的克隆"></a>第五章 原型模式 - 对象的克隆</h1><p>原型模式：使用原型实例指定创建对象的种类，并且通过拷贝这些原型创建新的对象。属于一种对象创建型模式。</p>
-<h2 id="一、概述"><a href="#一、概述" class="headerlink" title="一、概述"></a>一、概述</h2><h3 id="1-1-原理"><a href="#1-1-原理" class="headerlink" title="1.1 原理"></a>1.1 原理</h3><p>原型模式的工作原理很简单：将一个原型对象传给那个要发动创建的对象，这个要发动创建的对象通过请求原型对象拷贝自己来实现创建过程。由于在软件系统中我们经常会遇到需要创建多个相同或者相似对象的情况，因此原型模式在真实开发中的使用频率还是非常高的。原型模式是一种“另类”的创建型模式，创建克隆对象的工厂就是原型类自身，工厂方法由克隆方法来实现。</p>
-<h3 id="1-2-原型模式中的几个角色"><a href="#1-2-原型模式中的几个角色" class="headerlink" title="1.2 原型模式中的几个角色"></a>1.2 原型模式中的几个角色</h3><ol>
-<li>Prototype - 抽象原型类<ol>
-<li>声明克隆方法的接口，是所有具体原型类的公共父类</li>
-</ol>
-</li>
-<li>ConcretePrototype - 具体原型类<ol>
-<li>实现抽象原型类中声明的克隆方法，在克隆方法中返回自己的一个克隆对象</li>
-</ol>
-</li>
-<li>Client - 客户类<ol>
-<li>让一个原型对象克隆自身从而创建一个新的对象，在客户类中只需要直接实例化或通过工厂方法等方式创建一个原型对象，再通过调用该对象的克隆方法即可得到多个相同的对象。</li>
-</ol>
-</li>
-</ol>
-<h3 id="1-3-案例"><a href="#1-3-案例" class="headerlink" title="1.3 案例"></a>1.3 案例</h3><pre><code class="java">@Getter
-@Setter
-class WeeklyLog implements Clonealbe{
-    private String name;
-    private String date;
-    private String content;
-
-    publci WeekLog clone(){
-        Object obj = null;
-        try{
-            obj = super.clone();
-            return (WeekLog)obj;
-        } catch (CloneNotSupportedException e){
-            System.out.println(&quot;不支持复制&quot;);
-            return null;
-        }
-    }
-}</code></pre>
-<h2 id="二、浅克隆与深克隆"><a href="#二、浅克隆与深克隆" class="headerlink" title="二、浅克隆与深克隆"></a>二、浅克隆与深克隆</h2><h3 id="2-1-浅克隆"><a href="#2-1-浅克隆" class="headerlink" title="2.1 浅克隆"></a>2.1 浅克隆</h3><p>在浅克隆中，如果原型对象的成员是值类型，将复制一份给克隆对象；如果原型对象的成员变量是引用类型，则将引用对象的地址复制一份给克隆对象。也就是说，原型对象的引用类型变量与克隆对象中的变量指向同一内存地址。</p>
-<p>即值类型成员变量会被复制，但是引用成员变量不会。</p>
-<h3 id="2-2-深克隆"><a href="#2-2-深克隆" class="headerlink" title="2.2 深克隆"></a>2.2 深克隆</h3><p>在深克隆中，无论原型对象的成员变量是值类型还是引用类型，都将复制一份给克隆对象。</p>
-<p>如果需要实现深克隆，可以通过序列化（Serialization）等方式实现：将对象写入到流，再从流中读出。</p>
-<blockquote>
-<p>Java语言提供的 Cloneable 接口和 Serializable 接口都是空接口，也称为标识接口。标识接口无任何方法定义，只提供告诉JRE这些接口的实现类是否支持克隆、序列化等功能。</p>
-</blockquote>
-<h2 id="三、总结"><a href="#三、总结" class="headerlink" title="三、总结"></a>三、总结</h2><h3 id="优点"><a href="#优点" class="headerlink" title="优点"></a>优点</h3><ol>
-<li>当创建新对象较为复杂时，可以使用原型模式简化对象的创建过程，复制一个已有实例以提高新实例的创建效率</li>
-<li>扩展性较好，由于在原型模式中提供了抽象原型类，在客户端可以针对抽象原型类进行编程，而将具体原型类写在配置文件中</li>
-<li>原型模式提供了简化的创建结构，工厂方法模式需要与产品等级结构对应的工厂等级结构，而原型模式则直接通过封装在原型类中的克隆方法实现</li>
-<li>深克隆方式可以保存对象的状态</li>
-</ol>
-<h3 id="缺点"><a href="#缺点" class="headerlink" title="缺点"></a>缺点</h3><ol>
-<li>需要每个类配置一个克隆方法，且位于类内部，当对类进行改造时需要修改源码，违反了“开闭原则”</li>
-<li>实现深克隆时较为复杂，对象的每一层子对象都需要进行深克隆</li>
-</ol>
-<h3 id="适用场景"><a href="#适用场景" class="headerlink" title="适用场景"></a>适用场景</h3><ol>
-<li>创建新对象成本较大（如初始化时间长、占用CPU资源多或网络资源占用多），新对象能够通过原型模式进行复制，复制相似对象再进行修改</li>
-<li>可以通过原型模式+备忘录模式，来实现保存对象的状态</li>
-<li>避免使用工厂模式来创建对象</li>
 </ol>
 </div><hr></div><div class="recent-post-item article-container"><a class="article-title" href="/2019/06/26/读书笔记/《JavaDesignPatterns》/4.工厂方法模式/">《Java Design Patterns》第二章 工厂方法模式</a><time class="post-meta__date"><i class="fa fa-calendar" aria-hidden="true"></i> 2019-06-26</time><span class="article-meta"><span class="article-meta__separator">|</span><i class="fa fa-inbox article-meta__icon" aria-hidden="true"></i><a class="article-meta__categories" href="/categories/设计模式/">设计模式</a></span><span class="article-meta tags"><span class="article-meta__separator">|</span><i class="fa fa-tag article-meta__icon" aria-hidden="true"></i><a class="article-meta__tags" href="/tags/读书笔记/">读书笔记</a></span><div class="content"><h1 id="第二章-工厂方法模式"><a href="#第二章-工厂方法模式" class="headerlink" title="第二章 工厂方法模式"></a>第二章 工厂方法模式</h1><p>工厂方法模式又称为工厂模式、虚拟构造模式或多态工厂模式，是一种类创建型模式。</p>
 <h2 id="一、设计一个日志记录器"><a href="#一、设计一个日志记录器" class="headerlink" title="一、设计一个日志记录器"></a>一、设计一个日志记录器</h2><p>设计一个日志记录器，可以通过多种途径保存系统的运行日志，如文件记录或数据库记录等。</p>
@@ -447,7 +310,280 @@ public static void main(String[] args){
 <h2 id="七、练习"><a href="#七、练习" class="headerlink" title="七、练习"></a>七、练习</h2><blockquote>
 <p>使用工厂方法模式设计一个程序来读取各种不同类型的图片格式，针对每一种图片格式都设计一个图片读取器，如GIF图片读取器用于读取GIF格式的图片、JPG图片读取器用于读取JPG格式的图片。需充分考虑系统的灵活性和可扩展性。</p>
 </blockquote>
-</div><hr></div><nav id="pagination"><div class="pagination"><a class="extend prev" rel="prev" href="/page/30/"><i class="fa fa-chevron-left"></i></a><a class="page-number" href="/">1</a><span class="space">&hellip;</span><a class="page-number" href="/page/30/">30</a><span class="page-number current">31</span><a class="page-number" href="/page/32/">32</a><span class="space">&hellip;</span><a class="page-number" href="/page/49/">49</a><a class="extend next" rel="next" href="/page/32/"><i class="fa fa-chevron-right"></i></a></div></nav></div></div><footer><div class="layout" id="footer"><div class="copyright">&copy;2013 - 2020 By koral</div><div class="framework-info"><span>驱动 - </span><a href="http://hexo.io"><span>Hexo</span></a><span class="footer-separator">|</span><span>主题 - </span><a href="https://github.com/Molunerfinn/hexo-theme-melody"><span>Melody</span></a></div><div class="busuanzi"><script async src="//busuanzi.ibruce.info/busuanzi/2.3/busuanzi.pure.mini.js"></script><span id="busuanzi_container_site_uv"><i class="fa fa-user"></i><span id="busuanzi_value_site_uv"></span><span></span></span><span class="footer-separator">|</span><span id="busuanzi_container_site_pv"><i class="fa fa-eye"></i><span id="busuanzi_value_site_pv"></span><span></span></span></div></div></footer><i class="fa fa-arrow-up" id="go-up" aria-hidden="true"></i><script src="https://cdn.jsdelivr.net/npm/animejs@latest/anime.min.js"></script><script src="https://cdn.jsdelivr.net/npm/jquery@latest/dist/jquery.min.js"></script><script src="https://cdn.jsdelivr.net/npm/@fancyapps/fancybox@latest/dist/jquery.fancybox.min.js"></script><script src="https://cdn.jsdelivr.net/npm/velocity-animate@latest/velocity.min.js"></script><script src="https://cdn.jsdelivr.net/npm/velocity-ui-pack@latest/velocity.ui.min.js"></script><script src="/js/utils.js?version=1.7.0"></script><script src="/js/fancybox.js?version=1.7.0"></script><script src="/js/sidebar.js?version=1.7.0"></script><script src="/js/copy.js?version=1.7.0"></script><script src="/js/fireworks.js?version=1.7.0"></script><script src="/js/transition.js?version=1.7.0"></script><script src="/js/scroll.js?version=1.7.0"></script><script src="/js/head.js?version=1.7.0"></script><script>if(/Android|webOS|iPhone|iPod|iPad|BlackBerry/i.test(navigator.userAgent)) {
+</div><hr></div><div class="recent-post-item article-container"><a class="article-title" href="/2019/06/26/读书笔记/《JavaDesignPatterns》/3.简单工厂模式/">《Java Design Patterns》第一章 简单工厂模式</a><time class="post-meta__date"><i class="fa fa-calendar" aria-hidden="true"></i> 2019-06-26</time><span class="article-meta"><span class="article-meta__separator">|</span><i class="fa fa-inbox article-meta__icon" aria-hidden="true"></i><a class="article-meta__categories" href="/categories/设计模式/">设计模式</a></span><span class="article-meta tags"><span class="article-meta__separator">|</span><i class="fa fa-tag article-meta__icon" aria-hidden="true"></i><a class="article-meta__tags" href="/tags/读书笔记/">读书笔记</a></span><div class="content"><h1 id="第一章-简单工厂模式"><a href="#第一章-简单工厂模式" class="headerlink" title="第一章 简单工厂模式"></a>第一章 简单工厂模式</h1><h2 id="一、设计图表库"><a href="#一、设计图表库" class="headerlink" title="一、设计图表库"></a>一、设计图表库</h2><p>设计一个图表库，用于为系统提供各种不同外观的图表，如柱状图、饼状图、折线图等。</p>
+<h3 id="1-1-初步设计"><a href="#1-1-初步设计" class="headerlink" title="1.1 初步设计"></a>1.1 初步设计</h3><pre><code class="java">public class Chart {
+
+    private String type; // 图表类型
+
+    public Chart(Object[][] data, String type) {
+        this.type = type;
+        if (type.equalsIgnoreCase(&quot;histogram&quot;)) {
+            // 初始化柱状图
+        }
+        if (type.equalsIgnoreCase(&quot;pie&quot;)) {
+            // 初始化饼状图
+        }
+        if (type.equalsIgnoreCase(&quot;line&quot;)) {
+            // 初始化折线图
+        }
+    }
+
+    public void display() {
+        if (type.equalsIgnoreCase(&quot;histogram&quot;)) {
+            // 显示柱状图
+        }
+        if (type.equalsIgnoreCase(&quot;pie&quot;)) {
+            // 显示饼状图
+        }
+        if (type.equalsIgnoreCase(&quot;line&quot;)) {
+            // 显示折线图
+        }
+    }
+}</code></pre>
+<h3 id="1-2-存在的问题"><a href="#1-2-存在的问题" class="headerlink" title="1.2 存在的问题"></a>1.2 存在的问题</h3><p>该类在设计时存在如下几个问题：</p>
+<ol>
+<li>Chart 类中包含许多 if…else 代码块，代码冗长，难以阅读、维护和测试；大量的条件判断还将影响系统的性能</li>
+<li>Chart 类职责过重，负责初始化和显示所有图表对象。违反了“单一职责原则”，不利于类的重用和维护；而且将大量的对象初始化代码写在构造函数中，在初始化对象时需要条件判断，降低了对象创建的效率</li>
+<li>违反了“开闭原则”，当需要增加新类型的图表时，必须修改 Chart 对象的代码</li>
+<li>客户端只能通过 new 关键字来直接创建 Chart 对象，与客户端耦合度较高，对象的创建和使用无法分离</li>
+<li>客户端中缺少其它初始化设置，如果在客户端对图表的颜色、高度等进行设置，则会在每次创建对象时都会出现，导致代码的重复</li>
+</ol>
+<h3 id="1-3-解决思路"><a href="#1-3-解决思路" class="headerlink" title="1.3 解决思路"></a>1.3 解决思路</h3><p>引入工厂类，进行抽象与拆分</p>
+<h2 id="二、简单工厂模式"><a href="#二、简单工厂模式" class="headerlink" title="二、简单工厂模式"></a>二、简单工厂模式</h2><h3 id="2-1-设计流程"><a href="#2-1-设计流程" class="headerlink" title="2.1 设计流程"></a>2.1 设计流程</h3><ol>
+<li>将需要创建的各种不同对象的相关代码封装到不同的类中，这些类称为具体产品类</li>
+<li>将它们公共的代码进行抽象和提取后封装在一个抽象产品类中，每个具体产品类都是抽象产品类的子类</li>
+<li>提供一个工厂类用于创建各种产品，在工厂类中提供一个创建产品的工厂方法，该方法可以根据所传入的参数不同创建不同的具体对象</li>
+<li>客户端只需调用工厂类的方法并传入相应的参数即可得到一个产品对象</li>
+</ol>
+<h3 id="2-2-简单工厂模式模式的定义"><a href="#2-2-简单工厂模式模式的定义" class="headerlink" title="2.2 简单工厂模式模式的定义"></a>2.2 简单工厂模式模式的定义</h3><p>定义一个工厂类，可以根据参数的不同返回不同类的实例，被创建的实例通常都具有共同的父类。因为在简单工厂模式中用于创建实例的方法是静态方法，<br>因此简单工厂模式又被称为静态工厂模式，属于类创建型模式。</p>
+<h3 id="2-3-简单工厂模式中的几个角色"><a href="#2-3-简单工厂模式中的几个角色" class="headerlink" title="2.3 简单工厂模式中的几个角色"></a>2.3 简单工厂模式中的几个角色</h3><ol>
+<li>Factory（工厂角色）<ol>
+<li>即工厂类，是简单工厂模式的核心，负责实现创建所有产品实例的内部逻辑；</li>
+<li>工厂类可以被外界直接调用，创建所需的产品对象；</li>
+<li>在工厂类中提供了静态的工厂方法，返回类型为抽象产品类；</li>
+</ol>
+</li>
+<li>Product（抽象产品角色）<ol>
+<li>是工厂类所创建的对象的父类，封装各产品对象的公共方法</li>
+<li>抽象产品类的引入，提供了系统的灵活性，使得在工厂类只需定义一个通用的工厂方法，因为所创建的具体产品对象都是其子类对象</li>
+</ol>
+</li>
+<li>ConcreteProduct（具体产品角色）<ol>
+<li>是简单工厂模式的创建目标，所有被创建的对象都充当这个角色的某个类的实例。</li>
+<li>每个具体产品角色都继承了抽象产品角色，需要实现在抽象产品中声明的抽象方法</li>
+</ol>
+</li>
+</ol>
+<h2 id="三、具体实现"><a href="#三、具体实现" class="headerlink" title="三、具体实现"></a>三、具体实现</h2><h3 id="3-1-产品抽象类"><a href="#3-1-产品抽象类" class="headerlink" title="3.1 产品抽象类"></a>3.1 产品抽象类</h3><pre><code class="java">/**
+ * 使用简单工厂模式时，需要先对产品类进行重构
+ * 根据实际情况设计一个产品层次结构，将所有产品类公共的代码移至抽象类，并声明一些抽象方法供具体产品类类实现
+ */
+public interface Chart {
+    void display();
+}</code></pre>
+<h3 id="3-2-具体产品类"><a href="#3-2-具体产品类" class="headerlink" title="3.2 具体产品类"></a>3.2 具体产品类</h3><pre><code class="java">/**
+ * 具体产品类实现了抽象产品类中声明的抽象业务方法，不同的具体产品类可以提供不同的实现
+ */
+public class HistogramChart implements Chart {
+    public HistogramChart() {
+        System.out.println(&quot;生成柱状图&quot;);
+    }
+
+    @Override
+    public void display() {
+        System.out.println(&quot;显示柱状图&quot;);
+    }
+}
+
+public class LineChart implements Chart {
+    public LineChart() {
+        System.out.println(&quot;生成折线图&quot;);
+    }
+
+    @Override
+    public void display() {
+        System.out.println(&quot;显示折线图&quot;);
+    }
+}
+
+public class PieChart implements Chart {
+    public PieChart() {
+        System.out.println(&quot;生成饼状图&quot;);
+    }
+
+    @Override
+    public void display() {
+        System.out.println(&quot;显示饼状图&quot;);
+    }
+}</code></pre>
+<h3 id="3-3-工厂方法类"><a href="#3-3-工厂方法类" class="headerlink" title="3.3 工厂方法类"></a>3.3 工厂方法类</h3><pre><code class="java">/**
+ * 简单工厂模式的核心就是工厂类
+ * 通过工厂类的静态工厂方法来创建具体产品对象，而非直接通过new来创建产品对象
+ */
+public class ChartFactory {
+    public static Chart getChart(String type) {
+        switch (type) {
+            case &quot;histogram&quot;:
+                return new HistogramChart();
+            case &quot;pic&quot;:
+                return new PieChart();
+            case &quot;line&quot;:
+                return new LineChart();
+            default:
+                return null;
+        }
+    }
+}</code></pre>
+<h3 id="3-4-客户端测试"><a href="#3-4-客户端测试" class="headerlink" title="3.4 客户端测试"></a>3.4 客户端测试</h3><pre><code class="java">/**
+ * 客户端测试代码
+ */
+public class DemoTest {
+    public static void main(String[] args) {
+        Chart pie = ChartFactory.getChart(&quot;pie&quot;);
+        pie.display();
+    }
+}</code></pre>
+<h2 id="四、总结"><a href="#四、总结" class="headerlink" title="四、总结"></a>四、总结</h2><p>简单工厂模式提供了专门的工厂类用于创建对象，将对象的创建和对象的使用分离。</p>
+<h3 id="4-1-优点"><a href="#4-1-优点" class="headerlink" title="4.1 优点"></a>4.1 优点</h3><ol>
+<li>工厂类包含必要的判断逻辑，可以决定何时创建哪一个实例。免除客户端直接创建产品对象的职责，而仅仅“消费”产品。实现了对象创建和使用的分离</li>
+<li>客户端无需知道所创建的具体产品类的类名，只需要知道具体参数即可。</li>
+<li>可以将具体参数引入配置文件，在不修改客户端代码的情况下增删具体产品类，在一定程序上提供了系统灵活度。</li>
+</ol>
+<h3 id="4-2-缺点"><a href="#4-2-缺点" class="headerlink" title="4.2 缺点"></a>4.2 缺点</h3><ol>
+<li>工厂类的职责过重，集中了所有产品的创建逻辑。一旦工厂类出现问题，整个系统都会受到影响</li>
+<li>使用简单工厂模式势必会增加系统中类的个数，增加了系统的复杂度和理解难度</li>
+<li>系统拓展难度，新增产品时必须修改工厂逻辑，在产品类型较多时，可能造成工厂逻辑过于复杂，不利于系统扩展和维护</li>
+<li>简单工厂模式由于使用了静态工厂方法，造成工厂角色无法形成基于继承的等级结构</li>
+</ol>
+<h3 id="4-3-适用场景"><a href="#4-3-适用场景" class="headerlink" title="4.3 适用场景"></a>4.3 适用场景</h3><ol>
+<li>工厂类负责创建的对象较少，因为需要创建的对象较少，不会造成工厂方法中的业务逻辑太过复杂</li>
+<li>客户端只知道传入工厂类的参数，对于如何创建对象并不关心</li>
+</ol>
+</div><hr></div><div class="recent-post-item article-container"><a class="article-title" href="/2019/06/26/读书笔记/《JavaDesignPatterns》/5.抽象工厂模式/">《Java Design Patterns》第三章 抽象工厂模式</a><time class="post-meta__date"><i class="fa fa-calendar" aria-hidden="true"></i> 2019-06-26</time><span class="article-meta"><span class="article-meta__separator">|</span><i class="fa fa-inbox article-meta__icon" aria-hidden="true"></i><a class="article-meta__categories" href="/categories/设计模式/">设计模式</a></span><span class="article-meta tags"><span class="article-meta__separator">|</span><i class="fa fa-tag article-meta__icon" aria-hidden="true"></i><a class="article-meta__tags" href="/tags/读书笔记/">读书笔记</a></span><div class="content"><h1 id="第三章-抽象工厂模式"><a href="#第三章-抽象工厂模式" class="headerlink" title="第三章 抽象工厂模式"></a>第三章 抽象工厂模式</h1><p>在工厂方法模式中，通过引入工厂等级结构，解决了 简单工厂模式 中工厂类过于庞大，职责过重的问题。但是由于工厂方法模式中的每一个工厂只生产一类产品，导致系统中存在大量工厂类，增加系统开销。</p>
+<p>因此我们需要将一些相关的产品组成一个“产品族”，由同一个工厂生产。</p>
+<h2 id="一、抽象工厂模式"><a href="#一、抽象工厂模式" class="headerlink" title="一、抽象工厂模式"></a>一、抽象工厂模式</h2><h3 id="1-1-设计一款界面皮肤库"><a href="#1-1-设计一款界面皮肤库" class="headerlink" title="1.1 设计一款界面皮肤库"></a>1.1 设计一款界面皮肤库</h3><p>设计一款界面皮肤库，可以通过菜单来选择皮肤，不同的皮肤将提供视觉效果不同的按钮、文本框、组合框等。</p>
+<p>按照之前的 <code>工厂方法模式</code> 设计，如下：</p>
+<p><img src="https://i.loli.net/2019/07/04/5d1d5ce8d1f3176430.jpg" alt="工厂方法模式.jpg"></p>
+<p>当我们需要增加 Winter风格 的按钮时，只需要继承抽象工厂并生产出对应的按钮即可。该系统具备良好的灵活性和可扩展性，开发可以在不修改现有代码的基础上增加新的皮肤。</p>
+<h3 id="1-2-缺陷与问题"><a href="#1-2-缺陷与问题" class="headerlink" title="1.2 缺陷与问题"></a>1.2 缺陷与问题</h3><p>该设计模式提供了大量的工厂来创建具体的界面组件，可以灵活的配置风格，但是存在以下问题：</p>
+<ol>
+<li>新增产品时，需要同时新增一个具体工厂类，类的个数成对增加，会增大系统的开销</li>
+<li>由于某一种风格的按钮、文本框、组合框通常都是一起使用的，但是因为其工厂方法分离，可能会导致使用时的选择失误</li>
+</ol>
+<h3 id="1-3-解决方案"><a href="#1-3-解决方案" class="headerlink" title="1.3 解决方案"></a>1.3 解决方案</h3><p>将一组产品类定义为一个“产品族”（如按钮、文本框、组合框统称为一个产品族），将之前一个产品对应一个具体工厂的模式改为-一个产品族对应一个产品工厂（如Spring风格工厂，能够生产Spring风格按钮、Spring风格文本框、Spring风格组合框）。</p>
+<h3 id="1-4-产品等级结构与产品族"><a href="#1-4-产品等级结构与产品族" class="headerlink" title="1.4 产品等级结构与产品族"></a>1.4 产品等级结构与产品族</h3><ol>
+<li>产品等级结构<ol>
+<li>在<code>1.3 解决方案</code> 中，抽象工厂与Spring风格工厂、Summer风格工厂之间的关系构成了一个产品等级结构</li>
+<li>抽象工厂类是父类，具体工厂类是子类</li>
+<li>产品等级扩展，只需要继续实现子类即可（如新增Winter风格工厂，用于生产Winter风格的按钮、文本框、组合框）</li>
+</ol>
+</li>
+<li>产品族：<ol>
+<li>即各个具体工厂生产的产品统称（如Spring风格工厂，能够生产Spring风格按钮、Spring风格文本框、Spring风格组合框）</li>
+</ol>
+</li>
+</ol>
+<p>当系统所提供的工厂生产的具体产品并不是一个简单的对象，而是位于多个不同产品等级结构、属于不同类型的具体产品时就可以使用抽象工厂模式。</p>
+<h2 id="二、抽象工厂模式"><a href="#二、抽象工厂模式" class="headerlink" title="二、抽象工厂模式"></a>二、抽象工厂模式</h2><h3 id="2-1-概述"><a href="#2-1-概述" class="headerlink" title="2.1 概述"></a>2.1 概述</h3><p>抽象工厂模式：提供一个创建一系列相关或互相依赖对象的接口，而无须指定它们具体的类。</p>
+<p>抽象工厂模式又称为 Kit模式，属于对象创建型模式。</p>
+<p>在抽象工厂模式中，每一个具体工厂都提供多个工厂方法，用于生产多种不同类型的产品。这些产品构成了一个产品族。</p>
+<p><img src="https://i.loli.net/2019/07/04/5d1d63c564e9523844.jpg" alt="抽象工厂模式"></p>
+<p>从图中可以看出，如果需要新增其他风格的按钮、文本框，只需要新增一个具体工厂，由该工厂的多个工厂方法产出具体的产品。</p>
+<p>同时，缺点也很明显，如果我们想新增图片类型产品，必须同时修改抽象工厂及其所有的具体工厂。</p>
+<h3 id="2-2-抽象工厂模式中的几个角色"><a href="#2-2-抽象工厂模式中的几个角色" class="headerlink" title="2.2 抽象工厂模式中的几个角色"></a>2.2 抽象工厂模式中的几个角色</h3><ol>
+<li>AbstractFactory - 抽象工厂<ol>
+<li>声明了一组用于创建一族产品的方法，每一个方法对应一种产品</li>
+</ol>
+</li>
+<li>ConcreteFactory - 具体工厂<ol>
+<li>实现了在抽象工厂中声明的创建产品的方法，生成一组具体产品，这些产品构成一个产品族</li>
+</ol>
+</li>
+<li>AbstractProduct - 抽象产品<ol>
+<li>每种产品的抽象对象</li>
+</ol>
+</li>
+<li>ConcreteProduct 具体产品<ol>
+<li>由具体工厂生产的具体产品对象</li>
+</ol>
+</li>
+</ol>
+<h3 id="2-3-具体实践"><a href="#2-3-具体实践" class="headerlink" title="2.3 具体实践"></a>2.3 具体实践</h3><pre><code class="java">/**
+ * 手机游戏软件
+ * 针对 Symbian、Android、WindowsPhone 等多个智能手机平台，
+ * 提供不同的游戏操作控制和游戏界面控制
+ */
+public class Gaming {
+    // 抽象产品类
+    interface Operation{}
+    // 具体产品类
+    class SymbianOperation implements Operation{}
+    class AndroidOperation implements Operation{}
+    class WindowsPhoneOperation implements Operation{}
+
+    interface HML{}
+    class SymbianHML implements HML{}
+    class AndroidHML implements HML{}
+    class WindowsPhoneHML implements HML{}
+
+    // 抽象工厂类
+    interface Factory{
+        Operation getOperation();
+        HML getHML();
+    }
+    // 具体工厂类
+    class SymbianFactory implements Factory{
+        @Override
+        public Operation getOperation() {
+            return new SymbianOperation();
+        }
+        @Override
+        public HML getHML() {
+            return new SymbianHML();
+        }
+    }
+    class AndroidFactory implements Factory{
+        @Override
+        public Operation getOperation() {
+            return new AndroidOperation();
+        }
+        @Override
+        public HML getHML() {
+            return new AndroidHML();
+        }
+    }
+    class WindowsPhoneFactory implements Factory{
+        @Override
+        public Operation getOperation() {
+            return new WindowsPhoneOperation();
+        }
+        @Override
+        public HML getHML() {
+            return new WindowsPhoneHML();
+        }
+    }
+}</code></pre>
+<h2 id="三、“开闭原则”的倾斜性"><a href="#三、“开闭原则”的倾斜性" class="headerlink" title="三、“开闭原则”的倾斜性"></a>三、“开闭原则”的倾斜性</h2><p>在抽象工厂模式中，增加新的产品族很方便（如增加Winter类型的界面），但是增加新的产品等级结构很麻烦（如增加单选框类型的产品，需要修改抽象工厂及其所有的具体工厂），这种性质被称为“开闭原则”的倾斜性。</p>
+<p>“开闭原则”要求系统对扩展开发，对修改封闭，通过扩展达到增强其功能的目的，对于设计多个产品族与多个产品等级结构的系统，其功能增强包括两方面：</p>
+<ol>
+<li>增加产品族，很好地支持了“开闭原则”，只需新增具体产品和新增一个具体工厂即可</li>
+<li>增加产品等级结构：违背了“开闭原则”，因为需要修改所有的抽象工厂与具体工厂才能实现扩展</li>
+</ol>
+<h2 id="四、总结"><a href="#四、总结" class="headerlink" title="四、总结"></a>四、总结</h2><h3 id="优点"><a href="#优点" class="headerlink" title="优点"></a>优点</h3><ol>
+<li>抽象工厂模式隔离了具体类的生成，使客户不需要知道何时被创建</li>
+<li>当一个产品族中的多个对象被设计为一起工作时，它能够保证客户端始终只使用一个产品族对象</li>
+<li>增加新的产品族很方便，无须修改已有系统，符合“开闭原则”</li>
+</ol>
+<h3 id="缺点"><a href="#缺点" class="headerlink" title="缺点"></a>缺点</h3><ol>
+<li>增加新的产品等级结构时，违背了“开闭原则”</li>
+</ol>
+<h3 id="适用场景"><a href="#适用场景" class="headerlink" title="适用场景"></a>适用场景</h3><ol>
+<li>系统不依赖于产品类的具体创建、组合及表达的细节</li>
+<li>系统中有多于一个的产品族，且每次只使用其中某一个产品族</li>
+<li>同一个产品族的产品配合使用</li>
+<li>产品等级结构稳定，设计完成后，不再修改系统中新的产品等级结构</li>
+</ol>
+</div><hr></div><nav id="pagination"><div class="pagination"><a class="extend prev" rel="prev" href="/page/30/"><i class="fa fa-chevron-left"></i></a><a class="page-number" href="/">1</a><span class="space">&hellip;</span><a class="page-number" href="/page/30/">30</a><span class="page-number current">31</span><a class="page-number" href="/page/32/">32</a><span class="space">&hellip;</span><a class="page-number" href="/page/48/">48</a><a class="extend next" rel="next" href="/page/32/"><i class="fa fa-chevron-right"></i></a></div></nav></div></div><footer><div class="layout" id="footer"><div class="copyright">&copy;2013 - 2020 By koral</div><div class="framework-info"><span>驱动 - </span><a href="http://hexo.io"><span>Hexo</span></a><span class="footer-separator">|</span><span>主题 - </span><a href="https://github.com/Molunerfinn/hexo-theme-melody"><span>Melody</span></a></div><div class="busuanzi"><script async src="//busuanzi.ibruce.info/busuanzi/2.3/busuanzi.pure.mini.js"></script><span id="busuanzi_container_site_uv"><i class="fa fa-user"></i><span id="busuanzi_value_site_uv"></span><span></span></span><span class="footer-separator">|</span><span id="busuanzi_container_site_pv"><i class="fa fa-eye"></i><span id="busuanzi_value_site_pv"></span><span></span></span></div></div></footer><i class="fa fa-arrow-up" id="go-up" aria-hidden="true"></i><script src="https://cdn.jsdelivr.net/npm/animejs@latest/anime.min.js"></script><script src="https://cdn.jsdelivr.net/npm/jquery@latest/dist/jquery.min.js"></script><script src="https://cdn.jsdelivr.net/npm/@fancyapps/fancybox@latest/dist/jquery.fancybox.min.js"></script><script src="https://cdn.jsdelivr.net/npm/velocity-animate@latest/velocity.min.js"></script><script src="https://cdn.jsdelivr.net/npm/velocity-ui-pack@latest/velocity.ui.min.js"></script><script src="/js/utils.js?version=1.7.0"></script><script src="/js/fancybox.js?version=1.7.0"></script><script src="/js/sidebar.js?version=1.7.0"></script><script src="/js/copy.js?version=1.7.0"></script><script src="/js/fireworks.js?version=1.7.0"></script><script src="/js/transition.js?version=1.7.0"></script><script src="/js/scroll.js?version=1.7.0"></script><script src="/js/head.js?version=1.7.0"></script><script>if(/Android|webOS|iPhone|iPod|iPad|BlackBerry/i.test(navigator.userAgent)) {
   $('#nav').addClass('is-mobile')
   $('footer').addClass('is-mobile')
   $('#top-container').addClass('is-mobile')

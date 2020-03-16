@@ -7,37 +7,7 @@
     error: '复制错误',
     noSupport: '浏览器不支持'
   }
-} </script></head><body><i class="fa fa-arrow-right" id="toggle-sidebar" aria-hidden="true"></i><div id="sidebar" data-display="false"><div class="author-info"><div class="author-info__avatar text-center"><img src="/img/avatar.png"></div><div class="author-info__name text-center">koral</div><div class="author-info__description text-center">描述</div><hr><div class="author-info-articles"><a class="author-info-articles__archives article-meta" href="/archives"><span class="pull-left">文章</span><span class="pull-right">241</span></a><a class="author-info-articles__tags article-meta" href="/tags"><span class="pull-left">标签</span><span class="pull-right">22</span></a><a class="author-info-articles__categories article-meta" href="/categories"><span class="pull-left">分类</span><span class="pull-right">19</span></a></div></div></div><nav class="no-bg" id="nav"><div id="page-header"><span class="pull-left"> <a id="site-name" href="/">凯</a></span><i class="fa fa-bars toggle-menu pull-right" aria-hidden="true"></i><span class="pull-right menus">   <a class="site-page" href="/">Home</a><a class="site-page" href="/archives">Archives</a><a class="site-page" href="/tags">Tags</a><a class="site-page" href="/categories">Categories</a></span><span class="pull-right"></span></div><div id="site-info"><div id="site-title">凯</div><div id="site-sub-title">凯</div></div></nav><div id="content-outer"><div class="layout" id="content-inner"><div class="recent-post-item article-container"><a class="article-title" href="/2019/07/22/读书笔记/《SpringSecurity》/13.BasicAuth/">《Spring Security》第十三章 Basic Authentication</a><time class="post-meta__date"><i class="fa fa-calendar" aria-hidden="true"></i> 2019-07-22</time><span class="article-meta"><span class="article-meta__separator">|</span><i class="fa fa-inbox article-meta__icon" aria-hidden="true"></i><a class="article-meta__categories" href="/categories/Spring-Security/">Spring Security</a></span><span class="article-meta tags"><span class="article-meta__separator">|</span><i class="fa fa-tag article-meta__icon" aria-hidden="true"></i><a class="article-meta__tags" href="/tags/读书笔记/">读书笔记</a></span><div class="content"><h1 id="第十三章-Basic-Authentication"><a href="#第十三章-Basic-Authentication" class="headerlink" title="第十三章 Basic Authentication"></a>第十三章 Basic Authentication</h1><p>Basic 认证和 Digest 认证是 web 应用中常用的两种认证机制。</p>
-<h2 id="一、Basic-Authentication"><a href="#一、Basic-Authentication" class="headerlink" title="一、Basic Authentication"></a>一、Basic Authentication</h2><p>Basic Authentication 通常用于无状态客户机，无状态客户机在每个请求上，传递其凭据。它与基于表单的身份验证结合使用是非常常见的。</p>
-<p>Basic Authentication 会将密码使用纯文本的形式传输，因此只能在加密的传输层（如HTTPS）上使用密码。</p>
-<h3 id="1-BasicAuthenticationFilter"><a href="#1-BasicAuthenticationFilter" class="headerlink" title="1. BasicAuthenticationFilter"></a>1. BasicAuthenticationFilter</h3><p>BasicAuthenticationFilter 负责处理 HTTP 头中提供的基本身份验证凭据。基本身份验证被广泛部署在用户代理中，并且实现非常简单。认证格式类似于：<code>https://zhangsan:123456@www.luokaiii.cn/login</code></p>
-<h3 id="2-Configuration"><a href="#2-Configuration" class="headerlink" title="2. Configuration"></a>2. Configuration</h3><p>配置的 AuthenticationManager 处理每个身份验证请去，如果身份验证失败，将使用 AuthenticationEntryPoint 重试身份验证过程。通常需要结合使用过滤器和 BasicAuthenticationEntryPoint，返回一个带有401 Header的响应来重试 HTTP Basic 身份验证。</p>
-<p>如果身份验证成功，则生成 Authentication 对象并放入 SecurityContextHolder 中。</p>
-<h2 id="二、Digest-Authentication"><a href="#二、Digest-Authentication" class="headerlink" title="二、Digest Authentication"></a>二、Digest Authentication</h2><p>Digest Authentication 试图解决 Basic Authentication 中存在的许多缺陷和弱点，特别是以明文形式发送凭据。</p>
-<pre><code class="text">You should not use Digest in modern applications because it is not considered secure. 
-翻译：你不应该在现代应用中使用 Digest，因为它是不安全的。</code></pre>
-<blockquote>
-<p>so，这里就不写了。详见 <a href="https://docs.spring.io/spring-security/site/docs/5.0.5.RELEASE/reference/htmlsingle/#digest-processing-filter" target="_blank" rel="noopener">digest-processing-filter</a>。</p>
-</blockquote>
-</div><hr></div><div class="recent-post-item article-container"><a class="article-title" href="/2019/07/22/读书笔记/《SpringSecurity》/12.ServletAPI/">《Spring Security》第十二章 Spring Security 与 Servlet API 集成</a><time class="post-meta__date"><i class="fa fa-calendar" aria-hidden="true"></i> 2019-07-22</time><span class="article-meta"><span class="article-meta__separator">|</span><i class="fa fa-inbox article-meta__icon" aria-hidden="true"></i><a class="article-meta__categories" href="/categories/Spring-Security/">Spring Security</a></span><span class="article-meta tags"><span class="article-meta__separator">|</span><i class="fa fa-tag article-meta__icon" aria-hidden="true"></i><a class="article-meta__tags" href="/tags/读书笔记/">读书笔记</a></span><div class="content"><h1 id="第十二章-Spring-Security-与-Servlet-API-集成"><a href="#第十二章-Spring-Security-与-Servlet-API-集成" class="headerlink" title="# 第十二章 Spring Security 与 Servlet API 集成"></a># 第十二章 Spring Security 与 Servlet API 集成</h1><h2 id="一、与-Servlet-2-0-的集成"><a href="#一、与-Servlet-2-0-的集成" class="headerlink" title="一、与 Servlet 2.0 的集成"></a>一、与 Servlet 2.0 的集成</h2><h3 id="1-getRemoteUser"><a href="#1-getRemoteUser" class="headerlink" title="1. getRemoteUser()"></a>1. getRemoteUser()</h3><p>HttpServletRequest.getRemoteUser() 返回 SecurityContextHolder.getContext().getAuthentication().getName()</p>
-<h3 id="2-getUserPrincipal"><a href="#2-getUserPrincipal" class="headerlink" title="2. getUserPrincipal()"></a>2. getUserPrincipal()</h3><p>HttpServletRequest.getUserPrincipal() 返回 SecurityContextHolder.getContext().getAuthentication()，返回结果类型为 Authentication，当使用用户名、密码的方式进行的身份验证时，其为 UsernamePasswordAuthenticationToken 的一个实例。</p>
-<p>可以通过 Authentication.getPrincipal() 方法，将其转换为 UserDetails 的实现类.</p>
-<h3 id="3-isUserInRole-String"><a href="#3-isUserInRole-String" class="headerlink" title="3. isUserInRole(String)"></a>3. isUserInRole(String)</h3><p>HttpServletRequest.isUserInRole(String) 返回 SecurityContextHolder.getContext().getAuthentication().getAuthorities() 是否包含传入的 String，getAuthorities() 返回一个 GrantedAuthority 集合。</p>
-<p>用户通常不需要传入 “ROLE” 前缀，它由系统自动添加。</p>
-<h2 id="二、与-Servlet-3-0-的集成"><a href="#二、与-Servlet-3-0-的集成" class="headerlink" title="二、与 Servlet 3.0 的集成"></a>二、与 Servlet 3.0 的集成</h2><h3 id="4-authenticate-HttpServletRequest-HttpServletResponse"><a href="#4-authenticate-HttpServletRequest-HttpServletResponse" class="headerlink" title="4. authenticate(HttpServletRequest,HttpServletResponse)"></a>4. authenticate(HttpServletRequest,HttpServletResponse)</h3><p>通过 HttpServletRequest.authenticate(HttpServletRequest,HttpServletResponse) 方法可以确保用户得到了身份验证。如果它们未经过身份验证，将会使用 AuthenticationEntryPoint 请求用户进行身份验证(如重定向至登录页)。</p>
-<h3 id="5-login-String-String"><a href="#5-login-String-String" class="headerlink" title="5. login(String,String)"></a>5. login(String,String)</h3><p>HttpServletRequest.login(String,String) 可用于使用当前 AuthenticationManager 对用户进行身份验证。</p>
-<pre><code class="java">try{
-    httpServletRequest.login(&quot;username&quot;,&quot;password&quot;);
-} catch(ServletException e) {
-    // fail to authenticate，失败信息
-}</code></pre>
-<blockquote>
-<p>如果需要 Spring Security 处理失败的身份验证，则不用捕获 ServletException。</p>
-</blockquote>
-<h3 id="6-logout"><a href="#6-logout" class="headerlink" title="6. logout()"></a>6. logout()</h3><p>使用 HttpServletRequest.logout() 将当前用户注销。</p>
-<p>通常这意味着会将 SecurityContextHolder 清除、HttpSession 失效、任何与 “RememberMe”相关的身份验证将被清除，等等。但是如果你自定义了 LogoutHandler，则将根据具体配置来，注意你仍然需要定义服务端的相应（比如重定向至登录页等）。</p>
-<h3 id="7-异步请求"><a href="#7-异步请求" class="headerlink" title="7. 异步请求"></a>7. 异步请求</h3><h2 id="三、与-Servlet-3-1-的集成"><a href="#三、与-Servlet-3-1-的集成" class="headerlink" title="三、与 Servlet 3.1 的集成"></a>三、与 Servlet 3.1 的集成</h2><h3 id="8-changeSessionId"><a href="#8-changeSessionId" class="headerlink" title="8. changeSessionId()"></a>8. changeSessionId()</h3><p>HttpServletRequest.changeSessionId() 是 Servlet3.1 及更高版本中，防止会话固定攻击的默认方法。</p>
-</div><hr></div><div class="recent-post-item article-container"><a class="article-title" href="/2019/07/22/读书笔记/《SpringSecurity》/11.核心安全过滤器/">《Spring Security》第十一章 Spring Security 中的几个核心过滤器</a><time class="post-meta__date"><i class="fa fa-calendar" aria-hidden="true"></i> 2019-07-22</time><span class="article-meta"><span class="article-meta__separator">|</span><i class="fa fa-inbox article-meta__icon" aria-hidden="true"></i><a class="article-meta__categories" href="/categories/Spring-Security/">Spring Security</a></span><span class="article-meta tags"><span class="article-meta__separator">|</span><i class="fa fa-tag article-meta__icon" aria-hidden="true"></i><a class="article-meta__tags" href="/tags/读书笔记/">读书笔记</a></span><div class="content"><h1 id="第十一章-Spring-Security-中的几个核心过滤器"><a href="#第十一章-Spring-Security-中的几个核心过滤器" class="headerlink" title="第十一章 Spring Security 中的几个核心过滤器"></a>第十一章 Spring Security 中的几个核心过滤器</h1><h2 id="FilterSecurityInterceptor"><a href="#FilterSecurityInterceptor" class="headerlink" title="FilterSecurityInterceptor"></a>FilterSecurityInterceptor</h2><p>FilterSecurityInterceptor 负责处理 HTTP 资源的安全性，提供了适用于不同 HTTP URL 请求的配置属性，引用了 AuthenticationManager 和 AccessDecisionManager。</p>
+} </script></head><body><i class="fa fa-arrow-right" id="toggle-sidebar" aria-hidden="true"></i><div id="sidebar" data-display="false"><div class="author-info"><div class="author-info__avatar text-center"><img src="/img/avatar.png"></div><div class="author-info__name text-center">koral</div><div class="author-info__description text-center">描述</div><hr><div class="author-info-articles"><a class="author-info-articles__archives article-meta" href="/archives"><span class="pull-left">文章</span><span class="pull-right">239</span></a><a class="author-info-articles__tags article-meta" href="/tags"><span class="pull-left">标签</span><span class="pull-right">22</span></a><a class="author-info-articles__categories article-meta" href="/categories"><span class="pull-left">分类</span><span class="pull-right">21</span></a></div></div></div><nav class="no-bg" id="nav"><div id="page-header"><span class="pull-left"> <a id="site-name" href="/">凯</a></span><i class="fa fa-bars toggle-menu pull-right" aria-hidden="true"></i><span class="pull-right menus">   <a class="site-page" href="/">首页</a><a class="site-page" href="/archives">归档</a><a class="site-page" href="/tags">标签</a><a class="site-page" href="/categories">分类</a><a class="site-page" href="/about">关于我</a></span><span class="pull-right"></span></div><div id="site-info"><div id="site-title">凯</div><div id="site-sub-title">凯</div></div></nav><div id="content-outer"><div class="layout" id="content-inner"><div class="recent-post-item article-container"><a class="article-title" href="/2019/07/22/读书笔记/《SpringSecurity》/11.核心安全过滤器/">《Spring Security》第十一章 Spring Security 中的几个核心过滤器</a><time class="post-meta__date"><i class="fa fa-calendar" aria-hidden="true"></i> 2019-07-22</time><span class="article-meta"><span class="article-meta__separator">|</span><i class="fa fa-inbox article-meta__icon" aria-hidden="true"></i><a class="article-meta__categories" href="/categories/Spring-Security/">Spring Security</a></span><span class="article-meta tags"><span class="article-meta__separator">|</span><i class="fa fa-tag article-meta__icon" aria-hidden="true"></i><a class="article-meta__tags" href="/tags/读书笔记/">读书笔记</a></span><div class="content"><h1 id="第十一章-Spring-Security-中的几个核心过滤器"><a href="#第十一章-Spring-Security-中的几个核心过滤器" class="headerlink" title="第十一章 Spring Security 中的几个核心过滤器"></a>第十一章 Spring Security 中的几个核心过滤器</h1><h2 id="FilterSecurityInterceptor"><a href="#FilterSecurityInterceptor" class="headerlink" title="FilterSecurityInterceptor"></a>FilterSecurityInterceptor</h2><p>FilterSecurityInterceptor 负责处理 HTTP 资源的安全性，提供了适用于不同 HTTP URL 请求的配置属性，引用了 AuthenticationManager 和 AccessDecisionManager。</p>
 <h2 id="ExceptionTranslationFilter"><a href="#ExceptionTranslationFilter" class="headerlink" title="ExceptionTranslationFilter"></a>ExceptionTranslationFilter</h2><p>ExceptionTranslationFilter 位于安全过滤器堆栈中的 FilterSecurityInterceptor 之上，它本身不执行任何实际的安全性控制，但处理安全性拦截器引发的异常。</p>
 <p>ExceptionTranslationFilter 的另一个职责是在调用 AuthenticationEntryPoint 之前保存当前请求，这允许用户在进行身份验证之后，恢复请求。如用户用表单登录之后，通过 SavedRequestAwareAuthenticationSuccessHandler 重定向至原始的 URL。</p>
 <p>RequestCacheFilter 的任务是，当用户被重定向到原始URL时，从缓存实际还原已保存的请求。</p>
@@ -163,7 +133,489 @@
 </ol>
 </li>
 </ol>
-</div><hr></div><div class="recent-post-item article-container"><a class="article-title" href="/2019/07/22/读书笔记/《JavaDesignPatterns》/19.迭代器模式/">《Java Design Patterns》第十七章 迭代器模式</a><time class="post-meta__date"><i class="fa fa-calendar" aria-hidden="true"></i> 2019-07-22</time><span class="article-meta"><span class="article-meta__separator">|</span><i class="fa fa-inbox article-meta__icon" aria-hidden="true"></i><a class="article-meta__categories" href="/categories/设计模式/">设计模式</a></span><span class="article-meta tags"><span class="article-meta__separator">|</span><i class="fa fa-tag article-meta__icon" aria-hidden="true"></i><a class="article-meta__tags" href="/tags/读书笔记/">读书笔记</a></span><div class="content"><h1 id="第十七章-迭代器模式-遍历聚合对象中的元素"><a href="#第十七章-迭代器模式-遍历聚合对象中的元素" class="headerlink" title="第十七章 迭代器模式 - 遍历聚合对象中的元素"></a>第十七章 迭代器模式 - 遍历聚合对象中的元素</h1></div><hr></div><nav id="pagination"><div class="pagination"><a class="extend prev" rel="prev" href="/page/18/"><i class="fa fa-chevron-left"></i></a><a class="page-number" href="/">1</a><span class="space">&hellip;</span><a class="page-number" href="/page/18/">18</a><span class="page-number current">19</span><a class="page-number" href="/page/20/">20</a><span class="space">&hellip;</span><a class="page-number" href="/page/49/">49</a><a class="extend next" rel="next" href="/page/20/"><i class="fa fa-chevron-right"></i></a></div></nav></div></div><footer><div class="layout" id="footer"><div class="copyright">&copy;2013 - 2020 By koral</div><div class="framework-info"><span>驱动 - </span><a href="http://hexo.io"><span>Hexo</span></a><span class="footer-separator">|</span><span>主题 - </span><a href="https://github.com/Molunerfinn/hexo-theme-melody"><span>Melody</span></a></div><div class="busuanzi"><script async src="//busuanzi.ibruce.info/busuanzi/2.3/busuanzi.pure.mini.js"></script><span id="busuanzi_container_site_uv"><i class="fa fa-user"></i><span id="busuanzi_value_site_uv"></span><span></span></span><span class="footer-separator">|</span><span id="busuanzi_container_site_pv"><i class="fa fa-eye"></i><span id="busuanzi_value_site_pv"></span><span></span></span></div></div></footer><i class="fa fa-arrow-up" id="go-up" aria-hidden="true"></i><script src="https://cdn.jsdelivr.net/npm/animejs@latest/anime.min.js"></script><script src="https://cdn.jsdelivr.net/npm/jquery@latest/dist/jquery.min.js"></script><script src="https://cdn.jsdelivr.net/npm/@fancyapps/fancybox@latest/dist/jquery.fancybox.min.js"></script><script src="https://cdn.jsdelivr.net/npm/velocity-animate@latest/velocity.min.js"></script><script src="https://cdn.jsdelivr.net/npm/velocity-ui-pack@latest/velocity.ui.min.js"></script><script src="/js/utils.js?version=1.7.0"></script><script src="/js/fancybox.js?version=1.7.0"></script><script src="/js/sidebar.js?version=1.7.0"></script><script src="/js/copy.js?version=1.7.0"></script><script src="/js/fireworks.js?version=1.7.0"></script><script src="/js/transition.js?version=1.7.0"></script><script src="/js/scroll.js?version=1.7.0"></script><script src="/js/head.js?version=1.7.0"></script><script>if(/Android|webOS|iPhone|iPod|iPad|BlackBerry/i.test(navigator.userAgent)) {
+</div><hr></div><div class="recent-post-item article-container"><a class="article-title" href="/2019/07/22/读书笔记/《JavaDesignPatterns》/18.解释器模式/">《Java Design Patterns》第十六章 解释器模式 - 自定义语言的实现</a><time class="post-meta__date"><i class="fa fa-calendar" aria-hidden="true"></i> 2019-07-22</time><span class="article-meta"><span class="article-meta__separator">|</span><i class="fa fa-inbox article-meta__icon" aria-hidden="true"></i><a class="article-meta__categories" href="/categories/设计模式/">设计模式</a></span><span class="article-meta tags"><span class="article-meta__separator">|</span><i class="fa fa-tag article-meta__icon" aria-hidden="true"></i><a class="article-meta__tags" href="/tags/读书笔记/">读书笔记</a></span><div class="content"><h1 id="第十六章-解释器模式-自定义语言的实现"><a href="#第十六章-解释器模式-自定义语言的实现" class="headerlink" title="第十六章 解释器模式 - 自定义语言的实现"></a>第十六章 解释器模式 - 自定义语言的实现</h1><h2 id="一、什么是解释器模式"><a href="#一、什么是解释器模式" class="headerlink" title="一、什么是解释器模式"></a>一、什么是解释器模式</h2><p>解释器模式（Interpreter Pattern）：定义一个语言的文法，并且建立一个解释器来解释该语言中的句子，这里的“语言”是指使用规定格式和语法的代码。解释器模式是一种类行为型模式。</p>
+<p>在某些情况下，为了更好地描述某一些特定类型的问题，我们可以创建一种新的语言，这种语言拥有自己的表达式和结构，即文法规则，这些问题的实例将对应为该语言中的句子。</p>
+<h2 id="二、文法规则和抽象语法树"><a href="#二、文法规则和抽象语法树" class="headerlink" title="二、文法规则和抽象语法树"></a>二、文法规则和抽象语法树</h2><p>解释器模式描述了如何为简单的语言定义一个文法，如何在改语言中表示一个句子，以及如何解释这些句子。</p>
+<p>在解释器模式中，我们可以使用一些符号来表示不同的含义，如“|”表示或，“{”与“}”表示组合等等。这些符号即代表着部分的文法规则</p>
+<p>除了依靠文法规则来定义一个语言之外，还可以通过抽象语法树的图形方式来直观的表示语言的构成。</p>
+<p><img src="https://i.loli.net/2019/07/20/5d32b544e08f875223.png" alt="抽象语法树示意图"></p>
+<p>例如一个表达式语句 “1+2+3-4+1”，</p>
+<h3 id="2-解释器模式中包含的几个角色："><a href="#2-解释器模式中包含的几个角色：" class="headerlink" title="2. 解释器模式中包含的几个角色："></a>2. 解释器模式中包含的几个角色：</h3><ol>
+<li>AbstractExpression - 抽象表达式    <ol>
+<li>在抽象表达式中声明了抽象的解释操作，他是所有终结符表达式和非终结符表达式的公共父类</li>
+</ol>
+</li>
+<li>TerminalExpression - 终结符表达式<ol>
+<li>是抽象表达式的子类，实现了与文法中的终结符相关联的解释操作</li>
+<li>在句子中的每一个终结符都是该类的一个实例</li>
+<li>通常在一个解释器模式中只有少数几个终结符表达式，他们的实例可以通过非终结符表达式组成较为复杂的句子</li>
+</ol>
+</li>
+<li>NonterminalExpression - 非终结符表达式<ol>
+<li>抽象表达式的子类，实现了文法中非终结符的解释操作</li>
+<li>由于在非终结符表达式中可以包含终结符表达式，也可以包含非终结符表达式</li>
+<li>因此其解释操作通常是递归的方式</li>
+</ol>
+</li>
+<li>Context - 环境类<ol>
+<li>环境类又称为上下文类，用于存储解释器之外的一些全局信息</li>
+<li>通常临时存储了需要解释的语句</li>
+</ol>
+</li>
+</ol>
+<h3 id="3-核心类的设计"><a href="#3-核心类的设计" class="headerlink" title="3. 核心类的设计"></a>3. 核心类的设计</h3><h4 id="抽象表达式类"><a href="#抽象表达式类" class="headerlink" title="抽象表达式类"></a>抽象表达式类</h4><p>在解释器模式中，每一种终结符和非终结符都有一个具体类与之对应，正因为使用类来表示每一条文法规则，所以系统将具有较好的灵活性和可扩展性。</p>
+<pre><code class="java">abstract class AbstractExpression {
+    public abstract void interpret(Context ctx);
+}</code></pre>
+<h4 id="终结符表达式"><a href="#终结符表达式" class="headerlink" title="终结符表达式"></a>终结符表达式</h4><p>终结符表达式主要是对终结符元素的处理。</p>
+<pre><code class="java">class TerminalExpression extends AbstractExpression {
+    public void interpre(Context ctx) {
+        // 终结符表达式的解释操作
+    }
+}</code></pre>
+<h4 id="非终结符表达式"><a href="#非终结符表达式" class="headerlink" title="非终结符表达式"></a>非终结符表达式</h4><p>非终结符表达式将表达式组合成更加复杂的结构，对于包含两个操作元素的非终结符表达式类，其典型代码如下：</p>
+<pre><code class="java">class NonterminalExpression extends AbstractExpression {
+    private AbstractExpression left;
+    private AbstractExpression right;
+
+    public NonterminalExpression(AbstractExpression left, AbstractExpression right) {
+        this.left = left;
+        this.right = right;
+    }
+
+    public void interpret(Context ctx) {
+        // 递归调用每一个组成部分的 interpret() 方法
+        // 在递归调用时指定组成部分的连接方式，即非终结符的功能
+    }
+}</code></pre>
+<h4 id="上下文类"><a href="#上下文类" class="headerlink" title="上下文类"></a>上下文类</h4><p>环境类Context， 用于存储一些全局信息，通常在Context中包含了一个 HashMap 或者 ArrayList 等类型的集合对象。</p>
+<pre><code class="java">class Context {
+    private HashMap map = new HashMap();
+    public void assign(String key, String value){
+        // 往环境中设值
+    }
+
+    public String lookup(String key) {
+        // 获取存储在环境中的值
+    }
+}</code></pre>
+<blockquote>
+<p>系统可以根据西药来决定是否需要环境类</p>
+</blockquote>
+<h2 id="三、完整实现"><a href="#三、完整实现" class="headerlink" title="三、完整实现"></a>三、完整实现</h2><pre><code class="java">// 抽象表达式
+abstract class AbstractNode {
+    public abstract String interpret();
+}
+
+// And解释 - 非终结符表达式
+class AndNode extends AbstractNode {
+    private AbstractNode left;
+    private AbstractNode right;
+
+    public AndNode(AbstractNode left, AbstractNode right){
+        this.left = left;
+        this.right = right;
+    }
+
+    // And 表达式的解释操作
+    public String interpret(){
+        return left.interpret() + &quot;再&quot; + right.interpret();
+    }
+}
+
+// 简单句子解释 - 非终结符表达式
+class SentenceNode extends AbstractNode {
+    private AbstractNode direction;
+    private AbstractNode action;
+    private AbstractNode distance;
+
+    public SentenceNode(AbstractNode direction, AbstractNode action, AbstractNode distance) {
+        this.direction = direction;
+        this.action = action;
+        this.distance = distance;
+    }
+
+    public String interpret(){
+        return direction.interpret() + action.interpret() + distance.interpret();
+    }
+}
+
+// 方向解释 - 终结符表达式
+class DirectionNode extends AbstractNode {
+    private String direction;
+
+    public Direction(String direction) {
+        this.direction = direction;
+    }
+
+    public String interpret() {
+        switch(direction){
+            case &quot;up&quot;:
+                return &quot;向上&quot;;
+            case &quot;down&quot;:
+                return &quot;向下&quot;;
+            case &quot;left&quot;:
+                return &quot;向左&quot;;
+            case &quot;right&quot;:
+                return &quot;向右&quot;;
+            default:
+                return &quot;无效指令&quot;&#39;
+        }
+    }
+}
+
+// 动作解释 - 终结符表达式
+class ActionNode extends AbstractNode {
+    private String action;
+
+    public ActionNode(String action) {
+        this.action = action;
+    }
+
+    public String interpret() {
+        switch(action) {
+            case &quot;move&quot;:
+                return &quot;移动&quot;;
+            case &quot;run&quot;:
+                return &quot;快速移动&quot;;
+            default:
+                return &quot;无效指令&quot;;
+        }
+    }
+}
+
+// 距离解释 - 终结符表达式
+class DistanceNode extends AbstractNode {
+    private String distance;
+
+    public DistanceNode(String distance) {
+        this.distance = distance;
+    }
+
+    public String interpret() {
+        return distance;
+    }
+}
+
+// 指令处理类 - 工具类
+/**
+ * 工具类用于对输入指令进行处理，将指令分隔为字符串数组
+ * 将第一二三个单词组成一个句子，并存入栈中
+ * 如果发现单词 “and”，则将 “and” 后的第一二三个单词组成一个新的句子作为右表达式，并从栈中取出原先的句子作为左表达式，然后组合成一个And节点存入栈中
+ * 依次类推，直到整个指令解析结束
+ */
+class InstructionHandler {
+    private String instruction;
+    private AbstractNode node;
+
+    public void handle(String instruction) {
+        AbstractNode left = null;
+        AbstractNode right = null;
+
+        AbstractNode direction = null;
+        AbstractNode action = null;
+        AbstractNode distance = null;
+
+        // 声明一个栈对象用于存储抽象语法树
+        Stack stack = new Stack();
+        // 以空格分隔指令字符串
+        String[] words = instruction.split(&quot; &quot;);
+
+        for(int i = 0;i &lt; words.length; i++){
+            // 如果遇到 and，则将后三个单词作为三个终结符表达式连成一个简单句子，并作为右表达式
+            // 从栈顶弹出之前的表达式作为 and 的左表达式，最后将and压入栈中
+            if(words[i].equalsIgnoreCase(&quot;and&quot;)){
+                // 弹出栈顶表达式作为左表达式
+                left = (AbstractNode) stack.pop();
+                direction = new DirectionNode(words[++i]);
+                action = new ActionNode(words[++i]);
+                distance = new DistanceNode(words[++i]);
+                // 右表达式
+                right = new SentenceNode(direction, action, distance); 
+                // 将新表达式压入栈中
+                stack.push(new AndNode(left, right));
+            }
+            // 如果是从头开始解释，则将前三个单词组成一个简单句子并压入栈中
+            else {
+                direction = new DirectionNode(words[i]);
+                action = new ActionNode(words[++i]);
+                distance = new DistanceNode(words[++i]);
+                left = new SentenceNode(direction, action, distance);
+                stack.push(left);
+            }
+        }
+
+        this.node = (AbstractNode)stack.pop();
+    }
+
+    public String output(){
+        // 解释表达式
+        String result = node.interpret();
+        return result;
+    }
+}
+
+// 客户端 - 测试类
+class Client {
+    public static void main(String[] args) {
+        String instruction = &quot;up move 5 and down run 10 and left move 5&quot;;
+        InstructionHandler handler = new InstructionHandler();
+        handler.handle(instruction);
+        String outString;
+        outString = handler.output();
+        System.out.println(outString);
+    }
+}</code></pre>
+<h3 id="四、Context的作用"><a href="#四、Context的作用" class="headerlink" title="四、Context的作用"></a>四、Context的作用</h3><p>在解释器模式中，环境类Context用于存储解释器之外的一些全局信息，它通常作为参数被传递到所有表达式的解释方法 interpret() 中，可以在 Context 对象中存储访问表达式解释器的状态，向表达式解释器提供一些全局的、公共的数据，此外还可以在 Context 中增加一些所有表达式解释器都共有的功能，减轻解释器的职责。</p>
+<h2 id="五、总结"><a href="#五、总结" class="headerlink" title="五、总结"></a>五、总结</h2><h3 id="优点"><a href="#优点" class="headerlink" title="优点"></a>优点</h3><ol>
+<li>易于改变和扩展文法。由于在解释器模式中使用类来表示语言的文法规则，因此可以通过继承等机制来改变或扩展文法</li>
+<li>每一条文法规则都可以表示为一个类，因此可以方便地实现一个简单的语言</li>
+<li>实现文法较为容易，在抽象语法树中每一个表达式节点类的实现方式都是相似的，这些类的代码编写都不会特别复杂，还可以通过一些工具自动生成节点类代码</li>
+<li>增加新的解释表达式较为方便。如果用户需要增加新的解释表达式只需要对应增加一个新的终结符表达式或非终结符表达式类，原有表达式类代码无需修改，符合“开闭原则”</li>
+</ol>
+<h3 id="缺点"><a href="#缺点" class="headerlink" title="缺点"></a>缺点</h3><ol>
+<li>对于复杂文法难以维护，每一条规则至少对应一个类</li>
+<li>执行效率较低，模式中使用了大量的循环和递归调用，因此在解释时速度很慢</li>
+</ol>
+<h3 id="适用场景"><a href="#适用场景" class="headerlink" title="适用场景"></a>适用场景</h3><ol>
+<li>讲一个需要解释执行的语言中的句子表示为一个丑行语法树</li>
+<li>一些重复出现的问题可以用一种简单的语言来进行表达</li>
+<li>一个语言的文法较为简单</li>
+<li>执行效率不是关键问题</li>
+</ol>
+<h2 id="六、练习"><a href="#六、练习" class="headerlink" title="六、练习"></a>六、练习</h2><blockquote>
+<p>Sunny软件公司欲为数据库备份和同步开发一套简单的数据库同步指令，通过指令可以对数据库中的数据和结构进行备份，例如，输入指令“COPY VIEW FROM srcDB TO desDB”表示将数据库srcDB中的所有视图(View)对象都拷贝至数据库desDB；输入指令“MOVE TABLE Student FROM srcDB TO esDB”表示将数据库srcDB中的Student表移动至数据库desDB。试使用解释器模式来设计并实现该数据库同步指令。</p>
+</blockquote>
+<pre><code class="java">import java.util.Stack;
+
+/**
+ * 解释器模式
+ * Sunny软件公司欲为数据库备份和同步开发一套简单的数据库同步指令，
+ * 通过指令可以对数据库中的数据和结构进行备份，
+ * 例如，
+ * 输入指令“COPY VIEW FROM srcDB TO desDB”
+ * 表示将数据库srcDB中的所有视图(View)对象都拷贝至数据库desDB；
+ * 输入指令“MOVE TABLE Student FROM srcDB TO esDB”
+ * 表示将数据库srcDB中的Student表移动至数据库desDB。
+ * 试使用解释器模式来设计并实现该数据库同步指令。
+ */
+// 抽象指令
+abstract class AbstractOrder {
+    // 抽象公共方法，用于解释具体的指令
+    abstract String interpret();
+}
+
+// 从。。到。。 指令 - 非终结符表达式
+class FromOrder extends AbstractOrder {
+    private AbstractOrder first;
+    private AbstractOrder second;
+
+    public FromOrder(AbstractOrder first, AbstractOrder second) {
+        this.first = first;
+        this.second = second;
+    }
+
+    @Override
+    String interpret() {
+        return &quot;从&quot; + first.interpret() + &quot;到&quot; + second.interpret();
+    }
+}
+
+// 视图指令 - 终结符表达式
+class ViewOrder extends AbstractOrder {
+    private String view;
+
+    public ViewOrder() {
+    }
+
+    public ViewOrder(String view) {
+        this.view = view;
+    }
+
+    @Override
+    String interpret() {
+        if (view == null) {
+            return &quot;[所有视图]&quot;;
+        }
+        return &quot;[视图:&quot; + view + &quot;]&quot;;
+    }
+}
+
+// 表格指令 - 终结符表达式
+class TableOrder extends AbstractOrder {
+    private String table;
+
+    public TableOrder() {
+    }
+
+    public TableOrder(String table) {
+        this.table = table;
+    }
+
+    @Override
+    String interpret() {
+        if (table == null) {
+            return &quot;[所有表格]&quot;;
+        }
+        return &quot;[&quot; + table + &quot;表]&quot;;
+    }
+}
+
+// 数据库名称指令 - 终结符表达式
+class DBOrder extends AbstractOrder {
+    private String name;
+
+    public DBOrder(String name) {
+        this.name = name;
+    }
+
+    @Override
+    String interpret() {
+        return &quot;[数据库:&quot; + name + &quot;]&quot;;
+    }
+}
+
+// 备份指令 - 终结符表达式
+class CopyOrder extends AbstractOrder {
+    @Override
+    String interpret() {
+        return &quot;拷贝&quot;;
+    }
+}
+
+// 移动指令 - 终结符表达式
+class MoveOrder extends AbstractOrder {
+    @Override
+    String interpret() {
+        return &quot;移动&quot;;
+    }
+}
+
+// 句子解释(Copy/Move FromOder) - 非终结符表达式
+class SentenceOrder extends AbstractOrder {
+    private AbstractOrder direction;
+    private AbstractOrder action;
+    private AbstractOrder distance;
+
+    public SentenceOrder(AbstractOrder direction, AbstractOrder action, AbstractOrder distance) {
+        this.direction = direction;
+        this.action = action;
+        this.distance = distance;
+    }
+
+    @Override
+    String interpret() {
+        return direction.interpret() + action.interpret() + distance.interpret();
+    }
+}
+
+// 指令工具类
+class InstructionHandler {
+    private String instruction;     // 输入的指令字符串
+    private AbstractOrder order;    // 字符串转换后的指令
+
+    public void handle(String instruction) {
+        AbstractOrder direction;     // sentence 指令的 direction
+        AbstractOrder action;    // sentence 指令的 action
+        AbstractOrder distance;    // sentence 指令的 distance
+
+        // 使用栈来保存表达式
+        Stack&lt;AbstractOrder&gt; stack = new Stack&lt;&gt;();
+
+        // 将输入的指令字符串按照 空格 拆分
+        final String[] words = instruction.split(&quot; &quot;);
+
+        for (int i = 0; i &lt; words.length; i++) {
+            final String word = words[i];
+
+            // 如果为 from 指令，则解析 From [DB] TO [DB]
+            switch (word.toLowerCase()) {
+                case &quot;from&quot;:
+                    String f = words[++i];
+                    ++i;
+                    String s = words[++i];
+                    stack.push(new FromOrder(new DBOrder(f), new DBOrder(s)));
+                    break;
+                case &quot;copy&quot;:
+                    stack.push(new CopyOrder());
+                    break;
+                case &quot;move&quot;:
+                    stack.push(new MoveOrder());
+                    break;
+                case &quot;view&quot;:
+                    if (!words[i + 1].equalsIgnoreCase(&quot;from&quot;))
+                        stack.push(new ViewOrder(words[++i]));
+                    else
+                        stack.push(new ViewOrder());
+                    break;
+                case &quot;table&quot;:
+                    if (!words[i + 1].equalsIgnoreCase(&quot;from&quot;))
+                        stack.push(new TableOrder(words[++i]));
+                    else
+                        stack.push(new TableOrder());
+                    break;
+                default:
+                    throw new RuntimeException(&quot;无效指令&quot;);
+            }
+        }
+        distance = stack.pop();
+        action = stack.pop();
+        direction = stack.pop();
+        // order 最终是一个解释类表达式
+        order = new SentenceOrder(direction, action, distance);
+    }
+
+    public String output() {
+        return order.interpret();
+    }
+}
+
+public class InterpretPattern {
+    public static void main(String[] args) {
+        String order = &quot;MOVE TABLE Student FROM srcDB TO esDB&quot;;
+        final InstructionHandler handler = new InstructionHandler();
+        handler.handle(order);
+        final String output = handler.output();
+        System.out.println(output);
+    }
+}
+</code></pre>
+</div><hr></div><div class="recent-post-item article-container"><a class="article-title" href="/2019/07/22/读书笔记/《JavaDesignPatterns》/19.迭代器模式/">《Java Design Patterns》第十七章 迭代器模式</a><time class="post-meta__date"><i class="fa fa-calendar" aria-hidden="true"></i> 2019-07-22</time><span class="article-meta"><span class="article-meta__separator">|</span><i class="fa fa-inbox article-meta__icon" aria-hidden="true"></i><a class="article-meta__categories" href="/categories/设计模式/">设计模式</a></span><span class="article-meta tags"><span class="article-meta__separator">|</span><i class="fa fa-tag article-meta__icon" aria-hidden="true"></i><a class="article-meta__tags" href="/tags/读书笔记/">读书笔记</a></span><div class="content"><h1 id="第十七章-迭代器模式-遍历聚合对象中的元素"><a href="#第十七章-迭代器模式-遍历聚合对象中的元素" class="headerlink" title="第十七章 迭代器模式 - 遍历聚合对象中的元素"></a>第十七章 迭代器模式 - 遍历聚合对象中的元素</h1></div><hr></div><div class="recent-post-item article-container"><a class="article-title" href="/2019/07/19/读书笔记/《SpringSecurity》/9.自定义注解/">《Spring Security》第九章 自定义 Security Mock 注解</a><time class="post-meta__date"><i class="fa fa-calendar" aria-hidden="true"></i> 2019-07-19</time><span class="article-meta"><span class="article-meta__separator">|</span><i class="fa fa-inbox article-meta__icon" aria-hidden="true"></i><a class="article-meta__categories" href="/categories/Spring-Security/">Spring Security</a></span><span class="article-meta tags"><span class="article-meta__separator">|</span><i class="fa fa-tag article-meta__icon" aria-hidden="true"></i><a class="article-meta__tags" href="/tags/读书笔记/">读书笔记</a></span><div class="content"><h1 id="第九章-自定义-Security-Mock-注解"><a href="#第九章-自定义-Security-Mock-注解" class="headerlink" title="第九章 自定义 Security Mock 注解"></a>第九章 自定义 Security Mock 注解</h1><p>从 <code>第八章 Spring Security 的测试支持</code> 可以看到，如果不使用自定义的身份验证主体，@WithMockUser 是一个很好的选择。</p>
+<h2 id="一、-WithMockUser-存在的问题"><a href="#一、-WithMockUser-存在的问题" class="headerlink" title="一、@WithMockUser 存在的问题"></a>一、@WithMockUser 存在的问题</h2><p>大部分情况下，我们使用都不是 UserDetails 对象，而是 UserDetails 的自定义实现。</p>
+<p>且 @WithUserDetails 注解还需要查询数据库，并且要求用户存在。</p>
+<h2 id="二、解决方案"><a href="#二、解决方案" class="headerlink" title="二、解决方案"></a>二、解决方案</h2><p>我们可以通过模仿 @WithMockUser 注解，创建自己的 @WithMockSutomUser注解。并通过实现 WithSecurityContextFactory 来使用自己的注解。</p>
+<h3 id="1-WithMockSutomUser"><a href="#1-WithMockSutomUser" class="headerlink" title="1. @WithMockSutomUser"></a>1. @WithMockSutomUser</h3><pre><code class="java">@Retention(RetentionPolicy.RUNTIME)
+@WithSecurityContext(factory = WithMockCustomUserSecurityContextFactory.class)
+public @interface WithMockCustomUser {
+
+    String username() default &quot;rob&quot;;
+
+    String name() default &quot;Rob Winch&quot;;
+}</code></pre>
+<h3 id="2-WithMockCustomUserSecurityContextFactory"><a href="#2-WithMockCustomUserSecurityContextFactory" class="headerlink" title="2. WithMockCustomUserSecurityContextFactory"></a>2. WithMockCustomUserSecurityContextFactory</h3><pre><code class="java">final class WithUserDetailsSecurityContextFactory
+    implements WithSecurityContextFactory&lt;WithUserDetails&gt; {
+
+    private UserDetailsService userDetailsService;
+
+    @Autowired
+    public WithUserDetailsSecurityContextFactory(UserDetailsService userDetailsService) {
+        this.userDetailsService = userDetailsService;
+    }
+
+    public SecurityContext createSecurityContext(WithUserDetails withUser) {
+        String username = withUser.value();
+        Assert.hasLength(username, &quot;value() must be non-empty String&quot;);
+        UserDetails principal = userDetailsService.loadUserByUsername(username);
+        Authentication authentication = new UsernamePasswordAuthenticationToken(principal, principal.getPassword(), principal.getAuthorities());
+        SecurityContext context = SecurityContextHolder.createEmptyContext();
+        context.setAuthentication(authentication);
+        return context;
+    }
+}</code></pre>
+<blockquote>
+<p>现在，我们使用新的注解来测试类或方法，Spring Security 的 WithSecurityContextTestExecutionListener 将确保我们的 SecurityContext 得到了适当的填充。</p>
+</blockquote>
+</div><hr></div><nav id="pagination"><div class="pagination"><a class="extend prev" rel="prev" href="/page/18/"><i class="fa fa-chevron-left"></i></a><a class="page-number" href="/">1</a><span class="space">&hellip;</span><a class="page-number" href="/page/18/">18</a><span class="page-number current">19</span><a class="page-number" href="/page/20/">20</a><span class="space">&hellip;</span><a class="page-number" href="/page/48/">48</a><a class="extend next" rel="next" href="/page/20/"><i class="fa fa-chevron-right"></i></a></div></nav></div></div><footer><div class="layout" id="footer"><div class="copyright">&copy;2013 - 2020 By koral</div><div class="framework-info"><span>驱动 - </span><a href="http://hexo.io"><span>Hexo</span></a><span class="footer-separator">|</span><span>主题 - </span><a href="https://github.com/Molunerfinn/hexo-theme-melody"><span>Melody</span></a></div><div class="busuanzi"><script async src="//busuanzi.ibruce.info/busuanzi/2.3/busuanzi.pure.mini.js"></script><span id="busuanzi_container_site_uv"><i class="fa fa-user"></i><span id="busuanzi_value_site_uv"></span><span></span></span><span class="footer-separator">|</span><span id="busuanzi_container_site_pv"><i class="fa fa-eye"></i><span id="busuanzi_value_site_pv"></span><span></span></span></div></div></footer><i class="fa fa-arrow-up" id="go-up" aria-hidden="true"></i><script src="https://cdn.jsdelivr.net/npm/animejs@latest/anime.min.js"></script><script src="https://cdn.jsdelivr.net/npm/jquery@latest/dist/jquery.min.js"></script><script src="https://cdn.jsdelivr.net/npm/@fancyapps/fancybox@latest/dist/jquery.fancybox.min.js"></script><script src="https://cdn.jsdelivr.net/npm/velocity-animate@latest/velocity.min.js"></script><script src="https://cdn.jsdelivr.net/npm/velocity-ui-pack@latest/velocity.ui.min.js"></script><script src="/js/utils.js?version=1.7.0"></script><script src="/js/fancybox.js?version=1.7.0"></script><script src="/js/sidebar.js?version=1.7.0"></script><script src="/js/copy.js?version=1.7.0"></script><script src="/js/fireworks.js?version=1.7.0"></script><script src="/js/transition.js?version=1.7.0"></script><script src="/js/scroll.js?version=1.7.0"></script><script src="/js/head.js?version=1.7.0"></script><script>if(/Android|webOS|iPhone|iPod|iPad|BlackBerry/i.test(navigator.userAgent)) {
   $('#nav').addClass('is-mobile')
   $('footer').addClass('is-mobile')
   $('#top-container').addClass('is-mobile')

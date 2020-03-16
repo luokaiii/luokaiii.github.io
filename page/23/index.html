@@ -7,332 +7,7 @@
     error: '复制错误',
     noSupport: '浏览器不支持'
   }
-} </script></head><body><i class="fa fa-arrow-right" id="toggle-sidebar" aria-hidden="true"></i><div id="sidebar" data-display="false"><div class="author-info"><div class="author-info__avatar text-center"><img src="/img/avatar.png"></div><div class="author-info__name text-center">koral</div><div class="author-info__description text-center">描述</div><hr><div class="author-info-articles"><a class="author-info-articles__archives article-meta" href="/archives"><span class="pull-left">文章</span><span class="pull-right">241</span></a><a class="author-info-articles__tags article-meta" href="/tags"><span class="pull-left">标签</span><span class="pull-right">22</span></a><a class="author-info-articles__categories article-meta" href="/categories"><span class="pull-left">分类</span><span class="pull-right">19</span></a></div></div></div><nav class="no-bg" id="nav"><div id="page-header"><span class="pull-left"> <a id="site-name" href="/">凯</a></span><i class="fa fa-bars toggle-menu pull-right" aria-hidden="true"></i><span class="pull-right menus">   <a class="site-page" href="/">Home</a><a class="site-page" href="/archives">Archives</a><a class="site-page" href="/tags">Tags</a><a class="site-page" href="/categories">Categories</a></span><span class="pull-right"></span></div><div id="site-info"><div id="site-title">凯</div><div id="site-sub-title">凯</div></div></nav><div id="content-outer"><div class="layout" id="content-inner"><div class="recent-post-item article-container"><a class="article-title" href="/2019/07/12/读书笔记/《JavaDesignPatterns》/14.享元模式/">《Java Design Patterns》第十二章 享元模式</a><time class="post-meta__date"><i class="fa fa-calendar" aria-hidden="true"></i> 2019-07-12</time><span class="article-meta"><span class="article-meta__separator">|</span><i class="fa fa-inbox article-meta__icon" aria-hidden="true"></i><a class="article-meta__categories" href="/categories/设计模式/">设计模式</a></span><span class="article-meta tags"><span class="article-meta__separator">|</span><i class="fa fa-tag article-meta__icon" aria-hidden="true"></i><a class="article-meta__tags" href="/tags/读书笔记/">读书笔记</a></span><div class="content"><h1 id="第十二章-享元模式"><a href="#第十二章-享元模式" class="headerlink" title="第十二章 享元模式"></a>第十二章 享元模式</h1><p>在Java开发或者面试过程中，经常会遇到一个面试题：</p>
-<pre><code class="java">String a = new String(&quot;abc&quot;); 
-String b = new String(&quot;abc&quot;);
-问：a == b ?</code></pre>
-<p>答案是肯定的，因为JVM在创建一个字符串后，会将其存储在 字符串池 中，下次new时会先去 字符串池 中查询是否已经存在。然后将引用地址返回。</p>
-<p>这就是一个典型的 <code>享元模式</code> 案例。</p>
-<h2 id="一、设计一个围棋软件"><a href="#一、设计一个围棋软件" class="headerlink" title="一、设计一个围棋软件"></a>一、设计一个围棋软件</h2><p>对于围棋软件而言，棋盘中包含大量的黑白色棋子，它们的形状、大小一致，但是出现的位置不同。如果将所有棋子都 new 一个对象存储在内存中，则该软件在运行时所需的内存空间会非常大。</p>
-<h3 id="解决方案"><a href="#解决方案" class="headerlink" title="解决方案"></a>解决方案</h3><p>享元模式通过共享技术实现相同或相似对象的重用，在逻辑上每一个出现的字符都有一个对象与之对应，然而在物理上它们却共享同一个享元对象。</p>
-<p>在享元模式中，存储这些共享实例对象的地方称为“享元池（Flyweight Pool）”</p>
-<h2 id="二、享元模式"><a href="#二、享元模式" class="headerlink" title="二、享元模式"></a>二、享元模式</h2><p>享元模式以共享方式，高效地支持大量细粒度对象的重用，享元对象能做到共享的关键是区分了 内部状态（Intrinsic State）和外部状态（Extrinsic State）。</p>
-<h3 id="内部状态"><a href="#内部状态" class="headerlink" title="内部状态"></a>内部状态</h3><p>内部状态是指存储在享元对象内部并且不会随环境变化而改变的状态，内部状态可以共享，但是不会被修改。</p>
-<h3 id="外部状态"><a href="#外部状态" class="headerlink" title="外部状态"></a>外部状态</h3><p>外部状态是随环境变化而变化的、不可以共享的状态。</p>
-<p>外部状态通常由客户端保存，并在享元对象被创建之后，需要使用的时候再传入享元对象内部。</p>
-<h3 id="享元模式的定义"><a href="#享元模式的定义" class="headerlink" title="享元模式的定义"></a>享元模式的定义</h3><p>享元模式（Flyweight Pattern）：运用共享技术有效地支持大量细粒度对象的复用。系统只使用少量的对象，而这些对象都很相似，状态变化很小，可以实现对象的多次复用。</p>
-<p>享元模式因其共享的是细粒度对象，因此又称为 <code>轻量级模式</code>，属于<code>对象结构型模式</code>。</p>
-<h3 id="享元模式中的几个角色"><a href="#享元模式中的几个角色" class="headerlink" title="享元模式中的几个角色"></a>享元模式中的几个角色</h3><ol>
-<li>Flyweight - 抽象享元类<ol>
-<li>接口或者抽象类，声明了具体享元类的公共方法</li>
-<li>这些方法可以向外界提供内部数据</li>
-<li>也可以有外界来设计外部数据</li>
-</ol>
-</li>
-<li>ConcreteFlyweight - 具体享元类<ol>
-<li>实现了抽象享元类，实例被称为享元对象</li>
-<li>具体享元类中为内部状态提供了存储空间</li>
-<li>通常使用单例模式来设计具体享元类</li>
-</ol>
-</li>
-<li>UnsharedConcreteFlyweight - 非共享具体享元类<ol>
-<li>不能被共享的子类可以设计为 非共享具体享元类</li>
-<li>在使用时可以直接通过实例化创建</li>
-</ol>
-</li>
-<li>FlyweightFactory - 享元工厂类<ol>
-<li>用于创建并管理享元对象，针对抽象享元类编程</li>
-<li>存储享元池，一般设计为“键值对”的集合</li>
-<li>可以结合工厂模式进行设计，返回唯一的实例</li>
-</ol>
-</li>
-</ol>
-<h2 id="三、享元模式的核心"><a href="#三、享元模式的核心" class="headerlink" title="三、享元模式的核心"></a>三、享元模式的核心</h2><h3 id="1-享元工厂类"><a href="#1-享元工厂类" class="headerlink" title="1. 享元工厂类"></a>1. 享元工厂类</h3><pre><code class="java">class FlyweightFactory {
-    // 定义享元池
-    private Map&lt;String,Flyweight&gt; flyweights = new HashMap();
-
-    public Flyweight getFlyweight(String key){
-        // 对象存在，则直接从享元池中取
-        if(flyweights.containsKey(key)){
-            return flyweights.get(key);
-        }
-        // 不存在，则创建一个享元对象，并放入享元池中返回
-        else {
-            Flyweight fy = new ConcreteFlyweight();
-            flyweights.put(key,fy);
-            return fy;
-        }
-    }
-}</code></pre>
-<h3 id="2-享元类"><a href="#2-享元类" class="headerlink" title="2. 享元类"></a>2. 享元类</h3><p>享元类将内部状态和外部状态分开处理，通常将内部状态作为享元类的成员变量，而外部状态通过注入的方式添加到享元模式中。</p>
-<pre><code class="java">class Flyweight {
-    // 内部状态，与享元对象的内部状态一致
-    private String intrinsicState;
-
-    public Flyweight(String intrinsicState){
-        this.intrinsicState = intrinsicState;
-    }
-
-    // 外部状态，在使用时由外部设置，不保存在享元对象中。
-    // 即使是同一个享元对象，每次使用时也可以传入不同的外部状态
-    public void operation(String extrinsicState){
-        .......
-    }
-}</code></pre>
-<h2 id="四、完整实现"><a href="#四、完整实现" class="headerlink" title="四、完整实现"></a>四、完整实现</h2><pre><code class="java">/**
- * 享元模式
- */
-// 围棋棋子类 - 抽象享元类
-abstract class IgoChessman {
-    // 抽象内部状态
-    public abstract String getColor();
-
-    // 在方法调用时，注入外部状态
-    public void display(Integer x, Integer y) {
-        System.out.println(&quot;棋子颜色:&quot; + getColor() + &quot;，当前棋子位置为：&quot; + x + &quot;,&quot; + y);
-    }
-}
-
-// 黑色棋子类 - 具体享元类
-class BlackIgoChessman extends IgoChessman {
-    @Override
-    public String getColor() {
-        return &quot;黑色&quot;;
-    }
-}
-
-// 白色棋子类 - 具体享元类
-class WhiteIgoChessman extends IgoChessman {
-    @Override
-    public String getColor() {
-        return &quot;白色&quot;;
-    }
-}
-
-// 围棋棋子工厂类 - 享元工厂类，使用单例模式进行设计
-class IgoChessmanFactory {
-    private static IgoChessmanFactory instance = new IgoChessmanFactory();
-    private static Hashtable&lt;String, IgoChessman&gt; ht; // 使用 Hashtable 来存储享元对象，充当享元池
-
-    private IgoChessmanFactory() {
-        ht = new Hashtable&lt;&gt;();
-        IgoChessman black = new BlackIgoChessman();
-        IgoChessman white = new WhiteIgoChessman();
-        ht.put(&quot;b&quot;, black);
-        ht.put(&quot;w&quot;, white);
-    }
-
-    // 返回享元工厂类的唯一实例
-    public static IgoChessmanFactory getInstance() {
-        return instance;
-    }
-
-    // 通过key来获取存储在 Hashtable 中的享元对象
-    public IgoChessman getIgoChessman(String color) {
-        return ht.get(color);
-    }
-}
-
-public class FlyweightPattern {
-    public static void main(String[] args) {
-        // 获取享元工厂对象
-        IgoChessmanFactory factory = IgoChessmanFactory.getInstance();
-
-        // 通过享元工厂获取棋子
-        IgoChessman black1 = factory.getIgoChessman(&quot;b&quot;);
-        IgoChessman black2 = factory.getIgoChessman(&quot;b&quot;);
-        IgoChessman black3 = factory.getIgoChessman(&quot;b&quot;);
-
-        IgoChessman white1 = factory.getIgoChessman(&quot;w&quot;);
-        IgoChessman white2 = factory.getIgoChessman(&quot;w&quot;);
-
-        black1.display(1,2);
-        black2.display(2,3);
-        black3.display(3,4);
-        white1.display(4,5);
-        white2.display(2,2);
-    }
-}</code></pre>
-<h2 id="五、单纯享元模式与复合享元模式"><a href="#五、单纯享元模式与复合享元模式" class="headerlink" title="五、单纯享元模式与复合享元模式"></a>五、单纯享元模式与复合享元模式</h2><h3 id="5-1-单纯享元模式"><a href="#5-1-单纯享元模式" class="headerlink" title="5.1 单纯享元模式"></a>5.1 单纯享元模式</h3><p>单纯享元模式中，所有具体享元类都是可以共享的，不存在非共享具体享元类。</p>
-<h3 id="5-2-复合享元模式"><a href="#5-2-复合享元模式" class="headerlink" title="5.2 复合享元模式"></a>5.2 复合享元模式</h3><p>将一些单纯享元对象使用组合模式进行组合，形成复合享元对象。复合享元对象本身不能共享，但是可以将组合后的享元对象分解为单纯享元对象，进行共享。</p>
-<h2 id="六、补充"><a href="#六、补充" class="headerlink" title="六、补充"></a>六、补充</h2><p>享元模式与其他模式的联用：</p>
-<ol>
-<li>享元工厂类通常提供一个 <code>静态的工厂方法</code> 用于返回享元对象，使用 <code>简单工厂模式</code> 来生成享元对象</li>
-<li>享元工厂通常是唯一的，可以使用 <code>单例模式</code> 进行设计</li>
-<li>可以使用 <code>组合模式</code> 形成复合享元模式，统一对多个享元对象设置外部状态</li>
-</ol>
-<h2 id="七、总结"><a href="#七、总结" class="headerlink" title="七、总结"></a>七、总结</h2><p>“节约内存，提高性能”</p>
-<h3 id="优点"><a href="#优点" class="headerlink" title="优点"></a>优点</h3><ol>
-<li>极大的减少内存中对象的数量，使得相同或相似对象在内存中只保存一份，从而节约系统资源，提高系统性能</li>
-<li>享元模式的外部状态相对独立，且不影响其内部状态，从而使得享元对象可以在不同环境中被共享</li>
-</ol>
-<h3 id="缺点"><a href="#缺点" class="headerlink" title="缺点"></a>缺点</h3><ol>
-<li>享元模式需要分离 内部状态和外部状态，使程序的逻辑更复杂</li>
-<li>为了使对象可以共享，享元模式需要将享元对象的部分状态外部化，而读取外部状态将使得运行时间变长</li>
-</ol>
-<h3 id="适用场景"><a href="#适用场景" class="headerlink" title="适用场景"></a>适用场景</h3><ol>
-<li>系统中有大量相同或相似的对象，造成大量的内存浪费</li>
-<li>对象的大部分状态都可以外部化，可以将这些外部状态传入对象中</li>
-<li>享元模式在运行时需要维护一个享元池，势必会使内存一直占用，因此享元池中的享元对象需要多次重复使用时才值得</li>
-</ol>
-<h2 id="八、练习"><a href="#八、练习" class="headerlink" title="八、练习"></a>八、练习</h2><blockquote>
-<p>Sunny软件公司欲开发一个多功能文档编辑器，在文本文档中可以插入图片、动画、视频等多媒体资料，为了节约系统资源，相同的图片、动画和视频在同一个文档中只需保存一份，但是可以多次重复出现，而且它们每次出现时位置和大小均可不同。试使用享元模式设计该文档编辑器。</p>
-<pre><code class="java">// 抽象享元类 - 声明公共方法，向外界提供内部数据，由外界提供外部数据
-abstract class Flyweight {
-    public abstract String type();
-
-    public void insert(String location, String size) {
-        System.out.println(&quot;插入类型：&quot; + type() + &quot;，位置：&quot; + location + &quot;，大小：&quot; + size);
-    }
-}
-
-// 具体享元类 - 实现抽象方法，内部数据的状态与对象状态一致，内部状态不能被修改
-class Picture extends Flyweight {
-    @Override
-    public String type() {
-        return &quot;图片类型&quot;;
-    }
-}
-
-class Cartoon extends Flyweight {
-    @Override
-    public String type() {
-        return &quot;动画类型&quot;;
-    }
-}
-
-class Video extends Flyweight {
-    @Override
-    public String type() {
-        return &quot;视频类型&quot;;
-    }
-}
-
-class FlyweightFactory {
-
-    // 使用单例模式，维持单一的工厂对象
-    private static FlyweightFactory factory = new FlyweightFactory();
-
-    private Map&lt;String, Flyweight&gt; map = new HashMap&lt;&gt;();
-
-    private FlyweightFactory() {
-        Flyweight picture = new Picture();
-        Flyweight cartoon = new Cartoon();
-        Flyweight video = new Video();
-        map.put(&quot;picture&quot;, picture);
-        map.put(&quot;cartoon&quot;, cartoon);
-        map.put(&quot;video&quot;, video);
-    }
-
-    // 静态工厂方法 - 返回工厂对象
-    public static FlyweightFactory getInstance(){
-        return factory;
-    }
-
-    public Flyweight getFlyweight(String key) {
-        if(map.containsKey(key)){
-            return map.get(key);
-        }
-        throw new RuntimeException(&quot;flyweight cann&#39;t support&quot;);
-    }
-}
-
-public class FlyweightPattern {
-    public static void main(String[] args) {
-        final FlyweightFactory factory = FlyweightFactory.getInstance();
-        Flyweight picture1 = factory.getFlyweight(&quot;picture&quot;);
-        Flyweight picture2 = factory.getFlyweight(&quot;picture&quot;);
-        Flyweight cartoon1 = factory.getFlyweight(&quot;cartoon&quot;);
-        Flyweight cartoon2 = factory.getFlyweight(&quot;cartoon&quot;);
-        Flyweight video = factory.getFlyweight(&quot;video&quot;);
-
-        picture1.insert(&quot;/Pic 下&quot;,&quot;273KB&quot;);
-        picture2.insert(&quot;/Pic 下&quot;,&quot;1.23MB&quot;);
-        cartoon1.insert(&quot;/cartoon 下&quot;,&quot;80MB&quot;);
-        cartoon2.insert(&quot;/cartoon 下&quot;,&quot;81MB&quot;);
-        video.insert(&quot;/video 下&quot;,&quot;1.3GB&quot;);
-    }
-}</code></pre>
-</blockquote>
-<p><img src="https://i.loli.net/2019/07/12/5d28459ba725023617.png" alt="运行结果"></p>
-</div><hr></div><div class="recent-post-item article-container"><a class="article-title" href="/2019/07/11/读书笔记/《JavaDesignPatterns》/13.外观模式/">《Java Design Patterns》第十一章 外观模式</a><time class="post-meta__date"><i class="fa fa-calendar" aria-hidden="true"></i> 2019-07-11</time><span class="article-meta"><span class="article-meta__separator">|</span><i class="fa fa-inbox article-meta__icon" aria-hidden="true"></i><a class="article-meta__categories" href="/categories/设计模式/">设计模式</a></span><span class="article-meta tags"><span class="article-meta__separator">|</span><i class="fa fa-tag article-meta__icon" aria-hidden="true"></i><a class="article-meta__tags" href="/tags/读书笔记/">读书笔记</a></span><div class="content"><h1 id="第十一章-外观模式"><a href="#第十一章-外观模式" class="headerlink" title="第十一章 外观模式"></a>第十一章 外观模式</h1><h2 id="一、外观模式"><a href="#一、外观模式" class="headerlink" title="一、外观模式"></a>一、外观模式</h2><p>在日常开发中，注册一个用户需要进行如下操作：验证手机验证码、生成用户类、存储至数据库、初始化用户积分等等操作。但是 客户端只需要调用一个 UserService.register() 即可，具体的其他对象的操作都交给 UserService 的实现来完成。</p>
-<p>还有如 MVC 模式中，Controller 层中通过调用 service 来解耦 Controller 层与 Dao 层，隔离各个层次，实现层次化结构。</p>
-<p>于 controller 而言，service 就是外观类，由service 来处理多个dao的交互。</p>
-<h3 id="1-1-定义"><a href="#1-1-定义" class="headerlink" title="1.1 定义"></a>1.1 定义</h3><p>外观模式，又称为门面模式，是一种使用频率非常高的结构型设计模式，通过引入一个外观对象来简化客户端与子系统之间的交互，为复杂的子系统调用提供一个统一的入口，降低子系统与客户端的耦合度，且客户端调用非常方便。</p>
-<p>外观模式是迪米特法则的一种具体实现，通过引入一个新的外观角色可以降低原油系统的复杂度，同时降低客户类与子系统的耦合。</p>
-<h3 id="1-2-外观模式"><a href="#1-2-外观模式" class="headerlink" title="1.2 外观模式"></a>1.2 外观模式</h3><p><img src="https://i.loli.net/2019/07/11/5d270855d1d7975835.png" alt="外观模式示意图"></p>
-<p>在日常生活中，自己泡茶和去茶馆喝茶的区别类似于上图显示的这样。自己泡需要与 热水、差距、茶叶 进行交互（系统耦合度十分的高），而去茶馆喝茶只需要与服务员（Facade）进行交互即可。</p>
-<h3 id="1-3-外观模式中的几个角色："><a href="#1-3-外观模式中的几个角色：" class="headerlink" title="1.3 外观模式中的几个角色："></a>1.3 外观模式中的几个角色：</h3><ol>
-<li>Facade - 外观角色<ol>
-<li>由客户端调用其中的方法，来访问相关子系统的功能</li>
-<li>由外观角色将客户端的请求委派到具体子系统中</li>
-</ol>
-</li>
-<li>SubSystem - 子系统角色<ol>
-<li>系统中可以存在一个或多个子系统角色</li>
-<li>每个可以被客户端调用，也可以被外观角色调用，用于处理请求</li>
-<li>子系统并不知道外观的存在，与它而言，外观角色仅仅是另一个客户端</li>
-</ol>
-</li>
-</ol>
-<h2 id="二、完整实现"><a href="#二、完整实现" class="headerlink" title="二、完整实现"></a>二、完整实现</h2><pre><code class="java">/**
- * 外观模式
- */
-class SubSystemA {
-    public void sayHello() {
-        System.out.println(&quot;大家好，我是系统A&quot;);
-    }
-}
-
-class SubSystemB {
-    public void byebye() {
-        System.out.println(&quot;再见，我是系统B&quot;);
-    }
-}
-
-class SubSystemC {
-    public void o() {
-        System.out.println(&quot;i don&#39;t wanna see you anymore.&quot;);
-    }
-}
-
-class Facade {
-    private SubSystemA a = new SubSystemA();
-    private SubSystemB b = new SubSystemB();
-    private SubSystemC c = new SubSystemC();
-
-    public void bb(){
-        a.sayHello();
-        c.o();
-        b.byebye();
-    }
-}
-
-public class FacadePattern {
-    public static void main(String[] args) {
-        // 通过外观类 Facade 减少了客户端与各个子系统的直接交互，降低耦合度
-        final Facade facade = new Facade();
-        facade.bb();
-    }
-}</code></pre>
-<h2 id="三、抽象外观类"><a href="#三、抽象外观类" class="headerlink" title="三、抽象外观类"></a>三、抽象外观类</h2><p>在标准外观模式中，如果需要增加、删除或更换与外观类交互的子系统类，必须修改外观类或客户端的代码。这将违背开闭原则。</p>
-<p>可以引入抽象外观类来对系统进行改进，客户端针对抽象外观类进行编程。</p>
-<h2 id="四、总结"><a href="#四、总结" class="headerlink" title="四、总结"></a>四、总结</h2><h3 id="优点"><a href="#优点" class="headerlink" title="优点"></a>优点</h3><ol>
-<li>对客户端屏蔽子系统组件，减少客户端所需处理的对象数目，使子系统的使用更加容易</li>
-<li>客户端与子系统间关联的对象会减少</li>
-<li>实现了子系统和客户端之间的松耦合，子系统的变化只需要调整外观类即可</li>
-<li>子系统的修改不会影响其他子系统，且子系统内部修改不会影响到外观类</li>
-</ol>
-<h3 id="缺点"><a href="#缺点" class="headerlink" title="缺点"></a>缺点</h3><ol>
-<li>由外观类来调用子系统类，减少了客户端直接调用时的灵活性和可变性</li>
-<li>如果设计不当，增加子系统时可能会修改外观类，违背了开闭原则</li>
-</ol>
-<h3 id="适用场景"><a href="#适用场景" class="headerlink" title="适用场景"></a>适用场景</h3><ol>
-<li>当需要为访问一系列复杂的子系统对象提供简单入口时，可以使用外观模式</li>
-<li>外观类可以将子系统与客户端解耦，从而提高子系统的独立性和可移植性</li>
-<li>在层次化结构中，可以使用外观模式定义系统中的每一层入口。层与层之间不直接产生联系，而通过外观类建立联系，降低层之间的耦合度</li>
-</ol>
-</div><hr></div><div class="recent-post-item article-container"><a class="article-title" href="/2019/07/11/读书笔记/《JavaDesignPatterns》/12.装饰模式/">《Java Design Patterns》第十章 装饰模式 - 扩展系统功能</a><time class="post-meta__date"><i class="fa fa-calendar" aria-hidden="true"></i> 2019-07-11</time><span class="article-meta"><span class="article-meta__separator">|</span><i class="fa fa-inbox article-meta__icon" aria-hidden="true"></i><a class="article-meta__categories" href="/categories/设计模式/">设计模式</a></span><span class="article-meta tags"><span class="article-meta__separator">|</span><i class="fa fa-tag article-meta__icon" aria-hidden="true"></i><a class="article-meta__tags" href="/tags/读书笔记/">读书笔记</a></span><div class="content"><h1 id="第十章-装饰模式-扩展系统功能"><a href="#第十章-装饰模式-扩展系统功能" class="headerlink" title="第十章 装饰模式 - 扩展系统功能"></a>第十章 装饰模式 - 扩展系统功能</h1><p>如果你买了一个毛坯房，那么剩下的就是装修。装修并没有改变原有房屋用于居住的本质，但是增加了实用性、美观性等特征。</p>
+} </script></head><body><i class="fa fa-arrow-right" id="toggle-sidebar" aria-hidden="true"></i><div id="sidebar" data-display="false"><div class="author-info"><div class="author-info__avatar text-center"><img src="/img/avatar.png"></div><div class="author-info__name text-center">koral</div><div class="author-info__description text-center">描述</div><hr><div class="author-info-articles"><a class="author-info-articles__archives article-meta" href="/archives"><span class="pull-left">文章</span><span class="pull-right">239</span></a><a class="author-info-articles__tags article-meta" href="/tags"><span class="pull-left">标签</span><span class="pull-right">22</span></a><a class="author-info-articles__categories article-meta" href="/categories"><span class="pull-left">分类</span><span class="pull-right">21</span></a></div></div></div><nav class="no-bg" id="nav"><div id="page-header"><span class="pull-left"> <a id="site-name" href="/">凯</a></span><i class="fa fa-bars toggle-menu pull-right" aria-hidden="true"></i><span class="pull-right menus">   <a class="site-page" href="/">首页</a><a class="site-page" href="/archives">归档</a><a class="site-page" href="/tags">标签</a><a class="site-page" href="/categories">分类</a><a class="site-page" href="/about">关于我</a></span><span class="pull-right"></span></div><div id="site-info"><div id="site-title">凯</div><div id="site-sub-title">凯</div></div></nav><div id="content-outer"><div class="layout" id="content-inner"><div class="recent-post-item article-container"><a class="article-title" href="/2019/07/11/读书笔记/《JavaDesignPatterns》/12.装饰模式/">《Java Design Patterns》第十章 装饰模式 - 扩展系统功能</a><time class="post-meta__date"><i class="fa fa-calendar" aria-hidden="true"></i> 2019-07-11</time><span class="article-meta"><span class="article-meta__separator">|</span><i class="fa fa-inbox article-meta__icon" aria-hidden="true"></i><a class="article-meta__categories" href="/categories/设计模式/">设计模式</a></span><span class="article-meta tags"><span class="article-meta__separator">|</span><i class="fa fa-tag article-meta__icon" aria-hidden="true"></i><a class="article-meta__tags" href="/tags/读书笔记/">读书笔记</a></span><div class="content"><h1 id="第十章-装饰模式-扩展系统功能"><a href="#第十章-装饰模式-扩展系统功能" class="headerlink" title="第十章 装饰模式 - 扩展系统功能"></a>第十章 装饰模式 - 扩展系统功能</h1><p>如果你买了一个毛坯房，那么剩下的就是装修。装修并没有改变原有房屋用于居住的本质，但是增加了实用性、美观性等特征。</p>
 <p>在软件设计中，装饰模式就是一种类似装修的技术，能对已有对象的功能进行扩展，以获得更符合用户需求的对象。</p>
 <h2 id="一、设计一款图形界面库"><a href="#一、设计一款图形界面库" class="headerlink" title="一、设计一款图形界面库"></a>一、设计一款图形界面库</h2><p>设计一款图形界面构件库，该库提供了大量基础构件，如窗体、文本框、列表框等。由于在使用时，需要定制一些特效，如带滚动条的窗体、带黑色边框的文本框、即带滚动条又带黑色边框的列表框等。即对原有的基础构件进行扩展，以增强其功能。</p>
 <h3 id="1-1-传统继承方式实现"><a href="#1-1-传统继承方式实现" class="headerlink" title="1.1 传统继承方式实现"></a>1.1 传统继承方式实现</h3><p><img src="https://i.loli.net/2019/07/11/5d269d7e4fdc421682.png" alt="传统继承的方式实现"></p>
@@ -1046,7 +721,186 @@ public class BridgePattern {
         db.transition();
     }
 }</code></pre>
-</div><hr></div><nav id="pagination"><div class="pagination"><a class="extend prev" rel="prev" href="/page/22/"><i class="fa fa-chevron-left"></i></a><a class="page-number" href="/">1</a><span class="space">&hellip;</span><a class="page-number" href="/page/22/">22</a><span class="page-number current">23</span><a class="page-number" href="/page/24/">24</a><span class="space">&hellip;</span><a class="page-number" href="/page/49/">49</a><a class="extend next" rel="next" href="/page/24/"><i class="fa fa-chevron-right"></i></a></div></nav></div></div><footer><div class="layout" id="footer"><div class="copyright">&copy;2013 - 2020 By koral</div><div class="framework-info"><span>驱动 - </span><a href="http://hexo.io"><span>Hexo</span></a><span class="footer-separator">|</span><span>主题 - </span><a href="https://github.com/Molunerfinn/hexo-theme-melody"><span>Melody</span></a></div><div class="busuanzi"><script async src="//busuanzi.ibruce.info/busuanzi/2.3/busuanzi.pure.mini.js"></script><span id="busuanzi_container_site_uv"><i class="fa fa-user"></i><span id="busuanzi_value_site_uv"></span><span></span></span><span class="footer-separator">|</span><span id="busuanzi_container_site_pv"><i class="fa fa-eye"></i><span id="busuanzi_value_site_pv"></span><span></span></span></div></div></footer><i class="fa fa-arrow-up" id="go-up" aria-hidden="true"></i><script src="https://cdn.jsdelivr.net/npm/animejs@latest/anime.min.js"></script><script src="https://cdn.jsdelivr.net/npm/jquery@latest/dist/jquery.min.js"></script><script src="https://cdn.jsdelivr.net/npm/@fancyapps/fancybox@latest/dist/jquery.fancybox.min.js"></script><script src="https://cdn.jsdelivr.net/npm/velocity-animate@latest/velocity.min.js"></script><script src="https://cdn.jsdelivr.net/npm/velocity-ui-pack@latest/velocity.ui.min.js"></script><script src="/js/utils.js?version=1.7.0"></script><script src="/js/fancybox.js?version=1.7.0"></script><script src="/js/sidebar.js?version=1.7.0"></script><script src="/js/copy.js?version=1.7.0"></script><script src="/js/fireworks.js?version=1.7.0"></script><script src="/js/transition.js?version=1.7.0"></script><script src="/js/scroll.js?version=1.7.0"></script><script src="/js/head.js?version=1.7.0"></script><script>if(/Android|webOS|iPhone|iPod|iPad|BlackBerry/i.test(navigator.userAgent)) {
+</div><hr></div><div class="recent-post-item article-container"><a class="article-title" href="/2019/07/06/读书笔记/《JavaDesignPatterns》/9.适配器模式/">《Java Design Patterns》第七章 适配器模式 - 不兼容结构的协调</a><time class="post-meta__date"><i class="fa fa-calendar" aria-hidden="true"></i> 2019-07-06</time><span class="article-meta"><span class="article-meta__separator">|</span><i class="fa fa-inbox article-meta__icon" aria-hidden="true"></i><a class="article-meta__categories" href="/categories/设计模式/">设计模式</a></span><span class="article-meta tags"><span class="article-meta__separator">|</span><i class="fa fa-tag article-meta__icon" aria-hidden="true"></i><a class="article-meta__tags" href="/tags/读书笔记/">读书笔记</a></span><div class="content"><h1 id="第七章-适配器模式-不兼容结构的协调"><a href="#第七章-适配器模式-不兼容结构的协调" class="headerlink" title="第七章 适配器模式 - 不兼容结构的协调"></a>第七章 适配器模式 - 不兼容结构的协调</h1><h2 id="一、概念"><a href="#一、概念" class="headerlink" title="一、概念"></a>一、概念</h2><p>如笔记本的电源接口只支持20V电压，而家庭用电的电压为220V，肯定无法直接通过一根电线直接为笔记本提供电源。此时，就需要一个变压器电源，来将220V电压转换为20V电压。这个变压器就是适配器模式的一种。</p>
+<p>适配器模式：将一个类的接口与另一个类的接口匹配利用，而无须修改原来的适配者，解耦合抽象目标类接口。</p>
+<p>适配器模式可以是类结构型模式，也可以是对象结构型模式。</p>
+<h2 id="1-2-适配器模式中的几个角色"><a href="#1-2-适配器模式中的几个角色" class="headerlink" title="1.2 适配器模式中的几个角色"></a>1.2 适配器模式中的几个角色</h2><ol>
+<li>Target - 目标抽象类<ol>
+<li>目标抽象类定义客户所需接口</li>
+<li>抽象类、接口或具体类</li>
+<li>类似上面的笔记本</li>
+</ol>
+</li>
+<li>Adapter - 适配器类<ol>
+<li>适配器可以调用另一个接口，作为一个转换器，对 Adaptee 和 Target 进行适配</li>
+</ol>
+</li>
+<li>Adaptee - 适配者类<ol>
+<li>被适配的角色（如220V的家庭电源，我们需要将其转换为20V电压输出）</li>
+<li>它定义了一个已经存在的接口，这个接口需要适配</li>
+<li>适配者类一般是个具体类，包含了客户希望使用的业务方法</li>
+</ol>
+</li>
+</ol>
+<h3 id="1-3-对象适配器-实例"><a href="#1-3-对象适配器-实例" class="headerlink" title="1.3 对象适配器 - 实例"></a>1.3 对象适配器 - 实例</h3><pre><code class="java">// 抽象成绩操作类 - Target目标接口
+interface ScoreOperation {
+    public int[] sort(int array[]); // 成绩排序
+    public int search(int array[],int key); // 成绩查找
+}
+
+// 快速排序类 - Adaptee 适配者类
+class QuickSort{
+    public int[] quickSort(int array[]){
+        // 自己实现
+    }
+}
+
+// 二分查找类 - Adaptee 适配者类
+class BinarySearch{
+    public int binarySearch(int array[],intkey){
+        // 自己实现
+    }
+}
+
+// 操作适配器 - Adapter 适配器
+class OperationAdapter implements ScoreOperation{
+    private QuickSort sort = new QuickSort;
+    private BinarySearch search = new BinarySearch();
+
+    // 调用适配者类QuickSort的排序方法
+    public int[] sort(int array[]){
+        return sort.quickSort(array);
+    }
+
+    // 调用适配者类BinarySearch的查找方法
+    public int search(int array[],int key){
+        return search.binarySearch(array,key);
+    }
+}</code></pre>
+<h3 id="1-4-类适配器"><a href="#1-4-类适配器" class="headerlink" title="1.4 类适配器"></a>1.4 类适配器</h3><p>类适配器与对象适配器的区别在于：</p>
+<p>对象适配器与适配者之间的关系是<code>关联关系</code>，而类适配器中的关系则是<code>继承关系</code>。</p>
+<p>如下：</p>
+<pre><code class="java">class Adapter extends Adaptee implements Target{
+    public void request(){
+        specificRequest();
+    }
+}</code></pre>
+<blockquote>
+<p>由于Java、C#等语言不支持多重继承，因此类适配器在使用时受到诸多限制。如Target必须是接口，Adapter不能是Final类等等。</p>
+</blockquote>
+<h3 id="1-5-双向适配器"><a href="#1-5-双向适配器" class="headerlink" title="1.5 双向适配器"></a>1.5 双向适配器</h3><p>在对象适配器的使用过程中，如果在适配器中同时包含对目标类和适配者类的引用，适配者和目标类可以通过它调用彼此的方法，那么该适配器就是一个双向适配器。如下：</p>
+<pre><code class="java">class Adapter implements Adaptee,Target{
+    private Target target;
+    private Adaptee adaptee;
+
+    public Adapter(Target target){
+        this.target = target;
+    }
+
+    public Adapter(Adaptee adpatee){
+        this.adaptee = adaptee;
+    }
+
+    public void request(){
+        adaptee.specificRequest();
+    }
+
+    public void specificRequest(){
+        target.request();
+    }
+}</code></pre>
+<h3 id="1-6-缺省适配器"><a href="#1-6-缺省适配器" class="headerlink" title="1.6 缺省适配器"></a>1.6 缺省适配器</h3><p>缺省适配器模式(Default Adapter Pattern)：当不需要实现一个接口所提供的所有方法时，可先设计一个抽象类实现该接口，并为接口中每个方法提供一个默认实现（空方法），那么该抽象类的子类可以选择性地覆盖父类的某些方法来实现需求，它适用于不想使用一个接口中的所有方法的情况，又称为单接口适配器模式。</p>
+<h2 id="二、总结"><a href="#二、总结" class="headerlink" title="二、总结"></a>二、总结</h2><h3 id="优点"><a href="#优点" class="headerlink" title="优点"></a>优点</h3><ol>
+<li>目标类与适配者类解耦，通过引入一个适配器类来重用现有的适配者类</li>
+<li>增加类的透明性和复用性，具体业务过程封装在适配者类中，对客户端透明，提供了适配者的复用性，同一个适配者类可以在多个不同系统中复用</li>
+<li>灵活性和扩展性好，可以通过配置文件的方式更换适配器，符合“开闭原则”</li>
+</ol>
+<h3 id="缺点"><a href="#缺点" class="headerlink" title="缺点"></a>缺点</h3><ol>
+<li>Java、C#不支持多重继承，一次只能适配一个适配者类</li>
+<li>适配者类不能为最终类</li>
+<li>Java、C#中，类适配器模式的目标抽象类必须是接口</li>
+</ol>
+<h3 id="适用场景"><a href="#适用场景" class="headerlink" title="适用场景"></a>适用场景</h3><ol>
+<li>系统需要使用一些现有的类，但该类的接口不符合系统需要</li>
+<li>创建一个可重复使用的类，如上面的快速排序，可以做成一个适配者，为其它适配器类所调用</li>
+</ol>
+<h2 id="三、练习"><a href="#三、练习" class="headerlink" title="三、练习"></a>三、练习</h2><pre><code class="java">// SD卡接口及其具体实现
+public interface SDCard {
+    String readSD(); // 读SD卡
+    int writeSD(String message); // 写SD卡
+}
+class SDCardImpl implements SDCard {
+    public String readSD() {
+        return &quot;读取SD卡&quot;;
+    }
+    public int writeSD(String message) {
+        // 假装写入数据至SD卡中了
+        return 0;
+    }
+}
+
+// 电脑类，具有读取SD卡的功能
+class Computer {
+    String readSD(SDCard sdCard) {
+        return sdCard.readSD();
+    }
+}
+
+// ----- 新版的TF卡上市，系统需要在不修改原有SD卡接口的情况下，支持新版的TF卡  -----
+
+// TF卡接口及其实现
+interface TFCard {
+    String readTF(); // 读TF卡
+    int writeTF(String message); // 写TF卡
+}
+class TFCardImpl implements TFCard {
+    public String readTF() {
+        return &quot;读取TF卡&quot;;
+    }
+    public int writeTF(String message) {
+        return 0;
+    }
+}
+
+// TF卡的适配器，继承与目标接口，但是将SD卡接口适配为TF卡的接口
+class TFCardAdapter implements SDCard {
+    private TFCard tfCard;
+    public TFCardAdapter(TFCard tfCard) {
+        this.tfCard = tfCard;
+    }
+    @Override
+    public String readSD() {
+        return tfCard.readTF();
+    }
+    @Override
+    public int writeSD(String message) {
+        return tfCard.writeTF(message);
+    }
+}
+
+// 测试客户端
+class Client {
+    public static void main(String[] args) {
+        SDCard sdCard = new SDCardImpl();
+        SDCard tfCard = new TFCardAdapter(new TFCardImpl()); // 通过适配器，将TFCard适配为SDCard
+
+        Computer computer = new Computer();
+        String s = computer.readSD(sdCard);
+        String s1 = computer.readSD(tfCard);
+        System.out.println(s);
+        System.out.println(s1);
+    }
+}</code></pre>
+<blockquote>
+<blockquote>
+<p>适配器类的名称尽量做到见名知意，因为客户端表面上调用的是SDCard，但是内部却被适配成了TFCard，如果系统中存在大量这种代码，会使系统十分的混乱。</p>
+</blockquote>
+</blockquote>
+<p>如果适配器大量存在的话，可以考虑重构代码，而不是继续适配下去。</p>
+</div><hr></div><div class="recent-post-item article-container"><a class="article-title" href="/2019/07/05/读书笔记/《JavaDesignPatterns》/8.建造者模式/">《Java Design Patterns》第六章 建造者模式 - 复杂对象的组装与创建</a><time class="post-meta__date"><i class="fa fa-calendar" aria-hidden="true"></i> 2019-07-05</time><span class="article-meta"><span class="article-meta__separator">|</span><i class="fa fa-inbox article-meta__icon" aria-hidden="true"></i><a class="article-meta__categories" href="/categories/设计模式/">设计模式</a></span><span class="article-meta tags"><span class="article-meta__separator">|</span><i class="fa fa-tag article-meta__icon" aria-hidden="true"></i><a class="article-meta__tags" href="/tags/读书笔记/">读书笔记</a></span><div class="content"><h1 id="第六章-建造者模式-复杂对象的组装与创建"><a href="#第六章-建造者模式-复杂对象的组装与创建" class="headerlink" title="第六章 建造者模式 - 复杂对象的组装与创建"></a>第六章 建造者模式 - 复杂对象的组装与创建</h1><h2 id="一、设计一个游戏角色"><a href="#一、设计一个游戏角色" class="headerlink" title="一、设计一个游戏角色"></a>一、设计一个游戏角色</h2><p>作为 RPG 游戏的一个重要组成部分，游戏角色拥有其特定的性别、脸型、服装、发型等外部特性。</p>
+<p>无论何种造型的游戏角色，它们的创建步骤都大同小异，都需要逐步创建其组成部分，再将各组成部分装配成一个完整的游戏角色。</p>
+<p>而建造者模式就是为了解决，各个组件组合为复杂对象的问题。</p>
+<p><img src="https://i.loli.net/2019/07/09/5d23ff6fa777253811.png" alt="建造者模式"></p></div><a class="more" href="/2019/07/05/读书笔记/《JavaDesignPatterns》/8.建造者模式/#more">阅读更多</a><hr></div><nav id="pagination"><div class="pagination"><a class="extend prev" rel="prev" href="/page/22/"><i class="fa fa-chevron-left"></i></a><a class="page-number" href="/">1</a><span class="space">&hellip;</span><a class="page-number" href="/page/22/">22</a><span class="page-number current">23</span><a class="page-number" href="/page/24/">24</a><span class="space">&hellip;</span><a class="page-number" href="/page/48/">48</a><a class="extend next" rel="next" href="/page/24/"><i class="fa fa-chevron-right"></i></a></div></nav></div></div><footer><div class="layout" id="footer"><div class="copyright">&copy;2013 - 2020 By koral</div><div class="framework-info"><span>驱动 - </span><a href="http://hexo.io"><span>Hexo</span></a><span class="footer-separator">|</span><span>主题 - </span><a href="https://github.com/Molunerfinn/hexo-theme-melody"><span>Melody</span></a></div><div class="busuanzi"><script async src="//busuanzi.ibruce.info/busuanzi/2.3/busuanzi.pure.mini.js"></script><span id="busuanzi_container_site_uv"><i class="fa fa-user"></i><span id="busuanzi_value_site_uv"></span><span></span></span><span class="footer-separator">|</span><span id="busuanzi_container_site_pv"><i class="fa fa-eye"></i><span id="busuanzi_value_site_pv"></span><span></span></span></div></div></footer><i class="fa fa-arrow-up" id="go-up" aria-hidden="true"></i><script src="https://cdn.jsdelivr.net/npm/animejs@latest/anime.min.js"></script><script src="https://cdn.jsdelivr.net/npm/jquery@latest/dist/jquery.min.js"></script><script src="https://cdn.jsdelivr.net/npm/@fancyapps/fancybox@latest/dist/jquery.fancybox.min.js"></script><script src="https://cdn.jsdelivr.net/npm/velocity-animate@latest/velocity.min.js"></script><script src="https://cdn.jsdelivr.net/npm/velocity-ui-pack@latest/velocity.ui.min.js"></script><script src="/js/utils.js?version=1.7.0"></script><script src="/js/fancybox.js?version=1.7.0"></script><script src="/js/sidebar.js?version=1.7.0"></script><script src="/js/copy.js?version=1.7.0"></script><script src="/js/fireworks.js?version=1.7.0"></script><script src="/js/transition.js?version=1.7.0"></script><script src="/js/scroll.js?version=1.7.0"></script><script src="/js/head.js?version=1.7.0"></script><script>if(/Android|webOS|iPhone|iPod|iPad|BlackBerry/i.test(navigator.userAgent)) {
   $('#nav').addClass('is-mobile')
   $('footer').addClass('is-mobile')
   $('#top-container').addClass('is-mobile')

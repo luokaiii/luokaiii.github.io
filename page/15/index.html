@@ -7,107 +7,7 @@
     error: '复制错误',
     noSupport: '浏览器不支持'
   }
-} </script></head><body><i class="fa fa-arrow-right" id="toggle-sidebar" aria-hidden="true"></i><div id="sidebar" data-display="false"><div class="author-info"><div class="author-info__avatar text-center"><img src="/img/avatar.png"></div><div class="author-info__name text-center">koral</div><div class="author-info__description text-center">描述</div><hr><div class="author-info-articles"><a class="author-info-articles__archives article-meta" href="/archives"><span class="pull-left">文章</span><span class="pull-right">241</span></a><a class="author-info-articles__tags article-meta" href="/tags"><span class="pull-left">标签</span><span class="pull-right">22</span></a><a class="author-info-articles__categories article-meta" href="/categories"><span class="pull-left">分类</span><span class="pull-right">19</span></a></div></div></div><nav class="no-bg" id="nav"><div id="page-header"><span class="pull-left"> <a id="site-name" href="/">凯</a></span><i class="fa fa-bars toggle-menu pull-right" aria-hidden="true"></i><span class="pull-right menus">   <a class="site-page" href="/">Home</a><a class="site-page" href="/archives">Archives</a><a class="site-page" href="/tags">Tags</a><a class="site-page" href="/categories">Categories</a></span><span class="pull-right"></span></div><div id="site-info"><div id="site-title">凯</div><div id="site-sub-title">凯</div></div></nav><div id="content-outer"><div class="layout" id="content-inner"><div class="recent-post-item article-container"><a class="article-title" href="/2019/09/05/读书笔记/《Mybatis》/0_目录/">《MyBatis》读书笔记 - 目录</a><span class="article-meta"><i class="fa fa-thumb-tack article-meta__icon sticky"></i><span class="sticky">置顶</span><span class="article-meta__separator" style="margin-right: 0.3rem">|</span></span><time class="post-meta__date"><i class="fa fa-calendar" aria-hidden="true"></i> 2019-09-05</time><span class="article-meta tags"><span class="article-meta__separator">|</span><i class="fa fa-tag article-meta__icon" aria-hidden="true"></i><a class="article-meta__tags" href="/tags/读书笔记/">读书笔记</a><span class="article-meta__link">-</span><i class="fa fa-tag article-meta__icon" aria-hidden="true"></i><a class="article-meta__tags" href="/tags/MyBatis/">MyBatis</a></span><div class="content"><p><img src="https://i.loli.net/2019/09/05/BjHJCbY6luQPnhK.png" alt="mybatis-superbird-small.png"></p></div><a class="more" href="/2019/09/05/读书笔记/《Mybatis》/0_目录/#more">阅读更多</a><hr></div><div class="recent-post-item article-container"><a class="article-title" href="/2019/09/05/读书笔记/《Mybatis》/4_动态SQL/">《MyBatis》读书笔记 - MyBatis 动态SQL</a><time class="post-meta__date"><i class="fa fa-calendar" aria-hidden="true"></i> 2019-09-05</time><span class="article-meta tags"><span class="article-meta__separator">|</span><i class="fa fa-tag article-meta__icon" aria-hidden="true"></i><a class="article-meta__tags" href="/tags/读书笔记/">读书笔记</a><span class="article-meta__link">-</span><i class="fa fa-tag article-meta__icon" aria-hidden="true"></i><a class="article-meta__tags" href="/tags/MyBatis/">MyBatis</a></span><div class="content"><h1 id="四、MyBatis-动态SQL"><a href="#四、MyBatis-动态SQL" class="headerlink" title="四、MyBatis 动态SQL"></a>四、MyBatis 动态SQL</h1><p>MyBatis 提供了可以被用在任意 SQL 映射语句中的动态SQL。动态 SQL 元素和 JSTL 或基于 XML 的文本处理器相似。</p>
-<p>MyBatis 采用基于 OGNL 的表达式来淘汰其他元素。</p>
-<ul>
-<li>if</li>
-<li>choose(when,otherwise)</li>
-<li>trim(where,set)</li>
-<li>foreach</li>
-</ul>
-<h2 id="if"><a href="#if" class="headerlink" title="if"></a>if</h2><p>动态 SQL 通常要做的事情是根据条件包含 where 子句的一部分，如：</p>
-<pre><code class="xml">&lt;select id=&quot;findActive&quot; resultType=&quot;Blog&quot;&gt;
-    select * from blog
-    where  state=&#39;active&#39;
-    &lt;if test=&quot;title != null&quot;&gt;
-        and title like #{title}
-    &lt;/if&gt;
-&lt;/select&gt;</code></pre>
-<p>需要多个条件，可以使用 and 连接</p>
-<h2 id="choose、when、otherwise"><a href="#choose、when、otherwise" class="headerlink" title="choose、when、otherwise"></a>choose、when、otherwise</h2><pre><code class="xml">&lt;select id=&quot;findActive&quot; resultType=&quot;Blog&quot;&gt;
-    select * from blog
-    where state=&quot;active&quot;
-    &lt;choose&gt;
-        &lt;when test=&quot;title != null&quot;&gt;
-            and title like #{title}
-        &lt;/when&gt;
-        &lt;when test=&quot;author != null and author.name != null&quot;&gt;
-            and author_name like #{author.name}
-        &lt;/when&gt;
-        &lt;otherwise&gt;
-            and featured = 1
-        &lt;/otherwise&gt;
-    &lt;/choose&gt;
-&lt;/select&gt;</code></pre>
-<h2 id="trim、where、set"><a href="#trim、where、set" class="headerlink" title="trim、where、set"></a>trim、where、set</h2><p>如果上面的 where 语句中，去掉了 “state=active”，当所有条件都不匹配时，sql 就不正常了。此时，可以使用 where 标签来解决</p>
-<pre><code class="xml">&lt;select id=&quot;findActive&quot; resultType=&quot;Blog&quot;&gt;
-     select * from blog
-    &lt;where&gt;
-        &lt;if test=&quot;state != null&quot;&gt;
-            state = #{state}
-        &lt;/if&gt;
-        &lt;if test=&quot;title != null&quot;&gt;
-            and title like #{title}
-        &lt;/if&gt;
-    &lt;/where&gt;
-&lt;/select&gt;</code></pre>
-<p>where 元素会在至少有一个子元素的条件返回 SQL 子句的情况下才去插入 where 子句。</p>
-<p>若语句开头为 AND 或 OR ，where 元素也会将它们去除。</p>
-<p>和 where 元素等价的自定义 trim 元素：</p>
-<pre><code class="xml">&lt;trim prefix=&quot;where&quot; prefixOverrides=&quot;AND | OR&quot;&gt;
-     ...
-&lt;/trim&gt;</code></pre>
-<p>set 元素可以用于动态包含需要更新的列，而舍去其他的，如：</p>
-<pre><code class="xml">&lt;update id=&quot;updateActive&quot;&gt;
-    update Author
-    &lt;set&gt;
-        &lt;if test=&quot;username != null&quot;&gt;username=#{username},&lt;/if&gt;
-        &lt;if test=&quot;password != null&quot;&gt;password=#{password},&lt;/if&gt;
-        &lt;if test=&quot;email != null&quot;&gt;email=#{email}&lt;/if&gt;
-    &lt;/set&gt;
-&lt;/update&gt;</code></pre>
-<h2 id="foreach"><a href="#foreach" class="headerlink" title="foreach"></a>foreach</h2><p>动态 SQL 的另一个常用操作是对一个集合进行遍历，通常是在构建 IN 条件语句的时候，如：</p>
-<pre><code class="xml">&lt;select id=&quot;selectPostIn&quot; resultType=&quot;Post&quot;&gt;
-    select * from post p
-    where id in
-    &lt;foreach item=&quot;item&quot; index=&quot;index&quot; collection=&quot;list&quot;
-             open=&quot;(&quot; separator=&quot;,&quot; close=&quot;)&quot;&gt;
-        #{item}
-    &lt;/foreach&gt;
-&lt;/select&gt;</code></pre>
-<blockquote>
-<p>foreach 可迭代的对象如 List、Set、Map或数组都可以作为参数。</p>
-</blockquote>
-<h2 id="script"><a href="#script" class="headerlink" title="script"></a>script</h2><p>如果要在注解中使用动态SQL，可以使用 script 元素：</p>
-<pre><code class="java">    @Update({&quot;&lt;script&gt;&quot;,
-      &quot;update Author&quot;,
-      &quot;  &lt;set&gt;&quot;,
-      &quot;    &lt;if test=&#39;username != null&#39;&gt;username=#{username},&lt;/if&gt;&quot;,
-      &quot;    &lt;if test=&#39;password != null&#39;&gt;password=#{password},&lt;/if&gt;&quot;,
-      &quot;    &lt;if test=&#39;email != null&#39;&gt;email=#{email},&lt;/if&gt;&quot;,
-      &quot;    &lt;if test=&#39;bio != null&#39;&gt;bio=#{bio}&lt;/if&gt;&quot;,
-      &quot;  &lt;/set&gt;&quot;,
-      &quot;where id=#{id}&quot;,
-      &quot;&lt;/script&gt;&quot;})
-    void updateAuthorValues(Author author);</code></pre>
-<h2 id="bind"><a href="#bind" class="headerlink" title="bind"></a>bind</h2><p>bind 元素可以从 OGNL 表达式中创建一个变量并将其绑定到上下文中：</p>
-<pre><code class="xml">&lt;select id=&quot;selectBlogs&quot; resultType=&quot;Blog&quot;&gt;
-    &lt;bind name=&quot;pattern&quot; value=&quot;&#39;%&#39; + _parameter.getTitle() + &#39;%&#39;&quot;/&gt;
-    select * from blog
-    where title like #{pattern}
-&lt;/select&gt;</code></pre>
-<h2 id="多数据库支持"><a href="#多数据库支持" class="headerlink" title="多数据库支持"></a>多数据库支持</h2><pre><code class="xml">&lt;insert id=&quot;insert&quot;&gt;
-  &lt;selectKey keyProperty=&quot;id&quot; resultType=&quot;int&quot; order=&quot;BEFORE&quot;&gt;
-    &lt;if test=&quot;_databaseId == &#39;oracle&#39;&quot;&gt;
-      select seq_users.nextval from dual
-    &lt;/if&gt;
-    &lt;if test=&quot;_databaseId == &#39;db2&#39;&quot;&gt;
-      select nextval for seq_users from sysibm.sysdummy1&quot;
-    &lt;/if&gt;
-  &lt;/selectKey&gt;
-  insert into users values (#{id}, #{name})
-&lt;/insert&gt;</code></pre>
-</div><hr></div><div class="recent-post-item article-container"><a class="article-title" href="/2019/09/05/读书笔记/《Mybatis》/3_XML映射文件/">《MyBatis》读书笔记 - MyBatis XML 映射文件</a><time class="post-meta__date"><i class="fa fa-calendar" aria-hidden="true"></i> 2019-09-05</time><span class="article-meta tags"><span class="article-meta__separator">|</span><i class="fa fa-tag article-meta__icon" aria-hidden="true"></i><a class="article-meta__tags" href="/tags/读书笔记/">读书笔记</a><span class="article-meta__link">-</span><i class="fa fa-tag article-meta__icon" aria-hidden="true"></i><a class="article-meta__tags" href="/tags/MyBatis/">MyBatis</a></span><div class="content"><h1 id="三、MyBatis-XML-映射文件"><a href="#三、MyBatis-XML-映射文件" class="headerlink" title="三、MyBatis XML 映射文件"></a>三、MyBatis XML 映射文件</h1><p>MyBatis 通过映射 XML 文件的方式，减少了 JDBC 的样板代码，十分的简单。</p>
+} </script></head><body><i class="fa fa-arrow-right" id="toggle-sidebar" aria-hidden="true"></i><div id="sidebar" data-display="false"><div class="author-info"><div class="author-info__avatar text-center"><img src="/img/avatar.png"></div><div class="author-info__name text-center">koral</div><div class="author-info__description text-center">描述</div><hr><div class="author-info-articles"><a class="author-info-articles__archives article-meta" href="/archives"><span class="pull-left">文章</span><span class="pull-right">239</span></a><a class="author-info-articles__tags article-meta" href="/tags"><span class="pull-left">标签</span><span class="pull-right">22</span></a><a class="author-info-articles__categories article-meta" href="/categories"><span class="pull-left">分类</span><span class="pull-right">21</span></a></div></div></div><nav class="no-bg" id="nav"><div id="page-header"><span class="pull-left"> <a id="site-name" href="/">凯</a></span><i class="fa fa-bars toggle-menu pull-right" aria-hidden="true"></i><span class="pull-right menus">   <a class="site-page" href="/">首页</a><a class="site-page" href="/archives">归档</a><a class="site-page" href="/tags">标签</a><a class="site-page" href="/categories">分类</a><a class="site-page" href="/about">关于我</a></span><span class="pull-right"></span></div><div id="site-info"><div id="site-title">凯</div><div id="site-sub-title">凯</div></div></nav><div id="content-outer"><div class="layout" id="content-inner"><div class="recent-post-item article-container"><a class="article-title" href="/2019/09/05/读书笔记/《Mybatis》/3_XML映射文件/">《MyBatis》读书笔记 - MyBatis XML 映射文件</a><time class="post-meta__date"><i class="fa fa-calendar" aria-hidden="true"></i> 2019-09-05</time><span class="article-meta tags"><span class="article-meta__separator">|</span><i class="fa fa-tag article-meta__icon" aria-hidden="true"></i><a class="article-meta__tags" href="/tags/读书笔记/">读书笔记</a><span class="article-meta__link">-</span><i class="fa fa-tag article-meta__icon" aria-hidden="true"></i><a class="article-meta__tags" href="/tags/MyBatis/">MyBatis</a></span><div class="content"><h1 id="三、MyBatis-XML-映射文件"><a href="#三、MyBatis-XML-映射文件" class="headerlink" title="三、MyBatis XML 映射文件"></a>三、MyBatis XML 映射文件</h1><p>MyBatis 通过映射 XML 文件的方式，减少了 JDBC 的样板代码，十分的简单。</p>
 <p>SQL 映射文件只有少数几个顶级约束：</p>
 <ul>
 <li>cache - 对给定命名空间的缓存配置</li>
@@ -1363,7 +1263,110 @@ public class ExampleTypeHandler extends BaseTypeHandler&lt;String&gt; {
 &lt;mappers&gt;
     &lt;package name=&quot;org.mybatis.builder&quot;/&gt;
 &lt;/mappers&gt;</code></pre>
-</div><hr></div><nav id="pagination"><div class="pagination"><a class="extend prev" rel="prev" href="/page/14/"><i class="fa fa-chevron-left"></i></a><a class="page-number" href="/">1</a><span class="space">&hellip;</span><a class="page-number" href="/page/14/">14</a><span class="page-number current">15</span><a class="page-number" href="/page/16/">16</a><span class="space">&hellip;</span><a class="page-number" href="/page/49/">49</a><a class="extend next" rel="next" href="/page/16/"><i class="fa fa-chevron-right"></i></a></div></nav></div></div><footer><div class="layout" id="footer"><div class="copyright">&copy;2013 - 2020 By koral</div><div class="framework-info"><span>驱动 - </span><a href="http://hexo.io"><span>Hexo</span></a><span class="footer-separator">|</span><span>主题 - </span><a href="https://github.com/Molunerfinn/hexo-theme-melody"><span>Melody</span></a></div><div class="busuanzi"><script async src="//busuanzi.ibruce.info/busuanzi/2.3/busuanzi.pure.mini.js"></script><span id="busuanzi_container_site_uv"><i class="fa fa-user"></i><span id="busuanzi_value_site_uv"></span><span></span></span><span class="footer-separator">|</span><span id="busuanzi_container_site_pv"><i class="fa fa-eye"></i><span id="busuanzi_value_site_pv"></span><span></span></span></div></div></footer><i class="fa fa-arrow-up" id="go-up" aria-hidden="true"></i><script src="https://cdn.jsdelivr.net/npm/animejs@latest/anime.min.js"></script><script src="https://cdn.jsdelivr.net/npm/jquery@latest/dist/jquery.min.js"></script><script src="https://cdn.jsdelivr.net/npm/@fancyapps/fancybox@latest/dist/jquery.fancybox.min.js"></script><script src="https://cdn.jsdelivr.net/npm/velocity-animate@latest/velocity.min.js"></script><script src="https://cdn.jsdelivr.net/npm/velocity-ui-pack@latest/velocity.ui.min.js"></script><script src="/js/utils.js?version=1.7.0"></script><script src="/js/fancybox.js?version=1.7.0"></script><script src="/js/sidebar.js?version=1.7.0"></script><script src="/js/copy.js?version=1.7.0"></script><script src="/js/fireworks.js?version=1.7.0"></script><script src="/js/transition.js?version=1.7.0"></script><script src="/js/scroll.js?version=1.7.0"></script><script src="/js/head.js?version=1.7.0"></script><script>if(/Android|webOS|iPhone|iPod|iPad|BlackBerry/i.test(navigator.userAgent)) {
+</div><hr></div><div class="recent-post-item article-container"><a class="article-title" href="/2019/09/05/读书笔记/《Mybatis》/1_入门/">《MyBatis》读书笔记 - 入门</a><time class="post-meta__date"><i class="fa fa-calendar" aria-hidden="true"></i> 2019-09-05</time><span class="article-meta tags"><span class="article-meta__separator">|</span><i class="fa fa-tag article-meta__icon" aria-hidden="true"></i><a class="article-meta__tags" href="/tags/读书笔记/">读书笔记</a><span class="article-meta__link">-</span><i class="fa fa-tag article-meta__icon" aria-hidden="true"></i><a class="article-meta__tags" href="/tags/MyBatis/">MyBatis</a></span><div class="content"><h1 id="一、入门"><a href="#一、入门" class="headerlink" title="一、入门"></a>一、入门</h1><h2 id="1-安装"><a href="#1-安装" class="headerlink" title="1. 安装"></a>1. 安装</h2><p>构建项目，需要引入如下的 dependency 到 pom.xml 中：</p>
+<pre><code class="xml">&lt;dependency&gt;
+  &lt;groupId&gt;or.mybatis&lt;/groupId&gt;
+  &lt;artifactId&gt;mybatis&lt;/artifactId&gt;
+  &lt;version&gt;x.x.x&lt;/version&gt;
+&lt;/dependency&gt;</code></pre>
+<h2 id="2-从XML配置SQLSessionFactory"><a href="#2-从XML配置SQLSessionFactory" class="headerlink" title="2. 从XML配置SQLSessionFactory"></a>2. 从XML配置SQLSessionFactory</h2><p>每个基于 MyBatis 的应用都是以一个 SqlSessionFactory 的实例为核心的。</p>
+<p>以下 XML 配置文件中包含了对 MyBatis 系统的核心设置，如获取数据源(DataSource)和决定事务作用于和控制方式的事务管理器(TransactionManager)：</p>
+<pre><code class="xml">&lt;?xml version=&quot;1.0&quot; encoding=&quot;UTF-8&quot; ?&gt;
+&lt;!DOCTYPE configuration PUBLIC &quot;-//mybatis.org//DTD Config 3.0//EN&quot; &quot;http://mybatis.org/dtd/mybatis-3-config.dtd&quot;&gt;
+&lt;configuration&gt;
+    &lt;environments id=&quot;development&quot;&gt;
+        &lt;transactionManager type=&quot;JDBC&quot; /&gt;
+        &lt;dataSource type=&quot;POOLED&quot;&gt;
+            &lt;property name=&quot;driver&quot; value=&quot;${driver}&quot;/&gt;
+            &lt;property name=&quot;url&quot; value=&quot;${url}&quot;/&gt;
+            &lt;property name=&quot;username&quot; value=&quot;${username}&quot;/&gt;
+            &lt;property name=&quot;password&quot; value=&quot;${password}&quot;/&gt;
+        &lt;/dataSource&gt;
+    &lt;/environments&gt;
+    &lt;mappers&gt;
+        &lt;mapper resource=&quot;org/mybatis/example/BlogMapper.xml&quot;/&gt;
+    &lt;/mappers&gt;
+&lt;/configuration&gt;</code></pre>
+<p>使用类路径下的资源文件进行配置，构建 SqlSessionFactory 实例：</p>
+<pre><code class="java">String resource = &quot;org/mybatis/example/mybatis-config.xml&quot;;
+InputStream inputStream = Resources.getResourceAsStream(resource);
+SqlSessionFactory sqlSessionFactory = new SqlSessionFactoryBuilder().build(inputStream);</code></pre>
+<h2 id="3-从SqlSessionFactory-获取-SqlSession"><a href="#3-从SqlSessionFactory-获取-SqlSession" class="headerlink" title="3. 从SqlSessionFactory 获取 SqlSession"></a>3. 从SqlSessionFactory 获取 SqlSession</h2><p>SqlSession 中完全包含了面向数据库执行 SQL 命令所需的所有方法，例如：</p>
+<pre><code class="java">try(SqlSession session = sqlSessionFactory.openSession()){
+    Blog blog = (Blog)session.selectOne(&quot;org.mybatis.example.BlogMapper.selectBlog&quot;,101);
+}</code></pre>
+<p>或者使用一种更简单的方式：</p>
+<pre><code class="java">try(SqlSession session = sqlSessionFactory.openSession()){
+    BlogMapper mapper = session.getMapper(BlogMapper.class);
+    Blog blog = mapper.selectBlog(101);
+}</code></pre>
+<h3 id="提示：命名空间（Namespaces）"><a href="#提示：命名空间（Namespaces）" class="headerlink" title="提示：命名空间（Namespaces）"></a>提示：命名空间（Namespaces）</h3><p>命名空间的作用有两个，一个是利用更长的完全限定名来将不同的语句隔离开来，同时也实现了接口绑定。</p>
+<p>命名解析：为了减少输入量，MyBatis 对所有的命名配置元素（包括语句，结果映射，缓存等）使用了如下的命名解析规则。</p>
+<ol>
+<li>完全限定名，将被直接用于查找和使用</li>
+<li>短名称，如果全局唯一也可作为单独的应用。如果不唯一，那么使用时就会出现错误，此时就需要使用完全限定名</li>
+</ol>
+<h2 id="4-基于-XML-映射语句的示例"><a href="#4-基于-XML-映射语句的示例" class="headerlink" title="4. 基于 XML 映射语句的示例"></a>4. 基于 XML 映射语句的示例</h2><pre><code class="xml">&lt;?xml version=&quot;1.0&quot; encoding=&quot;UTF-8&quot; ?&gt;
+&lt;!DOCTYPE mapper
+  PUBLIC &quot;-//mybatis.org//DTD Mapper 3.0//EN&quot;
+  &quot;http://mybatis.org/dtd/mybatis-3-mapper.dtd&quot;&gt;
+&lt;mapper namespace=&quot;org.mybatis.example.BlogMapper&quot;&gt;
+    &lt;select id=&quot;selectBlog&quot; resultType=&quot;Blog&quot;&gt;
+        select * from Blog where id = #{id}
+    &lt;/select&gt;
+&lt;/mapper&gt;</code></pre>
+<h2 id="5-基于注解的示例"><a href="#5-基于注解的示例" class="headerlink" title="5. 基于注解的示例"></a>5. 基于注解的示例</h2><pre><code class="java">public interface BlogMapper {
+    @Select(&quot;SELECT * FROM blog WHERE id = #{id}&quot;)
+    Blog selectBlog(int id);
+}</code></pre>
+<h2 id="6-作用域（Scope）和生命周期"><a href="#6-作用域（Scope）和生命周期" class="headerlink" title="6. 作用域（Scope）和生命周期"></a>6. 作用域（Scope）和生命周期</h2><p><code>依赖注入框架</code>可以创建线程安全的、基于事务的 SqlSession 和映射器，并将它们直接注入到你的 bean 中，因此可以直接忽略它们的生命周期。</p>
+<h3 id="SqlSessionFactoryBuilder"><a href="#SqlSessionFactoryBuilder" class="headerlink" title="SqlSessionFactoryBuilder"></a>SqlSessionFactoryBuilder</h3><p>这个类可以被实例化、使用和丢弃，一旦创建了 SqlSessionFactory，就不再需要了。</p>
+<p>因此该实例的最佳作用域为<code>方法作用域</code>，可以重用 SqlSessionFactoryBuilder 来创建多个 SqlSessionFactory，但是使用后最好不要让其一直存在，以保证 XML 资源可以被释放。</p>
+<h3 id="SqlSessionFactory"><a href="#SqlSessionFactory" class="headerlink" title="SqlSessionFactory"></a>SqlSessionFactory</h3><p>一旦创建就应该在应用的运行期间一直存在，尽量不要重复创建该实例。</p>
+<p>因此该实例的最佳作用域为<code>应用作用域</code>。可以使用单例模式或静态单例模式来做到。</p>
+<h3 id="SqlSession"><a href="#SqlSession" class="headerlink" title="SqlSession"></a>SqlSession</h3><p>每个线程都应该由自己的 SqlSession 实例。SqlSession 的实例不是线程安全的，因此不能被共享。</p>
+<p>因此该实例的最佳作用于为<code>请求或方法作用域</code>。绝不能将 SqlSession 的实例引用放在静态域中，甚至一个类的实例变量也不行，也不能将引用放在任何类型的托管作用域中（如Servlet 的HttpSession）。</p>
+<p>如果您使用的是 Web 框架，那么应该考虑将 SqlSession 放在和 Http 请求对象相似的作用域中。即每次 Http 请求，都打开一个 SqlSession，返回响应后就关闭它。</p>
+<h3 id="映射器实例"><a href="#映射器实例" class="headerlink" title="映射器实例"></a>映射器实例</h3><p>映射器是映射Sql语句的接口，该接口的实例是从 SqlSession 中获得的。</p>
+<p>因此该实例的最佳作用于<code>与 SqlSession 的作用域保持一致</code></p>
+</div><hr></div><div class="recent-post-item article-container"><a class="article-title" href="/2019/09/04/分布式/SpringCloud/分布式并发问题/">分布式环境中的并发问题</a><time class="post-meta__date"><i class="fa fa-calendar" aria-hidden="true"></i> 2019-09-04</time><span class="article-meta"><span class="article-meta__separator">|</span><i class="fa fa-inbox article-meta__icon" aria-hidden="true"></i><a class="article-meta__categories" href="/categories/分布式/">分布式</a></span><div class="content"><p>分布式环境中，处理并发问题没发通过操作系统和 JVM 提供的工具来解决，因为 LOCK 命令、总线锁、缓存所、monitor 对象、锁、等并发工具都无法影响到其他服务器的线程。</p>
+<p>那么在分布式环境中，可以使用一下策略和方式处理：</p>
+<ol>
+<li>避免并发<ol>
+<li>通过某些策略和业务来避免并发，如合理分配时间调度，避开共享资源的存取冲突等。</li>
+<li>可以通过hash算法的方式，使一个对象的数据计算和访问都交给同一个线程来完成</li>
+</ol>
+</li>
+<li>时间戳<ol>
+<li>每次系统A发送给系统B的时候都带上一个时间戳，B在拿到通知后，比较时间戳</li>
+<li>这样只需要调用方保证时间戳的时序有效性即可</li>
+</ol>
+</li>
+<li>串行化<ol>
+<li>串行化可能产生并发的问题，通过牺牲性能和扩展性，来满足对数据一致性的要求。</li>
+<li>比如分布式消息系统，没法保证消息的有序性，但是可以通过将分布式消息系统改为单一消息系统，就可以保证消息的有序性了。</li>
+<li>如果接收方无法保证处理的有序性，那么可以使用一个队列将调用信息缓存起来，再串行地处理这些调用</li>
+</ol>
+</li>
+<li>数据库<ol>
+<li>在分布式环境中，数据库是个服务器的共享点，可以通过数据库的高可靠一致性机制来满足需求。</li>
+<li>比如通过唯一性约束，来解决并发过程中重复数据的生产或重复任务的执行</li>
+<li>某些更新操作也尽量使用SQL来完成，在程序中计算后再更新，可能会出现脏复写的问题，但是通过一条SQL来完成计算和更新，就能通过数据库的锁机制来保证更新的一致性</li>
+</ol>
+</li>
+<li>行锁<ol>
+<li>有些事务较为复杂时，无法通过一条SQL解决问题，并且可能存在并发问题，此时可以考虑使用行锁来解决问题</li>
+<li>如 select … for update ，在查询后将该行数据锁定，直到 commit。但是这么做会导致其他涉及该行的所有操作都会被挂起</li>
+<li>通过在表中增加一个标志锁的字段，每次操作之前通过update，来模拟竞争锁的操作，操作完成后再update复位该标志，表示锁归还。（这种操作很类似Redis分布式锁、MongoDB分布式锁，说白了就是自己定义一个模拟竞争锁的场景）</li>
+</ol>
+</li>
+<li>统一触发途径<ol>
+<li>如果一个数据会被多个业务同时涉及到，就会有并发问题产生的隐患。因此可以通过前期架构和业务涉及，尽量统一触发途径，减少并发的可能，也有利于对并发问题的分析和判断。</li>
+</ol>
+</li>
+</ol>
+<p><a href="https://blog.csdn.net/cutesource/article/details/5791350" target="_blank" rel="noopener">文章总结自 : https://blog.csdn.net/cutesource/article/details/5791350</a></p>
+</div><hr></div><nav id="pagination"><div class="pagination"><a class="extend prev" rel="prev" href="/page/14/"><i class="fa fa-chevron-left"></i></a><a class="page-number" href="/">1</a><span class="space">&hellip;</span><a class="page-number" href="/page/14/">14</a><span class="page-number current">15</span><a class="page-number" href="/page/16/">16</a><span class="space">&hellip;</span><a class="page-number" href="/page/48/">48</a><a class="extend next" rel="next" href="/page/16/"><i class="fa fa-chevron-right"></i></a></div></nav></div></div><footer><div class="layout" id="footer"><div class="copyright">&copy;2013 - 2020 By koral</div><div class="framework-info"><span>驱动 - </span><a href="http://hexo.io"><span>Hexo</span></a><span class="footer-separator">|</span><span>主题 - </span><a href="https://github.com/Molunerfinn/hexo-theme-melody"><span>Melody</span></a></div><div class="busuanzi"><script async src="//busuanzi.ibruce.info/busuanzi/2.3/busuanzi.pure.mini.js"></script><span id="busuanzi_container_site_uv"><i class="fa fa-user"></i><span id="busuanzi_value_site_uv"></span><span></span></span><span class="footer-separator">|</span><span id="busuanzi_container_site_pv"><i class="fa fa-eye"></i><span id="busuanzi_value_site_pv"></span><span></span></span></div></div></footer><i class="fa fa-arrow-up" id="go-up" aria-hidden="true"></i><script src="https://cdn.jsdelivr.net/npm/animejs@latest/anime.min.js"></script><script src="https://cdn.jsdelivr.net/npm/jquery@latest/dist/jquery.min.js"></script><script src="https://cdn.jsdelivr.net/npm/@fancyapps/fancybox@latest/dist/jquery.fancybox.min.js"></script><script src="https://cdn.jsdelivr.net/npm/velocity-animate@latest/velocity.min.js"></script><script src="https://cdn.jsdelivr.net/npm/velocity-ui-pack@latest/velocity.ui.min.js"></script><script src="/js/utils.js?version=1.7.0"></script><script src="/js/fancybox.js?version=1.7.0"></script><script src="/js/sidebar.js?version=1.7.0"></script><script src="/js/copy.js?version=1.7.0"></script><script src="/js/fireworks.js?version=1.7.0"></script><script src="/js/transition.js?version=1.7.0"></script><script src="/js/scroll.js?version=1.7.0"></script><script src="/js/head.js?version=1.7.0"></script><script>if(/Android|webOS|iPhone|iPod|iPad|BlackBerry/i.test(navigator.userAgent)) {
   $('#nav').addClass('is-mobile')
   $('footer').addClass('is-mobile')
   $('#top-container').addClass('is-mobile')
