@@ -1,0 +1,67 @@
+<!DOCTYPE html><html lang="zh-Hans"><head><meta name="generator" content="Hexo 3.9.0"><meta charset="UTF-8"><meta http-equiv="X-UA-Compatible" content="IE=edge"><meta name="viewport" content="width=device-width, initial-scale=1, maximum-scale=1"><meta name="description" content="读取 Properties 文件的几种方式"><meta name="keywords" content="java,SpringBoot"><meta name="author" content="koral"><meta name="copyright" content="koral"><title>读取 Properties 文件的几种方式 | 凯</title><link rel="shortcut icon" href="/melody-favicon.ico"><link rel="stylesheet" href="/css/index.css?version=1.7.0"><link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/font-awesome@latest/css/font-awesome.min.css?version=1.7.0"><meta name="format-detection" content="telephone=no"><meta http-equiv="x-dns-prefetch-control" content="on"><link rel="dns-prefetch" href="https://cdn.jsdelivr.net"><meta http-equiv="Cache-Control" content="no-transform"><meta http-equiv="Cache-Control" content="no-siteapp"><script>var GLOBAL_CONFIG = { 
+  root: '/',
+  algolia: undefined,
+  localSearch: undefined,
+  copy: {
+    success: '复制成功',
+    error: '复制错误',
+    noSupport: '浏览器不支持'
+  }
+} </script></head><body><i class="fa fa-arrow-right" id="toggle-sidebar" aria-hidden="true"></i><div id="sidebar" data-display="true"><div class="toggle-sidebar-info text-center"><span data-toggle="切换文章详情">切换站点概览</span><hr></div><div class="sidebar-toc"><div class="sidebar-toc__title">目录</div><div class="sidebar-toc__progress"><span class="progress-notice">你已经读了</span><span class="progress-num">0</span><span class="progress-percentage">%</span><div class="sidebar-toc__progress-bar"></div></div><div class="sidebar-toc__content"><ol class="toc"><li class="toc-item toc-level-1"><a class="toc-link" href="#读取Properties文件的几种方式"><span class="toc-number">1.</span> <span class="toc-text">读取Properties文件的几种方式</span></a><ol class="toc-child"><li class="toc-item toc-level-2"><a class="toc-link" href="#读取-Properties-文件"><span class="toc-number">1.1.</span> <span class="toc-text">读取 Properties 文件</span></a><ol class="toc-child"><li class="toc-item toc-level-3"><a class="toc-link" href="#1-在xml-配置文件中使用”-”"><span class="toc-number">1.1.1.</span> <span class="toc-text">1.在xml 配置文件中使用”${}”</span></a></li><li class="toc-item toc-level-3"><a class="toc-link" href="#2-通过-Value注解注入"><span class="toc-number">1.1.2.</span> <span class="toc-text">2. 通过@Value注解注入</span></a></li><li class="toc-item toc-level-3"><a class="toc-link" href="#3-通过Environment获取"><span class="toc-number">1.1.3.</span> <span class="toc-text">3.通过Environment获取</span></a></li></ol></li><li class="toc-item toc-level-2"><a class="toc-link" href="#Properties的使用"><span class="toc-number">1.2.</span> <span class="toc-text">Properties的使用</span></a><ol class="toc-child"><li class="toc-item toc-level-3"><a class="toc-link" href="#1-通过XML配置"><span class="toc-number">1.2.1.</span> <span class="toc-text">1.通过XML配置</span></a></li><li class="toc-item toc-level-3"><a class="toc-link" href="#2-通过-PropertySource配置"><span class="toc-number">1.2.2.</span> <span class="toc-text">2.通过@PropertySource配置</span></a></li><li class="toc-item toc-level-3"><a class="toc-link" href="#3-PropertyPlaceholderConfigurer-Spring3-1之前"><span class="toc-number">1.2.3.</span> <span class="toc-text">3.PropertyPlaceholderConfigurer(Spring3.1之前)</span></a></li></ol></li><li class="toc-item toc-level-2"><a class="toc-link" href="#Spring-Boot"><span class="toc-number">1.3.</span> <span class="toc-text">Spring Boot</span></a><ol class="toc-child"><li class="toc-item toc-level-3"><a class="toc-link" href="#application-env-properties"><span class="toc-number">1.3.1.</span> <span class="toc-text">application-{env}.properties</span></a></li><li class="toc-item toc-level-3"><a class="toc-link" href="#ConfigurationProperties"><span class="toc-number">1.3.2.</span> <span class="toc-text">@ConfigurationProperties</span></a></li></ol></li></ol></li></ol></div></div><div class="author-info hide"><div class="author-info__avatar text-center"><img src="/img/avatar.png"></div><div class="author-info__name text-center">koral</div><div class="author-info__description text-center">描述</div><hr><div class="author-info-articles"><a class="author-info-articles__archives article-meta" href="/archives"><span class="pull-left">文章</span><span class="pull-right">241</span></a><a class="author-info-articles__tags article-meta" href="/tags"><span class="pull-left">标签</span><span class="pull-right">22</span></a><a class="author-info-articles__categories article-meta" href="/categories"><span class="pull-left">分类</span><span class="pull-right">19</span></a></div></div></div><div id="content-outer"><div class="no-bg" id="top-container"><div id="page-header"><span class="pull-left"> <a id="site-name" href="/">凯</a></span><i class="fa fa-bars toggle-menu pull-right" aria-hidden="true"></i><span class="pull-right menus">   <a class="site-page" href="/">Home</a><a class="site-page" href="/archives">Archives</a><a class="site-page" href="/tags">Tags</a><a class="site-page" href="/categories">Categories</a></span><span class="pull-right"></span></div><div id="post-info"><div id="post-title">读取 Properties 文件的几种方式</div><div id="post-meta"><time class="post-meta__date"><i class="fa fa-calendar" aria-hidden="true"></i> 2018-09-30</time><span class="post-meta__separator">|</span><i class="fa fa-inbox post-meta__icon" aria-hidden="true"></i><a class="post-meta__categories" href="/categories/Java成神之路/">Java成神之路</a></div></div></div><div class="layout" id="content-inner"><article id="post"><div class="article-container" id="post-content"><h1 id="读取Properties文件的几种方式"><a href="#读取Properties文件的几种方式" class="headerlink" title="读取Properties文件的几种方式"></a>读取Properties文件的几种方式</h1><p><img src="https://upload-images.jianshu.io/upload_images/13603359-9bc057f7c3fab711.png?imageMogr2/auto-orient/strip%7CimageView2/2/w/1240" alt="读取Properties文件的几种方式"></p>
+<a id="more"></a>
+
+<h2 id="读取-Properties-文件"><a href="#读取-Properties-文件" class="headerlink" title="读取 Properties 文件"></a>读取 Properties 文件</h2><h3 id="1-在xml-配置文件中使用”-”"><a href="#1-在xml-配置文件中使用”-”" class="headerlink" title="1.在xml 配置文件中使用”${}”"></a>1.在xml 配置文件中使用”${}”</h3><pre><code class="java">&lt;bean id=&quot;xxx&quot; class=&quot;com.javadoop.Xxx&quot;&gt;
+     &lt;property name=&quot;url&quot; value=&quot;${javadoop.jdbc.url}&quot; /&gt;
+&lt;/bean&gt;</code></pre>
+<h3 id="2-通过-Value注解注入"><a href="#2-通过-Value注解注入" class="headerlink" title="2. 通过@Value注解注入"></a>2. 通过@Value注解注入</h3><pre><code class="java">@Value(&quot;${javadoop.jdbc.url}&quot;)
+private String url;</code></pre>
+<h3 id="3-通过Environment获取"><a href="#3-通过Environment获取" class="headerlink" title="3.通过Environment获取"></a>3.通过Environment获取</h3><p>注意：只有使用注解 @PropertySource 的时候才可以使用，否则会 null ; 如果是 SpringBoot 的application.properties 注册 的，也可以</p>
+<pre><code class="java">@Autowired
+private Environment env;
+
+public String getUrl() {
+   return env.getProperty(&quot;javadoop.jdbc.url&quot;);
+}</code></pre>
+<h2 id="Properties的使用"><a href="#Properties的使用" class="headerlink" title="Properties的使用"></a>Properties的使用</h2><h3 id="1-通过XML配置"><a href="#1-通过XML配置" class="headerlink" title="1.通过XML配置"></a>1.通过XML配置</h3><pre><code class="java">&lt;context:property-placeholder location=&quot;classpath:sys.properties&quot; /&gt;</code></pre>
+<h3 id="2-通过-PropertySource配置"><a href="#2-通过-PropertySource配置" class="headerlink" title="2.通过@PropertySource配置"></a>2.通过@PropertySource配置</h3><pre><code class="java">@PropertySource(&quot;classpath:sys.properties&quot;)
+@Configuration
+public class JavaDoopConfig {
+
+}</code></pre>
+<h3 id="3-PropertyPlaceholderConfigurer-Spring3-1之前"><a href="#3-PropertyPlaceholderConfigurer-Spring3-1之前" class="headerlink" title="3.PropertyPlaceholderConfigurer(Spring3.1之前)"></a>3.PropertyPlaceholderConfigurer(Spring3.1之前)</h3><pre><code class="java">@Bean
+public PropertySourcesPlaceholderConfigurer properties() {
+   PropertySourcesPlaceholderConfigurer pspc = new PropertySourcesPlaceholderConfigurer();
+   Resource[] resources = new ClassPathResource[]{new ClassPathResource(&quot;sys.properties&quot;)};
+   pspc.setLocations(resources);
+   pspc.setIgnoreUnresolvablePlaceholders(true);
+   return pspc;
+}</code></pre>
+<h2 id="Spring-Boot"><a href="#Spring-Boot" class="headerlink" title="Spring Boot"></a>Spring Boot</h2><p>我们先去生成一个 SpringBoot 项目，不会的可以使用 <code>SpringBoot</code> 的 <a href="start.spring.io">在线生成服务</a>,直接下载到本地即可。</p>
+<p>在生成的项目中，默认包含一个 application.properties 的配置文件，只需配置，SpringBoot 会帮我们注册。</p>
+<p>如果需要换配置文件，则在启动时指定即可：</p>
+<pre><code class="java">java -Dspring.config.location=classpath:sys.properties -jar app.jar</code></pre>
+<h3 id="application-env-properties"><a href="#application-env-properties" class="headerlink" title="application-{env}.properties"></a>application-{env}.properties</h3><p>在 application.properties 的基础上，我们还需要新建 application-dev.properties 和application-prd.properties，用于配置环境相关的信息，然后启动的时候指定环境：</p>
+<pre><code class="java">java -Dspring.profiles.active=prd -jar app.jar</code></pre>
+<p>如果 application.properties 和 application-prd.properties 有key冲突，application-prd.properties 的优先级较高。</p>
+<h3 id="ConfigurationProperties"><a href="#ConfigurationProperties" class="headerlink" title="@ConfigurationProperties"></a>@ConfigurationProperties</h3><p>这个注解是 SpringBoot 才有的,我们在 <code>application.properties</code> 中加入</p>
+<pre><code class="java">javadoop.database.url=jdbc:mysql:
+javadoop.database.username=admin
+javadoop.database.password=admin123456</code></pre>
+<p>java文件</p>
+<pre><code class="java">@Configuration
+@ConfigurationProperties(prefix = &quot;javadoop.database&quot;)
+public class DataBase {
+   String url;
+   String username;
+   String password;
+   // getters and setters
+}</code></pre>
+<p>这样，就在 Spring 的容器中自动注册了一个类型为 DataBase 的 bean 了，而且属性都已经 set 好了</p>
+<p>属性配置的覆盖顺序：<br>启动参数 &gt; application-{env}.properties &gt; application.properties</p>
+<p>使用启动参数动态设置属性：</p>
+<pre><code class="java">java -Djavadoop.database.password=admin4321 -jar app.jar</code></pre>
+</div></article><div class="post-copyright"><div class="post-copyright__author"><span class="post-copyright-meta">文章作者: </span><span class="post-copyright-info"><a href="mailto:undefined">koral</a></span></div><div class="post-copyright__type"><span class="post-copyright-meta">文章链接: </span><span class="post-copyright-info"><a href="http://luokaiii.github.io/2018/09/30/后端/java/Java中使用Properties/">http://luokaiii.github.io/2018/09/30/后端/java/Java中使用Properties/</a></span></div><div class="post-copyright__notice"><span class="post-copyright-meta">版权声明: </span><span class="post-copyright-info">本博客所有文章除特别声明外，均采用 <a href="https://creativecommons.org/licenses/by-nc-sa/4.0/">CC BY-NC-SA 4.0</a> 许可协议。转载请注明来自 <a href="http://luokaiii.github.io">凯</a>！</span></div></div><div class="post-meta__tag-list"><a class="post-meta__tags" href="/tags/java/">java</a><a class="post-meta__tags" href="/tags/SpringBoot/">SpringBoot</a></div><nav id="pagination"><div class="prev-post pull-left"><a href="/2018/09/30/分布式/SpringBoot/OSS-阿里云文件上传/"><i class="fa fa-chevron-left">  </i><span>基于阿里云OSS的文件上传服务</span></a></div><div class="next-post pull-right"><a href="/2018/09/29/后端/java/regex/"><span>正则表达式</span><i class="fa fa-chevron-right"></i></a></div></nav></div></div><footer><div class="layout" id="footer"><div class="copyright">&copy;2013 - 2020 By koral</div><div class="framework-info"><span>驱动 - </span><a href="http://hexo.io"><span>Hexo</span></a><span class="footer-separator">|</span><span>主题 - </span><a href="https://github.com/Molunerfinn/hexo-theme-melody"><span>Melody</span></a></div><div class="busuanzi"><script async src="//busuanzi.ibruce.info/busuanzi/2.3/busuanzi.pure.mini.js"></script><span id="busuanzi_container_page_pv"><i class="fa fa-file"></i><span id="busuanzi_value_page_pv"></span><span></span></span></div></div></footer><i class="fa fa-arrow-up" id="go-up" aria-hidden="true"></i><script src="https://cdn.jsdelivr.net/npm/animejs@latest/anime.min.js"></script><script src="https://cdn.jsdelivr.net/npm/jquery@latest/dist/jquery.min.js"></script><script src="https://cdn.jsdelivr.net/npm/@fancyapps/fancybox@latest/dist/jquery.fancybox.min.js"></script><script src="https://cdn.jsdelivr.net/npm/velocity-animate@latest/velocity.min.js"></script><script src="https://cdn.jsdelivr.net/npm/velocity-ui-pack@latest/velocity.ui.min.js"></script><script src="/js/utils.js?version=1.7.0"></script><script src="/js/fancybox.js?version=1.7.0"></script><script src="/js/sidebar.js?version=1.7.0"></script><script src="/js/copy.js?version=1.7.0"></script><script src="/js/fireworks.js?version=1.7.0"></script><script src="/js/transition.js?version=1.7.0"></script><script src="/js/scroll.js?version=1.7.0"></script><script src="/js/head.js?version=1.7.0"></script><script>if(/Android|webOS|iPhone|iPod|iPad|BlackBerry/i.test(navigator.userAgent)) {
+  $('#nav').addClass('is-mobile')
+  $('footer').addClass('is-mobile')
+  $('#top-container').addClass('is-mobile')
+}</script></body></html>

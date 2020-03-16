@@ -7,164 +7,1038 @@
     error: '复制错误',
     noSupport: '浏览器不支持'
   }
-} </script></head><body><i class="fa fa-arrow-right" id="toggle-sidebar" aria-hidden="true"></i><div id="sidebar" data-display="false"><div class="author-info"><div class="author-info__avatar text-center"><img src="/img/avatar.png"></div><div class="author-info__name text-center">koral</div><div class="author-info__description text-center">描述</div><hr><div class="author-info-articles"><a class="author-info-articles__archives article-meta" href="/archives"><span class="pull-left">文章</span><span class="pull-right">243</span></a><a class="author-info-articles__tags article-meta" href="/tags"><span class="pull-left">标签</span><span class="pull-right">22</span></a><a class="author-info-articles__categories article-meta" href="/categories"><span class="pull-left">分类</span><span class="pull-right">19</span></a></div></div></div><nav class="no-bg" id="nav"><div id="page-header"><span class="pull-left"> <a id="site-name" href="/">凯</a></span><i class="fa fa-bars toggle-menu pull-right" aria-hidden="true"></i><span class="pull-right menus">   <a class="site-page" href="/">Home</a><a class="site-page" href="/archives">Archives</a><a class="site-page" href="/tags">Tags</a><a class="site-page" href="/categories">Categories</a></span><span class="pull-right"></span></div><div id="site-info"><div id="site-title">凯</div><div id="site-sub-title">凯</div></div></nav><div id="content-outer"><div class="layout" id="content-inner"><div class="recent-post-item article-container"><a class="article-title" href="/2018/09/08/Linux/Linux下后台运行Jar/">Linux后台部署Jar</a><time class="post-meta__date"><i class="fa fa-calendar" aria-hidden="true"></i> 2018-09-08</time><span class="article-meta"><span class="article-meta__separator">|</span><i class="fa fa-inbox article-meta__icon" aria-hidden="true"></i><a class="article-meta__categories" href="/categories/Linux学习之路/">Linux学习之路</a></span><span class="article-meta tags"><span class="article-meta__separator">|</span><i class="fa fa-tag article-meta__icon" aria-hidden="true"></i><a class="article-meta__tags" href="/tags/Linux/">Linux</a></span><div class="content"><h1 id="部署"><a href="#部署" class="headerlink" title="部署"></a>部署</h1><ol>
-<li><p>安装git</p>
-</li>
-<li><p>拉取代码</p>
-<ol>
-<li><p>如果不是通过 ssh 的方式拉取的话，每次都需要输入密码</p>
-</li>
-<li><p>解决方法：进入项目目录，输入：</p>
-</li>
-<li><pre><code class="shell">git config --global credential.helper store</code></pre>
-</li>
-<li><p>再重新pull一次，输入密码之后，以后就不用输入密码了</p>
-</li>
-</ol>
-</li>
-<li><p>创建可执行文件，用于拉取代码、构建项目</p>
-<ol>
-<li>需要给可执行文件授权：chmod 777 build.sh</li>
-<li>注意权限的大小</li>
-</ol>
-</li>
-<li><p>创建可执行文件，用于执行jar包</p>
-<ol>
-<li><p>执行文件可以直接通过java -jar 来执行</p>
-</li>
-<li><p>但是我们需要后台执行 ，用到 nohup</p>
-</li>
-<li><pre><code class="shell">nohup /usr/local/node/bin/node /www/im/chat.js &gt;&gt; /usr/local/node/output.log 2&gt;&amp;1 &amp;</code></pre>
-</li>
-<li><p>第二种，是将 jar包注册为服务，通过service stop等方法启动停止</p>
-</li>
-</ol>
-</li>
-<li><p>部署前端项目</p>
-<ol>
-<li><p>安装nodejs</p>
-</li>
-<li><p>安装yarn，注意，17.0以上的ubuntu需要先卸载cmdtest</p>
-<ol>
-<li><pre><code class="java">sudo apt remove cmdtest</code></pre>
-</li>
-<li><pre><code class="java">curl -sS https://dl.yarnpkg.com/debian/pubkey.gpg | sudo apt-key add -
-echo &quot;deb https://dl.yarnpkg.com/debian/ stable main&quot; | sudo tee /etc/apt/sources.list.d/yarn.list
-sudo apt-get update &amp;&amp; sudo apt-get install yarn</code></pre>
-</li>
-</ol>
-</li>
-</ol>
-</li>
-</ol>
-<p>重启：</p>
-<pre><code class="java">#!/bin/bash
-ps -ef | grep &quot;/opt/hifox/PGC/teacherApp/teacherapp-0.0.1-SNAPSHOT.jar&quot; | grep -v grep | awk &#39;{print $2}&#39; | xargs kill -15
+} </script></head><body><i class="fa fa-arrow-right" id="toggle-sidebar" aria-hidden="true"></i><div id="sidebar" data-display="false"><div class="author-info"><div class="author-info__avatar text-center"><img src="/img/avatar.png"></div><div class="author-info__name text-center">koral</div><div class="author-info__description text-center">描述</div><hr><div class="author-info-articles"><a class="author-info-articles__archives article-meta" href="/archives"><span class="pull-left">文章</span><span class="pull-right">241</span></a><a class="author-info-articles__tags article-meta" href="/tags"><span class="pull-left">标签</span><span class="pull-right">22</span></a><a class="author-info-articles__categories article-meta" href="/categories"><span class="pull-left">分类</span><span class="pull-right">19</span></a></div></div></div><nav class="no-bg" id="nav"><div id="page-header"><span class="pull-left"> <a id="site-name" href="/">凯</a></span><i class="fa fa-bars toggle-menu pull-right" aria-hidden="true"></i><span class="pull-right menus">   <a class="site-page" href="/">Home</a><a class="site-page" href="/archives">Archives</a><a class="site-page" href="/tags">Tags</a><a class="site-page" href="/categories">Categories</a></span><span class="pull-right"></span></div><div id="site-info"><div id="site-title">凯</div><div id="site-sub-title">凯</div></div></nav><div id="content-outer"><div class="layout" id="content-inner"><div class="recent-post-item article-container"><a class="article-title" href="/2018/09/01/后端/POI/POI生成Excel-图表生成/">POI+XChart图形报告</a><time class="post-meta__date"><i class="fa fa-calendar" aria-hidden="true"></i> 2018-09-01</time><span class="article-meta"><span class="article-meta__separator">|</span><i class="fa fa-inbox article-meta__icon" aria-hidden="true"></i><a class="article-meta__categories" href="/categories/Java/">Java</a></span><span class="article-meta tags"><span class="article-meta__separator">|</span><i class="fa fa-tag article-meta__icon" aria-hidden="true"></i><a class="article-meta__tags" href="/tags/POI/">POI</a></span><div class="content"><h1 id="POI-XChart图形报告"><a href="#POI-XChart图形报告" class="headerlink" title="POI+XChart图形报告"></a>POI+XChart图形报告</h1><h2 id="一、基础示例，写入Excel"><a href="#一、基础示例，写入Excel" class="headerlink" title="一、基础示例，写入Excel"></a>一、基础示例，写入Excel</h2><p>生成一个图形，并将其写入 Excel 中。</p>
+<pre><code class="java">@Test
+public void generate() throws IOException {
+    String filePath = &quot;C:\\Users\\user\\Desktop\\first.xlsx&quot;;
+    double[] xData = new double[]{0.0, 1.0, 2.0};
+    double[] yData = new double[]{2.0, 1.0, 0.0};
 
-pid=`ps -ef | grep &quot;/opt/hifox/PGC/teacherApp/teacherapp-0.0.1-SNAPSHOT.jar&quot; | grep -v grep | awk &#39;{print $2}&#39;` 
-while( ! test -z $pid)
-do
- sleep 1
- pid=`ps -ef | grep &quot;/opt/hifox/PGC/teacherApp/teacherapp-0.0.1-SNAPSHOT.jar&quot; | grep -v grep | awk &#39;{print $2}&#39;`
-echo -n &quot;*&quot; 
+    // Create Chart
+    XYChart chart = QuickChart.getChart(&quot;Sample Chart&quot;, &quot;X&quot;, &quot;Y&quot;, &quot;y(x)&quot;, xData, yData);
+    // 将图表转换为byte数组
+    byte[] bytes = BitmapEncoder.getBitmapBytes(chart, BitmapEncoder.BitmapFormat.PNG);
 
-done
+    try (XSSFWorkbook workbook = new XSSFWorkbook();
+         ByteArrayInputStream inputStream = new ByteArrayInputStream(bytes);
+         FileOutputStream outputStream = new FileOutputStream(filePath)) {
+        // 创建Excel
+        XSSFSheet sheet = workbook.createSheet(&quot;图表&quot;);
 
-nohup java -jar teacherapp-0.0.1-SNAPSHOT.jar &gt;/dev/null 2&gt;&amp;1 &amp;</code></pre>
-<p>以外部配置文件启动jar<br>   加载properties优先级：</p>
-<pre><code>        1. jar包同级目录下，config目录下的application.properties
-              jar包同级目录下的application.properties
-                   3. 最后才是jar内的application.properties
-                   依旧是 java -jar app.jar，默认按照上面的加载优先级加载。
-                   也可以手动指定 java -jar app.jar -Dspring.config.location=application.properties</code></pre><p>注意：cas和common需要是同一个数据库</p>
-<p>通过maven的默认仓库位置在 /root/.m2 ，这个文件夹可能被隐藏了</p>
-<p>查找方式为：find / .m2 ，表示查找”/“目录下的 .m2 文件或文件夹</p>
-<p>注意：当在shell终端中使用 ctrl+s 表示暂停当前命令行窗口，取消暂停为：ctrl+q</p>
-</div><hr></div><div class="recent-post-item article-container"><a class="article-title" href="/2018/09/08/Linux/1.Ubuntu安全基线检查/">Ubuntu安全基线检查</a><time class="post-meta__date"><i class="fa fa-calendar" aria-hidden="true"></i> 2018-09-08</time><span class="article-meta"><span class="article-meta__separator">|</span><i class="fa fa-inbox article-meta__icon" aria-hidden="true"></i><a class="article-meta__categories" href="/categories/Linux学习之路/">Linux学习之路</a></span><span class="article-meta tags"><span class="article-meta__separator">|</span><i class="fa fa-tag article-meta__icon" aria-hidden="true"></i><a class="article-meta__tags" href="/tags/Linux/">Linux</a></span><div class="content"><h1 id="Ubuntu安全基线检查"><a href="#Ubuntu安全基线检查" class="headerlink" title="Ubuntu安全基线检查"></a>Ubuntu安全基线检查</h1><p>来自于阿里云云安全中心于 2019/07/22 发送的一条安全漏洞检查，其中关于账户、文件等方面的安全检查及修改建议。</p>
-<h2 id="一、设置密码失效时间"><a href="#一、设置密码失效时间" class="headerlink" title="一、设置密码失效时间"></a>一、设置密码失效时间</h2><h3 id="描述"><a href="#描述" class="headerlink" title="描述"></a>描述</h3><p>设置密码失效时间，强制定期修改密码，减少密码被泄露和猜测风险，使用非密码登录(如密钥对)方式可以忽略。</p>
-<h3 id="加固建议"><a href="#加固建议" class="headerlink" title="加固建议"></a>加固建议</h3><p>在 /etc/login.defs 中将 PASS_MAX_DAYS 参数设置为 60-180 之间，如：</p>
-<pre><code class="shell">PASS_MAX_DAYS 90</code></pre>
-<p>需同时执行命令设置 root 密码失效时间：</p>
-<pre><code class="shell">chage --maxdays 90 root</code></pre>
-<h2 id="二、设置密码修改最小间隔时间"><a href="#二、设置密码修改最小间隔时间" class="headerlink" title="二、设置密码修改最小间隔时间"></a>二、设置密码修改最小间隔时间</h2><h3 id="描述-1"><a href="#描述-1" class="headerlink" title="描述"></a>描述</h3><p>设置密码修改最小间隔时间，限制密码更改过于频繁</p>
-<h3 id="加固建议-1"><a href="#加固建议-1" class="headerlink" title="加固建议"></a>加固建议</h3><p>在 /etc/login.defs 中将 PASS_MIN_DAYS 参数设置为 7-14 之间，建议为7：</p>
-<pre><code class="shell">PASS_MIN_DAYS 7</code></pre>
-<p>需同时执行命令为 root 用户设置：</p>
-<pre><code class="shell">chage --mindays 7 root</code></pre>
-<h2 id="三、密码复杂度检查"><a href="#三、密码复杂度检查" class="headerlink" title="三、密码复杂度检查"></a>三、密码复杂度检查</h2><h3 id="描述-2"><a href="#描述-2" class="headerlink" title="描述"></a>描述</h3><p>检查密码长度和密码是否使用多种字符类型</p>
-<h3 id="加固建议-2"><a href="#加固建议-2" class="headerlink" title="加固建议"></a>加固建议</h3><ol>
-<li><p>安装 PAM 的 cracklib 模块，执行命令：</p>
-<ol>
-<li><blockquote>
-<p>apt-get update &amp;&amp; apt-get install libpam-cracklib</p>
+        // 写入Excel的指定位置
+        XSSFDrawing shapes = sheet.createDrawingPatriarch();
+        XSSFClientAnchor anchor = new XSSFClientAnchor(0, 0, 0, 0, 0, 0, 6, 10);
+        shapes.createPicture(anchor, sheet.getWorkbook().addPicture(inputStream, HSSFWorkbook.PICTURE_TYPE_PNG));
+
+        // 将Excel写到文件中
+        workbook.write(outputStream);
+    }
+}</code></pre>
+<p><img src="https://images.gitee.com/uploads/images/2019/0121/180421_34b56169_1872936.png" alt="生成的基础图片"></p>
+<blockquote>
+<p> 上面我们演示了如何<code>将 XChart生成的图片导入 Excel</code>，下面的部分，都会将生成的图形导出为图片，如果需要导入Excel的话，只需要将chart套入第一章即可。</p>
 </blockquote>
-</li>
-</ol>
-</li>
-<li><p>编辑 <code>/etc/pam.d/common-password</code>，在 password requisite pam_cracklib.so 开头的这一行配置 minclass(至少包含小写字母、大写字母、数字、特殊字符等4类字符中的3类或4类) 设置为3或4，即在行末尾加上参数 minclass=3；在 password[success=1 default=ignore] pam_unix.so 开头的这一行增加配置 minlen（密码最小长度）设置为9-32位，建议为9,即在行末尾加上参数 minlen=9</p>
-</li>
-</ol>
-<h2 id="四、检查密码重用是否受限制"><a href="#四、检查密码重用是否受限制" class="headerlink" title="四、检查密码重用是否受限制"></a>四、检查密码重用是否受限制</h2><h3 id="描述-3"><a href="#描述-3" class="headerlink" title="描述"></a>描述</h3><p>强制用户不重用最新使用的密码，降低密码猜测攻击风险</p>
-<h3 id="加固建议-3"><a href="#加固建议-3" class="headerlink" title="加固建议"></a>加固建议</h3><p>编辑 <code>/etc/pam.d/common-password</code>，在 <code>password [success=1 default=ignore] pam_unix.so</code> 开头的这一行增加配置 remember 设置为 5-24 之间，如在行末尾加上 remember=5</p>
-<h2 id="五、设置用户权限配置文件的权限"><a href="#五、设置用户权限配置文件的权限" class="headerlink" title="五、设置用户权限配置文件的权限"></a>五、设置用户权限配置文件的权限</h2><h3 id="描述-4"><a href="#描述-4" class="headerlink" title="描述"></a>描述</h3><p>设置用户权限配置文件的权限</p>
-<h3 id="加固建议-4"><a href="#加固建议-4" class="headerlink" title="加固建议"></a>加固建议</h3><p>执行如下5条命令</p>
-<pre><code class="shell">chown root:root /etc/passwd /etc/shadow /etc/group /etc/gshadow
-chmod 0644 /etc/group
-chmod 0644 /etc/passwd
-chmod 0400 /etc/shadow
-chmod 0400 /etc/gshadow</code></pre>
-<h2 id="六、设置SSH空闲超时退出时间"><a href="#六、设置SSH空闲超时退出时间" class="headerlink" title="六、设置SSH空闲超时退出时间"></a>六、设置SSH空闲超时退出时间</h2><h3 id="描述-5"><a href="#描述-5" class="headerlink" title="描述"></a>描述</h3><p>设置SSH空闲超时退出时间，可降低未授权用户访问其他用户 ssh 会话的风险</p>
-<h3 id="加固建议-5"><a href="#加固建议-5" class="headerlink" title="加固建议"></a>加固建议</h3><p>编辑 <code>/etc/ssh/sshd_config</code>，将 ClientAliveInterval 设置为300到900，即5-15分钟，将ClientAliveCountMax 设置为0-3之间。</p>
-<pre><code class="shell">ClientAliveInterval 600
-ClientAliveCountMax 2</code></pre>
-<h3 id="七、检查系统空密码账户"><a href="#七、检查系统空密码账户" class="headerlink" title="七、检查系统空密码账户"></a>七、检查系统空密码账户</h3><h3 id="描述-6"><a href="#描述-6" class="headerlink" title="描述"></a>描述</h3><p>检查系统空密码账户</p>
-<h3 id="加固建议-6"><a href="#加固建议-6" class="headerlink" title="加固建议"></a>加固建议</h3><p>为用户设置一个非空密码，或者执行 <code>passwd -l &lt;username&gt;</code> 锁定用户</p>
-<h2 id="八、禁止SSH空密码用户登录"><a href="#八、禁止SSH空密码用户登录" class="headerlink" title="八、禁止SSH空密码用户登录"></a>八、禁止SSH空密码用户登录</h2><h3 id="描述-7"><a href="#描述-7" class="headerlink" title="描述"></a>描述</h3><p>禁止SSH空密码用户登录</p>
-<h3 id="加固建议-7"><a href="#加固建议-7" class="headerlink" title="加固建议"></a>加固建议</h3><p>编辑文件 <code>/etc/ssh/sshd_config</code>，将 PermitEmptyPasswords 配置为 no：</p>
-<pre><code class="shell">PermitEmptyPasswords no</code></pre>
-<h2 id="九、确保密码到期警告天数为7或更多"><a href="#九、确保密码到期警告天数为7或更多" class="headerlink" title="九、确保密码到期警告天数为7或更多"></a>九、确保密码到期警告天数为7或更多</h2><h3 id="描述-8"><a href="#描述-8" class="headerlink" title="描述"></a>描述</h3><p>确保密码到期警告天数为7或更多</p>
-<h3 id="加固建议-8"><a href="#加固建议-8" class="headerlink" title="加固建议"></a>加固建议</h3><p>在 /etc/login.defs 中将 PASS_WARN_AGE 参数设置为 7-14之间，建议为7：</p>
-<pre><code class="shell">PASS_WARN_AGE 7</code></pre>
-<p>同时执行命令使root用户设置生效：</p>
-<pre><code class="shell">chage --warndays 7 root</code></pre>
-<h2 id="十、确保SSH-MaxAuthTries设置为3到6之间"><a href="#十、确保SSH-MaxAuthTries设置为3到6之间" class="headerlink" title="十、确保SSH MaxAuthTries设置为3到6之间"></a>十、确保SSH MaxAuthTries设置为3到6之间</h2><h3 id="描述-9"><a href="#描述-9" class="headerlink" title="描述"></a>描述</h3><p>设置较低的Max AuthTrimes参数将降低SSH服务器被暴力攻击成功的风险。</p>
-<h3 id="加固建议-9"><a href="#加固建议-9" class="headerlink" title="加固建议"></a>加固建议</h3><p>在/etc/ssh/sshd_config中取消MaxAuthTries注释符号#，设置最大密码尝试失败次数3-6，建议为4：</p>
-<pre><code class="shell">MaxAuthTries 4</code></pre>
-<h2 id="十一、SSHD强制使用V2安全协议"><a href="#十一、SSHD强制使用V2安全协议" class="headerlink" title="十一、SSHD强制使用V2安全协议"></a>十一、SSHD强制使用V2安全协议</h2><h3 id="描述-10"><a href="#描述-10" class="headerlink" title="描述"></a>描述</h3><p>SSHD强制使用V2安全协议</p>
-<p>类型：SSH服务配置</p>
-<h3 id="加固建议-10"><a href="#加固建议-10" class="headerlink" title="加固建议"></a>加固建议</h3><p>编辑 /etc/ssh/sshd_config 文件以按如下方式设置参数：</p>
-<pre><code class="shell">Protocol 2</code></pre>
-<h2 id="十二、确保SSH-LogLevel设置为INFO"><a href="#十二、确保SSH-LogLevel设置为INFO" class="headerlink" title="十二、确保SSH LogLevel设置为INFO"></a>十二、确保SSH LogLevel设置为INFO</h2><h3 id="描述-11"><a href="#描述-11" class="headerlink" title="描述"></a>描述</h3><p>确保SSH LogLevel设置为INFO,记录登录和注销活动</p>
-<p>类型：服务配置</p>
-<h3 id="加固建议-11"><a href="#加固建议-11" class="headerlink" title="加固建议"></a>加固建议</h3><p>编辑 /etc/ssh/sshd_config 文件以按如下方式设置参数(取消注释):</p>
-<pre><code class="shell">LogLevel INFO</code></pre>
-<h2 id="十三、访问控制配置文件的权限设置"><a href="#十三、访问控制配置文件的权限设置" class="headerlink" title="十三、访问控制配置文件的权限设置"></a>十三、访问控制配置文件的权限设置</h2><h3 id="描述-12"><a href="#描述-12" class="headerlink" title="描述"></a>描述</h3><p>访问控制配置文件的权限设置</p>
-<p>类型：文件权限</p>
-<h3 id="加固建议-12"><a href="#加固建议-12" class="headerlink" title="加固建议"></a>加固建议</h3><p>运行以下4条命令：</p>
-<pre><code class="shell">chown root:root /etc/hosts.allow 
-chown root:root /etc/hosts.deny 
-chmod 644 /etc/hosts.deny
-chmod 644 /etc/hosts.allow</code></pre>
-<h2 id="十四、开启地址空间布局随机化"><a href="#十四、开启地址空间布局随机化" class="headerlink" title="十四、开启地址空间布局随机化"></a>十四、开启地址空间布局随机化</h2><h3 id="描述-13"><a href="#描述-13" class="headerlink" title="描述"></a>描述</h3><p>它将进程的内存空间地址随机化来增大入侵者预测目的地址难度，从而降低进程被成功入侵的风险</p>
-<p>类型：入侵防范</p>
-<h3 id="加固建议-13"><a href="#加固建议-13" class="headerlink" title="加固建议"></a>加固建议</h3><p>在/etc/sysctl.conf或/etc/sysctl.d/*文件中设置以下参数： <code>kernel.randomize_va_space = 2</code> 执行命令： <code>sysctl -w kernel.randomize_va_space=2</code></p>
-<h2 id="十五、确保root是唯一的UID为0的帐户"><a href="#十五、确保root是唯一的UID为0的帐户" class="headerlink" title="十五、确保root是唯一的UID为0的帐户"></a>十五、确保root是唯一的UID为0的帐户</h2><h3 id="描述-14"><a href="#描述-14" class="headerlink" title="描述"></a>描述</h3><p>除root以外其他UID为0的用户都应该删除，或者为其分配新的UID</p>
-<p>类型：身份鉴别</p>
-<h3 id="加固建议-14"><a href="#加固建议-14" class="headerlink" title="加固建议"></a>加固建议</h3><p>除root以外其他UID为0的用户(查看命令<code>cat /etc/passwd | awk -F: &#39;($3 == 0) { print $1 }&#39;|grep -v &#39;^root$&#39;</code>)都应该删除，或者为其分配新的UID</p>
-<h2 id="十六、确保rsyslog服务已启用"><a href="#十六、确保rsyslog服务已启用" class="headerlink" title="十六、确保rsyslog服务已启用"></a>十六、确保rsyslog服务已启用</h2><h3 id="描述-15"><a href="#描述-15" class="headerlink" title="描述"></a>描述</h3><p>确保rsyslog服务已启用，记录日志用于审计</p>
-<p>类型：安全审计</p>
-<h3 id="加固建议-15"><a href="#加固建议-15" class="headerlink" title="加固建议"></a>加固建议</h3><p>运行以下命令启用rsyslog服务：</p>
-<pre><code class="shell">service rsyslog start</code></pre>
-</div><hr></div><div class="recent-post-item article-container"><a class="article-title" href="/2018/09/01/SpringBootWebsocket/SpringBoot消息机制(一)-WebSocket介绍/">SpringBoot消息机制(一)-WebSocket介绍</a><time class="post-meta__date"><i class="fa fa-calendar" aria-hidden="true"></i> 2018-09-01</time><span class="article-meta"><span class="article-meta__separator">|</span><i class="fa fa-inbox article-meta__icon" aria-hidden="true"></i><a class="article-meta__categories" href="/categories/Java/">Java</a></span><span class="article-meta tags"><span class="article-meta__separator">|</span><i class="fa fa-tag article-meta__icon" aria-hidden="true"></i><a class="article-meta__tags" href="/tags/MQ/">MQ</a></span><div class="content"><p>#SpringBoot消息机制(一)-WebSocket介绍<br><a href="https://my.oschina.net/genghz/blog/1796965" target="_blank" rel="noopener">https://my.oschina.net/genghz/blog/1796965</a></p>
-</div><hr></div><div class="recent-post-item article-container"><a class="article-title" href="/2018/09/01/SpringBootWebsocket/SpringBoot消息机制(四)-ActiveMQ介绍/">SpringBoot消息机制(四)-ActiveMQ介绍</a><time class="post-meta__date"><i class="fa fa-calendar" aria-hidden="true"></i> 2018-09-01</time><span class="article-meta"><span class="article-meta__separator">|</span><i class="fa fa-inbox article-meta__icon" aria-hidden="true"></i><a class="article-meta__categories" href="/categories/Java/">Java</a></span><span class="article-meta tags"><span class="article-meta__separator">|</span><i class="fa fa-tag article-meta__icon" aria-hidden="true"></i><a class="article-meta__tags" href="/tags/MQ/">MQ</a></span><div class="content"><p>#SpringBoot消息机制(四)-ActiveMQ介绍</p>
-</div><hr></div><div class="recent-post-item article-container"><a class="article-title" href="/2018/09/01/SpringCloud/微服务重构/">SpringCloud-微服务重构</a><time class="post-meta__date"><i class="fa fa-calendar" aria-hidden="true"></i> 2018-09-01</time><span class="article-meta"><span class="article-meta__separator">|</span><i class="fa fa-inbox article-meta__icon" aria-hidden="true"></i><a class="article-meta__categories" href="/categories/Java/">Java</a></span><span class="article-meta tags"><span class="article-meta__separator">|</span><i class="fa fa-tag article-meta__icon" aria-hidden="true"></i><a class="article-meta__tags" href="/tags/Spring-Cloud/">Spring Cloud</a></span><div class="content"><h1 id="微服务重构"><a href="#微服务重构" class="headerlink" title="微服务重构"></a>微服务重构</h1><p>在重构应用中，可以通过以下几个方法梳理：</p>
-<ol>
-<li>每个 Rest 服务都是一个潜在的微服务</li>
-<li>每个 SOAP web 服务或 EJB 都是一个潜在的微服务</li>
-<li>使用领域驱动设计(domain-driven design)发现企业资产，这些资产可能是微服务。</li>
-</ol>
-<p>在<strong>重构数据</strong>方面，需要考虑以下几个方面：(1)<strong>寻找与其他数据关联不大的数据孤岛</strong>，检查系统的实体-关系图；如果有与其他数据断开的数据，就是一个潜在的数据重构点；(2)<strong>数据表非规范化</strong>，对高规范化数据库中非规范化一些数据表以将数据重组为更大的逻辑块，其目的是增加数据冗余度使其更容易被打破；(3)<strong>反向批数据更新</strong>，对数据重构时需要考虑数据重构失败时可批量地将新数据反向导回旧的数据模式；(4)<strong>使用主数据管理</strong>，对被广泛使用的数据实体组成一个单一的一致性视图，并开发相应的微服务与主数据一起工作；(5)在SQL数据库中<strong>寻找存储在BLOB(二进制大对象)字段</strong>类型中的代码，转而将这些对象存储在NoSQL数据库中，例如以键值(Key-value)存储方式存储；(6)寻找活跃的记录模式，与其他无关的Flat对象，使用文档模式数据库进行存储，例如Cloudant或Mongo等。</p>
-<p>微服务重构后还需要<strong>重新打包应用</strong>，包括：(1)<strong>分割应用的EAR文件</strong>并打包成独立的WAR文件；(2)应用“<strong>一个容器一个服务</strong>”，分别部署每个WAR文件至其自有的WebSphereLiberty实例运行时或Docker容器中；(3)<strong>分别构建、部署和管理</strong>,为每个WAR文件使用独立的DevOps管线,每个WAR文件独立伸缩和管理。</p>
+<h2 id="二、将生成的图形导出成为图片"><a href="#二、将生成的图形导出成为图片" class="headerlink" title="二、将生成的图形导出成为图片"></a>二、将生成的图形导出成为图片</h2><p>获取随机数的方法也是通用的，这里先给出，具体的数据应该根据业务而定：</p>
+<pre><code class="java">/**
+     * 获取随机数
+     * @param numPoints 随机的数量
+     * @return 随机数组
+     */
+    private double[] getRandomWalk(int numPoints) {
+
+        double[] y = new double[numPoints];
+        y[0] = 0;
+        for (int i = 1; i &lt; y.length; i++) {
+            y[i] = y[i - 1] + Math.random() - .5;
+        }
+        return y;
+    }</code></pre>
+<h3 id="折线图"><a href="#折线图" class="headerlink" title="折线图"></a>折线图</h3><pre><code class="java">@Test
+public void generate() throws IOException {
+    String filePath = &quot;C:\\Users\\user\\Desktop\\first.png&quot;;
+
+    XYChart chart = new XYChartBuilder().xAxisTitle(&quot;X&quot;).yAxisTitle(&quot;Y&quot;).width(600).height(400).build();
+    chart.getStyler().setYAxisMin(-10.0);
+    chart.getStyler().setYAxisMax(10.0);
+    XYSeries series = chart.addSeries(&quot;新绿&quot;, null, getRandomWalk(200));
+    series.setMarker(SeriesMarkers.NONE);
+
+    BitmapEncoder.saveBitmap(chart, filePath, BitmapEncoder.BitmapFormat.PNG);
+}</code></pre>
+<p>效果如下：</p>
+<p><img src="https://images.gitee.com/uploads/images/2019/0121/181356_e145341d_1872936.png" alt="输入图片说明" title="屏幕截图.png"></p>
+<h2 id="面积图"><a href="#面积图" class="headerlink" title="面积图"></a>面积图</h2><pre><code class="java">@Test
+public void generate() throws IOException {
+    String filePath = &quot;C:\\Users\\user\\Desktop\\first.png&quot;;
+
+    // Create Chart
+    XYChart chart = new XYChartBuilder().width(800).height(600).title(getClass().getSimpleName()).xAxisTitle(&quot;X&quot;).yAxisTitle(&quot;Y&quot;).build();
+
+    // Customize Chart
+    chart.getStyler().setLegendPosition(Styler.LegendPosition.InsideNE);
+    chart.getStyler().setAxisTitlesVisible(false);
+    chart.getStyler().setDefaultSeriesRenderStyle(XYSeries.XYSeriesRenderStyle.Area);
+
+    // Series
+    chart.addSeries(&quot;a&quot;, new double[] { 0, 3, 5, 7, 9 }, new double[] { -3, 5, 9, 6, 5 });
+    chart.addSeries(&quot;b&quot;, new double[] { 0, 2, 4, 6, 9 }, new double[] { -1, 6, 4, 0, 4 });
+    chart.addSeries(&quot;c&quot;, new double[] { 0, 1, 3, 8, 9 }, new double[] { -2, -1, 1, 0, 1 });
+
+    BitmapEncoder.saveBitmap(chart, filePath, BitmapEncoder.BitmapFormat.PNG);
+}</code></pre>
+<p><img src="https://images.gitee.com/uploads/images/2019/0121/182136_bba89ebf_1872936.png" alt="面积图" title="屏幕截图.png"></p>
+<h2 id="饼状图"><a href="#饼状图" class="headerlink" title="饼状图"></a>饼状图</h2><pre><code class="java">@Test
+public void generate() throws IOException {
+    String filePath = &quot;C:\\Users\\user\\Desktop\\first.png&quot;;
+
+    PieChart chart = new PieChartBuilder().width(800).height(600).title(getClass().getSimpleName()).build();
+
+    // Customize Chart
+    Color[] sliceColors = new Color[] { new Color(224, 68, 14), new Color(230, 105, 62), new Color(236, 143, 110), new Color(243, 180, 159), new Color(246, 199, 182) };
+    chart.getStyler().setSeriesColors(sliceColors);
+
+    // Series
+    chart.addSeries(&quot;Gold&quot;, 24);
+    chart.addSeries(&quot;Silver&quot;, 21);
+    chart.addSeries(&quot;Platinum&quot;, 39);
+    chart.addSeries(&quot;Copper&quot;, 17);
+    chart.addSeries(&quot;Zinc&quot;, 40);
+
+    BitmapEncoder.saveBitmap(chart, filePath, BitmapEncoder.BitmapFormat.PNG);
+}</code></pre>
+<p><img src="https://koral-home.oss-cn-beijing.aliyuncs.com/bignzhuang.png" alt="饼状图"></p>
+<h2 id="散点图"><a href="#散点图" class="headerlink" title="散点图"></a>散点图</h2><pre><code class="java">@Test
+public void generate() throws IOException {
+    String filePath = &quot;C:\\Users\\user\\Desktop\\first.png&quot;;
+
+    // Create Chart
+    XYChart chart = new XYChartBuilder().width(800).height(600).build();
+
+    // Customize Chart
+    chart.getStyler().setDefaultSeriesRenderStyle(XYSeries.XYSeriesRenderStyle.Scatter);
+    chart.getStyler().setChartTitleVisible(false);
+    chart.getStyler().setLegendPosition(Styler.LegendPosition.InsideSW);
+    chart.getStyler().setMarkerSize(16);
+
+    // Series
+    List&lt;Double&gt; xData = new LinkedList&lt;Double&gt;();
+    List&lt;Double&gt; yData = new LinkedList&lt;Double&gt;();
+    Random random = new Random();
+    int size = 1000;
+    for (int i = 0; i &lt; size; i++) {
+        xData.add(random.nextGaussian() / 1000);
+        yData.add(-1000000 + random.nextGaussian());
+    }
+    chart.addSeries(&quot;Gaussian Blob&quot;, xData, yData);
+
+
+    BitmapEncoder.saveBitmap(chart, filePath, BitmapEncoder.BitmapFormat.PNG);
+}</code></pre>
+<p><img src="https://koral-home.oss-cn-beijing.aliyuncs.com/sandian.png" alt="散点图"></p>
+<h2 id="柱状图"><a href="#柱状图" class="headerlink" title="柱状图"></a>柱状图</h2><pre><code class="java">@Test
+public void generate() throws IOException {
+    String filePath = &quot;C:\\Users\\user\\Desktop\\first.png&quot;;
+
+    // Create Chart
+    CategoryChart chart = new CategoryChartBuilder().width(800).height(600).title(&quot;Score Histogram&quot;).xAxisTitle(&quot;Score&quot;).yAxisTitle(&quot;Number&quot;).build();
+
+    // Customize Chart
+    chart.getStyler().setLegendPosition(Styler.LegendPosition.InsideNW);
+    chart.getStyler().setHasAnnotations(true);
+
+    // Series
+    chart.addSeries(&quot;test 1&quot;, Arrays.asList(0, 1, 2, 3, 4), Arrays.asList(4, 5, 9, 6, 5));
+
+    BitmapEncoder.saveBitmap(chart, filePath, BitmapEncoder.BitmapFormat.PNG);
+}</code></pre>
+<p><img src="https://koral-home.oss-cn-beijing.aliyuncs.com/zhuzhuang.png" alt="柱状图"></p>
+<h2 id="堆叠图"><a href="#堆叠图" class="headerlink" title="堆叠图"></a>堆叠图</h2><pre><code class="java">@Test
+public void generate() throws IOException {
+    String filePath = &quot;C:\\Users\\user\\Desktop\\first.png&quot;;
+
+    // Create Chart
+    CategoryChart chart = new CategoryChartBuilder().width(800).height(600).title(&quot;Score Histogram&quot;).xAxisTitle(&quot;Mean&quot;).yAxisTitle(&quot;Count&quot;).build();
+
+    // Customize Chart
+    chart.getStyler().setLegendPosition(Styler.LegendPosition.InsideNW);
+    chart.getStyler().setAvailableSpaceFill(.96);
+    chart.getStyler().setOverlapped(true);
+
+    // Series
+    Histogram histogram1 = new Histogram(getGaussianData(10000), 20, -20, 20);
+    Histogram histogram2 = new Histogram(getGaussianData(5000), 20, -20, 20);
+    chart.addSeries(&quot;histogram 1&quot;, histogram1.getxAxisData(), histogram1.getyAxisData());
+    chart.addSeries(&quot;histogram 2&quot;, histogram2.getxAxisData(), histogram2.getyAxisData());
+
+    BitmapEncoder.saveBitmap(chart, filePath, BitmapEncoder.BitmapFormat.PNG);
+}
+
+private List&lt;Double&gt; getGaussianData(int count) {
+    List&lt;Double&gt; data = new ArrayList&lt;Double&gt;(count);
+    Random r = new Random();
+    for (int i = 0; i &lt; count; i++) {
+        data.add(r.nextGaussian() * 10);
+    }
+    return data;
+}</code></pre>
+<p><img src="https://koral-home.oss-cn-beijing.aliyuncs.com/duidie.png" alt="堆叠图"></p>
+<h2 id="百分比堆叠柱状图"><a href="#百分比堆叠柱状图" class="headerlink" title="百分比堆叠柱状图"></a>百分比堆叠柱状图</h2><p>这个其实是堆叠图的变种。</p>
+<pre><code class="java">@Test
+public void generate() throws IOException {
+    String filePath = &quot;C:\\Users\\user\\Desktop\\first.png&quot;;
+
+    CategoryChart chart = new CategoryChartBuilder().width(800).height(600).build();
+    chart.getStyler().setChartBackgroundColor(Color.WHITE);
+    chart.getStyler().setLegendBorderColor(Color.WHITE);
+    chart.getStyler().setLegendPosition(Styler.LegendPosition.InsideNW);
+    chart.getStyler().setAvailableSpaceFill(0.7);
+    chart.getStyler().setStacked(true);
+
+    List&lt;String&gt; xData = Arrays.asList(&quot;学院A&quot;, &quot;学院B&quot;, &quot;学院C&quot;,&quot;学院D&quot;,&quot;学院E&quot;);
+
+    chart.addSeries(&quot;得分A&quot;, xData, getGaussianData(5));
+    chart.addSeries(&quot;得分B&quot;, xData, getGaussianData(5));
+    chart.addSeries(&quot;得分C&quot;, xData, getGaussianData(5));
+    chart.addSeries(&quot;得分D&quot;, xData, getGaussianData(5));
+
+    BitmapEncoder.saveBitmap(chart, filePath, BitmapEncoder.BitmapFormat.PNG);
+}
+
+private List&lt;Double&gt; getGaussianData(int count) {
+    List&lt;Double&gt; data = new ArrayList&lt;Double&gt;(count);
+    for (int i = 0; i &lt; count; i++) {
+        data.add(RandomUtils.nextDouble(0,1) * 10);
+    }
+    return data;
+}</code></pre>
+<p><img src="https://koral-home.oss-cn-beijing.aliyuncs.com/baifenbi.png" alt="百分比堆叠柱状图"></p>
+<p>参考：</p>
+<p> (1) <a href="https://knowm.org/open-source/xchart/xchart-example-code/" target="_blank" rel="noopener">XChart Demo</a></p>
+<p> (2) 自己</p>
+</div><hr></div><div class="recent-post-item article-container"><a class="article-title" href="/2018/09/01/后端/POI/POI生成Excel-表格抽象工具类/">POI生成Excel工具类</a><time class="post-meta__date"><i class="fa fa-calendar" aria-hidden="true"></i> 2018-09-01</time><span class="article-meta"><span class="article-meta__separator">|</span><i class="fa fa-inbox article-meta__icon" aria-hidden="true"></i><a class="article-meta__categories" href="/categories/Java/">Java</a></span><span class="article-meta tags"><span class="article-meta__separator">|</span><i class="fa fa-tag article-meta__icon" aria-hidden="true"></i><a class="article-meta__tags" href="/tags/POI/">POI</a></span><div class="content"><h1 id="POI生成Excel工具类"><a href="#POI生成Excel工具类" class="headerlink" title="POI生成Excel工具类"></a>POI生成Excel工具类</h1><p>该工具类中，包含：创建表格（带默认样式）、自定义样式（通过重写 setDefaultStyle和setFirstCellStyle）、合并单元格、宽度自适应等。</p>
+<pre><code class="java">/**
+ * Excel操作工具类
+ */
+public class ExcelTools {
+
+    /**
+     * 默认的样式， 垂直水平居中、默认换行
+     */
+    private XSSFCellStyle defaultStyle;
+
+    /**
+     * 默认的行首样式
+     */
+    private XSSFCellStyle firstCellStyle;
+
+    private static SimpleDateFormat sdf = new SimpleDateFormat(&quot;yyyy.MM.dd hh:mm&quot;);
+
+    public XSSFWorkbook createWorkbook() {
+        XSSFWorkbook workbook = new XSSFWorkbook();
+
+        XSSFFont defaultFont = workbook.createFont();
+        defaultFont.setColor(IndexedColors.BLACK.getIndex());
+        defaultFont.setFontHeight(11);
+        defaultFont.setFontName(&quot;微软雅黑 Light&quot;);
+
+        XSSFCellStyle defaultStyle = workbook.createCellStyle();
+        defaultStyle.setWrapText(true);
+        defaultStyle.setAlignment(HorizontalAlignment.CENTER);
+        defaultStyle.setVerticalAlignment(VerticalAlignment.CENTER);
+        defaultStyle.setFont(defaultFont);
+
+        XSSFFont font = workbook.createFont();
+        font.setColor(IndexedColors.WHITE.getIndex());
+        font.setFontHeight(11);
+        font.setFontName(&quot;微软雅黑 Light&quot;);
+
+        XSSFCellStyle firstCellStyle = workbook.createCellStyle();
+        firstCellStyle.setAlignment(HorizontalAlignment.CENTER);
+        firstCellStyle.setVerticalAlignment(VerticalAlignment.CENTER);
+        firstCellStyle.setFillForegroundColor(IndexedColors.LIGHT_BLUE.getIndex());
+        firstCellStyle.setFillPattern(FillPatternType.SOLID_FOREGROUND);
+        firstCellStyle.setFont(font);
+        firstCellStyle.setBorderBottom(BorderStyle.THIN);
+        firstCellStyle.setBottomBorderColor(IndexedColors.LIGHT_BLUE.getIndex());
+        firstCellStyle.setLeftBorderColor(IndexedColors.LIGHT_BLUE.getIndex());
+        firstCellStyle.setRightBorderColor(IndexedColors.LIGHT_BLUE.getIndex());
+
+        setDefaultStyle(defaultStyle);
+        setFirstCellStyle(firstCellStyle);
+
+        return workbook;
+    }
+
+    // 创建页
+    public XSSFSheet createSheet(XSSFWorkbook workbook, String sheetName) {
+        return workbook.createSheet(sheetName);
+    }
+
+    /**
+     * 创建表格
+     *
+     * @param sheet           页 @NotNull
+     * @param titles          首行标题 @NotNull
+     * @param content         填充的内容 @NotNull
+     * @param rowNumber       开始的行号 @NotNull
+     * @param colNumber       开始的列号 @NotNull
+     * @param customRowHeight 自定义行高
+     * @param cellRangeList   需要合并的单元格
+     * @param customRowStyle  自定义样式,key 对应行，value 对应样式
+     * @param customColWidth  自定义宽度自适应
+     */
+    @SuppressWarnings(&quot;unchecked&quot;)
+    public void createTable(XSSFSheet sheet, String[] titles, Object[][] content,
+                            Integer rowNumber, Integer colNumber,
+                            boolean customRowHeight,
+                            List&lt;CellRange&gt; cellRangeList,
+                            Map&lt;Integer, XSSFCellStyle&gt; customRowStyle,
+                            Map&lt;Integer, Integer&gt; customColWidth) {
+        // 首行填充
+        setFirstRow(sheet, titles, getFirstCellStyle(), rowNumber, colNumber);
+        rowNumber++;
+        // 设置单元格宽度
+        autoWidth(sheet, titles, colNumber, customColWidth);
+        // 填充数据
+        for (int i = 0; i &lt; content.length; i++) {
+            Object[] rowContent = content[i];
+            XSSFRow row = sheet.getRow(rowNumber + i) == null ? sheet.createRow(rowNumber + i) : sheet.getRow(rowNumber + i);
+            row.setHeight(customRowHeight ? (short) 800 : -1);
+            XSSFCellStyle cellStyle = customRowStyle == null || customRowStyle.get(rowNumber + i) == null ?
+                    getDefaultStyle() : customRowStyle.get(rowNumber + i);
+            for (int j = 0; j &lt; rowContent.length; j++) {
+                Object colContent = rowContent[j];
+                XSSFCell cell = row.createCell(colNumber + j);
+                // 如果是基本数据类型，则转换为字符串填充; 日期转换输出; List转String输出
+                if (colContent instanceof Integer || colContent instanceof Double
+                        || colContent instanceof String || colContent instanceof Float
+                        || colContent instanceof Character || colContent instanceof Byte
+                        || colContent instanceof Short || colContent instanceof Boolean
+                        || colContent instanceof Long)
+                    cell.setCellValue(String.valueOf(colContent));
+                else if (colContent instanceof Date)
+                    cell.setCellValue(sdf.format(colContent));
+                else if (colContent instanceof Iterable)
+                    cell.setCellValue(new XSSFRichTextString(String.join(&quot; \n &quot;, (Iterable) colContent)));
+                else
+                    cell.setCellValue(&quot; - &quot;);
+                // 单元格样式
+                cell.setCellStyle(cellStyle);
+            }
+        }
+
+        // 合并单元格
+        mergeRegion(sheet, cellRangeList);
+    }
+
+    /**
+     * 合并单元格
+     */
+    public static void mergeRegion(XSSFSheet sheet, List&lt;CellRange&gt; cellRangeList) {
+        if (cellRangeList == null) return;
+        for (CellRange cellRange : cellRangeList) {
+            sheet.addMergedRegion(new CellRangeAddress(cellRange.getFirstRow(), cellRange.getLastRow(), cellRange.getFirstCol(), cellRange.getLastCol()));
+        }
+    }
+
+    /**
+     * 无需定制样式和宽度的表格
+     */
+    public void createTable(XSSFSheet sheet, String[] titles, Object[][] content,
+                            Integer rowNumber, Integer colNumber) {
+        createTable(sheet, titles, content, rowNumber, colNumber, true, null, null, null);
+    }
+
+
+    /**
+     * 填充首行数据
+     * 默认按照标题的长度设置单元格宽度
+     *
+     * @param sheet       页
+     * @param cellTitles  标题
+     * @param headerStyle 首行样式
+     * @param rowNum      起始行
+     * @param colNum      起始列
+     */
+    public static void setFirstRow(XSSFSheet sheet, String[] cellTitles, XSSFCellStyle headerStyle, int rowNum, int colNum) {
+        final XSSFRow row = sheet.getRow(rowNum) == null ? sheet.createRow(rowNum) : sheet.getRow(rowNum);
+        row.setHeight((short) 800);
+
+        for (String cellName : cellTitles) {
+            final Cell cell = row.createCell(colNum++);
+            cell.setCellValue(cellName);
+            cell.setCellStyle(headerStyle);
+        }
+    }
+
+    /**
+     * 宽度自适应
+     *
+     * @param sheet       页
+     * @param strings     行首
+     * @param colNumber   起始列
+     * @param customWidth 自定义宽度
+     */
+    public static void autoWidth(Sheet sheet, String[] strings, Integer colNumber, Map&lt;Integer, Integer&gt; customWidth) {
+        for (int s = 0; s &lt; strings.length; s++) {
+            int col = colNumber + s;
+            if (customWidth != null &amp;&amp; customWidth.keySet().contains(col)) {
+                sheet.setColumnWidth(col, customWidth.get(col));
+            } else {
+                sheet.autoSizeColumn(col, true);
+                sheet.setColumnWidth(col, sheet.getColumnWidth(col) * 17 / 10);
+            }
+        }
+    }
+
+    public XSSFCellStyle getDefaultStyle() {
+        return defaultStyle;
+    }
+
+    public void setDefaultStyle(XSSFCellStyle defaultStyle) {
+        this.defaultStyle = defaultStyle;
+    }
+
+    public XSSFCellStyle getFirstCellStyle() {
+        return firstCellStyle;
+    }
+
+    public void setFirstCellStyle(XSSFCellStyle firstCellStyle) {
+        this.firstCellStyle = firstCellStyle;
+    }
+}</code></pre>
+<p>合并单元格的对象：</p>
+<pre><code class="java">/**
+ * 需要合并的单元格
+ */
+@Setter
+@Getter
+public class CellRange {
+    private Integer firstRow;
+    private Integer lastRow;
+    private Integer firstCol;
+    private Integer lastCol;
+
+    private CellRange(Integer firstRow, Integer lastRow, Integer firstCol, Integer lastCol) {
+        this.firstRow = firstRow;
+        this.lastRow = lastRow;
+        this.firstCol = firstCol;
+        this.lastCol = lastCol;
+    }
+
+    public static CellRange build(Integer firstRow, Integer lastRow, Integer firstCol, Integer lastCol) {
+        return new CellRange(firstRow, lastRow, firstCol, lastCol);
+    }
+}</code></pre>
+</div><hr></div><div class="recent-post-item article-container"><a class="article-title" href="/2018/09/01/后端/POI/POI生成原生Excel-雷达图/">使用POI结合Excel的行列生成雷达图</a><time class="post-meta__date"><i class="fa fa-calendar" aria-hidden="true"></i> 2018-09-01</time><span class="article-meta"><span class="article-meta__separator">|</span><i class="fa fa-inbox article-meta__icon" aria-hidden="true"></i><a class="article-meta__categories" href="/categories/Java/">Java</a></span><span class="article-meta tags"><span class="article-meta__separator">|</span><i class="fa fa-tag article-meta__icon" aria-hidden="true"></i><a class="article-meta__tags" href="/tags/POI/">POI</a></span><div class="content"><h1 id="使用POI结合Excel的行列生成雷达图"><a href="#使用POI结合Excel的行列生成雷达图" class="headerlink" title="使用POI结合Excel的行列生成雷达图"></a>使用POI结合Excel的行列生成雷达图</h1><h2 id="一、先放最后输出的结果图："><a href="#一、先放最后输出的结果图：" class="headerlink" title="一、先放最后输出的结果图："></a>一、先放最后输出的结果图：</h2><p><img src="https://koral-home.oss-cn-beijing.aliyuncs.com/blog/RadarChart.png" alt="雷达图"></p>
+<h2 id="二、代码"><a href="#二、代码" class="headerlink" title="二、代码"></a>二、代码</h2><pre><code class="java">    @Test
+    public void createRadar() throws IOException {
+        final String sheetName = &quot;RadarChart&quot;;
+        try (XSSFWorkbook workbook = new XSSFWorkbook()) {
+            XSSFSheet sheet = workbook.createSheet(sheetName);
+
+            for (int i = 0; i &lt; 16; i++) {
+                XSSFRow row = sheet.createRow(i);
+                XSSFCell cell = row.createCell(0);
+                cell.setCellValue(i + &quot;行&quot;);
+                XSSFCell cell1 = row.createCell(1);
+                cell1.setCellValue(RandomUtils.nextInt(0, 20));
+            }
+
+            XSSFDrawing drawing = sheet.createDrawingPatriarch();
+            XSSFClientAnchor anchor = drawing.createAnchor(0, 0, 0, 0, 2, 0, 7, 16);
+            XSSFChart chart = drawing.createChart(anchor);
+
+            CTChart ctChart = chart.getCTChart();
+            ctChart.addNewAutoTitleDeleted().setVal(false);
+//            ctChart.addNewPlotVisOnly().setVal(true);
+//            ctChart.addNewDispBlanksAs().setVal(STDispBlanksAs.GAP);
+//            ctChart.addNewShowDLblsOverMax().setVal(false);
+
+            CTPlotArea ctPlotArea = ctChart.addNewPlotArea();
+            ctPlotArea.addNewLayout();
+//            CTShapeProperties ctShapeProperties = ctPlotArea.addNewSpPr();
+//            ctShapeProperties.addNewNoFill();
+//            ctShapeProperties.addNewLn().addNewNoFill();
+//            ctShapeProperties.addNewEffectLst();
+
+            CTRadarChart ctRadarChart = ctPlotArea.addNewRadarChart();
+            // 这两个值应该对应着catAx和valAx
+            ctRadarChart.addNewAxId().setVal(123456);
+            ctRadarChart.addNewAxId().setVal(123457);
+            // 分类标签等是否显示
+            CTDLbls ctdLbls = ctRadarChart.addNewDLbls();
+            ctdLbls.addNewShowLegendKey().setVal(false);
+            ctdLbls.addNewShowVal().setVal(false);
+            ctdLbls.addNewShowCatName().setVal(false);
+            ctdLbls.addNewShowSerName().setVal(false);
+            ctdLbls.addNewShowPercent().setVal(false);
+            ctdLbls.addNewShowBubbleSize().setVal(false);
+            // 不允许自定义颜色、以及标记的形状
+            ctRadarChart.addNewRadarStyle().setVal(STRadarStyle.MARKER);
+            ctRadarChart.addNewVaryColors().setVal(false);
+
+            CTRadarSer ctRadarSer = ctRadarChart.addNewSer();
+            ctRadarSer.addNewIdx().setVal(0);
+            ctRadarSer.addNewOrder().setVal(0);
+            CTLineProperties ctLineProperties = ctRadarSer.addNewSpPr().addNewLn();
+            ctLineProperties.addNewRound();
+            ctLineProperties.addNewSolidFill().addNewSchemeClr().setVal(STSchemeColorVal.ACCENT_1);
+            // 渲染数据
+            ctRadarSer.addNewCat().addNewStrRef().setF(sheetName + &quot;!$A$1:$A$6&quot;);
+            ctRadarSer.addNewVal().addNewNumRef().setF(sheetName + &quot;!$B$2:$B$6&quot;);
+
+            CTCatAx ctCatAx = ctPlotArea.addNewCatAx();
+            ctCatAx.addNewAxId().setVal(123456);
+            ctCatAx.addNewScaling().addNewOrientation().setVal(MIN_MAX);
+            ctCatAx.addNewDelete().setVal(false);
+            ctCatAx.addNewAxPos().setVal(STAxPos.B);
+            ctCatAx.addNewCrossAx().setVal(123457);
+            ctCatAx.addNewMajorTickMark().setVal(STTickMark.NONE);
+            ctCatAx.addNewMinorTickMark().setVal(STTickMark.NONE);
+            ctCatAx.addNewTickLblPos().setVal(NEXT_TO);
+//            ctCatAx.addNewCrosses().setVal(STCrosses.AUTO_ZERO);
+//            ctCatAx.addNewAuto().setVal(true);
+//            ctCatAx.addNewLblAlgn().setVal(STLblAlgn.CTR);
+//            ctCatAx.addNewLblOffset().setVal(100);
+//            ctCatAx.addNewNoMultiLvlLbl().setVal(false);
+            // spPr
+//            CTShapeProperties ctShapeProperties = ctCatAx.addNewSpPr();
+//            ctShapeProperties.addNewNoFill();
+//            ctShapeProperties.addNewEffectLst();
+//            CTLineProperties ctLineProperties1 = ctShapeProperties.addNewLn();
+//            ctLineProperties1.setW(9525);
+//            ctLineProperties1.setCap(STLineCap.FLAT);
+//            ctLineProperties1.setCmpd(STCompoundLine.SNG);
+//            ctLineProperties1.setAlgn(STPenAlignment.CTR);
+//            CTSchemeColor ctSchemeColor = ctLineProperties1.addNewSolidFill().addNewSchemeClr();
+//            ctSchemeColor.setVal(STSchemeColorVal.TX_1);
+//            ctSchemeColor.addNewLumMod().setVal(15000);
+//            ctSchemeColor.addNewLumOff().setVal(85000);
+            // txPr
+//            CTTextBody ctTextBody = ctCatAx.addNewTxPr();
+//            CTTextCharacterProperties ctTextCharacterProperties = ctTextBody.addNewP().addNewPPr().addNewDefRPr();
+//            ctTextCharacterProperties.setU(STTextUnderlineType.NONE);
+//            ctTextCharacterProperties.setStrike(STTextStrikeType.NO_STRIKE);
+//            ctTextCharacterProperties.setSz(900);
+//            ctTextCharacterProperties.setB(false);
+//            ctTextCharacterProperties.setI(false);
+//            ctTextCharacterProperties.setBaseline(0);
+//            ctTextCharacterProperties.setKern(1200);
+//            CTSchemeColor ctSchemeColor = ctTextCharacterProperties.addNewSolidFill().addNewSchemeClr();
+//            ctSchemeColor.setVal(STSchemeColorVal.TX_1);
+//            ctSchemeColor.addNewLumMod().setVal(65000);
+//            ctSchemeColor.addNewLumOff().setVal(35000);
+
+
+            CTValAx ctValAx = ctPlotArea.addNewValAx();
+            ctValAx.addNewAxId().setVal(123457);
+            ctValAx.addNewScaling().addNewOrientation().setVal(MIN_MAX);
+            ctValAx.addNewDelete().setVal(false);
+            ctValAx.addNewAxPos().setVal(STAxPos.L);
+            ctValAx.addNewCrossAx().setVal(123456);
+            ctValAx.addNewMajorTickMark().setVal(STTickMark.NONE);
+            ctValAx.addNewMinorTickMark().setVal(STTickMark.NONE);
+            ctValAx.addNewTickLblPos().setVal(NEXT_TO);
+//            ctValAx.addNewCrosses().setVal(STCrosses.AUTO_ZERO);
+//            ctValAx.addNewCrossBetween().setVal(STCrossBetween.BETWEEN);
+            // 设置网格线
+            CTShapeProperties ctShapeProperties = ctValAx.addNewMajorGridlines().addNewSpPr();
+            CTLineProperties ctLineProperties1 = ctShapeProperties.addNewLn();
+            ctLineProperties1.setW(9525);
+            ctLineProperties1.setCap(STLineCap.FLAT);
+            ctLineProperties1.setCmpd(STCompoundLine.SNG);
+            ctLineProperties1.setAlgn(STPenAlignment.CTR);
+            // 值的纵坐标线，不显示
+            ctValAx.addNewSpPr().addNewLn().addNewNoFill();
+            // 值的纵坐标值，不显示
+            ctValAx.addNewTxPr().addNewP().addNewPPr().addNewDefRPr().addNewNoFill();
+
+            System.out.println(ctChart);
+
+            FileOutputStream outputStream =
+                    new FileOutputStream(&quot;C:\\Users\\user\\Desktop\\out.xlsx&quot;);
+            workbook.write(outputStream);
+            outputStream.flush();
+            outputStream.close();
+        }
+    }</code></pre>
+<h2 id="三、XML结构"><a href="#三、XML结构" class="headerlink" title="三、XML结构"></a>三、XML结构</h2><p>以上生成的图表，归根结底是属于XML的一种，通过 <code>RadarChart</code> 的继承关系可以看到，它其实是 <code>XmlObject</code>的一种实现。</p>
+<pre><code class="xml">&lt;xml-fragment xmlns:char=&quot;http://schemas.openxmlformats.org/drawingml/2006/chart&quot; xmlns:main=&quot;http://schemas.openxmlformats.org/drawingml/2006/main&quot;&gt;
+  &lt;char:autoTitleDeleted val=&quot;false&quot;/&gt;
+  &lt;char:plotArea&gt;
+    &lt;char:layout/&gt;
+  &lt;/char:plotArea&gt;
+  &lt;char:plotArea&gt;
+    &lt;char:layout/&gt;
+    &lt;char:radarChart&gt;
+      &lt;char:radarStyle val=&quot;marker&quot;/&gt;
+      &lt;char:varyColors val=&quot;false&quot;/&gt;
+      &lt;char:ser&gt;
+        &lt;char:idx val=&quot;0&quot;/&gt;
+        &lt;char:order val=&quot;0&quot;/&gt;
+        &lt;char:spPr&gt;
+          &lt;main:ln&gt;
+            &lt;main:solidFill&gt;
+              &lt;main:schemeClr val=&quot;accent1&quot;/&gt;
+            &lt;/main:solidFill&gt;
+            &lt;main:round/&gt;
+          &lt;/main:ln&gt;
+        &lt;/char:spPr&gt;
+        &lt;char:cat&gt;
+          &lt;char:strRef&gt;
+            &lt;char:f&gt;RadarChart!$A$1:$A$6&lt;/char:f&gt;
+          &lt;/char:strRef&gt;
+        &lt;/char:cat&gt;
+        &lt;char:val&gt;
+          &lt;char:numRef&gt;
+            &lt;char:f&gt;RadarChart!$B$2:$B$6&lt;/char:f&gt;
+          &lt;/char:numRef&gt;
+        &lt;/char:val&gt;
+      &lt;/char:ser&gt;
+      &lt;char:dLbls&gt;
+        &lt;char:showLegendKey val=&quot;false&quot;/&gt;
+        &lt;char:showVal val=&quot;false&quot;/&gt;
+        &lt;char:showCatName val=&quot;false&quot;/&gt;
+        &lt;char:showSerName val=&quot;false&quot;/&gt;
+        &lt;char:showPercent val=&quot;false&quot;/&gt;
+        &lt;char:showBubbleSize val=&quot;false&quot;/&gt;
+      &lt;/char:dLbls&gt;
+      &lt;char:axId val=&quot;123456&quot;/&gt;
+      &lt;char:axId val=&quot;123457&quot;/&gt;
+    &lt;/char:radarChart&gt;
+    &lt;char:catAx&gt;
+      &lt;char:axId val=&quot;123456&quot;/&gt;
+      &lt;char:scaling&gt;
+        &lt;char:orientation val=&quot;minMax&quot;/&gt;
+      &lt;/char:scaling&gt;
+      &lt;char:delete val=&quot;false&quot;/&gt;
+      &lt;char:axPos val=&quot;b&quot;/&gt;
+      &lt;char:majorTickMark val=&quot;none&quot;/&gt;
+      &lt;char:minorTickMark val=&quot;none&quot;/&gt;
+      &lt;char:tickLblPos val=&quot;nextTo&quot;/&gt;
+      &lt;char:crossAx val=&quot;123457&quot;/&gt;
+    &lt;/char:catAx&gt;
+    &lt;char:valAx&gt;
+      &lt;char:axId val=&quot;123457&quot;/&gt;
+      &lt;char:scaling&gt;
+        &lt;char:orientation val=&quot;minMax&quot;/&gt;
+      &lt;/char:scaling&gt;
+      &lt;char:delete val=&quot;false&quot;/&gt;
+      &lt;char:axPos val=&quot;l&quot;/&gt;
+      &lt;char:majorGridlines&gt;
+        &lt;char:spPr&gt;
+          &lt;main:ln w=&quot;9525&quot; cap=&quot;flat&quot; cmpd=&quot;sng&quot; algn=&quot;ctr&quot;/&gt;
+        &lt;/char:spPr&gt;
+      &lt;/char:majorGridlines&gt;
+      &lt;char:majorTickMark val=&quot;none&quot;/&gt;
+      &lt;char:minorTickMark val=&quot;none&quot;/&gt;
+      &lt;char:tickLblPos val=&quot;nextTo&quot;/&gt;
+      &lt;char:spPr&gt;
+        &lt;main:ln&gt;
+          &lt;main:noFill/&gt;
+        &lt;/main:ln&gt;
+      &lt;/char:spPr&gt;
+      &lt;char:txPr&gt;
+        &lt;main:p&gt;
+          &lt;main:pPr&gt;
+            &lt;main:defRPr&gt;
+              &lt;main:noFill/&gt;
+            &lt;/main:defRPr&gt;
+          &lt;/main:pPr&gt;
+        &lt;/main:p&gt;
+      &lt;/char:txPr&gt;
+      &lt;char:crossAx val=&quot;123456&quot;/&gt;
+    &lt;/char:valAx&gt;
+  &lt;/char:plotArea&gt;
+  &lt;char:plotVisOnly val=&quot;true&quot;/&gt;
+&lt;/xml-fragment&gt;</code></pre>
+<h2 id="四、工具类，我放在-POI生成原生图表-工具类-中"><a href="#四、工具类，我放在-POI生成原生图表-工具类-中" class="headerlink" title="四、工具类，我放在 POI生成原生图表-工具类 中"></a>四、工具类，我放在 <a href="www.baidu.com">POI生成原生图表-工具类</a> 中</h2></div><hr></div><div class="recent-post-item article-container"><a class="article-title" href="/2018/09/01/后端/SpringBootWebsocket/SpringBoot消息机制(四)-ActiveMQ介绍/">SpringBoot消息机制(四)-ActiveMQ介绍</a><time class="post-meta__date"><i class="fa fa-calendar" aria-hidden="true"></i> 2018-09-01</time><span class="article-meta"><span class="article-meta__separator">|</span><i class="fa fa-inbox article-meta__icon" aria-hidden="true"></i><a class="article-meta__categories" href="/categories/Java/">Java</a></span><span class="article-meta tags"><span class="article-meta__separator">|</span><i class="fa fa-tag article-meta__icon" aria-hidden="true"></i><a class="article-meta__tags" href="/tags/MQ/">MQ</a></span><div class="content"><p>#SpringBoot消息机制(四)-ActiveMQ介绍</p>
+</div><hr></div><div class="recent-post-item article-container"><a class="article-title" href="/2018/09/01/后端/POI/POI生成原生Excel-工具类/">POI生成原生Excel-工具类</a><time class="post-meta__date"><i class="fa fa-calendar" aria-hidden="true"></i> 2018-09-01</time><span class="article-meta"><span class="article-meta__separator">|</span><i class="fa fa-inbox article-meta__icon" aria-hidden="true"></i><a class="article-meta__categories" href="/categories/Java/">Java</a></span><span class="article-meta tags"><span class="article-meta__separator">|</span><i class="fa fa-tag article-meta__icon" aria-hidden="true"></i><a class="article-meta__tags" href="/tags/POI/">POI</a></span><div class="content"><h1 id="POI生成原生Excel-工具类"><a href="#POI生成原生Excel-工具类" class="headerlink" title="POI生成原生Excel-工具类"></a>POI生成原生Excel-工具类</h1><pre><code class="java">package com.pgc.diagnose.utils;
+
+import org.apache.poi.xssf.usermodel.XSSFChart;
+import org.apache.poi.xssf.usermodel.XSSFClientAnchor;
+import org.apache.poi.xssf.usermodel.XSSFDrawing;
+import org.apache.poi.xssf.usermodel.XSSFSheet;
+import org.openxmlformats.schemas.drawingml.x2006.chart.*;
+import org.openxmlformats.schemas.drawingml.x2006.main.*;
+
+import java.util.Iterator;
+import java.util.List;
+
+import static org.openxmlformats.schemas.drawingml.x2006.chart.STOrientation.MIN_MAX;
+import static org.openxmlformats.schemas.drawingml.x2006.chart.STTickLblPos.NEXT_TO;
+
+public class DrawUtils {
+
+    public static void drawRadarChart(XSSFSheet sheet, Position start, Position end,
+                                      List&lt;String&gt; dataRef) {
+        XSSFDrawing drawing = sheet.createDrawingPatriarch();
+        XSSFClientAnchor anchor = drawing.createAnchor(0, 0, 100, 50, start.getX(), start.getY(), end.getX(), end.getY());
+        XSSFChart chart = drawing.createChart(anchor);
+
+        CTChart ctChart = chart.getCTChart();
+        CTPlotArea ctPlotArea = ctChart.addNewPlotArea();
+
+        CTRadarChart ctRadarChart = ctPlotArea.addNewRadarChart();
+        // 不允许自定义颜色、以及标记的形状
+//        ctRadarChart.addNewRadarStyle().setVal(STRadarStyle.MARKER);
+        ctRadarChart.addNewVaryColors().setVal(false);
+
+        setAxIds(ctRadarChart);
+        setCatAx(ctPlotArea);
+        setRadarValAx(ctPlotArea);
+        setDataLabel(ctRadarChart);
+        paddingData(ctRadarChart, dataRef);
+    }
+
+    /**
+     * 散点图
+     */
+    public static void drawScatterChart(XSSFSheet sheet, Position start, Position end,
+                                        List&lt;String&gt; dataRef) {
+        XSSFDrawing drawing = sheet.createDrawingPatriarch();
+        XSSFClientAnchor anchor = drawing.createAnchor(0, 0, 100, 50, start.getX(), start.getY(), end.getX(), end.getY());
+
+        XSSFChart chart = drawing.createChart(anchor);
+        chart.setTitleText(sheet.getSheetName());
+
+        CTChart ctChart = chart.getCTChart();
+        CTPlotArea ctPlotArea = ctChart.getPlotArea();
+
+        CTScatterChart scatterChart = ctPlotArea.addNewScatterChart();
+        scatterChart.addNewVaryColors().setVal(true);
+
+        setAxIds(scatterChart);
+        setCatAx(ctPlotArea);
+        setScatterValAx(ctPlotArea);
+        setDataLabel(scatterChart);
+        paddingData(scatterChart, dataRef);
+        // 去掉连接线
+        ctPlotArea.getScatterChartArray(0).getSerArray(0).addNewSpPr().addNewLn().addNewNoFill();
+    }
+
+    /**
+     * 折线图
+     */
+    public static void drawCTLineChart(XSSFSheet sheet, Position start, Position end, List&lt;String&gt; xString, List&lt;String&gt; serTxName,
+                                       List&lt;String&gt; dataRef) {
+        // todo 折线图换成堆叠图
+        XSSFDrawing drawing = sheet.createDrawingPatriarch();
+        XSSFClientAnchor anchor = drawing.createAnchor(0, 0, 0, 0, start.getX(), start.getY(), end.getX(), end.getY());
+
+        XSSFChart chart = drawing.createChart(anchor);
+
+        CTChart ctChart = chart.getCTChart();
+        CTPlotArea ctPlotArea = ctChart.getPlotArea();
+        CTLineChart ctLineChart = ctPlotArea.addNewLineChart();
+
+        ctLineChart.addNewVaryColors().setVal(true);
+
+        // telling the Chart that it has axis and giving them Ids
+        setAxIds(ctLineChart);
+        // set cat axis
+        setCatAx(ctPlotArea);
+        // set val axis
+        setValAx(ctPlotArea);
+        // legend
+        setLegend(ctChart);
+        // set data lable
+        setDataLabel(ctLineChart);
+        // set chart title
+        setChartTitle(chart, sheet.getSheetName());
+
+        paddingData(ctLineChart, xString, serTxName, dataRef);
+    }
+
+    /*
+     * @param position 图表坐标 起始行，起始列，终点行
+     *
+     * @param xString 横坐标
+     *
+     * @param serTxName 图形示例
+     *
+     * @param dataRef 柱状图数据范围 sheetName!$A$1:$A$12
+     */
+    public static void drawBarChart(XSSFSheet sheet, Position start, Position end, List&lt;String&gt; xString, List&lt;String&gt; serTxName,
+                                    List&lt;String&gt; dataRef) {
+
+        XSSFDrawing drawing = sheet.createDrawingPatriarch();
+        XSSFClientAnchor anchor = drawing.createAnchor(0, 0, 0, 0, start.getX(), start.getY(), end.getX(), end.getY());
+
+        XSSFChart chart = drawing.createChart(anchor);
+
+        CTChart ctChart = chart.getCTChart();
+        CTPlotArea ctPlotArea = ctChart.getPlotArea();
+        CTBarChart ctBarChart = ctPlotArea.addNewBarChart();
+
+        ctBarChart.addNewVaryColors().setVal(false);
+        ctBarChart.addNewBarDir().setVal(STBarDir.COL);
+
+        // telling the Chart that it has axis and giving them Ids
+        setAxIds(ctBarChart);
+        // set cat axis
+        setCatAx(ctPlotArea);
+        // set val axis
+        setValAx(ctPlotArea);
+        // add legend and set legend position
+        setLegend(ctChart);
+        // set data lable
+        setDataLabel(ctBarChart);
+        // set chart title
+        setChartTitle(chart, sheet.getSheetName());
+        // padding data to chart
+        paddingData(ctBarChart, xString, serTxName, dataRef);
+    }
+
+    private static void paddingData(CTBarChart ctBarChart, List&lt;String&gt; xString, List&lt;String&gt; serTxName,
+                                    List&lt;String&gt; dataRef) {
+        Iterator&lt;String&gt; iterator = serTxName.iterator();
+        for (int r = 0, len = dataRef.size(); r &lt; len &amp;&amp; iterator.hasNext(); r++) {
+            CTBarSer ctBarSer = ctBarChart.addNewSer();
+
+            ctBarSer.addNewIdx().setVal(r);
+            // set legend value
+            setLegend(iterator.next(), ctBarSer.addNewTx());
+            // cat ax value
+            setChartCatAxLabel(ctBarSer.addNewCat(), xString);
+            // value range
+            ctBarSer.addNewVal().addNewNumRef().setF(dataRef.get(r));
+            // add border to chart
+            ctBarSer.addNewSpPr().addNewLn().addNewSolidFill().addNewSrgbClr().setVal(new byte[]{0, 0, 0});
+        }
+    }
+
+    private static void setLegend(String str, CTSerTx ctSerTx) {
+        if (str.contains(&quot;$&quot;))
+            // set legend by str ref
+            ctSerTx.addNewStrRef().setF(str);
+        else
+            // set legend by str
+            ctSerTx.setV(str);
+    }
+
+    private static void paddingData(CTLineChart ctLineChart, List&lt;String&gt; xString, List&lt;String&gt; serTxName,
+                                    List&lt;String&gt; dataRef) {
+        Iterator&lt;String&gt; iterator = serTxName.iterator();
+        for (int r = 0, len = dataRef.size(); r &lt; len &amp;&amp; iterator.hasNext(); r++) {
+            CTLineSer ctLineSer = ctLineChart.addNewSer();
+            ctLineSer.addNewIdx().setVal(r);
+            setLegend(iterator.next(), ctLineSer.addNewTx());
+            setChartCatAxLabel(ctLineSer.addNewCat(), xString);
+            ctLineSer.addNewVal().addNewNumRef().setF(dataRef.get(r));
+            ctLineSer.addNewSpPr().addNewLn().addNewSolidFill().addNewSrgbClr().setVal(new byte[]{0, 0, 0});
+        }
+    }
+
+    private static void paddingData(CTScatterChart scatterChart, List&lt;String&gt; dataRef) {
+        // 设置散点图内的信息
+        CTScatterSer ctScatterSer = scatterChart.addNewSer();
+        ctScatterSer.addNewIdx().setVal(0);
+        ctScatterSer.addNewOrder().setVal(0);
+        // 设置标记的样式
+        CTMarker ctMarker = ctScatterSer.addNewMarker();
+        ctMarker.addNewSymbol().setVal(STMarkerStyle.Enum.forInt(3));
+        ctMarker.addNewSize().setVal((short) 8);
+        CTShapeProperties ctShapeProperties1 = ctMarker.addNewSpPr();
+        ctShapeProperties1.addNewSolidFill().addNewSchemeClr().setVal(STSchemeColorVal.Enum.forInt(5));
+        CTLineProperties ctLineProperties1 = ctShapeProperties1.addNewLn();
+        ctLineProperties1.setW(9525);
+        ctLineProperties1.addNewSolidFill().addNewSchemeClr().setVal(STSchemeColorVal.Enum.forInt(5));
+
+        CTNumDataSource ctNumDataSource = ctScatterSer.addNewYVal();
+        CTNumRef ctNumRef = ctNumDataSource.addNewNumRef();
+        ctNumRef.setF(dataRef.get(0));
+    }
+
+    private static void paddingData(CTRadarChart ctRadarChart, List&lt;String&gt; dataRef) {
+        CTRadarSer ctRadarSer = ctRadarChart.addNewSer();
+        ctRadarSer.addNewIdx().setVal(0);
+        ctRadarSer.addNewOrder().setVal(0);
+        CTLineProperties ctLineProperties = ctRadarSer.addNewSpPr().addNewLn();
+        ctLineProperties.addNewRound();
+        ctLineProperties.addNewSolidFill().addNewSchemeClr().setVal(STSchemeColorVal.ACCENT_1);
+        // 渲染数据
+        ctRadarSer.addNewCat().addNewStrRef().setF(dataRef.get(0));
+        ctRadarSer.addNewVal().addNewNumRef().setF(dataRef.get(1));
+    }
+
+    private static void setChartCatAxLabel(CTAxDataSource cttAxDataSource, List&lt;String&gt; xString) {
+        if (xString.size() == 1) {
+            cttAxDataSource.addNewStrRef().setF(xString.get(0));
+        } else {
+            CTStrData ctStrData = cttAxDataSource.addNewStrLit();
+            for (int m = 0, xlen = xString.size(); m &lt; xlen; m++) {
+                CTStrVal ctStrVal = ctStrData.addNewPt();
+                ctStrVal.setIdx((long) m);
+                ctStrVal.setV(xString.get(m));
+            }
+        }
+    }
+
+    private static void setDataLabel(CTBarChart ctBarChart) {
+        setDLShowOpts(ctBarChart.addNewDLbls());
+    }
+
+    private static void setDataLabel(CTLineChart ctLineChart) {
+        CTDLbls dlbls = ctLineChart.addNewDLbls();
+        setDLShowOpts(dlbls);
+        setDLPosition(dlbls, null);
+    }
+
+    /**
+     * 设置散点图各图例的显示
+     */
+    private static void setDataLabel(CTScatterChart scatterChart) {
+        CTDLbls ctdLbls = scatterChart.addNewDLbls();
+        ctdLbls.addNewShowVal().setVal(true);
+        ctdLbls.addNewShowLegendKey().setVal(false);
+        ctdLbls.addNewShowSerName().setVal(false);
+        ctdLbls.addNewShowCatName().setVal(false);
+        ctdLbls.addNewShowPercent().setVal(false);
+        ctdLbls.addNewShowBubbleSize().setVal(false);
+    }
+
+    private static void setDataLabel(CTRadarChart ctRadarChart) {
+        // 分类标签等是否显示
+        CTDLbls ctdLbls = ctRadarChart.addNewDLbls();
+        ctdLbls.addNewShowLegendKey().setVal(false);
+        ctdLbls.addNewShowVal().setVal(false);
+        ctdLbls.addNewShowCatName().setVal(false);
+        ctdLbls.addNewShowSerName().setVal(false);
+        ctdLbls.addNewShowPercent().setVal(false);
+        ctdLbls.addNewShowBubbleSize().setVal(false);
+    }
+
+    private static void setDLPosition(CTDLbls dlbls, STDLblPos.Enum e) {
+        if (e == null)
+            dlbls.addNewDLblPos().setVal(STDLblPos.T);
+        else
+            dlbls.addNewDLblPos().setVal(e);
+    }
+
+    private static void setDLShowOpts(CTDLbls dlbls) {
+        // 添加图形示例的字符串
+        dlbls.addNewShowSerName().setVal(false);
+        // 添加x轴的坐标字符
+        dlbls.addNewShowCatName().setVal(false);
+        // 添加图形示例的图
+        dlbls.addNewShowLegendKey().setVal(false);
+        // 添加x对应y的---
+        // dlbls.addNewShowVal().setVal(false);
+    }
+
+    private static void setAxIds(CTRadarChart ctRadarChart) {
+        ctRadarChart.addNewAxId().setVal(123456);
+        ctRadarChart.addNewAxId().setVal(123457);
+    }
+
+    private static void setAxIds(CTBarChart ctBarChart) {
+        ctBarChart.addNewAxId().setVal(123456);
+        ctBarChart.addNewAxId().setVal(123457);
+    }
+
+    private static void setAxIds(CTLineChart ctLineChart) {
+        ctLineChart.addNewAxId().setVal(123456);
+        ctLineChart.addNewAxId().setVal(123457);
+    }
+
+    private static void setAxIds(CTScatterChart scatterChart) {
+        scatterChart.addNewAxId().setVal(123456);
+        scatterChart.addNewAxId().setVal(123457);
+    }
+
+    private static void setLegend(CTChart ctChart) {
+        CTLegend ctLegend = ctChart.addNewLegend();
+        ctLegend.addNewLegendPos().setVal(STLegendPos.B);
+        ctLegend.addNewOverlay().setVal(false);
+    }
+
+    private static void setCatAx(CTPlotArea ctPlotArea) {
+        CTCatAx ctCatAx = ctPlotArea.addNewCatAx();
+        ctCatAx.addNewAxId().setVal(123456); // id of the cat axis
+        CTScaling ctScaling = ctCatAx.addNewScaling();
+        ctScaling.addNewOrientation().setVal(STOrientation.MIN_MAX);
+        ctCatAx.addNewDelete().setVal(false);
+        ctCatAx.addNewAxPos().setVal(STAxPos.B);
+        ctCatAx.addNewCrossAx().setVal(123457); // id of the val axis
+        ctCatAx.addNewTickLblPos().setVal(STTickLblPos.NEXT_TO);
+    }
+
+    private static void setScatterValAx(CTPlotArea ctPlotArea) {
+        // 设置Y坐标
+        CTValAx ctValAx = ctPlotArea.addNewValAx();
+        ctValAx.addNewAxId().setVal(123457);
+        CTScaling ctScaling1 = ctValAx.addNewScaling();
+        ctScaling1.addNewOrientation().setVal(MIN_MAX);
+        ctValAx.addNewDelete().setVal(false);
+        ctValAx.addNewAxPos().setVal(STAxPos.B);
+        ctValAx.addNewCrossAx().setVal(123456);
+        // Y轴的对比线
+        CTShapeProperties ctShapeProperties = ctValAx.addNewMajorGridlines().addNewSpPr();
+        CTLineProperties ctLineProperties = ctShapeProperties.addNewLn();
+        ctLineProperties.setW(9525);
+        ctLineProperties.setCap(STLineCap.Enum.forInt(3));
+        ctLineProperties.setCmpd(STCompoundLine.Enum.forInt(1));
+        ctLineProperties.setAlgn(STPenAlignment.Enum.forInt(1));
+        // 不显示Y轴上的坐标刻度线
+        ctValAx.addNewMajorTickMark().setVal(STTickMark.NONE);
+        ctValAx.addNewMinorTickMark().setVal(STTickMark.NONE);
+        ctValAx.addNewTickLblPos().setVal(NEXT_TO);
+    }
+
+    private static void setRadarValAx(CTPlotArea ctPlotArea) {
+        CTValAx ctValAx = ctPlotArea.addNewValAx();
+        ctValAx.addNewAxId().setVal(123457);
+        ctValAx.addNewScaling().addNewOrientation().setVal(MIN_MAX);
+        ctValAx.addNewDelete().setVal(false);
+        ctValAx.addNewAxPos().setVal(STAxPos.L);
+        ctValAx.addNewCrossAx().setVal(123456);
+        ctValAx.addNewMajorTickMark().setVal(STTickMark.NONE);
+        ctValAx.addNewMinorTickMark().setVal(STTickMark.NONE);
+        ctValAx.addNewTickLblPos().setVal(NEXT_TO);
+        // 设置网格线
+        CTShapeProperties ctShapeProperties = ctValAx.addNewMajorGridlines().addNewSpPr();
+        CTLineProperties ctLineProperties1 = ctShapeProperties.addNewLn();
+        ctLineProperties1.setW(9525);
+        ctLineProperties1.setCap(STLineCap.FLAT);
+        ctLineProperties1.setCmpd(STCompoundLine.SNG);
+        ctLineProperties1.setAlgn(STPenAlignment.CTR);
+        // 值的纵坐标线，不显示
+        ctValAx.addNewSpPr().addNewLn().addNewNoFill();
+        // 值的纵坐标值，不显示
+        ctValAx.addNewTxPr().addNewP().addNewPPr().addNewDefRPr().addNewNoFill();
+    }
+
+    // 不要y轴的标签，或者y轴尽可能的窄
+    private static void setValAx(CTPlotArea ctPlotArea) {
+        CTValAx ctValAx = ctPlotArea.addNewValAx();
+        ctValAx.addNewAxId().setVal(123457); // id of the val axis
+        CTScaling ctScaling = ctValAx.addNewScaling();
+        ctScaling.addNewOrientation().setVal(STOrientation.MIN_MAX);
+        // 不现实y轴
+//        ctValAx.addNewDelete().setVal(true);
+        ctValAx.addNewAxPos().setVal(STAxPos.L);
+        ctValAx.addNewCrossAx().setVal(123456); // id of the cat axis
+        ctValAx.addNewTickLblPos().setVal(STTickLblPos.NEXT_TO);
+    }
+
+    // 图标标题
+    private static void setChartTitle(XSSFChart xchart, String titleStr) {
+        CTChart ctChart = xchart.getCTChart();
+
+        CTTitle title = CTTitle.Factory.newInstance();
+        CTTx cttx = title.addNewTx();
+        CTStrData sd = CTStrData.Factory.newInstance();
+        CTStrVal str = sd.addNewPt();
+        str.setIdx(123459);
+        str.setV(titleStr);
+        cttx.addNewStrRef().setStrCache(sd);
+
+        ctChart.setTitle(title);
+    }
+}
+</code></pre>
 </div><hr></div><nav id="pagination"><div class="pagination"><a class="extend prev" rel="prev" href="/page/44/"><i class="fa fa-chevron-left"></i></a><a class="page-number" href="/">1</a><span class="space">&hellip;</span><a class="page-number" href="/page/44/">44</a><span class="page-number current">45</span><a class="page-number" href="/page/46/">46</a><span class="space">&hellip;</span><a class="page-number" href="/page/49/">49</a><a class="extend next" rel="next" href="/page/46/"><i class="fa fa-chevron-right"></i></a></div></nav></div></div><footer><div class="layout" id="footer"><div class="copyright">&copy;2013 - 2020 By koral</div><div class="framework-info"><span>驱动 - </span><a href="http://hexo.io"><span>Hexo</span></a><span class="footer-separator">|</span><span>主题 - </span><a href="https://github.com/Molunerfinn/hexo-theme-melody"><span>Melody</span></a></div><div class="busuanzi"><script async src="//busuanzi.ibruce.info/busuanzi/2.3/busuanzi.pure.mini.js"></script><span id="busuanzi_container_site_uv"><i class="fa fa-user"></i><span id="busuanzi_value_site_uv"></span><span></span></span><span class="footer-separator">|</span><span id="busuanzi_container_site_pv"><i class="fa fa-eye"></i><span id="busuanzi_value_site_pv"></span><span></span></span></div></div></footer><i class="fa fa-arrow-up" id="go-up" aria-hidden="true"></i><script src="https://cdn.jsdelivr.net/npm/animejs@latest/anime.min.js"></script><script src="https://cdn.jsdelivr.net/npm/jquery@latest/dist/jquery.min.js"></script><script src="https://cdn.jsdelivr.net/npm/@fancyapps/fancybox@latest/dist/jquery.fancybox.min.js"></script><script src="https://cdn.jsdelivr.net/npm/velocity-animate@latest/velocity.min.js"></script><script src="https://cdn.jsdelivr.net/npm/velocity-ui-pack@latest/velocity.ui.min.js"></script><script src="/js/utils.js?version=1.7.0"></script><script src="/js/fancybox.js?version=1.7.0"></script><script src="/js/sidebar.js?version=1.7.0"></script><script src="/js/copy.js?version=1.7.0"></script><script src="/js/fireworks.js?version=1.7.0"></script><script src="/js/transition.js?version=1.7.0"></script><script src="/js/scroll.js?version=1.7.0"></script><script src="/js/head.js?version=1.7.0"></script><script>if(/Android|webOS|iPhone|iPod|iPad|BlackBerry/i.test(navigator.userAgent)) {
   $('#nav').addClass('is-mobile')
   $('footer').addClass('is-mobile')

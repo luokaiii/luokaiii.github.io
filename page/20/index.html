@@ -7,102 +7,7 @@
     error: '复制错误',
     noSupport: '浏览器不支持'
   }
-} </script></head><body><i class="fa fa-arrow-right" id="toggle-sidebar" aria-hidden="true"></i><div id="sidebar" data-display="false"><div class="author-info"><div class="author-info__avatar text-center"><img src="/img/avatar.png"></div><div class="author-info__name text-center">koral</div><div class="author-info__description text-center">描述</div><hr><div class="author-info-articles"><a class="author-info-articles__archives article-meta" href="/archives"><span class="pull-left">文章</span><span class="pull-right">243</span></a><a class="author-info-articles__tags article-meta" href="/tags"><span class="pull-left">标签</span><span class="pull-right">22</span></a><a class="author-info-articles__categories article-meta" href="/categories"><span class="pull-left">分类</span><span class="pull-right">19</span></a></div></div></div><nav class="no-bg" id="nav"><div id="page-header"><span class="pull-left"> <a id="site-name" href="/">凯</a></span><i class="fa fa-bars toggle-menu pull-right" aria-hidden="true"></i><span class="pull-right menus">   <a class="site-page" href="/">Home</a><a class="site-page" href="/archives">Archives</a><a class="site-page" href="/tags">Tags</a><a class="site-page" href="/categories">Categories</a></span><span class="pull-right"></span></div><div id="site-info"><div id="site-title">凯</div><div id="site-sub-title">凯</div></div></nav><div id="content-outer"><div class="layout" id="content-inner"><div class="recent-post-item article-container"><a class="article-title" href="/2019/07/22/读书笔记/《SpringSecurity》/10.过滤器链/">《Spring Security》第十章 SpringSecurity中的过滤器链</a><time class="post-meta__date"><i class="fa fa-calendar" aria-hidden="true"></i> 2019-07-22</time><span class="article-meta"><span class="article-meta__separator">|</span><i class="fa fa-inbox article-meta__icon" aria-hidden="true"></i><a class="article-meta__categories" href="/categories/Spring-Security/">Spring Security</a></span><span class="article-meta tags"><span class="article-meta__separator">|</span><i class="fa fa-tag article-meta__icon" aria-hidden="true"></i><a class="article-meta__tags" href="/tags/读书笔记/">读书笔记</a></span><div class="content"><h1 id="第十章-SpringSecurity中的过滤器链"><a href="#第十章-SpringSecurity中的过滤器链" class="headerlink" title="第十章 SpringSecurity中的过滤器链"></a>第十章 SpringSecurity中的过滤器链</h1><p>Spring Security 的 web 基础完全是基于标准的 servlet 过滤器的，它在内部不使用 servlet 或任何基于 servlet 的框架(如SpringMVC)，因此它与任何特定的 web 技术都没有特别强的关联。</p>
-<p>Spring Security 不关心请求是来自于 浏览器、web服务器、HttpInvoker 还是 ajax应用。</p>
-<p>在 Spring Security 的 HttpSecurityBuilder 类的 addFilter(Filter filter) 上，存在这样一段注解：</p>
-<pre><code class="java">    /**
-     * Adds a {@link Filter} that must be an instance of or extend one of the Filters
-     * provided within the Security framework. The method ensures that the ordering of the
-     * Filters is automatically taken care of.
-     *
-     * The ordering of the Filters is:
-     *
-     * &lt;ul&gt;
-     * &lt;li&gt;{@link ChannelProcessingFilter}&lt;/li&gt;
-     * &lt;li&gt;{@link ConcurrentSessionFilter}&lt;/li&gt;
-     * &lt;li&gt;{@link SecurityContextPersistenceFilter}&lt;/li&gt;
-     * &lt;li&gt;{@link LogoutFilter}&lt;/li&gt;
-     * &lt;li&gt;{@link X509AuthenticationFilter}&lt;/li&gt;
-     * &lt;li&gt;{@link AbstractPreAuthenticatedProcessingFilter}&lt;/li&gt;
-     * &lt;li&gt;&lt;a href=&quot;{@docRoot}/org/springframework/security/cas/web/CasAuthenticationFilter.html&quot;&gt;CasAuthenticationFilter&lt;/a&gt;&lt;/li&gt;
-     * &lt;li&gt;{@link UsernamePasswordAuthenticationFilter}&lt;/li&gt;
-     * &lt;li&gt;{@link ConcurrentSessionFilter}&lt;/li&gt;
-     * &lt;li&gt;{@link OpenIDAuthenticationFilter}&lt;/li&gt;
-     * &lt;li&gt;{@link org.springframework.security.web.authentication.ui.DefaultLoginPageGeneratingFilter}&lt;/li&gt;
-     * &lt;li&gt;{@link ConcurrentSessionFilter}&lt;/li&gt;
-     * &lt;li&gt;{@link DigestAuthenticationFilter}&lt;/li&gt;
-     * &lt;li&gt;{@link BasicAuthenticationFilter}&lt;/li&gt;
-     * &lt;li&gt;{@link RequestCacheAwareFilter}&lt;/li&gt;
-     * &lt;li&gt;{@link SecurityContextHolderAwareRequestFilter}&lt;/li&gt;
-     * &lt;li&gt;{@link JaasApiIntegrationFilter}&lt;/li&gt;
-     * &lt;li&gt;{@link RememberMeAuthenticationFilter}&lt;/li&gt;
-     * &lt;li&gt;{@link AnonymousAuthenticationFilter}&lt;/li&gt;
-     * &lt;li&gt;{@link SessionManagementFilter}&lt;/li&gt;
-     * &lt;li&gt;{@link ExceptionTranslationFilter}&lt;/li&gt;
-     * &lt;li&gt;{@link FilterSecurityInterceptor}&lt;/li&gt;
-     * &lt;li&gt;{@link SwitchUserFilter}&lt;/li&gt;
-     * &lt;/ul&gt;
-     *
-     * @param filter the {@link Filter} to add
-     * @return the {@link HttpSecurity} for further customizations
-     */
-    H addFilter(Filter filter);</code></pre>
-<h3 id="DelegatingFilterProxy"><a href="#DelegatingFilterProxy" class="headerlink" title="DelegatingFilterProxy"></a>DelegatingFilterProxy</h3><p>在 Spring Security 中，过滤器类也是在应用上下文中定义的 Bean，因此能够充分利用 Spring 的依赖注入工具和生命周期接口。</p>
-<p>DelegatingFilterProxy 提供了 web.xml 和应用程序上下文之间的关联。</p>
-<pre><code class="xml">&lt;!-- 当使用DelegatingFilterProxy时，可以在 web.xml 中看到如下内容 --&gt;
-&lt;filter&gt;
-    &lt;filter-name&gt;myFilter&lt;/filter-name&gt;
-    &lt;filter-class&gt;org.springframework.web.filter.DelegatingFilterProxy&lt;/filter-class&gt;
-&lt;/filter&gt;
-
-&lt;filter-mapping&gt;
-    &lt;filter-name&gt;myFilter&lt;/filter-name&gt;
-    &lt;url-pattern&gt;/*&lt;/url-pattern&gt;
-&lt;/filter-mapping&gt;</code></pre>
-<h3 id="Filter-Ordering-过滤器的顺序"><a href="#Filter-Ordering-过滤器的顺序" class="headerlink" title="Filter Ordering 过滤器的顺序"></a>Filter Ordering 过滤器的顺序</h3><ol>
-<li>ChannelProcessingFilter<ol>
-<li>可以重定向到不同的协议</li>
-</ol>
-</li>
-<li>SecurityContextPersistenceFilter<ol>
-<li>在web请求开始及结束时，将HttpSession复制到SecurityContext</li>
-</ol>
-</li>
-<li>ConcurrentSessionFilter<ol>
-<li>当session更新时，通过 SessionRegistry 来更新 SecurityContextHolder</li>
-<li>并更新 Principal</li>
-</ol>
-</li>
-<li>Authentication processing machanisms<ol>
-<li>认证处理机制</li>
-<li>UsernamePasswordAuthenticationFilter、CasAuthenticationFilter、BasicAuthenticationFilter等等</li>
-<li>用于向 SecurityContextHolder填充Authentication令牌</li>
-</ol>
-</li>
-<li>SecurityContextHolderAwareRequestFilter</li>
-<li>JassApiIntegrationFilter<ol>
-<li>用于处理 JassAuthenticationToken，并将其放入SecurityContextHolder</li>
-</ol>
-</li>
-<li>RememberMeAuthenticationFilter<ol>
-<li>如果没有其他身份更新 SecurityContextHolder，会尝试请求是否有RememberMe 的cookie，并生成一个Authentication 放入SecurityContextHolder</li>
-</ol>
-</li>
-<li>AnonymousAuthenticationFilter<ol>
-<li>如果没有其他身份更新 SecurityContextHolder，则会存储一个匿名对象</li>
-</ol>
-</li>
-<li>ExceptionTranslationFilter<ol>
-<li>捕获任何Spring Security 异常，并返回适当的Http响应</li>
-<li>可以由 AuthenticationEntryPoint 抛出</li>
-</ol>
-</li>
-<li>FilterSecurityInterceptor<ol>
-<li>保护web uri，并在拒绝访问时引发异常</li>
-</ol>
-</li>
-</ol>
-</div><hr></div><div class="recent-post-item article-container"><a class="article-title" href="/2019/07/22/读书笔记/《JavaDesignPatterns》/18.解释器模式/">《Java Design Patterns》第十六章 解释器模式 - 自定义语言的实现</a><time class="post-meta__date"><i class="fa fa-calendar" aria-hidden="true"></i> 2019-07-22</time><span class="article-meta"><span class="article-meta__separator">|</span><i class="fa fa-inbox article-meta__icon" aria-hidden="true"></i><a class="article-meta__categories" href="/categories/设计模式/">设计模式</a></span><span class="article-meta tags"><span class="article-meta__separator">|</span><i class="fa fa-tag article-meta__icon" aria-hidden="true"></i><a class="article-meta__tags" href="/tags/读书笔记/">读书笔记</a></span><div class="content"><h1 id="第十六章-解释器模式-自定义语言的实现"><a href="#第十六章-解释器模式-自定义语言的实现" class="headerlink" title="第十六章 解释器模式 - 自定义语言的实现"></a>第十六章 解释器模式 - 自定义语言的实现</h1><h2 id="一、什么是解释器模式"><a href="#一、什么是解释器模式" class="headerlink" title="一、什么是解释器模式"></a>一、什么是解释器模式</h2><p>解释器模式（Interpreter Pattern）：定义一个语言的文法，并且建立一个解释器来解释该语言中的句子，这里的“语言”是指使用规定格式和语法的代码。解释器模式是一种类行为型模式。</p>
+} </script></head><body><i class="fa fa-arrow-right" id="toggle-sidebar" aria-hidden="true"></i><div id="sidebar" data-display="false"><div class="author-info"><div class="author-info__avatar text-center"><img src="/img/avatar.png"></div><div class="author-info__name text-center">koral</div><div class="author-info__description text-center">描述</div><hr><div class="author-info-articles"><a class="author-info-articles__archives article-meta" href="/archives"><span class="pull-left">文章</span><span class="pull-right">241</span></a><a class="author-info-articles__tags article-meta" href="/tags"><span class="pull-left">标签</span><span class="pull-right">22</span></a><a class="author-info-articles__categories article-meta" href="/categories"><span class="pull-left">分类</span><span class="pull-right">19</span></a></div></div></div><nav class="no-bg" id="nav"><div id="page-header"><span class="pull-left"> <a id="site-name" href="/">凯</a></span><i class="fa fa-bars toggle-menu pull-right" aria-hidden="true"></i><span class="pull-right menus">   <a class="site-page" href="/">Home</a><a class="site-page" href="/archives">Archives</a><a class="site-page" href="/tags">Tags</a><a class="site-page" href="/categories">Categories</a></span><span class="pull-right"></span></div><div id="site-info"><div id="site-title">凯</div><div id="site-sub-title">凯</div></div></nav><div id="content-outer"><div class="layout" id="content-inner"><div class="recent-post-item article-container"><a class="article-title" href="/2019/07/22/读书笔记/《JavaDesignPatterns》/18.解释器模式/">《Java Design Patterns》第十六章 解释器模式 - 自定义语言的实现</a><time class="post-meta__date"><i class="fa fa-calendar" aria-hidden="true"></i> 2019-07-22</time><span class="article-meta"><span class="article-meta__separator">|</span><i class="fa fa-inbox article-meta__icon" aria-hidden="true"></i><a class="article-meta__categories" href="/categories/设计模式/">设计模式</a></span><span class="article-meta tags"><span class="article-meta__separator">|</span><i class="fa fa-tag article-meta__icon" aria-hidden="true"></i><a class="article-meta__tags" href="/tags/读书笔记/">读书笔记</a></span><div class="content"><h1 id="第十六章-解释器模式-自定义语言的实现"><a href="#第十六章-解释器模式-自定义语言的实现" class="headerlink" title="第十六章 解释器模式 - 自定义语言的实现"></a>第十六章 解释器模式 - 自定义语言的实现</h1><h2 id="一、什么是解释器模式"><a href="#一、什么是解释器模式" class="headerlink" title="一、什么是解释器模式"></a>一、什么是解释器模式</h2><p>解释器模式（Interpreter Pattern）：定义一个语言的文法，并且建立一个解释器来解释该语言中的句子，这里的“语言”是指使用规定格式和语法的代码。解释器模式是一种类行为型模式。</p>
 <p>在某些情况下，为了更好地描述某一些特定类型的问题，我们可以创建一种新的语言，这种语言拥有自己的表达式和结构，即文法规则，这些问题的实例将对应为该语言中的句子。</p>
 <h2 id="二、文法规则和抽象语法树"><a href="#二、文法规则和抽象语法树" class="headerlink" title="二、文法规则和抽象语法树"></a>二、文法规则和抽象语法树</h2><p>解释器模式描述了如何为简单的语言定义一个文法，如何在改语言中表示一个句子，以及如何解释这些句子。</p>
 <p>在解释器模式中，我们可以使用一些符号来表示不同的含义，如“|”表示或，“{”与“}”表示组合等等。这些符号即代表着部分的文法规则</p>
@@ -549,7 +454,7 @@ public class InterpretPattern {
     }
 }
 </code></pre>
-</div><hr></div><div class="recent-post-item article-container"><a class="article-title" href="/2019/07/22/读书笔记/《JavaDesignPatterns》/19.迭代器模式/">《Java Design Patterns》第十七章 迭代器模式</a><time class="post-meta__date"><i class="fa fa-calendar" aria-hidden="true"></i> 2019-07-22</time><span class="article-meta"><span class="article-meta__separator">|</span><i class="fa fa-inbox article-meta__icon" aria-hidden="true"></i><a class="article-meta__categories" href="/categories/设计模式/">设计模式</a></span><span class="article-meta tags"><span class="article-meta__separator">|</span><i class="fa fa-tag article-meta__icon" aria-hidden="true"></i><a class="article-meta__tags" href="/tags/读书笔记/">读书笔记</a></span><div class="content"><h1 id="第十七章-迭代器模式-遍历聚合对象中的元素"><a href="#第十七章-迭代器模式-遍历聚合对象中的元素" class="headerlink" title="第十七章 迭代器模式 - 遍历聚合对象中的元素"></a>第十七章 迭代器模式 - 遍历聚合对象中的元素</h1></div><hr></div><div class="recent-post-item article-container"><a class="article-title" href="/2019/07/19/读书笔记/《SpringSecurity》/9.自定义注解/">《Spring Security》第九章 自定义 Security Mock 注解</a><time class="post-meta__date"><i class="fa fa-calendar" aria-hidden="true"></i> 2019-07-19</time><span class="article-meta"><span class="article-meta__separator">|</span><i class="fa fa-inbox article-meta__icon" aria-hidden="true"></i><a class="article-meta__categories" href="/categories/Spring-Security/">Spring Security</a></span><span class="article-meta tags"><span class="article-meta__separator">|</span><i class="fa fa-tag article-meta__icon" aria-hidden="true"></i><a class="article-meta__tags" href="/tags/读书笔记/">读书笔记</a></span><div class="content"><h1 id="第九章-自定义-Security-Mock-注解"><a href="#第九章-自定义-Security-Mock-注解" class="headerlink" title="第九章 自定义 Security Mock 注解"></a>第九章 自定义 Security Mock 注解</h1><p>从 <code>第八章 Spring Security 的测试支持</code> 可以看到，如果不使用自定义的身份验证主体，@WithMockUser 是一个很好的选择。</p>
+</div><hr></div><div class="recent-post-item article-container"><a class="article-title" href="/2019/07/19/读书笔记/《SpringSecurity》/9.自定义注解/">《Spring Security》第九章 自定义 Security Mock 注解</a><time class="post-meta__date"><i class="fa fa-calendar" aria-hidden="true"></i> 2019-07-19</time><span class="article-meta"><span class="article-meta__separator">|</span><i class="fa fa-inbox article-meta__icon" aria-hidden="true"></i><a class="article-meta__categories" href="/categories/Spring-Security/">Spring Security</a></span><span class="article-meta tags"><span class="article-meta__separator">|</span><i class="fa fa-tag article-meta__icon" aria-hidden="true"></i><a class="article-meta__tags" href="/tags/读书笔记/">读书笔记</a></span><div class="content"><h1 id="第九章-自定义-Security-Mock-注解"><a href="#第九章-自定义-Security-Mock-注解" class="headerlink" title="第九章 自定义 Security Mock 注解"></a>第九章 自定义 Security Mock 注解</h1><p>从 <code>第八章 Spring Security 的测试支持</code> 可以看到，如果不使用自定义的身份验证主体，@WithMockUser 是一个很好的选择。</p>
 <h2 id="一、-WithMockUser-存在的问题"><a href="#一、-WithMockUser-存在的问题" class="headerlink" title="一、@WithMockUser 存在的问题"></a>一、@WithMockUser 存在的问题</h2><p>大部分情况下，我们使用都不是 UserDetails 对象，而是 UserDetails 的自定义实现。</p>
 <p>且 @WithUserDetails 注解还需要查询数据库，并且要求用户存在。</p>
 <h2 id="二、解决方案"><a href="#二、解决方案" class="headerlink" title="二、解决方案"></a>二、解决方案</h2><p>我们可以通过模仿 @WithMockUser 注解，创建自己的 @WithMockSutomUser注解。并通过实现 WithSecurityContextFactory 来使用自己的注解。</p>
@@ -641,6 +546,257 @@ public class UserServiceTest {
         Assertions.assertThat(user.getCreateUser()).isEqualsTo(&quot;admin&quot;);
     }
 }</code></pre>
+</div><hr></div><div class="recent-post-item article-container"><a class="article-title" href="/2019/07/19/读书笔记/《SpringSecurity》/7.核心服务/">《Spring Security》第七章 Spring Security 中的核心服务</a><time class="post-meta__date"><i class="fa fa-calendar" aria-hidden="true"></i> 2019-07-19</time><span class="article-meta"><span class="article-meta__separator">|</span><i class="fa fa-inbox article-meta__icon" aria-hidden="true"></i><a class="article-meta__categories" href="/categories/Spring-Security/">Spring Security</a></span><span class="article-meta tags"><span class="article-meta__separator">|</span><i class="fa fa-tag article-meta__icon" aria-hidden="true"></i><a class="article-meta__tags" href="/tags/读书笔记/">读书笔记</a></span><div class="content"><h1 id="第七章-Spring-Security-中的核心服务"><a href="#第七章-Spring-Security-中的核心服务" class="headerlink" title="第七章 Spring Security 中的核心服务"></a>第七章 Spring Security 中的核心服务</h1><p><img src="https://i.loli.net/2019/07/19/5d315f6f3a2c585678.png" alt="SpringSecurity中的核心组件与服务"></p>
+<h2 id="一、核心接口与其实现"><a href="#一、核心接口与其实现" class="headerlink" title="一、核心接口与其实现"></a>一、核心接口与其实现</h2><p>在 <code>第五章 SpringSecurity 中的核心组件</code> 与 <code>第六章 SpringSecurity 身份认证流程</code> 中介绍了 Spring Security 体系结构及其核心类。下面更加深入的了解一些核心接口与其实现方法。</p>
+<p>上图描述了一个请求认证，大致需要经过的过滤器、接口，及各个接口的子类实现。</p>
+<p>其中标黄的部分是下面讲解的重点。</p>
+<blockquote>
+<p>具体的接口与实现类的含义，可以参考官方网站中的解释并结合图中的关系进行梳理。我只会挑选一些核心的实现方法来说。</p>
+</blockquote>
+<blockquote>
+<p>如果不想看源码，请直接看我写的注释，也能明白这些类的执行过程。</p>
+</blockquote>
+<h3 id="1-UsernamePasswordAuthenticationFilter"><a href="#1-UsernamePasswordAuthenticationFilter" class="headerlink" title="1. UsernamePasswordAuthenticationFilter"></a>1. UsernamePasswordAuthenticationFilter</h3><p>拦截并处理用户的登录请求</p>
+<pre><code class="java">public Authentication attemptAuthentication(HttpServletRequest request,
+                                            HttpServletResponse response) throws AuthenticationException {
+    // 1. 登录认证请求必须是POST
+    if (postOnly &amp;&amp; !request.getMethod().equals(&quot;POST&quot;)) {
+        throw new AuthenticationServiceException(
+            &quot;Authentication method not supported: &quot; + request.getMethod());
+    }
+
+    // 2. 检查请求 request 中是否包含 username、password 参数
+    String username = obtainUsername(request);
+    String password = obtainPassword(request);
+
+    if (username == null) {
+        username = &quot;&quot;;
+    }
+
+    if (password == null) {
+        password = &quot;&quot;;
+    }
+
+    username = username.trim();
+
+    // 3. 将 username、password 封装为一个 UsernamePasswordAuthenticationToken 对象
+    // 该对象是 Authentication 的实现类
+    UsernamePasswordAuthenticationToken authRequest = new UsernamePasswordAuthenticationToken(
+        username, password);
+
+    setDetails(request, authRequest);
+
+    // 4. 调用 AuthenticationManager 的认证方法
+    return this.getAuthenticationManager().authenticate(authRequest);
+}</code></pre>
+<h3 id="2-ProviderManager"><a href="#2-ProviderManager" class="headerlink" title="2. ProviderManager"></a>2. ProviderManager</h3><p>上面调用 authenticate(authRequset) 的 AuthenticationManager 是一个接口类，其具体实现是 ProviderManager。当然，也可以选择其他实现类或者自定义。</p>
+<pre><code class="java">/**
+ * 该方法用于验证 authentication（也就是上面传入的 UsernamePasswordAuthenticationToken）
+ */
+public Authentication authenticate(Authentication authentication)
+    throws AuthenticationException {
+    Class&lt;? extends Authentication&gt; toTest = authentication.getClass();
+    AuthenticationException lastException = null;
+    Authentication result = null;
+    boolean debug = logger.isDebugEnabled();
+
+    // 1. 循环遍历 AuthenticationProvider 的实现类集合
+    // 如果有超过一个的 provider 支持，则使用第一个
+    // 如果一个都不支持，则返回 AuthenticationException 异常
+    for (AuthenticationProvider provider : getProviders()) {
+        // 2. 判断是否支持
+        if (!provider.supports(toTest)) {
+            continue;
+        }
+
+        if (debug) {
+            logger.debug(&quot;Authentication attempt using &quot;
+                         + provider.getClass().getName());
+        }
+
+        try {
+            // 3. 调用 provider 的认证，下面会以 DaoAuthenticationProvider 为例进行介绍
+            result = provider.authenticate(authentication);
+
+            if (result != null) {
+                copyDetails(authentication, result);
+                break;
+            }
+        }
+        catch (AccountStatusException e) {
+            prepareException(e, authentication);
+            throw e;
+        }
+        catch (InternalAuthenticationServiceException e) {
+            prepareException(e, authentication);
+            throw e;
+        }
+        catch (AuthenticationException e) {
+            lastException = e;
+        }
+    }
+
+    if (result == null &amp;&amp; parent != null) {
+        try {
+            // 4. 进行父类的认证尝试
+            result = parent.authenticate(authentication);
+        }
+        catch (ProviderNotFoundException e) {
+
+        }
+        catch (AuthenticationException e) {
+            lastException = e;
+        }
+    }
+
+    if (result != null) {
+        if (eraseCredentialsAfterAuthentication
+            &amp;&amp; (result instanceof CredentialsContainer)) {
+            // 5. 认证完成，请求结束之后，删除 SecurityContextHolder 中保存的 SecurityContext，清除相关数据
+            ((CredentialsContainer) result).eraseCredentials();
+        }
+
+        // 6. 发送验证成功的事件
+        eventPublisher.publishAuthenticationSuccess(result);
+        return result;
+    }
+
+    // 7. 身份验证失败，抛出异常
+    if (lastException == null) {
+        lastException = new ProviderNotFoundException(messages.getMessage(
+            &quot;ProviderManager.providerNotFound&quot;,
+            new Object[] { toTest.getName() },
+            &quot;No AuthenticationProvider found for {0}&quot;));
+    }
+
+    prepareException(lastException, authentication);
+
+    throw lastException;
+}</code></pre>
+<h3 id="3-DaoAuthenticationProvider"><a href="#3-DaoAuthenticationProvider" class="headerlink" title="3. DaoAuthenticationProvider"></a>3. DaoAuthenticationProvider</h3><p>DaoAuthenticationProvider 包含两个接口属性 PasswordEncoder 与 UserDetailsService，通过 UserDetailsService 加载用户数据，并使用 PasswordEncoder 比较 UserDetails.password 与 token.password 是否相等。</p>
+<p>以此来决定是否认证成功。</p>
+<pre><code class="java">protected final UserDetails retrieveUser(String username,
+                                         UsernamePasswordAuthenticationToken authentication)
+    throws AuthenticationException {
+    prepareTimingAttackProtection();
+    try {
+        // 调用 UserDetailsService 的 loadUserByUsername 方法，查询装载 UserDetails
+        // 在实际开发中，通常会自定义 UserDetailsService 的实现，例如将数据库查询的 User 对象与 UserDetails 对象进行一个适配
+        // 适配者也需要我们自己定义，如 CustomUserDetails 实现 UserDetails，并将 user.role 转换为 authority等。
+        UserDetails loadedUser = this.getUserDetailsService().loadUserByUsername(username);
+        if (loadedUser == null) {
+            throw new InternalAuthenticationServiceException(
+                &quot;UserDetailsService returned null, which is an interface contract violation&quot;);
+        }
+        return loadedUser;
+    }
+    catch (UsernameNotFoundException ex) {
+        mitigateAgainstTimingAttack(authentication);
+        throw ex;
+    }
+    catch (InternalAuthenticationServiceException ex) {
+        throw ex;
+    }
+    catch (Exception ex) {
+        throw new InternalAuthenticationServiceException(ex.getMessage(), ex);
+    }
+}</code></pre>
+<h3 id="4-UserDetailsService"><a href="#4-UserDetailsService" class="headerlink" title="4. UserDetailsService"></a>4. UserDetailsService</h3><p>UserDetailsService 是整个 Dao 认证框架的核心，用来装载特殊的用户数据。</p>
+<p>因为该类为接口类，只声明了一个 loadUserByUsername(String) 方法，所以这里我们使用自定义实现来演示在日常开发场景中的使用过程：</p>
+<pre><code class="java">// 1. 实现 UserDetailsService 接口，自定义获取用户的方法
+@Service
+public class DemoUserDetailsService implements UserDetailsService {
+
+    // 2. 注入数据库查询实例，这里不限数据库，只要能获取到用户即可。自己new的也行
+    @Autowired
+    private UserService userService;
+
+    @Override
+    UserDetails loadUserByUsername(String username) throws UsernameNotFoundException {
+        // 3. 从数据库中查询到 User 对象
+        DBUser user = userService.findUserByUsername(username);
+        if(user == null){
+            throw new AuthenticationCredentialsNotFoundException(&quot;user not found.&quot;)；
+        }
+        // 4. 将 DBUser 包装为一个 UserDetails 对象，并将 user.roles 转换为 Authority
+        return User.withDefaultPasswordEncoder().username(user.username).password(user.password).authorities(user.roles);
+    }
+}</code></pre>
+<h2 id="二、其他"><a href="#二、其他" class="headerlink" title="二、其他"></a>二、其他</h2><p>上面几个类大致说明了，如果将数据库的用户转换为 Spring Security 支持的 Authentication 对象的。</p>
+<p>其它如内存认证、jdbcDaoImpl 的实现不再赘述。</p>
+<p>还有如自定义 PasswordEncoder、自定义 UserDetails 等其它实现，就不一一列举了，网上一搜一大把。</p>
+</div><hr></div><div class="recent-post-item article-container"><a class="article-title" href="/2019/07/18/读书笔记/《SpringSecurity》/6.身份认证流程/">《Spring Security》第六章 SpringSecurity 身份认证流程</a><time class="post-meta__date"><i class="fa fa-calendar" aria-hidden="true"></i> 2019-07-18</time><span class="article-meta"><span class="article-meta__separator">|</span><i class="fa fa-inbox article-meta__icon" aria-hidden="true"></i><a class="article-meta__categories" href="/categories/Spring-Security/">Spring Security</a></span><span class="article-meta tags"><span class="article-meta__separator">|</span><i class="fa fa-tag article-meta__icon" aria-hidden="true"></i><a class="article-meta__tags" href="/tags/读书笔记/">读书笔记</a></span><div class="content"><h1 id="第六章-SpringSecurity-身份认证流程"><a href="#第六章-SpringSecurity-身份认证流程" class="headerlink" title="第六章 SpringSecurity 身份认证流程"></a>第六章 SpringSecurity 身份认证流程</h1><h2 id="一、标准的身份认证"><a href="#一、标准的身份认证" class="headerlink" title="一、标准的身份认证"></a>一、标准的身份认证</h2><p>一个标准的身份验证流程：</p>
+<ol>
+<li>用户提供用户名与密码</li>
+<li>系统验证用户名密码是否正确</li>
+<li>获取该用户的上下文信息（如角色列表、权限等）</li>
+<li>为用户建立安全上下文</li>
+<li>访问受保护资源时，通过上下文信息验证权限</li>
+</ol>
+<p>以下示例来自于 <code>Spring Security Reference</code>，演示了一个简单的迷你认证环境。</p>
+<h3 id="模拟身份认证"><a href="#模拟身份认证" class="headerlink" title="模拟身份认证"></a>模拟身份认证</h3><pre><code class="java">public class AuthenticationExample {
+private static AuthenticationManager am = new SampleAuthenticationManager();
+
+public static void main(String[] args) throws Exception {
+    BufferedReader in = new BufferedReader(new InputStreamReader(System.in));
+
+    while(true) {
+        // 1. 接收用户名与密码
+    System.out.println(&quot;Please enter your username:&quot;);
+    String name = in.readLine();
+    System.out.println(&quot;Please enter your password:&quot;);
+    String password = in.readLine();
+    try {
+        // 2. 生成 token
+        Authentication request = new UsernamePasswordAuthenticationToken(name, password);
+        // 3. 验证 token 是否正确
+        Authentication result = am.authenticate(request);
+        // 4. 将认证主题注入上下文
+        SecurityContextHolder.getContext().setAuthentication(result);
+        break;
+    } catch(AuthenticationException e) {
+        System.out.println(&quot;Authentication failed: &quot; + e.getMessage());
+    }
+    }
+    System.out.println(&quot;Successfully authenticated. Security context contains: &quot; +
+            SecurityContextHolder.getContext().getAuthentication());
+}
+}
+
+class SampleAuthenticationManager implements AuthenticationManager {
+static final List&lt;GrantedAuthority&gt; AUTHORITIES = new ArrayList&lt;GrantedAuthority&gt;();
+
+static {
+    AUTHORITIES.add(new SimpleGrantedAuthority(&quot;ROLE_USER&quot;));
+}
+
+public Authentication authenticate(Authentication auth) throws AuthenticationException {
+    if (auth.getName().equals(auth.getCredentials())) {
+    return new UsernamePasswordAuthenticationToken(auth.getName(),
+        auth.getCredentials(), AUTHORITIES);
+    }
+    throw new BadCredentialsException(&quot;Bad Credentials&quot;);
+}
+}</code></pre>
+<p>通常情况下，这个流程是由 Spring Security 内部执行的，但是这大致显示了 Spring Security 通过 username、password 构建一个 SecurityContext 的过程。</p>
+<h3 id="直接设置-SecurityContextHolder"><a href="#直接设置-SecurityContextHolder" class="headerlink" title="直接设置 SecurityContextHolder"></a>直接设置 SecurityContextHolder</h3><p>如果你需要在一个已经拥有身份认证的系统（如自定义了过滤器或MVC控制器、拥有自己的认证系统等）中，接入 Spring Security 环境。</p>
+<p>只需要在原有系统中读取第三方用户信息，构建一个 Spring Security 特定的 Authentication 对象，并将其放入 SecurityContextHolder 中即可。</p>
+<h2 id="二、Web应用中的身份验证"><a href="#二、Web应用中的身份验证" class="headerlink" title="二、Web应用中的身份验证"></a>二、Web应用中的身份验证</h2><p>在一个Web 应用程序中使用 Spring Security 访问受保护的资源，流程如下：</p>
+<p><img src="https://i.loli.net/2019/07/19/5d312c9031ea155349.png" alt="访问资源的验证及认证流程"></p>
+<p>Spring Security 中提供了不同的类负责上图中的不同流程，主要参与者（按照使用顺序）是 ExceptionTranslationFilter、AuthenticationEntryPoint和 authentication mechanism。负责调用的是 AuthenticationManager。</p>
+<p><img src="https://i.loli.net/2019/07/19/5d312f3a9d38248120.png" alt="安全拦截器与安全对象模型"></p>
+<h3 id="ExceptionTranslationFilter"><a href="#ExceptionTranslationFilter" class="headerlink" title="ExceptionTranslationFilter"></a>ExceptionTranslationFilter</h3><p>ExceptionTranslationFilter 是一个 Spring Security 过滤器，负责检测所有引发的 Spring Security 异常。通常情况下，异常都是由 AbstractSecurityInterceptor 引发的，它是授权服务的主要提供者。</p>
+<p>ExceptionTranslationFilter 在验证主题时(如图中的 ③⑦)，负责返回错误代码403(即认证成功，但是缺少权限的情况)，或者启动 AuthenticationEntryPoint（尚未登录）。</p>
+<h3 id="AuthenticationEntryPoint"><a href="#AuthenticationEntryPoint" class="headerlink" title="AuthenticationEntryPoint"></a>AuthenticationEntryPoint</h3><p>负责为 web 应用程序提供一个默认的身份认证策略(③ )。</p>
+<h3 id="Authentication-Mechanism-认证机制"><a href="#Authentication-Mechanism-认证机制" class="headerlink" title="Authentication Mechanism 认证机制"></a>Authentication Mechanism 认证机制</h3><p>浏览器提供了身份验证凭据之后，服务器就需要收集这些身份信息，并进入“身份验证机制”。将用户验证的凭据生成一个“request”对象，然后交给 AuthenticationManager。</p>
+<p>如果 AuthenticationManager 验证接收回完全填充的 Authentication 对象后，它将认为请求有效，并将 Authentication 放入 SecurityContextHolder 中，并进行重试请求。</p>
+<p>如果 AuthenticationManager 拒绝请求，身份验证机制将要求用户重新进行认证（跳转至url或者返回http状态码）。</p>
+<h3 id="Store-SecurityContext"><a href="#Store-SecurityContext" class="headerlink" title="Store SecurityContext"></a>Store SecurityContext</h3><p>在 Spring Security 中，由 SecurityContextPersistenceFilter 来承担在请求之间存储 SecurityContext，它默认将 SecurityContext 作为HttpSession 的属性存储。</p>
+<p>每个请求都会将 SecurityContext 恢复到 SecurityContextHolder 汇总，并且在请求完成时清除 SecurityContextHolder。这样做是十分安全的，且您不应该直接与 HttpSession交互，而应当总是与 SecurityContextHolder 交互。</p>
+<p>如果在不使用 HttpSession 的应用程序(如 无状态的 Restful web 服务)中，对每个请求进行身份验证。SecurityContextPersistenceFilter 依然十分重要，因为它会确保 SecurityContextHolder 在每个请求之后被清除。</p>
+<p>您可以通过自定义 SecurityContextPersistenceFilter 的行为，为每个请求创建一个新的 SecurityContext。以防止一个线程中的更改影响另一个线程，或者在临时更改上下文的地方创建一个新实例。</p>
+<h3 id="Access-Control-访问控制"><a href="#Access-Control-访问控制" class="headerlink" title="Access-Control 访问控制"></a>Access-Control 访问控制</h3><p>在 Spring Security 中负责访问控制决策的接口是 AccessDecisionManager，它具有一个 decide 方法，该方法使用 Authentication 对象代表请求访问的主体、安全对象、和一个基于该对象的安全元数据属性列表（如角色列表属性等）。</p>
+<h3 id="Spring-Security-与-AOP"><a href="#Spring-Security-与-AOP" class="headerlink" title="Spring Security 与 AOP"></a>Spring Security 与 AOP</h3><p>AOP 中提供了如：before、after、throws、around通知。Spring Security 为方法调用和 Web 请求提供了一个大致的建议，通过 around 通知，可以决定该方法是否继续调用，是否修改响应，以及是否抛出异常。</p>
 </div><hr></div><nav id="pagination"><div class="pagination"><a class="extend prev" rel="prev" href="/page/19/"><i class="fa fa-chevron-left"></i></a><a class="page-number" href="/">1</a><span class="space">&hellip;</span><a class="page-number" href="/page/19/">19</a><span class="page-number current">20</span><a class="page-number" href="/page/21/">21</a><span class="space">&hellip;</span><a class="page-number" href="/page/49/">49</a><a class="extend next" rel="next" href="/page/21/"><i class="fa fa-chevron-right"></i></a></div></nav></div></div><footer><div class="layout" id="footer"><div class="copyright">&copy;2013 - 2020 By koral</div><div class="framework-info"><span>驱动 - </span><a href="http://hexo.io"><span>Hexo</span></a><span class="footer-separator">|</span><span>主题 - </span><a href="https://github.com/Molunerfinn/hexo-theme-melody"><span>Melody</span></a></div><div class="busuanzi"><script async src="//busuanzi.ibruce.info/busuanzi/2.3/busuanzi.pure.mini.js"></script><span id="busuanzi_container_site_uv"><i class="fa fa-user"></i><span id="busuanzi_value_site_uv"></span><span></span></span><span class="footer-separator">|</span><span id="busuanzi_container_site_pv"><i class="fa fa-eye"></i><span id="busuanzi_value_site_pv"></span><span></span></span></div></div></footer><i class="fa fa-arrow-up" id="go-up" aria-hidden="true"></i><script src="https://cdn.jsdelivr.net/npm/animejs@latest/anime.min.js"></script><script src="https://cdn.jsdelivr.net/npm/jquery@latest/dist/jquery.min.js"></script><script src="https://cdn.jsdelivr.net/npm/@fancyapps/fancybox@latest/dist/jquery.fancybox.min.js"></script><script src="https://cdn.jsdelivr.net/npm/velocity-animate@latest/velocity.min.js"></script><script src="https://cdn.jsdelivr.net/npm/velocity-ui-pack@latest/velocity.ui.min.js"></script><script src="/js/utils.js?version=1.7.0"></script><script src="/js/fancybox.js?version=1.7.0"></script><script src="/js/sidebar.js?version=1.7.0"></script><script src="/js/copy.js?version=1.7.0"></script><script src="/js/fireworks.js?version=1.7.0"></script><script src="/js/transition.js?version=1.7.0"></script><script src="/js/scroll.js?version=1.7.0"></script><script src="/js/head.js?version=1.7.0"></script><script>if(/Android|webOS|iPhone|iPod|iPad|BlackBerry/i.test(navigator.userAgent)) {
   $('#nav').addClass('is-mobile')
   $('footer').addClass('is-mobile')

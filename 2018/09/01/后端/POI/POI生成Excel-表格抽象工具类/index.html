@@ -1,0 +1,229 @@
+<!DOCTYPE html><html lang="zh-Hans"><head><meta name="generator" content="Hexo 3.9.0"><meta charset="UTF-8"><meta http-equiv="X-UA-Compatible" content="IE=edge"><meta name="viewport" content="width=device-width, initial-scale=1, maximum-scale=1"><meta name="description" content="POI生成Excel工具类"><meta name="keywords" content="POI"><meta name="author" content="koral"><meta name="copyright" content="koral"><title>POI生成Excel工具类 | 凯</title><link rel="shortcut icon" href="/melody-favicon.ico"><link rel="stylesheet" href="/css/index.css?version=1.7.0"><link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/font-awesome@latest/css/font-awesome.min.css?version=1.7.0"><meta name="format-detection" content="telephone=no"><meta http-equiv="x-dns-prefetch-control" content="on"><link rel="dns-prefetch" href="https://cdn.jsdelivr.net"><meta http-equiv="Cache-Control" content="no-transform"><meta http-equiv="Cache-Control" content="no-siteapp"><script>var GLOBAL_CONFIG = { 
+  root: '/',
+  algolia: undefined,
+  localSearch: undefined,
+  copy: {
+    success: '复制成功',
+    error: '复制错误',
+    noSupport: '浏览器不支持'
+  }
+} </script></head><body><i class="fa fa-arrow-right" id="toggle-sidebar" aria-hidden="true"></i><div id="sidebar" data-display="true"><div class="toggle-sidebar-info text-center"><span data-toggle="切换文章详情">切换站点概览</span><hr></div><div class="sidebar-toc"><div class="sidebar-toc__title">目录</div><div class="sidebar-toc__progress"><span class="progress-notice">你已经读了</span><span class="progress-num">0</span><span class="progress-percentage">%</span><div class="sidebar-toc__progress-bar"></div></div><div class="sidebar-toc__content"><ol class="toc"><li class="toc-item toc-level-1"><a class="toc-link" href="#POI生成Excel工具类"><span class="toc-number">1.</span> <span class="toc-text">POI生成Excel工具类</span></a></li></ol></div></div><div class="author-info hide"><div class="author-info__avatar text-center"><img src="/img/avatar.png"></div><div class="author-info__name text-center">koral</div><div class="author-info__description text-center">描述</div><hr><div class="author-info-articles"><a class="author-info-articles__archives article-meta" href="/archives"><span class="pull-left">文章</span><span class="pull-right">241</span></a><a class="author-info-articles__tags article-meta" href="/tags"><span class="pull-left">标签</span><span class="pull-right">22</span></a><a class="author-info-articles__categories article-meta" href="/categories"><span class="pull-left">分类</span><span class="pull-right">19</span></a></div></div></div><div id="content-outer"><div class="no-bg" id="top-container"><div id="page-header"><span class="pull-left"> <a id="site-name" href="/">凯</a></span><i class="fa fa-bars toggle-menu pull-right" aria-hidden="true"></i><span class="pull-right menus">   <a class="site-page" href="/">Home</a><a class="site-page" href="/archives">Archives</a><a class="site-page" href="/tags">Tags</a><a class="site-page" href="/categories">Categories</a></span><span class="pull-right"></span></div><div id="post-info"><div id="post-title">POI生成Excel工具类</div><div id="post-meta"><time class="post-meta__date"><i class="fa fa-calendar" aria-hidden="true"></i> 2018-09-01</time><span class="post-meta__separator">|</span><i class="fa fa-inbox post-meta__icon" aria-hidden="true"></i><a class="post-meta__categories" href="/categories/Java/">Java</a></div></div></div><div class="layout" id="content-inner"><article id="post"><div class="article-container" id="post-content"><h1 id="POI生成Excel工具类"><a href="#POI生成Excel工具类" class="headerlink" title="POI生成Excel工具类"></a>POI生成Excel工具类</h1><p>该工具类中，包含：创建表格（带默认样式）、自定义样式（通过重写 setDefaultStyle和setFirstCellStyle）、合并单元格、宽度自适应等。</p>
+<pre><code class="java">/**
+ * Excel操作工具类
+ */
+public class ExcelTools {
+
+    /**
+     * 默认的样式， 垂直水平居中、默认换行
+     */
+    private XSSFCellStyle defaultStyle;
+
+    /**
+     * 默认的行首样式
+     */
+    private XSSFCellStyle firstCellStyle;
+
+    private static SimpleDateFormat sdf = new SimpleDateFormat(&quot;yyyy.MM.dd hh:mm&quot;);
+
+    public XSSFWorkbook createWorkbook() {
+        XSSFWorkbook workbook = new XSSFWorkbook();
+
+        XSSFFont defaultFont = workbook.createFont();
+        defaultFont.setColor(IndexedColors.BLACK.getIndex());
+        defaultFont.setFontHeight(11);
+        defaultFont.setFontName(&quot;微软雅黑 Light&quot;);
+
+        XSSFCellStyle defaultStyle = workbook.createCellStyle();
+        defaultStyle.setWrapText(true);
+        defaultStyle.setAlignment(HorizontalAlignment.CENTER);
+        defaultStyle.setVerticalAlignment(VerticalAlignment.CENTER);
+        defaultStyle.setFont(defaultFont);
+
+        XSSFFont font = workbook.createFont();
+        font.setColor(IndexedColors.WHITE.getIndex());
+        font.setFontHeight(11);
+        font.setFontName(&quot;微软雅黑 Light&quot;);
+
+        XSSFCellStyle firstCellStyle = workbook.createCellStyle();
+        firstCellStyle.setAlignment(HorizontalAlignment.CENTER);
+        firstCellStyle.setVerticalAlignment(VerticalAlignment.CENTER);
+        firstCellStyle.setFillForegroundColor(IndexedColors.LIGHT_BLUE.getIndex());
+        firstCellStyle.setFillPattern(FillPatternType.SOLID_FOREGROUND);
+        firstCellStyle.setFont(font);
+        firstCellStyle.setBorderBottom(BorderStyle.THIN);
+        firstCellStyle.setBottomBorderColor(IndexedColors.LIGHT_BLUE.getIndex());
+        firstCellStyle.setLeftBorderColor(IndexedColors.LIGHT_BLUE.getIndex());
+        firstCellStyle.setRightBorderColor(IndexedColors.LIGHT_BLUE.getIndex());
+
+        setDefaultStyle(defaultStyle);
+        setFirstCellStyle(firstCellStyle);
+
+        return workbook;
+    }
+
+    // 创建页
+    public XSSFSheet createSheet(XSSFWorkbook workbook, String sheetName) {
+        return workbook.createSheet(sheetName);
+    }
+
+    /**
+     * 创建表格
+     *
+     * @param sheet           页 @NotNull
+     * @param titles          首行标题 @NotNull
+     * @param content         填充的内容 @NotNull
+     * @param rowNumber       开始的行号 @NotNull
+     * @param colNumber       开始的列号 @NotNull
+     * @param customRowHeight 自定义行高
+     * @param cellRangeList   需要合并的单元格
+     * @param customRowStyle  自定义样式,key 对应行，value 对应样式
+     * @param customColWidth  自定义宽度自适应
+     */
+    @SuppressWarnings(&quot;unchecked&quot;)
+    public void createTable(XSSFSheet sheet, String[] titles, Object[][] content,
+                            Integer rowNumber, Integer colNumber,
+                            boolean customRowHeight,
+                            List&lt;CellRange&gt; cellRangeList,
+                            Map&lt;Integer, XSSFCellStyle&gt; customRowStyle,
+                            Map&lt;Integer, Integer&gt; customColWidth) {
+        // 首行填充
+        setFirstRow(sheet, titles, getFirstCellStyle(), rowNumber, colNumber);
+        rowNumber++;
+        // 设置单元格宽度
+        autoWidth(sheet, titles, colNumber, customColWidth);
+        // 填充数据
+        for (int i = 0; i &lt; content.length; i++) {
+            Object[] rowContent = content[i];
+            XSSFRow row = sheet.getRow(rowNumber + i) == null ? sheet.createRow(rowNumber + i) : sheet.getRow(rowNumber + i);
+            row.setHeight(customRowHeight ? (short) 800 : -1);
+            XSSFCellStyle cellStyle = customRowStyle == null || customRowStyle.get(rowNumber + i) == null ?
+                    getDefaultStyle() : customRowStyle.get(rowNumber + i);
+            for (int j = 0; j &lt; rowContent.length; j++) {
+                Object colContent = rowContent[j];
+                XSSFCell cell = row.createCell(colNumber + j);
+                // 如果是基本数据类型，则转换为字符串填充; 日期转换输出; List转String输出
+                if (colContent instanceof Integer || colContent instanceof Double
+                        || colContent instanceof String || colContent instanceof Float
+                        || colContent instanceof Character || colContent instanceof Byte
+                        || colContent instanceof Short || colContent instanceof Boolean
+                        || colContent instanceof Long)
+                    cell.setCellValue(String.valueOf(colContent));
+                else if (colContent instanceof Date)
+                    cell.setCellValue(sdf.format(colContent));
+                else if (colContent instanceof Iterable)
+                    cell.setCellValue(new XSSFRichTextString(String.join(&quot; \n &quot;, (Iterable) colContent)));
+                else
+                    cell.setCellValue(&quot; - &quot;);
+                // 单元格样式
+                cell.setCellStyle(cellStyle);
+            }
+        }
+
+        // 合并单元格
+        mergeRegion(sheet, cellRangeList);
+    }
+
+    /**
+     * 合并单元格
+     */
+    public static void mergeRegion(XSSFSheet sheet, List&lt;CellRange&gt; cellRangeList) {
+        if (cellRangeList == null) return;
+        for (CellRange cellRange : cellRangeList) {
+            sheet.addMergedRegion(new CellRangeAddress(cellRange.getFirstRow(), cellRange.getLastRow(), cellRange.getFirstCol(), cellRange.getLastCol()));
+        }
+    }
+
+    /**
+     * 无需定制样式和宽度的表格
+     */
+    public void createTable(XSSFSheet sheet, String[] titles, Object[][] content,
+                            Integer rowNumber, Integer colNumber) {
+        createTable(sheet, titles, content, rowNumber, colNumber, true, null, null, null);
+    }
+
+
+    /**
+     * 填充首行数据
+     * 默认按照标题的长度设置单元格宽度
+     *
+     * @param sheet       页
+     * @param cellTitles  标题
+     * @param headerStyle 首行样式
+     * @param rowNum      起始行
+     * @param colNum      起始列
+     */
+    public static void setFirstRow(XSSFSheet sheet, String[] cellTitles, XSSFCellStyle headerStyle, int rowNum, int colNum) {
+        final XSSFRow row = sheet.getRow(rowNum) == null ? sheet.createRow(rowNum) : sheet.getRow(rowNum);
+        row.setHeight((short) 800);
+
+        for (String cellName : cellTitles) {
+            final Cell cell = row.createCell(colNum++);
+            cell.setCellValue(cellName);
+            cell.setCellStyle(headerStyle);
+        }
+    }
+
+    /**
+     * 宽度自适应
+     *
+     * @param sheet       页
+     * @param strings     行首
+     * @param colNumber   起始列
+     * @param customWidth 自定义宽度
+     */
+    public static void autoWidth(Sheet sheet, String[] strings, Integer colNumber, Map&lt;Integer, Integer&gt; customWidth) {
+        for (int s = 0; s &lt; strings.length; s++) {
+            int col = colNumber + s;
+            if (customWidth != null &amp;&amp; customWidth.keySet().contains(col)) {
+                sheet.setColumnWidth(col, customWidth.get(col));
+            } else {
+                sheet.autoSizeColumn(col, true);
+                sheet.setColumnWidth(col, sheet.getColumnWidth(col) * 17 / 10);
+            }
+        }
+    }
+
+    public XSSFCellStyle getDefaultStyle() {
+        return defaultStyle;
+    }
+
+    public void setDefaultStyle(XSSFCellStyle defaultStyle) {
+        this.defaultStyle = defaultStyle;
+    }
+
+    public XSSFCellStyle getFirstCellStyle() {
+        return firstCellStyle;
+    }
+
+    public void setFirstCellStyle(XSSFCellStyle firstCellStyle) {
+        this.firstCellStyle = firstCellStyle;
+    }
+}</code></pre>
+<p>合并单元格的对象：</p>
+<pre><code class="java">/**
+ * 需要合并的单元格
+ */
+@Setter
+@Getter
+public class CellRange {
+    private Integer firstRow;
+    private Integer lastRow;
+    private Integer firstCol;
+    private Integer lastCol;
+
+    private CellRange(Integer firstRow, Integer lastRow, Integer firstCol, Integer lastCol) {
+        this.firstRow = firstRow;
+        this.lastRow = lastRow;
+        this.firstCol = firstCol;
+        this.lastCol = lastCol;
+    }
+
+    public static CellRange build(Integer firstRow, Integer lastRow, Integer firstCol, Integer lastCol) {
+        return new CellRange(firstRow, lastRow, firstCol, lastCol);
+    }
+}</code></pre>
+</div></article><div class="post-copyright"><div class="post-copyright__author"><span class="post-copyright-meta">文章作者: </span><span class="post-copyright-info"><a href="mailto:undefined">koral</a></span></div><div class="post-copyright__type"><span class="post-copyright-meta">文章链接: </span><span class="post-copyright-info"><a href="http://luokaiii.github.io/2018/09/01/后端/POI/POI生成Excel-表格抽象工具类/">http://luokaiii.github.io/2018/09/01/后端/POI/POI生成Excel-表格抽象工具类/</a></span></div><div class="post-copyright__notice"><span class="post-copyright-meta">版权声明: </span><span class="post-copyright-info">本博客所有文章除特别声明外，均采用 <a href="https://creativecommons.org/licenses/by-nc-sa/4.0/">CC BY-NC-SA 4.0</a> 许可协议。转载请注明来自 <a href="http://luokaiii.github.io">凯</a>！</span></div></div><div class="post-meta__tag-list"><a class="post-meta__tags" href="/tags/POI/">POI</a></div><nav id="pagination"><div class="prev-post pull-left"><a href="/2018/09/01/后端/POI/POI生成Excel-图表生成/"><i class="fa fa-chevron-left">  </i><span>POI+XChart图形报告</span></a></div><div class="next-post pull-right"><a href="/2018/09/01/后端/POI/POI生成原生Excel-雷达图/"><span>使用POI结合Excel的行列生成雷达图</span><i class="fa fa-chevron-right"></i></a></div></nav></div></div><footer><div class="layout" id="footer"><div class="copyright">&copy;2013 - 2020 By koral</div><div class="framework-info"><span>驱动 - </span><a href="http://hexo.io"><span>Hexo</span></a><span class="footer-separator">|</span><span>主题 - </span><a href="https://github.com/Molunerfinn/hexo-theme-melody"><span>Melody</span></a></div><div class="busuanzi"><script async src="//busuanzi.ibruce.info/busuanzi/2.3/busuanzi.pure.mini.js"></script><span id="busuanzi_container_page_pv"><i class="fa fa-file"></i><span id="busuanzi_value_page_pv"></span><span></span></span></div></div></footer><i class="fa fa-arrow-up" id="go-up" aria-hidden="true"></i><script src="https://cdn.jsdelivr.net/npm/animejs@latest/anime.min.js"></script><script src="https://cdn.jsdelivr.net/npm/jquery@latest/dist/jquery.min.js"></script><script src="https://cdn.jsdelivr.net/npm/@fancyapps/fancybox@latest/dist/jquery.fancybox.min.js"></script><script src="https://cdn.jsdelivr.net/npm/velocity-animate@latest/velocity.min.js"></script><script src="https://cdn.jsdelivr.net/npm/velocity-ui-pack@latest/velocity.ui.min.js"></script><script src="/js/utils.js?version=1.7.0"></script><script src="/js/fancybox.js?version=1.7.0"></script><script src="/js/sidebar.js?version=1.7.0"></script><script src="/js/copy.js?version=1.7.0"></script><script src="/js/fireworks.js?version=1.7.0"></script><script src="/js/transition.js?version=1.7.0"></script><script src="/js/scroll.js?version=1.7.0"></script><script src="/js/head.js?version=1.7.0"></script><script>if(/Android|webOS|iPhone|iPod|iPad|BlackBerry/i.test(navigator.userAgent)) {
+  $('#nav').addClass('is-mobile')
+  $('footer').addClass('is-mobile')
+  $('#top-container').addClass('is-mobile')
+}</script></body></html>

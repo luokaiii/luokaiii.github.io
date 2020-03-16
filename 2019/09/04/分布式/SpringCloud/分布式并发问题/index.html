@@ -1,0 +1,51 @@
+<!DOCTYPE html><html lang="zh-Hans"><head><meta name="generator" content="Hexo 3.9.0"><meta charset="UTF-8"><meta http-equiv="X-UA-Compatible" content="IE=edge"><meta name="viewport" content="width=device-width, initial-scale=1, maximum-scale=1"><meta name="description" content="分布式环境中的并发问题"><meta name="keywords" content><meta name="author" content="koral"><meta name="copyright" content="koral"><title>分布式环境中的并发问题 | 凯</title><link rel="shortcut icon" href="/melody-favicon.ico"><link rel="stylesheet" href="/css/index.css?version=1.7.0"><link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/font-awesome@latest/css/font-awesome.min.css?version=1.7.0"><meta name="format-detection" content="telephone=no"><meta http-equiv="x-dns-prefetch-control" content="on"><link rel="dns-prefetch" href="https://cdn.jsdelivr.net"><meta http-equiv="Cache-Control" content="no-transform"><meta http-equiv="Cache-Control" content="no-siteapp"><script>var GLOBAL_CONFIG = { 
+  root: '/',
+  algolia: undefined,
+  localSearch: undefined,
+  copy: {
+    success: '复制成功',
+    error: '复制错误',
+    noSupport: '浏览器不支持'
+  }
+} </script></head><body><i class="fa fa-arrow-right" id="toggle-sidebar" aria-hidden="true"></i><div id="sidebar" data-display="true"><div class="toggle-sidebar-info text-center"><span data-toggle="切换文章详情">切换站点概览</span><hr></div><div class="sidebar-toc"><div class="sidebar-toc__title">目录</div><div class="sidebar-toc__progress"><span class="progress-notice">你已经读了</span><span class="progress-num">0</span><span class="progress-percentage">%</span><div class="sidebar-toc__progress-bar"></div></div><div class="sidebar-toc__content"></div></div><div class="author-info hide"><div class="author-info__avatar text-center"><img src="/img/avatar.png"></div><div class="author-info__name text-center">koral</div><div class="author-info__description text-center">描述</div><hr><div class="author-info-articles"><a class="author-info-articles__archives article-meta" href="/archives"><span class="pull-left">文章</span><span class="pull-right">241</span></a><a class="author-info-articles__tags article-meta" href="/tags"><span class="pull-left">标签</span><span class="pull-right">22</span></a><a class="author-info-articles__categories article-meta" href="/categories"><span class="pull-left">分类</span><span class="pull-right">19</span></a></div></div></div><div id="content-outer"><div class="no-bg" id="top-container"><div id="page-header"><span class="pull-left"> <a id="site-name" href="/">凯</a></span><i class="fa fa-bars toggle-menu pull-right" aria-hidden="true"></i><span class="pull-right menus">   <a class="site-page" href="/">Home</a><a class="site-page" href="/archives">Archives</a><a class="site-page" href="/tags">Tags</a><a class="site-page" href="/categories">Categories</a></span><span class="pull-right"></span></div><div id="post-info"><div id="post-title">分布式环境中的并发问题</div><div id="post-meta"><time class="post-meta__date"><i class="fa fa-calendar" aria-hidden="true"></i> 2019-09-04</time><span class="post-meta__separator">|</span><i class="fa fa-inbox post-meta__icon" aria-hidden="true"></i><a class="post-meta__categories" href="/categories/分布式/">分布式</a></div></div></div><div class="layout" id="content-inner"><article id="post"><div class="article-container" id="post-content"><p>分布式环境中，处理并发问题没发通过操作系统和 JVM 提供的工具来解决，因为 LOCK 命令、总线锁、缓存所、monitor 对象、锁、等并发工具都无法影响到其他服务器的线程。</p>
+<p>那么在分布式环境中，可以使用一下策略和方式处理：</p>
+<ol>
+<li>避免并发<ol>
+<li>通过某些策略和业务来避免并发，如合理分配时间调度，避开共享资源的存取冲突等。</li>
+<li>可以通过hash算法的方式，使一个对象的数据计算和访问都交给同一个线程来完成</li>
+</ol>
+</li>
+<li>时间戳<ol>
+<li>每次系统A发送给系统B的时候都带上一个时间戳，B在拿到通知后，比较时间戳</li>
+<li>这样只需要调用方保证时间戳的时序有效性即可</li>
+</ol>
+</li>
+<li>串行化<ol>
+<li>串行化可能产生并发的问题，通过牺牲性能和扩展性，来满足对数据一致性的要求。</li>
+<li>比如分布式消息系统，没法保证消息的有序性，但是可以通过将分布式消息系统改为单一消息系统，就可以保证消息的有序性了。</li>
+<li>如果接收方无法保证处理的有序性，那么可以使用一个队列将调用信息缓存起来，再串行地处理这些调用</li>
+</ol>
+</li>
+<li>数据库<ol>
+<li>在分布式环境中，数据库是个服务器的共享点，可以通过数据库的高可靠一致性机制来满足需求。</li>
+<li>比如通过唯一性约束，来解决并发过程中重复数据的生产或重复任务的执行</li>
+<li>某些更新操作也尽量使用SQL来完成，在程序中计算后再更新，可能会出现脏复写的问题，但是通过一条SQL来完成计算和更新，就能通过数据库的锁机制来保证更新的一致性</li>
+</ol>
+</li>
+<li>行锁<ol>
+<li>有些事务较为复杂时，无法通过一条SQL解决问题，并且可能存在并发问题，此时可以考虑使用行锁来解决问题</li>
+<li>如 select … for update ，在查询后将该行数据锁定，直到 commit。但是这么做会导致其他涉及该行的所有操作都会被挂起</li>
+<li>通过在表中增加一个标志锁的字段，每次操作之前通过update，来模拟竞争锁的操作，操作完成后再update复位该标志，表示锁归还。（这种操作很类似Redis分布式锁、MongoDB分布式锁，说白了就是自己定义一个模拟竞争锁的场景）</li>
+</ol>
+</li>
+<li>统一触发途径<ol>
+<li>如果一个数据会被多个业务同时涉及到，就会有并发问题产生的隐患。因此可以通过前期架构和业务涉及，尽量统一触发途径，减少并发的可能，也有利于对并发问题的分析和判断。</li>
+</ol>
+</li>
+</ol>
+<p><a href="https://blog.csdn.net/cutesource/article/details/5791350" target="_blank" rel="noopener">文章总结自 : https://blog.csdn.net/cutesource/article/details/5791350</a></p>
+</div></article><div class="post-copyright"><div class="post-copyright__author"><span class="post-copyright-meta">文章作者: </span><span class="post-copyright-info"><a href="mailto:undefined">koral</a></span></div><div class="post-copyright__type"><span class="post-copyright-meta">文章链接: </span><span class="post-copyright-info"><a href="http://luokaiii.github.io/2019/09/04/分布式/SpringCloud/分布式并发问题/">http://luokaiii.github.io/2019/09/04/分布式/SpringCloud/分布式并发问题/</a></span></div><div class="post-copyright__notice"><span class="post-copyright-meta">版权声明: </span><span class="post-copyright-info">本博客所有文章除特别声明外，均采用 <a href="https://creativecommons.org/licenses/by-nc-sa/4.0/">CC BY-NC-SA 4.0</a> 许可协议。转载请注明来自 <a href="http://luokaiii.github.io">凯</a>！</span></div></div><div class="post-meta__tag-list"></div><nav id="pagination"><div class="prev-post pull-left"><a href="/2019/09/05/读书笔记/《Mybatis》/1_入门/"><i class="fa fa-chevron-left">  </i><span>《MyBatis》读书笔记 - 入门</span></a></div><div class="next-post pull-right"><a href="/2019/09/04/Interview/20190903上海基诺联生物/"><span>20190903上海基诺联生物科技有限公司</span><i class="fa fa-chevron-right"></i></a></div></nav></div></div><footer><div class="layout" id="footer"><div class="copyright">&copy;2013 - 2020 By koral</div><div class="framework-info"><span>驱动 - </span><a href="http://hexo.io"><span>Hexo</span></a><span class="footer-separator">|</span><span>主题 - </span><a href="https://github.com/Molunerfinn/hexo-theme-melody"><span>Melody</span></a></div><div class="busuanzi"><script async src="//busuanzi.ibruce.info/busuanzi/2.3/busuanzi.pure.mini.js"></script><span id="busuanzi_container_page_pv"><i class="fa fa-file"></i><span id="busuanzi_value_page_pv"></span><span></span></span></div></div></footer><i class="fa fa-arrow-up" id="go-up" aria-hidden="true"></i><script src="https://cdn.jsdelivr.net/npm/animejs@latest/anime.min.js"></script><script src="https://cdn.jsdelivr.net/npm/jquery@latest/dist/jquery.min.js"></script><script src="https://cdn.jsdelivr.net/npm/@fancyapps/fancybox@latest/dist/jquery.fancybox.min.js"></script><script src="https://cdn.jsdelivr.net/npm/velocity-animate@latest/velocity.min.js"></script><script src="https://cdn.jsdelivr.net/npm/velocity-ui-pack@latest/velocity.ui.min.js"></script><script src="/js/utils.js?version=1.7.0"></script><script src="/js/fancybox.js?version=1.7.0"></script><script src="/js/sidebar.js?version=1.7.0"></script><script src="/js/copy.js?version=1.7.0"></script><script src="/js/fireworks.js?version=1.7.0"></script><script src="/js/transition.js?version=1.7.0"></script><script src="/js/scroll.js?version=1.7.0"></script><script src="/js/head.js?version=1.7.0"></script><script>if(/Android|webOS|iPhone|iPod|iPad|BlackBerry/i.test(navigator.userAgent)) {
+  $('#nav').addClass('is-mobile')
+  $('footer').addClass('is-mobile')
+  $('#top-container').addClass('is-mobile')
+}</script></body></html>

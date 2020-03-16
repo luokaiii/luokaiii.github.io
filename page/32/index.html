@@ -7,187 +7,7 @@
     error: '复制错误',
     noSupport: '浏览器不支持'
   }
-} </script></head><body><i class="fa fa-arrow-right" id="toggle-sidebar" aria-hidden="true"></i><div id="sidebar" data-display="false"><div class="author-info"><div class="author-info__avatar text-center"><img src="/img/avatar.png"></div><div class="author-info__name text-center">koral</div><div class="author-info__description text-center">描述</div><hr><div class="author-info-articles"><a class="author-info-articles__archives article-meta" href="/archives"><span class="pull-left">文章</span><span class="pull-right">243</span></a><a class="author-info-articles__tags article-meta" href="/tags"><span class="pull-left">标签</span><span class="pull-right">22</span></a><a class="author-info-articles__categories article-meta" href="/categories"><span class="pull-left">分类</span><span class="pull-right">19</span></a></div></div></div><nav class="no-bg" id="nav"><div id="page-header"><span class="pull-left"> <a id="site-name" href="/">凯</a></span><i class="fa fa-bars toggle-menu pull-right" aria-hidden="true"></i><span class="pull-right menus">   <a class="site-page" href="/">Home</a><a class="site-page" href="/archives">Archives</a><a class="site-page" href="/tags">Tags</a><a class="site-page" href="/categories">Categories</a></span><span class="pull-right"></span></div><div id="site-info"><div id="site-title">凯</div><div id="site-sub-title">凯</div></div></nav><div id="content-outer"><div class="layout" id="content-inner"><div class="recent-post-item article-container"><a class="article-title" href="/2019/06/27/读书笔记/《JavaDesignPatterns》/7.原型模式/">《Java Design Patterns》第五章 原型模式 - 对象的克隆</a><time class="post-meta__date"><i class="fa fa-calendar" aria-hidden="true"></i> 2019-06-27</time><span class="article-meta"><span class="article-meta__separator">|</span><i class="fa fa-inbox article-meta__icon" aria-hidden="true"></i><a class="article-meta__categories" href="/categories/设计模式/">设计模式</a></span><span class="article-meta tags"><span class="article-meta__separator">|</span><i class="fa fa-tag article-meta__icon" aria-hidden="true"></i><a class="article-meta__tags" href="/tags/读书笔记/">读书笔记</a></span><div class="content"><h1 id="第五章-原型模式-对象的克隆"><a href="#第五章-原型模式-对象的克隆" class="headerlink" title="第五章 原型模式 - 对象的克隆"></a>第五章 原型模式 - 对象的克隆</h1><p>原型模式：使用原型实例指定创建对象的种类，并且通过拷贝这些原型创建新的对象。属于一种对象创建型模式。</p>
-<h2 id="一、概述"><a href="#一、概述" class="headerlink" title="一、概述"></a>一、概述</h2><h3 id="1-1-原理"><a href="#1-1-原理" class="headerlink" title="1.1 原理"></a>1.1 原理</h3><p>原型模式的工作原理很简单：将一个原型对象传给那个要发动创建的对象，这个要发动创建的对象通过请求原型对象拷贝自己来实现创建过程。由于在软件系统中我们经常会遇到需要创建多个相同或者相似对象的情况，因此原型模式在真实开发中的使用频率还是非常高的。原型模式是一种“另类”的创建型模式，创建克隆对象的工厂就是原型类自身，工厂方法由克隆方法来实现。</p>
-<h3 id="1-2-原型模式中的几个角色"><a href="#1-2-原型模式中的几个角色" class="headerlink" title="1.2 原型模式中的几个角色"></a>1.2 原型模式中的几个角色</h3><ol>
-<li>Prototype - 抽象原型类<ol>
-<li>声明克隆方法的接口，是所有具体原型类的公共父类</li>
-</ol>
-</li>
-<li>ConcretePrototype - 具体原型类<ol>
-<li>实现抽象原型类中声明的克隆方法，在克隆方法中返回自己的一个克隆对象</li>
-</ol>
-</li>
-<li>Client - 客户类<ol>
-<li>让一个原型对象克隆自身从而创建一个新的对象，在客户类中只需要直接实例化或通过工厂方法等方式创建一个原型对象，再通过调用该对象的克隆方法即可得到多个相同的对象。</li>
-</ol>
-</li>
-</ol>
-<h3 id="1-3-案例"><a href="#1-3-案例" class="headerlink" title="1.3 案例"></a>1.3 案例</h3><pre><code class="java">@Getter
-@Setter
-class WeeklyLog implements Clonealbe{
-    private String name;
-    private String date;
-    private String content;
-
-    publci WeekLog clone(){
-        Object obj = null;
-        try{
-            obj = super.clone();
-            return (WeekLog)obj;
-        } catch (CloneNotSupportedException e){
-            System.out.println(&quot;不支持复制&quot;);
-            return null;
-        }
-    }
-}</code></pre>
-<h2 id="二、浅克隆与深克隆"><a href="#二、浅克隆与深克隆" class="headerlink" title="二、浅克隆与深克隆"></a>二、浅克隆与深克隆</h2><h3 id="2-1-浅克隆"><a href="#2-1-浅克隆" class="headerlink" title="2.1 浅克隆"></a>2.1 浅克隆</h3><p>在浅克隆中，如果原型对象的成员是值类型，将复制一份给克隆对象；如果原型对象的成员变量是引用类型，则将引用对象的地址复制一份给克隆对象。也就是说，原型对象的引用类型变量与克隆对象中的变量指向同一内存地址。</p>
-<p>即值类型成员变量会被复制，但是引用成员变量不会。</p>
-<h3 id="2-2-深克隆"><a href="#2-2-深克隆" class="headerlink" title="2.2 深克隆"></a>2.2 深克隆</h3><p>在深克隆中，无论原型对象的成员变量是值类型还是引用类型，都将复制一份给克隆对象。</p>
-<p>如果需要实现深克隆，可以通过序列化（Serialization）等方式实现：将对象写入到流，再从流中读出。</p>
-<blockquote>
-<p>Java语言提供的 Cloneable 接口和 Serializable 接口都是空接口，也称为标识接口。标识接口无任何方法定义，只提供告诉JRE这些接口的实现类是否支持克隆、序列化等功能。</p>
-</blockquote>
-<h2 id="三、总结"><a href="#三、总结" class="headerlink" title="三、总结"></a>三、总结</h2><h3 id="优点"><a href="#优点" class="headerlink" title="优点"></a>优点</h3><ol>
-<li>当创建新对象较为复杂时，可以使用原型模式简化对象的创建过程，复制一个已有实例以提高新实例的创建效率</li>
-<li>扩展性较好，由于在原型模式中提供了抽象原型类，在客户端可以针对抽象原型类进行编程，而将具体原型类写在配置文件中</li>
-<li>原型模式提供了简化的创建结构，工厂方法模式需要与产品等级结构对应的工厂等级结构，而原型模式则直接通过封装在原型类中的克隆方法实现</li>
-<li>深克隆方式可以保存对象的状态</li>
-</ol>
-<h3 id="缺点"><a href="#缺点" class="headerlink" title="缺点"></a>缺点</h3><ol>
-<li>需要每个类配置一个克隆方法，且位于类内部，当对类进行改造时需要修改源码，违反了“开闭原则”</li>
-<li>实现深克隆时较为复杂，对象的每一层子对象都需要进行深克隆</li>
-</ol>
-<h3 id="适用场景"><a href="#适用场景" class="headerlink" title="适用场景"></a>适用场景</h3><ol>
-<li>创建新对象成本较大（如初始化时间长、占用CPU资源多或网络资源占用多），新对象能够通过原型模式进行复制，复制相似对象再进行修改</li>
-<li>可以通过原型模式+备忘录模式，来实现保存对象的状态</li>
-<li>避免使用工厂模式来创建对象</li>
-</ol>
-</div><hr></div><div class="recent-post-item article-container"><a class="article-title" href="/2019/06/26/读书笔记/《JavaDesignPatterns》/5.抽象工厂模式/">《Java Design Patterns》第三章 抽象工厂模式</a><time class="post-meta__date"><i class="fa fa-calendar" aria-hidden="true"></i> 2019-06-26</time><span class="article-meta"><span class="article-meta__separator">|</span><i class="fa fa-inbox article-meta__icon" aria-hidden="true"></i><a class="article-meta__categories" href="/categories/设计模式/">设计模式</a></span><span class="article-meta tags"><span class="article-meta__separator">|</span><i class="fa fa-tag article-meta__icon" aria-hidden="true"></i><a class="article-meta__tags" href="/tags/读书笔记/">读书笔记</a></span><div class="content"><h1 id="第三章-抽象工厂模式"><a href="#第三章-抽象工厂模式" class="headerlink" title="第三章 抽象工厂模式"></a>第三章 抽象工厂模式</h1><p>在工厂方法模式中，通过引入工厂等级结构，解决了 简单工厂模式 中工厂类过于庞大，职责过重的问题。但是由于工厂方法模式中的每一个工厂只生产一类产品，导致系统中存在大量工厂类，增加系统开销。</p>
-<p>因此我们需要将一些相关的产品组成一个“产品族”，由同一个工厂生产。</p>
-<h2 id="一、抽象工厂模式"><a href="#一、抽象工厂模式" class="headerlink" title="一、抽象工厂模式"></a>一、抽象工厂模式</h2><h3 id="1-1-设计一款界面皮肤库"><a href="#1-1-设计一款界面皮肤库" class="headerlink" title="1.1 设计一款界面皮肤库"></a>1.1 设计一款界面皮肤库</h3><p>设计一款界面皮肤库，可以通过菜单来选择皮肤，不同的皮肤将提供视觉效果不同的按钮、文本框、组合框等。</p>
-<p>按照之前的 <code>工厂方法模式</code> 设计，如下：</p>
-<p><img src="https://i.loli.net/2019/07/04/5d1d5ce8d1f3176430.jpg" alt="工厂方法模式.jpg"></p>
-<p>当我们需要增加 Winter风格 的按钮时，只需要继承抽象工厂并生产出对应的按钮即可。该系统具备良好的灵活性和可扩展性，开发可以在不修改现有代码的基础上增加新的皮肤。</p>
-<h3 id="1-2-缺陷与问题"><a href="#1-2-缺陷与问题" class="headerlink" title="1.2 缺陷与问题"></a>1.2 缺陷与问题</h3><p>该设计模式提供了大量的工厂来创建具体的界面组件，可以灵活的配置风格，但是存在以下问题：</p>
-<ol>
-<li>新增产品时，需要同时新增一个具体工厂类，类的个数成对增加，会增大系统的开销</li>
-<li>由于某一种风格的按钮、文本框、组合框通常都是一起使用的，但是因为其工厂方法分离，可能会导致使用时的选择失误</li>
-</ol>
-<h3 id="1-3-解决方案"><a href="#1-3-解决方案" class="headerlink" title="1.3 解决方案"></a>1.3 解决方案</h3><p>将一组产品类定义为一个“产品族”（如按钮、文本框、组合框统称为一个产品族），将之前一个产品对应一个具体工厂的模式改为-一个产品族对应一个产品工厂（如Spring风格工厂，能够生产Spring风格按钮、Spring风格文本框、Spring风格组合框）。</p>
-<h3 id="1-4-产品等级结构与产品族"><a href="#1-4-产品等级结构与产品族" class="headerlink" title="1.4 产品等级结构与产品族"></a>1.4 产品等级结构与产品族</h3><ol>
-<li>产品等级结构<ol>
-<li>在<code>1.3 解决方案</code> 中，抽象工厂与Spring风格工厂、Summer风格工厂之间的关系构成了一个产品等级结构</li>
-<li>抽象工厂类是父类，具体工厂类是子类</li>
-<li>产品等级扩展，只需要继续实现子类即可（如新增Winter风格工厂，用于生产Winter风格的按钮、文本框、组合框）</li>
-</ol>
-</li>
-<li>产品族：<ol>
-<li>即各个具体工厂生产的产品统称（如Spring风格工厂，能够生产Spring风格按钮、Spring风格文本框、Spring风格组合框）</li>
-</ol>
-</li>
-</ol>
-<p>当系统所提供的工厂生产的具体产品并不是一个简单的对象，而是位于多个不同产品等级结构、属于不同类型的具体产品时就可以使用抽象工厂模式。</p>
-<h2 id="二、抽象工厂模式"><a href="#二、抽象工厂模式" class="headerlink" title="二、抽象工厂模式"></a>二、抽象工厂模式</h2><h3 id="2-1-概述"><a href="#2-1-概述" class="headerlink" title="2.1 概述"></a>2.1 概述</h3><p>抽象工厂模式：提供一个创建一系列相关或互相依赖对象的接口，而无须指定它们具体的类。</p>
-<p>抽象工厂模式又称为 Kit模式，属于对象创建型模式。</p>
-<p>在抽象工厂模式中，每一个具体工厂都提供多个工厂方法，用于生产多种不同类型的产品。这些产品构成了一个产品族。</p>
-<p><img src="https://i.loli.net/2019/07/04/5d1d63c564e9523844.jpg" alt="抽象工厂模式"></p>
-<p>从图中可以看出，如果需要新增其他风格的按钮、文本框，只需要新增一个具体工厂，由该工厂的多个工厂方法产出具体的产品。</p>
-<p>同时，缺点也很明显，如果我们想新增图片类型产品，必须同时修改抽象工厂及其所有的具体工厂。</p>
-<h3 id="2-2-抽象工厂模式中的几个角色"><a href="#2-2-抽象工厂模式中的几个角色" class="headerlink" title="2.2 抽象工厂模式中的几个角色"></a>2.2 抽象工厂模式中的几个角色</h3><ol>
-<li>AbstractFactory - 抽象工厂<ol>
-<li>声明了一组用于创建一族产品的方法，每一个方法对应一种产品</li>
-</ol>
-</li>
-<li>ConcreteFactory - 具体工厂<ol>
-<li>实现了在抽象工厂中声明的创建产品的方法，生成一组具体产品，这些产品构成一个产品族</li>
-</ol>
-</li>
-<li>AbstractProduct - 抽象产品<ol>
-<li>每种产品的抽象对象</li>
-</ol>
-</li>
-<li>ConcreteProduct 具体产品<ol>
-<li>由具体工厂生产的具体产品对象</li>
-</ol>
-</li>
-</ol>
-<h3 id="2-3-具体实践"><a href="#2-3-具体实践" class="headerlink" title="2.3 具体实践"></a>2.3 具体实践</h3><pre><code class="java">/**
- * 手机游戏软件
- * 针对 Symbian、Android、WindowsPhone 等多个智能手机平台，
- * 提供不同的游戏操作控制和游戏界面控制
- */
-public class Gaming {
-    // 抽象产品类
-    interface Operation{}
-    // 具体产品类
-    class SymbianOperation implements Operation{}
-    class AndroidOperation implements Operation{}
-    class WindowsPhoneOperation implements Operation{}
-
-    interface HML{}
-    class SymbianHML implements HML{}
-    class AndroidHML implements HML{}
-    class WindowsPhoneHML implements HML{}
-
-    // 抽象工厂类
-    interface Factory{
-        Operation getOperation();
-        HML getHML();
-    }
-    // 具体工厂类
-    class SymbianFactory implements Factory{
-        @Override
-        public Operation getOperation() {
-            return new SymbianOperation();
-        }
-        @Override
-        public HML getHML() {
-            return new SymbianHML();
-        }
-    }
-    class AndroidFactory implements Factory{
-        @Override
-        public Operation getOperation() {
-            return new AndroidOperation();
-        }
-        @Override
-        public HML getHML() {
-            return new AndroidHML();
-        }
-    }
-    class WindowsPhoneFactory implements Factory{
-        @Override
-        public Operation getOperation() {
-            return new WindowsPhoneOperation();
-        }
-        @Override
-        public HML getHML() {
-            return new WindowsPhoneHML();
-        }
-    }
-}</code></pre>
-<h2 id="三、“开闭原则”的倾斜性"><a href="#三、“开闭原则”的倾斜性" class="headerlink" title="三、“开闭原则”的倾斜性"></a>三、“开闭原则”的倾斜性</h2><p>在抽象工厂模式中，增加新的产品族很方便（如增加Winter类型的界面），但是增加新的产品等级结构很麻烦（如增加单选框类型的产品，需要修改抽象工厂及其所有的具体工厂），这种性质被称为“开闭原则”的倾斜性。</p>
-<p>“开闭原则”要求系统对扩展开发，对修改封闭，通过扩展达到增强其功能的目的，对于设计多个产品族与多个产品等级结构的系统，其功能增强包括两方面：</p>
-<ol>
-<li>增加产品族，很好地支持了“开闭原则”，只需新增具体产品和新增一个具体工厂即可</li>
-<li>增加产品等级结构：违背了“开闭原则”，因为需要修改所有的抽象工厂与具体工厂才能实现扩展</li>
-</ol>
-<h2 id="四、总结"><a href="#四、总结" class="headerlink" title="四、总结"></a>四、总结</h2><h3 id="优点"><a href="#优点" class="headerlink" title="优点"></a>优点</h3><ol>
-<li>抽象工厂模式隔离了具体类的生成，使客户不需要知道何时被创建</li>
-<li>当一个产品族中的多个对象被设计为一起工作时，它能够保证客户端始终只使用一个产品族对象</li>
-<li>增加新的产品族很方便，无须修改已有系统，符合“开闭原则”</li>
-</ol>
-<h3 id="缺点"><a href="#缺点" class="headerlink" title="缺点"></a>缺点</h3><ol>
-<li>增加新的产品等级结构时，违背了“开闭原则”</li>
-</ol>
-<h3 id="适用场景"><a href="#适用场景" class="headerlink" title="适用场景"></a>适用场景</h3><ol>
-<li>系统不依赖于产品类的具体创建、组合及表达的细节</li>
-<li>系统中有多于一个的产品族，且每次只使用其中某一个产品族</li>
-<li>同一个产品族的产品配合使用</li>
-<li>产品等级结构稳定，设计完成后，不再修改系统中新的产品等级结构</li>
-</ol>
-</div><hr></div><div class="recent-post-item article-container"><a class="article-title" href="/2019/06/26/读书笔记/《JavaDesignPatterns》/3.简单工厂模式/">《Java Design Patterns》第一章 简单工厂模式</a><time class="post-meta__date"><i class="fa fa-calendar" aria-hidden="true"></i> 2019-06-26</time><span class="article-meta"><span class="article-meta__separator">|</span><i class="fa fa-inbox article-meta__icon" aria-hidden="true"></i><a class="article-meta__categories" href="/categories/设计模式/">设计模式</a></span><span class="article-meta tags"><span class="article-meta__separator">|</span><i class="fa fa-tag article-meta__icon" aria-hidden="true"></i><a class="article-meta__tags" href="/tags/读书笔记/">读书笔记</a></span><div class="content"><h1 id="第一章-简单工厂模式"><a href="#第一章-简单工厂模式" class="headerlink" title="第一章 简单工厂模式"></a>第一章 简单工厂模式</h1><h2 id="一、设计图表库"><a href="#一、设计图表库" class="headerlink" title="一、设计图表库"></a>一、设计图表库</h2><p>设计一个图表库，用于为系统提供各种不同外观的图表，如柱状图、饼状图、折线图等。</p>
+} </script></head><body><i class="fa fa-arrow-right" id="toggle-sidebar" aria-hidden="true"></i><div id="sidebar" data-display="false"><div class="author-info"><div class="author-info__avatar text-center"><img src="/img/avatar.png"></div><div class="author-info__name text-center">koral</div><div class="author-info__description text-center">描述</div><hr><div class="author-info-articles"><a class="author-info-articles__archives article-meta" href="/archives"><span class="pull-left">文章</span><span class="pull-right">241</span></a><a class="author-info-articles__tags article-meta" href="/tags"><span class="pull-left">标签</span><span class="pull-right">22</span></a><a class="author-info-articles__categories article-meta" href="/categories"><span class="pull-left">分类</span><span class="pull-right">19</span></a></div></div></div><nav class="no-bg" id="nav"><div id="page-header"><span class="pull-left"> <a id="site-name" href="/">凯</a></span><i class="fa fa-bars toggle-menu pull-right" aria-hidden="true"></i><span class="pull-right menus">   <a class="site-page" href="/">Home</a><a class="site-page" href="/archives">Archives</a><a class="site-page" href="/tags">Tags</a><a class="site-page" href="/categories">Categories</a></span><span class="pull-right"></span></div><div id="site-info"><div id="site-title">凯</div><div id="site-sub-title">凯</div></div></nav><div id="content-outer"><div class="layout" id="content-inner"><div class="recent-post-item article-container"><a class="article-title" href="/2019/06/26/读书笔记/《JavaDesignPatterns》/3.简单工厂模式/">《Java Design Patterns》第一章 简单工厂模式</a><time class="post-meta__date"><i class="fa fa-calendar" aria-hidden="true"></i> 2019-06-26</time><span class="article-meta"><span class="article-meta__separator">|</span><i class="fa fa-inbox article-meta__icon" aria-hidden="true"></i><a class="article-meta__categories" href="/categories/设计模式/">设计模式</a></span><span class="article-meta tags"><span class="article-meta__separator">|</span><i class="fa fa-tag article-meta__icon" aria-hidden="true"></i><a class="article-meta__tags" href="/tags/读书笔记/">读书笔记</a></span><div class="content"><h1 id="第一章-简单工厂模式"><a href="#第一章-简单工厂模式" class="headerlink" title="第一章 简单工厂模式"></a>第一章 简单工厂模式</h1><h2 id="一、设计图表库"><a href="#一、设计图表库" class="headerlink" title="一、设计图表库"></a>一、设计图表库</h2><p>设计一个图表库，用于为系统提供各种不同外观的图表，如柱状图、饼状图、折线图等。</p>
 <h3 id="1-1-初步设计"><a href="#1-1-初步设计" class="headerlink" title="1.1 初步设计"></a>1.1 初步设计</h3><pre><code class="java">public class Chart {
 
     private String type; // 图表类型
@@ -336,135 +156,130 @@ public class DemoTest {
 <li>工厂类负责创建的对象较少，因为需要创建的对象较少，不会造成工厂方法中的业务逻辑太过复杂</li>
 <li>客户端只知道传入工厂类的参数，对于如何创建对象并不关心</li>
 </ol>
-</div><hr></div><div class="recent-post-item article-container"><a class="article-title" href="/2019/06/26/读书笔记/《JavaDesignPatterns》/4.工厂方法模式/">《Java Design Patterns》第二章 工厂方法模式</a><time class="post-meta__date"><i class="fa fa-calendar" aria-hidden="true"></i> 2019-06-26</time><span class="article-meta"><span class="article-meta__separator">|</span><i class="fa fa-inbox article-meta__icon" aria-hidden="true"></i><a class="article-meta__categories" href="/categories/设计模式/">设计模式</a></span><span class="article-meta tags"><span class="article-meta__separator">|</span><i class="fa fa-tag article-meta__icon" aria-hidden="true"></i><a class="article-meta__tags" href="/tags/读书笔记/">读书笔记</a></span><div class="content"><h1 id="第二章-工厂方法模式"><a href="#第二章-工厂方法模式" class="headerlink" title="第二章 工厂方法模式"></a>第二章 工厂方法模式</h1><p>工厂方法模式又称为工厂模式、虚拟构造模式或多态工厂模式，是一种类创建型模式。</p>
-<h2 id="一、设计一个日志记录器"><a href="#一、设计一个日志记录器" class="headerlink" title="一、设计一个日志记录器"></a>一、设计一个日志记录器</h2><p>设计一个日志记录器，可以通过多种途径保存系统的运行日志，如文件记录或数据库记录等。</p>
-<h3 id="1-1-简单模式实现"><a href="#1-1-简单模式实现" class="headerlink" title="1.1 简单模式实现"></a>1.1 简单模式实现</h3><pre><code class="java">// 抽象产品类
-interface Logger{
-    void writeLog();
-}
-// 具体产品类
-class FileLogger implements Logger{
-    @Override
-    void writeLog(){
-        System.out.println(&quot;文件日志记录&quot;);
+</div><hr></div><div class="recent-post-item article-container"><a class="article-title" href="/2019/06/26/读书笔记/《JavaDesignPatterns》/5.抽象工厂模式/">《Java Design Patterns》第三章 抽象工厂模式</a><time class="post-meta__date"><i class="fa fa-calendar" aria-hidden="true"></i> 2019-06-26</time><span class="article-meta"><span class="article-meta__separator">|</span><i class="fa fa-inbox article-meta__icon" aria-hidden="true"></i><a class="article-meta__categories" href="/categories/设计模式/">设计模式</a></span><span class="article-meta tags"><span class="article-meta__separator">|</span><i class="fa fa-tag article-meta__icon" aria-hidden="true"></i><a class="article-meta__tags" href="/tags/读书笔记/">读书笔记</a></span><div class="content"><h1 id="第三章-抽象工厂模式"><a href="#第三章-抽象工厂模式" class="headerlink" title="第三章 抽象工厂模式"></a>第三章 抽象工厂模式</h1><p>在工厂方法模式中，通过引入工厂等级结构，解决了 简单工厂模式 中工厂类过于庞大，职责过重的问题。但是由于工厂方法模式中的每一个工厂只生产一类产品，导致系统中存在大量工厂类，增加系统开销。</p>
+<p>因此我们需要将一些相关的产品组成一个“产品族”，由同一个工厂生产。</p>
+<h2 id="一、抽象工厂模式"><a href="#一、抽象工厂模式" class="headerlink" title="一、抽象工厂模式"></a>一、抽象工厂模式</h2><h3 id="1-1-设计一款界面皮肤库"><a href="#1-1-设计一款界面皮肤库" class="headerlink" title="1.1 设计一款界面皮肤库"></a>1.1 设计一款界面皮肤库</h3><p>设计一款界面皮肤库，可以通过菜单来选择皮肤，不同的皮肤将提供视觉效果不同的按钮、文本框、组合框等。</p>
+<p>按照之前的 <code>工厂方法模式</code> 设计，如下：</p>
+<p><img src="https://i.loli.net/2019/07/04/5d1d5ce8d1f3176430.jpg" alt="工厂方法模式.jpg"></p>
+<p>当我们需要增加 Winter风格 的按钮时，只需要继承抽象工厂并生产出对应的按钮即可。该系统具备良好的灵活性和可扩展性，开发可以在不修改现有代码的基础上增加新的皮肤。</p>
+<h3 id="1-2-缺陷与问题"><a href="#1-2-缺陷与问题" class="headerlink" title="1.2 缺陷与问题"></a>1.2 缺陷与问题</h3><p>该设计模式提供了大量的工厂来创建具体的界面组件，可以灵活的配置风格，但是存在以下问题：</p>
+<ol>
+<li>新增产品时，需要同时新增一个具体工厂类，类的个数成对增加，会增大系统的开销</li>
+<li>由于某一种风格的按钮、文本框、组合框通常都是一起使用的，但是因为其工厂方法分离，可能会导致使用时的选择失误</li>
+</ol>
+<h3 id="1-3-解决方案"><a href="#1-3-解决方案" class="headerlink" title="1.3 解决方案"></a>1.3 解决方案</h3><p>将一组产品类定义为一个“产品族”（如按钮、文本框、组合框统称为一个产品族），将之前一个产品对应一个具体工厂的模式改为-一个产品族对应一个产品工厂（如Spring风格工厂，能够生产Spring风格按钮、Spring风格文本框、Spring风格组合框）。</p>
+<h3 id="1-4-产品等级结构与产品族"><a href="#1-4-产品等级结构与产品族" class="headerlink" title="1.4 产品等级结构与产品族"></a>1.4 产品等级结构与产品族</h3><ol>
+<li>产品等级结构<ol>
+<li>在<code>1.3 解决方案</code> 中，抽象工厂与Spring风格工厂、Summer风格工厂之间的关系构成了一个产品等级结构</li>
+<li>抽象工厂类是父类，具体工厂类是子类</li>
+<li>产品等级扩展，只需要继续实现子类即可（如新增Winter风格工厂，用于生产Winter风格的按钮、文本框、组合框）</li>
+</ol>
+</li>
+<li>产品族：<ol>
+<li>即各个具体工厂生产的产品统称（如Spring风格工厂，能够生产Spring风格按钮、Spring风格文本框、Spring风格组合框）</li>
+</ol>
+</li>
+</ol>
+<p>当系统所提供的工厂生产的具体产品并不是一个简单的对象，而是位于多个不同产品等级结构、属于不同类型的具体产品时就可以使用抽象工厂模式。</p>
+<h2 id="二、抽象工厂模式"><a href="#二、抽象工厂模式" class="headerlink" title="二、抽象工厂模式"></a>二、抽象工厂模式</h2><h3 id="2-1-概述"><a href="#2-1-概述" class="headerlink" title="2.1 概述"></a>2.1 概述</h3><p>抽象工厂模式：提供一个创建一系列相关或互相依赖对象的接口，而无须指定它们具体的类。</p>
+<p>抽象工厂模式又称为 Kit模式，属于对象创建型模式。</p>
+<p>在抽象工厂模式中，每一个具体工厂都提供多个工厂方法，用于生产多种不同类型的产品。这些产品构成了一个产品族。</p>
+<p><img src="https://i.loli.net/2019/07/04/5d1d63c564e9523844.jpg" alt="抽象工厂模式"></p>
+<p>从图中可以看出，如果需要新增其他风格的按钮、文本框，只需要新增一个具体工厂，由该工厂的多个工厂方法产出具体的产品。</p>
+<p>同时，缺点也很明显，如果我们想新增图片类型产品，必须同时修改抽象工厂及其所有的具体工厂。</p>
+<h3 id="2-2-抽象工厂模式中的几个角色"><a href="#2-2-抽象工厂模式中的几个角色" class="headerlink" title="2.2 抽象工厂模式中的几个角色"></a>2.2 抽象工厂模式中的几个角色</h3><ol>
+<li>AbstractFactory - 抽象工厂<ol>
+<li>声明了一组用于创建一族产品的方法，每一个方法对应一种产品</li>
+</ol>
+</li>
+<li>ConcreteFactory - 具体工厂<ol>
+<li>实现了在抽象工厂中声明的创建产品的方法，生成一组具体产品，这些产品构成一个产品族</li>
+</ol>
+</li>
+<li>AbstractProduct - 抽象产品<ol>
+<li>每种产品的抽象对象</li>
+</ol>
+</li>
+<li>ConcreteProduct 具体产品<ol>
+<li>由具体工厂生产的具体产品对象</li>
+</ol>
+</li>
+</ol>
+<h3 id="2-3-具体实践"><a href="#2-3-具体实践" class="headerlink" title="2.3 具体实践"></a>2.3 具体实践</h3><pre><code class="java">/**
+ * 手机游戏软件
+ * 针对 Symbian、Android、WindowsPhone 等多个智能手机平台，
+ * 提供不同的游戏操作控制和游戏界面控制
+ */
+public class Gaming {
+    // 抽象产品类
+    interface Operation{}
+    // 具体产品类
+    class SymbianOperation implements Operation{}
+    class AndroidOperation implements Operation{}
+    class WindowsPhoneOperation implements Operation{}
+
+    interface HML{}
+    class SymbianHML implements HML{}
+    class AndroidHML implements HML{}
+    class WindowsPhoneHML implements HML{}
+
+    // 抽象工厂类
+    interface Factory{
+        Operation getOperation();
+        HML getHML();
     }
-}
-class DatabaseLogger implements Logger{
-    @Override
-    void writeLog(){
-        System.out.println(&quot;数据库日志记录&quot;);
+    // 具体工厂类
+    class SymbianFactory implements Factory{
+        @Override
+        public Operation getOperation() {
+            return new SymbianOperation();
+        }
+        @Override
+        public HML getHML() {
+            return new SymbianHML();
+        }
     }
-}
-// 工厂类
-class LoggerFactory{
-    public static Logger createLogger(String type){
-        switch(type){
-            case &quot;file&quot;:
-                // 创建文件、初始化文件日志、等其他操作
-                return new FileLogger();
-            case &quot;db&quot;:
-                // 连接数据库、创建数据库日志、等其他操作
-                return new DatabaseLogger();
-            default:
-                throw new UnSupportOperationException();
+    class AndroidFactory implements Factory{
+        @Override
+        public Operation getOperation() {
+            return new AndroidOperation();
+        }
+        @Override
+        public HML getHML() {
+            return new AndroidHML();
+        }
+    }
+    class WindowsPhoneFactory implements Factory{
+        @Override
+        public Operation getOperation() {
+            return new WindowsPhoneOperation();
+        }
+        @Override
+        public HML getHML() {
+            return new WindowsPhoneHML();
         }
     }
 }</code></pre>
-<h3 id="1-2-缺陷与问题"><a href="#1-2-缺陷与问题" class="headerlink" title="1.2 缺陷与问题"></a>1.2 缺陷与问题</h3><p>虽然简单工厂模式实现了对象的创建和使用分离，但是仍然存在以下问题：</p>
+<h2 id="三、“开闭原则”的倾斜性"><a href="#三、“开闭原则”的倾斜性" class="headerlink" title="三、“开闭原则”的倾斜性"></a>三、“开闭原则”的倾斜性</h2><p>在抽象工厂模式中，增加新的产品族很方便（如增加Winter类型的界面），但是增加新的产品等级结构很麻烦（如增加单选框类型的产品，需要修改抽象工厂及其所有的具体工厂），这种性质被称为“开闭原则”的倾斜性。</p>
+<p>“开闭原则”要求系统对扩展开发，对修改封闭，通过扩展达到增强其功能的目的，对于设计多个产品族与多个产品等级结构的系统，其功能增强包括两方面：</p>
 <ol>
-<li>工厂类过于庞大，包含了许多的条件判断，导致维护和测试难度增大</li>
-<li>系统扩展不灵活，如果新增其他类型的日志记录器，必须修改静态工厂方法的业务逻辑，违反“开闭原则”</li>
+<li>增加产品族，很好地支持了“开闭原则”，只需新增具体产品和新增一个具体工厂即可</li>
+<li>增加产品等级结构：违背了“开闭原则”，因为需要修改所有的抽象工厂与具体工厂才能实现扩展</li>
 </ol>
-<h3 id="1-3-解决思路"><a href="#1-3-解决思路" class="headerlink" title="1.3 解决思路"></a>1.3 解决思路</h3><p>简单工厂方法的缺陷在于违反了“开闭原则”，每次新增新类型时必须修改静态工厂方法的业务逻辑。所有的产品都由一个工厂来创建，工厂职责较重，业务逻辑较为复杂，具体产品和工厂类之间耦合度高。严重影响了系统的灵活性和扩展性。</p>
-<p>通过引入工厂方法模式，将工厂与产品拆分，降低耦合，提高系统灵活性。</p>
-<h2 id="二、工厂方法模式"><a href="#二、工厂方法模式" class="headerlink" title="二、工厂方法模式"></a>二、工厂方法模式</h2><h3 id="2-1-概述"><a href="#2-1-概述" class="headerlink" title="2.1 概述"></a>2.1 概述</h3><p>在工厂方法模式中，不再提供一个统一的工厂类来创建所有的产品对象，而是针对不同的产品提供不同的工厂，系统提供一个与产品等级结构对应的工厂等级结构。</p>
-<p>工厂方法模式：定义一个用于创建对象的接口，让子类决定将哪一个类实例化。这样可以将类的实例化延迟到其子类。</p>
-<h3 id="2-2-工厂方法模式中的角色"><a href="#2-2-工厂方法模式中的角色" class="headerlink" title="2.2 工厂方法模式中的角色"></a>2.2 工厂方法模式中的角色</h3><ol>
-<li>Product（抽象产品）：产品对象的公共父类</li>
-<li>ConcreteProduct（具体产品）：实现抽象产品接口，由具体工厂创建，一一对应</li>
-<li>Factory（抽象工厂）：在抽象工厂中，声明了工厂方法，用于返回一个产品。<ol>
-<li>抽象工厂是工厂方法模式的核心，所有创建对象的工厂类都必须实现该接口</li>
-</ol>
-</li>
-<li>ConcreteFactory（具体工厂）：抽象工厂的子类，实现了抽象工厂中定义的方法，通过调用工厂方法，返回一个具体产品类的实例。</li>
-</ol>
-<p>工厂方法模式与简单方法模式的区别就在于，多了一个抽象工厂类。</p>
-<p>在抽象工厂中声明工厂方法，有具体工厂类来创建子类，不同的具体工厂可以创建不同的具体产品。</p>
-<p>在实际使用中，还可以在具体工厂中做一些初始化工作，如资源加载、环境配置等工作。</p>
-<p>而客户端只需针对抽象工厂编程即可。</p>
-<h2 id="三、解决方案"><a href="#三、解决方案" class="headerlink" title="三、解决方案"></a>三、解决方案</h2><pre><code class="java">// 抽象产品类
-interface Logger{
-    void writeLog();
-}
-// 具体产品类
-class FileLogger implements Logger{
-    @Override
-    void writeLog(){
-        System.out.println(&quot;文件日志记录&quot;);
-    }
-}
-class DatabaseLogger implements Logger{
-    @Override
-    void writeLog(){
-        System.out.println(&quot;数据库日志记录&quot;);
-    }
-}
-// 抽象工厂类
-interfact Factory{
-    Logger createLogger();
-}
-// 具体工厂类
-class FileLoggerFactory implement Factory {
-    @Override
-    public Logger createLogger(){
-        // 初始化环境等
-        return  new FileLogger();
-    }
-}
-class DatabaseLoggerFactory implement Factory {
-    @Override
-    public Logger createLogger(){
-        // 初始化环境等
-        return  new DatabaseLogger();
-    }
-}
-// 测试
-public static void main(String[] args){
-    Factory factory = new FileLoggerFactory();
-    Logger logger = factory.createLogger();
-    logger.writeLog();
-}</code></pre>
-<h2 id="四、扩展"><a href="#四、扩展" class="headerlink" title="四、扩展"></a>四、扩展</h2><p>使用 反射与配置文件 扩展系统。</p>
-<p>为了让系统拥有更好的灵活性和可扩展性，在客户端代码汇总不使用new关键字来创建工厂对象，而是将具体工厂类的类名存储在配置文件中，通过读取配置文件获取类名字符串，再使用 Java反射机制，根据类名字符串来生成对象。</p>
-<h2 id="五、隐藏工厂方法"><a href="#五、隐藏工厂方法" class="headerlink" title="五、隐藏工厂方法"></a>五、隐藏工厂方法</h2><p>为了进一步简化客户端的使用，还可以对客户端隐藏工厂方法，在抽象工厂中直接调用产品类的业务方法。</p>
-<pre><code class="java">abstract class Factory{
-    public void writeLog(){
-        Logger logger = this.createLogger();
-        logger.writeLog();
-    }
-    abstract Logger createLogger();
-}</code></pre>
-<p>这样，客户端直接调用抽象工厂的方法即可调用具体的产品业务方法。</p>
-<h2 id="六、工厂方法模式总结"><a href="#六、工厂方法模式总结" class="headerlink" title="六、工厂方法模式总结"></a>六、工厂方法模式总结</h2><h3 id="优点"><a href="#优点" class="headerlink" title="优点"></a>优点</h3><ol>
-<li>由工厂方法来创建客户所需的产品，以及隐藏了具体产品类的实例化过程，客户只需关心所需产品对应的工厂，无需关系创建细节，甚至无需知道产品类的类名。</li>
-<li>基于工厂角色和产品角色的多态性设计是工厂方法的关键。能让工厂可以自主确定创建何种产品对象，而创建对象的细节封装在具体工厂的内部。</li>
-<li>符合“开闭原则”，向系统中新增产品时，无需修改抽象工厂和抽象产品提供的接口，无需修改客户端，只需要添加一个具体工厂和具体产品即可。</li>
+<h2 id="四、总结"><a href="#四、总结" class="headerlink" title="四、总结"></a>四、总结</h2><h3 id="优点"><a href="#优点" class="headerlink" title="优点"></a>优点</h3><ol>
+<li>抽象工厂模式隔离了具体类的生成，使客户不需要知道何时被创建</li>
+<li>当一个产品族中的多个对象被设计为一起工作时，它能够保证客户端始终只使用一个产品族对象</li>
+<li>增加新的产品族很方便，无须修改已有系统，符合“开闭原则”</li>
 </ol>
 <h3 id="缺点"><a href="#缺点" class="headerlink" title="缺点"></a>缺点</h3><ol>
-<li>在添加新产品时，需要编写新的具体产品类，还需要提供对应的具体工厂类。系统中类的个数增加，提升了系统复杂度，更多的类需要编译和运行，会给系统带来一些额外开销。</li>
-<li>由于考虑系统的可扩展性，需要引入抽象层，增加了系统抽象性和理解难度。且实现时可能用到DOM、反射等技术，增加系统实现难度</li>
+<li>增加新的产品等级结构时，违背了“开闭原则”</li>
 </ol>
 <h3 id="适用场景"><a href="#适用场景" class="headerlink" title="适用场景"></a>适用场景</h3><ol>
-<li>客户端不知道具体所需的对象，只知道工厂即可。</li>
-<li>抽象工厂类通过其子类来指定创建哪个对象。<ol>
-<li>抽象工厂类只需要提供一个创建工厂的接口，由其子类-具体工厂类来决定要创建的对象</li>
-<li>利用面向对象的多态性和里氏替换原则，在程序运行时，由子类替换父类，从而使系统更容易扩展</li>
+<li>系统不依赖于产品类的具体创建、组合及表达的细节</li>
+<li>系统中有多于一个的产品族，且每次只使用其中某一个产品族</li>
+<li>同一个产品族的产品配合使用</li>
+<li>产品等级结构稳定，设计完成后，不再修改系统中新的产品等级结构</li>
 </ol>
-</li>
-</ol>
-<h2 id="七、练习"><a href="#七、练习" class="headerlink" title="七、练习"></a>七、练习</h2><blockquote>
-<p>使用工厂方法模式设计一个程序来读取各种不同类型的图片格式，针对每一种图片格式都设计一个图片读取器，如GIF图片读取器用于读取GIF格式的图片、JPG图片读取器用于读取JPG格式的图片。需充分考虑系统的灵活性和可扩展性。</p>
-</blockquote>
 </div><hr></div><div class="recent-post-item article-container"><a class="article-title" href="/2019/06/25/读书笔记/《JavaDesignPatterns》/2.面向对象设计原则/">《Java Design Patterns》7大原则</a><time class="post-meta__date"><i class="fa fa-calendar" aria-hidden="true"></i> 2019-06-25</time><span class="article-meta"><span class="article-meta__separator">|</span><i class="fa fa-inbox article-meta__icon" aria-hidden="true"></i><a class="article-meta__categories" href="/categories/设计模式/">设计模式</a></span><span class="article-meta tags"><span class="article-meta__separator">|</span><i class="fa fa-tag article-meta__icon" aria-hidden="true"></i><a class="article-meta__tags" href="/tags/读书笔记/">读书笔记</a></span><div class="content"><h1 id="面向对象设计原则"><a href="#面向对象设计原则" class="headerlink" title="面向对象设计原则"></a>面向对象设计原则</h1><table>
 <thead>
 <tr>
@@ -559,7 +374,35 @@ public static void main(String[] args){
 <td></td>
 </tr>
 </tbody></table>
-</div><hr></div><nav id="pagination"><div class="pagination"><a class="extend prev" rel="prev" href="/page/31/"><i class="fa fa-chevron-left"></i></a><a class="page-number" href="/">1</a><span class="space">&hellip;</span><a class="page-number" href="/page/31/">31</a><span class="page-number current">32</span><a class="page-number" href="/page/33/">33</a><span class="space">&hellip;</span><a class="page-number" href="/page/49/">49</a><a class="extend next" rel="next" href="/page/33/"><i class="fa fa-chevron-right"></i></a></div></nav></div></div><footer><div class="layout" id="footer"><div class="copyright">&copy;2013 - 2020 By koral</div><div class="framework-info"><span>驱动 - </span><a href="http://hexo.io"><span>Hexo</span></a><span class="footer-separator">|</span><span>主题 - </span><a href="https://github.com/Molunerfinn/hexo-theme-melody"><span>Melody</span></a></div><div class="busuanzi"><script async src="//busuanzi.ibruce.info/busuanzi/2.3/busuanzi.pure.mini.js"></script><span id="busuanzi_container_site_uv"><i class="fa fa-user"></i><span id="busuanzi_value_site_uv"></span><span></span></span><span class="footer-separator">|</span><span id="busuanzi_container_site_pv"><i class="fa fa-eye"></i><span id="busuanzi_value_site_pv"></span><span></span></span></div></div></footer><i class="fa fa-arrow-up" id="go-up" aria-hidden="true"></i><script src="https://cdn.jsdelivr.net/npm/animejs@latest/anime.min.js"></script><script src="https://cdn.jsdelivr.net/npm/jquery@latest/dist/jquery.min.js"></script><script src="https://cdn.jsdelivr.net/npm/@fancyapps/fancybox@latest/dist/jquery.fancybox.min.js"></script><script src="https://cdn.jsdelivr.net/npm/velocity-animate@latest/velocity.min.js"></script><script src="https://cdn.jsdelivr.net/npm/velocity-ui-pack@latest/velocity.ui.min.js"></script><script src="/js/utils.js?version=1.7.0"></script><script src="/js/fancybox.js?version=1.7.0"></script><script src="/js/sidebar.js?version=1.7.0"></script><script src="/js/copy.js?version=1.7.0"></script><script src="/js/fireworks.js?version=1.7.0"></script><script src="/js/transition.js?version=1.7.0"></script><script src="/js/scroll.js?version=1.7.0"></script><script src="/js/head.js?version=1.7.0"></script><script>if(/Android|webOS|iPhone|iPod|iPad|BlackBerry/i.test(navigator.userAgent)) {
+</div><hr></div><div class="recent-post-item article-container"><a class="article-title" href="/2019/06/24/读书笔记/《Java核心知识点整理》/16.设计模式/">《JAVA 核心知识点整理》第十六章 设计模式</a><time class="post-meta__date"><i class="fa fa-calendar" aria-hidden="true"></i> 2019-06-24</time><span class="article-meta"><span class="article-meta__separator">|</span><i class="fa fa-inbox article-meta__icon" aria-hidden="true"></i><a class="article-meta__categories" href="/categories/JAVA-核心知识点整理/">JAVA 核心知识点整理</a></span><span class="article-meta tags"><span class="article-meta__separator">|</span><i class="fa fa-tag article-meta__icon" aria-hidden="true"></i><a class="article-meta__tags" href="/tags/读书笔记/">读书笔记</a></span><div class="content"><h1 id="第十六章-设计模式"><a href="#第十六章-设计模式" class="headerlink" title="第十六章 设计模式"></a>第十六章 设计模式</h1><p>设计模式请详见我的另一篇博客： <a href="../../../../../06/24/读书笔记/《JavaDesignPatterns》/0.目录/">《JavaDesignPatterns》</a></p>
+<p>目录如下：</p>
+<ol>
+<li>设计原则</li>
+<li>工厂方法模式</li>
+<li>抽象工厂模式</li>
+<li>单例模式</li>
+<li>建造者模式</li>
+<li>原型模式</li>
+<li>适配器模式</li>
+<li>装饰器模式</li>
+<li>代理模式</li>
+<li>外观模式</li>
+<li>桥接模式</li>
+<li>组合模式</li>
+<li>享元模式</li>
+<li>策略模式</li>
+<li>模板方法模式</li>
+<li>观察者模式</li>
+<li>迭代子模式</li>
+<li>责任链模式</li>
+<li>命令模式</li>
+<li>备忘录模式</li>
+<li>状态模式</li>
+<li>访问者模式</li>
+<li>中介者模式</li>
+<li>解释器模式</li>
+</ol>
+</div><hr></div><div class="recent-post-item article-container"><a class="article-title" href="/2019/06/24/读书笔记/《JavaDesignPatterns》/0.目录/">《Java Design Patterns》读书笔记 - 目录</a><span class="article-meta"><i class="fa fa-thumb-tack article-meta__icon sticky"></i><span class="sticky">置顶</span><span class="article-meta__separator" style="margin-right: 0.3rem">|</span></span><time class="post-meta__date"><i class="fa fa-calendar" aria-hidden="true"></i> 2019-06-24</time><span class="article-meta"><span class="article-meta__separator">|</span><i class="fa fa-inbox article-meta__icon" aria-hidden="true"></i><a class="article-meta__categories" href="/categories/设计模式/">设计模式</a></span><span class="article-meta tags"><span class="article-meta__separator">|</span><i class="fa fa-tag article-meta__icon" aria-hidden="true"></i><a class="article-meta__tags" href="/tags/读书笔记/">读书笔记</a></span><div class="content"><p><img src="https://i.loli.net/2019/07/04/5d1dc031039b536890.png" alt="设计模式"></p></div><a class="more" href="/2019/06/24/读书笔记/《JavaDesignPatterns》/0.目录/#more">阅读更多</a><hr></div><nav id="pagination"><div class="pagination"><a class="extend prev" rel="prev" href="/page/31/"><i class="fa fa-chevron-left"></i></a><a class="page-number" href="/">1</a><span class="space">&hellip;</span><a class="page-number" href="/page/31/">31</a><span class="page-number current">32</span><a class="page-number" href="/page/33/">33</a><span class="space">&hellip;</span><a class="page-number" href="/page/49/">49</a><a class="extend next" rel="next" href="/page/33/"><i class="fa fa-chevron-right"></i></a></div></nav></div></div><footer><div class="layout" id="footer"><div class="copyright">&copy;2013 - 2020 By koral</div><div class="framework-info"><span>驱动 - </span><a href="http://hexo.io"><span>Hexo</span></a><span class="footer-separator">|</span><span>主题 - </span><a href="https://github.com/Molunerfinn/hexo-theme-melody"><span>Melody</span></a></div><div class="busuanzi"><script async src="//busuanzi.ibruce.info/busuanzi/2.3/busuanzi.pure.mini.js"></script><span id="busuanzi_container_site_uv"><i class="fa fa-user"></i><span id="busuanzi_value_site_uv"></span><span></span></span><span class="footer-separator">|</span><span id="busuanzi_container_site_pv"><i class="fa fa-eye"></i><span id="busuanzi_value_site_pv"></span><span></span></span></div></div></footer><i class="fa fa-arrow-up" id="go-up" aria-hidden="true"></i><script src="https://cdn.jsdelivr.net/npm/animejs@latest/anime.min.js"></script><script src="https://cdn.jsdelivr.net/npm/jquery@latest/dist/jquery.min.js"></script><script src="https://cdn.jsdelivr.net/npm/@fancyapps/fancybox@latest/dist/jquery.fancybox.min.js"></script><script src="https://cdn.jsdelivr.net/npm/velocity-animate@latest/velocity.min.js"></script><script src="https://cdn.jsdelivr.net/npm/velocity-ui-pack@latest/velocity.ui.min.js"></script><script src="/js/utils.js?version=1.7.0"></script><script src="/js/fancybox.js?version=1.7.0"></script><script src="/js/sidebar.js?version=1.7.0"></script><script src="/js/copy.js?version=1.7.0"></script><script src="/js/fireworks.js?version=1.7.0"></script><script src="/js/transition.js?version=1.7.0"></script><script src="/js/scroll.js?version=1.7.0"></script><script src="/js/head.js?version=1.7.0"></script><script>if(/Android|webOS|iPhone|iPod|iPad|BlackBerry/i.test(navigator.userAgent)) {
   $('#nav').addClass('is-mobile')
   $('footer').addClass('is-mobile')
   $('#top-container').addClass('is-mobile')
