@@ -3,10 +3,10 @@ title: 《MyBatis》读书笔记 - MyBatis XML 映射文件
 date: 2019-09-05 14:10:20
 tags: 
   - MyBatis
+  - hide
 categories:
   - 读书笔记
   - MyBatis
-visible: hide
 ---
 
 # 三、MyBatis XML 映射文件

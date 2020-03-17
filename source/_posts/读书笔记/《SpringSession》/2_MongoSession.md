@@ -3,10 +3,10 @@ title: 《Spring Session》二、Spring Session MongoDB
 date: 2019-09-26 10:08:00
 tags:
   - Spring Session
+  - hide
 categories:
   - 读书笔记
   - Spring Session
-visible: hide
 ---
 
 # Spring Session MongoDB
@@ -81,4 +81,4 @@ spring.data.mongodb.url=mongodb://localhost:27017/test
 参考资料：
 
 1. [Spring Data Session MongoDB - DOCS](https://docs.spring.io/spring-session-data-mongodb/docs/2.2.0.BUILD-SNAPSHOT/reference/htmlsingle/boot-mongo.html)
-2. [Spring Session MongoDB - DOCS](https://docs.spring.io/spring-session-data-mongodb/docs/2.2.0.BUILD-SNAPSHOT/reference/htmlsingle/)
+2. [Spring Session MongoDB - DOCS](https://docs.spring.io/spring-session-data-mongodb/docs/2.2.0.BUILD-SNAPSHOT/reference/htmlsingle/index.html)

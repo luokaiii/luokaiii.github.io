@@ -9,7 +9,7 @@ categories:
 
 计划：(从Quartz的属性、方法、配置文件、配置类、持久化、集群等几个方面，写一些心得)
 
-Quartz 作为一款由 Java 编写的开源作业调度框架,[官网传送门](http://www.quartz-scheduler.org/)。与我而言，作用是定时执行某一个任务。
+Quartz 作为一款由 Java 编写的开源作业调度框架,[官网传送门](http://www.quartz-scheduler.org/index.html)。与我而言，作用是定时执行某一个任务。
 
 ![Quartz](https://upload-images.jianshu.io/upload_images/13603359-55f97ba1d65bc00f.png)
 

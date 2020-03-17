@@ -3,10 +3,10 @@ title: 《Spring Session》一、Spring Session Redis
 date: 2019-09-26 10:00:00
 tags:
   - Spring Session
+  - hide
 categories:
   - 读书笔记
   - Spring Session
-visible: hide
 ---
 
 # Spring Session Redis

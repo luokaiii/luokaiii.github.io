@@ -3,10 +3,10 @@ title: 《Spring技术内幕》第一章 Spring 的设计理念和整体架构
 date: 2019-09-26 10:10:00
 tags:
   - Spring技术内幕
+  - hide
 categories:
   - 读书笔记
   - Spring技术内幕
-visible: hide
 ---
 
 Spring 为开发者提供一个一站式的轻量级应用开发框架(平台)。

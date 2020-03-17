@@ -3,10 +3,10 @@ title: 《Spring技术内幕》第二章 Spring Framework 的核心：IoC容器�
 date: 2019-09-26 10:10:00
 tags:
   - Spring技术内幕
+  - hide
 categories:
   - 读书笔记
   - Spring技术内幕
-visible: hide
 ---
 
 通过 Spring 的核心 IoC 容器和 AOP 的设计和实现可以了解 Spring 所倡导的开发思路，如 **使用 POJO 开发企业应用**、提供**一致的编程模型**、**强调对接口编程**等。

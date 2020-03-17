@@ -275,7 +275,7 @@ private List<Double> getGaussianData(int count) {
 
 参考：
 
- (1) [XChart Demo](https://knowm.org/open-source/xchart/xchart-example-code/)
+ (1) [XChart Demo](https://knowm.org/open-source/xchart/xchart-example-code/index.html)
 
  (2) 自己
 

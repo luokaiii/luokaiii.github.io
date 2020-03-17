@@ -2,9 +2,11 @@
 title: SpringDataMongoDB(一)
 date: 2018-09-01 14:46:03
 tags:
- - Spring Data
-categories: 
- - Java
+  - Spring Data MongoDB
+  - hide
+categories:
+  - 读书笔记
+  - Spring Data MongoDB
 ---
 # 前言
 

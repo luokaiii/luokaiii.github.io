@@ -3,6 +3,7 @@ title: Jenkins 从零到有部署一个Java项目
 date: 2019-08-05 17:47:00
 tags: 
   - Jenkins部署
+  - hide
 categories:
   - 读书笔记
   - Jenkins部署

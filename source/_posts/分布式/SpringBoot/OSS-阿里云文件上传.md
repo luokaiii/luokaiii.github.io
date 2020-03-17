@@ -152,7 +152,7 @@ categories:
         }
 
         public static void uploadOSS() throws ClientProtocolExcetion{
-            HttpPost httpPost = new HttpPost("http://127.0.0.1:7001/test/autonavi/shanghai/api/attachment/oss/);
+            HttpPost httpPost = new HttpPost("http://127.0.0.1:7001/test/autonavi/shanghai/api/attachment/oss/index.html);
             httpPost.addHeader("key","123");
             httpPost.addHeader("user","123");
             httpPost.addHeader("method","123");
