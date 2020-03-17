@@ -7,527 +7,1335 @@
     error: '复制错误',
     noSupport: '浏览器不支持'
   }
-} </script></head><body><i class="fa fa-arrow-right" id="toggle-sidebar" aria-hidden="true"></i><div id="sidebar" data-display="false"><div class="author-info"><div class="author-info__avatar text-center"><img src="/img/avatar.png"></div><div class="author-info__name text-center">koral</div><div class="author-info__description text-center">描述</div><hr><div class="author-info-articles"><a class="author-info-articles__archives article-meta" href="/archives/index.html"><span class="pull-left">文章</span><span class="pull-right">237</span></a><a class="author-info-articles__tags article-meta" href="/tags/index.html"><span class="pull-left">标签</span><span class="pull-right">29</span></a><a class="author-info-articles__categories article-meta" href="/categories/index.html"><span class="pull-left">分类</span><span class="pull-right">33</span></a></div></div></div><nav class="no-bg" id="nav"><div id="page-header"><span class="pull-left"> <a id="site-name" href="/index.html">凯</a></span><i class="fa fa-bars toggle-menu pull-right" aria-hidden="true"></i><span class="pull-right menus">   <a class="site-page" href="/">首页</a><a class="site-page" href="/archives/index.html">归档</a><a class="site-page" href="/tags/index.html">标签</a><a class="site-page" href="/categories/index.html">分类</a><a class="site-page" href="/about/index.html">关于我</a></span><span class="pull-right"></span></div><div id="site-info"><div id="site-title">凯</div><div id="site-sub-title">凯</div></div></nav><div id="content-outer"><div class="layout" id="content-inner"><div class="recent-post-item article-container"><a class="article-title" href="/2019/09/23/读书笔记/《Docker全栈项目部署》/0.全栈部署流程/index.html">Docker部署全栈 - 项目</a><span class="article-meta"><i class="fa fa-thumb-tack article-meta__icon sticky"></i><span class="sticky">置顶</span><span class="article-meta__separator" style="margin-right: 0.3rem">|</span></span><time class="post-meta__date"><i class="fa fa-calendar" aria-hidden="true"></i> 2019-09-23</time><span class="article-meta"><span class="article-meta__separator">|</span><i class="fa fa-inbox article-meta__icon" aria-hidden="true"></i><a class="article-meta__categories" href="/categories/运维/index.html">运维</a><i class="fa fa-angle-right" aria-hidden="true"></i><i class="fa fa-inbox article-meta__icon" aria-hidden="true"></i><a class="article-meta__categories" href="/categories/运维/Docker全栈部署/index.html">Docker全栈部署</a></span><span class="article-meta tags"><span class="article-meta__separator">|</span><i class="fa fa-tag article-meta__icon" aria-hidden="true"></i><a class="article-meta__tags" href="/tags/Docker全栈部署/index.html">Docker全栈部署</a></span><div class="content"><p><img src="https://i.loli.net/2019/09/24/z12gXNAQaqITFUw.png" alt="compose_swarm.png"></p></div><a class="more" href="/2019/09/23/读书笔记/《Docker全栈项目部署》/0.全栈部署流程/index.html#more">阅读更多</a><hr></div><div class="recent-post-item article-container"><a class="article-title" href="/2019/09/22/读书笔记/《Docker全栈项目部署》/3.Redis/index.html">Docker部署全栈：三、安装Redis</a><time class="post-meta__date"><i class="fa fa-calendar" aria-hidden="true"></i> 2019-09-22</time><span class="article-meta"><span class="article-meta__separator">|</span><i class="fa fa-inbox article-meta__icon" aria-hidden="true"></i><a class="article-meta__categories" href="/categories/运维/index.html">运维</a><i class="fa fa-angle-right" aria-hidden="true"></i><i class="fa fa-inbox article-meta__icon" aria-hidden="true"></i><a class="article-meta__categories" href="/categories/运维/Docker全栈部署/index.html">Docker全栈部署</a></span><span class="article-meta tags"><span class="article-meta__separator">|</span><i class="fa fa-tag article-meta__icon" aria-hidden="true"></i><a class="article-meta__tags" href="/tags/Docker全栈部署/index.html">Docker全栈部署</a></span><div class="content"><h1 id="Docker部署全栈项目：三、Redis-镜像"><a href="#Docker部署全栈项目：三、Redis-镜像" class="headerlink" title="Docker部署全栈项目：三、Redis 镜像"></a>Docker部署全栈项目：三、Redis 镜像</h1><h2 id="一、编写启动脚本"><a href="#一、编写启动脚本" class="headerlink" title="一、编写启动脚本"></a>一、编写启动脚本</h2><pre><code class="sh">#!/bin/bash
-
-curr=`PWD`
-
-# 运行前先停止原有容器
-docker stop luokaiii-redis
-docker rm luokaiii-redis
-
-# docker run 运行容器
-docker run --name luokaiii-redis \ # 指定运行后的容器名称
-        -p 7481:6379 \    # 将容器的6379端口映射到宿主机的7481端口
-        -v /${curr}/data/:/data \ # 挂载redis持久化的目录到宿主机
-        -d redis:4.0.14 \
-        --requirepass &quot;password&quot; # 指定redis的连接密码</code></pre>
-<blockquote>
-<p>如果需要使用 conf 自定义配置，请参考 <a href="http://download.redis.io/redis-stable/redis.conf" target="_blank" rel="noopener">官网提供的 redis.conf</a> 。</p>
-<p>Redis 的执行速度特别快，能到做到 15W/s 的查询，因此推荐使用较为复杂的密码。</p>
-</blockquote>
-<h2 id="二、启动脚本"><a href="#二、启动脚本" class="headerlink" title="二、启动脚本"></a>二、启动脚本</h2><pre><code class="sh">$ cd /home/luokaiii/images/redis   # 脚本和DB文件的存放位置
-
-$ mkdir data   # 创建存储目录
-
-$ ./start.sh   # 运行刚刚写的脚本
-994e9e05bb42d1d.....  # 控制台打印这种的，即表示启动成功</code></pre>
-<h2 id="三、日志解释"><a href="#三、日志解释" class="headerlink" title="三、日志解释"></a>三、日志解释</h2><pre><code class="tex"># Redis 启动、配置加载
-1:C 23 Sep 08:55:24.988 # oO0OoO0OoO0Oo Redis is starting oO0OoO0OoO0Oo
-1:C 23 Sep 08:55:24.988 # Redis version=4.0.14, bits=64, commit=00000000, modified=0, pid=1, just started
-1:C 23 Sep 08:55:24.989 # Configuration loaded
-1:M 23 Sep 08:55:24.992 * Running mode=standalone, port=6379.
-
-# Redis 启动成功
-1:M 23 Sep 08:55:24.993 * Ready to accept connections</code></pre>
-<h2 id="四、测试"><a href="#四、测试" class="headerlink" title="四、测试"></a>四、测试</h2><p><img src="https://i.loli.net/2019/09/23/YH3OnIpa7G2vieK.png" alt="图：连接测试"></p>
-<h2 id="五、遇到的问题"><a href="#五、遇到的问题" class="headerlink" title="五、遇到的问题"></a>五、遇到的问题</h2><h3 id="1-在-windows-下使用-redis-conf，失败"><a href="#1-在-windows-下使用-redis-conf，失败" class="headerlink" title="1. 在 windows 下使用 redis.conf，失败"></a>1. 在 windows 下使用 redis.conf，失败</h3><p>使用 redis.conf 的 Redis 启动脚本，配置来源于 <a href="http://download.redis.io/redis-stable/redis.conf" target="_blank" rel="noopener">官网提供的 redis.conf</a>，且未做任何修改。</p>
-<pre><code class="sh">docker run --name luokaiii-redis \ # 指定运行后的容器名称
-        -p 7481:6379 \    # 将容器的6379端口映射到宿主机的7481端口
-        -v /${PWD}/data/:/data \ # 挂载redis持久化的目录到宿主机
-        -v /${PWD}/redis.conf:/usr/local/etc/redis/redis.conf \ # 挂载redis.conf
-        -d redis:4.0.14 \ # 后台运行容器
-        redis-server /usr/local/etc/redis/redis.conf</code></pre>
-<p>执行脚本参考自 <a href="https://hub.docker.com/_/redis?tab=description" target="_blank" rel="noopener">Docker Hub</a>。</p>
-<p><img src="https://i.loli.net/2019/09/23/DvtaXPkubZUJL6A.png" alt="图：DockerHub提供的redis启动脚本"></p>
-<h4 id="错误提示"><a href="#错误提示" class="headerlink" title="错误提示"></a>错误提示</h4><pre><code class="sh">1:C 23 Sep 08:43:00.482 # Fatal error, can&#39;t open config file &#39;C:/Program Files/Git/usr/local/etc/redis/redis.conf&#39;</code></pre>
-<h4 id="原因"><a href="#原因" class="headerlink" title="原因"></a>原因</h4><p>未知。不明白为什么 Docker Container 会提示出 ‘C:/…’ 路径。</p>
-<h4 id="解决方案"><a href="#解决方案" class="headerlink" title="解决方案"></a>解决方案</h4><p>Windows 环境不使用 redis.conf. </p>
-<blockquote>
-<p>Ubuntu 下使用相同配置并无问题。以下是部署流程：</p>
-</blockquote>
-<p><img src="https://i.loli.net/2019/09/23/mXkanxRFu8HIYfi.png" alt="Linux下配置"></p>
-<p>连接验证：</p>
-<p><img src="https://i.loli.net/2019/09/23/i7rZhyLgPHwbnDI.png" alt="连接Linux下的Redis"></p>
-<h2 id="项目地址"><a href="#项目地址" class="headerlink" title="项目地址"></a>项目地址</h2><ul>
-<li><p><a href="https://github.com/luokaiii/luokaiii.docker-images" target="_blank" rel="noopener">Github</a></p>
-</li>
-<li><p><a href="https://gitee.com/luokaiii/luokaiii.docker-images" target="_blank" rel="noopener">Gitee</a></p>
-</li>
-</ul>
-</div><hr></div><div class="recent-post-item article-container"><a class="article-title" href="/2019/09/21/读书笔记/《Docker全栈项目部署》/4.MariaDB/index.html">Docker部署全栈：四、安装MySQL</a><time class="post-meta__date"><i class="fa fa-calendar" aria-hidden="true"></i> 2019-09-21</time><span class="article-meta"><span class="article-meta__separator">|</span><i class="fa fa-inbox article-meta__icon" aria-hidden="true"></i><a class="article-meta__categories" href="/categories/运维/index.html">运维</a><i class="fa fa-angle-right" aria-hidden="true"></i><i class="fa fa-inbox article-meta__icon" aria-hidden="true"></i><a class="article-meta__categories" href="/categories/运维/Docker全栈部署/index.html">Docker全栈部署</a></span><span class="article-meta tags"><span class="article-meta__separator">|</span><i class="fa fa-tag article-meta__icon" aria-hidden="true"></i><a class="article-meta__tags" href="/tags/Docker全栈部署/index.html">Docker全栈部署</a></span><div class="content"><h1 id="Docker部署全栈项目：四、MySQL-镜像"><a href="#Docker部署全栈项目：四、MySQL-镜像" class="headerlink" title="Docker部署全栈项目：四、MySQL 镜像"></a>Docker部署全栈项目：四、MySQL 镜像</h1><p>这里使用的是 MariaDB 镜像，与 MySQL 一样。</p>
-<h2 id="一、编写启动脚本"><a href="#一、编写启动脚本" class="headerlink" title="一、编写启动脚本"></a>一、编写启动脚本</h2><h2 id="1-start-sh"><a href="#1-start-sh" class="headerlink" title="1. start.sh"></a>1. start.sh</h2><pre><code class="sh">#!/bin/bash
-
-# 启动前先尝试停止该服务
-docker stop luokaiii-mysql
-docker rm luokaiii-mysql
-
-# 运行服务
-docker run --name luokaiii-mysql \ # 指定容器服务名称
-        -p 3307:3306 \ # 将容器的3306端口映射到宿主机的3307端口
-        -v /${PWD}/conf/local.cnf:/etc/mysql/conf.d/local.cnf \ # 使用自定义的配置文件(Windows环境下必不可少！)
-        -v /${PWD}/data:/var/lib/mysql \ # 挂载数据目录
-        -e MYSQL_ROOT_PASSWORD=password \ # MySQL初始密码
-        -d mariadb:10.4.8 \ # 后台运行指定版本
-        --character-set-server=utf8mb4 \ # 指定字符集
-        --collation-server=utf8mb4_unicode_ci</code></pre>
-<h3 id="2-conf-local-cnf"><a href="#2-conf-local-cnf" class="headerlink" title="2. conf/local.cnf"></a>2. conf/local.cnf</h3><p>指定 InnoDB 的刷新方法，否则会出现数据目录无法挂载的异常。当出现该异常后，请先清空 <code>./data</code> 目录。</p>
-<pre><code class="cnf">[mysqld]
-innodb_flush_method=O_DSYNC</code></pre>
-<p><img src="https://i.loli.net/2019/09/23/6EcOuQZePBIXRvq.png" alt="数据无法挂载，data目录未清空"></p>
-<h2 id="二、执行启动脚本"><a href="#二、执行启动脚本" class="headerlink" title="二、执行启动脚本"></a>二、执行启动脚本</h2><pre><code class="sh">$ cd /home/luokaiii/images/mysql   # 脚本和DB文件的存放位置
-
-$ mkdir data   # 创建存储目录
-$ vim conf/local.cnf  # 编写配置文件，填入innodb_flush_method=O_DSYNC
-
-$ ./start.sh   # 运行刚刚写的脚本
-994e9e05bb42d1d.....  # 控制台打印这种的，即表示启动成功</code></pre>
-<h2 id="三、测试连接"><a href="#三、测试连接" class="headerlink" title="三、测试连接"></a>三、测试连接</h2><p><img src="https://i.loli.net/2019/09/23/EUrI5Cu6HRN2gSK.png" alt="连接MySQL"></p>
-<h2 id="四、遇到的问题"><a href="#四、遇到的问题" class="headerlink" title="四、遇到的问题"></a>四、遇到的问题</h2><h3 id="1-问题：在-Windows-环境下，无法挂载-数据目录-至容器中。"><a href="#1-问题：在-Windows-环境下，无法挂载-数据目录-至容器中。" class="headerlink" title="1. 问题：在 Windows 环境下，无法挂载 数据目录 至容器中。"></a>1. 问题：在 Windows 环境下，无法挂载 数据目录 至容器中。</h3><p><img src="https://i.loli.net/2019/09/24/dWpOrvMy5eXznNg.png" alt="图：启动失败，无法挂载数据目录"></p>
-<h3 id="原因："><a href="#原因：" class="headerlink" title="原因："></a>原因：</h3><p>未指定 <code>innodb_flush_method=O_DSYNC</code>。</p>
-<blockquote>
-<p>Linux 环境下不需要</p>
-</blockquote>
-<h3 id="解决方法："><a href="#解决方法：" class="headerlink" title="解决方法："></a>解决方法：</h3><ol>
-<li>编写 <code>/conf/local.cnf</code> 并挂载到 <code>mariadb 容器</code> 中</li>
-<li>删除之前 ./data 下的所有数据</li>
-<li>并重新执行启动脚本</li>
-</ol>
-<p>参考资料：</p>
+} </script></head><body><i class="fa fa-arrow-right" id="toggle-sidebar" aria-hidden="true"></i><div id="sidebar" data-display="false"><div class="author-info"><div class="author-info__avatar text-center"><img src="/img/avatar.png"></div><div class="author-info__name text-center">koral</div><div class="author-info__description text-center">描述</div><hr><div class="author-info-articles"><a class="author-info-articles__archives article-meta" href="/archives/index.html"><span class="pull-left">文章</span><span class="pull-right">207</span></a><a class="author-info-articles__tags article-meta" href="/tags/index.html"><span class="pull-left">标签</span><span class="pull-right">25</span></a><a class="author-info-articles__categories article-meta" href="/categories/index.html"><span class="pull-left">分类</span><span class="pull-right">28</span></a></div></div></div><nav class="no-bg" id="nav"><div id="page-header"><span class="pull-left"> <a id="site-name" href="/index.html">凯</a></span><i class="fa fa-bars toggle-menu pull-right" aria-hidden="true"></i><span class="pull-right menus">   <a class="site-page" href="/">首页</a><a class="site-page" href="/archives/index.html">归档</a><a class="site-page" href="/tags/index.html">标签</a><a class="site-page" href="/categories/index.html">分类</a><a class="site-page" href="/about/index.html">关于我</a></span><span class="pull-right"></span></div><div id="site-info"><div id="site-title">凯</div><div id="site-sub-title">凯</div></div></nav><div id="content-outer"><div class="layout" id="content-inner"><div class="recent-post-item article-container"><a class="article-title" href="/2019/07/11/读书笔记/《JavaDesignPatterns》/12.装饰模式/index.html">《Java Design Patterns》第十章 装饰模式 - 扩展系统功能</a><time class="post-meta__date"><i class="fa fa-calendar" aria-hidden="true"></i> 2019-07-11</time><span class="article-meta"><span class="article-meta__separator">|</span><i class="fa fa-inbox article-meta__icon" aria-hidden="true"></i><a class="article-meta__categories" href="/categories/读书笔记/index.html">读书笔记</a><i class="fa fa-angle-right" aria-hidden="true"></i><i class="fa fa-inbox article-meta__icon" aria-hidden="true"></i><a class="article-meta__categories" href="/categories/读书笔记/设计模式/index.html">设计模式</a></span><span class="article-meta tags"><span class="article-meta__separator">|</span><i class="fa fa-tag article-meta__icon" aria-hidden="true"></i><a class="article-meta__tags" href="/tags/hide/index.html">hide</a><span class="article-meta__link">-</span><i class="fa fa-tag article-meta__icon" aria-hidden="true"></i><a class="article-meta__tags" href="/tags/设计模式/index.html">设计模式</a></span><div class="content"><h1 id="第十章-装饰模式-扩展系统功能"><a href="#第十章-装饰模式-扩展系统功能" class="headerlink" title="第十章 装饰模式 - 扩展系统功能"></a>第十章 装饰模式 - 扩展系统功能</h1><p>如果你买了一个毛坯房，那么剩下的就是装修。装修并没有改变原有房屋用于居住的本质，但是增加了实用性、美观性等特征。</p>
+<p>在软件设计中，装饰模式就是一种类似装修的技术，能对已有对象的功能进行扩展，以获得更符合用户需求的对象。</p>
+<h2 id="一、设计一款图形界面库"><a href="#一、设计一款图形界面库" class="headerlink" title="一、设计一款图形界面库"></a>一、设计一款图形界面库</h2><p>设计一款图形界面构件库，该库提供了大量基础构件，如窗体、文本框、列表框等。由于在使用时，需要定制一些特效，如带滚动条的窗体、带黑色边框的文本框、即带滚动条又带黑色边框的列表框等。即对原有的基础构件进行扩展，以增强其功能。</p>
+<h3 id="1-1-传统继承方式实现"><a href="#1-1-传统继承方式实现" class="headerlink" title="1.1 传统继承方式实现"></a>1.1 传统继承方式实现</h3><p><img src="https://i.loli.net/2019/07/11/5d269d7e4fdc421682.png" alt="传统继承的方式实现"></p>
+<h3 id="1-2-问题与缺陷"><a href="#1-2-问题与缺陷" class="headerlink" title="1.2 问题与缺陷"></a>1.2 问题与缺陷</h3><p>按照 1.1 中的实现方式，虽然可以满足系统的设计需求。但是，存在的问题也十分严重：</p>
 <ol>
-<li><a href="https://hub.docker.com/_/mariadb" target="_blank" rel="noopener">Docker Hub</a></li>
-<li><a href="https://github.com/docker-library/mariadb/issues/38" target="_blank" rel="noopener">Github Issue</a></li>
+<li>系统扩展十分麻烦。当我们需要 “带滚动条和黑色边框的窗体类” 时，需要同时继承两种类型的窗体类。这在 <code>不支持多重继承</code> 的语言中是无法使用的</li>
+<li>代码重复。从设计图中可以看出，不只是 窗体类 需要滚动和边框，文本框类和列表框类同样需要。而设计滚动条与黑色边框的过程基本相同，代码重复。不利于对系统进行修改和维护。</li>
+<li>系统庞大，类的数目非常多。如果增加新的控件或者新的扩展功能，系统都需要增加大量的具体类，这将导致系统变得非常庞大。<ol>
+<li>如增加一个透明边框（基本控件）的功能，则需要对窗体、文本框、列表框各加一个实现类。</li>
+<li>如果需要组合各个功能的话，3种扩展方式则存在7种组合关系。</li>
 </ol>
-<h2 id="项目地址"><a href="#项目地址" class="headerlink" title="项目地址"></a>项目地址</h2><ul>
-<li><p><a href="https://github.com/luokaiii/luokaiii.docker-images" target="_blank" rel="noopener">Github</a></p>
 </li>
-<li><p><a href="https://gitee.com/luokaiii/luokaiii.docker-images" target="_blank" rel="noopener">Gitee</a></p>
+</ol>
+<h3 id="1-3-解决方案"><a href="#1-3-解决方案" class="headerlink" title="1.3 解决方案"></a>1.3 解决方案</h3><p>直接继承的设计方法的问题在于 类的扩展十分不便，而且会导致类数目的急剧增加。</p>
+<p>其根本原因在于复用机制的不合理：上文采用了继承复用，如“带滚动的窗体”通过继承的方式来复用“窗体类”的“显示功能”，又增加了特定的方法。在复用父类的方法后再增加新的方法来扩展功能。</p>
+<p>根据“合成复用原则”，在实现功能复用时，要多用关联，少用继承。如将 “滚动功能” 抽离，封装在单独的类中，在这个类中定义一个 Component 类型的对象，通过调用 Comonent 的 “显示方法”，在通过调用“滚动功能”的方法来实现功能的扩展。</p>
+<p>根据“里氏替换原则”，只需要在程序运行时，向独立的类中注入具体的 Component 子类对象即可实现功能扩展。</p>
+<p>这个独立的类一般称为“装饰器 Decorator” 或装饰类。</p>
+<h2 id="二、装饰模式"><a href="#二、装饰模式" class="headerlink" title="二、装饰模式"></a>二、装饰模式</h2><p>装饰模式可以在不改变一个对象本身功能的基础上给对象增加额外的新行为。</p>
+<p>装饰模式是一种用于替代继承的技术，它通过一种无须定义子类的方式来给对象动态增加职责，使用对象之间的关联关系取代类之间的继承关系。通过装饰类调用待装饰的原有类的方法，还可以增加新的方法，以扩充原有类的功能。</p>
+<h3 id="2-1-定义"><a href="#2-1-定义" class="headerlink" title="2.1 定义"></a>2.1 定义</h3><p>装饰模式：动态地给一个对象增加一些额外的职责，就增加对象功能来说，装饰模式比生成子类实现更加灵活。装饰模式是一种对象结构型模式。</p>
+<p><img src="https://i.loli.net/2019/07/11/5d27016a49a1297684.png" alt="装饰模式"></p>
+<h3 id="2-2-装饰模式中的几个角色"><a href="#2-2-装饰模式中的几个角色" class="headerlink" title="2.2 装饰模式中的几个角色"></a>2.2 装饰模式中的几个角色</h3><ol>
+<li>Component - 抽象构件<ol>
+<li>具体构件和抽象装饰类的共同父类，声明了在具体构件中实现的业务方法</li>
+<li>引入抽象构件，可以使客户端以一致的方式处理未被装饰的对象，以及装饰之后的对象</li>
+<li>实现客户端的透明操作</li>
+</ol>
 </li>
-</ul>
-</div><hr></div><div class="recent-post-item article-container"><a class="article-title" href="/2019/09/20/读书笔记/《Docker全栈项目部署》/5.SpringBoot/index.html">Docker部署全栈：五、Docker-Compose部署SpringBoot</a><time class="post-meta__date"><i class="fa fa-calendar" aria-hidden="true"></i> 2019-09-20</time><span class="article-meta"><span class="article-meta__separator">|</span><i class="fa fa-inbox article-meta__icon" aria-hidden="true"></i><a class="article-meta__categories" href="/categories/运维/index.html">运维</a><i class="fa fa-angle-right" aria-hidden="true"></i><i class="fa fa-inbox article-meta__icon" aria-hidden="true"></i><a class="article-meta__categories" href="/categories/运维/Docker全栈部署/index.html">Docker全栈部署</a></span><span class="article-meta tags"><span class="article-meta__separator">|</span><i class="fa fa-tag article-meta__icon" aria-hidden="true"></i><a class="article-meta__tags" href="/tags/Docker全栈部署/index.html">Docker全栈部署</a></span><div class="content"><h1 id="Docker部署全栈项目：五、SpringBoot-Jar"><a href="#Docker部署全栈项目：五、SpringBoot-Jar" class="headerlink" title="Docker部署全栈项目：五、SpringBoot Jar"></a>Docker部署全栈项目：五、SpringBoot Jar</h1><h2 id="一、创建-SpringBoot-项目"><a href="#一、创建-SpringBoot-项目" class="headerlink" title="一、创建 SpringBoot 项目"></a>一、创建 SpringBoot 项目</h2><h3 id="1-创建接口"><a href="#1-创建接口" class="headerlink" title="1. 创建接口"></a>1. 创建接口</h3><pre><code class="java">@EntityScan(&quot;cn.luokaiii.api.entity&quot;)
-@RestController
-@SpringBootApplication
-public class ApiApplication {
+<li>ConcreteComponent - 具体构件<ol>
+<li>抽象构件的子类，用于定义具体的构件对象</li>
+<li>装饰器可以给它增加额外的职责（方法）</li>
+</ol>
+</li>
+<li>Decorator - 抽象装饰类<ol>
+<li>抽象构件的子类，用于给具体构件增加职责，但是具体职责在其子类中实现</li>
+<li>维护一个指向抽象构件对象的引用，通过该引用可以调用装饰之前构件对象的方法</li>
+<li>通过子类扩展该方法，以达到装饰的目的</li>
+</ol>
+</li>
+<li>ConcreteDecorator - 具体装饰类<ol>
+<li>抽象装饰类的子类，负责向构件添加新的职责</li>
+<li>每个具体装饰类都定义了一些新的行为，可以调用抽象装饰类中定义的方法，并增加新的方法用以扩充对象的行为</li>
+</ol>
+</li>
+</ol>
+<h3 id="2-3-装饰模式的核心-抽象装饰类-代码"><a href="#2-3-装饰模式的核心-抽象装饰类-代码" class="headerlink" title="2.3 装饰模式的核心 - 抽象装饰类 - 代码"></a>2.3 装饰模式的核心 - 抽象装饰类 - 代码</h3><pre><code class="java">class Decorator implements Component {
+    private Component component; // 维护一个对抽象构件对象的引用
+    public Decorator(Component component) { // 注入一个抽象构件类型的对象
+        this.component = component;
+    }
 
-    private final UserMongoService mongoService;
+    public void operation(){ // 调用原有业务方法
+        component.operation();
+    }
+}</code></pre>
+<p>抽象装饰类可以做到对装饰类进行再装饰，如对一张图表增加一个相框，还能继续在小相框外套大相框。因为它们都是 Component 的子类。</p>
+<p>抽象装饰类只是调用原有的 component 对象的 operation() 方法，它并没有真正的实施装饰，而是提供一个统一的接口，将具体装饰过程交给子类完成。</p>
+<pre><code class="java">class ConcreteDecorator extends Decorator {
+    public ConcreteDecorator(Component component){
+        super(component);
+    }
 
-    private final UserMySQLService mySQLService;
+    public void operation(){
+        super.operation();  // 调用原有业务方法
+        addedBehavior();   // 调用新增业务方法
+    }
 
-    private final StringRedisTemplate stringRedisTemplate;
+    // 新增的业务方法
+    public void addedBehavior(){
+        // ...
+    }
+}</code></pre>
+<blockquote>
+<p>装饰模式中是否存在独立变化的两个维度？ 试比较装饰模式和桥接模式的相同之处和不同之处？</p>
+</blockquote>
+<h2 id="三、完整实现"><a href="#三、完整实现" class="headerlink" title="三、完整实现"></a>三、完整实现</h2><pre><code class="java">/**
+ * 装饰模式
+ */
+// 抽象界面构件类 - 抽象构件类
+abstract class Component {
+    public abstract void display();
+}
 
-    @Autowired
-    public ApiApplication(UserMongoService mongoService,
-                          UserMySQLService mySQLService,
-                          StringRedisTemplate stringRedisTemplate) {
-        this.mongoService = mongoService;
-        this.mySQLService = mySQLService;
-        this.stringRedisTemplate = stringRedisTemplate;
+// 窗体类 - 具体构件类
+class Window extends Component {
+    @Override
+    public void display() {
+        System.out.println(&quot;显示窗体!&quot;);
+    }
+}
+
+// 文本框类 - 具体构件类
+class TextBox extends Component {
+    @Override
+    public void display() {
+        System.out.println(&quot;显示文本框!&quot;);
+    }
+}
+
+// 列表框类 - 具体构件类
+class ListBox extends Component {
+    @Override
+    public void display() {
+        System.out.println(&quot;显示列表框!&quot;);
+    }
+}
+
+// 构件装饰类 - 抽象装饰类
+class ComponentDecorator extends Component {
+    // 维持对抽象构件类型对象的引用
+    private Component component;
+
+    // 注入抽象构件类型的对象
+    public ComponentDecorator(Component component) {
+        this.component = component;
+    }
+
+    @Override
+    public void display() {
+        component.display();
+    }
+}
+
+// 滚动条装饰类 - 具体装饰类
+class ScrollBarDecorator extends ComponentDecorator {
+
+    public ScrollBarDecorator(Component component) {
+        super(component);
+    }
+
+    @Override
+    public void display() {
+        this.setScrollBar();
+        super.display();
+    }
+
+    public void setScrollBar() {
+        System.out.println(&quot;为构件增加滚动条!&quot;);
+    }
+}
+
+// 黑色边框装饰类 - 具体装饰类
+class BlackBorderDecorator extends ComponentDecorator {
+    public BlackBorderDecorator(Component component) {
+        super(component);
+    }
+
+    @Override
+    public void display() {
+        setBlackBorder();
+        super.display();
+    }
+
+    public void setBlackBorder() {
+        System.out.println(&quot;为构件增加黑色边框&quot;);
+    }
+}
+
+public class DecoratorPattern {
+
+    public static void main(String[] args) {
+        Component window = new Window();
+        Component scrollBarWindow = new ScrollBarDecorator(window);
+        scrollBarWindow.display();
+    }
+}</code></pre>
+<h2 id="四、透明装饰模式和半透明装饰模式"><a href="#四、透明装饰模式和半透明装饰模式" class="headerlink" title="四、透明装饰模式和半透明装饰模式"></a>四、透明装饰模式和半透明装饰模式</h2><p>如果我们需要在 “黑色边框装饰类” 中增加一个方法用于设置边框宽度。则修改后的类如下：</p>
+<pre><code class="java">// 黑色边框装饰类 - 具体装饰类
+class BlackBorderDecorator extends ComponentDecorator {
+    public BlackBorderDecorator(Component component) {
+        super(component);
+    }
+
+    @Override
+    public void display() {
+        setBlackBorder();
+        super.display();
+    }
+
+    public void setBlackBorder() {
+        System.out.println(&quot;为构件增加黑色边框&quot;);
+    }
+
+    public void setBorderWidth(Integer width){
+        // ...
+    }
+}</code></pre>
+<p>如果我们继续使用 <code>抽象构件类</code> ，则客户端无法调用新增的业务方法 <code>setBorderWidth(Integer width)</code>。因为在抽象构建类中，没有对该方法的声明。</p>
+<p>在实际使用中，必须使用具体装饰类对象来调用该方法，这种装饰模式就是 <code>半透明(Semi-transparent)装饰模式</code>，而标准的装饰模式是透明装饰模式。</p>
+<h3 id="透明装饰模式与半透明装饰模式的区别"><a href="#透明装饰模式与半透明装饰模式的区别" class="headerlink" title="透明装饰模式与半透明装饰模式的区别"></a>透明装饰模式与半透明装饰模式的区别</h3><p>透明装饰模式要求客户端完全针对抽象编程，所有的装饰类必须声明为抽象构件类型。</p>
+<ol>
+<li>优点：客户端无需关心具体构件类型，可以让客户端透明地使用装饰之前的对象和装饰之后的对象，无须关系它们的区别</li>
+<li>优点：能够对装饰过的对象进行多次装饰，得到更复杂、功能更强大的对象。</li>
+</ol>
+<p>而半透明装饰模式的设计难度较大，对于新增特有的方法，必须使用具体装饰类型来定义装饰后的对象。</p>
+<ol>
+<li>优点：半透明装饰模式可以给系统带来更多灵活性，设计相对简单，使用也比较方便</li>
+<li>缺点：不能对使用同一对象的多次装饰，且客户端需要区别对待装饰之前和装饰之后的对象</li>
+</ol>
+<h2 id="五、总结"><a href="#五、总结" class="headerlink" title="五、总结"></a>五、总结</h2><h3 id="优点"><a href="#优点" class="headerlink" title="优点"></a>优点</h3><ol>
+<li>对于扩展对象的功能，装饰模式比继承更加灵活，且类的个数不会急剧增加</li>
+<li>能够动态扩展对象功能，比如通过配置文件决定运行时的具体装饰类</li>
+<li>能够对一个对象进行多次装饰，通过使用不同的具体装饰类来获得不同行为的组合</li>
+<li>具体构件类和具体装饰类可以独立变化，符合“开闭原则”</li>
+</ol>
+<h3 id="缺点"><a href="#缺点" class="headerlink" title="缺点"></a>缺点</h3><ol>
+<li>装饰模式在使用时，会产生许多的对象。<ol>
+<li>例如通过对一个对象的多次包装，会产生多个具体包装类</li>
+<li>大量对象势必会占用更多的系统资源，一定程度上影响程序的性能</li>
+</ol>
+</li>
+<li>装饰模式虽然比继承更加灵活，但也意味着更加容易出错，排查问题更加困难。<ol>
+<li>对于多次装饰后的对象，调试问题可能需要逐级排查，较为繁琐</li>
+</ol>
+</li>
+</ol>
+<h3 id="适用场景"><a href="#适用场景" class="headerlink" title="适用场景"></a>适用场景</h3><ol>
+<li>在不影响其他对象的情况下，以动态、透明的方式给单个对象添加职责</li>
+<li>不能采用继承方式对系统扩展时。<ol>
+<li>系统中存在大量独立的扩展，增加扩展时会导致子类爆炸性增长</li>
+<li>类被定义为不能继承（如final修饰的类）</li>
+</ol>
+</li>
+</ol>
+<h2 id="六、练习"><a href="#六、练习" class="headerlink" title="六、练习"></a>六、练习</h2><blockquote>
+<p>Sunny软件公司欲开发了一个数据加密模块，可以对字符串进行加密。最简单的加密算法通过对字母进行移位来实现，同时还提供了稍复杂的逆向输出加密，还提供了更为高级的求模加密。用户先使用最简单的加密算法对字符串进行加密，如果觉得还不够可以对加密之后的结果使用其他加密算法进行二次加密，当然也可以进行第三次加密。试使用装饰模式设计该多重加密系统。</p>
+</blockquote>
+</div><hr></div><div class="recent-post-item article-container"><a class="article-title" href="/2019/07/09/读书笔记/《JavaDesignPatterns》/11.组合模式/index.html">《Java Design Patterns》第九章 组合模式 - 树形结构的处理</a><time class="post-meta__date"><i class="fa fa-calendar" aria-hidden="true"></i> 2019-07-09</time><span class="article-meta"><span class="article-meta__separator">|</span><i class="fa fa-inbox article-meta__icon" aria-hidden="true"></i><a class="article-meta__categories" href="/categories/读书笔记/index.html">读书笔记</a><i class="fa fa-angle-right" aria-hidden="true"></i><i class="fa fa-inbox article-meta__icon" aria-hidden="true"></i><a class="article-meta__categories" href="/categories/读书笔记/设计模式/index.html">设计模式</a></span><span class="article-meta tags"><span class="article-meta__separator">|</span><i class="fa fa-tag article-meta__icon" aria-hidden="true"></i><a class="article-meta__tags" href="/tags/hide/index.html">hide</a><span class="article-meta__link">-</span><i class="fa fa-tag article-meta__icon" aria-hidden="true"></i><a class="article-meta__tags" href="/tags/设计模式/index.html">设计模式</a></span><div class="content"><h1 id="第九章-组合模式-树形结构的处理"><a href="#第九章-组合模式-树形结构的处理" class="headerlink" title="第九章 组合模式 - 树形结构的处理"></a>第九章 组合模式 - 树形结构的处理</h1><h2 id="一、杀毒软件的框架结构"><a href="#一、杀毒软件的框架结构" class="headerlink" title="一、杀毒软件的框架结构"></a>一、杀毒软件的框架结构</h2><h3 id="1-介绍"><a href="#1-介绍" class="headerlink" title="1. 介绍"></a>1. 介绍</h3><p>开发一个杀毒软件，既可以对某个文件夹（Folder）杀毒，也可以对指定文件（File）进行杀毒。</p>
+<h3 id="2-面向对象的解法"><a href="#2-面向对象的解法" class="headerlink" title="2. 面向对象的解法"></a>2. 面向对象的解法</h3><p>按照面向对象的设计思路，应该在 Folder 中包含图像、文本等文件类型的集合，以及文件夹的集合。</p>
+<pre><code class="java">class ImageFile {
+    // image property
+}
+
+class TextFile {
+    // text property
+}
+
+class Folder {
+    List&lt;ImageFile&gt; images = new ArrayList&lt;&gt;();
+    List&lt;TextFile&gt; texts = new ArrayList&lt;&gt;();
+    List&lt;Folder&gt; folders = new ArrayList&lt;&gt;();
+
+    void addFolder();
+    void addImage();
+    void addText();
+
+    // ... remove/find etc.
+}</code></pre>
+<h3 id="3-存在的问题"><a href="#3-存在的问题" class="headerlink" title="3. 存在的问题"></a>3. 存在的问题</h3><ol>
+<li>Folder 的设计和实现十分复杂，需要定义多个集合存储不同类型的成员，且需要针对不同成员提供各自的 增删改查方法，存在大量冗余代码，系统维护困难</li>
+<li>由于系统没有抽象层，客户端必须有区别地对待 文件夹和各类型的文件，无法对其进行统一处理</li>
+<li>系统灵活性和可扩展性差，增加新类型的叶子和容器都需要对原有代码进行修改</li>
+</ol>
+<h3 id="4-解决思路"><a href="#4-解决思路" class="headerlink" title="4. 解决思路"></a>4. 解决思路</h3><p>整个架构中包含两类不同的元素，文件夹和文件。文件夹中可以包含文件或文件夹、而文件不能再包含子文件或子文件夹。因此，我们可以将文件夹成为 容器（Container），不同类型的文件是其成员，也称为 叶子（Leaf）。</p>
+<h2 id="二、组合模式"><a href="#二、组合模式" class="headerlink" title="二、组合模式"></a>二、组合模式</h2><h3 id="1-定义"><a href="#1-定义" class="headerlink" title="1. 定义"></a>1. 定义</h3><p>对于树形结构，当容器对象（如文件夹）的某一个方法被调用时，将遍历整个属性结构，其中使用了递归调用的机制来对整个结构进行处理。由于容器对象和叶子对象在功能上的区别，在使用时必须有区别地对待。而大多数情况下我们希望一致地处理它们，因为对于这些对象的使用具有一致性。</p>
+<p>组合模式：组合多个对象形成树形结构，以表示具有“整体 - 部分” 关系的层次结构。组合模式对单个对象（叶子对象）和组合对象（容器对象）的使用具有一致性，组合模式又可以成为“整体 - 部分”模式，属于对象结构性模式。</p>
+<h3 id="2-组合模式中的几个角色"><a href="#2-组合模式中的几个角色" class="headerlink" title="2. 组合模式中的几个角色"></a>2. 组合模式中的几个角色</h3><ol>
+<li>Component - 抽象构件<ol>
+<li>接口或抽象类，为 Leaf 和 Composite 对象声明接口，在该角色中可以包含所有子类共有行为的声明和实现</li>
+</ol>
+</li>
+<li>Leaf - 叶子构件<ol>
+<li>叶子节点，没有子节点，实现了在抽象构件中定义的行为</li>
+<li>对于访问及管理子构件的方法，可以通过异常等方式进行处理</li>
+</ol>
+</li>
+<li>Composite - 容器构件<ol>
+<li>容器节点对象，包含子节点</li>
+<li>子节点可以是叶子节点，也可以是容器节点</li>
+<li>提供一个集合用于存储子节点，实现了抽象构件中定义的行为，包含那些访问及管理子节点的方法</li>
+<li>在业务方法中可以递归调用子节点的业务方法</li>
+</ol>
+</li>
+</ol>
+<h2 id="三、-完整解决方案"><a href="#三、-完整解决方案" class="headerlink" title="三、 完整解决方案"></a>三、 完整解决方案</h2><pre><code class="java">// 组合模式
+abstract class AbstractFile {
+    public abstract void add(AbstractFile file);
+
+    public abstract void remove(AbstractFile file);
+
+    public abstract AbstractFile getChild(int i);
+
+    public abstract void killVirus();
+}
+
+class ImageFile extends AbstractFile {
+    private String name;
+
+    public ImageFile(String name) {
+        this.name = name;
+    }
+
+    @Override
+    public void add(AbstractFile file) {
+        System.out.println(&quot;不支持该方法！&quot;);
+    }
+
+    @Override
+    public void remove(AbstractFile file) {
+        System.out.println(&quot;不支持该方法！&quot;);
+    }
+
+    @Override
+    public AbstractFile getChild(int i) {
+        System.out.println(&quot;不支持该方法！&quot;);
+        return null;
+    }
+
+    @Override
+    public void killVirus() {
+        System.out.println(&quot;对图像进行[&quot; + name + &quot;]杀毒&quot;);
+    }
+}
+
+class TextFile extends AbstractFile {
+    private String name;
+
+    public TextFile(String name) {
+        this.name = name;
+    }
+
+    @Override
+    public void add(AbstractFile file) {
+        System.out.println(&quot;不支持该方法！&quot;);
+    }
+
+    @Override
+    public void remove(AbstractFile file) {
+        System.out.println(&quot;不支持该方法！&quot;);
+    }
+
+    @Override
+    public AbstractFile getChild(int i) {
+        System.out.println(&quot;不支持该方法！&quot;);
+        return null;
+    }
+
+    @Override
+    public void killVirus() {
+        System.out.println(&quot;对文本进行[&quot; + name + &quot;]杀毒&quot;);
+    }
+}
+
+class Folder extends AbstractFile {
+    private List&lt;AbstractFile&gt; files = new ArrayList&lt;&gt;();
+    private String name;
+
+    public Folder(String name) {
+        this.name = name;
+    }
+
+    @Override
+    public void add(AbstractFile file) {
+        files.add(file);
+    }
+
+    @Override
+    public void remove(AbstractFile file) {
+        files.remove(file);
+    }
+
+    @Override
+    public AbstractFile getChild(int i) {
+        return files.get(i);
+    }
+
+    @Override
+    public void killVirus() {
+        System.out.println(&quot;对文件夹[&quot; + name + &quot;]进行杀毒&quot;);
+        for (AbstractFile file : files) {
+            file.killVirus();
+        }
+    }
+}
+
+public class CompositePattern {
+    public static void main(String[] args) {
+        AbstractFile folder1 = new Folder(&quot;图像文件夹&quot;);
+        AbstractFile folder2 = new Folder(&quot;文本文件夹&quot;);
+
+        AbstractFile file1 = new ImageFile(&quot;图片一&quot;);
+        AbstractFile file2 = new ImageFile(&quot;图片二&quot;);
+
+        AbstractFile file3 = new ImageFile(&quot;文本一&quot;);
+        AbstractFile file4 = new ImageFile(&quot;文本二&quot;);
+
+        folder1.add(file1);
+        folder1.add(file2);
+
+        folder2.add(file3);
+        folder2.add(file4);
+        folder2.add(folder1);
+
+        folder2.killVirus();
+    }
+}</code></pre>
+<h2 id="四、透明组合模式和安全组合模式"><a href="#四、透明组合模式和安全组合模式" class="headerlink" title="四、透明组合模式和安全组合模式"></a>四、透明组合模式和安全组合模式</h2><p>通过引入 组合模式，该杀毒软件具有良好的可扩展性，在新增文件类型时，只需要新增一个文件类继承 AbstractFile 即可。</p>
+<p>但是 Abstract 中声明了大量用于管理和访问成员构件的方法，如 add() remove() 等方法，提供对应的错误提示和异常处理。</p>
+<p>解决方案一：将叶子构件的add()、remove() 方法移至AbstractFile中，提供默认实现：</p>
+<pre><code class="java">abstract class AbstractFile {
+    public void add(AbstractFile file){
+        System.out.println(&quot;对不起，不支持该方法！&quot;)
+    }
+    public void remove(AbstractFile file){
+        System.out.println(&quot;对不起，不支持该方法！&quot;)
+    }
+    public AbstractFile getChild(int i){
+        System.out.println(&quot;对不起，不支持该方法！&quot;)
+    }
+
+    public abstract void killVirus();
+}</code></pre>
+<p>解决方案二：不提供 add()、remove() 等抽象方法，由具体需要的子构件自己提供。但是会导致客户端不得不使用容器类本身来声明容器构件对象，否则无法访问其中新增的方法。客户端代码无法通过容器构件的抽象构件来定义。</p>
+<h3 id="1-透明组合模式"><a href="#1-透明组合模式" class="headerlink" title="1. 透明组合模式"></a>1. 透明组合模式</h3><p>上面的解决方案一，就是透明组合模式的实现。由抽象构件提供子构件方法的默认实现。</p>
+<p>好处是确保所有构件类都有相同的接口，对客户端来说，叶子对象和容器对象的方法一致。</p>
+<p>缺点是，因为叶子对象和容器对象在本质上是有区别的，叶子对象不可能有下一层对象，因此不应该有 add()/remove() 等方法，在运行时可能会出现异常。</p>
+<h3 id="2-安全组合模式"><a href="#2-安全组合模式" class="headerlink" title="2. 安全组合模式"></a>2. 安全组合模式</h3><p>解决方案二，就是安全组合模式的实现。抽象构件中不声明管理成员对象的方法，而是在 Composite类中声明并实现这些方法。</p>
+<p>这种做法是安全的，因为叶子对象没有了管理成员对象的方法，客户端也就不能对叶子对象调用这些方法了。</p>
+<h2 id="五、总结"><a href="#五、总结" class="headerlink" title="五、总结"></a>五、总结</h2><p>组合模式使用面向对象的思想来实现树形结构的构建与处理，描述了如何将容器对象和叶子对象进行递归组合，实现简单，灵活型号。</p>
+<h3 id="优点"><a href="#优点" class="headerlink" title="优点"></a>优点</h3><ol>
+<li>组合模式可以清楚地定义分层次的复杂对象，表示对象的全部或部分层次，使客户端忽略了层次的差异，方便对整个层次结构进行控制</li>
+<li>客户端可以一致地使用一个组合结构或其中的单个对象，不必关系处理的是单个对象还是整个组合结构，简化客户端代码</li>
+<li>组合模式为树形结构的面向对象实现，提供了一种灵活的解决方案，通过叶子对象和容器对象的递归组合，可以形成复杂的树形结构，但对树形结构的控制却非常简单</li>
+</ol>
+<h3 id="缺点"><a href="#缺点" class="headerlink" title="缺点"></a>缺点</h3><ol>
+<li>增加新构件时很难对容器中的构件类型进行限制</li>
+</ol>
+<h2 id="适用场景"><a href="#适用场景" class="headerlink" title="适用场景"></a>适用场景</h2><ol>
+<li>在具有整合和部分的层次结构中，希望通过一种方式忽略整体与部分的差异，客户端可以一致地对待它们</li>
+<li>在一种使用面向对象语言开发的系统中需要处理一个树形结构</li>
+<li>在一个系统中能够分离出叶子对象和容器对象，而且它们的类型不固定，需要增加一些新的类型</li>
+</ol>
+<h2 id="六、练习"><a href="#六、练习" class="headerlink" title="六、练习"></a>六、练习</h2><blockquote>
+<p>Sunny软件公司欲开发一个界面控件库，界面控件分为两大类，一类是单元控件，例如按钮、文本框等，一类是容器控件，例如窗体、中间面板等，试用组合模式设计该界面控件库。</p>
+</blockquote>
+<pre><code class="java">/**
+ * 组合模式：
+ * Sunny软件公司欲开发一个界面控件库，
+ * 界面控件分为两大类，一类是单元控件，例如按钮、文本框等，
+ * 一类是容器控件，例如窗体、中间面板等，
+ * 试用组合模式设计该界面控件库。
+ */
+abstract class UI {
+    abstract void display();
+
+    void add(UI ui){
+        System.out.println(&quot;不支持该方法&quot;);
+    }
+}
+
+class ButtonUI extends UI {
+    @Override
+    void display() {
+        System.out.println(&quot;显示按钮&quot;);
+    }
+}
+
+class InputUI extends UI {
+    @Override
+    void display() {
+        System.out.println(&quot;显示输入框&quot;);
+    }
+}
+
+class Window extends UI{
+    List&lt;UI&gt; uis = new ArrayList&lt;&gt;();
+
+    @Override
+    void display() {
+        System.out.println(&quot;--开始显示窗口--&quot;);
+        for (UI ui : uis) {
+            ui.display();
+        }
+    }
+
+    @Override
+    void add(UI ui) {
+        uis.add(ui);
+    }
+}
+
+class Dashboard extends UI {
+    List&lt;UI&gt; uis = new ArrayList&lt;&gt;();
+
+    @Override
+    void display() {
+        System.out.println(&quot;--开始显示面板--&quot;);
+        for (UI ui : uis) {
+            ui.display();
+        }
+    }
+
+    @Override
+    void add(UI ui) {
+        uis.add(ui);
+    }
+}
+
+public class CompositePattern {
+    public static void main(String[] args) {
+        final UI ui1 = new ButtonUI();
+        final UI ui2 = new ButtonUI();
+        final UI ui3 = new InputUI();
+        final UI ui4 = new InputUI();
+
+        final UI window = new Window();
+        final UI dashboard = new Dashboard();
+
+        dashboard.add(ui1);
+        dashboard.add(ui4);
+        window.add(ui1);
+        window.add(ui3);
+        window.add(ui2);
+        window.add(dashboard);
+
+        window.display();
+    }
+}
+</code></pre>
+</div><hr></div><div class="recent-post-item article-container"><a class="article-title" href="/2019/07/08/读书笔记/《JavaDesignPatterns》/10.桥接模式/index.html">《Java Design Patterns》第八章 桥接模式 - 处理多维度变化</a><time class="post-meta__date"><i class="fa fa-calendar" aria-hidden="true"></i> 2019-07-08</time><span class="article-meta"><span class="article-meta__separator">|</span><i class="fa fa-inbox article-meta__icon" aria-hidden="true"></i><a class="article-meta__categories" href="/categories/读书笔记/index.html">读书笔记</a><i class="fa fa-angle-right" aria-hidden="true"></i><i class="fa fa-inbox article-meta__icon" aria-hidden="true"></i><a class="article-meta__categories" href="/categories/读书笔记/设计模式/index.html">设计模式</a></span><span class="article-meta tags"><span class="article-meta__separator">|</span><i class="fa fa-tag article-meta__icon" aria-hidden="true"></i><a class="article-meta__tags" href="/tags/hide/index.html">hide</a><span class="article-meta__link">-</span><i class="fa fa-tag article-meta__icon" aria-hidden="true"></i><a class="article-meta__tags" href="/tags/设计模式/index.html">设计模式</a></span><div class="content"><h1 id="第八章-桥接模式-处理多维度变化"><a href="#第八章-桥接模式-处理多维度变化" class="headerlink" title="第八章 桥接模式 - 处理多维度变化"></a>第八章 桥接模式 - 处理多维度变化</h1><h2 id="一、基本概念"><a href="#一、基本概念" class="headerlink" title="一、基本概念"></a>一、基本概念</h2><h3 id="1-1-场景"><a href="#1-1-场景" class="headerlink" title="1.1 场景"></a>1.1 场景</h3><p>有两种文具，分别是毛笔和蜡笔。如果需要大中小三种型号的蜡笔，且每种型号需要有12种不同的颜色。</p>
+<p>则蜡笔需要各种型号的各种颜色 3*12 = 36支，而毛笔只需要大中小型号和12中颜色的颜料盒 3 + 12 = 15支。</p>
+<p>在蜡笔的模式中，无论是增加颜色，还是增加型号，都会影响另一个维度。耦合度非常的强。</p>
+<p>但在毛笔中，型号与颜色进行了解耦，只是在使用时组合使用，非常灵活，扩展也十分方便。</p>
+<h3 id="1-2-场景二-跨平台图像浏览系统"><a href="#1-2-场景二-跨平台图像浏览系统" class="headerlink" title="1.2 场景二 - 跨平台图像浏览系统"></a>1.2 场景二 - 跨平台图像浏览系统</h3><p>现有一个系统，需要该系统支持BMP、JPG、GIF等格式的图形文件，并且能在Windows、Linux、MacOS等多个系统上运行。首先将文件解析为像素矩阵，然后各系统使用各自的绘制函数，将矩阵显示在屏幕上。</p>
+<p>如果使用上面的“蜡笔模式” - 多层继承模式，可能会存在 Image -&gt; BMPImage、JPGImage、GIFIMAGE -&gt; BMPWindowsImage/BMPLinuxImage/BMPMacOSImage、JPGWindowsImage/JPGLinuxImage/JPGMacOSImage、GIFWindowsImage/GIFLinuxImage/GIFMacOSImage。</p>
+<h4 id="存在的问题："><a href="#存在的问题：" class="headerlink" title="存在的问题："></a>存在的问题：</h4><ol>
+<li>由于采用了多层继承，系统中的类个数非常多。具体类的个数 = 所支持的图像格式 * 所支持的操作系统</li>
+<li>系统扩展麻烦，如BMPWindowsImage，即包含图像文件格式，又包含操作系统信息。无论是增加图像格式还是操作系统，都需要增加大量具体类。</li>
+<li>违反了“单一职责原则”，因为具体类将图像文件解析和像素矩阵显示这两个完全不同的职责融合，任意职责发生改变，都需要修改所有。</li>
+</ol>
+<h4 id="解决方案："><a href="#解决方案：" class="headerlink" title="解决方案："></a>解决方案：</h4><p>引入桥接模式，将两个独立变化的维度设计为两个独立的继承等级结构，并且在抽象层建立一个抽象关联。</p>
+<h2 id="二、桥接模式"><a href="#二、桥接模式" class="headerlink" title="二、桥接模式"></a>二、桥接模式</h2><h3 id="2-1-定义"><a href="#2-1-定义" class="headerlink" title="2.1 定义"></a>2.1 定义</h3><p>桥接模式，又称为柄体模式或接口模式：将抽象部分与它的实现部分分离，使它们都可以独立地变化。是一种非常实用的结构性设计模式。</p>
+<p>如果软件系统中某个类存在两个独立变化的维度，通过该模式可以将这两个维度分离出来，使两者可以独立扩展，让系统更加符合“单一职责原则”。</p>
+<p>桥接模式用一种巧妙的方式处理多层继承存在的问题，用抽象关联取代传统的多层继承，将类之间的静态继承关系转换为动态的对象组合关系，使系统更加灵活，更易于扩展，同时有效控制了系统中类的个数。</p>
+<blockquote>
+<p>桥接模式是一个非常有用的模式，包含了很多面向对象设计原则的思想，如“单一职责原则”、“开闭原则”、“合成复用原则”、“里氏替换原则”、“依赖倒转原则”等。有助于我们深入理解设计原则，形成正确的设计思想和培养良好的设计风格。</p>
+</blockquote>
+<h3 id="2-2-桥接模式中的几个角色"><a href="#2-2-桥接模式中的几个角色" class="headerlink" title="2.2 桥接模式中的几个角色"></a>2.2 桥接模式中的几个角色</h3><ol>
+<li>Abstraction - 抽象类<ol>
+<li>用于定义抽象类的接口，他一般是抽象类而不是接口</li>
+<li>定义了一个 <code>Implementor实现类接口</code> 类型的对象，并可以维护该对象，它与实现类接口之间具有关联关系</li>
+<li>既可以包含抽象业务方法，也可以包含具体业务方法</li>
+</ol>
+</li>
+<li>RefinedAbstraction - 扩充抽象类<ol>
+<li>一般为具体类，实现了 <code>Abstraction抽象类</code> 中的抽象方法</li>
+<li>因为 <code>Abstraction抽象类</code> 中定义了实现类接口对象，所以<code>RefinedAbstraction扩充抽象类</code>中可以调用 <code>Implementor具体实现了类</code> 中定义的业务方法</li>
+</ol>
+</li>
+<li>Implementor - 实现类接口<ol>
+<li>定义实现类接口，提供基本操作</li>
+<li>具体实现交给其子类</li>
+<li>通过关联关系，在 <code>Abstraction抽象类</code> 中，可以直接调用 <code>Implementor及其子类</code> 的方法</li>
+<li>使用关联关系来代替继承关系</li>
+</ol>
+</li>
+<li>ConcreteImplementor - 具体实现类<ol>
+<li>实现 <code>Implementor接口</code>，不同的具体实现类提供不同的方法实现</li>
+<li>用于提供给 <code>Abstraction抽象类</code> 调用的具体实现</li>
+</ol>
+</li>
+</ol>
+<h3 id="2-3-具体实现"><a href="#2-3-具体实现" class="headerlink" title="2.3 具体实现"></a>2.3 具体实现</h3><pre><code class="java">// 桥接模式
+public class BridgePattern {
+
+    // 像素矩阵类：辅助类，各种格式的文件最终都被转化为像素矩阵，不同的操作系统提供不同的方式显示像素矩阵
+    static class Matrix {
+
+    }
+
+    // 抽象图像类：抽象类
+    static abstract class Image {
+        protected ImageImp imp;
+
+        public void setImp(ImageImp imp) {
+            this.imp = imp;
+        }
+
+        public abstract void parseFile(String fileName);
+    }
+
+    // JPG格式图像：扩充抽象类
+    static class JPGImage extends Image {
+        @Override
+        public void parseFile(String fileName) {
+            final Matrix matrix = new Matrix();
+            imp.doPaint(matrix);
+            System.out.println(fileName + &quot;,格式为JPG&quot;);
+        }
+    }
+
+    // PNG格式图像：扩充抽象类
+    static class PNGImage extends Image {
+        @Override
+        public void parseFile(String fileName) {
+            final Matrix matrix = new Matrix();
+            imp.doPaint(matrix);
+            System.out.println(fileName + &quot;,格式为PNG&quot;);
+        }
+    }
+
+    // 抽象操作系统实现类：实现类接口
+    static interface ImageImp {
+        public void doPaint(Matrix m); // 显示像素矩阵 m
+    }
+
+    // Windows 操作系统实现类：具体实现类
+    static class WindowsImp implements ImageImp {
+        @Override
+        public void doPaint(Matrix m) {
+            // 调用Windows系统的绘制函数，绘制像素矩阵
+            System.out.println(&quot;在Windows操作系统中显示图像&quot;);
+        }
+    }
+
+    // Linux 操作系统实现类：具体实现类
+    static class LinuxImp implements ImageImp {
+        @Override
+        public void doPaint(Matrix m) {
+            // 调用Linux系统的绘制函数，绘制像素矩阵
+            System.out.println(&quot;在Linux操作系统中显示图像&quot;);
+        }
     }
 
     public static void main(String[] args) {
-        SpringApplication.run(ApiApplication.class, args);
-    }
-
-    @PostMapping
-    public ResponseEntity createByMySql(@RequestBody Person person) {
-        final Person save = mySQLService.save(person);
-        final User user = mongoService.save(new User(person.getId().toString(), person.getName(), 22));
-        stringRedisTemplate.opsForValue().set(person.getName(), person.getSex().toString());
-        return ResponseEntity.ok(new UPDTO(save, user, null));
-    }
-
-    @GetMapping
-    public ResponseEntity getByMySql(@RequestParam String username) {
-        final Person person = mySQLService.findFirstByName(username);
-        final User user = mongoService.findFirstByName(username);
-        final String redis = stringRedisTemplate.opsForValue().get(username);
-        return ResponseEntity.ok(new UPDTO(person, user, redis));
+        Image img = new PNGImage();
+        ImageImp imp = new WindowsImp();
+        img.setImp(imp);
+        img.parseFile(&quot;死了都要爱.jpg&quot;);
     }
 }</code></pre>
-<h3 id="2-配置参数"><a href="#2-配置参数" class="headerlink" title="2. 配置参数"></a>2. 配置参数</h3><p>连上我们之前配置的MongoDB、MySQL、Redis容器。</p>
-<blockquote>
-<p>这里使用配置的 docker-compose 中的服务名称。这样服务会自动连接，而 <code>localhost</code> 或者 <code>127.0.0.1</code> 则表示 <code>luokaiii-api</code> 当前容器内部的端口号，肯定会连接失败的。</p>
-</blockquote>
-<pre><code class="properties"># MongoDB 连接
-spring.data.mongodb.uri=mongodb://mongoadmin:password@mongo:27017/demo?authSource=admin
-
-# MySQL 连接
-spring.datasource.username=root
-spring.datasource.password=password
-spring.datasource.driver-class-name=com.mysql.cj.jdbc.Driver
-spring.datasource.url=jdbc:mysql://mariadb:3306/db_user?useUnicode=true&amp;characterEncoding=GBK&amp;useSSL=false
-
-# Redis 连接
-spring.redis.host=redis
-spring.redis.port=6379
-spring.redis.password=password</code></pre>
-<h3 id="3-测试"><a href="#3-测试" class="headerlink" title="3. 测试"></a>3. 测试</h3><p>执行如下 Post 命令：</p>
-<pre><code class="sh"># Post 请求
-$ curl -i -X POST  -H &quot;Content-Type:application/json&quot; -d &#39;{ &quot;id&quot;:2, &quot;name&quot;:&quot;zhangsan&quot;, &quot;sex&quot;:1 }&#39; &#39;http://localhost:8080/&#39;
-
-# 返回结果
-{&quot;mysql&quot;:{&quot;id&quot;:2,&quot;name&quot;:&quot;zhangsan&quot;,&quot;sex&quot;:1},&quot;mongo&quot;:{&quot;id&quot;:&quot;2&quot;,&quot;name&quot;:&quot;zhangsan&quot;,&quot;age&quot;:22},&quot;redis&quot;:null}</code></pre>
-<p>执行如下 Get 命令：</p>
-<pre><code class="sh"># Get 请求
-$ curl -i -X GET &#39;http://localhost:8080?username=zhangsan&#39;
-
-# 返回结果
-{&quot;mysql&quot;:{&quot;id&quot;:2,&quot;name&quot;:&quot;zhangsan&quot;,&quot;sex&quot;:1},&quot;mongo&quot;:{&quot;id&quot;:&quot;2&quot;,&quot;name&quot;:&quot;zhangsan&quot;,&quot;age&quot;:22},&quot;redis&quot;:&quot;1&quot;}</code></pre>
-<h2 id="二、构建-Docker-镜像"><a href="#二、构建-Docker-镜像" class="headerlink" title="二、构建 Docker 镜像"></a>二、构建 Docker 镜像</h2><h3 id="1-pom-xml-中增加-docker-插件"><a href="#1-pom-xml-中增加-docker-插件" class="headerlink" title="1. pom.xml 中增加 docker 插件"></a>1. pom.xml 中增加 docker 插件</h3><p>完整的 <code>pom.xml</code> 如下：</p>
-<pre><code class="xml">&lt;?xml version=&quot;1.0&quot; encoding=&quot;UTF-8&quot;?&gt;
-&lt;project xmlns=&quot;http://maven.apache.org/POM/4.0.0&quot; xmlns:xsi=&quot;http://www.w3.org/2001/XMLSchema-instance&quot;
-         xsi:schemaLocation=&quot;http://maven.apache.org/POM/4.0.0 https://maven.apache.org/xsd/maven-4.0.0.xsd&quot;&gt;
-    &lt;modelVersion&gt;4.0.0&lt;/modelVersion&gt;
-    &lt;parent&gt;
-        &lt;groupId&gt;org.springframework.boot&lt;/groupId&gt;
-        &lt;artifactId&gt;spring-boot-starter-parent&lt;/artifactId&gt;
-        &lt;version&gt;2.1.8.RELEASE&lt;/version&gt;
-        &lt;relativePath/&gt; &lt;!-- lookup parent from repository --&gt;
-    &lt;/parent&gt;
-    &lt;!-- 当前项目的版本、名称等信息 --&gt;
-    &lt;groupId&gt;cn.luokaiii&lt;/groupId&gt;
-    &lt;artifactId&gt;api&lt;/artifactId&gt;
-    &lt;version&gt;0.0.1-SNAPSHOT&lt;/version&gt;
-    &lt;name&gt;api&lt;/name&gt;
-    &lt;description&gt;java api&lt;/description&gt;
-
-    &lt;!-- JDK版本 --&gt;
-    &lt;properties&gt;
-        &lt;java.version&gt;1.8&lt;/java.version&gt;
-    &lt;/properties&gt;
-
-    &lt;dependencies&gt;
-        &lt;!-- Spring Data JPA --&gt;
-        &lt;dependency&gt;
-            &lt;groupId&gt;org.springframework.boot&lt;/groupId&gt;
-            &lt;artifactId&gt;spring-boot-starter-data-jpa&lt;/artifactId&gt;
-        &lt;/dependency&gt;
-        &lt;!-- Spring Data MongoDB --&gt;
-        &lt;dependency&gt;
-            &lt;groupId&gt;org.springframework.boot&lt;/groupId&gt;
-            &lt;artifactId&gt;spring-boot-starter-data-mongodb&lt;/artifactId&gt;
-        &lt;/dependency&gt;
-        &lt;!-- Spring Data Redis --&gt;
-        &lt;dependency&gt;
-            &lt;groupId&gt;org.springframework.boot&lt;/groupId&gt;
-            &lt;artifactId&gt;spring-boot-starter-data-redis&lt;/artifactId&gt;
-        &lt;/dependency&gt;
-        &lt;!-- Web 服务器 --&gt;
-        &lt;dependency&gt;
-            &lt;groupId&gt;org.springframework.boot&lt;/groupId&gt;
-            &lt;artifactId&gt;spring-boot-starter-web&lt;/artifactId&gt;
-        &lt;/dependency&gt;
-        &lt;!-- MySQL驱动连接 --&gt;
-        &lt;dependency&gt;
-            &lt;groupId&gt;mysql&lt;/groupId&gt;
-            &lt;artifactId&gt;mysql-connector-java&lt;/artifactId&gt;
-        &lt;/dependency&gt;
-        &lt;!-- 测试 --&gt;
-        &lt;dependency&gt;
-            &lt;groupId&gt;org.springframework.boot&lt;/groupId&gt;
-            &lt;artifactId&gt;spring-boot-starter-test&lt;/artifactId&gt;
-            &lt;scope&gt;test&lt;/scope&gt;
-        &lt;/dependency&gt;
-    &lt;/dependencies&gt;
-
-    &lt;build&gt;
-        &lt;plugins&gt;
-            &lt;!-- Maven 插件 --&gt;
-            &lt;plugin&gt;
-                &lt;groupId&gt;org.springframework.boot&lt;/groupId&gt;
-                &lt;artifactId&gt;spring-boot-maven-plugin&lt;/artifactId&gt;
-            &lt;/plugin&gt;
-            &lt;!-- Docker Maven 插件 --&gt;
-            &lt;plugin&gt;
-                &lt;groupId&gt;com.spotify&lt;/groupId&gt;
-                &lt;artifactId&gt;docker-maven-plugin&lt;/artifactId&gt;
-                &lt;version&gt;1.2.0&lt;/version&gt;
-                &lt;configuration&gt;
-                    &lt;!-- 构建出的镜像名 --&gt;
-                    &lt;imageName&gt;luokaiii-api&lt;/imageName&gt;
-                    &lt;!-- 基础依赖的镜像 --&gt;
-                    &lt;baseImage&gt;openjdk:8-slim&lt;/baseImage&gt;
-
-                    &lt;entryPoint&gt;[&quot;java&quot;, &quot;-jar&quot;, &quot;/${project.build.finalName}.jar&quot;]&lt;/entryPoint&gt;
-                    &lt;resources&gt;
-                        &lt;resource&gt;
-                            &lt;targetPath&gt;/&lt;/targetPath&gt;
-                            &lt;directory&gt;${project.build.directory}&lt;/directory&gt;
-                            &lt;include&gt;${project.build.finalName}.jar&lt;/include&gt;
-                        &lt;/resource&gt;
-                    &lt;/resources&gt;
-                &lt;/configuration&gt;
-            &lt;/plugin&gt;
-        &lt;/plugins&gt;
-    &lt;/build&gt;
-
-&lt;/project&gt;</code></pre>
-<h3 id="2-构建镜像"><a href="#2-构建镜像" class="headerlink" title="2. 构建镜像"></a>2. 构建镜像</h3><pre><code class="sh"># mvn clean package 重新打包， -Dmaven.test.skip 跳过测试，docker:build 构建镜像
-$ mvn clean package -Dmaven.test.skip=true docker:build</code></pre>
-<blockquote>
-<p>正常的生产环境，应该有严格的单元测试。</p>
-</blockquote>
-<p>查看 Docker Images (<code>$ docker images</code>)，应该有如下几个镜像了：</p>
-<p><img src="https://i.loli.net/2019/09/24/XfK9C25qhBNSERr.png" alt="图：Docker Images"></p>
-<p>带上之前的镜像，一共有如下几个：<code>luokaiii-api</code> ，<code>mongo:4.0.12</code> ，<code>mariadb:10.4.8</code> ，<code>openjdk:8-slim</code>， <code>redis:4.0.14</code></p>
-<h3 id="3-测试-1"><a href="#3-测试-1" class="headerlink" title="3. 测试"></a>3. 测试</h3><h4 id="a-启动-luokaiii-api-镜像"><a href="#a-启动-luokaiii-api-镜像" class="headerlink" title="a) 启动 luokaiii-api 镜像"></a>a) 启动 <code>luokaiii-api</code> 镜像</h4><p>这里我们直接使用了 Docker-Compose 来启动该镜像，因为 <code>luokaiii-api</code> 依赖了如 <code>mongodb</code>，<code>mariadb</code>，<code>redis</code> 等其他镜像容器。</p>
-<h4 id="a-1-在父级目录下创建-docker-compose-yml-文件"><a href="#a-1-在父级目录下创建-docker-compose-yml-文件" class="headerlink" title="a.1 在父级目录下创建 docker-compose.yml 文件"></a>a.1 在父级目录下创建 docker-compose.yml 文件</h4><blockquote>
-<p> 不再开放mongo、mysql、redis的外部连接，统一改为容器内部通信，只对外提供一个 8080 端口用于访问。</p>
-</blockquote>
-<p><code>docker-compose.yml</code> 文件如下：</p>
-<pre><code class="yml"># Docker-Compose 的版本
-version: &#39;3&#39;
-
-# 服务声明
-services:
-  # MongoDB 服务
-  mongo:
-    container_name: &#39;luokaiii-mongo&#39;
-    image: &#39;mongo:4.0.12&#39;
-    volumes:
-      - mongodata:/data/db
-    environment:
-      MONGO_INITDB_ROOT_USERNAME: mongoadmin
-      MONGO_INITDB_ROOT_PASSWORD: password
-    restart: always
-    expose:    # 暴露端口，但不映射到宿主机
-      - &#39;27017&#39;
-  # MariaDB 服务
-  mariadb:
-    container_name: &#39;luokaiii-mysql&#39;
-    image: &#39;mariadb:10.4.8&#39;
-    volumes:
-      - &#39;./mysql/data/:/var/lib/mysql&#39;
-      - &#39;./mysql/conf/local.cnf:/etc/mysql/conf.d/local.cnf&#39;
-    environment:
-      MYSQL_ROOT_PASSWORD: password
-      MYSQL_DATABASE: db_user
-    command: [&#39;mysqld&#39;, &#39;--character-set-server=utf8mb4&#39;, &#39;--collation-server=utf8mb4_unicode_ci&#39;]
-    restart: always
-    expose:
-      - &#39;3306&#39;
-  # Redis 服务
-  redis:
-    container_name: &#39;luokaiii-redis&#39;
-    image: &#39;redis:4.0.14&#39;
-    volumes:
-      - &#39;./redis/data:/data&#39;
-    command: redis-server --requirepass password
-    restart: always
-    expose:
-      - &#39;6379&#39;
-  # Java API 服务
-  api:
-    container_name: &#39;luokaiii-api&#39;
-    depends_on: # 依赖其他容器(如DB连接等)
-      - mongo
-      - redis
-      - mariadb
-    image: &#39;luokaiii-api:latest&#39;
-    ports:    # 对外暴露 8080 端口
-      - &#39;8080:8080&#39;
-    restart: always
-
-# 容器能够使用的数据卷
-volumes:
-  mongodata:</code></pre>
-<h4 id="a-2-修改之前的-application-properties"><a href="#a-2-修改之前的-application-properties" class="headerlink" title="a.2 修改之前的 application.properties"></a>a.2 修改之前的 application.properties</h4><p>将 <code>localhost</code> 全部改为对应 <code>Compose</code> 的服务名称，这样 容器在运行时会动态加载对应的服务及端口。</p>
-<pre><code class="properties"># MongoDB 连接
-spring.data.mongodb.uri=mongodb://mongoadmin:password@mongo:27017/demo?authSource=admin
-
-# MySQL 连接
-spring.datasource.username=root
-spring.datasource.password=password
-spring.datasource.driver-class-name=com.mysql.cj.jdbc.Driver
-spring.datasource.url=jdbc:mysql://mariadb:3306/db_user?useUnicode=true&amp;characterEncoding=GBK&amp;useSSL=false
-
-# Redis 连接
-spring.redis.host=redis
-spring.redis.port=6379
-spring.redis.password=password</code></pre>
-<h4 id="a-3-运行-docker-compose"><a href="#a-3-运行-docker-compose" class="headerlink" title="a.3 运行 docker-compose"></a>a.3 运行 docker-compose</h4><pre><code class="sh"># 后台运行所有容器
-$ docker-compose -d up
-
-# 停止所有容器
-# docker-compose down
-
-# 停止单个容器
-# docker-compose stop luokaiii-api
-
-# 运行单个容器(停止状态)
-# docker-compose start luokaiii-api
-
-# 运行单个容器(被删除后)
-# docker-compose run --name luokaiii-api luokaiii-api</code></pre>
-<h4 id="a-4-依次查看容器的日志"><a href="#a-4-依次查看容器的日志" class="headerlink" title="a.4 依次查看容器的日志"></a>a.4 依次查看容器的日志</h4><p>控制台打印的日志太过混乱，这里我们一个一个的查看：</p>
-<pre><code class="sh"># 查看 MongoDB 运行情况
-$ docker logs luokaiii-mongo</code></pre>
-<p><img src="https://i.loli.net/2019/09/24/VDTEhsdHlyFC1Zi.png" alt="MongoDB运行情况"></p>
-<pre><code class="sh"># 查看 MariaDB 运行情况
-$ docker logs luokaiii-mysql</code></pre>
-<p><img src="https://i.loli.net/2019/09/24/POFBid9THoQbWNg.png" alt="MariaDB运行情况"></p>
-<pre><code class="sh"># 查看 Redis 运行情况
-$ docker logs luokaiii-redis</code></pre>
-<p><img src="C:%5CUsers%5Cuser%5CAppData%5CRoaming%5CTypora%5Ctypora-user-images%5C1569306056942.png" alt="Redis 运行情况"></p>
-<pre><code class="sh"># 查看 JAVA Server 运行情况
-$ docker logs luokaiii-api</code></pre>
-<p><img src="https://i.loli.net/2019/09/24/tUzEfZaIGOLouvP.png" alt="Java运行状况"></p>
-<h3 id="b-生成数据表"><a href="#b-生成数据表" class="headerlink" title="b. 生成数据表"></a>b. 生成数据表</h3><p>进入 <code>luokaiii-mysql</code> 容器，进入 MySQL，生成 person 表。 发送请求即可。</p>
-<h2 id="遇到的问题"><a href="#遇到的问题" class="headerlink" title="遇到的问题"></a>遇到的问题</h2><h3 id="1-MongoDB无法挂载data目录"><a href="#1-MongoDB无法挂载data目录" class="headerlink" title="1. MongoDB无法挂载data目录"></a>1. MongoDB无法挂载data目录</h3><p>按照正常来说，<code>mongo</code> 服务的编排应该如下所示：</p>
-<pre><code class="yml">services:
-  mongo:
-    container_name: &#39;luokaiii-mongo&#39;
-    image: &#39;mongo:4.0.12&#39;
-    volumes:
-      - ./mongo/db:/data/db
-    environment:
-      MONGO_INITDB_ROOT_USERNAME: mongoadmin
-      MONGO_INITDB_ROOT_PASSWORD: password
-    restart: always
-    expose:
-      - &#39;27017&#39;
-......</code></pre>
-<h4 id="问题："><a href="#问题：" class="headerlink" title="问题："></a>问题：</h4><p>这样的挂载，却会抛出文件无法打开、无法读取、无法写入的问题。详见 <a href="https://github.com/docker-library/mongo/issues/74" target="_blank" rel="noopener">Github Issue</a>。</p>
-<h4 id="原因："><a href="#原因：" class="headerlink" title="原因："></a>原因：</h4><p>Docker 中的 Mongo 容器无法使用部分文件。</p>
-<h4 id="解决方案："><a href="#解决方案：" class="headerlink" title="解决方案："></a>解决方案：</h4><p>手动创建一个共享卷，即如下改动：</p>
-<pre><code class="yml">services:
-  mongo:
-    container_name: &#39;luokaiii-mongo&#39;
-    image: &#39;mongo:4.0.12&#39;
-    volumes:
-      - mongodata:/data/db   # 这里改为下面声明的卷
-    environment:
-      MONGO_INITDB_ROOT_USERNAME: mongoadmin
-      MONGO_INITDB_ROOT_PASSWORD: password
-    restart: always
-    expose:
-      - &#39;27017&#39;
-......
-volumes:
-  mongodata:</code></pre>
-<blockquote>
-<p><code>$ docker volume list</code> 能够查看所有共享的卷</p>
-<p><code>$ docker volume inspect &lt;name&gt;</code> 能够查看具体的卷信息(如实际地址等)</p>
-</blockquote>
-<h3 id="2-MySQL-初始密码未生效"><a href="#2-MySQL-初始密码未生效" class="headerlink" title="2. MySQL 初始密码未生效"></a>2. MySQL 初始密码未生效</h3><h4 id="问题：-1"><a href="#问题：-1" class="headerlink" title="问题："></a>问题：</h4><p>在使用 <code>docker-compose up</code> 启动完所有程序后，<code>luokaiii-api</code> 项目抛出 “无法连接 MySQL 数据库的异常”。</p>
-<p>而我们在 <code>docker-compose.yml</code> 中已经指定了具体的初始密码:</p>
-<pre><code class="yml">MYSQL_ROOT_PASSWORD: password</code></pre>
-<h4 id="原因：-1"><a href="#原因：-1" class="headerlink" title="原因："></a>原因：</h4><p>经排查发现，是 <code>luokaiii-mysql</code> 容器的密码未初始化。</p>
-<h4 id="解决方案：-1"><a href="#解决方案：-1" class="headerlink" title="解决方案："></a>解决方案：</h4><p>依次运行以下代码：</p>
-<pre><code class="sh"># 进入 MySQL 容器(Windows需要加上 `winpty`)
-$ docker exec -it luokaiii-mysql bash
-
-# 匹配环境变量
-root@xx/# env | grep -i password
-MYSQL_ROOT_PASSWORD=password
-
-# 尝试无密码登录 - 失败
-root@xx/# mysql -Uroot
-ERROR 1045 (28000): Access denied for user &#39;root&#39;@&#39;localhost&#39; (using password: NO)
-
-# 尝试使用密码登录，成功？？？？为什么？？？
-root@xx/# mysql -Uroot -ppassword</code></pre>
-<p>详见 <a href="https://github.com/docker-library/mysql/issues/557" target="_blank" rel="noopener">Github Issue</a>。</p>
-<blockquote>
-<p>首次操作即可，往后未出现该bug。</p>
-</blockquote>
-<p>参考资料：</p>
-<ol>
-<li><a href="https://github.com/spotify/docker-maven-plugin" target="_blank" rel="noopener">Docker-maven-plugin</a></li>
-<li><a href="https://hub.docker.com/_/openjdk" target="_blank" rel="noopener">Docker Hub OpenJDK</a></li>
-<li><a href="https://stackoverflow.com/questions/45729326/how-to-change-the-default-character-set-of-mysql-using-docker-compose" target="_blank" rel="noopener">https://stackoverflow.com/questions/45729326/how-to-change-the-default-character-set-of-mysql-using-docker-compose</a></li>
-<li><a href="https://www.hi-linux.com/posts/12554.html" target="_blank" rel="noopener">运维之美</a></li>
-<li><a href="https://github.com/docker-library/mysql/issues/557" target="_blank" rel="noopener">https://github.com/docker-library/mysql/issues/557</a></li>
+<h2 id="三、总结"><a href="#三、总结" class="headerlink" title="三、总结"></a>三、总结</h2><p>在使用桥接模式时，我们应该先识别出一个类所具有的两个独立变化的维度，将它们设计为两个独立的继承等级结构，为两个维度都提供抽象层，并建立抽象耦合。通常情况下，我们将具有两个独立变化维度的类的一些普通业务方法，和与之关系最密切的维度设计为“抽象类”层次结构（抽象部分），而将另一个维度设计为“实现类”层次结构（实现部分）。</p>
+<p>如毛笔，由于型号是固有的维度，可以设计为抽象毛笔类，在该类中声明并部分实现毛笔的业务方法，将各种型号的毛笔作为子类。将颜色作为毛笔的另一个维度。</p>
+<p>增加新的毛笔类型，只需扩展左侧的“抽象部分”；增加新的颜色，只需扩展右侧的“实现部分”。</p>
+<h3 id="优点"><a href="#优点" class="headerlink" title="优点"></a>优点</h3><ol>
+<li>分离抽象解耦及其实现部分。解耦了抽象和实现之间的绑定关系，使抽象部分和实现部分都有自己的维度变化</li>
+<li>很多情况下，桥接模式可以取代多层继承方案。多层继承违背了“单一职责原则”，复用性较差，且类的个数较多</li>
+<li>桥接模式提供了系统的可扩展性，两个维度的扩展都不需要修改原有系统，符合“开闭原则”</li>
 </ol>
-<h2 id="项目地址"><a href="#项目地址" class="headerlink" title="项目地址"></a>项目地址</h2><ul>
-<li><p><a href="https://github.com/luokaiii/luokaiii.docker-images" target="_blank" rel="noopener">Github</a></p>
-</li>
-<li><p><a href="https://gitee.com/luokaiii/luokaiii.docker-images" target="_blank" rel="noopener">Gitee</a></p>
-</li>
-</ul>
-</div><hr></div><div class="recent-post-item article-container"><a class="article-title" href="/2019/09/19/读书笔记/《Docker全栈项目部署》/6.Nginx/index.html">Docker部署全栈：六、部署Nginx和React</a><time class="post-meta__date"><i class="fa fa-calendar" aria-hidden="true"></i> 2019-09-19</time><span class="article-meta"><span class="article-meta__separator">|</span><i class="fa fa-inbox article-meta__icon" aria-hidden="true"></i><a class="article-meta__categories" href="/categories/运维/index.html">运维</a><i class="fa fa-angle-right" aria-hidden="true"></i><i class="fa fa-inbox article-meta__icon" aria-hidden="true"></i><a class="article-meta__categories" href="/categories/运维/Docker全栈部署/index.html">Docker全栈部署</a></span><span class="article-meta tags"><span class="article-meta__separator">|</span><i class="fa fa-tag article-meta__icon" aria-hidden="true"></i><a class="article-meta__tags" href="/tags/Docker全栈部署/index.html">Docker全栈部署</a></span><div class="content"><h1 id="Docker部署全栈项目：六、部署Nginx和React"><a href="#Docker部署全栈项目：六、部署Nginx和React" class="headerlink" title="Docker部署全栈项目：六、部署Nginx和React"></a>Docker部署全栈项目：六、部署Nginx和React</h1><p>前端项目不论是 vue 还是 react，编译之后都是 html + css +js 的模板。</p>
-<p>因此这里使用 <code>React Demo</code> 来演示如何部署前端项目至，Nginx的代理中。</p>
-<h2 id="一、创建React项目"><a href="#一、创建React项目" class="headerlink" title="一、创建React项目"></a>一、创建React项目</h2><p>如果你使用的是其它前端语言，或者直接是纯JS写法，都是大同小异。</p>
-<pre><code class="sh"># 创建React项目
-$ create-react-app web
-
-# 进入前端项目
-$ cd web
-
-# 构建项目(或者使用 npm run build)
-$ yarn build 
-
-# 构建完成后，会出现 build/ 目录，存放所有的静态资源文件</code></pre>
-<p>将构建后的数据，放到 nginx/html 目录下。</p>
-<blockquote>
-<p>如果是远程服务器，可以使用 scp、pscp 等命令发送文件。</p>
+<h3 id="缺点"><a href="#缺点" class="headerlink" title="缺点"></a>缺点</h3><ol>
+<li>桥接模式的使用，会增加系统的理解和设计难度，由于关联关系建立在抽象层，要求开发者一开始就针对抽象层进行设计和编程</li>
+<li>桥接模式要求正确识别出系统中两个独立变化的维度，因此其使用范围具有一定的局限性。</li>
+</ol>
+<h3 id="适用场景"><a href="#适用场景" class="headerlink" title="适用场景"></a>适用场景</h3><ol>
+<li>如果一个系统需要在抽象化和具体化之间增加更多的灵活性，避免在两个层次之间建立静态的继承关系，通过桥接模式可以使它们在抽象层建立一个关联关系</li>
+<li>“抽象部分”和“实现部分”可以以继承的方式独立扩展而不受影响，在程序运行时可以动态将一个抽象化子类的对象和一个实现化子类的对象进行组合，即系统需要对抽象化角色和实现化角色进行动态耦合</li>
+<li>一个类存在两个（或多个）独立变化的维度，且各维度都需要独立进行扩展</li>
+<li>对于不希望使用继承或多层继承的系统，导致系统类的个数急剧增加的系统，桥接模式非常适用</li>
+</ol>
+<h2 id="四、扩展"><a href="#四、扩展" class="headerlink" title="四、扩展"></a>四、扩展</h2><blockquote>
+<p>开发一个数据转换工具，可以将数据库中的数据转换成多种文件格式，例如txt、xml、pdf等格式，同时该工具需要支持多种不同的数据库。试使用桥接模式对其进行设计。</p>
 </blockquote>
-<h2 id="二、启动Nginx"><a href="#二、启动Nginx" class="headerlink" title="二、启动Nginx"></a>二、启动Nginx</h2><h3 id="1-编写-start-sh"><a href="#1-编写-start-sh" class="headerlink" title="1. 编写 start.sh"></a>1. 编写 start.sh</h3><pre><code class="sh">#!/bin/bash
+<pre><code class="java">// 桥接模式
+public class BridgePattern {
 
-# 启动前停止容器
-docker stop luokaiii-nginx
-docker rm luokaiii-nginx
+    // 数据库抽象类
+    static abstract class Database {
+        protected FileFormat fileFormat;
 
-# 运行容器
-docker run --name luokaiii-nginx \ # 指定容器名
-        -p 80:80 \    # 暴露80端口至宿主机
-        -v /${PWD}/conf:/etc/nginx/conf.d \    # 挂载额外的配置文件
-        -v /${PWD}/html:/usr/www/luokaiii/cn/html \    # 挂载静态资源
-        -d nginx:alpine     # 后台运行nginx</code></pre>
-<h3 id="2-编写-conf-nginx-conf"><a href="#2-编写-conf-nginx-conf" class="headerlink" title="2. 编写 conf/nginx.conf"></a>2. 编写 conf/nginx.conf</h3><pre><code class="sh">server {
-        listen 80;
-
-        root /usr/www/luokaiii/cn/html;
-
-        location / {
-                try_files $uri $uri/ /index.html;
+        public void setFileFormat(FileFormat fileFormat) {
+            this.fileFormat = fileFormat;
         }
+
+        public abstract void transition();
+    }
+
+    // Oracle 数据库 - 抽象扩展类
+    static class OracleDatabase extends Database {
+        @Override
+        public void transition() {
+            System.out.println(&quot;Oracle数据库&quot;);
+            fileFormat.file();
+        }
+    }
+
+    // Microsoft 数据库 - 抽象扩展类
+    static class MCDatabase extends Database {
+        @Override
+        public void transition() {
+            System.out.println(&quot;Microsoft数据库&quot;);
+            fileFormat.file();
+        }
+    }
+
+    // 文件格式 - 实现类接口
+    interface FileFormat {
+        void file();
+    }
+
+    // txt 文件 - 具体实现类
+    static class TxtFileFormat implements FileFormat {
+        @Override
+        public void file() {
+            System.out.println(&quot;TXT 格式文本输出&quot;);
+        }
+    }
+
+    // pdf 文件 - 具体实现类
+    static class PDFFileFormat implements FileFormat {
+        @Override
+        public void file() {
+            System.out.println(&quot;PDF 格式文本输出&quot;);
+        }
+    }
+
+    public static void main(String[] args) {
+        Database db = new OracleDatabase();
+        FileFormat ff = new TxtFileFormat();
+        db.setFileFormat(ff);
+        db.transition();
+    }
 }</code></pre>
-<h3 id="3-运行脚本"><a href="#3-运行脚本" class="headerlink" title="3. 运行脚本"></a>3. 运行脚本</h3><pre><code class="sh"># 运行脚本
-$ ./start.sh</code></pre>
-<h3 id="4-访问端口"><a href="#4-访问端口" class="headerlink" title="4. 访问端口"></a>4. 访问端口</h3><p><img src="https://i.loli.net/2019/09/24/ur4k3zwVv1AYeZX.png" alt="访问80端口"></p>
-<h2 id="三、使用Nginx代理接口服务"><a href="#三、使用Nginx代理接口服务" class="headerlink" title="三、使用Nginx代理接口服务"></a>三、使用Nginx代理接口服务</h2><p>既然我们的接口使用的是容器服务，那么我可以把 <code>luokaiii-api</code> 的外部端口关闭，改为 nginx 的请求转发。</p>
-<p>修改 nginx.conf：</p>
-<pre><code class="sh">upstream apisupport {
-        server api:8080;
-}
-server {
-        listen 80;
-
-        root /usr/www/luokaiii/cn/html;
-
-        location / {
-                try_files $uri $uri/ /index.html;
-        }
-
-        # 将 /api/ 请求转发至 `luokaiii-api` 服务
-        location /api/ {
-                proxy_pass http://apisupport/;
-        }
-}
-</code></pre>
-<p>请求测试：</p>
-<p><img src="https://i.loli.net/2019/09/24/zx2qnsV7OCurgSH.png" alt="请求结果"></p>
-<p>参考资料：</p>
-<ol>
-<li><a href="https://hub.docker.com/_/nginx" target="_blank" rel="noopener">Docker Hub</a></li>
+</div><hr></div><div class="recent-post-item article-container"><a class="article-title" href="/2019/07/06/读书笔记/《JavaDesignPatterns》/9.适配器模式/index.html">《Java Design Patterns》第七章 适配器模式 - 不兼容结构的协调</a><time class="post-meta__date"><i class="fa fa-calendar" aria-hidden="true"></i> 2019-07-06</time><span class="article-meta"><span class="article-meta__separator">|</span><i class="fa fa-inbox article-meta__icon" aria-hidden="true"></i><a class="article-meta__categories" href="/categories/读书笔记/index.html">读书笔记</a><i class="fa fa-angle-right" aria-hidden="true"></i><i class="fa fa-inbox article-meta__icon" aria-hidden="true"></i><a class="article-meta__categories" href="/categories/读书笔记/设计模式/index.html">设计模式</a></span><span class="article-meta tags"><span class="article-meta__separator">|</span><i class="fa fa-tag article-meta__icon" aria-hidden="true"></i><a class="article-meta__tags" href="/tags/hide/index.html">hide</a><span class="article-meta__link">-</span><i class="fa fa-tag article-meta__icon" aria-hidden="true"></i><a class="article-meta__tags" href="/tags/设计模式/index.html">设计模式</a></span><div class="content"><h1 id="第七章-适配器模式-不兼容结构的协调"><a href="#第七章-适配器模式-不兼容结构的协调" class="headerlink" title="第七章 适配器模式 - 不兼容结构的协调"></a>第七章 适配器模式 - 不兼容结构的协调</h1><h2 id="一、概念"><a href="#一、概念" class="headerlink" title="一、概念"></a>一、概念</h2><p>如笔记本的电源接口只支持20V电压，而家庭用电的电压为220V，肯定无法直接通过一根电线直接为笔记本提供电源。此时，就需要一个变压器电源，来将220V电压转换为20V电压。这个变压器就是适配器模式的一种。</p>
+<p>适配器模式：将一个类的接口与另一个类的接口匹配利用，而无须修改原来的适配者，解耦合抽象目标类接口。</p>
+<p>适配器模式可以是类结构型模式，也可以是对象结构型模式。</p>
+<h2 id="1-2-适配器模式中的几个角色"><a href="#1-2-适配器模式中的几个角色" class="headerlink" title="1.2 适配器模式中的几个角色"></a>1.2 适配器模式中的几个角色</h2><ol>
+<li>Target - 目标抽象类<ol>
+<li>目标抽象类定义客户所需接口</li>
+<li>抽象类、接口或具体类</li>
+<li>类似上面的笔记本</li>
 </ol>
-<h2 id="项目地址"><a href="#项目地址" class="headerlink" title="项目地址"></a>项目地址</h2><ul>
-<li><p><a href="https://github.com/luokaiii/luokaiii.docker-images" target="_blank" rel="noopener">Github</a></p>
 </li>
-<li><p><a href="https://gitee.com/luokaiii/luokaiii.docker-images" target="_blank" rel="noopener">Gitee</a></p>
+<li>Adapter - 适配器类<ol>
+<li>适配器可以调用另一个接口，作为一个转换器，对 Adaptee 和 Target 进行适配</li>
+</ol>
+</li>
+<li>Adaptee - 适配者类<ol>
+<li>被适配的角色（如220V的家庭电源，我们需要将其转换为20V电压输出）</li>
+<li>它定义了一个已经存在的接口，这个接口需要适配</li>
+<li>适配者类一般是个具体类，包含了客户希望使用的业务方法</li>
+</ol>
+</li>
+</ol>
+<h3 id="1-3-对象适配器-实例"><a href="#1-3-对象适配器-实例" class="headerlink" title="1.3 对象适配器 - 实例"></a>1.3 对象适配器 - 实例</h3><pre><code class="java">// 抽象成绩操作类 - Target目标接口
+interface ScoreOperation {
+    public int[] sort(int array[]); // 成绩排序
+    public int search(int array[],int key); // 成绩查找
+}
+
+// 快速排序类 - Adaptee 适配者类
+class QuickSort{
+    public int[] quickSort(int array[]){
+        // 自己实现
+    }
+}
+
+// 二分查找类 - Adaptee 适配者类
+class BinarySearch{
+    public int binarySearch(int array[],intkey){
+        // 自己实现
+    }
+}
+
+// 操作适配器 - Adapter 适配器
+class OperationAdapter implements ScoreOperation{
+    private QuickSort sort = new QuickSort;
+    private BinarySearch search = new BinarySearch();
+
+    // 调用适配者类QuickSort的排序方法
+    public int[] sort(int array[]){
+        return sort.quickSort(array);
+    }
+
+    // 调用适配者类BinarySearch的查找方法
+    public int search(int array[],int key){
+        return search.binarySearch(array,key);
+    }
+}</code></pre>
+<h3 id="1-4-类适配器"><a href="#1-4-类适配器" class="headerlink" title="1.4 类适配器"></a>1.4 类适配器</h3><p>类适配器与对象适配器的区别在于：</p>
+<p>对象适配器与适配者之间的关系是<code>关联关系</code>，而类适配器中的关系则是<code>继承关系</code>。</p>
+<p>如下：</p>
+<pre><code class="java">class Adapter extends Adaptee implements Target{
+    public void request(){
+        specificRequest();
+    }
+}</code></pre>
+<blockquote>
+<p>由于Java、C#等语言不支持多重继承，因此类适配器在使用时受到诸多限制。如Target必须是接口，Adapter不能是Final类等等。</p>
+</blockquote>
+<h3 id="1-5-双向适配器"><a href="#1-5-双向适配器" class="headerlink" title="1.5 双向适配器"></a>1.5 双向适配器</h3><p>在对象适配器的使用过程中，如果在适配器中同时包含对目标类和适配者类的引用，适配者和目标类可以通过它调用彼此的方法，那么该适配器就是一个双向适配器。如下：</p>
+<pre><code class="java">class Adapter implements Adaptee,Target{
+    private Target target;
+    private Adaptee adaptee;
+
+    public Adapter(Target target){
+        this.target = target;
+    }
+
+    public Adapter(Adaptee adpatee){
+        this.adaptee = adaptee;
+    }
+
+    public void request(){
+        adaptee.specificRequest();
+    }
+
+    public void specificRequest(){
+        target.request();
+    }
+}</code></pre>
+<h3 id="1-6-缺省适配器"><a href="#1-6-缺省适配器" class="headerlink" title="1.6 缺省适配器"></a>1.6 缺省适配器</h3><p>缺省适配器模式(Default Adapter Pattern)：当不需要实现一个接口所提供的所有方法时，可先设计一个抽象类实现该接口，并为接口中每个方法提供一个默认实现（空方法），那么该抽象类的子类可以选择性地覆盖父类的某些方法来实现需求，它适用于不想使用一个接口中的所有方法的情况，又称为单接口适配器模式。</p>
+<h2 id="二、总结"><a href="#二、总结" class="headerlink" title="二、总结"></a>二、总结</h2><h3 id="优点"><a href="#优点" class="headerlink" title="优点"></a>优点</h3><ol>
+<li>目标类与适配者类解耦，通过引入一个适配器类来重用现有的适配者类</li>
+<li>增加类的透明性和复用性，具体业务过程封装在适配者类中，对客户端透明，提供了适配者的复用性，同一个适配者类可以在多个不同系统中复用</li>
+<li>灵活性和扩展性好，可以通过配置文件的方式更换适配器，符合“开闭原则”</li>
+</ol>
+<h3 id="缺点"><a href="#缺点" class="headerlink" title="缺点"></a>缺点</h3><ol>
+<li>Java、C#不支持多重继承，一次只能适配一个适配者类</li>
+<li>适配者类不能为最终类</li>
+<li>Java、C#中，类适配器模式的目标抽象类必须是接口</li>
+</ol>
+<h3 id="适用场景"><a href="#适用场景" class="headerlink" title="适用场景"></a>适用场景</h3><ol>
+<li>系统需要使用一些现有的类，但该类的接口不符合系统需要</li>
+<li>创建一个可重复使用的类，如上面的快速排序，可以做成一个适配者，为其它适配器类所调用</li>
+</ol>
+<h2 id="三、练习"><a href="#三、练习" class="headerlink" title="三、练习"></a>三、练习</h2><pre><code class="java">// SD卡接口及其具体实现
+public interface SDCard {
+    String readSD(); // 读SD卡
+    int writeSD(String message); // 写SD卡
+}
+class SDCardImpl implements SDCard {
+    public String readSD() {
+        return &quot;读取SD卡&quot;;
+    }
+    public int writeSD(String message) {
+        // 假装写入数据至SD卡中了
+        return 0;
+    }
+}
+
+// 电脑类，具有读取SD卡的功能
+class Computer {
+    String readSD(SDCard sdCard) {
+        return sdCard.readSD();
+    }
+}
+
+// ----- 新版的TF卡上市，系统需要在不修改原有SD卡接口的情况下，支持新版的TF卡  -----
+
+// TF卡接口及其实现
+interface TFCard {
+    String readTF(); // 读TF卡
+    int writeTF(String message); // 写TF卡
+}
+class TFCardImpl implements TFCard {
+    public String readTF() {
+        return &quot;读取TF卡&quot;;
+    }
+    public int writeTF(String message) {
+        return 0;
+    }
+}
+
+// TF卡的适配器，继承与目标接口，但是将SD卡接口适配为TF卡的接口
+class TFCardAdapter implements SDCard {
+    private TFCard tfCard;
+    public TFCardAdapter(TFCard tfCard) {
+        this.tfCard = tfCard;
+    }
+    @Override
+    public String readSD() {
+        return tfCard.readTF();
+    }
+    @Override
+    public int writeSD(String message) {
+        return tfCard.writeTF(message);
+    }
+}
+
+// 测试客户端
+class Client {
+    public static void main(String[] args) {
+        SDCard sdCard = new SDCardImpl();
+        SDCard tfCard = new TFCardAdapter(new TFCardImpl()); // 通过适配器，将TFCard适配为SDCard
+
+        Computer computer = new Computer();
+        String s = computer.readSD(sdCard);
+        String s1 = computer.readSD(tfCard);
+        System.out.println(s);
+        System.out.println(s1);
+    }
+}</code></pre>
+<blockquote>
+<blockquote>
+<p>适配器类的名称尽量做到见名知意，因为客户端表面上调用的是SDCard，但是内部却被适配成了TFCard，如果系统中存在大量这种代码，会使系统十分的混乱。</p>
+</blockquote>
+</blockquote>
+<p>如果适配器大量存在的话，可以考虑重构代码，而不是继续适配下去。</p>
+</div><hr></div><div class="recent-post-item article-container"><a class="article-title" href="/2019/07/05/读书笔记/《JavaDesignPatterns》/8.建造者模式/index.html">《Java Design Patterns》第六章 建造者模式 - 复杂对象的组装与创建</a><time class="post-meta__date"><i class="fa fa-calendar" aria-hidden="true"></i> 2019-07-05</time><span class="article-meta"><span class="article-meta__separator">|</span><i class="fa fa-inbox article-meta__icon" aria-hidden="true"></i><a class="article-meta__categories" href="/categories/读书笔记/index.html">读书笔记</a><i class="fa fa-angle-right" aria-hidden="true"></i><i class="fa fa-inbox article-meta__icon" aria-hidden="true"></i><a class="article-meta__categories" href="/categories/读书笔记/设计模式/index.html">设计模式</a></span><span class="article-meta tags"><span class="article-meta__separator">|</span><i class="fa fa-tag article-meta__icon" aria-hidden="true"></i><a class="article-meta__tags" href="/tags/hide/index.html">hide</a><span class="article-meta__link">-</span><i class="fa fa-tag article-meta__icon" aria-hidden="true"></i><a class="article-meta__tags" href="/tags/设计模式/index.html">设计模式</a></span><div class="content"><h1 id="第六章-建造者模式-复杂对象的组装与创建"><a href="#第六章-建造者模式-复杂对象的组装与创建" class="headerlink" title="第六章 建造者模式 - 复杂对象的组装与创建"></a>第六章 建造者模式 - 复杂对象的组装与创建</h1><h2 id="一、设计一个游戏角色"><a href="#一、设计一个游戏角色" class="headerlink" title="一、设计一个游戏角色"></a>一、设计一个游戏角色</h2><p>作为 RPG 游戏的一个重要组成部分，游戏角色拥有其特定的性别、脸型、服装、发型等外部特性。</p>
+<p>无论何种造型的游戏角色，它们的创建步骤都大同小异，都需要逐步创建其组成部分，再将各组成部分装配成一个完整的游戏角色。</p>
+<p>而建造者模式就是为了解决，各个组件组合为复杂对象的问题。</p>
+<p><img src="https://i.loli.net/2019/07/09/5d23ff6fa777253811.png" alt="建造者模式"></p></div><a class="more" href="/2019/07/05/读书笔记/《JavaDesignPatterns》/8.建造者模式/index.html#more">阅读更多</a><hr></div><div class="recent-post-item article-container"><a class="article-title" href="/2019/07/01/分布式/SpringBoot/Sso单点登录/index.html">无题</a><time class="post-meta__date"><i class="fa fa-calendar" aria-hidden="true"></i> 2019-07-01</time><div class="content"><h1 id="单点登录"><a href="#单点登录" class="headerlink" title="单点登录"></a>单点登录</h1><h2 id="一、单点登录机制"><a href="#一、单点登录机制" class="headerlink" title="一、单点登录机制"></a>一、单点登录机制</h2><pre><code>web 应用采用的是 b/s 架构，以 http 作为通信协议。而 http 是无状态协议，浏览器每一次请求，服务器都会独立处理，不与之前或者之后的请求产生关联。</code></pre><p><img src="https://images2015.cnblogs.com/blog/797930/201611/797930-20161129155231912-1627010726.png" alt></p>
+<pre><code>在三次请求、响应对之间没有任何联系。这同时也意味着，任何用户都能通过浏览器访问服务器资源，如果想保护服务器的某些资源，必须限制浏览器请求；要限制浏览器请求，必须鉴别浏览器请求，响应合法请求；要鉴别浏览器请求，必须清楚浏览器请求状态。既然http协议无状态，就需要服务器和浏览器共同维护一个状态，这就是会话机制。</code></pre><h2 id="二、会话机制"><a href="#二、会话机制" class="headerlink" title="二、会话机制"></a>二、会话机制</h2><pre><code>浏览器第一次请求服务器，服务器创建一个会话，并将会话 id 作为响应的一部分发送给浏览器，浏览器存储会话 id ，并在后续的第二次和第三次请求中带上会话 id ，服务器取得请求中的会话 id 就知道是不是同一个用户了。</code></pre><blockquote>
+<p>  服务器在内存中保存会话对象，浏览器怎么保存会话 id 呢？  </p>
+</blockquote>
+<pre><code>1.请求参数：将会话 id 作为每一次请求的参数，服务器接收请求自然能解析参数获得会话 id ，并借此判断是否来自同一会话，很明显不靠谱。
+
+2.cookie：是浏览器用来存储少量数据的一种机制，数据以&quot; key/value&quot;形式存储，浏览器发送 http 请求时自动附带 cookie 信息。</code></pre><p><img src="https://images2015.cnblogs.com/blog/797930/201611/797930-20161129155234443-99011212.png" alt></p>
+<pre><code>tomcat会话机制中也实现了cookie，访问tomcat服务器时，浏览器中可以看到一个名为“JSESSIONID” 的cookie，这就是 tomcat 会话机制维护的会话 id 。</code></pre><h2 id="三、登录状态"><a href="#三、登录状态" class="headerlink" title="三、登录状态"></a>三、登录状态</h2><pre><code>我们假设浏览器第一次请求服务器需要输入用户名与密码来验证身份，服务器拿到用户名密码去数据库比对，正确的话说明当持有这个会话的用户是合法用户，应该将这个会话标记为“已授权”或者“一登录”之类的状态，既然是会话的状态，自然要保存在会话对象中，tomcat在会话对象那个中的登录状态如下：
+
+    HttpSession session = request.getSession();
+    session.setAttribution(&quot;isLogin&quot;,true);
+再次访问时，tomcat会在会话对象中查看登录状态。
+每次请求受保护资源时都会检查会话对象中的登录状态，只有 isLogin 时才能访问，登录机制因此实现。</code></pre><p><img src="https://images2015.cnblogs.com/blog/797930/201611/797930-20161129155235693-1708276896.png" alt></p>
+<h2 id="四、多系统的复杂性"><a href="#四、多系统的复杂性" class="headerlink" title="四、多系统的复杂性"></a>四、多系统的复杂性</h2><pre><code>web系统由原始的单系统发展成为如今由多系统组成的应用群，面对多个系统，用户不可能以一个个登录再一个个注销。
+而且由多系统组成的应用群，复杂性应该由系统内部承担，而不是用户。无论web系统内部多么复杂，对用户而言，都是一个统一的整体。
+
+虽然cookie是解决单系统登录的核心，但是cookie的限制在于cookie的域，浏览器发送 http 请求时会自动携带与该域匹配的 cookie ，而不是所有 cookie。
+
+在早些年，很多登录系统就采用同域名共享 cookie 的方式，将 web 应用群中所有子系统的域名统一在一个顶级域名下，然后将它们的 cookie 域设置为“baidu.com”。这样做虽然可行，但并不好。共享 cookie 的方式存在众多局限：首先，应用群域名得统一；其次，应用群各系统使用的技术(至少是 web 服务器)要相同，不然 cookie 的key值不相同（例如 tomcat 的是 JSESSIONID），无法维持会话，共享 cookie 的方式是无法实现跨语言技术平台登录的，比如 java、php、.net 系统之间；第三，cookie本身并不安全。
+
+因此，我们需要一种全新的登录方式来实现多系统应用群的登录，这就是单点登录。</code></pre><h2 id="五、单点登录"><a href="#五、单点登录" class="headerlink" title="五、单点登录"></a>五、单点登录</h2><pre><code>单点登录(Single Sign On)，指在多系统应用群中登录一个系统，便可在其他所有系统中得到授权而无需再次登录，包括单点登录与单点注销两部分。</code></pre><p><img src="http://images2015.cnblogs.com/blog/797930/201611/797930-20161129155238365-788619473.png" alt></p>
+<h3 id="1-登录"><a href="#1-登录" class="headerlink" title="1.登录"></a>1.登录</h3><pre><code>对比单系统登录，sso 需要一个独立的认证中心，只有认证中心能接受用户的用户名密码等安全信息，其他系统不提供登录入口，只接受认证中心的间接授权。
+
+间接授权通过令牌实现，sso 认证中心验证用户的用户名密码没问题，创建授权令牌吗，在跳转过程中，授权令牌作为参数发送给各个子系统，子系统拿到令牌，即通过了授权，可以借此创建局部会话，局部会话登录方式与单系统的登录方式相同。
+这个过程就是单点登录的原理。</code></pre><p><img src="https://images2015.cnblogs.com/blog/797930/201612/797930-20161203152650974-276822362.png" alt></p>
+<p>简要描述</p>
+<ol>
+<li>用户访问系统1的受保护资源，系统1发现用户未登录，跳转至sso认证中心，并将自己的地址作为参数</li>
+<li>sso认证中心发现用户未登录，将用户引导至登录页面</li>
+<li>用户输入用户名密码提交登录申请</li>
+<li>sso认证中心校验用户信息，创建用户与sso认证中心之间的会话，称为全局会话，同时创建授权令牌</li>
+<li>sso认证中心带着令牌跳转会最初的请求地址（系统1）</li>
+<li>系统1拿到令牌，去sso认证中心校验令牌是否有效</li>
+<li>sso认证中心校验令牌，返回有效，注册系统1</li>
+<li>系统1使用该令牌创建与用户的会话，称为局部会话，返回受保护资源</li>
+<li>用户访问系统2的受保护资源</li>
+<li>系统2发现用户未登录，跳转至sso认证中心，并将自己的地址作为参数</li>
+<li>sso认证中心发现用户已登录，跳转回系统2的地址，并附上令牌</li>
+<li>系统2拿到令牌，去sso认证中心校验令牌是否有效</li>
+<li>sso认证中心校验令牌，返回有效，注册系统2</li>
+<li>系统2使用该令牌创建与用户的局部会话，返回受保护资源</li>
+</ol>
+<h3 id="2-注销"><a href="#2-注销" class="headerlink" title="2.注销"></a>2.注销</h3><pre><code>单点登录的注销，在一个子系统中注销，所有子系统的会话都将被销毁：
+sso认证中心一直坚挺全局会话的状态，一旦全局会话销毁，监听器将通知所有注册系统执行注销操作　　</code></pre><p><img src="https://images2015.cnblogs.com/blog/797930/201611/797930-20161129155243068-1378377736.png" alt></p>
+<p>简要说明</p>
+<ol>
+<li>用户向系统1发起注销请求</li>
+<li>系统1根据用户与系统1建立的会话id拿到令牌，向sso认证中心发起注销请求</li>
+<li>sso认证中心校验令牌有效，销毁全局会话，同时取出所有用此令牌注册的系统地址</li>
+<li>sso认证中心向所有注册系统发起注销请求</li>
+<li>各注册系统接收sso认证中心的注销请求，销毁局部会话</li>
+<li>sso认证中心引导用户至登录页面</li>
+</ol>
+<h2 id="六、部署图"><a href="#六、部署图" class="headerlink" title="六、部署图"></a>六、部署图</h2><pre><code>单点登录涉及 sso 认证中心与众子系统，子系统与 sso 认证中心需要通信以交换令牌、校验令牌及发起注销请求，因而子系统必须集成 sso 的客户端，sso 认证中心则是 sso 服务端，整个单点定了公路过程实质是 sso 客户端与服务端通信的过程。</code></pre><p><img src="https://images2015.cnblogs.com/blog/797930/201611/797930-20161129155244646-2067469767.png" alt title="图片"></p>
+<pre><code>sso 认证中心与 sso 客户端通信方式有多种，例如 webservice、rpc、restful api等
+
+sso采用客户端/服务端架构，我们先看sso-client与sso-server要实现的功能（下面：sso认证中心=sso-server）</code></pre><p>　　sso-client</p>
+<p>拦截子系统未登录用户请求，跳转至sso认证中心<br>接收并存储sso认证中心发送的令牌<br>与sso-server通信，校验令牌的有效性<br>建立局部会话<br>拦截用户注销请求，向sso认证中心发送注销请求<br>接收sso认证中心发出的注销请求，销毁局部会话<br>　　sso-server</p>
+<p>验证用户的登录信息<br>创建全局会话<br>创建授权令牌<br>与sso-client通信发送令牌<br>校验sso-client令牌有效性<br>系统注册<br>接收sso-client注销请求，注销所有会话<br>　　接下来，我们按照原理来一步步实现sso吧！</p>
+<p>1、sso-client拦截未登录请求<br>　　java拦截请求的方式有servlet、filter、listener三种方式，我们采用filter。在sso-client中新建LoginFilter.java类并实现Filter接口，在doFilter()方法中加入对未登录用户的拦截</p>
+<p>public void doFilter(ServletRequest request, ServletResponse response, FilterChain chain) throws IOException, ServletException {<br>    HttpServletRequest req = (HttpServletRequest) request;<br>    HttpServletResponse res = (HttpServletResponse) response;<br>    HttpSession session = req.getSession();</p>
+<pre><code>if (session.getAttribute(&quot;isLogin&quot;)) {
+    chain.doFilter(request, response);
+    return;
+}
+//跳转至sso认证中心
+res.sendRedirect(&quot;sso-server-url-with-system-url&quot;);</code></pre><p>}<br>2、sso-server拦截未登录请求<br>　　拦截从sso-client跳转至sso认证中心的未登录请求，跳转至登录页面，这个过程与sso-client完全一样</p>
+<p>3、sso-server验证用户登录信息<br>　　用户在登录页面输入用户名密码，请求登录，sso认证中心校验用户信息，校验成功，将会话状态标记为“已登录”</p>
+<p>@RequestMapping(“/login”)<br>public String login(String username, String password, HttpServletRequest req) {<br>    this.checkLoginInfo(username, password);<br>    req.getSession().setAttribute(“isLogin”, true);<br>    return “success”;<br>}<br>4、sso-server创建授权令牌<br>　　授权令牌是一串随机字符，以什么样的方式生成都没有关系，只要不重复、不易伪造即可，下面是一个例子</p>
+<p>String token = UUID.randomUUID().toString();<br>5、sso-client取得令牌并校验<br>　　sso认证中心登录后，跳转回子系统并附上令牌，子系统（sso-client）取得令牌，然后去sso认证中心校验，在LoginFilter.java的doFilter()中添加几行</p>
+<p>// 请求附带token参数<br>String token = req.getParameter(“token”);<br>if (token != null) {<br>    // 去sso认证中心校验token<br>    boolean verifyResult = this.verify(“sso-server-verify-url”, token);<br>    if (!verifyResult) {<br>        res.sendRedirect(“sso-server-url”);<br>        return;<br>    }<br>    chain.doFilter(request, response);<br>}<br>　　verify()方法使用httpClient实现，这里仅简略介绍，httpClient详细使用方法请参考官方文档</p>
+<p>HttpPost httpPost = new HttpPost(“sso-server-verify-url-with-token”);<br>HttpResponse httpResponse = httpClient.execute(httpPost);<br>6、sso-server接收并处理校验令牌请求<br>　　用户在sso认证中心登录成功后，sso-server创建授权令牌并存储该令牌，所以，sso-server对令牌的校验就是去查找这个令牌是否存在以及是否过期，令牌校验成功后sso-server将发送校验请求的系统注册到sso认证中心（就是存储起来的意思）</p>
+<p>　　令牌与注册系统地址通常存储在key-value数据库（如redis）中，redis可以为key设置有效时间也就是令牌的有效期。redis运行在内存中，速度非常快，正好sso-server不需要持久化任何数据。</p>
+<p>　　令牌与注册系统地址可以用下图描述的结构存储在redis中，可能你会问，为什么要存储这些系统的地址？如果不存储，注销的时候就麻烦了，用户向sso认证中心提交注销请求，sso认证中心注销全局会话，但不知道哪些系统用此全局会话建立了自己的局部会话，也不知道要向哪些子系统发送注销请求注销局部会话</p>
+<p><img src="https://images2015.cnblogs.com/blog/797930/201611/797930-20161129155245506-1069288802.png" alt></p>
+<p>7、sso-client校验令牌成功创建局部会话<br>　　令牌校验成功后，sso-client将当前局部会话标记为“已登录”，修改LoginFilter.java，添加几行</p>
+<p>if (verifyResult) {<br>    session.setAttribute(“isLogin”, true);<br>}<br>　　sso-client还需将当前会话id与令牌绑定，表示这个会话的登录状态与令牌相关，此关系可以用java的hashmap保存，保存的数据用来处理sso认证中心发来的注销请求</p>
+<p>8、注销过程<br>　　用户向子系统发送带有“logout”参数的请求（注销请求），sso-client拦截器拦截该请求，向sso认证中心发起注销请求</p>
+<p>String logout = req.getParameter(“logout”);<br>if (logout != null) {<br>    this.ssoServer.logout(token);<br>}<br>　　sso认证中心也用同样的方式识别出sso-client的请求是注销请求（带有“logout”参数），sso认证中心注销全局会话</p>
+<p>@RequestMapping(“/logout”)<br>public String logout(HttpServletRequest req) {<br>    HttpSession session = req.getSession();<br>    if (session != null) {<br>        session.invalidate();//触发LogoutListener<br>    }<br>    return “redirect:/“;<br>}<br>　　sso认证中心有一个全局会话的监听器，一旦全局会话注销，将通知所有注册系统注销</p>
+<p>1<br>2<br>3<br>4<br>5<br>6<br>7<br>8<br>public class LogoutListener implements HttpSessionListener {<br>    @Override<br>    public void sessionCreated(HttpSessionEvent event) {}<br>    @Override<br>    public void sessionDestroyed(HttpSessionEvent event) {<br>        //通过httpClient向所有注册系统发送注销请求<br>    }<br>}</p>
+</div><hr></div><div class="recent-post-item article-container"><a class="article-title" href="/2019/07/01/分布式/SpringBoot/SpringBoot常用Listener/index.html">无题</a><time class="post-meta__date"><i class="fa fa-calendar" aria-hidden="true"></i> 2019-07-01</time><div class="content"><h1 id="SpringBoot-的几种常见监听器"><a href="#SpringBoot-的几种常见监听器" class="headerlink" title="SpringBoot 的几种常见监听器"></a>SpringBoot 的几种常见监听器</h1><p>例如：在Web项目启动时，需要执行一段代码，该写在哪里呢？<br>解决方法：注册监听器监听 ServletContext 创建的钩子函数，并重写自己的实现</p>
+<h2 id="1-创建Listener"><a href="#1-创建Listener" class="headerlink" title="1. 创建Listener"></a>1. 创建Listener</h2><pre><code class="java">@WebListener
+public class InitDemo implements ServletContextListener {
+
+    @Override
+    public void contextInitialized(ServletContextEvent sce) {
+        System.out.println(&quot;Web Initialized!&quot;);
+    }
+
+    @Override
+    public void contextDestroyed(ServletContextEvent sce) {
+        System.out.println(&quot;Web Destroyed!&quot;);
+    }
+}</code></pre>
+<blockquote>
+<p>使用 @WebListener 注册声明类为监听器</p>
+</blockquote>
+<h2 id="2-添加-servlet-扫描"><a href="#2-添加-servlet-扫描" class="headerlink" title="2. 添加 servlet 扫描"></a>2. 添加 servlet 扫描</h2><pre><code class="java">@SpringBootApplication
+@ServletComponentScan(basePackages = &quot;com.test.*&quot;)
+public class App {
+    public static void main(String[] args){
+        SpringApplication.run(App.class,args);
+    }
+}</code></pre>
+<h2 id="3-测试"><a href="#3-测试" class="headerlink" title="3. 测试"></a>3. 测试</h2><p>启动项目，可在堆栈信息中找到对应的输出</p>
+<h2 id="4-常见监听器接口"><a href="#4-常见监听器接口" class="headerlink" title="4. 常见监听器接口"></a>4. 常见监听器接口</h2><ol>
+<li>ServletContextListener - 监听 ServletContext 对象的创建及销毁<ol>
+<li>contextInitialized(ServletContextEventsce) - web应用程序初始化进程正在启动的通知</li>
+<li>contextDestroyed(ServletContextEvent sce) - 通知servlet上下文即将关闭。所有servlet和过滤器之前已经被销毁()</li>
+</ol>
+</li>
+<li>HttpSessionListener - 监听 session 对象的创建及销毁<ol>
+<li>sessionCreated(HttpSessionEvent se) - 创建会话的通知</li>
+<li>sessionDestroyed(HttpSessionEvent se) - 会话即将失效的通知</li>
+</ol>
+</li>
+<li>ServletRequestListener - 监听 request 对象的创建及销毁<ol>
+<li>requestDestroyed(ServletRequestEvent src) - 请求将超出web应用程序的范围</li>
+<li>requestInitialized(ServletRequestEvent src) - 请求将进入web应用程序的范围</li>
+</ol>
+</li>
+<li>ServletContextAttributeListener - 监听 servletContext 对象中属性的变化<ol>
+<li>attributeAdded(ServletContextAttributeEvent scae) - 通知servlet上下文中添加了一个新属性。在添加属性后调用</li>
+<li>attributeRemoved(ServletContextAttributeEvent scae) - 从servlet上下文中删除现有属性的通知。删除属性后调用</li>
+<li>attributeReplaced(ServletContextAttributeEvent scae) - 通知servlet上下文上的属性已被替换。替换属性后调用。</li>
+</ol>
+</li>
+<li>HttpSessionAttributeListener - 监听 session 对象中属性的改变<ol>
+<li>同 ServletContextAttributeListener</li>
+</ol>
+</li>
+<li>ServletRequestAttributeListener - 监听request 对象中属性的改变<ol>
+<li>同 ServletContextAttributeListener</li>
+</ol>
+</li>
+</ol>
+</div><hr></div><div class="recent-post-item article-container"><a class="article-title" href="/2019/06/27/读书笔记/《JavaDesignPatterns》/6.单例模式/index.html">《Java Design Patterns》第四章 单例模式 - 确保对象的唯一性</a><time class="post-meta__date"><i class="fa fa-calendar" aria-hidden="true"></i> 2019-06-27</time><span class="article-meta"><span class="article-meta__separator">|</span><i class="fa fa-inbox article-meta__icon" aria-hidden="true"></i><a class="article-meta__categories" href="/categories/读书笔记/index.html">读书笔记</a><i class="fa fa-angle-right" aria-hidden="true"></i><i class="fa fa-inbox article-meta__icon" aria-hidden="true"></i><a class="article-meta__categories" href="/categories/读书笔记/设计模式/index.html">设计模式</a></span><span class="article-meta tags"><span class="article-meta__separator">|</span><i class="fa fa-tag article-meta__icon" aria-hidden="true"></i><a class="article-meta__tags" href="/tags/hide/index.html">hide</a><span class="article-meta__link">-</span><i class="fa fa-tag article-meta__icon" aria-hidden="true"></i><a class="article-meta__tags" href="/tags/设计模式/index.html">设计模式</a></span><div class="content"><h1 id="第四章-单例模式-确保对象的唯一性"><a href="#第四章-单例模式-确保对象的唯一性" class="headerlink" title="第四章 单例模式 - 确保对象的唯一性"></a>第四章 单例模式 - 确保对象的唯一性</h1><p>单例模式用于确保对象的唯一性，为了确保系统中某一个类只有一个唯一实例，当这个唯一实例创建后，无法再创建一个同类型的其他对象。</p>
+<h2 id="一、概述"><a href="#一、概述" class="headerlink" title="一、概述"></a>一、概述</h2><p>单例模式：确保一个类只有一个实例，而且自行实例化并向整个系统提供这个实例，这个类称为单例类，它提供全局访问的方法。属于对象创建型模式。</p>
+<h3 id="1-2-单例模式中的角色"><a href="#1-2-单例模式中的角色" class="headerlink" title="1.2 单例模式中的角色"></a>1.2 单例模式中的角色</h3><ul>
+<li>Singleton - 单例角色<ul>
+<li>在单例类内容实现只生成一个实例，同时提供一个静态工厂方法用于获取该唯一实例</li>
+<li>为了防止外部实例化，将其构造函数设计为私有</li>
+<li>单例类内部顶一个Singleton类型的静态对象，作为外部共享的唯一实例</li>
+</ul>
 </li>
 </ul>
-</div><hr></div><nav id="pagination"><div class="pagination"><a class="extend prev" rel="prev" href="/page/11/"><i class="fa fa-chevron-left"></i></a><a class="page-number" href="/">1</a><span class="space">&hellip;</span><a class="page-number" href="/page/11/">11</a><span class="page-number current">12</span><a class="page-number" href="/page/13/">13</a><span class="space">&hellip;</span><a class="page-number" href="/page/48/">48</a><a class="extend next" rel="next" href="/page/13/"><i class="fa fa-chevron-right"></i></a></div></nav></div></div><footer><div class="layout" id="footer"><div class="copyright">&copy;2013 - 2020 By koral</div><div class="framework-info"><span>驱动 - </span><a href="http://hexo.io"><span>Hexo</span></a><span class="footer-separator">|</span><span>主题 - </span><a href="https://github.com/Molunerfinn/hexo-theme-melody"><span>Melody</span></a></div><div class="busuanzi"><script async src="//busuanzi.ibruce.info/busuanzi/2.3/busuanzi.pure.mini.js"></script><span id="busuanzi_container_site_uv"><i class="fa fa-user"></i><span id="busuanzi_value_site_uv"></span><span></span></span><span class="footer-separator">|</span><span id="busuanzi_container_site_pv"><i class="fa fa-eye"></i><span id="busuanzi_value_site_pv"></span><span></span></span></div></div></footer><i class="fa fa-arrow-up" id="go-up" aria-hidden="true"></i><script src="https://cdn.jsdelivr.net/npm/animejs@latest/anime.min.js"></script><script src="https://cdn.jsdelivr.net/npm/jquery@latest/dist/jquery.min.js"></script><script src="https://cdn.jsdelivr.net/npm/@fancyapps/fancybox@latest/dist/jquery.fancybox.min.js"></script><script src="https://cdn.jsdelivr.net/npm/velocity-animate@latest/velocity.min.js"></script><script src="https://cdn.jsdelivr.net/npm/velocity-ui-pack@latest/velocity.ui.min.js"></script><script src="/js/utils.js?version=1.7.0"></script><script src="/js/fancybox.js?version=1.7.0"></script><script src="/js/sidebar.js?version=1.7.0"></script><script src="/js/copy.js?version=1.7.0"></script><script src="/js/fireworks.js?version=1.7.0"></script><script src="/js/transition.js?version=1.7.0"></script><script src="/js/scroll.js?version=1.7.0"></script><script src="/js/head.js?version=1.7.0"></script><script>if(/Android|webOS|iPhone|iPod|iPad|BlackBerry/i.test(navigator.userAgent)) {
+<h2 id="二、懒汉模式与饿汉模式"><a href="#二、懒汉模式与饿汉模式" class="headerlink" title="二、懒汉模式与饿汉模式"></a>二、懒汉模式与饿汉模式</h2><h3 id="2-1-饿汉式单例类-线程安全"><a href="#2-1-饿汉式单例类-线程安全" class="headerlink" title="2.1 饿汉式单例类 - 线程安全"></a>2.1 饿汉式单例类 - 线程安全</h3><p><img src="https://i.loli.net/2019/07/04/5d1da0231e7a752730.png" alt="懒汉单例模式"></p>
+<pre><code class="java">class EagerSingleton{
+    private static final EagerSingleton instance = new EagerSingleton();
+    private EagerSingleton(){}
+    public static EagerSingleton getInstance(){
+        return instance;
+    }
+}</code></pre>
+<p>饿汉模式实现起来最为简单，在类加载时，静态变量 instance 就会被初始化，此时类的私有构造函数会被调用，单例类的唯一实例将被创建。</p>
+<h3 id="2-2-懒汉式单例类（一）-线程安全"><a href="#2-2-懒汉式单例类（一）-线程安全" class="headerlink" title="2.2 懒汉式单例类（一） - 线程安全"></a>2.2 懒汉式单例类（一） - 线程安全</h3><p><img src="https://i.loli.net/2019/07/04/5d1da0b319cb857695.png" alt="懒汉单例模式"></p>
+<p>懒汉模式能将类进行 延迟加载，即在需要使用时再加载实例，为了避免多线程调用 getInstance() 时实例化多个 LazySingleton，这里使用 synchronized 关键字进行加锁。</p>
+<pre><code class="java">class LazySingleton{
+    private static LazySingleton instance = null;
+    private LazySingleton(){}
+    synchronized public static LazySingleton getInstance(){
+        if(instance == null)
+            instance = new LazySingleton();
+        return instance;
+    }
+}</code></pre>
+<h3 id="2-3-懒汉式单例类（二）-线程不安全"><a href="#2-3-懒汉式单例类（二）-线程不安全" class="headerlink" title="2.3 懒汉式单例类（二） - 线程不安全"></a>2.3 懒汉式单例类（二） - 线程不安全</h3><p>虽然 synchronized 关键字进行了线程锁定，但是每次调用 getInstance() 方法时都会进行加锁操作，在多线程高并发场景下，会导致系统性能大大降低。</p>
+<p>事实上，只需要在 new L:azySingleton() 时进行加锁即可，即第一次实例化实例时加锁。</p>
+<pre><code class="java">public static LazySingleton getInstance(){
+    if(instance == null){
+        synchronized(LazySingleton.class){
+            instance = new LazySingleton();
+        }
+    }
+    return instance;
+}</code></pre>
+<h3 id="2-4-懒汉模式单例类（三-DoubleCheck）-线程不安全"><a href="#2-4-懒汉模式单例类（三-DoubleCheck）-线程不安全" class="headerlink" title="2.4 懒汉模式单例类（三 DoubleCheck） - 线程不安全"></a>2.4 懒汉模式单例类（三 DoubleCheck） - 线程不安全</h3><p>如果当两个线程同时进行了 if 条件之中，当线程A完成实例化之后，线程B继续执行，依旧会进行一次实例化。违背了单例模式的设计思想。</p>
+<p>双重检测机制：因此我们需要在 synchronized 中在进行一次判断</p>
+<pre><code class="java">public static LazySingleton getInstance(){
+    if(instance == null){
+        synchronized(LazySingleton.class){
+            if(instance == null){
+                instance = new LazySingleton();
+            }
+        }
+    }
+    return instance;
+}</code></pre>
+<h3 id="2-5-懒汉模式单例类（四-volatile-DoubleCheck）-线程安全"><a href="#2-5-懒汉模式单例类（四-volatile-DoubleCheck）-线程安全" class="headerlink" title="2.5 懒汉模式单例类（四 volatile+DoubleCheck） - 线程安全"></a>2.5 懒汉模式单例类（四 volatile+DoubleCheck） - 线程安全</h3><p>上述代码看起来可能没什么问题，但是</p>
+<p>instance = new LazySingleton() 在内存中的指令顺序应该为：</p>
+<ol>
+<li>instance 分配内存地址</li>
+<li>实例化 LazySingleton</li>
+<li>将实例化地址指向instance</li>
+</ol>
+<p>因为 JVM 的指令重排和优化，可能会导致以上执行顺序与所想像的不一致。最终导致单例出现问题，因此我们在静态实例 instance 前，加上 volatile 关键词，避免 instance 的实例化发生指令重排。</p>
+<blockquote>
+<p>因此<code>完整的懒汉模式</code>如下：</p>
+</blockquote>
+<pre><code class="java">class LazySingleton{
+    // 使用volatile 修改时静态实例，避免指令重排序
+    private volatile static LazySignleton instance = null;
+    // 构造方法私有化，防止外部实例
+    private LazySingleton(){}
+    // 静态工厂类，用于返回唯一实例，且使用延迟加载技术
+    public static LazySingleton getInstance(){
+        // 第一重检查，只有当instance 为空时才进行实例化
+        if(instance == null){
+            // 实例化时对当前类进行加锁，避免多线程同时实例化
+            synchronized(LazySingleton.class){
+                // 第二重检查，避免当前线程通过第一重检查后其他线程已实例化过
+                if(instance == null){
+                    instance = new LazySingleton();
+                }
+            }
+        }
+        return instance;
+    }
+}</code></pre>
+<blockquote>
+<p>缺点也很明显：1. volatile 关键词虽然能保证实例避免重排，但是只在1.5以上的版本才能生效 2. volatile关键词会屏蔽 JVM 的一些代码优化，可能导致系统运行效率降低</p>
+</blockquote>
+<h2 id="三、一种更好的单例实现方法"><a href="#三、一种更好的单例实现方法" class="headerlink" title="三、一种更好的单例实现方法"></a>三、一种更好的单例实现方法</h2><h2 id="3-1-懒汉模式与饿汉模式的缺点"><a href="#3-1-懒汉模式与饿汉模式的缺点" class="headerlink" title="3.1 懒汉模式与饿汉模式的缺点"></a>3.1 懒汉模式与饿汉模式的缺点</h2><p>饿汉模式：不能实现延迟加载，不管实例是否使用都将占据内存</p>
+<p>饿汉模式：繁琐的线程安全控制，且性能会受到一定影响</p>
+<h2 id="3-2-静态内部类单例-IoDH-线程安全"><a href="#3-2-静态内部类单例-IoDH-线程安全" class="headerlink" title="3.2 静态内部类单例 - IoDH - 线程安全"></a>3.2 静态内部类单例 - IoDH - 线程安全</h2><pre><code class="java">class Signleton{
+    private Singleton(){}
+    // 静态内部类只有在第一次调用时才会进行加载
+    private static class HolderClass{
+        // 因为instance 不是Singleton的成员变量，所以不会在Singleton加载时实例化
+        private final static Singleton instance = new Singleton();
+    }
+    // 通过JVM特性来保证线程安全性，确保成员变量只能初始化一次
+    public static Singleton getInstance(){
+        return HolderClass.instance;
+    }
+}</code></pre>
+<p>Initialization Demand Holder 技术，在单例类内部增加一个静态内部类，在该内部类中创建单例对象，再将单例对象通过 getInstance() 方法返回给外部使用。</p>
+<blockquote>
+<p>但是IoDH依赖于JVM的特性，并不适用于所有语言。但是IoDH既可以实现延迟加载，又可以保证线程安全，又不影响性能，不失为一种最好的Java语言单例模式。</p>
+</blockquote>
+<h2 id="四、总结"><a href="#四、总结" class="headerlink" title="四、总结"></a>四、总结</h2><h3 id="优点"><a href="#优点" class="headerlink" title="优点"></a>优点</h3><ol>
+<li>单例模式提供了对唯一实例的受控访问。因为单例类封装了它的唯一实例，严格控制客户如何访问</li>
+<li>节约系统资源。因为内存中只存在一个对象，无需频繁的创建、销毁对象</li>
+<li>允许可变数目的实例。可以通过变种，让getInstance返回至多几个实例</li>
+</ol>
+<h3 id="缺点"><a href="#缺点" class="headerlink" title="缺点"></a>缺点</h3><ol>
+<li>由于单例类没有抽象层，很难进行扩展</li>
+<li>单例类职责过重，违背了“单一职责原则”。因为单例类即是工厂角色，提供工厂方法，又是产品角色，包含一些业务方法。将产品的创建和产品的功能融合到了一起</li>
+<li>许多面向对象语言（如Java、C#）的自动垃圾回收技术，如果实例化的共享变量长时间不被使用。GC 会自动销毁并回收资源，导致单例对象状态的丢失。</li>
+</ol>
+<h3 id="适用场景"><a href="#适用场景" class="headerlink" title="适用场景"></a>适用场景</h3><ol>
+<li>系统只需要一个实例对象。如资源消耗过大的对象、资源管理器等只能实例一次的对象</li>
+<li>客户调用类的单个实例只允许使用一个公共访问点，不能通过其他途径访问该实例。</li>
+</ol>
+</div><hr></div><div class="recent-post-item article-container"><a class="article-title" href="/2019/06/27/读书笔记/《JavaDesignPatterns》/7.原型模式/index.html">《Java Design Patterns》第五章 原型模式 - 对象的克隆</a><time class="post-meta__date"><i class="fa fa-calendar" aria-hidden="true"></i> 2019-06-27</time><span class="article-meta"><span class="article-meta__separator">|</span><i class="fa fa-inbox article-meta__icon" aria-hidden="true"></i><a class="article-meta__categories" href="/categories/读书笔记/index.html">读书笔记</a><i class="fa fa-angle-right" aria-hidden="true"></i><i class="fa fa-inbox article-meta__icon" aria-hidden="true"></i><a class="article-meta__categories" href="/categories/读书笔记/设计模式/index.html">设计模式</a></span><span class="article-meta tags"><span class="article-meta__separator">|</span><i class="fa fa-tag article-meta__icon" aria-hidden="true"></i><a class="article-meta__tags" href="/tags/hide/index.html">hide</a><span class="article-meta__link">-</span><i class="fa fa-tag article-meta__icon" aria-hidden="true"></i><a class="article-meta__tags" href="/tags/设计模式/index.html">设计模式</a></span><div class="content"><h1 id="第五章-原型模式-对象的克隆"><a href="#第五章-原型模式-对象的克隆" class="headerlink" title="第五章 原型模式 - 对象的克隆"></a>第五章 原型模式 - 对象的克隆</h1><p>原型模式：使用原型实例指定创建对象的种类，并且通过拷贝这些原型创建新的对象。属于一种对象创建型模式。</p>
+<h2 id="一、概述"><a href="#一、概述" class="headerlink" title="一、概述"></a>一、概述</h2><h3 id="1-1-原理"><a href="#1-1-原理" class="headerlink" title="1.1 原理"></a>1.1 原理</h3><p>原型模式的工作原理很简单：将一个原型对象传给那个要发动创建的对象，这个要发动创建的对象通过请求原型对象拷贝自己来实现创建过程。由于在软件系统中我们经常会遇到需要创建多个相同或者相似对象的情况，因此原型模式在真实开发中的使用频率还是非常高的。原型模式是一种“另类”的创建型模式，创建克隆对象的工厂就是原型类自身，工厂方法由克隆方法来实现。</p>
+<h3 id="1-2-原型模式中的几个角色"><a href="#1-2-原型模式中的几个角色" class="headerlink" title="1.2 原型模式中的几个角色"></a>1.2 原型模式中的几个角色</h3><ol>
+<li>Prototype - 抽象原型类<ol>
+<li>声明克隆方法的接口，是所有具体原型类的公共父类</li>
+</ol>
+</li>
+<li>ConcretePrototype - 具体原型类<ol>
+<li>实现抽象原型类中声明的克隆方法，在克隆方法中返回自己的一个克隆对象</li>
+</ol>
+</li>
+<li>Client - 客户类<ol>
+<li>让一个原型对象克隆自身从而创建一个新的对象，在客户类中只需要直接实例化或通过工厂方法等方式创建一个原型对象，再通过调用该对象的克隆方法即可得到多个相同的对象。</li>
+</ol>
+</li>
+</ol>
+<h3 id="1-3-案例"><a href="#1-3-案例" class="headerlink" title="1.3 案例"></a>1.3 案例</h3><pre><code class="java">@Getter
+@Setter
+class WeeklyLog implements Clonealbe{
+    private String name;
+    private String date;
+    private String content;
+
+    publci WeekLog clone(){
+        Object obj = null;
+        try{
+            obj = super.clone();
+            return (WeekLog)obj;
+        } catch (CloneNotSupportedException e){
+            System.out.println(&quot;不支持复制&quot;);
+            return null;
+        }
+    }
+}</code></pre>
+<h2 id="二、浅克隆与深克隆"><a href="#二、浅克隆与深克隆" class="headerlink" title="二、浅克隆与深克隆"></a>二、浅克隆与深克隆</h2><h3 id="2-1-浅克隆"><a href="#2-1-浅克隆" class="headerlink" title="2.1 浅克隆"></a>2.1 浅克隆</h3><p>在浅克隆中，如果原型对象的成员是值类型，将复制一份给克隆对象；如果原型对象的成员变量是引用类型，则将引用对象的地址复制一份给克隆对象。也就是说，原型对象的引用类型变量与克隆对象中的变量指向同一内存地址。</p>
+<p>即值类型成员变量会被复制，但是引用成员变量不会。</p>
+<h3 id="2-2-深克隆"><a href="#2-2-深克隆" class="headerlink" title="2.2 深克隆"></a>2.2 深克隆</h3><p>在深克隆中，无论原型对象的成员变量是值类型还是引用类型，都将复制一份给克隆对象。</p>
+<p>如果需要实现深克隆，可以通过序列化（Serialization）等方式实现：将对象写入到流，再从流中读出。</p>
+<blockquote>
+<p>Java语言提供的 Cloneable 接口和 Serializable 接口都是空接口，也称为标识接口。标识接口无任何方法定义，只提供告诉JRE这些接口的实现类是否支持克隆、序列化等功能。</p>
+</blockquote>
+<h2 id="三、总结"><a href="#三、总结" class="headerlink" title="三、总结"></a>三、总结</h2><h3 id="优点"><a href="#优点" class="headerlink" title="优点"></a>优点</h3><ol>
+<li>当创建新对象较为复杂时，可以使用原型模式简化对象的创建过程，复制一个已有实例以提高新实例的创建效率</li>
+<li>扩展性较好，由于在原型模式中提供了抽象原型类，在客户端可以针对抽象原型类进行编程，而将具体原型类写在配置文件中</li>
+<li>原型模式提供了简化的创建结构，工厂方法模式需要与产品等级结构对应的工厂等级结构，而原型模式则直接通过封装在原型类中的克隆方法实现</li>
+<li>深克隆方式可以保存对象的状态</li>
+</ol>
+<h3 id="缺点"><a href="#缺点" class="headerlink" title="缺点"></a>缺点</h3><ol>
+<li>需要每个类配置一个克隆方法，且位于类内部，当对类进行改造时需要修改源码，违反了“开闭原则”</li>
+<li>实现深克隆时较为复杂，对象的每一层子对象都需要进行深克隆</li>
+</ol>
+<h3 id="适用场景"><a href="#适用场景" class="headerlink" title="适用场景"></a>适用场景</h3><ol>
+<li>创建新对象成本较大（如初始化时间长、占用CPU资源多或网络资源占用多），新对象能够通过原型模式进行复制，复制相似对象再进行修改</li>
+<li>可以通过原型模式+备忘录模式，来实现保存对象的状态</li>
+<li>避免使用工厂模式来创建对象</li>
+</ol>
+</div><hr></div><div class="recent-post-item article-container"><a class="article-title" href="/2019/06/26/读书笔记/《JavaDesignPatterns》/5.抽象工厂模式/index.html">《Java Design Patterns》第三章 抽象工厂模式</a><time class="post-meta__date"><i class="fa fa-calendar" aria-hidden="true"></i> 2019-06-26</time><span class="article-meta"><span class="article-meta__separator">|</span><i class="fa fa-inbox article-meta__icon" aria-hidden="true"></i><a class="article-meta__categories" href="/categories/读书笔记/index.html">读书笔记</a><i class="fa fa-angle-right" aria-hidden="true"></i><i class="fa fa-inbox article-meta__icon" aria-hidden="true"></i><a class="article-meta__categories" href="/categories/读书笔记/设计模式/index.html">设计模式</a></span><span class="article-meta tags"><span class="article-meta__separator">|</span><i class="fa fa-tag article-meta__icon" aria-hidden="true"></i><a class="article-meta__tags" href="/tags/hide/index.html">hide</a><span class="article-meta__link">-</span><i class="fa fa-tag article-meta__icon" aria-hidden="true"></i><a class="article-meta__tags" href="/tags/设计模式/index.html">设计模式</a></span><div class="content"><h1 id="第三章-抽象工厂模式"><a href="#第三章-抽象工厂模式" class="headerlink" title="第三章 抽象工厂模式"></a>第三章 抽象工厂模式</h1><p>在工厂方法模式中，通过引入工厂等级结构，解决了 简单工厂模式 中工厂类过于庞大，职责过重的问题。但是由于工厂方法模式中的每一个工厂只生产一类产品，导致系统中存在大量工厂类，增加系统开销。</p>
+<p>因此我们需要将一些相关的产品组成一个“产品族”，由同一个工厂生产。</p>
+<h2 id="一、抽象工厂模式"><a href="#一、抽象工厂模式" class="headerlink" title="一、抽象工厂模式"></a>一、抽象工厂模式</h2><h3 id="1-1-设计一款界面皮肤库"><a href="#1-1-设计一款界面皮肤库" class="headerlink" title="1.1 设计一款界面皮肤库"></a>1.1 设计一款界面皮肤库</h3><p>设计一款界面皮肤库，可以通过菜单来选择皮肤，不同的皮肤将提供视觉效果不同的按钮、文本框、组合框等。</p>
+<p>按照之前的 <code>工厂方法模式</code> 设计，如下：</p>
+<p><img src="https://i.loli.net/2019/07/04/5d1d5ce8d1f3176430.jpg" alt="工厂方法模式.jpg"></p>
+<p>当我们需要增加 Winter风格 的按钮时，只需要继承抽象工厂并生产出对应的按钮即可。该系统具备良好的灵活性和可扩展性，开发可以在不修改现有代码的基础上增加新的皮肤。</p>
+<h3 id="1-2-缺陷与问题"><a href="#1-2-缺陷与问题" class="headerlink" title="1.2 缺陷与问题"></a>1.2 缺陷与问题</h3><p>该设计模式提供了大量的工厂来创建具体的界面组件，可以灵活的配置风格，但是存在以下问题：</p>
+<ol>
+<li>新增产品时，需要同时新增一个具体工厂类，类的个数成对增加，会增大系统的开销</li>
+<li>由于某一种风格的按钮、文本框、组合框通常都是一起使用的，但是因为其工厂方法分离，可能会导致使用时的选择失误</li>
+</ol>
+<h3 id="1-3-解决方案"><a href="#1-3-解决方案" class="headerlink" title="1.3 解决方案"></a>1.3 解决方案</h3><p>将一组产品类定义为一个“产品族”（如按钮、文本框、组合框统称为一个产品族），将之前一个产品对应一个具体工厂的模式改为-一个产品族对应一个产品工厂（如Spring风格工厂，能够生产Spring风格按钮、Spring风格文本框、Spring风格组合框）。</p>
+<h3 id="1-4-产品等级结构与产品族"><a href="#1-4-产品等级结构与产品族" class="headerlink" title="1.4 产品等级结构与产品族"></a>1.4 产品等级结构与产品族</h3><ol>
+<li>产品等级结构<ol>
+<li>在<code>1.3 解决方案</code> 中，抽象工厂与Spring风格工厂、Summer风格工厂之间的关系构成了一个产品等级结构</li>
+<li>抽象工厂类是父类，具体工厂类是子类</li>
+<li>产品等级扩展，只需要继续实现子类即可（如新增Winter风格工厂，用于生产Winter风格的按钮、文本框、组合框）</li>
+</ol>
+</li>
+<li>产品族：<ol>
+<li>即各个具体工厂生产的产品统称（如Spring风格工厂，能够生产Spring风格按钮、Spring风格文本框、Spring风格组合框）</li>
+</ol>
+</li>
+</ol>
+<p>当系统所提供的工厂生产的具体产品并不是一个简单的对象，而是位于多个不同产品等级结构、属于不同类型的具体产品时就可以使用抽象工厂模式。</p>
+<h2 id="二、抽象工厂模式"><a href="#二、抽象工厂模式" class="headerlink" title="二、抽象工厂模式"></a>二、抽象工厂模式</h2><h3 id="2-1-概述"><a href="#2-1-概述" class="headerlink" title="2.1 概述"></a>2.1 概述</h3><p>抽象工厂模式：提供一个创建一系列相关或互相依赖对象的接口，而无须指定它们具体的类。</p>
+<p>抽象工厂模式又称为 Kit模式，属于对象创建型模式。</p>
+<p>在抽象工厂模式中，每一个具体工厂都提供多个工厂方法，用于生产多种不同类型的产品。这些产品构成了一个产品族。</p>
+<p><img src="https://i.loli.net/2019/07/04/5d1d63c564e9523844.jpg" alt="抽象工厂模式"></p>
+<p>从图中可以看出，如果需要新增其他风格的按钮、文本框，只需要新增一个具体工厂，由该工厂的多个工厂方法产出具体的产品。</p>
+<p>同时，缺点也很明显，如果我们想新增图片类型产品，必须同时修改抽象工厂及其所有的具体工厂。</p>
+<h3 id="2-2-抽象工厂模式中的几个角色"><a href="#2-2-抽象工厂模式中的几个角色" class="headerlink" title="2.2 抽象工厂模式中的几个角色"></a>2.2 抽象工厂模式中的几个角色</h3><ol>
+<li>AbstractFactory - 抽象工厂<ol>
+<li>声明了一组用于创建一族产品的方法，每一个方法对应一种产品</li>
+</ol>
+</li>
+<li>ConcreteFactory - 具体工厂<ol>
+<li>实现了在抽象工厂中声明的创建产品的方法，生成一组具体产品，这些产品构成一个产品族</li>
+</ol>
+</li>
+<li>AbstractProduct - 抽象产品<ol>
+<li>每种产品的抽象对象</li>
+</ol>
+</li>
+<li>ConcreteProduct 具体产品<ol>
+<li>由具体工厂生产的具体产品对象</li>
+</ol>
+</li>
+</ol>
+<h3 id="2-3-具体实践"><a href="#2-3-具体实践" class="headerlink" title="2.3 具体实践"></a>2.3 具体实践</h3><pre><code class="java">/**
+ * 手机游戏软件
+ * 针对 Symbian、Android、WindowsPhone 等多个智能手机平台，
+ * 提供不同的游戏操作控制和游戏界面控制
+ */
+public class Gaming {
+    // 抽象产品类
+    interface Operation{}
+    // 具体产品类
+    class SymbianOperation implements Operation{}
+    class AndroidOperation implements Operation{}
+    class WindowsPhoneOperation implements Operation{}
+
+    interface HML{}
+    class SymbianHML implements HML{}
+    class AndroidHML implements HML{}
+    class WindowsPhoneHML implements HML{}
+
+    // 抽象工厂类
+    interface Factory{
+        Operation getOperation();
+        HML getHML();
+    }
+    // 具体工厂类
+    class SymbianFactory implements Factory{
+        @Override
+        public Operation getOperation() {
+            return new SymbianOperation();
+        }
+        @Override
+        public HML getHML() {
+            return new SymbianHML();
+        }
+    }
+    class AndroidFactory implements Factory{
+        @Override
+        public Operation getOperation() {
+            return new AndroidOperation();
+        }
+        @Override
+        public HML getHML() {
+            return new AndroidHML();
+        }
+    }
+    class WindowsPhoneFactory implements Factory{
+        @Override
+        public Operation getOperation() {
+            return new WindowsPhoneOperation();
+        }
+        @Override
+        public HML getHML() {
+            return new WindowsPhoneHML();
+        }
+    }
+}</code></pre>
+<h2 id="三、“开闭原则”的倾斜性"><a href="#三、“开闭原则”的倾斜性" class="headerlink" title="三、“开闭原则”的倾斜性"></a>三、“开闭原则”的倾斜性</h2><p>在抽象工厂模式中，增加新的产品族很方便（如增加Winter类型的界面），但是增加新的产品等级结构很麻烦（如增加单选框类型的产品，需要修改抽象工厂及其所有的具体工厂），这种性质被称为“开闭原则”的倾斜性。</p>
+<p>“开闭原则”要求系统对扩展开发，对修改封闭，通过扩展达到增强其功能的目的，对于设计多个产品族与多个产品等级结构的系统，其功能增强包括两方面：</p>
+<ol>
+<li>增加产品族，很好地支持了“开闭原则”，只需新增具体产品和新增一个具体工厂即可</li>
+<li>增加产品等级结构：违背了“开闭原则”，因为需要修改所有的抽象工厂与具体工厂才能实现扩展</li>
+</ol>
+<h2 id="四、总结"><a href="#四、总结" class="headerlink" title="四、总结"></a>四、总结</h2><h3 id="优点"><a href="#优点" class="headerlink" title="优点"></a>优点</h3><ol>
+<li>抽象工厂模式隔离了具体类的生成，使客户不需要知道何时被创建</li>
+<li>当一个产品族中的多个对象被设计为一起工作时，它能够保证客户端始终只使用一个产品族对象</li>
+<li>增加新的产品族很方便，无须修改已有系统，符合“开闭原则”</li>
+</ol>
+<h3 id="缺点"><a href="#缺点" class="headerlink" title="缺点"></a>缺点</h3><ol>
+<li>增加新的产品等级结构时，违背了“开闭原则”</li>
+</ol>
+<h3 id="适用场景"><a href="#适用场景" class="headerlink" title="适用场景"></a>适用场景</h3><ol>
+<li>系统不依赖于产品类的具体创建、组合及表达的细节</li>
+<li>系统中有多于一个的产品族，且每次只使用其中某一个产品族</li>
+<li>同一个产品族的产品配合使用</li>
+<li>产品等级结构稳定，设计完成后，不再修改系统中新的产品等级结构</li>
+</ol>
+</div><hr></div><nav id="pagination"><div class="pagination"><a class="extend prev" rel="prev" href="/page/11/"><i class="fa fa-chevron-left"></i></a><a class="page-number" href="/">1</a><span class="space">&hellip;</span><a class="page-number" href="/page/11/">11</a><span class="page-number current">12</span><a class="page-number" href="/page/13/">13</a><span class="space">&hellip;</span><a class="page-number" href="/page/21/">21</a><a class="extend next" rel="next" href="/page/13/"><i class="fa fa-chevron-right"></i></a></div></nav></div></div><footer><div class="layout" id="footer"><div class="copyright">&copy;2013 - 2020 By koral</div><div class="framework-info"><span>驱动 - </span><a href="http://hexo.io"><span>Hexo</span></a><span class="footer-separator">|</span><span>主题 - </span><a href="https://github.com/Molunerfinn/hexo-theme-melody"><span>Melody</span></a></div><div class="busuanzi"><script async src="//busuanzi.ibruce.info/busuanzi/2.3/busuanzi.pure.mini.js"></script><span id="busuanzi_container_site_uv"><i class="fa fa-user"></i><span id="busuanzi_value_site_uv"></span><span></span></span><span class="footer-separator">|</span><span id="busuanzi_container_site_pv"><i class="fa fa-eye"></i><span id="busuanzi_value_site_pv"></span><span></span></span></div></div></footer><i class="fa fa-arrow-up" id="go-up" aria-hidden="true"></i><script src="https://cdn.jsdelivr.net/npm/animejs@latest/anime.min.js"></script><script src="https://cdn.jsdelivr.net/npm/jquery@latest/dist/jquery.min.js"></script><script src="https://cdn.jsdelivr.net/npm/@fancyapps/fancybox@latest/dist/jquery.fancybox.min.js"></script><script src="https://cdn.jsdelivr.net/npm/velocity-animate@latest/velocity.min.js"></script><script src="https://cdn.jsdelivr.net/npm/velocity-ui-pack@latest/velocity.ui.min.js"></script><script src="/js/utils.js?version=1.7.0"></script><script src="/js/fancybox.js?version=1.7.0"></script><script src="/js/sidebar.js?version=1.7.0"></script><script src="/js/copy.js?version=1.7.0"></script><script src="/js/fireworks.js?version=1.7.0"></script><script src="/js/transition.js?version=1.7.0"></script><script src="/js/scroll.js?version=1.7.0"></script><script src="/js/head.js?version=1.7.0"></script><script>if(/Android|webOS|iPhone|iPod|iPad|BlackBerry/i.test(navigator.userAgent)) {
   $('#nav').addClass('is-mobile')
   $('footer').addClass('is-mobile')
   $('#top-container').addClass('is-mobile')

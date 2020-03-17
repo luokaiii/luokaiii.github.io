@@ -7,389 +7,806 @@
     error: '复制错误',
     noSupport: '浏览器不支持'
   }
-} </script></head><body><i class="fa fa-arrow-right" id="toggle-sidebar" aria-hidden="true"></i><div id="sidebar" data-display="false"><div class="author-info"><div class="author-info__avatar text-center"><img src="/img/avatar.png"></div><div class="author-info__name text-center">koral</div><div class="author-info__description text-center">描述</div><hr><div class="author-info-articles"><a class="author-info-articles__archives article-meta" href="/archives/index.html"><span class="pull-left">文章</span><span class="pull-right">237</span></a><a class="author-info-articles__tags article-meta" href="/tags/index.html"><span class="pull-left">标签</span><span class="pull-right">29</span></a><a class="author-info-articles__categories article-meta" href="/categories/index.html"><span class="pull-left">分类</span><span class="pull-right">33</span></a></div></div></div><nav class="no-bg" id="nav"><div id="page-header"><span class="pull-left"> <a id="site-name" href="/index.html">凯</a></span><i class="fa fa-bars toggle-menu pull-right" aria-hidden="true"></i><span class="pull-right menus">   <a class="site-page" href="/">首页</a><a class="site-page" href="/archives/index.html">归档</a><a class="site-page" href="/tags/index.html">标签</a><a class="site-page" href="/categories/index.html">分类</a><a class="site-page" href="/about/index.html">关于我</a></span><span class="pull-right"></span></div><div id="site-info"><div id="site-title">凯</div><div id="site-sub-title">凯</div></div></nav><div id="content-outer"><div class="layout" id="content-inner"><div class="recent-post-item article-container"><a class="article-title" href="/2019/09/05/读书笔记/《Mybatis》/1_入门/index.html">《MyBatis》读书笔记 - 入门</a><time class="post-meta__date"><i class="fa fa-calendar" aria-hidden="true"></i> 2019-09-05</time><span class="article-meta"><span class="article-meta__separator">|</span><i class="fa fa-inbox article-meta__icon" aria-hidden="true"></i><a class="article-meta__categories" href="/categories/读书笔记/index.html">读书笔记</a><i class="fa fa-angle-right" aria-hidden="true"></i><i class="fa fa-inbox article-meta__icon" aria-hidden="true"></i><a class="article-meta__categories" href="/categories/读书笔记/MyBatis/index.html">MyBatis</a></span><span class="article-meta tags"><span class="article-meta__separator">|</span><i class="fa fa-tag article-meta__icon" aria-hidden="true"></i><a class="article-meta__tags" href="/tags/MyBatis/index.html">MyBatis</a></span><div class="content"><h1 id="一、入门"><a href="#一、入门" class="headerlink" title="一、入门"></a>一、入门</h1><h2 id="1-安装"><a href="#1-安装" class="headerlink" title="1. 安装"></a>1. 安装</h2><p>构建项目，需要引入如下的 dependency 到 pom.xml 中：</p>
-<pre><code class="xml">&lt;dependency&gt;
-  &lt;groupId&gt;or.mybatis&lt;/groupId&gt;
-  &lt;artifactId&gt;mybatis&lt;/artifactId&gt;
-  &lt;version&gt;x.x.x&lt;/version&gt;
-&lt;/dependency&gt;</code></pre>
-<h2 id="2-从XML配置SQLSessionFactory"><a href="#2-从XML配置SQLSessionFactory" class="headerlink" title="2. 从XML配置SQLSessionFactory"></a>2. 从XML配置SQLSessionFactory</h2><p>每个基于 MyBatis 的应用都是以一个 SqlSessionFactory 的实例为核心的。</p>
-<p>以下 XML 配置文件中包含了对 MyBatis 系统的核心设置，如获取数据源(DataSource)和决定事务作用于和控制方式的事务管理器(TransactionManager)：</p>
-<pre><code class="xml">&lt;?xml version=&quot;1.0&quot; encoding=&quot;UTF-8&quot; ?&gt;
-&lt;!DOCTYPE configuration PUBLIC &quot;-//mybatis.org//DTD Config 3.0//EN&quot; &quot;http://mybatis.org/dtd/mybatis-3-config.dtd&quot;&gt;
-&lt;configuration&gt;
-    &lt;environments id=&quot;development&quot;&gt;
-        &lt;transactionManager type=&quot;JDBC&quot; /&gt;
-        &lt;dataSource type=&quot;POOLED&quot;&gt;
-            &lt;property name=&quot;driver&quot; value=&quot;${driver}&quot;/&gt;
-            &lt;property name=&quot;url&quot; value=&quot;${url}&quot;/&gt;
-            &lt;property name=&quot;username&quot; value=&quot;${username}&quot;/&gt;
-            &lt;property name=&quot;password&quot; value=&quot;${password}&quot;/&gt;
-        &lt;/dataSource&gt;
-    &lt;/environments&gt;
-    &lt;mappers&gt;
-        &lt;mapper resource=&quot;org/mybatis/example/BlogMapper.xml&quot;/&gt;
-    &lt;/mappers&gt;
-&lt;/configuration&gt;</code></pre>
-<p>使用类路径下的资源文件进行配置，构建 SqlSessionFactory 实例：</p>
-<pre><code class="java">String resource = &quot;org/mybatis/example/mybatis-config.xml&quot;;
-InputStream inputStream = Resources.getResourceAsStream(resource);
-SqlSessionFactory sqlSessionFactory = new SqlSessionFactoryBuilder().build(inputStream);</code></pre>
-<h2 id="3-从SqlSessionFactory-获取-SqlSession"><a href="#3-从SqlSessionFactory-获取-SqlSession" class="headerlink" title="3. 从SqlSessionFactory 获取 SqlSession"></a>3. 从SqlSessionFactory 获取 SqlSession</h2><p>SqlSession 中完全包含了面向数据库执行 SQL 命令所需的所有方法，例如：</p>
-<pre><code class="java">try(SqlSession session = sqlSessionFactory.openSession()){
-    Blog blog = (Blog)session.selectOne(&quot;org.mybatis.example.BlogMapper.selectBlog&quot;,101);
-}</code></pre>
-<p>或者使用一种更简单的方式：</p>
-<pre><code class="java">try(SqlSession session = sqlSessionFactory.openSession()){
-    BlogMapper mapper = session.getMapper(BlogMapper.class);
-    Blog blog = mapper.selectBlog(101);
-}</code></pre>
-<h3 id="提示：命名空间（Namespaces）"><a href="#提示：命名空间（Namespaces）" class="headerlink" title="提示：命名空间（Namespaces）"></a>提示：命名空间（Namespaces）</h3><p>命名空间的作用有两个，一个是利用更长的完全限定名来将不同的语句隔离开来，同时也实现了接口绑定。</p>
-<p>命名解析：为了减少输入量，MyBatis 对所有的命名配置元素（包括语句，结果映射，缓存等）使用了如下的命名解析规则。</p>
-<ol>
-<li>完全限定名，将被直接用于查找和使用</li>
-<li>短名称，如果全局唯一也可作为单独的应用。如果不唯一，那么使用时就会出现错误，此时就需要使用完全限定名</li>
-</ol>
-<h2 id="4-基于-XML-映射语句的示例"><a href="#4-基于-XML-映射语句的示例" class="headerlink" title="4. 基于 XML 映射语句的示例"></a>4. 基于 XML 映射语句的示例</h2><pre><code class="xml">&lt;?xml version=&quot;1.0&quot; encoding=&quot;UTF-8&quot; ?&gt;
-&lt;!DOCTYPE mapper
-  PUBLIC &quot;-//mybatis.org//DTD Mapper 3.0//EN&quot;
-  &quot;http://mybatis.org/dtd/mybatis-3-mapper.dtd&quot;&gt;
-&lt;mapper namespace=&quot;org.mybatis.example.BlogMapper&quot;&gt;
-    &lt;select id=&quot;selectBlog&quot; resultType=&quot;Blog&quot;&gt;
-        select * from Blog where id = #{id}
-    &lt;/select&gt;
-&lt;/mapper&gt;</code></pre>
-<h2 id="5-基于注解的示例"><a href="#5-基于注解的示例" class="headerlink" title="5. 基于注解的示例"></a>5. 基于注解的示例</h2><pre><code class="java">public interface BlogMapper {
-    @Select(&quot;SELECT * FROM blog WHERE id = #{id}&quot;)
-    Blog selectBlog(int id);
-}</code></pre>
-<h2 id="6-作用域（Scope）和生命周期"><a href="#6-作用域（Scope）和生命周期" class="headerlink" title="6. 作用域（Scope）和生命周期"></a>6. 作用域（Scope）和生命周期</h2><p><code>依赖注入框架</code>可以创建线程安全的、基于事务的 SqlSession 和映射器，并将它们直接注入到你的 bean 中，因此可以直接忽略它们的生命周期。</p>
-<h3 id="SqlSessionFactoryBuilder"><a href="#SqlSessionFactoryBuilder" class="headerlink" title="SqlSessionFactoryBuilder"></a>SqlSessionFactoryBuilder</h3><p>这个类可以被实例化、使用和丢弃，一旦创建了 SqlSessionFactory，就不再需要了。</p>
-<p>因此该实例的最佳作用域为<code>方法作用域</code>，可以重用 SqlSessionFactoryBuilder 来创建多个 SqlSessionFactory，但是使用后最好不要让其一直存在，以保证 XML 资源可以被释放。</p>
-<h3 id="SqlSessionFactory"><a href="#SqlSessionFactory" class="headerlink" title="SqlSessionFactory"></a>SqlSessionFactory</h3><p>一旦创建就应该在应用的运行期间一直存在，尽量不要重复创建该实例。</p>
-<p>因此该实例的最佳作用域为<code>应用作用域</code>。可以使用单例模式或静态单例模式来做到。</p>
-<h3 id="SqlSession"><a href="#SqlSession" class="headerlink" title="SqlSession"></a>SqlSession</h3><p>每个线程都应该由自己的 SqlSession 实例。SqlSession 的实例不是线程安全的，因此不能被共享。</p>
-<p>因此该实例的最佳作用于为<code>请求或方法作用域</code>。绝不能将 SqlSession 的实例引用放在静态域中，甚至一个类的实例变量也不行，也不能将引用放在任何类型的托管作用域中（如Servlet 的HttpSession）。</p>
-<p>如果您使用的是 Web 框架，那么应该考虑将 SqlSession 放在和 Http 请求对象相似的作用域中。即每次 Http 请求，都打开一个 SqlSession，返回响应后就关闭它。</p>
-<h3 id="映射器实例"><a href="#映射器实例" class="headerlink" title="映射器实例"></a>映射器实例</h3><p>映射器是映射Sql语句的接口，该接口的实例是从 SqlSession 中获得的。</p>
-<p>因此该实例的最佳作用于<code>与 SqlSession 的作用域保持一致</code></p>
-</div><hr></div><div class="recent-post-item article-container"><a class="article-title" href="/2019/09/04/分布式/SpringCloud/分布式并发问题/index.html">分布式环境中的并发问题</a><time class="post-meta__date"><i class="fa fa-calendar" aria-hidden="true"></i> 2019-09-04</time><span class="article-meta"><span class="article-meta__separator">|</span><i class="fa fa-inbox article-meta__icon" aria-hidden="true"></i><a class="article-meta__categories" href="/categories/分布式/index.html">分布式</a></span><div class="content"><p>分布式环境中，处理并发问题没发通过操作系统和 JVM 提供的工具来解决，因为 LOCK 命令、总线锁、缓存所、monitor 对象、锁、等并发工具都无法影响到其他服务器的线程。</p>
-<p>那么在分布式环境中，可以使用一下策略和方式处理：</p>
-<ol>
-<li>避免并发<ol>
-<li>通过某些策略和业务来避免并发，如合理分配时间调度，避开共享资源的存取冲突等。</li>
-<li>可以通过hash算法的方式，使一个对象的数据计算和访问都交给同一个线程来完成</li>
-</ol>
-</li>
-<li>时间戳<ol>
-<li>每次系统A发送给系统B的时候都带上一个时间戳，B在拿到通知后，比较时间戳</li>
-<li>这样只需要调用方保证时间戳的时序有效性即可</li>
-</ol>
-</li>
-<li>串行化<ol>
-<li>串行化可能产生并发的问题，通过牺牲性能和扩展性，来满足对数据一致性的要求。</li>
-<li>比如分布式消息系统，没法保证消息的有序性，但是可以通过将分布式消息系统改为单一消息系统，就可以保证消息的有序性了。</li>
-<li>如果接收方无法保证处理的有序性，那么可以使用一个队列将调用信息缓存起来，再串行地处理这些调用</li>
-</ol>
-</li>
-<li>数据库<ol>
-<li>在分布式环境中，数据库是个服务器的共享点，可以通过数据库的高可靠一致性机制来满足需求。</li>
-<li>比如通过唯一性约束，来解决并发过程中重复数据的生产或重复任务的执行</li>
-<li>某些更新操作也尽量使用SQL来完成，在程序中计算后再更新，可能会出现脏复写的问题，但是通过一条SQL来完成计算和更新，就能通过数据库的锁机制来保证更新的一致性</li>
-</ol>
-</li>
-<li>行锁<ol>
-<li>有些事务较为复杂时，无法通过一条SQL解决问题，并且可能存在并发问题，此时可以考虑使用行锁来解决问题</li>
-<li>如 select … for update ，在查询后将该行数据锁定，直到 commit。但是这么做会导致其他涉及该行的所有操作都会被挂起</li>
-<li>通过在表中增加一个标志锁的字段，每次操作之前通过update，来模拟竞争锁的操作，操作完成后再update复位该标志，表示锁归还。（这种操作很类似Redis分布式锁、MongoDB分布式锁，说白了就是自己定义一个模拟竞争锁的场景）</li>
-</ol>
-</li>
-<li>统一触发途径<ol>
-<li>如果一个数据会被多个业务同时涉及到，就会有并发问题产生的隐患。因此可以通过前期架构和业务涉及，尽量统一触发途径，减少并发的可能，也有利于对并发问题的分析和判断。</li>
-</ol>
-</li>
-</ol>
-<p><a href="https://blog.csdn.net/cutesource/article/details/5791350" target="_blank" rel="noopener">文章总结自 : https://blog.csdn.net/cutesource/article/details/5791350</a></p>
-</div><hr></div><div class="recent-post-item article-container"><a class="article-title" href="/2019/09/04/Interview/20190903上海基诺联生物/index.html">20190903上海基诺联生物科技有限公司</a><time class="post-meta__date"><i class="fa fa-calendar" aria-hidden="true"></i> 2019-09-04</time><span class="article-meta"><span class="article-meta__separator">|</span><i class="fa fa-inbox article-meta__icon" aria-hidden="true"></i><a class="article-meta__categories" href="/categories/面试题/index.html">面试题</a></span><div class="content"><ol>
-<li>公司最新的业务，为什么有两个云平台<ol>
-<li>一个教学平台，一个比赛平台，然后说一些业务</li>
-</ol>
-</li>
-<li>搭建过权限架构，使用的是什么框架？是如何实现Spring Security的？Spring Security 是如何实现权限验证的？<ol>
-<li>Spring Security，引入依赖，配置一个Configure，开启Security Method验证，自定义实现UserDetailsService，扩展UserDetails，加载Authority，默认存入Session中，可以将Session扩展到Redis、MongoDB等地方保存，即可加载出用户信息到 SecurityContext 中。</li>
-<li>通过@PreAuthorize 可以验证之前加载的Authority权限数组。</li>
-</ol>
-</li>
-<li>如果用户保存在Session中，那么权限变更后如何重新加载权限？<ol>
-<li>现在的解决方案：SpringSecurity 是通过 @PreAuthorize 的 SecurityExpressionOperations 实现类，如 hasAuthority()、hasAnyAuthority(…) 来验证的，那么我们只要实现一个 hasCustomAuthority() 改为从Redis、MongoDB等地直接获取用户存储的权限即可。通过使用自定义的接口，扩展Security的验证</li>
-<li>不用担心性能问题，因为我们的Session存储在Redis、MongoDB中，那么程序每次获取Session时，都会从Redis、MongoDB中取。那么自定义接口所修改的，只是从spring_sessions表改为了自己的用户权限表。</li>
-</ol>
-</li>
-<li>JDK版本是多少？1.8 有哪些新特性？说说你对流式编程的理解？如何从List<user>中取出所有的username？<ol>
-<li>jdk8主要增加了对集合类的流式操作，也就是所说的lambda表达式，使我们对集合的遍历等操作更加便利。</li>
-<li>userList.stream().map(val -&gt; val.getUsername()).collect(toList())</li>
-</ol>
-</user></li>
-<li>用过索引没？谈谈索引的作用？谈谈复合索引<ol>
-<li>索引的主要作用是优化查询，在数据库的某一个字段上创建了索引后，对该表的某一个字段查询时，将不再遍历整张表，而是遍历索引树。但是索引不应该创建的过多，如果索引树过于庞大的话，对性能也有很大的影响</li>
-<li>复合索引，就是以一个数组的方式保存多个字段，然后在查询时，依次按照索引的位置从左到右查询</li>
-<li>以下来自于“高性能MySQL”中对索引设计的规范：<ol>
-<li>禁止给每个列都建立索引，单表索引建议不超过5个</li>
-<li>索引定义在SELECT、UPDATE、DELETE语句的WHERE从句中的列</li>
-<li>索引定义在OrderBy、GroupBy、Distinct中的字段</li>
-<li>多表Join的字段</li>
-<li>复合索引，区分度高的放左侧、字段长度小的放左侧、使用最频繁的放左侧</li>
-<li>避免冗余索引和重复索引，MySQL在执行优化时需要选择具体的索引，降低了索引使用效率</li>
-<li>避免使用外键约束，建议在业务端保证数据的参照完整性，因为外键会影响父表和子表的写操作而降低性能</li>
-<li>不建议使用外键约束，但一定要在表与表的关联键上建立索引</li>
-</ol>
-</li>
-</ol>
-</li>
-<li>说一说数据库事务是什么？回滚是在什么情况下发生的(提示)？<ol>
-<li>我只说了数据隔离，然后被提示之后才想到一致性</li>
-<li>数据隔离，比如数据插入时阻塞其他插入操作，数据查询时阻塞其他插入操作等，这些由数据库的事务隔离级别来决定（还好没问我数据库的隔离级别，越简单的越不容易记），避免脏读</li>
-<li>回滚是为了保存数据的一致性，在同一个事务中执行的SQL会保持一致性，只能全部执行成功。如果某一个SQL出现了异常，会导致整个事务回滚到执行之前的状态。</li>
-</ol>
-</li>
-<li>什么是分布式锁？怎么实现分布式锁？<ol>
-<li>分布式锁就是为了解决集群环境时，JVM和锁无法工作的问题。因为多台服务器的线程彼此之间没办法互相加锁，因此需要一些第三方中间件来帮助我们来模拟加锁行为。</li>
-<li>比如Redis、Zookeeper、MongoDB等中间件，我们定义一个标识位，在我们进行一些对数据有要求的插入等操作时，为了避免其他线程同时执行，我们需要在执行之前尝试获取这个标志位，如果获取成功了，那么执行，获取失败则等待、轮询、或者抛出异常。</li>
-</ol>
-</li>
-<li>Redis是如何实现分布式锁的？<ol>
-<li>Redis有一个setNX的语句，是一个CAS操作，会先比较某一个值是否存在，如果不存在才设置，存在则不设置。</li>
-<li>setNX比直接查询再赋值，要原子化，将查询并修改合为一个操作。查询再赋值的操作再怎么快也是有时间间隔的。</li>
-</ol>
-</li>
-<li>Redis有哪些数据结构？(对Redis不太熟悉，带过了)<ol>
-<li>string、hash、list、set、sorted set（后续查的）</li>
-</ol>
-</li>
-<li>公司是如何使用Docker的？Docker是如何创建镜像的？<ol>
-<li>（白话）公司将Nginx、后台的Java Jar、前端编译后的包，都挂载到docker上，并使用容器的方式启动和运行。使用Docker能够保证每次容器运行时的环境都是隔离的。使用方法：在项目根目录下写一个Dockerfile，然后在文件中指定所需的jdk版本、redis等其他中间件服务。（后面这段没回答上来）然后通过 docker build 的方法生成镜像，然后将镜像通过 docker push 的方式推送到远程云上。push之后我就不知道了。这些是从公司的jenkins上学到的。</li>
-</ol>
-</li>
-<li>你有什么要了解的吗？<ol>
-<li>打脸行为：</li>
-<li>问：技术栈听贴合的，那么公司用的什么ORM框架呢？答：Mybatis，你用的是JPA？</li>
-<li>就这吧，嘟嘟嘟……</li>
-</ol>
-</li>
-</ol>
-</div><hr></div><div class="recent-post-item article-container"><a class="article-title" href="/2019/08/19/leetcode/第一章-初级算法/数组/12寻找数组的中心索引/index.html">无题</a><time class="post-meta__date"><i class="fa fa-calendar" aria-hidden="true"></i> 2019-08-19</time><div class="content"><pre><code class="java">/**
- * 寻找数组的中心索引
- * 给定一个整数类型的数组 nums，请编写一个能够返回数组“中心索引”的方法。
- * &lt;p&gt;
- * 我们是这样定义数组中心索引的：数组中心索引的左侧所有元素相加的和等于右侧所有元素相加的和。
- * &lt;p&gt;
- * 如果数组不存在中心索引，那么我们应该返回 -1。如果数组有多个中心索引，那么我们应该返回最靠近左边的那一个。
- * &lt;p&gt;
- * 示例 1:
- * &lt;p&gt;
- * 输入:
- * nums = [1, 7, 3, 6, 5, 6]
- * 输出: 3
- * 解释:
- * 索引3 (nums[3] = 6) 的左侧数之和(1 + 7 + 3 = 11)，与右侧数之和(5 + 6 = 11)相等。
- * 同时, 3 也是第一个符合要求的中心索引。
- * 示例 2:
- * &lt;p&gt;
- * 输入:
- * nums = [1, 2, 3]
- * 输出: -1
- * 解释:
- * 数组中不存在满足此条件的中心索引。
- * 说明:
- * &lt;p&gt;
- * nums 的长度范围为 [0, 10000]。
- * 任何一个 nums[i] 将会是一个范围在 [-1000, 1000]的整数。
- */
-public class Solution {
+} </script></head><body><i class="fa fa-arrow-right" id="toggle-sidebar" aria-hidden="true"></i><div id="sidebar" data-display="false"><div class="author-info"><div class="author-info__avatar text-center"><img src="/img/avatar.png"></div><div class="author-info__name text-center">koral</div><div class="author-info__description text-center">描述</div><hr><div class="author-info-articles"><a class="author-info-articles__archives article-meta" href="/archives/index.html"><span class="pull-left">文章</span><span class="pull-right">207</span></a><a class="author-info-articles__tags article-meta" href="/tags/index.html"><span class="pull-left">标签</span><span class="pull-right">25</span></a><a class="author-info-articles__categories article-meta" href="/categories/index.html"><span class="pull-left">分类</span><span class="pull-right">28</span></a></div></div></div><nav class="no-bg" id="nav"><div id="page-header"><span class="pull-left"> <a id="site-name" href="/index.html">凯</a></span><i class="fa fa-bars toggle-menu pull-right" aria-hidden="true"></i><span class="pull-right menus">   <a class="site-page" href="/">首页</a><a class="site-page" href="/archives/index.html">归档</a><a class="site-page" href="/tags/index.html">标签</a><a class="site-page" href="/categories/index.html">分类</a><a class="site-page" href="/about/index.html">关于我</a></span><span class="pull-right"></span></div><div id="site-info"><div id="site-title">凯</div><div id="site-sub-title">凯</div></div></nav><div id="content-outer"><div class="layout" id="content-inner"><div class="recent-post-item article-container"><a class="article-title" href="/2019/05/26/读书笔记/《React》简书慕课/0.目录/index.html">《React》网课笔记</a><span class="article-meta"><i class="fa fa-thumb-tack article-meta__icon sticky"></i><span class="sticky">置顶</span><span class="article-meta__separator" style="margin-right: 0.3rem">|</span></span><time class="post-meta__date"><i class="fa fa-calendar" aria-hidden="true"></i> 2019-05-26</time><span class="article-meta"><span class="article-meta__separator">|</span><i class="fa fa-inbox article-meta__icon" aria-hidden="true"></i><a class="article-meta__categories" href="/categories/读书笔记/index.html">读书笔记</a><i class="fa fa-angle-right" aria-hidden="true"></i><i class="fa fa-inbox article-meta__icon" aria-hidden="true"></i><a class="article-meta__categories" href="/categories/读书笔记/React慕课/index.html">React慕课</a></span><span class="article-meta tags"><span class="article-meta__separator">|</span><i class="fa fa-tag article-meta__icon" aria-hidden="true"></i><a class="article-meta__tags" href="/tags/React慕课/index.html">React慕课</a></span><div class="content"><p><img src="https://i.loli.net/2019/09/26/RUlB9viqn3YbtSo.png" alt="慕课网 - 简书项目"></p></div><a class="more" href="/2019/05/26/读书笔记/《React》简书慕课/0.目录/index.html#more">阅读更多</a><hr></div><div class="recent-post-item article-container"><a class="article-title" href="/2019/05/13/读书笔记/《React》简书慕课/7.完整配置/index.html">完整React配置</a><time class="post-meta__date"><i class="fa fa-calendar" aria-hidden="true"></i> 2019-05-13</time><span class="article-meta"><span class="article-meta__separator">|</span><i class="fa fa-inbox article-meta__icon" aria-hidden="true"></i><a class="article-meta__categories" href="/categories/读书笔记/index.html">读书笔记</a><i class="fa fa-angle-right" aria-hidden="true"></i><i class="fa fa-inbox article-meta__icon" aria-hidden="true"></i><a class="article-meta__categories" href="/categories/读书笔记/React慕课/index.html">React慕课</a></span><span class="article-meta tags"><span class="article-meta__separator">|</span><i class="fa fa-tag article-meta__icon" aria-hidden="true"></i><a class="article-meta__tags" href="/tags/hide/index.html">hide</a><span class="article-meta__link">-</span><i class="fa fa-tag article-meta__icon" aria-hidden="true"></i><a class="article-meta__tags" href="/tags/React慕课/index.html">React慕课</a></span><div class="content"><h1 id="React-入门"><a href="#React-入门" class="headerlink" title="React 入门"></a>React 入门</h1><h2 id="一、初始化项目结构"><a href="#一、初始化项目结构" class="headerlink" title="一、初始化项目结构"></a>一、初始化项目结构</h2><h3 id="1-创建-ReactApp"><a href="#1-创建-ReactApp" class="headerlink" title="1. 创建 ReactApp"></a>1. 创建 ReactApp</h3><blockquote>
+<p>create-react-app leetcode</p>
+</blockquote>
+<h3 id="2-引入其他可能用到的依赖"><a href="#2-引入其他可能用到的依赖" class="headerlink" title="2. 引入其他可能用到的依赖"></a>2. 引入其他可能用到的依赖</h3><blockquote>
+<p>yarn add antd // Ant Design 设计库<br>yarn add redux // Redux 数据层框架<br>yarn add react-redux // React-Redux React 更加方便集成 Redux<br>yarn add redux-thunk // Redux-Thunk 异步 Action<br>yarn add axios // Axios Http 请求工具<br>yarn add react-router-dom // ReactRouterDom 路由工具<br>yarn add immutable // Immutable 封装工具，将 store 封装起来<br>yarn add redux-immutable // ReactImmutable 子组件封装工具，将 store 的子 reducer 封装起来<br>yarn add styled-components // StyledComponents 使用 JS 编写 CSS 样式<br>yarn add react-loadable // 异步加载组件</p>
+</blockquote>
+<h3 id="3-创建-Redux-中的-Store，并使用-Redux-DevelopTools"><a href="#3-创建-Redux-中的-Store，并使用-Redux-DevelopTools" class="headerlink" title="3. 创建 Redux 中的 Store，并使用 Redux-DevelopTools"></a>3. 创建 Redux 中的 Store，并使用 Redux-DevelopTools</h3><h4 id="3-1-在-src-目录下，创建-store-reducer-js"><a href="#3-1-在-src-目录下，创建-store-reducer-js" class="headerlink" title="3.1 在 src 目录下，创建 store/reducer.js"></a>3.1 在 src 目录下，创建 store/reducer.js</h4><p>defaultState 为默认的 state，此文件导出一个函数，state 为 store 中存储的内容，action 为视图层发出的事件。</p>
+<blockquote>
+<p>需要先引入 redux。</p>
+</blockquote>
+<pre><code class="js">const defaultState = {};
 
-    public static void main(String[] args) {
-        int[] nums = {1, 7, 3, 6, 5, 6};
-        final int i = pivotIndex(nums);
-        System.out.println(i);
-    }
+export default (state = defaultState, action) =&gt; {
+  return state;
+};</code></pre>
+<p>官方定义：Action 是把数据从应用（译者注：这里之所以不叫 view 是因为这些数据有可能是服务器响应，用户输入或其它非 view 的数据 ）传到 store 的有效载荷。<br>其格式大致为：</p>
+<pre><code class="js">const action = {
+  type: &quot;ADD_TODO&quot;,
+  value: &quot;xxx&quot;
+};
+dispatch(action);</code></pre>
+<p>通过 dispatch 发送至 store，再由具体的 reducer 对 action 进行处理，将修改之后的 state 返回给 store，由 store 自己更新 state。</p>
+<h4 id="3-2-在-src-目录下，创建-store-index-js"><a href="#3-2-在-src-目录下，创建-store-index-js" class="headerlink" title="3.2 在 src 目录下，创建 store/index.js"></a>3.2 在 src 目录下，创建 store/index.js</h4><p>Store 就是把它们联系到一起的对象。Store 有以下职责：</p>
+<ul>
+<li>维持应用的 state；</li>
+<li>提供 getState() 方法获取 state；</li>
+<li>提供 dispatch(action) 方法更新 state；</li>
+<li>通过 subscribe(listener) 注册监听器;</li>
+<li>通过 subscribe(listener) 返回的函数注销监听器。</li>
+</ul>
+<pre><code class="js">import { createStore } from &quot;redux&quot;;
+import reducer from &quot;./reducer&quot;;
 
-    /**
-     * 解题思路：先求出数组综合，然后遍历数组，左侧和不断相加，右侧和是总和减去左侧及当前元素。
-     * 当左右侧和相同时，返回当前下标。否则返回-1
-     */
-    private static int pivotIndex(int[] nums) {
-        if (nums.length == 0)
-            return -1;
-        int sum = 0, leftSum = 0;
-        for (int num : nums) {
-            sum += num;
+const store = createStore(
+  reducer,
+  window.__REDUX_DEVTOOLS_EXTENSION__ &amp;&amp; window.__REDUX_DEVTOOLS_EXTENSION__()
+);
+
+export default store;</code></pre>
+<blockquote>
+<p>注：<code>window.__REDUX_DEVTOOLS_EXTENSION__ &amp;&amp; window.__REDUX_DEVTOOLS_EXTENSION__()</code> 为开启 Redux_Devtools<br>在使用其他中间件时，需要引入 applyMiddleware,下面会有 <a href="xxx">示例</a>。</p>
+</blockquote>
+<h4 id="3-3-测试-store-是否可用"><a href="#3-3-测试-store-是否可用" class="headerlink" title="3.3 测试 store 是否可用"></a>3.3 测试 store 是否可用</h4><p>第一步：在 reducer 的 defaultState 中加入一个属性 value</p>
+<pre><code class="js">const defaultState = {
+  value: &quot;Hello World!&quot;
+};</code></pre>
+<p>第二步：在任意组件引入 store/index.js，并获取到该 value 值。这里以 src/App.js 为例：</p>
+<pre><code class="js">import React from &quot;react&quot;;
+import &quot;./App.css&quot;;
+import store from &quot;./store&quot;;
+
+function App() {
+  return &lt;div className=&quot;App&quot;&gt;{store.getState().value}&lt;/div&gt;;
+}
+
+export default App;</code></pre>
+<p>第三步：启动项目，访问首页即可看到 value 值。</p>
+<h3 id="4-使用-Immutable-封装-state"><a href="#4-使用-Immutable-封装-state" class="headerlink" title="4. 使用 Immutable 封装 state"></a>4. 使用 Immutable 封装 state</h3><p>immutable 是 facebook 开源的一个项目，用于实现 js 中的数据不可变，解决引用带来的副作用。</p>
+<p>非常类似 Java 中的封装特性，即将属性私有化，提供公有方法访问私有变量。</p>
+<blockquote>
+<p>需要先引入 immutable</p>
+</blockquote>
+<p>修改之前的 src/store/reducer.js，将 defaultState 使用 immutable 提供的 fromJS 方法进行封装。</p>
+<pre><code class="js">import { fromJS } from &quot;immutable&quot;;
+
+const defaultState = fromJS({
+  value: &quot;Hello World!&quot;
+});
+
+export default (state = defaultState, action) =&gt; {
+  return state;
+};</code></pre>
+<p>完成之后，也需要在调用 store.getState().value 的地方，将其改为 store.getState().get(‘value’)。如上面的 src/App.js：</p>
+<pre><code class="js">function App() {
+  return &lt;div className=&quot;App&quot;&gt;{store.getState().get(&quot;value&quot;)}&lt;/div&gt;;
+}</code></pre>
+<h3 id="5-拆分-reducer，各组件分别管理各自的-reducer"><a href="#5-拆分-reducer，各组件分别管理各自的-reducer" class="headerlink" title="5. 拆分 reducer，各组件分别管理各自的 reducer"></a>5. 拆分 reducer，各组件分别管理各自的 reducer</h3><blockquote>
+<p>需要依赖 redux-immutable</p>
+</blockquote>
+<p>使用 redux 自身的 combineReducers 也可以做到管理子 reducer，如下：</p>
+<pre><code class="js">import { combineReducers } from &quot;redux&quot;;
+import { reducer as premiumReducer } from &quot;../premium/store&quot;;
+
+const reducer = combineReducers({
+  premium: premiumReducer
+});
+
+export default reducer;</code></pre>
+<p>但是 combineReducers 只能处理普通的 JS 对象，而 Store 中的所有属性已经被 Immutable 封装，此时我们要想使用子 reducer 中的属性时，需要这样写 <code>store.getState().premium.get(&#39;value&#39;)</code> 的方式获取数据。</p>
+<p>显然，premium 依然可以存在被修改的副作用。</p>
+<p>因此，我们只需要将 combineReducers 改为从 <code>redux-immutable</code> 中导入即可。</p>
+<pre><code class="js">import { combineReducers } from &quot;redux-immutable&quot;;
+import { reducer as premiumReducer } from &quot;../premium/store&quot;;
+
+const reducer = combineReducers({
+  premium: premiumReducer
+});
+
+export default reducer;</code></pre>
+<p>获取数据的方式也会变为：<code>store.getState().getIn([&#39;premium&#39;,&#39;value&#39;])</code></p>
+<h3 id="6-增加-Router-路由功能"><a href="#6-增加-Router-路由功能" class="headerlink" title="6. 增加 Router 路由功能"></a>6. 增加 Router 路由功能</h3><blockquote>
+<p>需要依赖 react-router-dom</p>
+</blockquote>
+<p>第一步：创建另一个组件 src/premium/index.js</p>
+<pre><code class="js">import React from &quot;react&quot;;
+
+function Premium() {
+  return &lt;div&gt;Premium page&lt;/div&gt;;
+}
+
+export default Premium;</code></pre>
+<p>第二步：修改 App.js，将其改为 Router.js</p>
+<p>定义两个路由， ‘/‘ 直接返回一个 Div dom；’/premium’ 返回刚刚创建的组件。</p>
+<pre><code class="js">import React from &quot;react&quot;;
+import { BrowserRouter, Route } from &quot;react-router-dom&quot;;
+import Premium from &quot;./premium&quot;;
+
+function Router() {
+  return (
+    &lt;div&gt;
+      &lt;BrowserRouter&gt;
+        &lt;Route path=&quot;/&quot; exact render={() =&gt; &lt;div&gt;Home Page&lt;/div&gt;} /&gt;
+        &lt;Route path=&quot;/premium&quot; exact component={Premium} /&gt;
+      &lt;/BrowserRouter&gt;
+    &lt;/div&gt;
+  );
+}
+
+export default Router;</code></pre>
+<p>同时，src/index.js 也需要将 App 组件名换成 Router。</p>
+<p>第三步：测试路由功能是否有效</p>
+<p>启动项目，分别访问 <code>localhost:3000</code> 和 <code>localhost:3000/premium</code> 即可。</p>
+<h3 id="7-使用-React-Redux-控制-Store"><a href="#7-使用-React-Redux-控制-Store" class="headerlink" title="7. 使用 React-Redux 控制 Store"></a>7. 使用 React-Redux 控制 Store</h3><p>通过 React-Redux 提供的 <code>&lt;Provider store&gt;</code> 标签，使 Provider 内的任何组件，都能够有权利使用 store 中的数据。</p>
+<p>前提是组件需要先通过 connect 进行连接。</p>
+<blockquote>
+<p>需要依赖 react-redux</p>
+</blockquote>
+<h4 id="7-1-修改-Router-js-原-App-js"><a href="#7-1-修改-Router-js-原-App-js" class="headerlink" title="7.1 修改 Router.js (原 App.js)"></a>7.1 修改 Router.js (原 App.js)</h4><p>将需要用到 store 存储的组件，放在 Provider 标签内。并指定所使用的 store</p>
+<pre><code class="js">import React from &quot;react&quot;;
+import { BrowserRouter, Route } from &quot;react-router-dom&quot;;
+import Premium from &quot;./premium&quot;;
+import { Provider } from &quot;react-redux&quot;;
+import store from &quot;./store&quot;;
+
+function Router() {
+  return (
+    &lt;Provider store={store}&gt;
+      &lt;BrowserRouter&gt;
+        &lt;Route path=&quot;/&quot; exact render={() =&gt; &lt;div&gt;Home Page&lt;/div&gt;} /&gt;
+        &lt;Route path=&quot;/premium&quot; exact component={Premium} /&gt;
+      &lt;/BrowserRouter&gt;
+    &lt;/Provider&gt;
+  );
+}
+
+export default Router;</code></pre>
+<h4 id="7-2-修改-premium-index-js"><a href="#7-2-修改-premium-index-js" class="headerlink" title="7.2 修改 premium/index.js"></a>7.2 修改 premium/index.js</h4><p>Premium 组件，使用 connect 进行连接。</p>
+<pre><code class="js">import React from &quot;react&quot;;
+import { connect } from &quot;react-redux&quot;;
+
+function Premium(props) {
+  const { value } = props;
+  return &lt;div&gt;{value}&lt;/div&gt;;
+}
+
+const mapStateToProps = state =&gt; ({
+  value: state.getIn([&quot;premium&quot;, &quot;value&quot;])
+});
+
+const mapDispatchToProps = dispatch =&gt; ({});
+
+export default connect(mapStateToProps, mapDispatchToProps)(Premium);</code></pre>
+<h4 id="7-3-connect-mapState-mapDispatch-module"><a href="#7-3-connect-mapState-mapDispatch-module" class="headerlink" title="7.3 connect(mapState,mapDispatch)(module)"></a>7.3 connect(mapState,mapDispatch)(module)</h4><p>mapStateToProps 函数，接收一个 state，即 store 中存储的 state，返回一个对象。该对象即组件的 props。<br>所以可以理解为，mapStateToProps 将 store 中的数据存入 this.props 中。</p>
+<p>mapDispatchToProps 函数，接收一个 dispatch，用来派发 action 给 store。由 reducer 接收并处理 action。</p>
+<p>module 即需要进行连接的组件。</p>
+<h3 id="8-测试-State-与-Action"><a href="#8-测试-State-与-Action" class="headerlink" title="8. 测试 State 与 Action"></a>8. 测试 State 与 Action</h3><p>一个简单的测试，使用一个 input，值为 store 中的 value，当 input 修改时，发送 action 修改 store 中的 value，与此同时更改 input 的 value。</p>
+<p>依旧使用 /premium/store/reducer 中的 value 作为测试数据。</p>
+<h4 id="8-1-修改-premium-index-js"><a href="#8-1-修改-premium-index-js" class="headerlink" title="8.1 修改 premium/index.js"></a>8.1 修改 premium/index.js</h4><pre><code class="js">import React from &quot;react&quot;;
+import { connect } from &quot;react-redux&quot;;
+
+function Premium(props) {
+  const { value, changeInputValue } = props;
+  return (
+    &lt;div&gt;
+      &lt;input value={value} onChange={changeInputValue} /&gt;
+    &lt;/div&gt;
+  );
+}
+
+const mapStateToProps = state =&gt; ({
+  value: state.getIn([&quot;premium&quot;, &quot;value&quot;])
+});
+
+const mapDispatchToProps = dispatch =&gt; ({
+  changeInputValue(e) {
+    const value = e.target.value;
+    const action = {
+      type: &quot;CHANGE_INPUT_VALUE&quot;,
+      value: value
+    };
+    dispatch(action);
+  }
+});
+
+export default connect(mapStateToProps, mapDispatchToProps)(Premium);</code></pre>
+<h4 id="8-2-修改-premium-store-reducer-js"><a href="#8-2-修改-premium-store-reducer-js" class="headerlink" title="8.2 修改 premium/store/reducer.js"></a>8.2 修改 premium/store/reducer.js</h4><p>reducer.js 接收 action，并进行处理，修改 store 中存储的 state 属性。</p>
+<pre><code class="js">import { fromJS } from &quot;immutable&quot;;
+
+const defaultState = fromJS({
+  value: &quot;Hello World!&quot;
+});
+
+export default (state = defaultState, action) =&gt; {
+  switch (action.type) {
+    case &quot;CHANGE_INPUT_VALUE&quot;:
+      return state.set(&quot;value&quot;, action.value);
+    default:
+      return state;
+  }
+};</code></pre>
+<h4 id="8-3-测试"><a href="#8-3-测试" class="headerlink" title="8.3 测试"></a>8.3 测试</h4><p>启动项目，并打开 Redux DevTools 控制台，更改 input 内容，观察 state 中的数据变动。</p>
+<p><img src="https://koral-home.oss-cn-beijing.aliyuncs.com/blog/ReduxDevTools.png" alt="Redux DevTools"></p>
+<h3 id="9-Redux-Thunk-异步加载数据"><a href="#9-Redux-Thunk-异步加载数据" class="headerlink" title="9. Redux-Thunk 异步加载数据"></a>9. Redux-Thunk 异步加载数据</h3><p>当某一时刻触发的事件，需要从后端接口请求数据渲染页面时。可以通过 Redux-Thunk 使 Action 支持异步函数(原 Action 只是返回一个带 type 属性的对象)。</p>
+<blockquote>
+<p>需要依赖 redux-thunk</p>
+</blockquote>
+<h4 id="9-1-添加-Redux-Thunk-中间件"><a href="#9-1-添加-Redux-Thunk-中间件" class="headerlink" title="9.1 添加 Redux-Thunk 中间件"></a>9.1 添加 Redux-Thunk 中间件</h4><p>在 Redux 的 Store 创建时，引入 thunk 中间件，并使用它。</p>
+<p>配置方法来源于 <a href="https://github.com/zalmoxisus/redux-devtools-extension#12-advanced-store-setup" target="_blank" rel="noopener">github：redux-devtools-extension</a></p>
+<pre><code class="js">import { createStore, applyMiddleware, compose } from &quot;redux&quot;;
+import reducer from &quot;./reducer&quot;;
+import thunk from &quot;redux-thunk&quot;;
+
+const composeEnhancers = window.__REDUX_DEVTOOLS_EXTENSION_COMPOSE__ || compose;
+
+const store = createStore(reducer, composeEnhancers(applyMiddleware(thunk)));
+
+export default store;</code></pre>
+<h4 id="9-2-Mock-数据-public-api-list-json"><a href="#9-2-Mock-数据-public-api-list-json" class="headerlink" title="9.2 Mock 数据 /public/api/list.json"></a>9.2 Mock 数据 /public/api/list.json</h4><p>在 src 同级的 public 目录下创建文件 <code>/public/api/list.json</code>：</p>
+<p>如果能使用后端语言直接返回也可以</p>
+<pre><code class="js">{
+    &quot;success&quot;:true,
+    &quot;data&quot;: [&quot;张三&quot;,&quot;李四&quot;,&quot;王五&quot;,&quot;刘六&quot;]
+}</code></pre>
+<h4 id="9-3-修改-premium-index-js，发送-ajax-请求，获取-list-json"><a href="#9-3-修改-premium-index-js，发送-ajax-请求，获取-list-json" class="headerlink" title="9.3 修改 premium/index.js，发送 ajax 请求，获取 list.json"></a>9.3 修改 premium/index.js，发送 ajax 请求，获取 list.json</h4><blockquote>
+<p>需要依赖 axios</p>
+</blockquote>
+<p>点击 <code>获取数据</code> 的按钮时，触发事件 getList。获取 ajax 请求，并生成一个 action 发送给 store，替换 reducer 中的 list。</p>
+<pre><code class="js">import React from &#39;react&#39;;
+import { connect } from &#39;react-redux&#39;;
+import axios from &#39;axios&#39;;
+import { fromJS } from &#39;immutable&#39;;
+
+function Premium(props) {
+    const { list, getList } = props;
+    return (
+            &lt;button onClick={getList}&gt;获取数据&lt;/button&gt;
+            &lt;br/&gt;
+            {
+                list &amp;&amp; list.map((item) =&gt; (&lt;div key={item}&gt;{item}&lt;/div&gt;))
+            }
+        &lt;/div&gt;
+    );
+}
+
+const mapStateToProps = (state) =&gt; ({
+    list: state.getIn([&#39;premium&#39;,&#39;list&#39;])
+});
+
+const mapDispatchToProps = (dispatch) =&gt; ({
+    getList() {
+        const action = () =&gt; {
+            axios.get(&#39;/api/list.json&#39;).then(res =&gt; {
+                const list = res.data.data;
+                const action2 = {
+                    type: &#39;UPDATE_LIST&#39;,
+                    // 注意这里：因为store中的数据是Immutable类型的，所以其属性也应该是Immutable类型的
+                    list: fromJS(list)
+                };
+                dispatch(action2);
+            }).catch(err =&gt; {
+                console.log(err);
+            })
         }
-        for (int i = 0; i &lt; nums.length; i++) {
-            if (leftSum == sum - leftSum - nums[i])
-                return i;
-            leftSum += nums[i];
-        }
-        return -1;
+        dispatch(action);
     }
-}</code></pre>
-</div><hr></div><div class="recent-post-item article-container"><a class="article-title" href="/2019/08/05/读书笔记/《Jenkins》实战笔记/jenkins-springboot/index.html">Jenkins 从零到有部署一个Java项目</a><time class="post-meta__date"><i class="fa fa-calendar" aria-hidden="true"></i> 2019-08-05</time><span class="article-meta"><span class="article-meta__separator">|</span><i class="fa fa-inbox article-meta__icon" aria-hidden="true"></i><a class="article-meta__categories" href="/categories/读书笔记/index.html">读书笔记</a><i class="fa fa-angle-right" aria-hidden="true"></i><i class="fa fa-inbox article-meta__icon" aria-hidden="true"></i><a class="article-meta__categories" href="/categories/读书笔记/Jenkins部署/index.html">Jenkins部署</a></span><span class="article-meta tags"><span class="article-meta__separator">|</span><i class="fa fa-tag article-meta__icon" aria-hidden="true"></i><a class="article-meta__tags" href="/tags/Jenkins部署/index.html">Jenkins部署</a></span><div class="content"><h1 id="Docker-Nginx-Jenkins-部署-SpringBoot-Jar"><a href="#Docker-Nginx-Jenkins-部署-SpringBoot-Jar" class="headerlink" title="Docker + Nginx + Jenkins 部署 SpringBoot Jar"></a>Docker + Nginx + Jenkins 部署 SpringBoot Jar</h1><p>本文能解决的问题：</p>
-<ol>
-<li>如何使用Docker 部署Jenkins</li>
-<li>Jenkins 会重写url(使用三级域名)</li>
-<li>nginx 配置 jenkins、前端、后端</li>
-<li>部署 Maven 子项目(单 maven 项目更简单，我相信你们能举一反三)</li>
-</ol>
-<h2 id="一、docker-compose"><a href="#一、docker-compose" class="headerlink" title="一、docker-compose"></a>一、docker-compose</h2><p>编写 docker-compose，连接 nginx 与 jenkins。</p>
+});
+
+export default connect(mapStateToProps, mapDispatchToProps)(Premium);</code></pre>
 <blockquote>
-<p>如果不是使用 Docker 做容器管理，此步可忽略。直接启动 Nginx 与 Jenkins 即可。</p>
+<p>因为前面配置了 Redux-Thunk 中间件，所以 action 能够直接返回一个函数，并且在 dispatch 时自动执行。</p>
 </blockquote>
-<pre><code class="sh">version: &#39;3&#39;
+<h4 id="9-4-premium-store-reducer-支持-UPDATE-LIST-的-Action"><a href="#9-4-premium-store-reducer-支持-UPDATE-LIST-的-Action" class="headerlink" title="9.4 premium/store/reducer 支持 UPDATE_LIST 的 Action"></a>9.4 premium/store/reducer 支持 UPDATE_LIST 的 Action</h4><p>reducer 接收 action，并将值设置到 state 中。</p>
+<pre><code class="js">const defaultState = fromJS({
+  list: []
+});
 
-services:
-  jenkins:
-    container_name: &#39;jenkins.ci&#39;
-    image: &#39;jenkins/jenkins:lts&#39;
-    #ports:  不对外暴露端口，直接使用nginx容器转到8080
-      #- &#39;8080:8080&#39;
-      #- &#39;50000:50000&#39;
-    volumes:
-      - &#39;/home/docker-images/jenkins/var/jenkins_home:/var/jenkins_home&#39;
-      - &#39;/home/docker-images/jenkins/html:/usr/share/jenkins/html&#39; #挂载编译打包后的存放路径
-  nginx:
-    container_name: &#39;nginx&#39;
-    depends_on:
-      - jenkins
-    image: nginx:alpine
-    volumes:
-      - &#39;/home/luokaiii/backstage_page/html:/usr/www/luokaiii/cn/html&#39;
-      - &#39;/home/docker-images/nginx/conf:/etc/nginx/conf.d&#39;
-      - &#39;/home/docker-images/nginx/cert:/etc/nginx/cert&#39;
-    ports:
-      - 80:80 # 对外统一使用80端口
-      - 443:443
-    restart: always
-</code></pre>
-<h2 id="二、nginx-conf"><a href="#二、nginx-conf" class="headerlink" title="二、nginx.conf"></a>二、nginx.conf</h2><pre><code class="sh">upstream apisupport {
-    # 自己部署的后端服务，因为是在容器访问外部服务，所以需要使用内网IP
-    # 第二种方法是在 docker-compose 中将 jar 作为一个 service 连接
-    server xxx.xx.xx.xxx:9000;
-}
-# 这里用到了 docker-compose 中的容器，如果没用docker，直接写localhost就可以了。
-upstream dk-jenkins {
-    server jenkins:8080;
-}
-server {
-    listen 80 default_server;
-    listen [::]:80 default_server;
-    server_name www.luokaiii.cn;
-    return    301 https://$server_name$request_uri; 
-}
-server {
-    listen 80;
-    # 我用了一个 三级域名来处理Jenkins的请求，因为 jenkins 会从根目录查找静态资源和发送请求，总是会重写url。
-    server_name jenkins.luokaiii.cn;
-    location / {
-        proxy_pass http://dk-jenkins/;
-    }
-}
-# 如果没有 https 证书，直接将 ssl 以下的部分写在 80 里就行了
-server { 
-    listen 443 ssl; 
-    server_name www.luokaiii.cn luokaiii.cn; 
-
-    # ssl config
-    ssl on;   #设置为on启用SSL功能。
-    ssl_certificate cert/2292046_www.luokaiii.cn.pem;
-    ssl_certificate_key cert/2292046_www.luokaiii.cn.key;
-    ssl_session_timeout 5m;
-    ssl_ciphers ECDHE-RSA-AES128-GCM-SHA256:ECDHE:ECDH:AES:HIGH:!NULL:!aNULL:!MD5:!ADH:!RC4;
-    ssl_protocols TLSv1 TLSv1.1 TLSv1.2;
-    ssl_prefer_server_ciphers on; 
-
-    # 压缩请求，这样服务返回会快一些，毕竟国内带宽很贵的
-    gzip on;
-    gzip_min_length 1k;
-    gzip_comp_level 9;
-    gzip_types text/plain application/javascript application/x-javascript text/css application/xml text/javascript application/x-httpd-php image/jpeg image/gif image/png;
-    gzip_vary on;
-    gzip_disable &quot;MSIE [1-6]\.&quot;;
-
-    # 静态资源代理，在Jenkins部署前端项目的文章中，就是把前端静态文件部署在该目录下，直接由nginx代理即可。
-    root /usr/www/luokaiii/cn/html;
-
-    location / {
-        try_files $uri $uri/ /index.html;
-    }
-
-    # 请求转发，将 /api/ 请求转发到 jar 服务上
-    location /api/ {
-        proxy_pass http://apisupport/;
-        proxy_redirect  http://api/support/ https://www.luokaiii.cn/api/;
-        proxy_set_header X-Forwarded-For $proxy_add_x_forwarded_for;
-        proxy_set_header Host  $host;
-        proxy_set_header X-Real_IP  $remote_addr;
-        proxy_set_header REMOTE-HOST $remote_addr;
-        proxy_set_header X-Nginx-Proxy true;
-        proxy_connect_timeout 300;
-        proxy_send_timeout 300;
-        proxy_read_timeout 600;
-        proxy_buffer_size 256k;
-        proxy_buffers 4 256k;
-        proxy_busy_buffers_size 256k;
-        proxy_temp_file_write_size 256k;
-        proxy_next_upstream error timeout invalid_header http_500 http_502 http_503 http_504 http_404;
-        proxy_max_temp_file_size 128m;
-        proxy_http_version 1.1;
-        #proxy_cache mycache;
-        #proxy_cache_valid 200 302 1h;
-        #proxy_cache_valid 301 1h;
-        #proxy_cache_valid any 1m;
-    }
-}</code></pre>
-<blockquote>
-<p>这里使用了一个三级域名来代理 Jenkins，因为 Jenkins 总是会从根目录查找静态资源，以及发送请求。如果是 <a href="http://www.luokaiii.cn/jenkins/" target="_blank" rel="noopener">www.luokaiii.cn/jenkins/</a> 的话总是会被重写为 <a href="http://www.luokaiii.cn，所以直接用三级域名，让它从根目录找好了。" target="_blank" rel="noopener">www.luokaiii.cn，所以直接用三级域名，让它从根目录找好了。</a></p>
-<p>如果有知道如何代理的大佬也可以告诉我，虚心请教，谢谢。</p>
-</blockquote>
-<h2 id="三、SpringBoot-项目"><a href="#三、SpringBoot-项目" class="headerlink" title="三、SpringBoot 项目"></a>三、SpringBoot 项目</h2><p>这里项目以我自己写的 Demo <a href="https://github.com/luokaiii/luokaiii.api" target="_blank" rel="noopener"><a href="https://github.com/luokaiii/luokaiii.api" target="_blank" rel="noopener">https://github.com/luokaiii/luokaiii.api</a></a> 为例，一个 Maven 多级项目，我们只部署其中的 admin-server 模块。</p>
-<p>具体的项目是怎么写的就不说了，大致是：打开idea  &gt; 新建 Spring Initializr &gt; 选择maven &gt; 在 Application 中写一个 GetMapping &gt; OK</p>
-<h2 id="四、进入正题"><a href="#四、进入正题" class="headerlink" title="四、进入正题"></a>四、进入正题</h2><p>打开Jenkins，并新建一个 Freestyle（即自由风格的软件项目）。</p>
-<p>除了上一节 <a href="https://www.jianshu.com/p/e34674f34242" target="_blank" rel="noopener">Jenkins部署前端React项目</a> 中所需的依赖之外，这里还需要 <code>Maven Integration</code> 依赖。</p>
-<h3 id="1-项目描述（随便写）"><a href="#1-项目描述（随便写）" class="headerlink" title="1. 项目描述（随便写）"></a>1. 项目描述（随便写）</h3><p><img src="https://i.loli.net/2019/08/06/3AErybK1UaCoXgv.png" alt="UTOOLS1565082361195.png"></p>
-<h3 id="2-源码管理"><a href="#2-源码管理" class="headerlink" title="2. 源码管理"></a>2. 源码管理</h3><p>刚创建的用户，Credentials 可能为空，创建一个 username+password(一般是你的git账号密码)就行，(如果觉得不安全，可以使用SSH的方式，自己百度)。</p>
-<p><img src="C:%5CUsers%5Cuser%5CAppData%5CRoaming%5CTypora%5Ctypora-user-images%5C1565082401841.png" alt="1565082401841"></p>
-<blockquote>
-<p>这里分支使用的是 <code>develop</code>，原因：在 Git Flow 中，develop 为开发分支(这里用来做测试服务器的分支)，master 为主分支(即正式服务器的分支)。</p>
-<p>因人而异，你想用 master 也行，反正不是我的项目，哈哈。</p>
-</blockquote>
-<h3 id="3-构建（jenkins与测试服务器在同一台服务器上）"><a href="#3-构建（jenkins与测试服务器在同一台服务器上）" class="headerlink" title="3. 构建（jenkins与测试服务器在同一台服务器上）"></a>3. 构建（jenkins与测试服务器在同一台服务器上）</h3><p>如果你的 jenkins 部署在测试服务器上，那么直接将打包后的 jar 文件移动至指定目录即可。</p>
-<ol>
-<li>调用顶层 Maven 目标，使用maven 打包项目<ol>
-<li>因为打包的是子项目，所以使用 -pl 参数指定需要打包的子项目，通过 -am 参数开启依赖项目的构建</li>
-<li>-Dmaven.test.skip=true 跳过测试(一般对单元测试有严格要求的都不应该跳过此步骤)</li>
+export default (state = defaultState, action) =&gt; {
+  switch (action.type) {
+    case &quot;UPDATE_LIST&quot;:
+      return state.set(&quot;list&quot;, action.list);
+    default:
+      return state;
+  }
+};</code></pre>
+<h4 id="9-5-测试-ajax-异步获取数据"><a href="#9-5-测试-ajax-异步获取数据" class="headerlink" title="9.5 测试 ajax 异步获取数据"></a>9.5 测试 ajax 异步获取数据</h4><p>启动项目，点击 button 按钮。页面会显示 list.json 中的数据。</p>
+<h3 id="10-优化-Redux-层"><a href="#10-优化-Redux-层" class="headerlink" title="10. 优化 Redux 层"></a>10. 优化 Redux 层</h3><h4 id="10-1-将常量抽离"><a href="#10-1-将常量抽离" class="headerlink" title="10.1 将常量抽离"></a>10.1 将常量抽离</h4><p>将 premium/reducer.js 和 /premium/index.js 中 action.type 属性，抽离为一个单独的文件，在使用时直接调用该常量文件进行获取。方便进行调试和代码报错排查。</p>
+<h4 id="10-2-将-Action-的创建抽离"><a href="#10-2-将-Action-的创建抽离" class="headerlink" title="10.2 将 Action 的创建抽离"></a>10.2 将 Action 的创建抽离</h4><p>将 premium/index.js 中所有 action 的创建，抽离到一个 ActionCreator.js 中。</p>
+<h4 id="10-3-将抽离之后的文件统一管理"><a href="#10-3-将抽离之后的文件统一管理" class="headerlink" title="10.3 将抽离之后的文件统一管理"></a>10.3 将抽离之后的文件统一管理</h4><p>抽离之后的文件大致分为如下：</p>
+<ul>
+<li>public<ol>
+<li>api<ul>
+<li>list.json // 测试 ajax 请求的数据</li>
+</ul>
+</li>
+<li>favicon.ico</li>
+<li>index.html</li>
+<li>mainifest.json</li>
 </ol>
 </li>
-<li>Send files or execute commands over SSH<ol>
-<li>通过 SSH发送文件或执行命令 </li>
-<li>因为jenkins与测试在一起，所以我们只需要执行mv命令即可</li>
-<li>下面的jenkins与服务器分开(比如正式服部署，总不能还浪费带宽吧)，就需要发送将jar发送到服务器然后运行</li>
+<li>src<ol>
+<li>premium<ol>
+<li>store<ul>
+<li>actionCreator.js // 管理 Action 的创建</li>
+<li>constants.js // 管理常量</li>
+<li>reducer.js // 处理 action</li>
+<li>index.js // 将上面三个文件导出</li>
+</ul>
+</li>
+<li>index.js // 首页</li>
+<li>style.js</li>
+</ol>
+</li>
+<li>store // redux 的存储层、redux-thunk、redux-devtools 的配置<ol>
+<li>index.js // 使用当前目录下的 reducer 创建 store</li>
+<li>reducer.js // react-redux 引入组件的 store/index.js，并管理子 reducer</li>
+</ol>
+</li>
+<li>index.js // React 项目的入口</li>
+<li>index.css</li>
+<li>router.js // 路由文件，包含 store 作用域的限制、路由的配置</li>
+</ol>
+</li>
+</ul>
+</div><hr></div><div class="recent-post-item article-container"><a class="article-title" href="/2019/05/12/读书笔记/《React》简书慕课/6.ReactRouterDom/index.html">React-Router-Dom</a><time class="post-meta__date"><i class="fa fa-calendar" aria-hidden="true"></i> 2019-05-12</time><span class="article-meta"><span class="article-meta__separator">|</span><i class="fa fa-inbox article-meta__icon" aria-hidden="true"></i><a class="article-meta__categories" href="/categories/读书笔记/index.html">读书笔记</a><i class="fa fa-angle-right" aria-hidden="true"></i><i class="fa fa-inbox article-meta__icon" aria-hidden="true"></i><a class="article-meta__categories" href="/categories/读书笔记/React慕课/index.html">React慕课</a></span><span class="article-meta tags"><span class="article-meta__separator">|</span><i class="fa fa-tag article-meta__icon" aria-hidden="true"></i><a class="article-meta__tags" href="/tags/hide/index.html">hide</a><span class="article-meta__link">-</span><i class="fa fa-tag article-meta__icon" aria-hidden="true"></i><a class="article-meta__tags" href="/tags/React慕课/index.html">React慕课</a></span><div class="content"><h1 id="路由-ReactRouterDom"><a href="#路由-ReactRouterDom" class="headerlink" title="路由 ReactRouterDom"></a>路由 ReactRouterDom</h1><h2 id="1-引入依赖"><a href="#1-引入依赖" class="headerlink" title="1. 引入依赖"></a>1. 引入依赖</h2><blockquote>
+<p>yarn add react-router-dom</p>
+</blockquote>
+</div><hr></div><div class="recent-post-item article-container"><a class="article-title" href="/2019/05/11/读书笔记/《React》简书慕课/5.Immutable/index.html">Immutable</a><time class="post-meta__date"><i class="fa fa-calendar" aria-hidden="true"></i> 2019-05-11</time><span class="article-meta"><span class="article-meta__separator">|</span><i class="fa fa-inbox article-meta__icon" aria-hidden="true"></i><a class="article-meta__categories" href="/categories/读书笔记/index.html">读书笔记</a><i class="fa fa-angle-right" aria-hidden="true"></i><i class="fa fa-inbox article-meta__icon" aria-hidden="true"></i><a class="article-meta__categories" href="/categories/读书笔记/React慕课/index.html">React慕课</a></span><span class="article-meta tags"><span class="article-meta__separator">|</span><i class="fa fa-tag article-meta__icon" aria-hidden="true"></i><a class="article-meta__tags" href="/tags/hide/index.html">hide</a><span class="article-meta__link">-</span><i class="fa fa-tag article-meta__icon" aria-hidden="true"></i><a class="article-meta__tags" href="/tags/React慕课/index.html">React慕课</a></span><div class="content"><h1 id="优化"><a href="#优化" class="headerlink" title="优化"></a>优化</h1><h2 id="拆分-reducer"><a href="#拆分-reducer" class="headerlink" title="拆分 reducer"></a>拆分 reducer</h2><p>当 Reducer 中需要接收的 action 过多，且各个组件都有自己的 action、reducer、constants 时，可以将 reducer.js 分散到各个组件模块中。在总的 reducer 中使用 combineReducers ，将各个子 reducer 连接起来。</p>
+<h3 id="关系图"><a href="#关系图" class="headerlink" title="关系图"></a>关系图</h3><p><img src="https://koral-home.oss-cn-beijing.aliyuncs.com/blog/Reducer%E6%8B%86%E5%88%86.jpg" alt="拆分Reducer"></p>
+<p>common/header - /store<br>/actionCreator.js<br>/constants.js<br>/reducer.js<br>/index.js - /index.js<br>store<br>/index.js<br>/reducer.js</p>
+<h2 id="Immutable-将-state-属性私有"><a href="#Immutable-将-state-属性私有" class="headerlink" title="Immutable 将 state 属性私有"></a>Immutable 将 state 属性私有</h2><p>在 Redux 的开发中，要求 store 中的 state，只能由其自己进行修改，因此我们可以使用 Immutable 来对 state 进行封装。将其改为一个不可变对象。</p>
+<p>只能通过操作 Immutable 提供的 get、set 方法来修改数据。</p>
+<h3 id="1-引入依赖"><a href="#1-引入依赖" class="headerlink" title="1. 引入依赖"></a>1. 引入依赖</h3><blockquote>
+<p>yarn add immutable // 项目中添加 Immutable 依赖</p>
+</blockquote>
+<h3 id="2-将-state-转换为-Immutable-对象"><a href="#2-将-state-转换为-Immutable-对象" class="headerlink" title="2. 将 state 转换为 Immutable 对象"></a>2. 将 state 转换为 Immutable 对象</h3><p>在使用时，将 state 通过 Immutable 提供的 fromJS 方法进行包装。包装之后的 state 便无法再通过 . 属性的方式获取到值。非常类似 Java 中的封装。</p>
+<p>下面是 Header 组件的 reducer.js：</p>
+<pre><code class="js">import { fromJS } from &quot;immutable&quot;;
+
+const defaultState = fromJS({
+  value: &quot;Hello React !&quot;,
+  focused: false
+});
+
+export default (state = defaultState, action) =&gt; {
+  switch (action.type) {
+    case &quot;aaa&quot;:
+      return state.set(&quot;value&quot;, action.value);
+    case &quot;bbb&quot;:
+      return state.set(&quot;focused&quot;, true);
+    default:
+      return state;
+  }
+};</code></pre>
+<h3 id="3-将子组件的-state-转换为-Immutable-对象"><a href="#3-将子组件的-state-转换为-Immutable-对象" class="headerlink" title="3. 将子组件的 state 转换为 Immutable 对象"></a>3. 将子组件的 state 转换为 Immutable 对象</h3><p>重点是将 combineReducers 方法，改为从 redux-immutalbe 中获取。</p>
+<pre><code class="js">import { combineReducers } from &quot;redux-immutable&quot;;
+import { reducer as headerReducer } from &quot;../common/header/store&quot;;
+
+const reducers = combineReducers({
+  header: headerReducer
+});
+
+export default reducers;</code></pre>
+<h3 id="4-Header-组件使用-state-header-value"><a href="#4-Header-组件使用-state-header-value" class="headerlink" title="4. Header 组件使用 state.header.value"></a>4. Header 组件使用 state.header.value</h3><p>下面是使用 redux-saga 进行组件与 store 的连接，请查阅 <a href="www.xx.cc">Redux-Saga</a></p>
+<pre><code class="js">class Header extends Component {
+    // ......
+}
+
+const mapStateToProps = (state) =&gt; {
+    return {
+        value: state.get(&#39;header&#39;).get(&#39;value&#39;),
+        focused: state.get(&#39;header&#39;).get(&#39;focused&#39;),
+        list: state.get(&#39;header&#39;).get(&#39;list&#39;)
+    }
+}
+
+const mapDispatchToProps ...
+
+export default connect(mapStateToProps,mapDispatchToProps)(Header);</code></pre>
+</div><hr></div><div class="recent-post-item article-container"><a class="article-title" href="/2019/05/10/读书笔记/《React》简书慕课/4.ReactRedux/index.html">ReactRedux</a><time class="post-meta__date"><i class="fa fa-calendar" aria-hidden="true"></i> 2019-05-10</time><span class="article-meta"><span class="article-meta__separator">|</span><i class="fa fa-inbox article-meta__icon" aria-hidden="true"></i><a class="article-meta__categories" href="/categories/读书笔记/index.html">读书笔记</a><i class="fa fa-angle-right" aria-hidden="true"></i><i class="fa fa-inbox article-meta__icon" aria-hidden="true"></i><a class="article-meta__categories" href="/categories/读书笔记/React慕课/index.html">React慕课</a></span><span class="article-meta tags"><span class="article-meta__separator">|</span><i class="fa fa-tag article-meta__icon" aria-hidden="true"></i><a class="article-meta__tags" href="/tags/hide/index.html">hide</a><span class="article-meta__link">-</span><i class="fa fa-tag article-meta__icon" aria-hidden="true"></i><a class="article-meta__tags" href="/tags/React慕课/index.html">React慕课</a></span><div class="content"><h1 id="React-Redux-入门"><a href="#React-Redux-入门" class="headerlink" title="React-Redux 入门"></a>React-Redux 入门</h1><p>以下内容来源于 <img src="https://react-redux.js.org/introduction/quick-start" alt="React-Redux官网"></p>
+<p>使用 React-Redux + Redux-saga 重构 TodoList</p>
+<ol>
+<li>新增 Redux 依赖</li>
+<li>设置 Redux store</li>
+<li>添加 React-Redux 依赖</li>
+</ol>
+<h2 id="一、使用-Provider-标签"><a href="#一、使用-Provider-标签" class="headerlink" title="一、使用 Provider 标签"></a>一、使用 Provider 标签</h2><p>React Redux 提供了 <code>&lt;Provider/&gt;</code> 标签，使 Redux Store 可以用于被包含的程序组件内。</p>
+<pre><code class="js">import React from &quot;react&quot;;
+import ReactDOM from &quot;react-dom&quot;;
+
+import { Provider } from &quot;react-redux&quot;;
+import store from &quot;./store&quot;;
+
+import App from &quot;./App&quot;;
+
+const rootElement = document.getElementById(&quot;root&quot;);
+ReactDOM.render(
+  &lt;Provider store={store}&gt;
+    &lt;App /&gt;
+  &lt;/Provider&gt;,
+  rootElement
+);</code></pre>
+<h2 id="二、组件连接-Store"><a href="#二、组件连接-Store" class="headerlink" title="二、组件连接 Store"></a>二、组件连接 Store</h2><p>React Redux 提供了 connect 将组件连接到 store。</p>
+<pre><code class="js">import { connect } from &quot;react-redux&quot;;
+import { increment, decrement, reset } from &quot;./actionCreators&quot;;
+
+// const Counter = ...
+
+const mapStateToProps = (state /*, ownProps*/index.html) =&gt; {
+  return {
+    counter: state.counter
+  };
+};
+
+const mapDispatchToProps = { increment, decrement, reset };
+
+export default connect(mapStateToProps, mapDispatchToProps)(Counter);</code></pre>
+<h2 id="三、拆分-Reducer-js"><a href="#三、拆分-Reducer-js" class="headerlink" title="三、拆分 Reducer.js"></a>三、拆分 Reducer.js</h2><p>当 Reducer 中需要接收的 action 过多，且各个组件都有自己的 action、reducer、constants 时，可以将 reducer.js 分散到各个组件模块中。在总的 reducer 中使用 combineReducers ，将各个子 reducer 连接起来。</p>
+</div><hr></div><div class="recent-post-item article-container"><a class="article-title" href="/2019/05/09/读书笔记/《React》简书慕课/3.ReduxThunk/index.html">ReduxThunk</a><time class="post-meta__date"><i class="fa fa-calendar" aria-hidden="true"></i> 2019-05-09</time><span class="article-meta"><span class="article-meta__separator">|</span><i class="fa fa-inbox article-meta__icon" aria-hidden="true"></i><a class="article-meta__categories" href="/categories/读书笔记/index.html">读书笔记</a><i class="fa fa-angle-right" aria-hidden="true"></i><i class="fa fa-inbox article-meta__icon" aria-hidden="true"></i><a class="article-meta__categories" href="/categories/读书笔记/React慕课/index.html">React慕课</a></span><span class="article-meta tags"><span class="article-meta__separator">|</span><i class="fa fa-tag article-meta__icon" aria-hidden="true"></i><a class="article-meta__tags" href="/tags/hide/index.html">hide</a><span class="article-meta__link">-</span><i class="fa fa-tag article-meta__icon" aria-hidden="true"></i><a class="article-meta__tags" href="/tags/React慕课/index.html">React慕课</a></span><div class="content"><h1 id="ReduxThunk"><a href="#ReduxThunk" class="headerlink" title="ReduxThunk"></a>ReduxThunk</h1><p>Redux Thunk 可以使 Redux 的 Action 不只是返回对象，也可以是一个函数。该函数在 Component 执行 dispatch(atcion) 时会自动执行。<br>使用原因：使用 Redux Thunk 替换在组件生命周期函数中，使用异步函数的问题。<br>解决因生命周期函数所需执行的内容过多问题。</p>
+<h2 id="Redux-Data-Flow"><a href="#Redux-Data-Flow" class="headerlink" title="Redux Data Flow"></a>Redux Data Flow</h2><p>Redux 的数据流程图：</p>
+<p><img src="https://koral-home.oss-cn-beijing.aliyuncs.com/blog/ReduxDataFlow.jpg" alt="Redux Data Flow"></p>
+<h2 id="引入依赖"><a href="#引入依赖" class="headerlink" title="引入依赖"></a>引入依赖</h2><blockquote>
+<p>yarn add redux-thunk</p>
+</blockquote>
+<h2 id="Redux-使用-Redux-thunk-中间件"><a href="#Redux-使用-Redux-thunk-中间件" class="headerlink" title="Redux 使用 Redux-thunk 中间件"></a>Redux 使用 Redux-thunk 中间件</h2><p>在创建 Redux 的 Store 时，应用所需使用的中间件。<br><a href="https://github.com/reduxjs/redux-thunk#installation" target="_blank" rel="noopener">来源于 github:redux-thunk</a></p>
+<pre><code class="js">import { createStore, applyMiddleware } from &quot;redux&quot;;
+import thunk from &quot;redux-thunk&quot;;
+import rootReducer from &quot;./reducers/index&quot;;
+
+// Note: this API requires redux@&gt;=3.1.0
+const store = createStore(rootReducer, applyMiddleware(thunk));</code></pre>
+<p>如果需要使用多个中间件，这里使用 Redux-DevTools 和 Redux-Thunk 两个中间件做演示，请使用下面的方式：<br><a href="https://github.com/zalmoxisus/redux-devtools-extension#12-advanced-store-setup" target="_blank" rel="noopener">来源于 github:redux-devtools-extension</a></p>
+<pre><code class="js">import { createStore, applyMiddleware, compose } from &quot;redux&quot;;
+import reducer from &quot;./reducer&quot;;
+import thunk from &quot;redux-thunk&quot;;
+
+const composeEnhancers =
+  typeof window === &quot;object&quot; &amp;&amp; window.__REDUX_DEVTOOLS_EXTENSION_COMPOSE__
+    ? window.__REDUX_DEVTOOLS_EXTENSION_COMPOSE__({})
+    : compose;
+
+const enhancer = composeEnhancers(
+  applyMiddleware(thunk) // 如果有其他中间件，可以在这里引入
+);
+
+const store = createStore(reducer, enhancer);
+
+export default store;</code></pre>
+</div><hr></div><div class="recent-post-item article-container"><a class="article-title" href="/2019/05/08/读书笔记/《React》简书慕课/2.ReduxFlow/index.html">Redux入门</a><time class="post-meta__date"><i class="fa fa-calendar" aria-hidden="true"></i> 2019-05-08</time><span class="article-meta"><span class="article-meta__separator">|</span><i class="fa fa-inbox article-meta__icon" aria-hidden="true"></i><a class="article-meta__categories" href="/categories/读书笔记/index.html">读书笔记</a><i class="fa fa-angle-right" aria-hidden="true"></i><i class="fa fa-inbox article-meta__icon" aria-hidden="true"></i><a class="article-meta__categories" href="/categories/读书笔记/React慕课/index.html">React慕课</a></span><span class="article-meta tags"><span class="article-meta__separator">|</span><i class="fa fa-tag article-meta__icon" aria-hidden="true"></i><a class="article-meta__tags" href="/tags/hide/index.html">hide</a><span class="article-meta__link">-</span><i class="fa fa-tag article-meta__icon" aria-hidden="true"></i><a class="article-meta__tags" href="/tags/React慕课/index.html">React慕课</a></span><div class="content"><h1 id="Redux-入门"><a href="#Redux-入门" class="headerlink" title="Redux 入门"></a>Redux 入门</h1><p>使用 Redux 重构之前的 TodoList，使用全局 state 来实现。</p>
+<h2 id="Redux-Flow"><a href="#Redux-Flow" class="headerlink" title="Redux Flow"></a>Redux Flow</h2><p>Redux 的工作流：<br><img src="https://koral-home.oss-cn-beijing.aliyuncs.com/blog/ReduxFlow.jpg" alt="Redux Flow"></p>
+<h2 id="一、引入依赖"><a href="#一、引入依赖" class="headerlink" title="一、引入依赖"></a>一、引入依赖</h2><p>需要先引入 Ant Design 和 Redux</p>
+<blockquote>
+<p>yarn add antd<br>yarn add redux</p>
+</blockquote>
+<h2 id="二、创建全局-Store"><a href="#二、创建全局-Store" class="headerlink" title="二、创建全局 Store"></a>二、创建全局 Store</h2><p>第一步：创建 store/reducer.js<br>reducer 必须返回一个函数，state 参数为存储的内容</p>
+<pre><code class="javascript">const defaultState = {
+  // state默认值
+  inputValue: &quot;123&quot;,
+  list: [1, 2, 3]
+};
+
+export default (state = defaultState, action) =&gt; {
+  return state;
+};</code></pre>
+<p>第二步：创建 store/index.js<br>使用 redux 的 createStore 方法，使用之前创建的 reducer 作为参数，创建一个 store</p>
+<pre><code class="javascript">import { createStore } from &quot;redux&quot;;
+import reducer from &quot;./reducer&quot;;
+
+const store = createStore(reducer);
+
+export default store;</code></pre>
+<h2 id="使用与修改"><a href="#使用与修改" class="headerlink" title="使用与修改"></a>使用与修改</h2><p>一：使用 redux 的公共存储</p>
+<pre><code class="javascript">import store from &quot;./store/index.js&quot;;
+// import store from &#39;./store&#39; // 可以缩写为这样
+
+console.log(store.getState()); // 直接能打印出store中的内容</code></pre>
+<p>二：修改 redux 中的内容</p>
+<p>注意：redux 的 reducer 只支持读取 state，而不支持修改 state。如果需要修改，请深拷贝原有 state，修改新的 newState，并将 newState 返回。</p>
+<pre><code class="js">const defaultState = {
+  inputValue: &quot;Hello React !&quot;,
+  list: [&quot;1111&quot;, &quot;2222&quot;]
+};
+
+export default (state = defaultState, action) =&gt; {
+  if (action.type === &quot;change_input_value&quot;) {
+    const newState = JSON.parse(JSON.stringify(state));
+    newState.inputValue = action.value;
+    return newState;
+  } else if (action.type === &quot;add_list_item&quot;) {
+    const newState = JSON.parse(JSON.stringify(state));
+    newState.list.push(state.inputValue);
+    newState.inputValue = &quot;&quot;;
+    return newState;
+  } else if (action.type === &quot;del_list_item&quot;) {
+    const newState = JSON.parse(JSON.stringify(state));
+    newState.list.splice(action.index, 1);
+    return newState;
+  }
+  return state;
+};</code></pre>
+<p>三、监听 store 内容的修改</p>
+<pre><code class="js">    constructor(props) {
+        super(props);
+        this.state = store.getState();
+        this.handleStoreChange = this.handleStoreChange.bind(this);
+        store.subscribe(this.handleStoreChange);
+    }
+
+    render () {
+        ...
+    }
+
+    handleStoreChange() {
+        this.setState(store.getState());
+    }</code></pre>
+<h2 id="整体使用如下："><a href="#整体使用如下：" class="headerlink" title="整体使用如下："></a>整体使用如下：</h2><h3 id="src-TodoList-js"><a href="#src-TodoList-js" class="headerlink" title="src/TodoList.js"></a>src/TodoList.js</h3><pre><code class="js">import React, { Component } from &quot;react&quot;;
+import store from &quot;./store&quot;;
+import &quot;antd/dist/antd.css&quot;;
+import { Input, Button, List } from &quot;antd&quot;;
+import {
+  getInputChangeAction,
+  getAddItemAction,
+  getDeleteItemAction
+} from &quot;./store/actionCreator&quot;;
+
+class TodoList extends Component {
+  constructor(props) {
+    super(props);
+    this.state = store.getState();
+    this.handleInputChange = this.handleInputChange.bind(this);
+    this.handleStoreChange = this.handleStoreChange.bind(this);
+    this.handleBtnClick = this.handleBtnClick.bind(this);
+    this.handleDeleteItem = this.handleDeleteItem.bind(this);
+    store.subscribe(this.handleStoreChange);
+  }
+
+  render() {
+    return (
+      &lt;div style={{ marginTop: "10px", marginLeft: "10px" }}&gt;
+        &lt;Input
+          style={{ width: "300px", marginRight: "10px" }}
+          value={this.state.inputValue}
+          onChange={this.handleInputChange}
+        /&gt;
+        &lt;Button type=&quot;primary&quot; onClick={this.handleBtnClick}&gt;
+          æ��äº¤
+        &lt;/Button&gt;
+        &lt;br /&gt;
+        &lt;List
+          style={{ width: "300px" }}
+          bordered
+          dataSource={this.state.list}
+          renderItem={(item, index) =&gt; (
+            &lt;List.Item onClick={() =&gt; this.handleDeleteItem(index)}&gt;
+              {item}
+            &lt;/List.Item&gt;
+          )}
+        /&gt;
+      &lt;/div&gt;
+    );
+  }
+
+  handleInputChange(e) {
+    const value = e.target.value;
+    const action = getInputChangeAction(value);
+    store.dispatch(action);
+  }
+
+  handleStoreChange() {
+    this.setState(store.getState());
+  }
+
+  handleBtnClick() {
+    const action = getAddItemAction();
+    store.dispatch(action);
+  }
+
+  handleDeleteItem(index) {
+    const action = getDeleteItemAction(index);
+    store.dispatch(action);
+  }
+}
+
+export default TodoList;</code></pre>
+<h3 id="src-store-index-js"><a href="#src-store-index-js" class="headerlink" title="src/store/index.js"></a>src/store/index.js</h3><pre><code class="js">import { createStore } from &quot;redux&quot;;
+import reducer from &quot;./reducer&quot;;
+
+const store = createStore(
+  reducer,
+  window.__REDUX_DEVTOOLS_EXTENSION__ &amp;&amp; window.__REDUX_DEVTOOLS_EXTENSION__()
+);
+
+export default store;</code></pre>
+<h3 id="src-store-reducer-js"><a href="#src-store-reducer-js" class="headerlink" title="src/store/reducer.js"></a>src/store/reducer.js</h3><pre><code class="js">const defaultState = {
+  inputValue: &quot;Hello React !&quot;,
+  list: [&quot;1111&quot;, &quot;2222&quot;]
+};
+
+export default (state = defaultState, action) =&gt; {
+  if (action.type === &quot;change_input_value&quot;) {
+    const newState = JSON.parse(JSON.stringify(state));
+    newState.inputValue = action.value;
+    return newState;
+  } else if (action.type === &quot;add_list_item&quot;) {
+    const newState = JSON.parse(JSON.stringify(state));
+    newState.list.push(state.inputValue);
+    newState.inputValue = &quot;&quot;;
+    return newState;
+  } else if (action.type === &quot;del_list_item&quot;) {
+    const newState = JSON.parse(JSON.stringify(state));
+    newState.list.splice(action.index, 1);
+    return newState;
+  }
+  return state;
+};</code></pre>
+<h3 id="src-store-actionTypes-js"><a href="#src-store-actionTypes-js" class="headerlink" title="src/store/actionTypes.js"></a>src/store/actionTypes.js</h3><p>将所有的 Action 类型提取为常量，统一管理。方便调试与代码定位。</p>
+<pre><code class="js">export const CHANGE_INPUT_VALUE = &quot;change_input_value&quot;;
+export const ADD_LIST_ITEM = &quot;add_list_item&quot;;
+export const DEL_LIST_ITEM = &quot;del_list_item&quot;;</code></pre>
+<h3 id="src-store-actionCreator-js"><a href="#src-store-actionCreator-js" class="headerlink" title="src/store/actionCreator.js"></a>src/store/actionCreator.js</h3><p>将 Action 的创建统一管理，使用 Creator 提供创建 Action 的方法。使流程更加清晰</p>
+<pre><code class="js">import {
+  CHANGE_INPUT_VALUE,
+  ADD_LIST_ITEM,
+  DEL_LIST_ITEM
+} from &quot;./actionTypes&quot;;
+
+export const getInputChangeAction = value =&gt; ({
+  type: CHANGE_INPUT_VALUE,
+  value: value
+});
+
+export const getAddItemAction = () =&gt; ({
+  type: ADD_LIST_ITEM
+});
+
+export const getDeleteItemAction = index =&gt; ({
+  type: DEL_LIST_ITEM,
+  index: index
+});</code></pre>
+</div><hr></div><div class="recent-post-item article-container"><a class="article-title" href="/2019/05/07/读书笔记/《React》简书慕课/1.基础语法/index.html">React入门</a><time class="post-meta__date"><i class="fa fa-calendar" aria-hidden="true"></i> 2019-05-07</time><span class="article-meta"><span class="article-meta__separator">|</span><i class="fa fa-inbox article-meta__icon" aria-hidden="true"></i><a class="article-meta__categories" href="/categories/读书笔记/index.html">读书笔记</a><i class="fa fa-angle-right" aria-hidden="true"></i><i class="fa fa-inbox article-meta__icon" aria-hidden="true"></i><a class="article-meta__categories" href="/categories/读书笔记/React慕课/index.html">React慕课</a></span><span class="article-meta tags"><span class="article-meta__separator">|</span><i class="fa fa-tag article-meta__icon" aria-hidden="true"></i><a class="article-meta__tags" href="/tags/hide/index.html">hide</a><span class="article-meta__link">-</span><i class="fa fa-tag article-meta__icon" aria-hidden="true"></i><a class="article-meta__tags" href="/tags/React慕课/index.html">React慕课</a></span><div class="content"><h1 id="React入门"><a href="#React入门" class="headerlink" title="React入门"></a>React入门</h1><p>父组件向子组件传值：父组件可以通过向子组件传递属性，子组件通过props拿到该属性。<br>子组件向父组件传值：父组件先 将操作元素的方法 传递给子组件，子组件通过props调用父组件的方法。</p>
+<p>单向数据流：子组件只能读取父组件传递的属性，不能修改父组件的属性。</p>
+<p>当组件的state或props发生改变时，render函数就会重新执行</p>
+<p>React对性能的提升：<br>    使用虚拟DOM的方式来渲染页面，当组件的state和props发生改变时，会重新调用一次组件的render方法，重新生成一次页面。如果是直接使用新的DOM替换旧的DOM，非常损耗性能。而使用虚拟DOM可以极大地提升性能。</p>
+<p>React的虚拟DOM的流程：<br>    1. state 数据<br>    2. JSX 模板<br>    3. 数据 + 模板 生成虚拟DOM<br>        1. <code>[&#39;div&#39;, {id :&#39;abc&#39;}, [&#39;span&#39;,{},&#39;hello&#39;]]</code><br>    4. 使用虚拟DOM 生成真实的DOM<br>        1. <code>&lt;div id=&#39;abc&#39;&gt;&lt;span&gt;hello&lt;/span&gt;&lt;/div&gt;</code><br>    5. 数据(state、props)发生了改变<br>    6. 数据 + 模板 生成新的虚拟DOM<br>        1. <code>[&#39;div&#39;, {id :&#39;abc&#39;}, [&#39;span&#39;,{},&#39;bye bye&#39;]]</code><br>    7. 比较新的虚拟DOM 和原有的虚拟DOM，找出差异处<br>        1. Diff 算法：<br>        2. 将多个setState合为一个setState渲染<br>        3. 逐层比较，类似于异或<br>        4. 列表循环时，key值要保持稳定<br>    8. 使用新的虚拟DOM重新渲染差异处<br>优点：<br>    1. 极大地提升了性能<br>        1. 将直接生成真实DOM，改为先生成虚拟DOM，再通过虚拟DOM生成真实DOM<br>        2. 降低比较真实DOM的损耗，改为直接比较虚拟DOM<br>        3. 从直接渲染新的真实DOM，改为先比较虚拟DOM<br>        4. 使用虚拟DOM的差异重新渲染数据<br>    2. 使跨端应用得以实现（如React Native）<br>        1. 在第三步生成虚拟DOM之后，可以通过虚拟DOM生成如Android、IOS可使用的组件</p>
+<h2 id="React生命周期函数"><a href="#React生命周期函数" class="headerlink" title="React生命周期函数"></a>React生命周期函数</h2><p>在某一时刻，自动执行的函数</p>
+<ol>
+<li>Initialization 初始化阶段<ol>
+<li>constructor</li>
+</ol>
+</li>
+<li>Mounting 挂载阶段<ol>
+<li>componentWillMount 组件被挂载前，自动执行</li>
+<li>render 组件挂载时，自动执行</li>
+<li>componentDidMount 组件挂载完成时，自动执行</li>
+</ol>
+</li>
+<li>Updation 数据更新阶段<ol>
+<li>props 属性更新<ol>
+<li>componentWillReceiveProps 子组件重新接受Props时，自动执行</li>
+<li>shouldComponentUpdate 重新渲染render前，自动执行，且影响render是否执行</li>
+<li>componentWillUpdate 组件将被更新前、shouldComponentUpdate后，自动执行</li>
+<li>render</li>
+<li>componentDidUpdate 组件更新之后，自动执行</li>
+</ol>
+</li>
+<li>states 状态更新<ol>
+<li>shouldComponentUpdate 重新渲染render前，自动执行，且影响render是否执行</li>
+<li>componentWillUpdate 组件将被更新前、shouldComponentUpdate后，自动执行</li>
+<li>render</li>
+<li>componentDidUpdate 组件更新之后，自动执行</li>
 </ol>
 </li>
 </ol>
-<p><img src="https://i.loli.net/2019/08/06/nSx9yFpINqrEAlo.png" alt="UTOOLS1565082655139.png"></p>
+</li>
+<li>Unmounting 移除挂载阶段<ol>
+<li>componentWillUnmount 子组件将被移除前，自动执行</li>
+</ol>
+</li>
+</ol>
+<h2 id="Axios"><a href="#Axios" class="headerlink" title="Axios"></a>Axios</h2><p>新增依赖</p>
 <blockquote>
+<p>yarn add axios</p>
 </blockquote>
-<h3 id="4-构建（jenkins与测试服务器分离）"><a href="#4-构建（jenkins与测试服务器分离）" class="headerlink" title="4. 构建（jenkins与测试服务器分离）"></a>4. 构建（jenkins与测试服务器分离）</h3><p>跟步骤3没什么太大的区别，只是将 jar 发送到服务器。</p>
-<p><img src="https://i.loli.net/2019/08/06/he49txiGX5PQgzT.png" alt="UTOOLS1565083626352.png"></p>
+<h3 id="Charles-Mock数据"><a href="#Charles-Mock数据" class="headerlink" title="Charles Mock数据"></a>Charles Mock数据</h3><p>使用Charles进行数据的Mock</p>
+<h2 id="Ant-Design"><a href="#Ant-Design" class="headerlink" title="Ant Design"></a>Ant Design</h2><p>使用 <code>Ant Design</code> 重构代码样式布局。</p>
 <blockquote>
-<p>最后一句 <code>pm2 restart api-support</code> 类似于 <code>nohup java -jar xxx.jar</code> 我是使用 pm2 管理的jar包，有兴趣的可以自己查一下(或者推荐一下其他的进程管理工具也行)。</p>
+<p>yarn add antd // 新增ant design依赖</p>
 </blockquote>
-<h2 id="5-测试"><a href="#5-测试" class="headerlink" title="5. 测试"></a>5. 测试</h2><p>随便提交一次代码，点击立即构建。经过漫长的等待(maven首次更新、向服务器发送jar包)，打印出以下日志。</p>
-<p><img src="https://i.loli.net/2019/08/06/GaonXC9TAKLF1wr.png" alt="构建成功"></p>
-<p>完成，收工！</p>
-<blockquote>
-<p>最后提一下我为什么会写两种构建方式，因为我先用步骤 四4 中的构建时，1M (上行才100多k，T_T)小水管发一个 jar 包快二十分钟了。所以想到同服务器还是直接拷贝的比较好。</p>
-</blockquote>
-</div><hr></div><nav id="pagination"><div class="pagination"><a class="extend prev" rel="prev" href="/page/15/"><i class="fa fa-chevron-left"></i></a><a class="page-number" href="/">1</a><span class="space">&hellip;</span><a class="page-number" href="/page/15/">15</a><span class="page-number current">16</span><a class="page-number" href="/page/17/">17</a><span class="space">&hellip;</span><a class="page-number" href="/page/48/">48</a><a class="extend next" rel="next" href="/page/17/"><i class="fa fa-chevron-right"></i></a></div></nav></div></div><footer><div class="layout" id="footer"><div class="copyright">&copy;2013 - 2020 By koral</div><div class="framework-info"><span>驱动 - </span><a href="http://hexo.io"><span>Hexo</span></a><span class="footer-separator">|</span><span>主题 - </span><a href="https://github.com/Molunerfinn/hexo-theme-melody"><span>Melody</span></a></div><div class="busuanzi"><script async src="//busuanzi.ibruce.info/busuanzi/2.3/busuanzi.pure.mini.js"></script><span id="busuanzi_container_site_uv"><i class="fa fa-user"></i><span id="busuanzi_value_site_uv"></span><span></span></span><span class="footer-separator">|</span><span id="busuanzi_container_site_pv"><i class="fa fa-eye"></i><span id="busuanzi_value_site_pv"></span><span></span></span></div></div></footer><i class="fa fa-arrow-up" id="go-up" aria-hidden="true"></i><script src="https://cdn.jsdelivr.net/npm/animejs@latest/anime.min.js"></script><script src="https://cdn.jsdelivr.net/npm/jquery@latest/dist/jquery.min.js"></script><script src="https://cdn.jsdelivr.net/npm/@fancyapps/fancybox@latest/dist/jquery.fancybox.min.js"></script><script src="https://cdn.jsdelivr.net/npm/velocity-animate@latest/velocity.min.js"></script><script src="https://cdn.jsdelivr.net/npm/velocity-ui-pack@latest/velocity.ui.min.js"></script><script src="/js/utils.js?version=1.7.0"></script><script src="/js/fancybox.js?version=1.7.0"></script><script src="/js/sidebar.js?version=1.7.0"></script><script src="/js/copy.js?version=1.7.0"></script><script src="/js/fireworks.js?version=1.7.0"></script><script src="/js/transition.js?version=1.7.0"></script><script src="/js/scroll.js?version=1.7.0"></script><script src="/js/head.js?version=1.7.0"></script><script>if(/Android|webOS|iPhone|iPod|iPad|BlackBerry/i.test(navigator.userAgent)) {
+<h2 id="Redux"><a href="#Redux" class="headerlink" title="Redux"></a>Redux</h2><p>详见 ReduxFlow</p>
+<h2 id="组件"><a href="#组件" class="headerlink" title="组件"></a>组件</h2><p>普通组件、UI组件、容器组件、无状态组件</p>
+</div><hr></div><div class="recent-post-item article-container"><a class="article-title" href="/2018/11/16/后端/java/POI-PPT2IMG/index.html">POI之PPT转image,SmartArt解决方法</a><time class="post-meta__date"><i class="fa fa-calendar" aria-hidden="true"></i> 2018-11-16</time><span class="article-meta"><span class="article-meta__separator">|</span><i class="fa fa-inbox article-meta__icon" aria-hidden="true"></i><a class="article-meta__categories" href="/categories/Java成神之路/index.html">Java成神之路</a></span><span class="article-meta tags"><span class="article-meta__separator">|</span><i class="fa fa-tag article-meta__icon" aria-hidden="true"></i><a class="article-meta__tags" href="/tags/java/index.html">java</a></span><div class="content"><h1 id="POI之PPT转image-SmartArt解决方法"><a href="#POI之PPT转image-SmartArt解决方法" class="headerlink" title="POI之PPT转image,SmartArt解决方法"></a>POI之PPT转image,SmartArt解决方法</h1><p>关于使用 POI 将 PPT 转为 图片，随便就能查到以下代码。</p>
+<pre><code class="java">import java.io.File;
+import java.io.FileInputStream;
+import java.io.FileOutputStream;
+import java.io.IOException;
+
+import org.apache.poi.xslf.usermodel.XMLSlideShow;
+import org.apache.poi.xslf.usermodel.XSLFSlide;
+
+public class PpttoPNG {
+
+   public static void main(String args[]) throws IOException {
+
+      //creating an empty presentation
+      File file = new File(&quot;addingimage.pptx&quot;);
+      XMLSlideShow ppt = new XMLSlideShow(new FileInputStream(file));
+
+      //getting the dimensions and size of the slide 
+      Dimension pgsize = ppt.getPageSize();
+      XSLFSlide[] slide = ppt.getSlides();
+
+      for (int i = 0; i &lt; slide.length; i++) {
+         BufferedImage img = new BufferedImage(
+            pgsize.width, pgsize.height,BufferedImage.TYPE_INT_RGB);
+         Graphics2D graphics = img.createGraphics();
+
+         //clear the drawing area
+         graphics.setPaint(Color.white);
+         graphics.fill(new Rectangle2D.Float(0, 0, pgsize.width, pgsize.height));
+
+         //render
+         slide[i].draw(graphics);
+      }
+
+      //creating an image file as output
+      FileOutputStream out = new FileOutputStream(&quot;ppt_image.png&quot;);
+      javax.imageio.ImageIO.write(img, &quot;png&quot;, out);
+      ppt.write(out);
+
+      System.out.println(&quot;Image successfully created&quot;);
+      out.close();    
+   }
+}</code></pre>
+<p>但是问题显然不会这么简单，经过实验发现。</p>
+<p>通过POI导出的图片，出现以下几个问题：</p>
+<ol>
+<li>无法读取 SmartArt</li>
+<li>艺术字只能显示为普通文本</li>
+<li>图形阴影无法显示</li>
+<li>部分自定义几何图形显示异常</li>
+</ol>
+<p>然后就出现了这种状况：<br><code>PPT文件的内容：</code> <img src="https://upload-images.jianshu.io/upload_images/13603359-ddc7e137e2ff31cf.png?imageMogr2/auto-orient/strip%7CimageView2/2/w/1240" alt="PPT文件的内容"><br><code>导出的内容(这是什么鬼)：</code> <img src="https://upload-images.jianshu.io/upload_images/13603359-51403ce29c688f11.png" alt="image.png"></p>
+<p>然后上网查解决方法：</p>
+<p><img src="https://images.gitee.com/uploads/images/2018/1116/111529_aa242626_1872936.png" alt="stack overflow" title="屏幕截图.png"></p>
+<p><img src="https://upload-images.jianshu.io/upload_images/13603359-0b2c169e961ec894.png" alt="无解又是什么鬼"></p>
+<h2 id="解决方法"><a href="#解决方法" class="headerlink" title="解决方法"></a>解决方法</h2><p>无解，所以我们抛弃了 POI，改用其他方式导出。</p>
+<h3 id="1-改用java调用Python"><a href="#1-改用java调用Python" class="headerlink" title="1.改用java调用Python"></a>1.改用java调用Python</h3><p>如果你不会python，可以将下面的py代码放到项目下，通过 <code>jython</code> 解释器来执行。</p>
+<pre><code class="python">import comtypes.client as client
+import os
+
+def init_powerpoint():
+    powerpoint = client.CreateObject(&quot;Powerpoint.Application&quot;)
+    powerpoint.Visible = 1
+    return powerpoint
+
+def ppt_to_pdf(powerpoint, inputFileName, outputFileName, formatType=32):
+    if outputFileName[-3:] != &#39;pdf&#39;:
+        outputFileName = outputFileName[0:-4] + &quot;pdf&quot;
+    deck = powerpoint.Presentations.Open(inputFileName)
+    deck.SaveAs(outputFileName, formatType)  # formatType = 32 for ppt to pdf
+    deck.SaveAs(inputFileName.rsplit(&#39;.&#39;)[0] + &#39;.jpg&#39;, 17)
+    deck.Close()
+
+def convert_files_in_folder(powerpoint, folder):
+    files = os.listdir(folder)
+    pptfiles = [f for f in files if f.endswith((&quot;.ppt&quot;, &quot;.pptx&quot;))]
+    for pptfile in pptfiles:
+        fullpath = os.path.join(cwd, pptfile)
+        ppt_to_pdf(powerpoint, fullpath, fullpath)
+
+if __name__ == &quot;__main__&quot;:
+    powerpoint = init_powerpoint()
+    cwd = os.getcwd()
+    convert_files_in_folder(powerpoint, cwd)
+    powerpoint.Quit()</code></pre>
+<p>这种方法应该是最适合的了，导出的图片接近完美。</p>
+<h3 id="2-使用第三方服务"><a href="#2-使用第三方服务" class="headerlink" title="2.使用第三方服务"></a>2.使用第三方服务</h3><p>阿里云提供了一个“智能媒体管理”的服务，其中包含了许多的文档转换的API。省事</p>
+<p><img src="https://upload-images.jianshu.io/upload_images/13603359-0ebbce1f64d3e639.png" alt="收费标准"></p>
+<p><img src="https://upload-images.jianshu.io/upload_images/13603359-ab529c4e928c38f5.png" alt="转换服务"></p>
+</div><hr></div><div class="recent-post-item article-container"><a class="article-title" href="/2018/11/05/后端/Quartz/SpringBoot整合Quartz(五)/index.html">SpringBoot整合Quartz(五)-集群测试</a><time class="post-meta__date"><i class="fa fa-calendar" aria-hidden="true"></i> 2018-11-05</time><span class="article-meta"><span class="article-meta__separator">|</span><i class="fa fa-inbox article-meta__icon" aria-hidden="true"></i><a class="article-meta__categories" href="/categories/Java成神之路/index.html">Java成神之路</a><i class="fa fa-angle-right" aria-hidden="true"></i><i class="fa fa-inbox article-meta__icon" aria-hidden="true"></i><a class="article-meta__categories" href="/categories/Java成神之路/Study社区/index.html">Study社区</a></span><div class="content"><h1 id="SpringBoot整合Quartz-五-集群测试"><a href="#SpringBoot整合Quartz-五-集群测试" class="headerlink" title="SpringBoot整合Quartz(五)-集群测试"></a>SpringBoot整合Quartz(五)-集群测试</h1><p>计划：(从Quartz的属性、方法、配置文件、配置类、持久化、集群等几个方面，写一些心得)</p>
+<p><img src="https://upload-images.jianshu.io/upload_images/13603359-55f97ba1d65bc00f.png" alt="Quartz"></p></div><a class="more" href="/2018/11/05/后端/Quartz/SpringBoot整合Quartz(五)/index.html#more">阅读更多</a><hr></div><nav id="pagination"><div class="pagination"><a class="extend prev" rel="prev" href="/page/15/"><i class="fa fa-chevron-left"></i></a><a class="page-number" href="/">1</a><span class="space">&hellip;</span><a class="page-number" href="/page/15/">15</a><span class="page-number current">16</span><a class="page-number" href="/page/17/">17</a><span class="space">&hellip;</span><a class="page-number" href="/page/21/">21</a><a class="extend next" rel="next" href="/page/17/"><i class="fa fa-chevron-right"></i></a></div></nav></div></div><footer><div class="layout" id="footer"><div class="copyright">&copy;2013 - 2020 By koral</div><div class="framework-info"><span>驱动 - </span><a href="http://hexo.io"><span>Hexo</span></a><span class="footer-separator">|</span><span>主题 - </span><a href="https://github.com/Molunerfinn/hexo-theme-melody"><span>Melody</span></a></div><div class="busuanzi"><script async src="//busuanzi.ibruce.info/busuanzi/2.3/busuanzi.pure.mini.js"></script><span id="busuanzi_container_site_uv"><i class="fa fa-user"></i><span id="busuanzi_value_site_uv"></span><span></span></span><span class="footer-separator">|</span><span id="busuanzi_container_site_pv"><i class="fa fa-eye"></i><span id="busuanzi_value_site_pv"></span><span></span></span></div></div></footer><i class="fa fa-arrow-up" id="go-up" aria-hidden="true"></i><script src="https://cdn.jsdelivr.net/npm/animejs@latest/anime.min.js"></script><script src="https://cdn.jsdelivr.net/npm/jquery@latest/dist/jquery.min.js"></script><script src="https://cdn.jsdelivr.net/npm/@fancyapps/fancybox@latest/dist/jquery.fancybox.min.js"></script><script src="https://cdn.jsdelivr.net/npm/velocity-animate@latest/velocity.min.js"></script><script src="https://cdn.jsdelivr.net/npm/velocity-ui-pack@latest/velocity.ui.min.js"></script><script src="/js/utils.js?version=1.7.0"></script><script src="/js/fancybox.js?version=1.7.0"></script><script src="/js/sidebar.js?version=1.7.0"></script><script src="/js/copy.js?version=1.7.0"></script><script src="/js/fireworks.js?version=1.7.0"></script><script src="/js/transition.js?version=1.7.0"></script><script src="/js/scroll.js?version=1.7.0"></script><script src="/js/head.js?version=1.7.0"></script><script>if(/Android|webOS|iPhone|iPod|iPad|BlackBerry/i.test(navigator.userAgent)) {
   $('#nav').addClass('is-mobile')
   $('footer').addClass('is-mobile')
   $('#top-container').addClass('is-mobile')
