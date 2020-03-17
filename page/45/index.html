@@ -7,617 +7,225 @@
     error: '复制错误',
     noSupport: '浏览器不支持'
   }
-} </script></head><body><i class="fa fa-arrow-right" id="toggle-sidebar" aria-hidden="true"></i><div id="sidebar" data-display="false"><div class="author-info"><div class="author-info__avatar text-center"><img src="/img/avatar.png"></div><div class="author-info__name text-center">koral</div><div class="author-info__description text-center">描述</div><hr><div class="author-info-articles"><a class="author-info-articles__archives article-meta" href="/archives/index.html"><span class="pull-left">文章</span><span class="pull-right">239</span></a><a class="author-info-articles__tags article-meta" href="/tags/index.html"><span class="pull-left">标签</span><span class="pull-right">20</span></a><a class="author-info-articles__categories article-meta" href="/categories/index.html"><span class="pull-left">分类</span><span class="pull-right">20</span></a></div></div></div><nav class="no-bg" id="nav"><div id="page-header"><span class="pull-left"> <a id="site-name" href="/index.html">凯</a></span><i class="fa fa-bars toggle-menu pull-right" aria-hidden="true"></i><span class="pull-right menus">   <a class="site-page" href="/">首页</a><a class="site-page" href="/archives/index.html">归档</a><a class="site-page" href="/tags/index.html">标签</a><a class="site-page" href="/categories/index.html">分类</a><a class="site-page" href="/about/index.html">关于我</a></span><span class="pull-right"></span></div><div id="site-info"><div id="site-title">凯</div><div id="site-sub-title">凯</div></div></nav><div id="content-outer"><div class="layout" id="content-inner"><div class="recent-post-item article-container"><a class="article-title" href="/2018/09/01/后端/POI/POI生成原生Excel-雷达图/index.html">使用POI结合Excel的行列生成雷达图</a><time class="post-meta__date"><i class="fa fa-calendar" aria-hidden="true"></i> 2018-09-01</time><span class="article-meta"><span class="article-meta__separator">|</span><i class="fa fa-inbox article-meta__icon" aria-hidden="true"></i><a class="article-meta__categories" href="/categories/Java/index.html">Java</a></span><span class="article-meta tags"><span class="article-meta__separator">|</span><i class="fa fa-tag article-meta__icon" aria-hidden="true"></i><a class="article-meta__tags" href="/tags/POI/index.html">POI</a></span><div class="content"><h1 id="使用POI结合Excel的行列生成雷达图"><a href="#使用POI结合Excel的行列生成雷达图" class="headerlink" title="使用POI结合Excel的行列生成雷达图"></a>使用POI结合Excel的行列生成雷达图</h1><h2 id="一、先放最后输出的结果图："><a href="#一、先放最后输出的结果图：" class="headerlink" title="一、先放最后输出的结果图："></a>一、先放最后输出的结果图：</h2><p><img src="https://koral-home.oss-cn-beijing.aliyuncs.com/blog/RadarChart.png" alt="雷达图"></p>
-<h2 id="二、代码"><a href="#二、代码" class="headerlink" title="二、代码"></a>二、代码</h2><pre><code class="java">    @Test
-    public void createRadar() throws IOException {
-        final String sheetName = &quot;RadarChart&quot;;
-        try (XSSFWorkbook workbook = new XSSFWorkbook()) {
-            XSSFSheet sheet = workbook.createSheet(sheetName);
-
-            for (int i = 0; i &lt; 16; i++) {
-                XSSFRow row = sheet.createRow(i);
-                XSSFCell cell = row.createCell(0);
-                cell.setCellValue(i + &quot;行&quot;);
-                XSSFCell cell1 = row.createCell(1);
-                cell1.setCellValue(RandomUtils.nextInt(0, 20));
-            }
-
-            XSSFDrawing drawing = sheet.createDrawingPatriarch();
-            XSSFClientAnchor anchor = drawing.createAnchor(0, 0, 0, 0, 2, 0, 7, 16);
-            XSSFChart chart = drawing.createChart(anchor);
-
-            CTChart ctChart = chart.getCTChart();
-            ctChart.addNewAutoTitleDeleted().setVal(false);
-//            ctChart.addNewPlotVisOnly().setVal(true);
-//            ctChart.addNewDispBlanksAs().setVal(STDispBlanksAs.GAP);
-//            ctChart.addNewShowDLblsOverMax().setVal(false);
-
-            CTPlotArea ctPlotArea = ctChart.addNewPlotArea();
-            ctPlotArea.addNewLayout();
-//            CTShapeProperties ctShapeProperties = ctPlotArea.addNewSpPr();
-//            ctShapeProperties.addNewNoFill();
-//            ctShapeProperties.addNewLn().addNewNoFill();
-//            ctShapeProperties.addNewEffectLst();
-
-            CTRadarChart ctRadarChart = ctPlotArea.addNewRadarChart();
-            // 这两个值应该对应着catAx和valAx
-            ctRadarChart.addNewAxId().setVal(123456);
-            ctRadarChart.addNewAxId().setVal(123457);
-            // 分类标签等是否显示
-            CTDLbls ctdLbls = ctRadarChart.addNewDLbls();
-            ctdLbls.addNewShowLegendKey().setVal(false);
-            ctdLbls.addNewShowVal().setVal(false);
-            ctdLbls.addNewShowCatName().setVal(false);
-            ctdLbls.addNewShowSerName().setVal(false);
-            ctdLbls.addNewShowPercent().setVal(false);
-            ctdLbls.addNewShowBubbleSize().setVal(false);
-            // 不允许自定义颜色、以及标记的形状
-            ctRadarChart.addNewRadarStyle().setVal(STRadarStyle.MARKER);
-            ctRadarChart.addNewVaryColors().setVal(false);
-
-            CTRadarSer ctRadarSer = ctRadarChart.addNewSer();
-            ctRadarSer.addNewIdx().setVal(0);
-            ctRadarSer.addNewOrder().setVal(0);
-            CTLineProperties ctLineProperties = ctRadarSer.addNewSpPr().addNewLn();
-            ctLineProperties.addNewRound();
-            ctLineProperties.addNewSolidFill().addNewSchemeClr().setVal(STSchemeColorVal.ACCENT_1);
-            // 渲染数据
-            ctRadarSer.addNewCat().addNewStrRef().setF(sheetName + &quot;!$A$1:$A$6&quot;);
-            ctRadarSer.addNewVal().addNewNumRef().setF(sheetName + &quot;!$B$2:$B$6&quot;);
-
-            CTCatAx ctCatAx = ctPlotArea.addNewCatAx();
-            ctCatAx.addNewAxId().setVal(123456);
-            ctCatAx.addNewScaling().addNewOrientation().setVal(MIN_MAX);
-            ctCatAx.addNewDelete().setVal(false);
-            ctCatAx.addNewAxPos().setVal(STAxPos.B);
-            ctCatAx.addNewCrossAx().setVal(123457);
-            ctCatAx.addNewMajorTickMark().setVal(STTickMark.NONE);
-            ctCatAx.addNewMinorTickMark().setVal(STTickMark.NONE);
-            ctCatAx.addNewTickLblPos().setVal(NEXT_TO);
-//            ctCatAx.addNewCrosses().setVal(STCrosses.AUTO_ZERO);
-//            ctCatAx.addNewAuto().setVal(true);
-//            ctCatAx.addNewLblAlgn().setVal(STLblAlgn.CTR);
-//            ctCatAx.addNewLblOffset().setVal(100);
-//            ctCatAx.addNewNoMultiLvlLbl().setVal(false);
-            // spPr
-//            CTShapeProperties ctShapeProperties = ctCatAx.addNewSpPr();
-//            ctShapeProperties.addNewNoFill();
-//            ctShapeProperties.addNewEffectLst();
-//            CTLineProperties ctLineProperties1 = ctShapeProperties.addNewLn();
-//            ctLineProperties1.setW(9525);
-//            ctLineProperties1.setCap(STLineCap.FLAT);
-//            ctLineProperties1.setCmpd(STCompoundLine.SNG);
-//            ctLineProperties1.setAlgn(STPenAlignment.CTR);
-//            CTSchemeColor ctSchemeColor = ctLineProperties1.addNewSolidFill().addNewSchemeClr();
-//            ctSchemeColor.setVal(STSchemeColorVal.TX_1);
-//            ctSchemeColor.addNewLumMod().setVal(15000);
-//            ctSchemeColor.addNewLumOff().setVal(85000);
-            // txPr
-//            CTTextBody ctTextBody = ctCatAx.addNewTxPr();
-//            CTTextCharacterProperties ctTextCharacterProperties = ctTextBody.addNewP().addNewPPr().addNewDefRPr();
-//            ctTextCharacterProperties.setU(STTextUnderlineType.NONE);
-//            ctTextCharacterProperties.setStrike(STTextStrikeType.NO_STRIKE);
-//            ctTextCharacterProperties.setSz(900);
-//            ctTextCharacterProperties.setB(false);
-//            ctTextCharacterProperties.setI(false);
-//            ctTextCharacterProperties.setBaseline(0);
-//            ctTextCharacterProperties.setKern(1200);
-//            CTSchemeColor ctSchemeColor = ctTextCharacterProperties.addNewSolidFill().addNewSchemeClr();
-//            ctSchemeColor.setVal(STSchemeColorVal.TX_1);
-//            ctSchemeColor.addNewLumMod().setVal(65000);
-//            ctSchemeColor.addNewLumOff().setVal(35000);
-
-
-            CTValAx ctValAx = ctPlotArea.addNewValAx();
-            ctValAx.addNewAxId().setVal(123457);
-            ctValAx.addNewScaling().addNewOrientation().setVal(MIN_MAX);
-            ctValAx.addNewDelete().setVal(false);
-            ctValAx.addNewAxPos().setVal(STAxPos.L);
-            ctValAx.addNewCrossAx().setVal(123456);
-            ctValAx.addNewMajorTickMark().setVal(STTickMark.NONE);
-            ctValAx.addNewMinorTickMark().setVal(STTickMark.NONE);
-            ctValAx.addNewTickLblPos().setVal(NEXT_TO);
-//            ctValAx.addNewCrosses().setVal(STCrosses.AUTO_ZERO);
-//            ctValAx.addNewCrossBetween().setVal(STCrossBetween.BETWEEN);
-            // 设置网格线
-            CTShapeProperties ctShapeProperties = ctValAx.addNewMajorGridlines().addNewSpPr();
-            CTLineProperties ctLineProperties1 = ctShapeProperties.addNewLn();
-            ctLineProperties1.setW(9525);
-            ctLineProperties1.setCap(STLineCap.FLAT);
-            ctLineProperties1.setCmpd(STCompoundLine.SNG);
-            ctLineProperties1.setAlgn(STPenAlignment.CTR);
-            // 值的纵坐标线，不显示
-            ctValAx.addNewSpPr().addNewLn().addNewNoFill();
-            // 值的纵坐标值，不显示
-            ctValAx.addNewTxPr().addNewP().addNewPPr().addNewDefRPr().addNewNoFill();
-
-            System.out.println(ctChart);
-
-            FileOutputStream outputStream =
-                    new FileOutputStream(&quot;C:\\Users\\user\\Desktop\\out.xlsx&quot;);
-            workbook.write(outputStream);
-            outputStream.flush();
-            outputStream.close();
-        }
-    }</code></pre>
-<h2 id="三、XML结构"><a href="#三、XML结构" class="headerlink" title="三、XML结构"></a>三、XML结构</h2><p>以上生成的图表，归根结底是属于XML的一种，通过 <code>RadarChart</code> 的继承关系可以看到，它其实是 <code>XmlObject</code>的一种实现。</p>
-<pre><code class="xml">&lt;xml-fragment xmlns:char=&quot;http://schemas.openxmlformats.org/drawingml/2006/chart&quot; xmlns:main=&quot;http://schemas.openxmlformats.org/drawingml/2006/main&quot;&gt;
-  &lt;char:autoTitleDeleted val=&quot;false&quot;/&gt;
-  &lt;char:plotArea&gt;
-    &lt;char:layout/&gt;
-  &lt;/char:plotArea&gt;
-  &lt;char:plotArea&gt;
-    &lt;char:layout/&gt;
-    &lt;char:radarChart&gt;
-      &lt;char:radarStyle val=&quot;marker&quot;/&gt;
-      &lt;char:varyColors val=&quot;false&quot;/&gt;
-      &lt;char:ser&gt;
-        &lt;char:idx val=&quot;0&quot;/&gt;
-        &lt;char:order val=&quot;0&quot;/&gt;
-        &lt;char:spPr&gt;
-          &lt;main:ln&gt;
-            &lt;main:solidFill&gt;
-              &lt;main:schemeClr val=&quot;accent1&quot;/&gt;
-            &lt;/main:solidFill&gt;
-            &lt;main:round/&gt;
-          &lt;/main:ln&gt;
-        &lt;/char:spPr&gt;
-        &lt;char:cat&gt;
-          &lt;char:strRef&gt;
-            &lt;char:f&gt;RadarChart!$A$1:$A$6&lt;/char:f&gt;
-          &lt;/char:strRef&gt;
-        &lt;/char:cat&gt;
-        &lt;char:val&gt;
-          &lt;char:numRef&gt;
-            &lt;char:f&gt;RadarChart!$B$2:$B$6&lt;/char:f&gt;
-          &lt;/char:numRef&gt;
-        &lt;/char:val&gt;
-      &lt;/char:ser&gt;
-      &lt;char:dLbls&gt;
-        &lt;char:showLegendKey val=&quot;false&quot;/&gt;
-        &lt;char:showVal val=&quot;false&quot;/&gt;
-        &lt;char:showCatName val=&quot;false&quot;/&gt;
-        &lt;char:showSerName val=&quot;false&quot;/&gt;
-        &lt;char:showPercent val=&quot;false&quot;/&gt;
-        &lt;char:showBubbleSize val=&quot;false&quot;/&gt;
-      &lt;/char:dLbls&gt;
-      &lt;char:axId val=&quot;123456&quot;/&gt;
-      &lt;char:axId val=&quot;123457&quot;/&gt;
-    &lt;/char:radarChart&gt;
-    &lt;char:catAx&gt;
-      &lt;char:axId val=&quot;123456&quot;/&gt;
-      &lt;char:scaling&gt;
-        &lt;char:orientation val=&quot;minMax&quot;/&gt;
-      &lt;/char:scaling&gt;
-      &lt;char:delete val=&quot;false&quot;/&gt;
-      &lt;char:axPos val=&quot;b&quot;/&gt;
-      &lt;char:majorTickMark val=&quot;none&quot;/&gt;
-      &lt;char:minorTickMark val=&quot;none&quot;/&gt;
-      &lt;char:tickLblPos val=&quot;nextTo&quot;/&gt;
-      &lt;char:crossAx val=&quot;123457&quot;/&gt;
-    &lt;/char:catAx&gt;
-    &lt;char:valAx&gt;
-      &lt;char:axId val=&quot;123457&quot;/&gt;
-      &lt;char:scaling&gt;
-        &lt;char:orientation val=&quot;minMax&quot;/&gt;
-      &lt;/char:scaling&gt;
-      &lt;char:delete val=&quot;false&quot;/&gt;
-      &lt;char:axPos val=&quot;l&quot;/&gt;
-      &lt;char:majorGridlines&gt;
-        &lt;char:spPr&gt;
-          &lt;main:ln w=&quot;9525&quot; cap=&quot;flat&quot; cmpd=&quot;sng&quot; algn=&quot;ctr&quot;/&gt;
-        &lt;/char:spPr&gt;
-      &lt;/char:majorGridlines&gt;
-      &lt;char:majorTickMark val=&quot;none&quot;/&gt;
-      &lt;char:minorTickMark val=&quot;none&quot;/&gt;
-      &lt;char:tickLblPos val=&quot;nextTo&quot;/&gt;
-      &lt;char:spPr&gt;
-        &lt;main:ln&gt;
-          &lt;main:noFill/&gt;
-        &lt;/main:ln&gt;
-      &lt;/char:spPr&gt;
-      &lt;char:txPr&gt;
-        &lt;main:p&gt;
-          &lt;main:pPr&gt;
-            &lt;main:defRPr&gt;
-              &lt;main:noFill/&gt;
-            &lt;/main:defRPr&gt;
-          &lt;/main:pPr&gt;
-        &lt;/main:p&gt;
-      &lt;/char:txPr&gt;
-      &lt;char:crossAx val=&quot;123456&quot;/&gt;
-    &lt;/char:valAx&gt;
-  &lt;/char:plotArea&gt;
-  &lt;char:plotVisOnly val=&quot;true&quot;/&gt;
-&lt;/xml-fragment&gt;</code></pre>
-<h2 id="四、工具类，我放在-POI生成原生图表-工具类-中"><a href="#四、工具类，我放在-POI生成原生图表-工具类-中" class="headerlink" title="四、工具类，我放在 POI生成原生图表-工具类 中"></a>四、工具类，我放在 <a href="www.baidu.com">POI生成原生图表-工具类</a> 中</h2></div><hr></div><div class="recent-post-item article-container"><a class="article-title" href="/2018/09/01/后端/SpringBootWebsocket/SpringBoot消息机制(四)-ActiveMQ介绍/index.html">SpringBoot消息机制(四)-ActiveMQ介绍</a><time class="post-meta__date"><i class="fa fa-calendar" aria-hidden="true"></i> 2018-09-01</time><span class="article-meta"><span class="article-meta__separator">|</span><i class="fa fa-inbox article-meta__icon" aria-hidden="true"></i><a class="article-meta__categories" href="/categories/Java/index.html">Java</a></span><span class="article-meta tags"><span class="article-meta__separator">|</span><i class="fa fa-tag article-meta__icon" aria-hidden="true"></i><a class="article-meta__tags" href="/tags/MQ/index.html">MQ</a></span><div class="content"><p>#SpringBoot消息机制(四)-ActiveMQ介绍</p>
-</div><hr></div><div class="recent-post-item article-container"><a class="article-title" href="/2018/09/01/后端/POI/POI生成原生Excel-工具类/index.html">POI生成原生Excel-工具类</a><time class="post-meta__date"><i class="fa fa-calendar" aria-hidden="true"></i> 2018-09-01</time><span class="article-meta"><span class="article-meta__separator">|</span><i class="fa fa-inbox article-meta__icon" aria-hidden="true"></i><a class="article-meta__categories" href="/categories/Java/index.html">Java</a></span><span class="article-meta tags"><span class="article-meta__separator">|</span><i class="fa fa-tag article-meta__icon" aria-hidden="true"></i><a class="article-meta__tags" href="/tags/POI/index.html">POI</a></span><div class="content"><h1 id="POI生成原生Excel-工具类"><a href="#POI生成原生Excel-工具类" class="headerlink" title="POI生成原生Excel-工具类"></a>POI生成原生Excel-工具类</h1><pre><code class="java">package com.pgc.diagnose.utils;
-
-import org.apache.poi.xssf.usermodel.XSSFChart;
-import org.apache.poi.xssf.usermodel.XSSFClientAnchor;
-import org.apache.poi.xssf.usermodel.XSSFDrawing;
-import org.apache.poi.xssf.usermodel.XSSFSheet;
-import org.openxmlformats.schemas.drawingml.x2006.chart.*;
-import org.openxmlformats.schemas.drawingml.x2006.main.*;
-
-import java.util.Iterator;
-import java.util.List;
-
-import static org.openxmlformats.schemas.drawingml.x2006.chart.STOrientation.MIN_MAX;
-import static org.openxmlformats.schemas.drawingml.x2006.chart.STTickLblPos.NEXT_TO;
-
-public class DrawUtils {
-
-    public static void drawRadarChart(XSSFSheet sheet, Position start, Position end,
-                                      List&lt;String&gt; dataRef) {
-        XSSFDrawing drawing = sheet.createDrawingPatriarch();
-        XSSFClientAnchor anchor = drawing.createAnchor(0, 0, 100, 50, start.getX(), start.getY(), end.getX(), end.getY());
-        XSSFChart chart = drawing.createChart(anchor);
-
-        CTChart ctChart = chart.getCTChart();
-        CTPlotArea ctPlotArea = ctChart.addNewPlotArea();
-
-        CTRadarChart ctRadarChart = ctPlotArea.addNewRadarChart();
-        // 不允许自定义颜色、以及标记的形状
-//        ctRadarChart.addNewRadarStyle().setVal(STRadarStyle.MARKER);
-        ctRadarChart.addNewVaryColors().setVal(false);
-
-        setAxIds(ctRadarChart);
-        setCatAx(ctPlotArea);
-        setRadarValAx(ctPlotArea);
-        setDataLabel(ctRadarChart);
-        paddingData(ctRadarChart, dataRef);
-    }
-
-    /**
-     * 散点图
-     */
-    public static void drawScatterChart(XSSFSheet sheet, Position start, Position end,
-                                        List&lt;String&gt; dataRef) {
-        XSSFDrawing drawing = sheet.createDrawingPatriarch();
-        XSSFClientAnchor anchor = drawing.createAnchor(0, 0, 100, 50, start.getX(), start.getY(), end.getX(), end.getY());
-
-        XSSFChart chart = drawing.createChart(anchor);
-        chart.setTitleText(sheet.getSheetName());
-
-        CTChart ctChart = chart.getCTChart();
-        CTPlotArea ctPlotArea = ctChart.getPlotArea();
-
-        CTScatterChart scatterChart = ctPlotArea.addNewScatterChart();
-        scatterChart.addNewVaryColors().setVal(true);
-
-        setAxIds(scatterChart);
-        setCatAx(ctPlotArea);
-        setScatterValAx(ctPlotArea);
-        setDataLabel(scatterChart);
-        paddingData(scatterChart, dataRef);
-        // 去掉连接线
-        ctPlotArea.getScatterChartArray(0).getSerArray(0).addNewSpPr().addNewLn().addNewNoFill();
-    }
-
-    /**
-     * 折线图
-     */
-    public static void drawCTLineChart(XSSFSheet sheet, Position start, Position end, List&lt;String&gt; xString, List&lt;String&gt; serTxName,
-                                       List&lt;String&gt; dataRef) {
-        // todo 折线图换成堆叠图
-        XSSFDrawing drawing = sheet.createDrawingPatriarch();
-        XSSFClientAnchor anchor = drawing.createAnchor(0, 0, 0, 0, start.getX(), start.getY(), end.getX(), end.getY());
-
-        XSSFChart chart = drawing.createChart(anchor);
-
-        CTChart ctChart = chart.getCTChart();
-        CTPlotArea ctPlotArea = ctChart.getPlotArea();
-        CTLineChart ctLineChart = ctPlotArea.addNewLineChart();
-
-        ctLineChart.addNewVaryColors().setVal(true);
-
-        // telling the Chart that it has axis and giving them Ids
-        setAxIds(ctLineChart);
-        // set cat axis
-        setCatAx(ctPlotArea);
-        // set val axis
-        setValAx(ctPlotArea);
-        // legend
-        setLegend(ctChart);
-        // set data lable
-        setDataLabel(ctLineChart);
-        // set chart title
-        setChartTitle(chart, sheet.getSheetName());
-
-        paddingData(ctLineChart, xString, serTxName, dataRef);
-    }
-
-    /*
-     * @param position 图表坐标 起始行，起始列，终点行
-     *
-     * @param xString 横坐标
-     *
-     * @param serTxName 图形示例
-     *
-     * @param dataRef 柱状图数据范围 sheetName!$A$1:$A$12
-     */
-    public static void drawBarChart(XSSFSheet sheet, Position start, Position end, List&lt;String&gt; xString, List&lt;String&gt; serTxName,
-                                    List&lt;String&gt; dataRef) {
-
-        XSSFDrawing drawing = sheet.createDrawingPatriarch();
-        XSSFClientAnchor anchor = drawing.createAnchor(0, 0, 0, 0, start.getX(), start.getY(), end.getX(), end.getY());
-
-        XSSFChart chart = drawing.createChart(anchor);
-
-        CTChart ctChart = chart.getCTChart();
-        CTPlotArea ctPlotArea = ctChart.getPlotArea();
-        CTBarChart ctBarChart = ctPlotArea.addNewBarChart();
-
-        ctBarChart.addNewVaryColors().setVal(false);
-        ctBarChart.addNewBarDir().setVal(STBarDir.COL);
-
-        // telling the Chart that it has axis and giving them Ids
-        setAxIds(ctBarChart);
-        // set cat axis
-        setCatAx(ctPlotArea);
-        // set val axis
-        setValAx(ctPlotArea);
-        // add legend and set legend position
-        setLegend(ctChart);
-        // set data lable
-        setDataLabel(ctBarChart);
-        // set chart title
-        setChartTitle(chart, sheet.getSheetName());
-        // padding data to chart
-        paddingData(ctBarChart, xString, serTxName, dataRef);
-    }
-
-    private static void paddingData(CTBarChart ctBarChart, List&lt;String&gt; xString, List&lt;String&gt; serTxName,
-                                    List&lt;String&gt; dataRef) {
-        Iterator&lt;String&gt; iterator = serTxName.iterator();
-        for (int r = 0, len = dataRef.size(); r &lt; len &amp;&amp; iterator.hasNext(); r++) {
-            CTBarSer ctBarSer = ctBarChart.addNewSer();
-
-            ctBarSer.addNewIdx().setVal(r);
-            // set legend value
-            setLegend(iterator.next(), ctBarSer.addNewTx());
-            // cat ax value
-            setChartCatAxLabel(ctBarSer.addNewCat(), xString);
-            // value range
-            ctBarSer.addNewVal().addNewNumRef().setF(dataRef.get(r));
-            // add border to chart
-            ctBarSer.addNewSpPr().addNewLn().addNewSolidFill().addNewSrgbClr().setVal(new byte[]{0, 0, 0});
-        }
-    }
-
-    private static void setLegend(String str, CTSerTx ctSerTx) {
-        if (str.contains(&quot;$&quot;))
-            // set legend by str ref
-            ctSerTx.addNewStrRef().setF(str);
-        else
-            // set legend by str
-            ctSerTx.setV(str);
-    }
-
-    private static void paddingData(CTLineChart ctLineChart, List&lt;String&gt; xString, List&lt;String&gt; serTxName,
-                                    List&lt;String&gt; dataRef) {
-        Iterator&lt;String&gt; iterator = serTxName.iterator();
-        for (int r = 0, len = dataRef.size(); r &lt; len &amp;&amp; iterator.hasNext(); r++) {
-            CTLineSer ctLineSer = ctLineChart.addNewSer();
-            ctLineSer.addNewIdx().setVal(r);
-            setLegend(iterator.next(), ctLineSer.addNewTx());
-            setChartCatAxLabel(ctLineSer.addNewCat(), xString);
-            ctLineSer.addNewVal().addNewNumRef().setF(dataRef.get(r));
-            ctLineSer.addNewSpPr().addNewLn().addNewSolidFill().addNewSrgbClr().setVal(new byte[]{0, 0, 0});
-        }
-    }
-
-    private static void paddingData(CTScatterChart scatterChart, List&lt;String&gt; dataRef) {
-        // 设置散点图内的信息
-        CTScatterSer ctScatterSer = scatterChart.addNewSer();
-        ctScatterSer.addNewIdx().setVal(0);
-        ctScatterSer.addNewOrder().setVal(0);
-        // 设置标记的样式
-        CTMarker ctMarker = ctScatterSer.addNewMarker();
-        ctMarker.addNewSymbol().setVal(STMarkerStyle.Enum.forInt(3));
-        ctMarker.addNewSize().setVal((short) 8);
-        CTShapeProperties ctShapeProperties1 = ctMarker.addNewSpPr();
-        ctShapeProperties1.addNewSolidFill().addNewSchemeClr().setVal(STSchemeColorVal.Enum.forInt(5));
-        CTLineProperties ctLineProperties1 = ctShapeProperties1.addNewLn();
-        ctLineProperties1.setW(9525);
-        ctLineProperties1.addNewSolidFill().addNewSchemeClr().setVal(STSchemeColorVal.Enum.forInt(5));
-
-        CTNumDataSource ctNumDataSource = ctScatterSer.addNewYVal();
-        CTNumRef ctNumRef = ctNumDataSource.addNewNumRef();
-        ctNumRef.setF(dataRef.get(0));
-    }
-
-    private static void paddingData(CTRadarChart ctRadarChart, List&lt;String&gt; dataRef) {
-        CTRadarSer ctRadarSer = ctRadarChart.addNewSer();
-        ctRadarSer.addNewIdx().setVal(0);
-        ctRadarSer.addNewOrder().setVal(0);
-        CTLineProperties ctLineProperties = ctRadarSer.addNewSpPr().addNewLn();
-        ctLineProperties.addNewRound();
-        ctLineProperties.addNewSolidFill().addNewSchemeClr().setVal(STSchemeColorVal.ACCENT_1);
-        // 渲染数据
-        ctRadarSer.addNewCat().addNewStrRef().setF(dataRef.get(0));
-        ctRadarSer.addNewVal().addNewNumRef().setF(dataRef.get(1));
-    }
-
-    private static void setChartCatAxLabel(CTAxDataSource cttAxDataSource, List&lt;String&gt; xString) {
-        if (xString.size() == 1) {
-            cttAxDataSource.addNewStrRef().setF(xString.get(0));
-        } else {
-            CTStrData ctStrData = cttAxDataSource.addNewStrLit();
-            for (int m = 0, xlen = xString.size(); m &lt; xlen; m++) {
-                CTStrVal ctStrVal = ctStrData.addNewPt();
-                ctStrVal.setIdx((long) m);
-                ctStrVal.setV(xString.get(m));
-            }
-        }
-    }
-
-    private static void setDataLabel(CTBarChart ctBarChart) {
-        setDLShowOpts(ctBarChart.addNewDLbls());
-    }
-
-    private static void setDataLabel(CTLineChart ctLineChart) {
-        CTDLbls dlbls = ctLineChart.addNewDLbls();
-        setDLShowOpts(dlbls);
-        setDLPosition(dlbls, null);
-    }
-
-    /**
-     * 设置散点图各图例的显示
-     */
-    private static void setDataLabel(CTScatterChart scatterChart) {
-        CTDLbls ctdLbls = scatterChart.addNewDLbls();
-        ctdLbls.addNewShowVal().setVal(true);
-        ctdLbls.addNewShowLegendKey().setVal(false);
-        ctdLbls.addNewShowSerName().setVal(false);
-        ctdLbls.addNewShowCatName().setVal(false);
-        ctdLbls.addNewShowPercent().setVal(false);
-        ctdLbls.addNewShowBubbleSize().setVal(false);
-    }
-
-    private static void setDataLabel(CTRadarChart ctRadarChart) {
-        // 分类标签等是否显示
-        CTDLbls ctdLbls = ctRadarChart.addNewDLbls();
-        ctdLbls.addNewShowLegendKey().setVal(false);
-        ctdLbls.addNewShowVal().setVal(false);
-        ctdLbls.addNewShowCatName().setVal(false);
-        ctdLbls.addNewShowSerName().setVal(false);
-        ctdLbls.addNewShowPercent().setVal(false);
-        ctdLbls.addNewShowBubbleSize().setVal(false);
-    }
-
-    private static void setDLPosition(CTDLbls dlbls, STDLblPos.Enum e) {
-        if (e == null)
-            dlbls.addNewDLblPos().setVal(STDLblPos.T);
-        else
-            dlbls.addNewDLblPos().setVal(e);
-    }
-
-    private static void setDLShowOpts(CTDLbls dlbls) {
-        // 添加图形示例的字符串
-        dlbls.addNewShowSerName().setVal(false);
-        // 添加x轴的坐标字符
-        dlbls.addNewShowCatName().setVal(false);
-        // 添加图形示例的图
-        dlbls.addNewShowLegendKey().setVal(false);
-        // 添加x对应y的---
-        // dlbls.addNewShowVal().setVal(false);
-    }
-
-    private static void setAxIds(CTRadarChart ctRadarChart) {
-        ctRadarChart.addNewAxId().setVal(123456);
-        ctRadarChart.addNewAxId().setVal(123457);
-    }
-
-    private static void setAxIds(CTBarChart ctBarChart) {
-        ctBarChart.addNewAxId().setVal(123456);
-        ctBarChart.addNewAxId().setVal(123457);
-    }
-
-    private static void setAxIds(CTLineChart ctLineChart) {
-        ctLineChart.addNewAxId().setVal(123456);
-        ctLineChart.addNewAxId().setVal(123457);
-    }
-
-    private static void setAxIds(CTScatterChart scatterChart) {
-        scatterChart.addNewAxId().setVal(123456);
-        scatterChart.addNewAxId().setVal(123457);
-    }
-
-    private static void setLegend(CTChart ctChart) {
-        CTLegend ctLegend = ctChart.addNewLegend();
-        ctLegend.addNewLegendPos().setVal(STLegendPos.B);
-        ctLegend.addNewOverlay().setVal(false);
-    }
-
-    private static void setCatAx(CTPlotArea ctPlotArea) {
-        CTCatAx ctCatAx = ctPlotArea.addNewCatAx();
-        ctCatAx.addNewAxId().setVal(123456); // id of the cat axis
-        CTScaling ctScaling = ctCatAx.addNewScaling();
-        ctScaling.addNewOrientation().setVal(STOrientation.MIN_MAX);
-        ctCatAx.addNewDelete().setVal(false);
-        ctCatAx.addNewAxPos().setVal(STAxPos.B);
-        ctCatAx.addNewCrossAx().setVal(123457); // id of the val axis
-        ctCatAx.addNewTickLblPos().setVal(STTickLblPos.NEXT_TO);
-    }
-
-    private static void setScatterValAx(CTPlotArea ctPlotArea) {
-        // 设置Y坐标
-        CTValAx ctValAx = ctPlotArea.addNewValAx();
-        ctValAx.addNewAxId().setVal(123457);
-        CTScaling ctScaling1 = ctValAx.addNewScaling();
-        ctScaling1.addNewOrientation().setVal(MIN_MAX);
-        ctValAx.addNewDelete().setVal(false);
-        ctValAx.addNewAxPos().setVal(STAxPos.B);
-        ctValAx.addNewCrossAx().setVal(123456);
-        // Y轴的对比线
-        CTShapeProperties ctShapeProperties = ctValAx.addNewMajorGridlines().addNewSpPr();
-        CTLineProperties ctLineProperties = ctShapeProperties.addNewLn();
-        ctLineProperties.setW(9525);
-        ctLineProperties.setCap(STLineCap.Enum.forInt(3));
-        ctLineProperties.setCmpd(STCompoundLine.Enum.forInt(1));
-        ctLineProperties.setAlgn(STPenAlignment.Enum.forInt(1));
-        // 不显示Y轴上的坐标刻度线
-        ctValAx.addNewMajorTickMark().setVal(STTickMark.NONE);
-        ctValAx.addNewMinorTickMark().setVal(STTickMark.NONE);
-        ctValAx.addNewTickLblPos().setVal(NEXT_TO);
-    }
-
-    private static void setRadarValAx(CTPlotArea ctPlotArea) {
-        CTValAx ctValAx = ctPlotArea.addNewValAx();
-        ctValAx.addNewAxId().setVal(123457);
-        ctValAx.addNewScaling().addNewOrientation().setVal(MIN_MAX);
-        ctValAx.addNewDelete().setVal(false);
-        ctValAx.addNewAxPos().setVal(STAxPos.L);
-        ctValAx.addNewCrossAx().setVal(123456);
-        ctValAx.addNewMajorTickMark().setVal(STTickMark.NONE);
-        ctValAx.addNewMinorTickMark().setVal(STTickMark.NONE);
-        ctValAx.addNewTickLblPos().setVal(NEXT_TO);
-        // 设置网格线
-        CTShapeProperties ctShapeProperties = ctValAx.addNewMajorGridlines().addNewSpPr();
-        CTLineProperties ctLineProperties1 = ctShapeProperties.addNewLn();
-        ctLineProperties1.setW(9525);
-        ctLineProperties1.setCap(STLineCap.FLAT);
-        ctLineProperties1.setCmpd(STCompoundLine.SNG);
-        ctLineProperties1.setAlgn(STPenAlignment.CTR);
-        // 值的纵坐标线，不显示
-        ctValAx.addNewSpPr().addNewLn().addNewNoFill();
-        // 值的纵坐标值，不显示
-        ctValAx.addNewTxPr().addNewP().addNewPPr().addNewDefRPr().addNewNoFill();
-    }
-
-    // 不要y轴的标签，或者y轴尽可能的窄
-    private static void setValAx(CTPlotArea ctPlotArea) {
-        CTValAx ctValAx = ctPlotArea.addNewValAx();
-        ctValAx.addNewAxId().setVal(123457); // id of the val axis
-        CTScaling ctScaling = ctValAx.addNewScaling();
-        ctScaling.addNewOrientation().setVal(STOrientation.MIN_MAX);
-        // 不现实y轴
-//        ctValAx.addNewDelete().setVal(true);
-        ctValAx.addNewAxPos().setVal(STAxPos.L);
-        ctValAx.addNewCrossAx().setVal(123456); // id of the cat axis
-        ctValAx.addNewTickLblPos().setVal(STTickLblPos.NEXT_TO);
-    }
-
-    // 图标标题
-    private static void setChartTitle(XSSFChart xchart, String titleStr) {
-        CTChart ctChart = xchart.getCTChart();
-
-        CTTitle title = CTTitle.Factory.newInstance();
-        CTTx cttx = title.addNewTx();
-        CTStrData sd = CTStrData.Factory.newInstance();
-        CTStrVal str = sd.addNewPt();
-        str.setIdx(123459);
-        str.setV(titleStr);
-        cttx.addNewStrRef().setStrCache(sd);
-
-        ctChart.setTitle(title);
-    }
-}
-</code></pre>
+} </script></head><body><i class="fa fa-arrow-right" id="toggle-sidebar" aria-hidden="true"></i><div id="sidebar" data-display="false"><div class="author-info"><div class="author-info__avatar text-center"><img src="/img/avatar.png"></div><div class="author-info__name text-center">koral</div><div class="author-info__description text-center">描述</div><hr><div class="author-info-articles"><a class="author-info-articles__archives article-meta" href="/archives/index.html"><span class="pull-left">文章</span><span class="pull-right">237</span></a><a class="author-info-articles__tags article-meta" href="/tags/index.html"><span class="pull-left">标签</span><span class="pull-right">29</span></a><a class="author-info-articles__categories article-meta" href="/categories/index.html"><span class="pull-left">分类</span><span class="pull-right">33</span></a></div></div></div><nav class="no-bg" id="nav"><div id="page-header"><span class="pull-left"> <a id="site-name" href="/index.html">凯</a></span><i class="fa fa-bars toggle-menu pull-right" aria-hidden="true"></i><span class="pull-right menus">   <a class="site-page" href="/">首页</a><a class="site-page" href="/archives/index.html">归档</a><a class="site-page" href="/tags/index.html">标签</a><a class="site-page" href="/categories/index.html">分类</a><a class="site-page" href="/about/index.html">关于我</a></span><span class="pull-right"></span></div><div id="site-info"><div id="site-title">凯</div><div id="site-sub-title">凯</div></div></nav><div id="content-outer"><div class="layout" id="content-inner"><div class="recent-post-item article-container"><a class="article-title" href="/2018/09/01/后端/SpringBootWebsocket/SpringBoot消息机制(四)-ActiveMQ介绍/index.html">SpringBoot消息机制(四)-ActiveMQ介绍</a><time class="post-meta__date"><i class="fa fa-calendar" aria-hidden="true"></i> 2018-09-01</time><span class="article-meta"><span class="article-meta__separator">|</span><i class="fa fa-inbox article-meta__icon" aria-hidden="true"></i><a class="article-meta__categories" href="/categories/Java/index.html">Java</a></span><span class="article-meta tags"><span class="article-meta__separator">|</span><i class="fa fa-tag article-meta__icon" aria-hidden="true"></i><a class="article-meta__tags" href="/tags/MQ/index.html">MQ</a></span><div class="content"><p>#SpringBoot消息机制(四)-ActiveMQ介绍</p>
+</div><hr></div><div class="recent-post-item article-container"><a class="article-title" href="/2018/09/01/后端/SpringBootWebsocket/SpringBoot消息机制(六)-Apollo介绍与整合/index.html">SpringBoot消息机制(六)-Apollo介绍与整合</a><time class="post-meta__date"><i class="fa fa-calendar" aria-hidden="true"></i> 2018-09-01</time><span class="article-meta"><span class="article-meta__separator">|</span><i class="fa fa-inbox article-meta__icon" aria-hidden="true"></i><a class="article-meta__categories" href="/categories/Java/index.html">Java</a></span><span class="article-meta tags"><span class="article-meta__separator">|</span><i class="fa fa-tag article-meta__icon" aria-hidden="true"></i><a class="article-meta__tags" href="/tags/MQ/index.html">MQ</a></span><div class="content"><p>#SpringBoot消息机制(六)-Apollo介绍与整合</p>
 </div><hr></div><div class="recent-post-item article-container"><a class="article-title" href="/2018/09/01/后端/SpringBootWebsocket/SpringBoot消息机制(五)-SpringBoot整合ActiveMQ/index.html">SpringBoot消息机制(五)-SpringBoot整合ActiveMQ</a><time class="post-meta__date"><i class="fa fa-calendar" aria-hidden="true"></i> 2018-09-01</time><span class="article-meta"><span class="article-meta__separator">|</span><i class="fa fa-inbox article-meta__icon" aria-hidden="true"></i><a class="article-meta__categories" href="/categories/Java/index.html">Java</a></span><span class="article-meta tags"><span class="article-meta__separator">|</span><i class="fa fa-tag article-meta__icon" aria-hidden="true"></i><a class="article-meta__tags" href="/tags/MQ/index.html">MQ</a></span><div class="content"><p>#SpringBoot消息机制(五)-SpringBoot整合ActiveMQ</p>
-</div><hr></div><div class="recent-post-item article-container"><a class="article-title" href="/2018/09/01/后端/SpringBootWebsocket/SpringBoot消息机制(二)-Stomp协议/index.html">SpringBoot消息机制(二)-Stomp协议</a><time class="post-meta__date"><i class="fa fa-calendar" aria-hidden="true"></i> 2018-09-01</time><span class="article-meta"><span class="article-meta__separator">|</span><i class="fa fa-inbox article-meta__icon" aria-hidden="true"></i><a class="article-meta__categories" href="/categories/Java/index.html">Java</a></span><span class="article-meta tags"><span class="article-meta__separator">|</span><i class="fa fa-tag article-meta__icon" aria-hidden="true"></i><a class="article-meta__tags" href="/tags/MQ/index.html">MQ</a></span><div class="content"><h1 id="SpringBoot消息机制-二-Stomp协议"><a href="#SpringBoot消息机制-二-Stomp协议" class="headerlink" title="SpringBoot消息机制(二)-Stomp协议"></a>SpringBoot消息机制(二)-Stomp协议</h1></div><hr></div><nav id="pagination"><div class="pagination"><a class="extend prev" rel="prev" href="/page/44/"><i class="fa fa-chevron-left"></i></a><a class="page-number" href="/">1</a><span class="space">&hellip;</span><a class="page-number" href="/page/44/">44</a><span class="page-number current">45</span><a class="page-number" href="/page/46/">46</a><span class="space">&hellip;</span><a class="page-number" href="/page/48/">48</a><a class="extend next" rel="next" href="/page/46/"><i class="fa fa-chevron-right"></i></a></div></nav></div></div><footer><div class="layout" id="footer"><div class="copyright">&copy;2013 - 2020 By koral</div><div class="framework-info"><span>驱动 - </span><a href="http://hexo.io"><span>Hexo</span></a><span class="footer-separator">|</span><span>主题 - </span><a href="https://github.com/Molunerfinn/hexo-theme-melody"><span>Melody</span></a></div><div class="busuanzi"><script async src="//busuanzi.ibruce.info/busuanzi/2.3/busuanzi.pure.mini.js"></script><span id="busuanzi_container_site_uv"><i class="fa fa-user"></i><span id="busuanzi_value_site_uv"></span><span></span></span><span class="footer-separator">|</span><span id="busuanzi_container_site_pv"><i class="fa fa-eye"></i><span id="busuanzi_value_site_pv"></span><span></span></span></div></div></footer><i class="fa fa-arrow-up" id="go-up" aria-hidden="true"></i><script src="https://cdn.jsdelivr.net/npm/animejs@latest/anime.min.js"></script><script src="https://cdn.jsdelivr.net/npm/jquery@latest/dist/jquery.min.js"></script><script src="https://cdn.jsdelivr.net/npm/@fancyapps/fancybox@latest/dist/jquery.fancybox.min.js"></script><script src="https://cdn.jsdelivr.net/npm/velocity-animate@latest/velocity.min.js"></script><script src="https://cdn.jsdelivr.net/npm/velocity-ui-pack@latest/velocity.ui.min.js"></script><script src="/js/utils.js?version=1.7.0"></script><script src="/js/fancybox.js?version=1.7.0"></script><script src="/js/sidebar.js?version=1.7.0"></script><script src="/js/copy.js?version=1.7.0"></script><script src="/js/fireworks.js?version=1.7.0"></script><script src="/js/transition.js?version=1.7.0"></script><script src="/js/scroll.js?version=1.7.0"></script><script src="/js/head.js?version=1.7.0"></script><script>if(/Android|webOS|iPhone|iPod|iPad|BlackBerry/i.test(navigator.userAgent)) {
+</div><hr></div><div class="recent-post-item article-container"><a class="article-title" href="/2018/09/01/后端/SpringBootWebsocket/SpringBoot消息机制(二)-Stomp协议/index.html">SpringBoot消息机制(二)-Stomp协议</a><time class="post-meta__date"><i class="fa fa-calendar" aria-hidden="true"></i> 2018-09-01</time><span class="article-meta"><span class="article-meta__separator">|</span><i class="fa fa-inbox article-meta__icon" aria-hidden="true"></i><a class="article-meta__categories" href="/categories/Java/index.html">Java</a></span><span class="article-meta tags"><span class="article-meta__separator">|</span><i class="fa fa-tag article-meta__icon" aria-hidden="true"></i><a class="article-meta__tags" href="/tags/MQ/index.html">MQ</a></span><div class="content"><h1 id="SpringBoot消息机制-二-Stomp协议"><a href="#SpringBoot消息机制-二-Stomp协议" class="headerlink" title="SpringBoot消息机制(二)-Stomp协议"></a>SpringBoot消息机制(二)-Stomp协议</h1></div><hr></div><div class="recent-post-item article-container"><a class="article-title" href="/2018/09/01/后端/POI/POI生成Excel-表格抽象工具类/index.html">POI生成Excel工具类</a><time class="post-meta__date"><i class="fa fa-calendar" aria-hidden="true"></i> 2018-09-01</time><span class="article-meta"><span class="article-meta__separator">|</span><i class="fa fa-inbox article-meta__icon" aria-hidden="true"></i><a class="article-meta__categories" href="/categories/Java/index.html">Java</a></span><span class="article-meta tags"><span class="article-meta__separator">|</span><i class="fa fa-tag article-meta__icon" aria-hidden="true"></i><a class="article-meta__tags" href="/tags/POI/index.html">POI</a></span><div class="content"><h1 id="POI生成Excel工具类"><a href="#POI生成Excel工具类" class="headerlink" title="POI生成Excel工具类"></a>POI生成Excel工具类</h1><p>该工具类中，包含：创建表格（带默认样式）、自定义样式（通过重写 setDefaultStyle和setFirstCellStyle）、合并单元格、宽度自适应等。</p>
+<pre><code class="java">/**
+ * Excel操作工具类
+ */
+public class ExcelTools {
+
+    /**
+     * 默认的样式， 垂直水平居中、默认换行
+     */
+    private XSSFCellStyle defaultStyle;
+
+    /**
+     * 默认的行首样式
+     */
+    private XSSFCellStyle firstCellStyle;
+
+    private static SimpleDateFormat sdf = new SimpleDateFormat(&quot;yyyy.MM.dd hh:mm&quot;);
+
+    public XSSFWorkbook createWorkbook() {
+        XSSFWorkbook workbook = new XSSFWorkbook();
+
+        XSSFFont defaultFont = workbook.createFont();
+        defaultFont.setColor(IndexedColors.BLACK.getIndex());
+        defaultFont.setFontHeight(11);
+        defaultFont.setFontName(&quot;微软雅黑 Light&quot;);
+
+        XSSFCellStyle defaultStyle = workbook.createCellStyle();
+        defaultStyle.setWrapText(true);
+        defaultStyle.setAlignment(HorizontalAlignment.CENTER);
+        defaultStyle.setVerticalAlignment(VerticalAlignment.CENTER);
+        defaultStyle.setFont(defaultFont);
+
+        XSSFFont font = workbook.createFont();
+        font.setColor(IndexedColors.WHITE.getIndex());
+        font.setFontHeight(11);
+        font.setFontName(&quot;微软雅黑 Light&quot;);
+
+        XSSFCellStyle firstCellStyle = workbook.createCellStyle();
+        firstCellStyle.setAlignment(HorizontalAlignment.CENTER);
+        firstCellStyle.setVerticalAlignment(VerticalAlignment.CENTER);
+        firstCellStyle.setFillForegroundColor(IndexedColors.LIGHT_BLUE.getIndex());
+        firstCellStyle.setFillPattern(FillPatternType.SOLID_FOREGROUND);
+        firstCellStyle.setFont(font);
+        firstCellStyle.setBorderBottom(BorderStyle.THIN);
+        firstCellStyle.setBottomBorderColor(IndexedColors.LIGHT_BLUE.getIndex());
+        firstCellStyle.setLeftBorderColor(IndexedColors.LIGHT_BLUE.getIndex());
+        firstCellStyle.setRightBorderColor(IndexedColors.LIGHT_BLUE.getIndex());
+
+        setDefaultStyle(defaultStyle);
+        setFirstCellStyle(firstCellStyle);
+
+        return workbook;
+    }
+
+    // 创建页
+    public XSSFSheet createSheet(XSSFWorkbook workbook, String sheetName) {
+        return workbook.createSheet(sheetName);
+    }
+
+    /**
+     * 创建表格
+     *
+     * @param sheet           页 @NotNull
+     * @param titles          首行标题 @NotNull
+     * @param content         填充的内容 @NotNull
+     * @param rowNumber       开始的行号 @NotNull
+     * @param colNumber       开始的列号 @NotNull
+     * @param customRowHeight 自定义行高
+     * @param cellRangeList   需要合并的单元格
+     * @param customRowStyle  自定义样式,key 对应行，value 对应样式
+     * @param customColWidth  自定义宽度自适应
+     */
+    @SuppressWarnings(&quot;unchecked&quot;)
+    public void createTable(XSSFSheet sheet, String[] titles, Object[][] content,
+                            Integer rowNumber, Integer colNumber,
+                            boolean customRowHeight,
+                            List&lt;CellRange&gt; cellRangeList,
+                            Map&lt;Integer, XSSFCellStyle&gt; customRowStyle,
+                            Map&lt;Integer, Integer&gt; customColWidth) {
+        // 首行填充
+        setFirstRow(sheet, titles, getFirstCellStyle(), rowNumber, colNumber);
+        rowNumber++;
+        // 设置单元格宽度
+        autoWidth(sheet, titles, colNumber, customColWidth);
+        // 填充数据
+        for (int i = 0; i &lt; content.length; i++) {
+            Object[] rowContent = content[i];
+            XSSFRow row = sheet.getRow(rowNumber + i) == null ? sheet.createRow(rowNumber + i) : sheet.getRow(rowNumber + i);
+            row.setHeight(customRowHeight ? (short) 800 : -1);
+            XSSFCellStyle cellStyle = customRowStyle == null || customRowStyle.get(rowNumber + i) == null ?
+                    getDefaultStyle() : customRowStyle.get(rowNumber + i);
+            for (int j = 0; j &lt; rowContent.length; j++) {
+                Object colContent = rowContent[j];
+                XSSFCell cell = row.createCell(colNumber + j);
+                // 如果是基本数据类型，则转换为字符串填充; 日期转换输出; List转String输出
+                if (colContent instanceof Integer || colContent instanceof Double
+                        || colContent instanceof String || colContent instanceof Float
+                        || colContent instanceof Character || colContent instanceof Byte
+                        || colContent instanceof Short || colContent instanceof Boolean
+                        || colContent instanceof Long)
+                    cell.setCellValue(String.valueOf(colContent));
+                else if (colContent instanceof Date)
+                    cell.setCellValue(sdf.format(colContent));
+                else if (colContent instanceof Iterable)
+                    cell.setCellValue(new XSSFRichTextString(String.join(&quot; \n &quot;, (Iterable) colContent)));
+                else
+                    cell.setCellValue(&quot; - &quot;);
+                // 单元格样式
+                cell.setCellStyle(cellStyle);
+            }
+        }
+
+        // 合并单元格
+        mergeRegion(sheet, cellRangeList);
+    }
+
+    /**
+     * 合并单元格
+     */
+    public static void mergeRegion(XSSFSheet sheet, List&lt;CellRange&gt; cellRangeList) {
+        if (cellRangeList == null) return;
+        for (CellRange cellRange : cellRangeList) {
+            sheet.addMergedRegion(new CellRangeAddress(cellRange.getFirstRow(), cellRange.getLastRow(), cellRange.getFirstCol(), cellRange.getLastCol()));
+        }
+    }
+
+    /**
+     * 无需定制样式和宽度的表格
+     */
+    public void createTable(XSSFSheet sheet, String[] titles, Object[][] content,
+                            Integer rowNumber, Integer colNumber) {
+        createTable(sheet, titles, content, rowNumber, colNumber, true, null, null, null);
+    }
+
+
+    /**
+     * 填充首行数据
+     * 默认按照标题的长度设置单元格宽度
+     *
+     * @param sheet       页
+     * @param cellTitles  标题
+     * @param headerStyle 首行样式
+     * @param rowNum      起始行
+     * @param colNum      起始列
+     */
+    public static void setFirstRow(XSSFSheet sheet, String[] cellTitles, XSSFCellStyle headerStyle, int rowNum, int colNum) {
+        final XSSFRow row = sheet.getRow(rowNum) == null ? sheet.createRow(rowNum) : sheet.getRow(rowNum);
+        row.setHeight((short) 800);
+
+        for (String cellName : cellTitles) {
+            final Cell cell = row.createCell(colNum++);
+            cell.setCellValue(cellName);
+            cell.setCellStyle(headerStyle);
+        }
+    }
+
+    /**
+     * 宽度自适应
+     *
+     * @param sheet       页
+     * @param strings     行首
+     * @param colNumber   起始列
+     * @param customWidth 自定义宽度
+     */
+    public static void autoWidth(Sheet sheet, String[] strings, Integer colNumber, Map&lt;Integer, Integer&gt; customWidth) {
+        for (int s = 0; s &lt; strings.length; s++) {
+            int col = colNumber + s;
+            if (customWidth != null &amp;&amp; customWidth.keySet().contains(col)) {
+                sheet.setColumnWidth(col, customWidth.get(col));
+            } else {
+                sheet.autoSizeColumn(col, true);
+                sheet.setColumnWidth(col, sheet.getColumnWidth(col) * 17 / 10);
+            }
+        }
+    }
+
+    public XSSFCellStyle getDefaultStyle() {
+        return defaultStyle;
+    }
+
+    public void setDefaultStyle(XSSFCellStyle defaultStyle) {
+        this.defaultStyle = defaultStyle;
+    }
+
+    public XSSFCellStyle getFirstCellStyle() {
+        return firstCellStyle;
+    }
+
+    public void setFirstCellStyle(XSSFCellStyle firstCellStyle) {
+        this.firstCellStyle = firstCellStyle;
+    }
+}</code></pre>
+<p>合并单元格的对象：</p>
+<pre><code class="java">/**
+ * 需要合并的单元格
+ */
+@Setter
+@Getter
+public class CellRange {
+    private Integer firstRow;
+    private Integer lastRow;
+    private Integer firstCol;
+    private Integer lastCol;
+
+    private CellRange(Integer firstRow, Integer lastRow, Integer firstCol, Integer lastCol) {
+        this.firstRow = firstRow;
+        this.lastRow = lastRow;
+        this.firstCol = firstCol;
+        this.lastCol = lastCol;
+    }
+
+    public static CellRange build(Integer firstRow, Integer lastRow, Integer firstCol, Integer lastCol) {
+        return new CellRange(firstRow, lastRow, firstCol, lastCol);
+    }
+}</code></pre>
+</div><hr></div><nav id="pagination"><div class="pagination"><a class="extend prev" rel="prev" href="/page/44/"><i class="fa fa-chevron-left"></i></a><a class="page-number" href="/">1</a><span class="space">&hellip;</span><a class="page-number" href="/page/44/">44</a><span class="page-number current">45</span><a class="page-number" href="/page/46/">46</a><span class="space">&hellip;</span><a class="page-number" href="/page/48/">48</a><a class="extend next" rel="next" href="/page/46/"><i class="fa fa-chevron-right"></i></a></div></nav></div></div><footer><div class="layout" id="footer"><div class="copyright">&copy;2013 - 2020 By koral</div><div class="framework-info"><span>驱动 - </span><a href="http://hexo.io"><span>Hexo</span></a><span class="footer-separator">|</span><span>主题 - </span><a href="https://github.com/Molunerfinn/hexo-theme-melody"><span>Melody</span></a></div><div class="busuanzi"><script async src="//busuanzi.ibruce.info/busuanzi/2.3/busuanzi.pure.mini.js"></script><span id="busuanzi_container_site_uv"><i class="fa fa-user"></i><span id="busuanzi_value_site_uv"></span><span></span></span><span class="footer-separator">|</span><span id="busuanzi_container_site_pv"><i class="fa fa-eye"></i><span id="busuanzi_value_site_pv"></span><span></span></span></div></div></footer><i class="fa fa-arrow-up" id="go-up" aria-hidden="true"></i><script src="https://cdn.jsdelivr.net/npm/animejs@latest/anime.min.js"></script><script src="https://cdn.jsdelivr.net/npm/jquery@latest/dist/jquery.min.js"></script><script src="https://cdn.jsdelivr.net/npm/@fancyapps/fancybox@latest/dist/jquery.fancybox.min.js"></script><script src="https://cdn.jsdelivr.net/npm/velocity-animate@latest/velocity.min.js"></script><script src="https://cdn.jsdelivr.net/npm/velocity-ui-pack@latest/velocity.ui.min.js"></script><script src="/js/utils.js?version=1.7.0"></script><script src="/js/fancybox.js?version=1.7.0"></script><script src="/js/sidebar.js?version=1.7.0"></script><script src="/js/copy.js?version=1.7.0"></script><script src="/js/fireworks.js?version=1.7.0"></script><script src="/js/transition.js?version=1.7.0"></script><script src="/js/scroll.js?version=1.7.0"></script><script src="/js/head.js?version=1.7.0"></script><script>if(/Android|webOS|iPhone|iPod|iPad|BlackBerry/i.test(navigator.userAgent)) {
   $('#nav').addClass('is-mobile')
   $('footer').addClass('is-mobile')
   $('#top-container').addClass('is-mobile')

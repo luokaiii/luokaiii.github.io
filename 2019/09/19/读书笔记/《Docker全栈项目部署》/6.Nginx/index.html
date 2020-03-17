@@ -1,0 +1,87 @@
+<!DOCTYPE html><html lang="zh-Hans"><head><meta name="generator" content="Hexo 3.9.0"><meta charset="UTF-8"><meta http-equiv="X-UA-Compatible" content="IE=edge"><meta name="viewport" content="width=device-width, initial-scale=1, maximum-scale=1"><meta name="description" content="Docker部署全栈：六、部署Nginx和React"><meta name="keywords" content="Docker全栈部署"><meta name="author" content="koral"><meta name="copyright" content="koral"><title>Docker部署全栈：六、部署Nginx和React | 凯</title><link rel="shortcut icon" href="/melody-favicon.ico"><link rel="stylesheet" href="/css/index.css?version=1.7.0"><link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/font-awesome@latest/css/font-awesome.min.css?version=1.7.0"><meta name="format-detection" content="telephone=no"><meta http-equiv="x-dns-prefetch-control" content="on"><link rel="dns-prefetch" href="https://cdn.jsdelivr.net"><meta http-equiv="Cache-Control" content="no-transform"><meta http-equiv="Cache-Control" content="no-siteapp"><script>var GLOBAL_CONFIG = { 
+  root: '/',
+  algolia: undefined,
+  localSearch: undefined,
+  copy: {
+    success: '复制成功',
+    error: '复制错误',
+    noSupport: '浏览器不支持'
+  }
+} </script></head><body><i class="fa fa-arrow-right" id="toggle-sidebar" aria-hidden="true"></i><div id="sidebar" data-display="true"><div class="toggle-sidebar-info text-center"><span data-toggle="切换文章详情">切换站点概览</span><hr></div><div class="sidebar-toc"><div class="sidebar-toc__title">目录</div><div class="sidebar-toc__progress"><span class="progress-notice">你已经读了</span><span class="progress-num">0</span><span class="progress-percentage">%</span><div class="sidebar-toc__progress-bar"></div></div><div class="sidebar-toc__content"><ol class="toc"><li class="toc-item toc-level-1"><a class="toc-link" href="#Docker部署全栈项目：六、部署Nginx和React"><span class="toc-number">1.</span> <span class="toc-text">Docker部署全栈项目：六、部署Nginx和React</span></a><ol class="toc-child"><li class="toc-item toc-level-2"><a class="toc-link" href="#一、创建React项目"><span class="toc-number">1.1.</span> <span class="toc-text">一、创建React项目</span></a></li><li class="toc-item toc-level-2"><a class="toc-link" href="#二、启动Nginx"><span class="toc-number">1.2.</span> <span class="toc-text">二、启动Nginx</span></a><ol class="toc-child"><li class="toc-item toc-level-3"><a class="toc-link" href="#1-编写-start-sh"><span class="toc-number">1.2.1.</span> <span class="toc-text">1. 编写 start.sh</span></a></li><li class="toc-item toc-level-3"><a class="toc-link" href="#2-编写-conf-nginx-conf"><span class="toc-number">1.2.2.</span> <span class="toc-text">2. 编写 conf/nginx.conf</span></a></li><li class="toc-item toc-level-3"><a class="toc-link" href="#3-运行脚本"><span class="toc-number">1.2.3.</span> <span class="toc-text">3. 运行脚本</span></a></li><li class="toc-item toc-level-3"><a class="toc-link" href="#4-访问端口"><span class="toc-number">1.2.4.</span> <span class="toc-text">4. 访问端口</span></a></li></ol></li><li class="toc-item toc-level-2"><a class="toc-link" href="#三、使用Nginx代理接口服务"><span class="toc-number">1.3.</span> <span class="toc-text">三、使用Nginx代理接口服务</span></a></li><li class="toc-item toc-level-2"><a class="toc-link" href="#项目地址"><span class="toc-number">1.4.</span> <span class="toc-text">项目地址</span></a></li></ol></li></ol></div></div><div class="author-info hide"><div class="author-info__avatar text-center"><img src="/img/avatar.png"></div><div class="author-info__name text-center">koral</div><div class="author-info__description text-center">描述</div><hr><div class="author-info-articles"><a class="author-info-articles__archives article-meta" href="/archives/index.html"><span class="pull-left">文章</span><span class="pull-right">237</span></a><a class="author-info-articles__tags article-meta" href="/tags/index.html"><span class="pull-left">标签</span><span class="pull-right">29</span></a><a class="author-info-articles__categories article-meta" href="/categories/index.html"><span class="pull-left">分类</span><span class="pull-right">33</span></a></div></div></div><div id="content-outer"><div class="no-bg" id="top-container"><div id="page-header"><span class="pull-left"> <a id="site-name" href="/index.html">凯</a></span><i class="fa fa-bars toggle-menu pull-right" aria-hidden="true"></i><span class="pull-right menus">   <a class="site-page" href="/">首页</a><a class="site-page" href="/archives/index.html">归档</a><a class="site-page" href="/tags/index.html">标签</a><a class="site-page" href="/categories/index.html">分类</a><a class="site-page" href="/about/index.html">关于我</a></span><span class="pull-right"></span></div><div id="post-info"><div id="post-title">Docker部署全栈：六、部署Nginx和React</div><div id="post-meta"><time class="post-meta__date"><i class="fa fa-calendar" aria-hidden="true"></i> 2019-09-19</time><span class="post-meta__separator">|</span><i class="fa fa-inbox post-meta__icon" aria-hidden="true"></i><a class="post-meta__categories" href="/categories/运维/index.html">运维</a><i class="fa fa-angle-right" aria-hidden="true"></i><i class="fa fa-inbox post-meta__icon" aria-hidden="true"></i><a class="post-meta__categories" href="/categories/运维/Docker全栈部署/index.html">Docker全栈部署</a></div></div></div><div class="layout" id="content-inner"><article id="post"><div class="article-container" id="post-content"><h1 id="Docker部署全栈项目：六、部署Nginx和React"><a href="#Docker部署全栈项目：六、部署Nginx和React" class="headerlink" title="Docker部署全栈项目：六、部署Nginx和React"></a>Docker部署全栈项目：六、部署Nginx和React</h1><p>前端项目不论是 vue 还是 react，编译之后都是 html + css +js 的模板。</p>
+<p>因此这里使用 <code>React Demo</code> 来演示如何部署前端项目至，Nginx的代理中。</p>
+<h2 id="一、创建React项目"><a href="#一、创建React项目" class="headerlink" title="一、创建React项目"></a>一、创建React项目</h2><p>如果你使用的是其它前端语言，或者直接是纯JS写法，都是大同小异。</p>
+<pre><code class="sh"># 创建React项目
+$ create-react-app web
+
+# 进入前端项目
+$ cd web
+
+# 构建项目(或者使用 npm run build)
+$ yarn build 
+
+# 构建完成后，会出现 build/ 目录，存放所有的静态资源文件</code></pre>
+<p>将构建后的数据，放到 nginx/html 目录下。</p>
+<blockquote>
+<p>如果是远程服务器，可以使用 scp、pscp 等命令发送文件。</p>
+</blockquote>
+<h2 id="二、启动Nginx"><a href="#二、启动Nginx" class="headerlink" title="二、启动Nginx"></a>二、启动Nginx</h2><h3 id="1-编写-start-sh"><a href="#1-编写-start-sh" class="headerlink" title="1. 编写 start.sh"></a>1. 编写 start.sh</h3><pre><code class="sh">#!/bin/bash
+
+# 启动前停止容器
+docker stop luokaiii-nginx
+docker rm luokaiii-nginx
+
+# 运行容器
+docker run --name luokaiii-nginx \ # 指定容器名
+        -p 80:80 \    # 暴露80端口至宿主机
+        -v /${PWD}/conf:/etc/nginx/conf.d \    # 挂载额外的配置文件
+        -v /${PWD}/html:/usr/www/luokaiii/cn/html \    # 挂载静态资源
+        -d nginx:alpine     # 后台运行nginx</code></pre>
+<h3 id="2-编写-conf-nginx-conf"><a href="#2-编写-conf-nginx-conf" class="headerlink" title="2. 编写 conf/nginx.conf"></a>2. 编写 conf/nginx.conf</h3><pre><code class="sh">server {
+        listen 80;
+
+        root /usr/www/luokaiii/cn/html;
+
+        location / {
+                try_files $uri $uri/ /index.html;
+        }
+}</code></pre>
+<h3 id="3-运行脚本"><a href="#3-运行脚本" class="headerlink" title="3. 运行脚本"></a>3. 运行脚本</h3><pre><code class="sh"># 运行脚本
+$ ./start.sh</code></pre>
+<h3 id="4-访问端口"><a href="#4-访问端口" class="headerlink" title="4. 访问端口"></a>4. 访问端口</h3><p><img src="https://i.loli.net/2019/09/24/ur4k3zwVv1AYeZX.png" alt="访问80端口"></p>
+<h2 id="三、使用Nginx代理接口服务"><a href="#三、使用Nginx代理接口服务" class="headerlink" title="三、使用Nginx代理接口服务"></a>三、使用Nginx代理接口服务</h2><p>既然我们的接口使用的是容器服务，那么我可以把 <code>luokaiii-api</code> 的外部端口关闭，改为 nginx 的请求转发。</p>
+<p>修改 nginx.conf：</p>
+<pre><code class="sh">upstream apisupport {
+        server api:8080;
+}
+server {
+        listen 80;
+
+        root /usr/www/luokaiii/cn/html;
+
+        location / {
+                try_files $uri $uri/ /index.html;
+        }
+
+        # 将 /api/ 请求转发至 `luokaiii-api` 服务
+        location /api/ {
+                proxy_pass http://apisupport/;
+        }
+}
+</code></pre>
+<p>请求测试：</p>
+<p><img src="https://i.loli.net/2019/09/24/zx2qnsV7OCurgSH.png" alt="请求结果"></p>
+<p>参考资料：</p>
+<ol>
+<li><a href="https://hub.docker.com/_/nginx" target="_blank" rel="noopener">Docker Hub</a></li>
+</ol>
+<h2 id="项目地址"><a href="#项目地址" class="headerlink" title="项目地址"></a>项目地址</h2><ul>
+<li><p><a href="https://github.com/luokaiii/luokaiii.docker-images" target="_blank" rel="noopener">Github</a></p>
+</li>
+<li><p><a href="https://gitee.com/luokaiii/luokaiii.docker-images" target="_blank" rel="noopener">Gitee</a></p>
+</li>
+</ul>
+</div></article><div class="post-copyright"><div class="post-copyright__author"><span class="post-copyright-meta">文章作者: </span><span class="post-copyright-info"><a href="mailto:undefined">koral</a></span></div><div class="post-copyright__type"><span class="post-copyright-meta">文章链接: </span><span class="post-copyright-info"><a href="http://luokaiii.github.io/2019/09/19/读书笔记/《Docker全栈项目部署》/6.Nginx//index.html">http://luokaiii.github.io/2019/09/19/读书笔记/《Docker全栈项目部署》/6.Nginx/</a></span></div><div class="post-copyright__notice"><span class="post-copyright-meta">版权声明: </span><span class="post-copyright-info">本博客所有文章除特别声明外，均采用 <a href="https://creativecommons.org/licenses/by-nc-sa/4.0/">CC BY-NC-SA 4.0</a> 许可协议。转载请注明来自 <a href="http://luokaiii.github.io">凯</a>！</span></div></div><div class="post-meta__tag-list"><a class="post-meta__tags" href="/tags/Docker全栈部署/index.html">Docker全栈部署</a></div><nav id="pagination"><div class="prev-post pull-left"><a href="/2019/09/20/读书笔记/《Docker全栈项目部署》/5.SpringBoot/index.html"><i class="fa fa-chevron-left">  </i><span>Docker部署全栈：五、Docker-Compose部署SpringBoot</span></a></div><div class="next-post pull-right"><a href="/2019/09/18/读书笔记/《Docker全栈项目部署》/7.Docker-Compose/index.html"><span>Docker部署全栈：六、部署Nginx和React</span><i class="fa fa-chevron-right"></i></a></div></nav></div></div><footer><div class="layout" id="footer"><div class="copyright">&copy;2013 - 2020 By koral</div><div class="framework-info"><span>驱动 - </span><a href="http://hexo.io"><span>Hexo</span></a><span class="footer-separator">|</span><span>主题 - </span><a href="https://github.com/Molunerfinn/hexo-theme-melody"><span>Melody</span></a></div><div class="busuanzi"><script async src="//busuanzi.ibruce.info/busuanzi/2.3/busuanzi.pure.mini.js"></script><span id="busuanzi_container_page_pv"><i class="fa fa-file"></i><span id="busuanzi_value_page_pv"></span><span></span></span></div></div></footer><i class="fa fa-arrow-up" id="go-up" aria-hidden="true"></i><script src="https://cdn.jsdelivr.net/npm/animejs@latest/anime.min.js"></script><script src="https://cdn.jsdelivr.net/npm/jquery@latest/dist/jquery.min.js"></script><script src="https://cdn.jsdelivr.net/npm/@fancyapps/fancybox@latest/dist/jquery.fancybox.min.js"></script><script src="https://cdn.jsdelivr.net/npm/velocity-animate@latest/velocity.min.js"></script><script src="https://cdn.jsdelivr.net/npm/velocity-ui-pack@latest/velocity.ui.min.js"></script><script src="/js/utils.js?version=1.7.0"></script><script src="/js/fancybox.js?version=1.7.0"></script><script src="/js/sidebar.js?version=1.7.0"></script><script src="/js/copy.js?version=1.7.0"></script><script src="/js/fireworks.js?version=1.7.0"></script><script src="/js/transition.js?version=1.7.0"></script><script src="/js/scroll.js?version=1.7.0"></script><script src="/js/head.js?version=1.7.0"></script><script>if(/Android|webOS|iPhone|iPod|iPad|BlackBerry/i.test(navigator.userAgent)) {
+  $('#nav').addClass('is-mobile')
+  $('footer').addClass('is-mobile')
+  $('#top-container').addClass('is-mobile')
+}</script></body></html>

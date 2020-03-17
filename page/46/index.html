@@ -7,133 +7,7 @@
     error: '复制错误',
     noSupport: '浏览器不支持'
   }
-} </script></head><body><i class="fa fa-arrow-right" id="toggle-sidebar" aria-hidden="true"></i><div id="sidebar" data-display="false"><div class="author-info"><div class="author-info__avatar text-center"><img src="/img/avatar.png"></div><div class="author-info__name text-center">koral</div><div class="author-info__description text-center">描述</div><hr><div class="author-info-articles"><a class="author-info-articles__archives article-meta" href="/archives/index.html"><span class="pull-left">文章</span><span class="pull-right">239</span></a><a class="author-info-articles__tags article-meta" href="/tags/index.html"><span class="pull-left">标签</span><span class="pull-right">20</span></a><a class="author-info-articles__categories article-meta" href="/categories/index.html"><span class="pull-left">分类</span><span class="pull-right">20</span></a></div></div></div><nav class="no-bg" id="nav"><div id="page-header"><span class="pull-left"> <a id="site-name" href="/index.html">凯</a></span><i class="fa fa-bars toggle-menu pull-right" aria-hidden="true"></i><span class="pull-right menus">   <a class="site-page" href="/">首页</a><a class="site-page" href="/archives/index.html">归档</a><a class="site-page" href="/tags/index.html">标签</a><a class="site-page" href="/categories/index.html">分类</a><a class="site-page" href="/about/index.html">关于我</a></span><span class="pull-right"></span></div><div id="site-info"><div id="site-title">凯</div><div id="site-sub-title">凯</div></div></nav><div id="content-outer"><div class="layout" id="content-inner"><div class="recent-post-item article-container"><a class="article-title" href="/2018/09/01/后端/SpringBootWebsocket/SpringBoot消息机制(三)-搭建Websocket+Stomp服务/index.html">SpringBoot消息机制(三)-搭建Websocket+Stomp服务</a><time class="post-meta__date"><i class="fa fa-calendar" aria-hidden="true"></i> 2018-09-01</time><span class="article-meta"><span class="article-meta__separator">|</span><i class="fa fa-inbox article-meta__icon" aria-hidden="true"></i><a class="article-meta__categories" href="/categories/Java/index.html">Java</a></span><span class="article-meta tags"><span class="article-meta__separator">|</span><i class="fa fa-tag article-meta__icon" aria-hidden="true"></i><a class="article-meta__tags" href="/tags/MQ/index.html">MQ</a></span><div class="content"><p>#SpringBoot消息机制(三)-搭建Websocket+Stomp服务</p>
-</div><hr></div><div class="recent-post-item article-container"><a class="article-title" href="/2018/09/01/读书笔记/《SpringData》/MongoDB/Spring-Data-MongoDB（3）/index.html">SpringDataMongoDB(三)</a><time class="post-meta__date"><i class="fa fa-calendar" aria-hidden="true"></i> 2018-09-01</time><span class="article-meta"><span class="article-meta__separator">|</span><i class="fa fa-inbox article-meta__icon" aria-hidden="true"></i><a class="article-meta__categories" href="/categories/Java/index.html">Java</a></span><span class="article-meta tags"><span class="article-meta__separator">|</span><i class="fa fa-tag article-meta__icon" aria-hidden="true"></i><a class="article-meta__tags" href="/tags/Spring-Data/index.html">Spring Data</a></span><div class="content"><h1 id="Spring-Data-MongoDB-（三）-自定义converter"><a href="#Spring-Data-MongoDB-（三）-自定义converter" class="headerlink" title="Spring Data MongoDB （三） 自定义converter"></a>Spring Data MongoDB （三） 自定义converter</h1><pre><code class="java">package com.pgc.diagnose.config;
-
-import com.mongodb.MongoClient;
-import org.springframework.beans.factory.annotation.Autowired;
-import org.springframework.beans.factory.annotation.Value;
-import org.springframework.boot.autoconfigure.EnableAutoConfiguration;
-import org.springframework.boot.autoconfigure.mongo.embedded.EmbeddedMongoAutoConfiguration;
-import org.springframework.context.annotation.Configuration;
-import org.springframework.context.annotation.Profile;
-import org.springframework.core.convert.converter.Converter;
-import org.springframework.data.convert.ReadingConverter;
-import org.springframework.data.mongodb.config.AbstractMongoConfiguration;
-import org.springframework.data.mongodb.core.convert.CustomConversions;
-
-import java.util.ArrayList;
-import java.util.List;
-
-@Configuration
-//@EnableAutoConfiguration(exclude = {EmbeddedMongoAutoConfiguration.class})
-//@Profile(&quot;!testing&quot;)
-public class MongoConfig extends AbstractMongoConfiguration {
-
-    @Value(&quot;${spring.data.mongodb.uri}&quot;)
-    private String host;
-
-    @Override
-    public MongoClient mongoClient() {
-        return new MongoClient(&quot;127.0.0.1&quot;, 27017);
-    }
-
-    @Override
-    protected String getDatabaseName() {
-        return &quot;ch_node&quot;;
-    }
-
-    @Override
-    public CustomConversions customConversions() {
-        List&lt;Converter&lt;?, ?&gt;&gt; converters = new ArrayList&lt;&gt;();
-        converters.add(new StringToPointConverter2());
-        return new CustomConversions(converters);
-    }
-}
-</code></pre>
-<pre><code class="java">package com.pgc.diagnose.config;
-
-import com.pgc.common.exception.BadRequestException;
-import com.pgc.diagnose.model.Point;
-import org.springframework.core.convert.ConverterNotFoundException;
-import org.springframework.core.convert.TypeDescriptor;
-import org.springframework.core.convert.converter.ConditionalGenericConverter;
-import org.springframework.stereotype.Component;
-
-import java.util.Collections;
-import java.util.Set;
-
-@Component
-public class StringToPointConverter implements ConditionalGenericConverter {
-
-    @Override
-    public boolean matches(TypeDescriptor sourceType, TypeDescriptor targetType) {
-        return sourceType.getType().equals(String.class) &amp;&amp; targetType.getType().equals(Point.class);
-    }
-
-    @Override
-    public Set&lt;ConvertiblePair&gt; getConvertibleTypes() {
-        return Collections.singleton(new ConvertiblePair(String.class, Point.class));
-    }
-
-    @Override
-    public Object convert(Object source, TypeDescriptor sourceType, TypeDescriptor targetType) {
-        String from = (String) source;
-
-        if (from != null){
-            String[] strings = from.split(&quot;#&quot;);
-
-            if (strings.length == 0 || strings.length &gt; 2)
-                throw new BadRequestException(&quot;String 转 Point 失败！&quot;);
-
-            if (strings.length == 1)
-                return Point.build(Point.Track.valueOf(strings[0]));
-
-            return Point.build(Point.Track.valueOf(strings[0]), Point.Industry.valueOf(strings[1]));
-        }
-
-        throw new ConverterNotFoundException(sourceType, targetType);
-    }
-}
-</code></pre>
-<pre><code class="java">package com.pgc.diagnose.config;
-
-import com.pgc.common.exception.BadRequestException;
-import com.pgc.diagnose.model.Point;
-import org.springframework.core.convert.converter.Converter;
-import org.springframework.stereotype.Component;
-
-@Component
-public class StringToPointConverter2 implements Converter&lt;String, Point&gt; {
-    @Override
-    public Point convert(String from) {
-
-        if (from != null){
-            String[] strings = from.split(&quot;#&quot;);
-
-            if (strings.length == 0 || strings.length &gt; 2)
-                throw new BadRequestException(&quot;String 转 Point 失败！&quot;);
-
-            if (strings.length == 1)
-                return Point.build(Point.Track.valueOf(strings[0]));
-
-            return Point.build(Point.Track.valueOf(strings[0]), Point.Industry.valueOf(strings[1]));
-        }
-
-        return null;
-    }
-}
-</code></pre>
-<pre><code class="java">package com.pgc.diagnose.config;
-
-import com.pgc.common.config.WebConfig;
-import org.springframework.context.annotation.Configuration;
-
-@Configuration
-public class DiagnoseAppWebConfig extends WebConfig {
-
-}
-</code></pre>
+} </script></head><body><i class="fa fa-arrow-right" id="toggle-sidebar" aria-hidden="true"></i><div id="sidebar" data-display="false"><div class="author-info"><div class="author-info__avatar text-center"><img src="/img/avatar.png"></div><div class="author-info__name text-center">koral</div><div class="author-info__description text-center">描述</div><hr><div class="author-info-articles"><a class="author-info-articles__archives article-meta" href="/archives/index.html"><span class="pull-left">文章</span><span class="pull-right">237</span></a><a class="author-info-articles__tags article-meta" href="/tags/index.html"><span class="pull-left">标签</span><span class="pull-right">29</span></a><a class="author-info-articles__categories article-meta" href="/categories/index.html"><span class="pull-left">分类</span><span class="pull-right">33</span></a></div></div></div><nav class="no-bg" id="nav"><div id="page-header"><span class="pull-left"> <a id="site-name" href="/index.html">凯</a></span><i class="fa fa-bars toggle-menu pull-right" aria-hidden="true"></i><span class="pull-right menus">   <a class="site-page" href="/">首页</a><a class="site-page" href="/archives/index.html">归档</a><a class="site-page" href="/tags/index.html">标签</a><a class="site-page" href="/categories/index.html">分类</a><a class="site-page" href="/about/index.html">关于我</a></span><span class="pull-right"></span></div><div id="site-info"><div id="site-title">凯</div><div id="site-sub-title">凯</div></div></nav><div id="content-outer"><div class="layout" id="content-inner"><div class="recent-post-item article-container"><a class="article-title" href="/2018/09/01/后端/SpringBootWebsocket/SpringBoot消息机制(一)-WebSocket介绍/index.html">SpringBoot消息机制(一)-WebSocket介绍</a><time class="post-meta__date"><i class="fa fa-calendar" aria-hidden="true"></i> 2018-09-01</time><span class="article-meta"><span class="article-meta__separator">|</span><i class="fa fa-inbox article-meta__icon" aria-hidden="true"></i><a class="article-meta__categories" href="/categories/Java/index.html">Java</a></span><span class="article-meta tags"><span class="article-meta__separator">|</span><i class="fa fa-tag article-meta__icon" aria-hidden="true"></i><a class="article-meta__tags" href="/tags/MQ/index.html">MQ</a></span><div class="content"><p>#SpringBoot消息机制(一)-WebSocket介绍<br><a href="https://my.oschina.net/genghz/blog/1796965" target="_blank" rel="noopener">https://my.oschina.net/genghz/blog/1796965</a></p>
 </div><hr></div><div class="recent-post-item article-container"><a class="article-title" href="/2018/09/01/分布式/SpringCloud/微服务重构/index.html">SpringCloud-微服务重构</a><time class="post-meta__date"><i class="fa fa-calendar" aria-hidden="true"></i> 2018-09-01</time><span class="article-meta"><span class="article-meta__separator">|</span><i class="fa fa-inbox article-meta__icon" aria-hidden="true"></i><a class="article-meta__categories" href="/categories/Java/index.html">Java</a></span><span class="article-meta tags"><span class="article-meta__separator">|</span><i class="fa fa-tag article-meta__icon" aria-hidden="true"></i><a class="article-meta__tags" href="/tags/Spring-Cloud/index.html">Spring Cloud</a></span><div class="content"><h1 id="微服务重构"><a href="#微服务重构" class="headerlink" title="微服务重构"></a>微服务重构</h1><p>在重构应用中，可以通过以下几个方法梳理：</p>
 <ol>
 <li>每个 Rest 服务都是一个潜在的微服务</li>
@@ -345,7 +219,109 @@ public void createScatterChart() throws IOException {
   &lt;char:dispBlanksAs val=&quot;gap&quot;/&gt;
   &lt;char:showDLblsOverMax val=&quot;false&quot;/&gt;
 &lt;/xml-fragment&gt;</code></pre>
-<h2 id="四、工具类，我放在-POI生成原生图表-工具类-中"><a href="#四、工具类，我放在-POI生成原生图表-工具类-中" class="headerlink" title="四、工具类，我放在 POI生成原生图表-工具类 中"></a>四、工具类，我放在 <a href="www.baidu.com">POI生成原生图表-工具类</a> 中</h2></div><hr></div><nav id="pagination"><div class="pagination"><a class="extend prev" rel="prev" href="/page/45/"><i class="fa fa-chevron-left"></i></a><a class="page-number" href="/">1</a><span class="space">&hellip;</span><a class="page-number" href="/page/45/">45</a><span class="page-number current">46</span><a class="page-number" href="/page/47/">47</a><a class="page-number" href="/page/48/">48</a><a class="extend next" rel="next" href="/page/47/"><i class="fa fa-chevron-right"></i></a></div></nav></div></div><footer><div class="layout" id="footer"><div class="copyright">&copy;2013 - 2020 By koral</div><div class="framework-info"><span>驱动 - </span><a href="http://hexo.io"><span>Hexo</span></a><span class="footer-separator">|</span><span>主题 - </span><a href="https://github.com/Molunerfinn/hexo-theme-melody"><span>Melody</span></a></div><div class="busuanzi"><script async src="//busuanzi.ibruce.info/busuanzi/2.3/busuanzi.pure.mini.js"></script><span id="busuanzi_container_site_uv"><i class="fa fa-user"></i><span id="busuanzi_value_site_uv"></span><span></span></span><span class="footer-separator">|</span><span id="busuanzi_container_site_pv"><i class="fa fa-eye"></i><span id="busuanzi_value_site_pv"></span><span></span></span></div></div></footer><i class="fa fa-arrow-up" id="go-up" aria-hidden="true"></i><script src="https://cdn.jsdelivr.net/npm/animejs@latest/anime.min.js"></script><script src="https://cdn.jsdelivr.net/npm/jquery@latest/dist/jquery.min.js"></script><script src="https://cdn.jsdelivr.net/npm/@fancyapps/fancybox@latest/dist/jquery.fancybox.min.js"></script><script src="https://cdn.jsdelivr.net/npm/velocity-animate@latest/velocity.min.js"></script><script src="https://cdn.jsdelivr.net/npm/velocity-ui-pack@latest/velocity.ui.min.js"></script><script src="/js/utils.js?version=1.7.0"></script><script src="/js/fancybox.js?version=1.7.0"></script><script src="/js/sidebar.js?version=1.7.0"></script><script src="/js/copy.js?version=1.7.0"></script><script src="/js/fireworks.js?version=1.7.0"></script><script src="/js/transition.js?version=1.7.0"></script><script src="/js/scroll.js?version=1.7.0"></script><script src="/js/head.js?version=1.7.0"></script><script>if(/Android|webOS|iPhone|iPod|iPad|BlackBerry/i.test(navigator.userAgent)) {
+<h2 id="四、工具类，我放在-POI生成原生图表-工具类-中"><a href="#四、工具类，我放在-POI生成原生图表-工具类-中" class="headerlink" title="四、工具类，我放在 POI生成原生图表-工具类 中"></a>四、工具类，我放在 <a href="www.baidu.com">POI生成原生图表-工具类</a> 中</h2></div><hr></div><div class="recent-post-item article-container"><a class="article-title" href="/2018/09/01/后端/POI/poi操作word生成textbox/index.html">poi����word����textbox</a><time class="post-meta__date"><i class="fa fa-calendar" aria-hidden="true"></i> 2018-09-01</time><span class="article-meta"><span class="article-meta__separator">|</span><i class="fa fa-inbox article-meta__icon" aria-hidden="true"></i><a class="article-meta__categories" href="/categories/Java/index.html">Java</a></span><span class="article-meta tags"><span class="article-meta__separator">|</span><i class="fa fa-tag article-meta__icon" aria-hidden="true"></i><a class="article-meta__tags" href="/tags/POI/index.html">POI</a></span><div class="content"><pre><code class="java">public static void main(String[] args) throws Exception {
+
+?```
+    XWPFDocument document = new XWPFDocument();
+
+    XWPFParagraph paragraph = document.createParagraph();
+    XWPFRun run =  paragraph.createRun();
+    run.setText(&quot;Callout shape over text: Lorem ipsum semit dolor Lorem ipsum semit dolor Lorem ipsum semit dolor Lorem ipsum semit dolor Lorem ipsum semit dolor Lorem ipsum semit dolor Lorem ipsum semit dolor Lorem ipsum semit dolor Lorem ipsum semit dolor Lorem ipsum semit dolor Lorem ipsum semit dolor Lorem ipsum semit dolor Lorem ipsum semit dolor Lorem ipsum semit dolor Lorem ipsum semit dolor Lorem ipsum semit dolor Lorem ipsum semit dolor.&quot;);
+
+    appendCalloutShape(run, &quot;200pt&quot;, &quot;0&quot;, &quot;1in&quot;, &quot;1in&quot;, &quot;black&quot;, &quot;#00FF00&quot;, &quot;The callout\ntext...&quot;, false);
+
+    paragraph = document.createParagraph();
+    paragraph = document.createParagraph();
+    paragraph = document.createParagraph();
+    paragraph = document.createParagraph();
+    run =  paragraph.createRun();
+    run.setText(&quot;Callout shape:&quot;);
+
+    appendCalloutShape(run, &quot;1in&quot;, &quot;-150px&quot;, &quot;100px&quot;, &quot;150px&quot;, &quot;#0000FF&quot;, &quot;yellow&quot;, &quot;The callout\ntext...&quot;, true);
+?```
+
+?```
+    FileOutputStream out = new FileOutputStream(&quot;C:\\Users\\user\\Desktop\\converter\\����.docx&quot;);
+    document.write(out);
+    out.close();
+    document.close();
+}
+
+public static void appendCalloutShape(XWPFRun run, String left, String top, String width, String height,
+                                      String strokecolor, String fillcolor, String calloutext, boolean hashandles) throws Exception {
+    CTGroup ctGroup = CTGroup.Factory.newInstance();
+
+    CTShape ctShape = ctGroup.addNewShape();
+    ctShape.setCoordsize(&quot;21600,21600&quot;);
+    if (hashandles) { //is not Libreoffice Writer compatible
+        ctShape.setAdj(&quot;&quot; + 21600*1/3 + &quot;,21600&quot;);
+        CTFormulas cTFormulas = ctShape.addNewFormulas();
+        cTFormulas.addNewF().setEqn(&quot;val #0&quot;);
+        cTFormulas.addNewF().setEqn(&quot;val #1&quot;);
+        ctShape.setPath2(&quot;m 1,1 l 1,&quot; + 21600*2/3 + &quot;, &quot; + 21600*1/3 + &quot;,&quot; + 21600*2/3 + &quot;, @0,@1, &quot; + 21600*2/3 + &quot;,&quot; + 21600*2/3 + &quot;, 21600,&quot; + 21600*2/3 + &quot;, 21600,1 x e&quot;);
+        ctShape.addNewHandles().addNewH().setPosition(&quot;#0,#1&quot;);
+    } else { // is Libreoffice Writer compatible
+        ctShape.setPath2(&quot;m 1,1 l 1,&quot; + 21600*2/3 + &quot;, &quot; + 21600*1/3 + &quot;,&quot; + 21600*2/3 + &quot;, &quot; + 21600*1/3 + &quot;,21600, &quot; + 21600*2/3 + &quot;,&quot; + 21600*2/3 + &quot;, 21600,&quot; + 21600*2/3 + &quot;, 21600,1 x e&quot;);
+    }
+
+    ctShape.addNewPath().setTextboxrect(&quot;1,1,21600,&quot; + 21600*2/3);
+
+    ctShape.setStyle(&quot;position:absolute;margin-left:&quot; + left + &quot;;margin-top:&quot; + top + &quot;;width:&quot; + width + &quot;;height:&quot; + height + &quot;;z-index:251659264;visibility:visible;rotation:0;&quot;);
+    ctShape.setStrokecolor(strokecolor);
+    ctShape.setFillcolor(fillcolor);
+
+    CTTextbox cTTextbox = ctShape.addNewTextbox();
+
+    CTTxbxContent ctTxbxContent = cTTextbox.addNewTxbxContent();
+    XWPFParagraph textboxparagraph = new XWPFParagraph(ctTxbxContent.addNewP(), run.getDocument());
+    XWPFRun textboxrun = null;
+    String[] lines = calloutext.split(&quot;\n&quot;);
+    for (int i = 0; i &lt; lines.length; i++) {
+        textboxrun = textboxparagraph.createRun();
+        textboxrun.setText(lines[i]);
+        textboxrun.addBreak();
+    }
+
+    Node ctGroupNode = ctGroup.getDomNode();
+    CTPicture ctPicture = CTPicture.Factory.parse(ctGroupNode);
+    CTR cTR = run.getCTR();
+    cTR.addNewPict();
+    cTR.setPictArray(0, ctPicture);
+}
+?```
+
+https://stackoverflow.com/questions/53834805/how-to-create-a-wedgerectcallout-shape-in-word-using-apache-poi</code></pre>
+<pre><code class="java">
+// �ı����еă��ݺ��韩
+        XmlObject object = paragraph.getCTP().getRArray(1);
+        XmlCursor cursor = object.newCursor();
+
+        // ���Դ�ӡXmlObject�������鿴��ǰxml�ļ�����
+        // Ҳ��ͨ��XmlCursor��getName��getTextValue�����鿴��ǰ����Node����ֵ
+        // �ҵĵ�һ��Ҫ�޸ĵ���������nodeΪ:ע��index
+        // &lt;xml-fragment&gt; -&gt; &lt;w:pict&gt; -&gt; &lt;v:shape&gt; -&gt; &lt;v:textbox&gt; -&gt;
+        // &lt;w:txbxContent&gt; -&gt; &lt;w:p&gt; -&gt; &lt;w:r&gt; -&gt; &lt;w:t&gt;
+        cursor.toChild(1);
+        cursor.toChild(0);
+        cursor.toChild(3);
+        cursor.toChild(0);
+
+        cursor.toChild(0);
+        cursor.toChild(3);
+        cursor.toChild(1);
+        cursor.setTextValue(&quot;First&quot;);
+
+        // �ҵĵڶ���Ҫ�޸ĵ���������nodeΪ��ע��index
+        // &lt;w:txbxContent&gt; -&gt; &lt;w:p&gt; -&gt; &lt;w:r&gt; -&gt; &lt;w:t&gt;
+        cursor.toParent();
+        cursor.toParent();
+        cursor.toParent();
+        cursor.toChild(1);
+        cursor.toChild(3);
+        cursor.toChild(1);
+        cursor.setTextValue(&quot;Second&quot;);</code></pre>
+<p>ͨ�� freemarker + flying-saucer-pdf ����������Ⱦ�� html���ٽ�htmlת�� pdf���������ڣ�ֻ��֧�� ����ͺ��� ��������</p>
+</div><hr></div><nav id="pagination"><div class="pagination"><a class="extend prev" rel="prev" href="/page/45/"><i class="fa fa-chevron-left"></i></a><a class="page-number" href="/">1</a><span class="space">&hellip;</span><a class="page-number" href="/page/45/">45</a><span class="page-number current">46</span><a class="page-number" href="/page/47/">47</a><a class="page-number" href="/page/48/">48</a><a class="extend next" rel="next" href="/page/47/"><i class="fa fa-chevron-right"></i></a></div></nav></div></div><footer><div class="layout" id="footer"><div class="copyright">&copy;2013 - 2020 By koral</div><div class="framework-info"><span>驱动 - </span><a href="http://hexo.io"><span>Hexo</span></a><span class="footer-separator">|</span><span>主题 - </span><a href="https://github.com/Molunerfinn/hexo-theme-melody"><span>Melody</span></a></div><div class="busuanzi"><script async src="//busuanzi.ibruce.info/busuanzi/2.3/busuanzi.pure.mini.js"></script><span id="busuanzi_container_site_uv"><i class="fa fa-user"></i><span id="busuanzi_value_site_uv"></span><span></span></span><span class="footer-separator">|</span><span id="busuanzi_container_site_pv"><i class="fa fa-eye"></i><span id="busuanzi_value_site_pv"></span><span></span></span></div></div></footer><i class="fa fa-arrow-up" id="go-up" aria-hidden="true"></i><script src="https://cdn.jsdelivr.net/npm/animejs@latest/anime.min.js"></script><script src="https://cdn.jsdelivr.net/npm/jquery@latest/dist/jquery.min.js"></script><script src="https://cdn.jsdelivr.net/npm/@fancyapps/fancybox@latest/dist/jquery.fancybox.min.js"></script><script src="https://cdn.jsdelivr.net/npm/velocity-animate@latest/velocity.min.js"></script><script src="https://cdn.jsdelivr.net/npm/velocity-ui-pack@latest/velocity.ui.min.js"></script><script src="/js/utils.js?version=1.7.0"></script><script src="/js/fancybox.js?version=1.7.0"></script><script src="/js/sidebar.js?version=1.7.0"></script><script src="/js/copy.js?version=1.7.0"></script><script src="/js/fireworks.js?version=1.7.0"></script><script src="/js/transition.js?version=1.7.0"></script><script src="/js/scroll.js?version=1.7.0"></script><script src="/js/head.js?version=1.7.0"></script><script>if(/Android|webOS|iPhone|iPod|iPad|BlackBerry/i.test(navigator.userAgent)) {
   $('#nav').addClass('is-mobile')
   $('footer').addClass('is-mobile')
   $('#top-container').addClass('is-mobile')

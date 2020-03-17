@@ -1,0 +1,150 @@
+<!DOCTYPE html><html lang="zh-Hans"><head><meta name="generator" content="Hexo 3.9.0"><meta charset="UTF-8"><meta http-equiv="X-UA-Compatible" content="IE=edge"><meta name="viewport" content="width=device-width, initial-scale=1, maximum-scale=1"><meta name="description" content="《高性能MySQL》第一章 数据库设计规范"><meta name="keywords" content><meta name="author" content="koral"><meta name="copyright" content="koral"><title>《高性能MySQL》第一章 数据库设计规范 | 凯</title><link rel="shortcut icon" href="/melody-favicon.ico"><link rel="stylesheet" href="/css/index.css?version=1.7.0"><link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/font-awesome@latest/css/font-awesome.min.css?version=1.7.0"><meta name="format-detection" content="telephone=no"><meta http-equiv="x-dns-prefetch-control" content="on"><link rel="dns-prefetch" href="https://cdn.jsdelivr.net"><meta http-equiv="Cache-Control" content="no-transform"><meta http-equiv="Cache-Control" content="no-siteapp"><script>var GLOBAL_CONFIG = { 
+  root: '/',
+  algolia: undefined,
+  localSearch: undefined,
+  copy: {
+    success: '复制成功',
+    error: '复制错误',
+    noSupport: '浏览器不支持'
+  }
+} </script></head><body><i class="fa fa-arrow-right" id="toggle-sidebar" aria-hidden="true"></i><div id="sidebar" data-display="true"><div class="toggle-sidebar-info text-center"><span data-toggle="切换文章详情">切换站点概览</span><hr></div><div class="sidebar-toc"><div class="sidebar-toc__title">目录</div><div class="sidebar-toc__progress"><span class="progress-notice">你已经读了</span><span class="progress-num">0</span><span class="progress-percentage">%</span><div class="sidebar-toc__progress-bar"></div></div><div class="sidebar-toc__content"><ol class="toc"><li class="toc-item toc-level-2"><a class="toc-link" href="#1-数据库-命名规范"><span class="toc-number">1.</span> <span class="toc-text">1. 数据库 - 命名规范</span></a></li><li class="toc-item toc-level-2"><a class="toc-link" href="#2-数据库-基本设计规范"><span class="toc-number">2.</span> <span class="toc-text">2. 数据库 - 基本设计规范</span></a></li><li class="toc-item toc-level-2"><a class="toc-link" href="#3-数据库-索引设计规范"><span class="toc-number">3.</span> <span class="toc-text">3. 数据库 - 索引设计规范</span></a><ol class="toc-child"><li class="toc-item toc-level-3"><a class="toc-link" href="#《高性能MySQL》目录"><span class="toc-number">3.1.</span> <span class="toc-text">《高性能MySQL》目录</span></a></li></ol></li></ol></div></div><div class="author-info hide"><div class="author-info__avatar text-center"><img src="/img/avatar.png"></div><div class="author-info__name text-center">koral</div><div class="author-info__description text-center">描述</div><hr><div class="author-info-articles"><a class="author-info-articles__archives article-meta" href="/archives/index.html"><span class="pull-left">文章</span><span class="pull-right">237</span></a><a class="author-info-articles__tags article-meta" href="/tags/index.html"><span class="pull-left">标签</span><span class="pull-right">29</span></a><a class="author-info-articles__categories article-meta" href="/categories/index.html"><span class="pull-left">分类</span><span class="pull-right">33</span></a></div></div></div><div id="content-outer"><div class="no-bg" id="top-container"><div id="page-header"><span class="pull-left"> <a id="site-name" href="/index.html">凯</a></span><i class="fa fa-bars toggle-menu pull-right" aria-hidden="true"></i><span class="pull-right menus">   <a class="site-page" href="/">首页</a><a class="site-page" href="/archives/index.html">归档</a><a class="site-page" href="/tags/index.html">标签</a><a class="site-page" href="/categories/index.html">分类</a><a class="site-page" href="/about/index.html">关于我</a></span><span class="pull-right"></span></div><div id="post-info"><div id="post-title">《高性能MySQL》第一章 数据库设计规范</div><div id="post-meta"><time class="post-meta__date"><i class="fa fa-calendar" aria-hidden="true"></i> 2019-06-23</time><span class="post-meta__separator">|</span><i class="fa fa-inbox post-meta__icon" aria-hidden="true"></i><a class="post-meta__categories" href="/categories/读书笔记/index.html">读书笔记</a><i class="fa fa-angle-right" aria-hidden="true"></i><i class="fa fa-inbox post-meta__icon" aria-hidden="true"></i><a class="post-meta__categories" href="/categories/读书笔记/高性能MySQL/index.html">高性能MySQL</a></div></div></div><div class="layout" id="content-inner"><article id="post"><div class="article-container" id="post-content"><h2 id="1-数据库-命名规范"><a href="#1-数据库-命名规范" class="headerlink" title="1. 数据库 - 命名规范"></a>1. 数据库 - 命名规范</h2><ol>
+<li>所有数据库对象名称必须使用小写字母并用下划线分割<ol>
+<li>eg：DbName != dbname</li>
+<li>eg: Table != table != tabLe</li>
+</ol>
+</li>
+<li>所有数据库对象名称禁止使用 MySQL 保留关键字<ol>
+<li>保留关键字：<a href="https://dev.mysql.com/doc/refman/8.0/en/keywords.html" target="_blank" rel="noopener">https://dev.mysql.com/doc/refman/8.0/en/keywords.html</a></li>
+</ol>
+</li>
+<li>数据库对象的命名要做到见名识义，并且最好不要超过 32 字符<ol>
+<li>数据库名过长，会增加网络开销</li>
+</ol>
+</li>
+<li>临时库必须以 tmp 为前缀，并以日期为后缀</li>
+<li>备份库、备份表必须以 bak 为前缀，并以日期为后缀</li>
+<li>所有存储相同数据的列名和列类型必须一致<ol>
+<li>即表A与表B的某个属性相同，则列名与类型必须一致</li>
+<li>如 A.cid与 B.cid，都必须是 <code>cid int unsigned not null</code></li>
+<li>这种属性一般用于关联列上，当保持一致时，对数据库查询效率有一定帮助</li>
+</ol>
+</li>
+</ol>
+<h2 id="2-数据库-基本设计规范"><a href="#2-数据库-基本设计规范" class="headerlink" title="2. 数据库 - 基本设计规范"></a>2. 数据库 - 基本设计规范</h2><ol>
+<li>所有表必须使用 Innodb 存储引擎<ol>
+<li>在 MySQL 5.5 之前，MylSAM 是默认的存储引擎，MylSAM 是表级锁，在高并发场景下，锁表会有很严重的性能问题</li>
+<li>InnoDB 是 5.6 以后的默认存储引擎</li>
+<li>InnoDB 支持事务，行级锁，拥有更好的恢复性，高并发场景下性能更好</li>
+</ol>
+</li>
+<li>数据库和表的字符集统一使用 UTF8<ol>
+<li>统一字符集可以避免由于字符集转换产生的乱码</li>
+<li>MySQL 中 UTF8 字符集汉字占 3 个字节，ASCII 码占一个字符</li>
+</ol>
+</li>
+<li>所有表和字段都需要添加注释<ol>
+<li>使用 comment 从句添加表和列的备注</li>
+<li>从一开始就进行数据字典的维护</li>
+</ol>
+</li>
+<li>尽量控制单表数据量的大小，建议控制在 500W 以内<ol>
+<li>500 W 并不是 MySQL 数据库的限制</li>
+<li>可以使用历史数据归档，分库分表等手段限制单表的数据量大小</li>
+</ol>
+</li>
+<li>谨慎使用 MySQL 分区表<ol>
+<li>分区表在物理上表现为多个文件，在逻辑上表现为一个表</li>
+<li>谨慎选择分区键，跨分区查询效率可能更低</li>
+<li>建议采用物理分表的方式管理大数据</li>
+</ol>
+</li>
+<li>尽量做到冷热数据分离，减小表的宽度<ol>
+<li>减少磁盘IO，保证热数据的内存缓存命中率</li>
+<li>更有效的利用缓存，避免读入无用的冷数据</li>
+<li>经常一起使用的列放在一个表中</li>
+</ol>
+</li>
+<li>禁止在表中建立预留字段<ol>
+<li>预留字段的命名很难做到见名识义</li>
+<li>预留字段无法确认存储的数据类型，所以无法选择合适的类型</li>
+<li>对预留字段类型的修改，会对表进行锁定<ol>
+<li>在 MySQL 中，对表类型修改的成本远远大于增加一个数据类型的成本</li>
+</ol>
+</li>
+</ol>
+</li>
+<li>禁止在数据库中存储图片，文件等二进制数据<ol>
+<li>blob、text 等类型</li>
+</ol>
+</li>
+<li>禁止在线上做数据库压力测试</li>
+<li>禁止从开发环境、测试环境直连生产环境数据库</li>
+</ol>
+<h2 id="3-数据库-索引设计规范"><a href="#3-数据库-索引设计规范" class="headerlink" title="3. 数据库 - 索引设计规范"></a>3. 数据库 - 索引设计规范</h2><ol>
+<li>限制每张表的索引数量，建议单张表索引不超过 5 个<ol>
+<li>索引并不是越多越好，过多的索引可能会降低效率</li>
+<li>禁止给表中的每一列都建立单独的索引</li>
+</ol>
+</li>
+<li>每个 InnoDB 表必须有一个主键<ol>
+<li>Innodb 是按照主键索引的顺序来组织表的，因此每个表必须有一个主键</li>
+<li>如果表中未设置主键，MySQL 会自动选择第一个非空唯一性的属性作为主键；如果没有非空唯一约束的属性，MySQL 会自动生成一个 6 字节的主键，但是效率不高</li>
+<li>不使用更新频繁的列作为主键，不使用多列主键</li>
+<li>不使用 UUID、MD5、HASH、字符串列作为主键</li>
+<li>主键建议选择使用主键自增ID</li>
+</ol>
+</li>
+<li>常见索引建议<ol>
+<li>SELECT、UPDATE、DELETE 语句的 WHERE 从句中的列</li>
+<li>包含在 ORDER BY、GROUP BY、DISTINCT 中的字段</li>
+<li>多表 JOIN 的字段</li>
+</ol>
+</li>
+<li>如何选择索引列的顺序<ol>
+<li>区分度最高的列放在联合索引的最左侧</li>
+<li>尽量把字段长度小的列放在联合索引的最左侧</li>
+<li>使用最频繁的列放在联合索引的最左侧</li>
+</ol>
+</li>
+<li>避免建议冗余索引和重复索引<ol>
+<li>eg: primary key(id) 、index(id)、unique index(id)</li>
+<li>eg: index(a,b,c)，index(a,b)，index(a)<ol>
+<li>对于冗余索引，MySQL 执行优化器会对查询到的索引进行选择，降低了索引使用的效率</li>
+</ol>
+</li>
+</ol>
+</li>
+<li>对于频繁的查询优先考虑使用覆盖索引<ol>
+<li>避免 Innodb 表进行索引的二次查找</li>
+<li>可以把随机 IO 变为顺序 IO，提高查询效率</li>
+</ol>
+</li>
+<li>尽量避免使用外键<ol>
+<li>不建议使用外键约束，但一定在表与表之间的关联键上建立索引</li>
+<li>外键可用于保证数据的参照完整性，但建议在业务端实现</li>
+<li>外键会影响父表和子表的写操作从而降低性能<ol>
+<li>存在外键约束的表在进行写操作时，会检查外键约束的完整性，降低写操作的性能</li>
+</ol>
+</li>
+</ol>
+</li>
+</ol>
+<h3 id="《高性能MySQL》目录"><a href="#《高性能MySQL》目录" class="headerlink" title="《高性能MySQL》目录"></a>《高性能MySQL》目录</h3><ol>
+<li>第一章 <a href="/2019/06/23/读书笔记/《高性能MySQL》/1.数据库设计规范/">数据库设计规范</a></li>
+<li>第二章 <a href="/2019/06/22/读书笔记/《高性能MySQL》/2.数据库字段设计规范/">数据库字段设计规范</a></li>
+<li>第三章 <a href="/2019/06/21/读书笔记/《高性能MySQL》/3.数据库SQL开发规范/">数据库 SQL 开发规范</a></li>
+<li>第四章 <a href="/2019/06/20/读书笔记/《高性能MySQL》/4.数据库操作行为规范/">数据库操作行为规范</a></li>
+<li>第五章 <a href="/2019/06/19/读书笔记/《高性能MySQL》/5.设计数据库分区表/">设计数据库分区表</a></li>
+<li>第六章 <a href="/2019/06/18/读书笔记/《高性能MySQL》/6.MySQL存储引擎/">MySQL存储引擎</a></li>
+<li>第七章 <a href="/2019/06/17/读书笔记/《高性能MySQL》/7.MySQL执行计划优化/">MySQL 执行优化</a></li>
+<li>第八章 <a href="/2019/06/16/读书笔记/《高性能MySQL》/8.MySQL慢查日志/">MySQL 慢查询日志</a></li>
+<li>第九章 <a href="/2019/06/15/读书笔记/《高性能MySQL》/9.数据库备份/">MySQL 数据库备份与恢复</a></li>
+<li>第十章 <a href="/2019/06/14/读书笔记/《高性能MySQL》/10.MySQL架构拆分/">MySQL构架拆分</a></li>
+<li>其他：<a href="/2019/06/12/读书笔记/《高性能MySQL》/20.数据库表结构实践/">MySQL表结构实践sql</a></li>
+<li>其他2：<a href="/2019/06/13/读书笔记/《高性能MySQL》/11.MySQL常用命令/">MySQL常用命令</a></li>
+</ol>
+</div></article><div class="post-copyright"><div class="post-copyright__author"><span class="post-copyright-meta">文章作者: </span><span class="post-copyright-info"><a href="mailto:undefined">koral</a></span></div><div class="post-copyright__type"><span class="post-copyright-meta">文章链接: </span><span class="post-copyright-info"><a href="http://luokaiii.github.io/2019/06/23/读书笔记/《高性能MySQL》/1.数据库设计规范//index.html">http://luokaiii.github.io/2019/06/23/读书笔记/《高性能MySQL》/1.数据库设计规范/</a></span></div><div class="post-copyright__notice"><span class="post-copyright-meta">版权声明: </span><span class="post-copyright-info">本博客所有文章除特别声明外，均采用 <a href="https://creativecommons.org/licenses/by-nc-sa/4.0/">CC BY-NC-SA 4.0</a> 许可协议。转载请注明来自 <a href="http://luokaiii.github.io">凯</a>！</span></div></div><div class="post-meta__tag-list"></div><nav id="pagination"><div class="prev-post pull-left"><a href="/2019/06/24/读书笔记/《JavaDesignPatterns》/1.常用设计模式一览/index.html"><i class="fa fa-chevron-left">  </i><span>《Java Design Patterns》常用设计模式一览</span></a></div><div class="next-post pull-right"><a href="/2019/06/22/读书笔记/《高性能MySQL》/2.数据库字段设计规范/index.html"><span>《高性能MySQL》第二章 数据库字段设计规范</span><i class="fa fa-chevron-right"></i></a></div></nav></div></div><footer><div class="layout" id="footer"><div class="copyright">&copy;2013 - 2020 By koral</div><div class="framework-info"><span>驱动 - </span><a href="http://hexo.io"><span>Hexo</span></a><span class="footer-separator">|</span><span>主题 - </span><a href="https://github.com/Molunerfinn/hexo-theme-melody"><span>Melody</span></a></div><div class="busuanzi"><script async src="//busuanzi.ibruce.info/busuanzi/2.3/busuanzi.pure.mini.js"></script><span id="busuanzi_container_page_pv"><i class="fa fa-file"></i><span id="busuanzi_value_page_pv"></span><span></span></span></div></div></footer><i class="fa fa-arrow-up" id="go-up" aria-hidden="true"></i><script src="https://cdn.jsdelivr.net/npm/animejs@latest/anime.min.js"></script><script src="https://cdn.jsdelivr.net/npm/jquery@latest/dist/jquery.min.js"></script><script src="https://cdn.jsdelivr.net/npm/@fancyapps/fancybox@latest/dist/jquery.fancybox.min.js"></script><script src="https://cdn.jsdelivr.net/npm/velocity-animate@latest/velocity.min.js"></script><script src="https://cdn.jsdelivr.net/npm/velocity-ui-pack@latest/velocity.ui.min.js"></script><script src="/js/utils.js?version=1.7.0"></script><script src="/js/fancybox.js?version=1.7.0"></script><script src="/js/sidebar.js?version=1.7.0"></script><script src="/js/copy.js?version=1.7.0"></script><script src="/js/fireworks.js?version=1.7.0"></script><script src="/js/transition.js?version=1.7.0"></script><script src="/js/scroll.js?version=1.7.0"></script><script src="/js/head.js?version=1.7.0"></script><script>if(/Android|webOS|iPhone|iPod|iPad|BlackBerry/i.test(navigator.userAgent)) {
+  $('#nav').addClass('is-mobile')
+  $('footer').addClass('is-mobile')
+  $('#top-container').addClass('is-mobile')
+}</script></body></html>

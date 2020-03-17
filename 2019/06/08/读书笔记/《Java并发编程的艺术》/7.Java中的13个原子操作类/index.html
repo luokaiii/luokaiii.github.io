@@ -1,0 +1,94 @@
+<!DOCTYPE html><html lang="zh-Hans"><head><meta name="generator" content="Hexo 3.9.0"><meta charset="UTF-8"><meta http-equiv="X-UA-Compatible" content="IE=edge"><meta name="viewport" content="width=device-width, initial-scale=1, maximum-scale=1"><meta name="description" content="《Java并发编程的艺术》第七章 Java中的13个原子操作类"><meta name="keywords" content="Java并发编程的艺术"><meta name="author" content="koral"><meta name="copyright" content="koral"><title>《Java并发编程的艺术》第七章 Java中的13个原子操作类 | 凯</title><link rel="shortcut icon" href="/melody-favicon.ico"><link rel="stylesheet" href="/css/index.css?version=1.7.0"><link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/font-awesome@latest/css/font-awesome.min.css?version=1.7.0"><meta name="format-detection" content="telephone=no"><meta http-equiv="x-dns-prefetch-control" content="on"><link rel="dns-prefetch" href="https://cdn.jsdelivr.net"><meta http-equiv="Cache-Control" content="no-transform"><meta http-equiv="Cache-Control" content="no-siteapp"><script>var GLOBAL_CONFIG = { 
+  root: '/',
+  algolia: undefined,
+  localSearch: undefined,
+  copy: {
+    success: '复制成功',
+    error: '复制错误',
+    noSupport: '浏览器不支持'
+  }
+} </script></head><body><i class="fa fa-arrow-right" id="toggle-sidebar" aria-hidden="true"></i><div id="sidebar" data-display="true"><div class="toggle-sidebar-info text-center"><span data-toggle="切换文章详情">切换站点概览</span><hr></div><div class="sidebar-toc"><div class="sidebar-toc__title">目录</div><div class="sidebar-toc__progress"><span class="progress-notice">你已经读了</span><span class="progress-num">0</span><span class="progress-percentage">%</span><div class="sidebar-toc__progress-bar"></div></div><div class="sidebar-toc__content"><ol class="toc"><li class="toc-item toc-level-1"><a class="toc-link" href="#第七章-Java-中的-13-个原子操作类"><span class="toc-number">1.</span> <span class="toc-text">第七章 Java 中的 13 个原子操作类</span></a><ol class="toc-child"><li class="toc-item toc-level-2"><a class="toc-link" href="#7-1-原子更新基本类型"><span class="toc-number">1.1.</span> <span class="toc-text">7.1 原子更新基本类型</span></a></li><li class="toc-item toc-level-2"><a class="toc-link" href="#7-2-原子更新数组"><span class="toc-number">1.2.</span> <span class="toc-text">7.2 原子更新数组</span></a></li><li class="toc-item toc-level-2"><a class="toc-link" href="#7-3-原子更新应用类型"><span class="toc-number">1.3.</span> <span class="toc-text">7.3 原子更新应用类型</span></a></li><li class="toc-item toc-level-2"><a class="toc-link" href="#7-4-原子更新字段类"><span class="toc-number">1.4.</span> <span class="toc-text">7.4 原子更新字段类</span></a></li></ol></li></ol></div></div><div class="author-info hide"><div class="author-info__avatar text-center"><img src="/img/avatar.png"></div><div class="author-info__name text-center">koral</div><div class="author-info__description text-center">描述</div><hr><div class="author-info-articles"><a class="author-info-articles__archives article-meta" href="/archives/index.html"><span class="pull-left">文章</span><span class="pull-right">237</span></a><a class="author-info-articles__tags article-meta" href="/tags/index.html"><span class="pull-left">标签</span><span class="pull-right">29</span></a><a class="author-info-articles__categories article-meta" href="/categories/index.html"><span class="pull-left">分类</span><span class="pull-right">33</span></a></div></div></div><div id="content-outer"><div class="no-bg" id="top-container"><div id="page-header"><span class="pull-left"> <a id="site-name" href="/index.html">凯</a></span><i class="fa fa-bars toggle-menu pull-right" aria-hidden="true"></i><span class="pull-right menus">   <a class="site-page" href="/">首页</a><a class="site-page" href="/archives/index.html">归档</a><a class="site-page" href="/tags/index.html">标签</a><a class="site-page" href="/categories/index.html">分类</a><a class="site-page" href="/about/index.html">关于我</a></span><span class="pull-right"></span></div><div id="post-info"><div id="post-title">《Java并发编程的艺术》第七章 Java中的13个原子操作类</div><div id="post-meta"><time class="post-meta__date"><i class="fa fa-calendar" aria-hidden="true"></i> 2019-06-08</time><span class="post-meta__separator">|</span><i class="fa fa-inbox post-meta__icon" aria-hidden="true"></i><a class="post-meta__categories" href="/categories/读书笔记/index.html">读书笔记</a><i class="fa fa-angle-right" aria-hidden="true"></i><i class="fa fa-inbox post-meta__icon" aria-hidden="true"></i><a class="post-meta__categories" href="/categories/读书笔记/Java并发编程的艺术/index.html">Java并发编程的艺术</a></div></div></div><div class="layout" id="content-inner"><article id="post"><div class="article-container" id="post-content"><h1 id="第七章-Java-中的-13-个原子操作类"><a href="#第七章-Java-中的-13-个原子操作类" class="headerlink" title="第七章 Java 中的 13 个原子操作类"></a>第七章 Java 中的 13 个原子操作类</h1><h2 id="7-1-原子更新基本类型"><a href="#7-1-原子更新基本类型" class="headerlink" title="7.1 原子更新基本类型"></a>7.1 原子更新基本类型</h2><p>Atomic 包提供了3中基本类：</p>
+<ul>
+<li>AtomicBoolean</li>
+<li>AtomicInteger</li>
+<li>AtomicLong</li>
+</ul>
+<p>这三个类的方法几乎一样，这里以 AtomicInteger 为例。AtomicInteger 的常用方法如下：</p>
+<ul>
+<li>int addAndGet(int delta)<ul>
+<li>以原子方式相加原值与传入值，返回结果</li>
+</ul>
+</li>
+<li>boolean compareAndSet(int expect, int update)<ul>
+<li>如果输入值等于预期值，则以原子方式设置该值</li>
+</ul>
+</li>
+<li>int getAndIncrement()<ul>
+<li>原子方式自增，返回旧值</li>
+</ul>
+</li>
+<li>void lazySet(int newValue)<ul>
+<li>延迟设置值，可能导致其他线程在一小段时间内还是读到旧值</li>
+</ul>
+</li>
+<li>int getAndSet(int newValue)<ul>
+<li>以原子方式设置为 newValue，返回旧值</li>
+</ul>
+</li>
+</ul>
+<p>AtomicBoolean 是把 Boolean转换为 整型，再使用 compareAndSwapInt 进行CAS。</p>
+<h2 id="7-2-原子更新数组"><a href="#7-2-原子更新数组" class="headerlink" title="7.2 原子更新数组"></a>7.2 原子更新数组</h2><p>Atomic 包提供了以下 4 个类：</p>
+<ul>
+<li>AtomicIntegerArray<ul>
+<li>原子更新整型数组里的元素</li>
+</ul>
+</li>
+<li>AtomicLongArray<ul>
+<li>原子更新长整型数组里的元素</li>
+</ul>
+</li>
+<li>AtomicReferenceArray<ul>
+<li>原子更新引用类型数组里的元素</li>
+</ul>
+</li>
+</ul>
+<p>以 AtomicIntegerArray 为例，常用方法有：</p>
+<ul>
+<li>int addAndGet(int i,int delta)</li>
+<li>boolean compareAndSet(int i,int expect,int update)</li>
+</ul>
+<h2 id="7-3-原子更新应用类型"><a href="#7-3-原子更新应用类型" class="headerlink" title="7.3 原子更新应用类型"></a>7.3 原子更新应用类型</h2><p>Atomic 包提供了以下 3 个类：</p>
+<ul>
+<li>AtomicReference<ul>
+<li>原子更新引用类型</li>
+</ul>
+</li>
+<li>AtomicReferenceFieldUpdater<ul>
+<li>原子更新引用类型里的字段</li>
+</ul>
+</li>
+<li>AtomicMarkableReference<ul>
+<li>原子更新带有标记位的应用类型</li>
+</ul>
+</li>
+</ul>
+<h2 id="7-4-原子更新字段类"><a href="#7-4-原子更新字段类" class="headerlink" title="7.4 原子更新字段类"></a>7.4 原子更新字段类</h2><p>Atomic 包提供了以下 3 个类：</p>
+<ul>
+<li>AtomicIntegerFieldUpdater<ul>
+<li>原子更新整型的字段-更新器</li>
+</ul>
+</li>
+<li>AtomicLongFieldUpdater<ul>
+<li>原子更新长整型字段的更新器</li>
+</ul>
+</li>
+<li>AtomicStampedReference<ul>
+<li>原子更新带版本号的应用类型</li>
+</ul>
+</li>
+</ul>
+</div></article><div class="post-copyright"><div class="post-copyright__author"><span class="post-copyright-meta">文章作者: </span><span class="post-copyright-info"><a href="mailto:undefined">koral</a></span></div><div class="post-copyright__type"><span class="post-copyright-meta">文章链接: </span><span class="post-copyright-info"><a href="http://luokaiii.github.io/2019/06/08/读书笔记/《Java并发编程的艺术》/7.Java中的13个原子操作类//index.html">http://luokaiii.github.io/2019/06/08/读书笔记/《Java并发编程的艺术》/7.Java中的13个原子操作类/</a></span></div><div class="post-copyright__notice"><span class="post-copyright-meta">版权声明: </span><span class="post-copyright-info">本博客所有文章除特别声明外，均采用 <a href="https://creativecommons.org/licenses/by-nc-sa/4.0/">CC BY-NC-SA 4.0</a> 许可协议。转载请注明来自 <a href="http://luokaiii.github.io">凯</a>！</span></div></div><div class="post-meta__tag-list"><a class="post-meta__tags" href="/tags/Java并发编程的艺术/index.html">Java并发编程的艺术</a></div><nav id="pagination"><div class="prev-post pull-left"><a href="/2019/06/09/读书笔记/《Java并发编程的艺术》/6.Java并发容器和框架/index.html"><i class="fa fa-chevron-left">  </i><span>《Java并发编程的艺术》第六章 Java 并发容器和框架</span></a></div><div class="next-post pull-right"><a href="/2019/06/07/读书笔记/《Java并发编程的艺术》/8.Java中的并发工具类/index.html"><span>《Java并发编程的艺术》第八章 Java 并发工具类</span><i class="fa fa-chevron-right"></i></a></div></nav></div></div><footer><div class="layout" id="footer"><div class="copyright">&copy;2013 - 2020 By koral</div><div class="framework-info"><span>驱动 - </span><a href="http://hexo.io"><span>Hexo</span></a><span class="footer-separator">|</span><span>主题 - </span><a href="https://github.com/Molunerfinn/hexo-theme-melody"><span>Melody</span></a></div><div class="busuanzi"><script async src="//busuanzi.ibruce.info/busuanzi/2.3/busuanzi.pure.mini.js"></script><span id="busuanzi_container_page_pv"><i class="fa fa-file"></i><span id="busuanzi_value_page_pv"></span><span></span></span></div></div></footer><i class="fa fa-arrow-up" id="go-up" aria-hidden="true"></i><script src="https://cdn.jsdelivr.net/npm/animejs@latest/anime.min.js"></script><script src="https://cdn.jsdelivr.net/npm/jquery@latest/dist/jquery.min.js"></script><script src="https://cdn.jsdelivr.net/npm/@fancyapps/fancybox@latest/dist/jquery.fancybox.min.js"></script><script src="https://cdn.jsdelivr.net/npm/velocity-animate@latest/velocity.min.js"></script><script src="https://cdn.jsdelivr.net/npm/velocity-ui-pack@latest/velocity.ui.min.js"></script><script src="/js/utils.js?version=1.7.0"></script><script src="/js/fancybox.js?version=1.7.0"></script><script src="/js/sidebar.js?version=1.7.0"></script><script src="/js/copy.js?version=1.7.0"></script><script src="/js/fireworks.js?version=1.7.0"></script><script src="/js/transition.js?version=1.7.0"></script><script src="/js/scroll.js?version=1.7.0"></script><script src="/js/head.js?version=1.7.0"></script><script>if(/Android|webOS|iPhone|iPod|iPad|BlackBerry/i.test(navigator.userAgent)) {
+  $('#nav').addClass('is-mobile')
+  $('footer').addClass('is-mobile')
+  $('#top-container').addClass('is-mobile')
+}</script></body></html>
