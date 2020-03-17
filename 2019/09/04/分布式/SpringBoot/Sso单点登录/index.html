@@ -1,0 +1,90 @@
+<!DOCTYPE html><html lang="zh-Hans"><head><meta name="generator" content="Hexo 3.9.0"><meta charset="UTF-8"><meta http-equiv="X-UA-Compatible" content="IE=edge"><meta name="viewport" content="width=device-width, initial-scale=1, maximum-scale=1"><meta name="description" content="单点登录"><meta name="keywords" content="hide"><meta name="author" content="koral"><meta name="copyright" content="koral"><title>单点登录 | 凯</title><link rel="shortcut icon" href="/melody-favicon.ico"><link rel="stylesheet" href="/css/index.css?version=1.7.0"><link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/font-awesome@latest/css/font-awesome.min.css?version=1.7.0"><meta name="format-detection" content="telephone=no"><meta http-equiv="x-dns-prefetch-control" content="on"><link rel="dns-prefetch" href="https://cdn.jsdelivr.net"><meta http-equiv="Cache-Control" content="no-transform"><meta http-equiv="Cache-Control" content="no-siteapp"><script>var GLOBAL_CONFIG = { 
+  root: '/',
+  algolia: undefined,
+  localSearch: undefined,
+  copy: {
+    success: '复制成功',
+    error: '复制错误',
+    noSupport: '浏览器不支持'
+  }
+} </script></head><body><i class="fa fa-arrow-right" id="toggle-sidebar" aria-hidden="true"></i><div id="sidebar" data-display="true"><div class="toggle-sidebar-info text-center"><span data-toggle="切换文章详情">切换站点概览</span><hr></div><div class="sidebar-toc"><div class="sidebar-toc__title">目录</div><div class="sidebar-toc__progress"><span class="progress-notice">你已经读了</span><span class="progress-num">0</span><span class="progress-percentage">%</span><div class="sidebar-toc__progress-bar"></div></div><div class="sidebar-toc__content"><ol class="toc"><li class="toc-item toc-level-1"><a class="toc-link" href="#单点登录"><span class="toc-number">1.</span> <span class="toc-text">单点登录</span></a><ol class="toc-child"><li class="toc-item toc-level-2"><a class="toc-link" href="#一、单点登录机制"><span class="toc-number">1.1.</span> <span class="toc-text">一、单点登录机制</span></a></li><li class="toc-item toc-level-2"><a class="toc-link" href="#二、会话机制"><span class="toc-number">1.2.</span> <span class="toc-text">二、会话机制</span></a></li><li class="toc-item toc-level-2"><a class="toc-link" href="#三、登录状态"><span class="toc-number">1.3.</span> <span class="toc-text">三、登录状态</span></a></li><li class="toc-item toc-level-2"><a class="toc-link" href="#四、多系统的复杂性"><span class="toc-number">1.4.</span> <span class="toc-text">四、多系统的复杂性</span></a></li><li class="toc-item toc-level-2"><a class="toc-link" href="#五、单点登录"><span class="toc-number">1.5.</span> <span class="toc-text">五、单点登录</span></a><ol class="toc-child"><li class="toc-item toc-level-3"><a class="toc-link" href="#1-登录"><span class="toc-number">1.5.1.</span> <span class="toc-text">1.登录</span></a></li><li class="toc-item toc-level-3"><a class="toc-link" href="#2-注销"><span class="toc-number">1.5.2.</span> <span class="toc-text">2.注销</span></a></li></ol></li><li class="toc-item toc-level-2"><a class="toc-link" href="#六、部署图"><span class="toc-number">1.6.</span> <span class="toc-text">六、部署图</span></a></li></ol></li></ol></div></div><div class="author-info hide"><div class="author-info__avatar text-center"><img src="/img/avatar.png"></div><div class="author-info__name text-center">koral</div><div class="author-info__description text-center">描述</div><hr><div class="author-info-articles"><a class="author-info-articles__archives article-meta" href="/archives/index.html"><span class="pull-left">文章</span><span class="pull-right">213</span></a><a class="author-info-articles__tags article-meta" href="/tags/index.html"><span class="pull-left">标签</span><span class="pull-right">33</span></a><a class="author-info-articles__categories article-meta" href="/categories/index.html"><span class="pull-left">分类</span><span class="pull-right">45</span></a></div></div></div><div id="content-outer"><div class="no-bg" id="top-container"><div id="page-header"><span class="pull-left"> <a id="site-name" href="/index.html">凯</a></span><i class="fa fa-bars toggle-menu pull-right" aria-hidden="true"></i><span class="pull-right menus">   <a class="site-page" href="/">首页</a><a class="site-page" href="/archives/index.html">归档</a><a class="site-page" href="/tags/index.html">标签</a><a class="site-page" href="/categories/index.html">分类</a><a class="site-page" href="/about/index.html">关于我</a></span><span class="pull-right"></span></div><div id="post-info"><div id="post-title">单点登录</div><div id="post-meta"><time class="post-meta__date"><i class="fa fa-calendar" aria-hidden="true"></i> 2019-09-04</time><span class="post-meta__separator">|</span><i class="fa fa-inbox post-meta__icon" aria-hidden="true"></i><a class="post-meta__categories" href="/categories/分布式/index.html">分布式</a></div></div></div><div class="layout" id="content-inner"><article id="post"><div class="article-container" id="post-content"><h1 id="单点登录"><a href="#单点登录" class="headerlink" title="单点登录"></a>单点登录</h1><h2 id="一、单点登录机制"><a href="#一、单点登录机制" class="headerlink" title="一、单点登录机制"></a>一、单点登录机制</h2><pre><code>web 应用采用的是 b/s 架构，以 http 作为通信协议。而 http 是无状态协议，浏览器每一次请求，服务器都会独立处理，不与之前或者之后的请求产生关联。</code></pre><p><img src="https://images2015.cnblogs.com/blog/797930/201611/797930-20161129155231912-1627010726.png" alt></p>
+<pre><code>在三次请求、响应对之间没有任何联系。这同时也意味着，任何用户都能通过浏览器访问服务器资源，如果想保护服务器的某些资源，必须限制浏览器请求；要限制浏览器请求，必须鉴别浏览器请求，响应合法请求；要鉴别浏览器请求，必须清楚浏览器请求状态。既然http协议无状态，就需要服务器和浏览器共同维护一个状态，这就是会话机制。</code></pre><h2 id="二、会话机制"><a href="#二、会话机制" class="headerlink" title="二、会话机制"></a>二、会话机制</h2><pre><code>浏览器第一次请求服务器，服务器创建一个会话，并将会话 id 作为响应的一部分发送给浏览器，浏览器存储会话 id ，并在后续的第二次和第三次请求中带上会话 id ，服务器取得请求中的会话 id 就知道是不是同一个用户了。</code></pre><blockquote>
+<p>服务器在内存中保存会话对象，浏览器怎么保存会话 id 呢？</p>
+</blockquote>
+<pre><code>1.请求参数：将会话 id 作为每一次请求的参数，服务器接收请求自然能解析参数获得会话 id ，并借此判断是否来自同一会话，很明显不靠谱。
+
+2.cookie：是浏览器用来存储少量数据的一种机制，数据以&quot; key/value&quot;形式存储，浏览器发送 http 请求时自动附带 cookie 信息。</code></pre><p><img src="https://images2015.cnblogs.com/blog/797930/201611/797930-20161129155234443-99011212.png" alt></p>
+<pre><code>tomcat会话机制中也实现了cookie，访问tomcat服务器时，浏览器中可以看到一个名为“JSESSIONID” 的cookie，这就是 tomcat 会话机制维护的会话 id 。</code></pre><h2 id="三、登录状态"><a href="#三、登录状态" class="headerlink" title="三、登录状态"></a>三、登录状态</h2><pre><code>我们假设浏览器第一次请求服务器需要输入用户名与密码来验证身份，服务器拿到用户名密码去数据库比对，正确的话说明当持有这个会话的用户是合法用户，应该将这个会话标记为“已授权”或者“一登录”之类的状态，既然是会话的状态，自然要保存在会话对象中，tomcat在会话对象那个中的登录状态如下：
+
+    HttpSession session = request.getSession();
+    session.setAttribution(&quot;isLogin&quot;,true);
+再次访问时，tomcat会在会话对象中查看登录状态。
+每次请求受保护资源时都会检查会话对象中的登录状态，只有 isLogin 时才能访问，登录机制因此实现。</code></pre><p><img src="https://images2015.cnblogs.com/blog/797930/201611/797930-20161129155235693-1708276896.png" alt></p>
+<h2 id="四、多系统的复杂性"><a href="#四、多系统的复杂性" class="headerlink" title="四、多系统的复杂性"></a>四、多系统的复杂性</h2><pre><code>web系统由原始的单系统发展成为如今由多系统组成的应用群，面对多个系统，用户不可能以一个个登录再一个个注销。
+而且由多系统组成的应用群，复杂性应该由系统内部承担，而不是用户。无论web系统内部多么复杂，对用户而言，都是一个统一的整体。
+
+虽然cookie是解决单系统登录的核心，但是cookie的限制在于cookie的域，浏览器发送 http 请求时会自动携带与该域匹配的 cookie ，而不是所有 cookie。
+
+在早些年，很多登录系统就采用同域名共享 cookie 的方式，将 web 应用群中所有子系统的域名统一在一个顶级域名下，然后将它们的 cookie 域设置为“baidu.com”。这样做虽然可行，但并不好。共享 cookie 的方式存在众多局限：首先，应用群域名得统一；其次，应用群各系统使用的技术(至少是 web 服务器)要相同，不然 cookie 的key值不相同（例如 tomcat 的是 JSESSIONID），无法维持会话，共享 cookie 的方式是无法实现跨语言技术平台登录的，比如 java、php、.net 系统之间；第三，cookie本身并不安全。
+
+因此，我们需要一种全新的登录方式来实现多系统应用群的登录，这就是单点登录。</code></pre><h2 id="五、单点登录"><a href="#五、单点登录" class="headerlink" title="五、单点登录"></a>五、单点登录</h2><pre><code>单点登录(Single Sign On)，指在多系统应用群中登录一个系统，便可在其他所有系统中得到授权而无需再次登录，包括单点登录与单点注销两部分。</code></pre><p><img src="http://images2015.cnblogs.com/blog/797930/201611/797930-20161129155238365-788619473.png" alt></p>
+<h3 id="1-登录"><a href="#1-登录" class="headerlink" title="1.登录"></a>1.登录</h3><pre><code>对比单系统登录，sso 需要一个独立的认证中心，只有认证中心能接受用户的用户名密码等安全信息，其他系统不提供登录入口，只接受认证中心的间接授权。
+
+间接授权通过令牌实现，sso 认证中心验证用户的用户名密码没问题，创建授权令牌吗，在跳转过程中，授权令牌作为参数发送给各个子系统，子系统拿到令牌，即通过了授权，可以借此创建局部会话，局部会话登录方式与单系统的登录方式相同。
+这个过程就是单点登录的原理。</code></pre><p><img src="https://images2015.cnblogs.com/blog/797930/201612/797930-20161203152650974-276822362.png" alt></p>
+<p>简要描述</p>
+<ol>
+<li>用户访问系统 1 的受保护资源，系统 1 发现用户未登录，跳转至 sso 认证中心，并将自己的地址作为参数</li>
+<li>sso 认证中心发现用户未登录，将用户引导至登录页面</li>
+<li>用户输入用户名密码提交登录申请</li>
+<li>sso 认证中心校验用户信息，创建用户与 sso 认证中心之间的会话，称为全局会话，同时创建授权令牌</li>
+<li>sso 认证中心带着令牌跳转会最初的请求地址（系统 1）</li>
+<li>系统 1 拿到令牌，去 sso 认证中心校验令牌是否有效</li>
+<li>sso 认证中心校验令牌，返回有效，注册系统 1</li>
+<li>系统 1 使用该令牌创建与用户的会话，称为局部会话，返回受保护资源</li>
+<li>用户访问系统 2 的受保护资源</li>
+<li>系统 2 发现用户未登录，跳转至 sso 认证中心，并将自己的地址作为参数</li>
+<li>sso 认证中心发现用户已登录，跳转回系统 2 的地址，并附上令牌</li>
+<li>系统 2 拿到令牌，去 sso 认证中心校验令牌是否有效</li>
+<li>sso 认证中心校验令牌，返回有效，注册系统 2</li>
+<li>系统 2 使用该令牌创建与用户的局部会话，返回受保护资源</li>
+</ol>
+<h3 id="2-注销"><a href="#2-注销" class="headerlink" title="2.注销"></a>2.注销</h3><pre><code>单点登录的注销，在一个子系统中注销，所有子系统的会话都将被销毁：
+sso认证中心一直坚挺全局会话的状态，一旦全局会话销毁，监听器将通知所有注册系统执行注销操作　　</code></pre><p><img src="https://images2015.cnblogs.com/blog/797930/201611/797930-20161129155243068-1378377736.png" alt></p>
+<p>简要说明</p>
+<ol>
+<li>用户向系统 1 发起注销请求</li>
+<li>系统 1 根据用户与系统 1 建立的会话 id 拿到令牌，向 sso 认证中心发起注销请求</li>
+<li>sso 认证中心校验令牌有效，销毁全局会话，同时取出所有用此令牌注册的系统地址</li>
+<li>sso 认证中心向所有注册系统发起注销请求</li>
+<li>各注册系统接收 sso 认证中心的注销请求，销毁局部会话</li>
+<li>sso 认证中心引导用户至登录页面</li>
+</ol>
+<h2 id="六、部署图"><a href="#六、部署图" class="headerlink" title="六、部署图"></a>六、部署图</h2><pre><code>单点登录涉及 sso 认证中心与众子系统，子系统与 sso 认证中心需要通信以交换令牌、校验令牌及发起注销请求，因而子系统必须集成 sso 的客户端，sso 认证中心则是 sso 服务端，整个单点定了公路过程实质是 sso 客户端与服务端通信的过程。</code></pre><p><img src="https://images2015.cnblogs.com/blog/797930/201611/797930-20161129155244646-2067469767.png" alt title="图片"></p>
+<pre><code>sso 认证中心与 sso 客户端通信方式有多种，例如 webservice、rpc、restful api等
+
+sso采用客户端/服务端架构，我们先看sso-client与sso-server要实现的功能（下面：sso认证中心=sso-server）</code></pre><p>sso-client</p>
+<p>拦截子系统未登录用户请求，跳转至 sso 认证中心<br>接收并存储 sso 认证中心发送的令牌<br>与 sso-server 通信，校验令牌的有效性<br>建立局部会话<br>拦截用户注销请求，向 sso 认证中心发送注销请求<br>接收 sso 认证中心发出的注销请求，销毁局部会话<br>　　 sso-server</p>
+<p>验证用户的登录信息<br>创建全局会话<br>创建授权令牌<br>与 sso-client 通信发送令牌<br>校验 sso-client 令牌有效性<br>系统注册<br>接收 sso-client 注销请求，注销所有会话<br>　　接下来，我们按照原理来一步步实现 sso 吧！</p>
+<p>1、sso-client 拦截未登录请求<br>　　 java 拦截请求的方式有 servlet、filter、listener 三种方式，我们采用 filter。在 sso-client 中新建 LoginFilter.java 类并实现 Filter 接口，在 doFilter()方法中加入对未登录用户的拦截</p>
+<p>public void doFilter(ServletRequest request, ServletResponse response, FilterChain chain) throws IOException, ServletException {<br>HttpServletRequest req = (HttpServletRequest) request;<br>HttpServletResponse res = (HttpServletResponse) response;<br>HttpSession session = req.getSession();</p>
+<p> if (session.getAttribute(“isLogin”)) {<br>chain.doFilter(request, response);<br>return;<br>}<br>//跳转至 sso 认证中心<br>res.sendRedirect(“sso-server-url-with-system-url”);<br>}<br>2、sso-server 拦截未登录请求<br>　　拦截从 sso-client 跳转至 sso 认证中心的未登录请求，跳转至登录页面，这个过程与 sso-client 完全一样</p>
+<p>3、sso-server 验证用户登录信息<br>　　用户在登录页面输入用户名密码，请求登录，sso 认证中心校验用户信息，校验成功，将会话状态标记为“已登录”</p>
+<p>@RequestMapping(“/login”)<br>public String login(String username, String password, HttpServletRequest req) {<br>this.checkLoginInfo(username, password);<br>req.getSession().setAttribute(“isLogin”, true);<br>return “success”;<br>}<br>4、sso-server 创建授权令牌<br>　　授权令牌是一串随机字符，以什么样的方式生成都没有关系，只要不重复、不易伪造即可，下面是一个例子</p>
+<p>String token = UUID.randomUUID().toString();<br>5、sso-client 取得令牌并校验<br>　　 sso 认证中心登录后，跳转回子系统并附上令牌，子系统（sso-client）取得令牌，然后去 sso 认证中心校验，在 LoginFilter.java 的 doFilter()中添加几行</p>
+<p>// 请求附带 token 参数<br>String token = req.getParameter(“token”);<br>if (token != null) {<br>// 去 sso 认证中心校验 token<br>boolean verifyResult = this.verify(“sso-server-verify-url”, token);<br>if (!verifyResult) {<br>res.sendRedirect(“sso-server-url”);<br>return;<br>}<br>chain.doFilter(request, response);<br>}<br>　　 verify()方法使用 httpClient 实现，这里仅简略介绍，httpClient 详细使用方法请参考官方文档</p>
+<p>HttpPost httpPost = new HttpPost(“sso-server-verify-url-with-token”);<br>HttpResponse httpResponse = httpClient.execute(httpPost);<br>6、sso-server 接收并处理校验令牌请求<br>　　用户在 sso 认证中心登录成功后，sso-server 创建授权令牌并存储该令牌，所以，sso-server 对令牌的校验就是去查找这个令牌是否存在以及是否过期，令牌校验成功后 sso-server 将发送校验请求的系统注册到 sso 认证中心（就是存储起来的意思）</p>
+<p>令牌与注册系统地址通常存储在 key-value 数据库（如 redis）中，redis 可以为 key 设置有效时间也就是令牌的有效期。redis 运行在内存中，速度非常快，正好 sso-server 不需要持久化任何数据。</p>
+<p>令牌与注册系统地址可以用下图描述的结构存储在 redis 中，可能你会问，为什么要存储这些系统的地址？如果不存储，注销的时候就麻烦了，用户向 sso 认证中心提交注销请求，sso 认证中心注销全局会话，但不知道哪些系统用此全局会话建立了自己的局部会话，也不知道要向哪些子系统发送注销请求注销局部会话</p>
+<p><img src="https://images2015.cnblogs.com/blog/797930/201611/797930-20161129155245506-1069288802.png" alt></p>
+<p>7、sso-client 校验令牌成功创建局部会话<br>　　令牌校验成功后，sso-client 将当前局部会话标记为“已登录”，修改 LoginFilter.java，添加几行</p>
+<p>if (verifyResult) {<br>session.setAttribute(“isLogin”, true);<br>}<br>　　 sso-client 还需将当前会话 id 与令牌绑定，表示这个会话的登录状态与令牌相关，此关系可以用 java 的 hashmap 保存，保存的数据用来处理 sso 认证中心发来的注销请求</p>
+<p>8、注销过程<br>　　用户向子系统发送带有“logout”参数的请求（注销请求），sso-client 拦截器拦截该请求，向 sso 认证中心发起注销请求</p>
+<p>String logout = req.getParameter(“logout”);<br>if (logout != null) {<br>this.ssoServer.logout(token);<br>}<br>　　 sso 认证中心也用同样的方式识别出 sso-client 的请求是注销请求（带有“logout”参数），sso 认证中心注销全局会话</p>
+<p>@RequestMapping(“/logout”)<br>public String logout(HttpServletRequest req) {<br>HttpSession session = req.getSession();<br>if (session != null) {<br>session.invalidate();//触发 LogoutListener<br>}<br>return “redirect:/“;<br>}<br>　　 sso 认证中心有一个全局会话的监听器，一旦全局会话注销，将通知所有注册系统注销</p>
+<p>1<br>2<br>3<br>4<br>5<br>6<br>7<br>8<br>public class LogoutListener implements HttpSessionListener {<br>@Override<br>public void sessionCreated(HttpSessionEvent event) {}<br>@Override<br>public void sessionDestroyed(HttpSessionEvent event) {<br>//通过 httpClient 向所有注册系统发送注销请求<br>}<br>}</p>
+</div></article><div class="post-copyright"><div class="post-copyright__author"><span class="post-copyright-meta">文章作者: </span><span class="post-copyright-info"><a href="mailto:undefined">koral</a></span></div><div class="post-copyright__type"><span class="post-copyright-meta">文章链接: </span><span class="post-copyright-info"><a href="http://luokaiii.github.io/2019/09/04/分布式/SpringBoot/Sso单点登录//index.html">http://luokaiii.github.io/2019/09/04/分布式/SpringBoot/Sso单点登录/</a></span></div><div class="post-copyright__notice"><span class="post-copyright-meta">版权声明: </span><span class="post-copyright-info">本博客所有文章除特别声明外，均采用 <a href="https://creativecommons.org/licenses/by-nc-sa/4.0/">CC BY-NC-SA 4.0</a> 许可协议。转载请注明来自 <a href="http://luokaiii.github.io">凯</a>！</span></div></div><div class="post-meta__tag-list"><a class="post-meta__tags" href="/tags/hide/index.html">hide</a></div><nav id="pagination"><div class="prev-post pull-left"><a href="/2019/09/05/读书笔记/《Mybatis》/1_入门/index.html"><i class="fa fa-chevron-left">  </i><span>《MyBatis》读书笔记 - 入门</span></a></div><div class="next-post pull-right"><a href="/2019/09/04/分布式/SpringCloud/分布式并发问题/index.html"><span>分布式环境中的并发问题</span><i class="fa fa-chevron-right"></i></a></div></nav></div></div><footer><div class="layout" id="footer"><div class="copyright">&copy;2013 - 2020 By koral</div><div class="framework-info"><span>驱动 - </span><a href="http://hexo.io"><span>Hexo</span></a><span class="footer-separator">|</span><span>主题 - </span><a href="https://github.com/Molunerfinn/hexo-theme-melody"><span>Melody</span></a></div><div class="busuanzi"><script async src="//busuanzi.ibruce.info/busuanzi/2.3/busuanzi.pure.mini.js"></script><span id="busuanzi_container_page_pv"><i class="fa fa-file"></i><span id="busuanzi_value_page_pv"></span><span></span></span></div></div></footer><i class="fa fa-arrow-up" id="go-up" aria-hidden="true"></i><script src="https://cdn.jsdelivr.net/npm/animejs@latest/anime.min.js"></script><script src="https://cdn.jsdelivr.net/npm/jquery@latest/dist/jquery.min.js"></script><script src="https://cdn.jsdelivr.net/npm/@fancyapps/fancybox@latest/dist/jquery.fancybox.min.js"></script><script src="https://cdn.jsdelivr.net/npm/velocity-animate@latest/velocity.min.js"></script><script src="https://cdn.jsdelivr.net/npm/velocity-ui-pack@latest/velocity.ui.min.js"></script><script src="/js/utils.js?version=1.7.0"></script><script src="/js/fancybox.js?version=1.7.0"></script><script src="/js/sidebar.js?version=1.7.0"></script><script src="/js/copy.js?version=1.7.0"></script><script src="/js/fireworks.js?version=1.7.0"></script><script src="/js/transition.js?version=1.7.0"></script><script src="/js/scroll.js?version=1.7.0"></script><script src="/js/head.js?version=1.7.0"></script><script>if(/Android|webOS|iPhone|iPod|iPad|BlackBerry/i.test(navigator.userAgent)) {
+  $('#nav').addClass('is-mobile')
+  $('footer').addClass('is-mobile')
+  $('#top-container').addClass('is-mobile')
+}</script></body></html>
