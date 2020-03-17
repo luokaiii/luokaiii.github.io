@@ -1,3 +1,12 @@
+---
+title: 单点登录
+date: 2019-09-04 18:17:03
+tags:
+  - hide
+categories:
+  - 分布式
+---
+
 # 单点登录
 
 ## 一、单点登录机制
@@ -12,7 +21,7 @@
 
     浏览器第一次请求服务器，服务器创建一个会话，并将会话 id 作为响应的一部分发送给浏览器，浏览器存储会话 id ，并在后续的第二次和第三次请求中带上会话 id ，服务器取得请求中的会话 id 就知道是不是同一个用户了。
 
->   服务器在内存中保存会话对象，浏览器怎么保存会话 id 呢？  
+> 服务器在内存中保存会话对象，浏览器怎么保存会话 id 呢？
 
     1.请求参数：将会话 id 作为每一次请求的参数，服务器接收请求自然能解析参数获得会话 id ，并借此判断是否来自同一会话，很明显不靠谱。
 
@@ -41,7 +50,7 @@
     虽然cookie是解决单系统登录的核心，但是cookie的限制在于cookie的域，浏览器发送 http 请求时会自动携带与该域匹配的 cookie ，而不是所有 cookie。
 
     在早些年，很多登录系统就采用同域名共享 cookie 的方式，将 web 应用群中所有子系统的域名统一在一个顶级域名下，然后将它们的 cookie 域设置为“baidu.com”。这样做虽然可行，但并不好。共享 cookie 的方式存在众多局限：首先，应用群域名得统一；其次，应用群各系统使用的技术(至少是 web 服务器)要相同，不然 cookie 的key值不相同（例如 tomcat 的是 JSESSIONID），无法维持会话，共享 cookie 的方式是无法实现跨语言技术平台登录的，比如 java、php、.net 系统之间；第三，cookie本身并不安全。
-    
+
     因此，我们需要一种全新的登录方式来实现多系统应用群的登录，这就是单点登录。
 
 ## 五、单点登录
@@ -53,27 +62,28 @@
 ### 1.登录
 
     对比单系统登录，sso 需要一个独立的认证中心，只有认证中心能接受用户的用户名密码等安全信息，其他系统不提供登录入口，只接受认证中心的间接授权。
-    
+
     间接授权通过令牌实现，sso 认证中心验证用户的用户名密码没问题，创建授权令牌吗，在跳转过程中，授权令牌作为参数发送给各个子系统，子系统拿到令牌，即通过了授权，可以借此创建局部会话，局部会话登录方式与单系统的登录方式相同。
     这个过程就是单点登录的原理。
 
 ![](https://images2015.cnblogs.com/blog/797930/201612/797930-20161203152650974-276822362.png)
-    
+  
 简要描述
-1. 用户访问系统1的受保护资源，系统1发现用户未登录，跳转至sso认证中心，并将自己的地址作为参数
-2. sso认证中心发现用户未登录，将用户引导至登录页面
+
+1. 用户访问系统 1 的受保护资源，系统 1 发现用户未登录，跳转至 sso 认证中心，并将自己的地址作为参数
+2. sso 认证中心发现用户未登录，将用户引导至登录页面
 3. 用户输入用户名密码提交登录申请
-4. sso认证中心校验用户信息，创建用户与sso认证中心之间的会话，称为全局会话，同时创建授权令牌
-5. sso认证中心带着令牌跳转会最初的请求地址（系统1）
-6. 系统1拿到令牌，去sso认证中心校验令牌是否有效
-7. sso认证中心校验令牌，返回有效，注册系统1
-8. 系统1使用该令牌创建与用户的会话，称为局部会话，返回受保护资源
-9. 用户访问系统2的受保护资源
-10. 系统2发现用户未登录，跳转至sso认证中心，并将自己的地址作为参数
-11. sso认证中心发现用户已登录，跳转回系统2的地址，并附上令牌
-12. 系统2拿到令牌，去sso认证中心校验令牌是否有效
-13. sso认证中心校验令牌，返回有效，注册系统2
-14. 系统2使用该令牌创建与用户的局部会话，返回受保护资源
+4. sso 认证中心校验用户信息，创建用户与 sso 认证中心之间的会话，称为全局会话，同时创建授权令牌
+5. sso 认证中心带着令牌跳转会最初的请求地址（系统 1）
+6. 系统 1 拿到令牌，去 sso 认证中心校验令牌是否有效
+7. sso 认证中心校验令牌，返回有效，注册系统 1
+8. 系统 1 使用该令牌创建与用户的会话，称为局部会话，返回受保护资源
+9. 用户访问系统 2 的受保护资源
+10. 系统 2 发现用户未登录，跳转至 sso 认证中心，并将自己的地址作为参数
+11. sso 认证中心发现用户已登录，跳转回系统 2 的地址，并附上令牌
+12. 系统 2 拿到令牌，去 sso 认证中心校验令牌是否有效
+13. sso 认证中心校验令牌，返回有效，注册系统 2
+14. 系统 2 使用该令牌创建与用户的局部会话，返回受保护资源
 
 ### 2.注销
 
@@ -83,12 +93,13 @@
 ![](https://images2015.cnblogs.com/blog/797930/201611/797930-20161129155243068-1378377736.png)
 
 简要说明
-1. 用户向系统1发起注销请求
-2. 系统1根据用户与系统1建立的会话id拿到令牌，向sso认证中心发起注销请求
-3. sso认证中心校验令牌有效，销毁全局会话，同时取出所有用此令牌注册的系统地址
-4. sso认证中心向所有注册系统发起注销请求
-5. 各注册系统接收sso认证中心的注销请求，销毁局部会话
-6. sso认证中心引导用户至登录页面
+
+1. 用户向系统 1 发起注销请求
+2. 系统 1 根据用户与系统 1 建立的会话 id 拿到令牌，向 sso 认证中心发起注销请求
+3. sso 认证中心校验令牌有效，销毁全局会话，同时取出所有用此令牌注册的系统地址
+4. sso 认证中心向所有注册系统发起注销请求
+5. 各注册系统接收 sso 认证中心的注销请求，销毁局部会话
+6. sso 认证中心引导用户至登录页面
 
 ## 六、部署图
 
@@ -100,111 +111,109 @@
 
     sso采用客户端/服务端架构，我们先看sso-client与sso-server要实现的功能（下面：sso认证中心=sso-server）
 
-　　sso-client
+sso-client
 
-拦截子系统未登录用户请求，跳转至sso认证中心
-接收并存储sso认证中心发送的令牌
-与sso-server通信，校验令牌的有效性
+拦截子系统未登录用户请求，跳转至 sso 认证中心
+接收并存储 sso 认证中心发送的令牌
+与 sso-server 通信，校验令牌的有效性
 建立局部会话
-拦截用户注销请求，向sso认证中心发送注销请求
-接收sso认证中心发出的注销请求，销毁局部会话
-　　sso-server
+拦截用户注销请求，向 sso 认证中心发送注销请求
+接收 sso 认证中心发出的注销请求，销毁局部会话
+　　 sso-server
 
 验证用户的登录信息
 创建全局会话
 创建授权令牌
-与sso-client通信发送令牌
-校验sso-client令牌有效性
+与 sso-client 通信发送令牌
+校验 sso-client 令牌有效性
 系统注册
-接收sso-client注销请求，注销所有会话
-　　接下来，我们按照原理来一步步实现sso吧！
+接收 sso-client 注销请求，注销所有会话
+　　接下来，我们按照原理来一步步实现 sso 吧！
 
-1、sso-client拦截未登录请求
-　　java拦截请求的方式有servlet、filter、listener三种方式，我们采用filter。在sso-client中新建LoginFilter.java类并实现Filter接口，在doFilter()方法中加入对未登录用户的拦截
+1、sso-client 拦截未登录请求
+　　 java 拦截请求的方式有 servlet、filter、listener 三种方式，我们采用 filter。在 sso-client 中新建 LoginFilter.java 类并实现 Filter 接口，在 doFilter()方法中加入对未登录用户的拦截
 
 public void doFilter(ServletRequest request, ServletResponse response, FilterChain chain) throws IOException, ServletException {
-    HttpServletRequest req = (HttpServletRequest) request;
-    HttpServletResponse res = (HttpServletResponse) response;
-    HttpSession session = req.getSession();
-     
-    if (session.getAttribute("isLogin")) {
-        chain.doFilter(request, response);
-        return;
-    }
-    //跳转至sso认证中心
-    res.sendRedirect("sso-server-url-with-system-url");
+HttpServletRequest req = (HttpServletRequest) request;
+HttpServletResponse res = (HttpServletResponse) response;
+HttpSession session = req.getSession();
+  
+ if (session.getAttribute("isLogin")) {
+chain.doFilter(request, response);
+return;
 }
-2、sso-server拦截未登录请求
-　　拦截从sso-client跳转至sso认证中心的未登录请求，跳转至登录页面，这个过程与sso-client完全一样
+//跳转至 sso 认证中心
+res.sendRedirect("sso-server-url-with-system-url");
+}
+2、sso-server 拦截未登录请求
+　　拦截从 sso-client 跳转至 sso 认证中心的未登录请求，跳转至登录页面，这个过程与 sso-client 完全一样
 
-3、sso-server验证用户登录信息
-　　用户在登录页面输入用户名密码，请求登录，sso认证中心校验用户信息，校验成功，将会话状态标记为“已登录”
+3、sso-server 验证用户登录信息
+　　用户在登录页面输入用户名密码，请求登录，sso 认证中心校验用户信息，校验成功，将会话状态标记为“已登录”
 
 @RequestMapping("/login")
 public String login(String username, String password, HttpServletRequest req) {
-    this.checkLoginInfo(username, password);
-    req.getSession().setAttribute("isLogin", true);
-    return "success";
+this.checkLoginInfo(username, password);
+req.getSession().setAttribute("isLogin", true);
+return "success";
 }
-4、sso-server创建授权令牌
+4、sso-server 创建授权令牌
 　　授权令牌是一串随机字符，以什么样的方式生成都没有关系，只要不重复、不易伪造即可，下面是一个例子
 
 String token = UUID.randomUUID().toString();
-5、sso-client取得令牌并校验
-　　sso认证中心登录后，跳转回子系统并附上令牌，子系统（sso-client）取得令牌，然后去sso认证中心校验，在LoginFilter.java的doFilter()中添加几行
+5、sso-client 取得令牌并校验
+　　 sso 认证中心登录后，跳转回子系统并附上令牌，子系统（sso-client）取得令牌，然后去 sso 认证中心校验，在 LoginFilter.java 的 doFilter()中添加几行
 
-// 请求附带token参数
+// 请求附带 token 参数
 String token = req.getParameter("token");
 if (token != null) {
-    // 去sso认证中心校验token
-    boolean verifyResult = this.verify("sso-server-verify-url", token);
-    if (!verifyResult) {
-        res.sendRedirect("sso-server-url");
-        return;
-    }
-    chain.doFilter(request, response);
+// 去 sso 认证中心校验 token
+boolean verifyResult = this.verify("sso-server-verify-url", token);
+if (!verifyResult) {
+res.sendRedirect("sso-server-url");
+return;
 }
-　　verify()方法使用httpClient实现，这里仅简略介绍，httpClient详细使用方法请参考官方文档
-
+chain.doFilter(request, response);
+}
+　　 verify()方法使用 httpClient 实现，这里仅简略介绍，httpClient 详细使用方法请参考官方文档
 
 HttpPost httpPost = new HttpPost("sso-server-verify-url-with-token");
 HttpResponse httpResponse = httpClient.execute(httpPost);
-6、sso-server接收并处理校验令牌请求
-　　用户在sso认证中心登录成功后，sso-server创建授权令牌并存储该令牌，所以，sso-server对令牌的校验就是去查找这个令牌是否存在以及是否过期，令牌校验成功后sso-server将发送校验请求的系统注册到sso认证中心（就是存储起来的意思）
+6、sso-server 接收并处理校验令牌请求
+　　用户在 sso 认证中心登录成功后，sso-server 创建授权令牌并存储该令牌，所以，sso-server 对令牌的校验就是去查找这个令牌是否存在以及是否过期，令牌校验成功后 sso-server 将发送校验请求的系统注册到 sso 认证中心（就是存储起来的意思）
 
-　　令牌与注册系统地址通常存储在key-value数据库（如redis）中，redis可以为key设置有效时间也就是令牌的有效期。redis运行在内存中，速度非常快，正好sso-server不需要持久化任何数据。
+令牌与注册系统地址通常存储在 key-value 数据库（如 redis）中，redis 可以为 key 设置有效时间也就是令牌的有效期。redis 运行在内存中，速度非常快，正好 sso-server 不需要持久化任何数据。
 
-　　令牌与注册系统地址可以用下图描述的结构存储在redis中，可能你会问，为什么要存储这些系统的地址？如果不存储，注销的时候就麻烦了，用户向sso认证中心提交注销请求，sso认证中心注销全局会话，但不知道哪些系统用此全局会话建立了自己的局部会话，也不知道要向哪些子系统发送注销请求注销局部会话
+令牌与注册系统地址可以用下图描述的结构存储在 redis 中，可能你会问，为什么要存储这些系统的地址？如果不存储，注销的时候就麻烦了，用户向 sso 认证中心提交注销请求，sso 认证中心注销全局会话，但不知道哪些系统用此全局会话建立了自己的局部会话，也不知道要向哪些子系统发送注销请求注销局部会话
 
 ![](https://images2015.cnblogs.com/blog/797930/201611/797930-20161129155245506-1069288802.png)
 
-7、sso-client校验令牌成功创建局部会话
-　　令牌校验成功后，sso-client将当前局部会话标记为“已登录”，修改LoginFilter.java，添加几行
+7、sso-client 校验令牌成功创建局部会话
+　　令牌校验成功后，sso-client 将当前局部会话标记为“已登录”，修改 LoginFilter.java，添加几行
 
 if (verifyResult) {
-    session.setAttribute("isLogin", true);
+session.setAttribute("isLogin", true);
 }
-　　sso-client还需将当前会话id与令牌绑定，表示这个会话的登录状态与令牌相关，此关系可以用java的hashmap保存，保存的数据用来处理sso认证中心发来的注销请求
+　　 sso-client 还需将当前会话 id 与令牌绑定，表示这个会话的登录状态与令牌相关，此关系可以用 java 的 hashmap 保存，保存的数据用来处理 sso 认证中心发来的注销请求
 
 8、注销过程
-　　用户向子系统发送带有“logout”参数的请求（注销请求），sso-client拦截器拦截该请求，向sso认证中心发起注销请求
-
+　　用户向子系统发送带有“logout”参数的请求（注销请求），sso-client 拦截器拦截该请求，向 sso 认证中心发起注销请求
 
 String logout = req.getParameter("logout");
 if (logout != null) {
-    this.ssoServer.logout(token);
+this.ssoServer.logout(token);
 }
-　　sso认证中心也用同样的方式识别出sso-client的请求是注销请求（带有“logout”参数），sso认证中心注销全局会话
+　　 sso 认证中心也用同样的方式识别出 sso-client 的请求是注销请求（带有“logout”参数），sso 认证中心注销全局会话
 
 @RequestMapping("/logout")
 public String logout(HttpServletRequest req) {
-    HttpSession session = req.getSession();
-    if (session != null) {
-        session.invalidate();//触发LogoutListener
-    }
-    return "redirect:/";
+HttpSession session = req.getSession();
+if (session != null) {
+session.invalidate();//触发 LogoutListener
 }
-　　sso认证中心有一个全局会话的监听器，一旦全局会话注销，将通知所有注册系统注销
+return "redirect:/";
+}
+　　 sso 认证中心有一个全局会话的监听器，一旦全局会话注销，将通知所有注册系统注销
 
 1
 2
@@ -215,10 +224,10 @@ public String logout(HttpServletRequest req) {
 7
 8
 public class LogoutListener implements HttpSessionListener {
-    @Override
-    public void sessionCreated(HttpSessionEvent event) {}
-    @Override
-    public void sessionDestroyed(HttpSessionEvent event) {
-        //通过httpClient向所有注册系统发送注销请求
-    }
+@Override
+public void sessionCreated(HttpSessionEvent event) {}
+@Override
+public void sessionDestroyed(HttpSessionEvent event) {
+//通过 httpClient 向所有注册系统发送注销请求
+}
 }

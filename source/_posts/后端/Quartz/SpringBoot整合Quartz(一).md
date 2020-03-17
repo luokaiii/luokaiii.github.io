@@ -1,13 +1,17 @@
 ---
 title: SpringBoot整合Quartz(一)-简单介绍Demo
 date: 2018-11-01 10:18:03
-categories: 
- - Java成神之路
- - Study社区
+tags:
+  - Quartz
+  - hide
+categories:
+  - 后端
+  - Quartz
 ---
-# SpringBoot整合Quartz(一)-简单介绍Demo
 
-计划：(从Quartz的属性、方法、配置文件、配置类、持久化、集群等几个方面，写一些心得)
+# SpringBoot 整合 Quartz(一)-简单介绍 Demo
+
+计划：(从 Quartz 的属性、方法、配置文件、配置类、持久化、集群等几个方面，写一些心得)
 
 Quartz 作为一款由 Java 编写的开源作业调度框架,[官网传送门](http://www.quartz-scheduler.org/index.html)。与我而言，作用是定时执行某一个任务。
 
@@ -19,7 +23,7 @@ Quartz 作为一款由 Java 编写的开源作业调度框架,[官网传送门](
 
 因为我们使用的是 `SpringBoot` 和 `Quartz` 整合。
 
-如果没有使用 `spring-boot-gradle-plugin` 指定SpringBoot的版本，则需要在下面的依赖汇中加入版本号。
+如果没有使用 `spring-boot-gradle-plugin` 指定 SpringBoot 的版本，则需要在下面的依赖汇中加入版本号。
 
 ```java
 // Gradle 方式
@@ -50,7 +54,7 @@ org.quartz.threadPool.threadPriority ： 5
 //org.quartz.threadPool.threadsInheritContextClassLoaderOfInitializingThread： true
 ```
 
-## 配置Config
+## 配置 Config
 
 ```java
 import org.quartz.Scheduler;
@@ -111,7 +115,7 @@ public class SchedulerConfig {
 
 ## 常用属性与方法
 
-### 1.Job类
+### 1.Job 类
 
 继承 `Job` 类，表明子类是一个任务（`Job 的子类必须存在一个无参构造。`）。实现 `execute(JobExecutionContext context)` 方法，来定义任务的执行内容。
 
@@ -128,22 +132,22 @@ public class HelloJob implements Job {
 }
 ```
 
-### 2.JobDetails接口
+### 2.JobDetails 接口
 
 Job 在执行时，通过 JobDetails 反射出具体的执行对象。包含了 Job 在执行时的具体属性。
 
 JobDetailImpl 实现 JobDetails，定义所有的属性，包括以下几个：
 
-| 属性名        | 说明                                                         |
-| ------------- | ------------------------------------------------------------ |
-| name          | Job任务的名称                                                |
-| group         | 组。注意：同组中只能存在一个 JobClass 在执行。               |
-| description   | 描述。                                                       |
-| jobClass      | 具体的 Job。必须是 Job 的实现类。                            |
-| jobDataMap    | 自定义的属性。可将任务的 key-value 存入 map 中，实现  Job 属性的扩展。 |
-| durability    | 是否持久化（默认false）。非持久化的 Job，会在 Trigger 执行完毕后，自动删除。 |
-| shouldRecover | 是否可恢复（默认false）。当设置为“是”，执行 Scheduler 发生崩溃等异常情况时，Job 会在 Scheduler 重启时，重新执行。 |
-| key           | 键，标识                                                     |
+| 属性名        | 说明                                                                                                               |
+| ------------- | ------------------------------------------------------------------------------------------------------------------ |
+| name          | Job 任务的名称                                                                                                     |
+| group         | 组。注意：同组中只能存在一个 JobClass 在执行。                                                                     |
+| description   | 描述。                                                                                                             |
+| jobClass      | 具体的 Job。必须是 Job 的实现类。                                                                                  |
+| jobDataMap    | 自定义的属性。可将任务的 key-value 存入 map 中，实现 Job 属性的扩展。                                              |
+| durability    | 是否持久化（默认 false）。非持久化的 Job，会在 Trigger 执行完毕后，自动删除。                                      |
+| shouldRecover | 是否可恢复（默认 false）。当设置为“是”，执行 Scheduler 发生崩溃等异常情况时，Job 会在 Scheduler 重启时，重新执行。 |
+| key           | 键，标识                                                                                                           |
 
 ```java
 /**
@@ -169,7 +173,7 @@ private static BaseJob getClass(String classname) throws Exception {
 | 子类          | 说明                                                   |
 | ------------- | ------------------------------------------------------ |
 | SimpleTrigger | 当仅需要触发一次，或者以固定时间间隔周期执行时，最合适 |
-| CronTrigger   | 通过 cron表达式 定义时间规则的调度方案                 |
+| CronTrigger   | 通过 cron 表达式 定义时间规则的调度方案                |
 
 ```java
 /**
@@ -188,25 +192,25 @@ public Trigger getTrigger(String jobClassName, String jobGroupName, String cronE
 
 ### 4.JobStore
 
-存储Job和运行期间的状态。
+存储 Job 和运行期间的状态。
 默认使用的是 `RAMJobStore` ,使用内存来配置、构造和运行，但是当程序停止或者重启后，任务就会丢失。
-后面我们会通过修改 JobStore 来使，Job和Trigger持久化到数据库中。也会更利于我们使用集群
+后面我们会通过修改 JobStore 来使，Job 和 Trigger 持久化到数据库中。也会更利于我们使用集群
 
 ### 5.Scheduler
 
 调度器，是 Quartz 调用执行 Job，以及设置 trigger 的主要接口。
 
-| 常用方法                                                 | 说明                                  |
-| -------------------------------------------------------- | ------------------------------------- |
-| start()                                                  | 开启调度线程，也就是启动Scheduler。   |
-| shutdown()                                               | 关闭。                                |
-| setJobFactory(JobFactory factory)                        | 指定生成 Job 的JobFactory。           |
-| scheduleJob(JobDetail jobDetail, Trigger trigger)        | 接收一个Job，按照指定的 trigger执行。 |
-| deleteJob(JobKey jobKey)                                 | 删除 Job。                            |
-| pauseJob(JobKey jobKey)                                  | 暂停 Job。                            |
-| pauseTrigger(TriggerKey triggerKey)                      | 暂停 Trigger。                        |
-| resumeJob(JobKey jobKey)                                 | 重启。                                |
-| rescheduleJob(TriggerKey triggerKey, Trigger newTrigger) | 修改。                                |
+| 常用方法                                                 | 说明                                    |
+| -------------------------------------------------------- | --------------------------------------- |
+| start()                                                  | 开启调度线程，也就是启动 Scheduler。    |
+| shutdown()                                               | 关闭。                                  |
+| setJobFactory(JobFactory factory)                        | 指定生成 Job 的 JobFactory。            |
+| scheduleJob(JobDetail jobDetail, Trigger trigger)        | 接收一个 Job，按照指定的 trigger 执行。 |
+| deleteJob(JobKey jobKey)                                 | 删除 Job。                              |
+| pauseJob(JobKey jobKey)                                  | 暂停 Job。                              |
+| pauseTrigger(TriggerKey triggerKey)                      | 暂停 Trigger。                          |
+| resumeJob(JobKey jobKey)                                 | 重启。                                  |
+| rescheduleJob(TriggerKey triggerKey, Trigger newTrigger) | 修改。                                  |
 
 ## 测试
 

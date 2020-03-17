@@ -1,11 +1,15 @@
 ---
-title: 模拟Ping
+title: 《常用的MySQL命令》
 date: 2018-09-29 17:38:03
 tags:
- - java
-categories: 
- - 工具函数
+  - java
+categories:
+  - 工具函数
 ---
+
+包含 MySQL 服务操作、数据库操作、表操作、数据操作、字符集编码、数据类型 等信息。
+
+<!-- more -->
 
 ## 基本操作
 
@@ -189,7 +193,7 @@ SET NAMES gbk; 	-- 以上三个配置
 	tinyint  	 1字节     -128~127 无符号位：0~255
 	smallint 	 2字节 	 -32768~32767
 	mediumint 	 3字节	 -8388608~8388607
-	int 		 4字节	
+	int 		 4字节
 	bigint		 8字节
 	int(M)		 M表示总位数
 	- 默认存在符号位，unsigned 属性修改
@@ -274,6 +278,4 @@ SET NAMES gbk; 	-- 以上三个配置
 		- 当创建表时，SET 成员值的尾部空格将自动删除
 ```
 
-
-
-文章摘抄自 [掘金 - 一千行MySQL命令](https://juejin.im/post/5d6faf8f6fb9a06b0b1c9535?utm_source=gold_browser_extension) 。
+文章摘抄自 [掘金 - 一千行 MySQL 命令](https://juejin.im/post/5d6faf8f6fb9a06b0b1c9535?utm_source=gold_browser_extension) 。

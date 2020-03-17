@@ -2,13 +2,16 @@
 title: POI+XChart图形报告
 date: 2018-09-01 14:46:03
 tags:
- - POI
-categories: 
- - Java
+  - POI
+  - hide
+categories:
+  - 后端
+  - POI
 ---
-# POI+XChart图形报告
 
-## 一、基础示例，写入Excel
+# POI+XChart 图形报告
+
+## 一、基础示例，写入 Excel
 
 生成一个图形，并将其写入 Excel 中。
 
@@ -41,11 +44,9 @@ public void generate() throws IOException {
 }
 ```
 
-
-
 ![生成的基础图片](https://images.gitee.com/uploads/images/2019/0121/180421_34b56169_1872936.png)
 
->  上面我们演示了如何`将 XChart生成的图片导入 Excel`，下面的部分，都会将生成的图形导出为图片，如果需要导入Excel的话，只需要将chart套入第一章即可。
+> 上面我们演示了如何`将 XChart生成的图片导入 Excel`，下面的部分，都会将生成的图形导出为图片，如果需要导入 Excel 的话，只需要将 chart 套入第一章即可。
 
 ## 二、将生成的图形导出成为图片
 
@@ -173,8 +174,6 @@ public void generate() throws IOException {
 }
 ```
 
-
-
 ![散点图](https://koral-home.oss-cn-beijing.aliyuncs.com/sandian.png)
 
 ## 柱状图
@@ -275,11 +274,6 @@ private List<Double> getGaussianData(int count) {
 
 参考：
 
- (1) [XChart Demo](https://knowm.org/open-source/xchart/xchart-example-code/index.html)
+(1) [XChart Demo](https://knowm.org/open-source/xchart/xchart-example-code/index.html)
 
- (2) 自己
-
-
-
-
-
+(2) 自己

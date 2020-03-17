@@ -2,13 +2,14 @@
 title: 使用POI导出Excel
 date: 2018-09-01 14:46:03
 tags:
- - POI
-categories: 
- - Java
+  - POI
+  - hide
+categories:
+  - 后端
+  - POI
 ---
-# 使用POI导出Excel
 
-## 一、引入POI4.0的包
+## 一、引入 POI4.0 的包
 
 ```xml
 <dependency>
@@ -23,7 +24,7 @@ categories:
 </dependency>
 ```
 
-## 二、普通的Excel生成
+## 二、普通的 Excel 生成
 
 ```java
 @Test
@@ -47,7 +48,7 @@ public void generate() {
 
 ![正常导出的Excel](https://images.gitee.com/uploads/images/2019/0121/161334_ee08a1e8_1872936.png)
 
->  这里返回的结果可能挤在一起了，这是因为我们没有设置单元格的宽高。
+> 这里返回的结果可能挤在一起了，这是因为我们没有设置单元格的宽高。
 
 ## 三、加上行首、样式
 
@@ -86,7 +87,7 @@ public void generate() throws IOException {
                 cell.setCellValue(String.format("第%s行，第%s列", i + 1, j + 1));
             }
         }
-        
+
         // 设置宽度自适应
         for (int o = 0; o < 5; o++) {
            sheet.autoSizeColumn(o, true);
@@ -103,6 +104,6 @@ public void generate() throws IOException {
 
 具体单元格的样式，我们可以在 `cellStyle` 中设置，如果需要多种样式组合的话，可以通过 `XSSFWorkbook` 创建多个，在指定位置进行设置。
 
->  通过以上代码可以看出，POI 操作 Excel 其实就是在操作 Row(行) 和 Col(列)，其数据可以抽象为一个 `二维数组`，只需要对二维数组进行遍历，即可渲染Excel数据。
+> 通过以上代码可以看出，POI 操作 Excel 其实就是在操作 Row(行) 和 Col(列)，其数据可以抽象为一个 `二维数组`，只需要对二维数组进行遍历，即可渲染 Excel 数据。
 
 具体的方法工具类，[贴在这里](www.baidu.com)

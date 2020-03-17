@@ -1,10 +1,12 @@
 ---
-title: 使用POI结合Excel的行列生成原生散点图(XY图)
+title: 使用POI结合Excel的生成簇状柱状图
 date: 2018-09-01 14:46:03
 tags:
- - POI
-categories: 
- - Java
+  - POI
+  - hide
+categories:
+  - 后端
+  - POI
 ---
 # 使用POI结合Excel的行列生成原生散点图(XY图)
 

@@ -2,10 +2,14 @@
 title: 模拟Ping
 date: 2018-09-29 17:38:03
 tags:
- - java
-categories: 
- - 工具函数
+  - java
+  - hide
+categories:
+  - 后端
+  - java
+  - 其它
 ---
+
 ```java
 import java.io.BufferedReader;
 import java.io.IOException;
@@ -54,4 +58,3 @@ public class IpContimeUtil {
 }
 
 ```
-

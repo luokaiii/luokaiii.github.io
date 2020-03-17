@@ -1,13 +1,20 @@
 ---
-title: SpringMVC测试框架
+title: 《MockMvc》测试框架
 date: 2018-10-11 11:23:10
+tags:
+  - MockMvc
 categories:
-  - Java成神之路
+  - 后端
+  - java
+  - 测试
 ---
-# SpringMVC测试框架
-### 基于RESTful风格的SpringMVC的测试，我们可以测试完整的Spring MVC流程，即从URL请求到控制器处理，再到视图渲染都可以测试。
+
+基于 RESTful 风格的 SpringMVC 的测试，我们可以测试完整的 Spring MVC 流程，即从 URL 请求到控制器处理，再到视图渲染都可以测试。
+
+<!-- more -->
 
 ## 快速入门-这个方法中包含了大多数的常见情况：
+
 ```java
     @RunWith(SpringRunner.class)
     @SpringBootTest
@@ -59,9 +66,9 @@ categories:
 
 ## 一 MockMvcBuilder
 
-MockMvcBuilder是用来构造MockMvc的构造器，其主要有两个实现：StandaloneMockMvcBuilder和DefaultMockMvcBuilder，分别对应两种测试方式，即独立安装和集成Web环境测试（此种方式并不会集成真正的web环境，而是通过相应的Mock API进行模拟测试，无须启动服务器）。对于我们来说直接使用静态工厂MockMvcBuilders创建即可。
+MockMvcBuilder 是用来构造 MockMvc 的构造器，其主要有两个实现：StandaloneMockMvcBuilder 和 DefaultMockMvcBuilder，分别对应两种测试方式，即独立安装和集成 Web 环境测试（此种方式并不会集成真正的 web 环境，而是通过相应的 Mock API 进行模拟测试，无须启动服务器）。对于我们来说直接使用静态工厂 MockMvcBuilders 创建即可。
 
-### 1.集成Web环境方式
+### 1.集成 Web 环境方式
 
     MockMvcBuilders.webAppContextSetup(WebApplicationContext context)：指定WebApplicationContext，将会从该上下文获取相应的控制器并得到相应的MockMvc；
 
@@ -109,7 +116,8 @@ MockMvcBuilder是用来构造MockMvc的构造器，其主要有两个实现：St
 
 ## 二 MockMvc
 
-#### 先看一个测试例子1：
+#### 先看一个测试例子 1：
+
     　　@Test
         public void createIncotermSuccess() throws Exception {
             IncotermTo createdIncoterm = new IncotermTo();
@@ -131,24 +139,24 @@ MockMvcBuilder是用来构造MockMvc的构造器，其主要有两个实现：St
     andDo：添加ResultHandler结果处理器，比如调试时打印结果到控制台；
     andReturn：最后返回相应的MvcResult；然后进行自定义验证/进行下一步的异步处理；
 
-#### 看一个具体的例子2：
+#### 看一个具体的例子 2：
 
-    @Test  
-    public void testView() throws Exception {  
-        MvcResult result = mockMvc.perform(MockMvcRequestBuilders.get("/user/1"))  
-                .andExpect(MockMvcResultMatchers.view().name("user/view"))  
-                .andExpect(MockMvcResultMatchers.model().attributeExists("user"))  
-                .andDo(MockMvcResultHandlers.print())  
-                .andReturn();  
-        Assert.assertNotNull(result.getModelAndView().getModel().get("user"));  
-    }  
+    @Test
+    public void testView() throws Exception {
+        MvcResult result = mockMvc.perform(MockMvcRequestBuilders.get("/user/1"))
+                .andExpect(MockMvcResultMatchers.view().name("user/view"))
+                .andExpect(MockMvcResultMatchers.model().attributeExists("user"))
+                .andDo(MockMvcResultHandlers.print())
+                .andReturn();
+        Assert.assertNotNull(result.getModelAndView().getModel().get("user"));
+    }
 
->    整个过程：
->    1、mockMvc.perform执行一个请求；   
->    2、MockMvcRequestBuilders.get("/user/1")构造一个请求   
->    3、ResultActions.andExpect添加执行完成后的断言     
->    4、ResultActions.andDo添加一个结果处理器，表示要对结果做点什么事情，比如此处使用MockMvcResultHandlers.print()输出整个响应结果信息。    
->    5、ResultActions.andReturn表示执行完成后返回相应的结果。   
+> 整个过程：
+> 1、mockMvc.perform 执行一个请求；  
+>  2、MockMvcRequestBuilders.get("/user/1")构造一个请求  
+>  3、ResultActions.andExpect 添加执行完成后的断言  
+>  4、ResultActions.andDo 添加一个结果处理器，表示要对结果做点什么事情，比如此处使用 MockMvcResultHandlers.print()输出整个响应结果信息。  
+>  5、ResultActions.andReturn 表示执行完成后返回相应的结果。
 
     整个测试过程非常有规律：
     1、准备测试环境
@@ -160,16 +168,16 @@ MockMvcBuilder是用来构造MockMvc的构造器，其主要有两个实现：St
 
 ## 三 RequestBuilder/MockMvcRequestBuilders
 
-从名字可以看出，RequestBuilder用来构建请求的，其提供了一个方法buildRequest(ServletContext servletContext)用于构建MockHttpServletRequest；其主要有两个子类MockHttpServletRequestBuilder和MockMultipartHttpServletRequestBuilder（如文件上传使用），即用来Mock客户端请求需要的所有数据。
+从名字可以看出，RequestBuilder 用来构建请求的，其提供了一个方法 buildRequest(ServletContext servletContext)用于构建 MockHttpServletRequest；其主要有两个子类 MockHttpServletRequestBuilder 和 MockMultipartHttpServletRequestBuilder（如文件上传使用），即用来 Mock 客户端请求需要的所有数据。
 
-### 1.MockMvcRequestBuilders主要API
+### 1.MockMvcRequestBuilders 主要 API
 
     MockHttpServletRequestBuilder get(String urlTemplate, Object... urlVariables)：根据uri模板和uri变量值得到一个GET请求方式的MockHttpServletRequestBuilder；如get(/user/{id}, 1L)；
 
     MockHttpServletRequestBuilder post(String urlTemplate, Object... urlVariables)：同get类似，但是是POST方法；
 
     MockHttpServletRequestBuilder put(String urlTemplate, Object... urlVariables)：同get类似，但是是PUT方法；
-    
+
     MockHttpServletRequestBuilder delete(String urlTemplate, Object... urlVariables) ：同get类似，但是是DELETE方法；
 
     MockHttpServletRequestBuilder options(String urlTemplate, Object... urlVariables)：同get类似，但是是OPTIONS方法；
@@ -180,7 +188,7 @@ MockMvcBuilder是用来构造MockMvc的构造器，其主要有两个实现：St
 
     RequestBuilder asyncDispatch(final MvcResult mvcResult)：创建一个从启动异步处理的请求的MvcResult进行异步分派的RequestBuilder；
 
-### 2.MockHttpServletRequestBuilder和MockMultipartHttpServletRequestBuilder API
+### 2.MockHttpServletRequestBuilder 和 MockMultipartHttpServletRequestBuilder API
 
 ## (1)MockHttpServletRequestBuilder API
 
@@ -231,7 +239,8 @@ MockMvcBuilder是用来构造MockMvc的构造器，其主要有两个实现：St
 ## 五 ResultMatcher/MockMvcResultMatchers
 
     1.ResultMatcher用来匹配执行完请求后的结果验证，其就一个match(MvcResult result)断言方法，如果匹配失败将抛出相应的异常；spring mvc测试框架提供了很多***ResultMatchers来满足测试需求。注意这些***ResultMatchers并不是ResultMatcher的子类，而是返回ResultMatcher实例的。Spring mvc测试框架为了测试方便提供了MockMvcResultMatchers静态工厂方法方便操作；
-2.具体的API如下：
+
+2.具体的 API 如下：
 
     HandlerResultMatchers handler()：请求的Handler验证器，比如验证处理器类型/方法名；此处的Handler其实就是处理请求的控制器；
 
@@ -267,72 +276,71 @@ MockMvcBuilder是用来构造MockMvc的构造器，其主要有两个实现：St
 
 ### 1.测试普通控制器
 
-    mockMvc.perform(get("/user/{id}", 1)) //执行请求  
-            .andExpect(model().attributeExists("user")) //验证存储模型数据  
-            .andExpect(view().name("user/view")) //验证viewName  
-            .andExpect(forwardedUrl("/WEB-INF/jsp/user/view.jsp"))//验证视图渲染时forward到的jsp  
-            .andExpect(status().isOk())//验证状态码  
+    mockMvc.perform(get("/user/{id}", 1)) //执行请求
+            .andExpect(model().attributeExists("user")) //验证存储模型数据
+            .andExpect(view().name("user/view")) //验证viewName
+            .andExpect(forwardedUrl("/WEB-INF/jsp/user/view.jsp"))//验证视图渲染时forward到的jsp
+            .andExpect(status().isOk())//验证状态码
             .andDo(print()); //输出MvcResult到控制台
 
-### 2.得到MvcResult自定义验证
+### 2.得到 MvcResult 自定义验证
 
+    MvcResult result = mockMvc.perform(get("/user/{id}", 1))//执行请求
+            .andReturn(); //返回MvcResult
+    Assert.assertNotNull(result.getModelAndView().getModel().get("user")); //自定义断言
 
-    MvcResult result = mockMvc.perform(get("/user/{id}", 1))//执行请求  
-            .andReturn(); //返回MvcResult  
-    Assert.assertNotNull(result.getModelAndView().getModel().get("user")); //自定义断言   
+### 3.验证请求参数绑定到模型数据及 Flash 属性
 
-### 3.验证请求参数绑定到模型数据及Flash属性
-
-    mockMvc.perform(post("/user").param("name", "zhang")) //执行传递参数的POST请求(也可以post("/user?name=zhang"))  
-                .andExpect(handler().handlerType(UserController.class)) //验证执行的控制器类型  
-                .andExpect(handler().methodName("create")) //验证执行的控制器方法名  
-                .andExpect(model().hasNoErrors()) //验证页面没有错误  
-                .andExpect(flash().attributeExists("success")) //验证存在flash属性  
-                .andExpect(view().name("redirect:/user")); //验证视图  
+    mockMvc.perform(post("/user").param("name", "zhang")) //执行传递参数的POST请求(也可以post("/user?name=zhang"))
+                .andExpect(handler().handlerType(UserController.class)) //验证执行的控制器类型
+                .andExpect(handler().methodName("create")) //验证执行的控制器方法名
+                .andExpect(model().hasNoErrors()) //验证页面没有错误
+                .andExpect(flash().attributeExists("success")) //验证存在flash属性
+                .andExpect(view().name("redirect:/user")); //验证视图
 
 ### 4.文件上传
 
-    byte[] bytes = new byte[] {1, 2};  
-    mockMvc.perform(fileUpload("/user/{id}/icon", 1L).file("icon", bytes)) //执行文件上传  
-            .andExpect(model().attribute("icon", bytes)) //验证属性相等性  
-            .andExpect(view().name("success")); //验证视图  
+    byte[] bytes = new byte[] {1, 2};
+    mockMvc.perform(fileUpload("/user/{id}/icon", 1L).file("icon", bytes)) //执行文件上传
+            .andExpect(model().attribute("icon", bytes)) //验证属性相等性
+            .andExpect(view().name("success")); //验证视图
 
-### 5.JSON请求/响应验证
+### 5.JSON 请求/响应验证
 
-    String requestBody = "{\"id\":1, \"name\":\"zhang\"}";  
-        mockMvc.perform(post("/user")  
-                .contentType(MediaType.APPLICATION_JSON).content(requestBody)  
-                .accept(MediaType.APPLICATION_JSON)) //执行请求  
-                .andExpect(content().contentType(MediaType.APPLICATION_JSON)) //验证响应contentType  
-                .andExpect(jsonPath("$.id").value(1)); //使用Json path验证JSON 请参考http://goessner.net/articles/JsonPath/   
-        String errorBody = "{id:1, name:zhang}";  
-        MvcResult result = mockMvc.perform(post("/user")  
-                .contentType(MediaType.APPLICATION_JSON).content(errorBody)  
-                .accept(MediaType.APPLICATION_JSON)) //执行请求  
-                .andExpect(status().isBadRequest()) //400错误请求  
-                .andReturn();   
+    String requestBody = "{\"id\":1, \"name\":\"zhang\"}";
+        mockMvc.perform(post("/user")
+                .contentType(MediaType.APPLICATION_JSON).content(requestBody)
+                .accept(MediaType.APPLICATION_JSON)) //执行请求
+                .andExpect(content().contentType(MediaType.APPLICATION_JSON)) //验证响应contentType
+                .andExpect(jsonPath("$.id").value(1)); //使用Json path验证JSON 请参考http://goessner.net/articles/JsonPath/
+        String errorBody = "{id:1, name:zhang}";
+        MvcResult result = mockMvc.perform(post("/user")
+                .contentType(MediaType.APPLICATION_JSON).content(errorBody)
+                .accept(MediaType.APPLICATION_JSON)) //执行请求
+                .andExpect(status().isBadRequest()) //400错误请求
+                .andReturn();
         Assert.assertTrue(HttpMessageNotReadableException.class.isAssignableFrom(result.getResolvedException().getClass()));//错误的请求内容体
 
 ### 6.异步测试
 
-    //Callable  
-    MvcResult result = mockMvc.perform(get("/user/async1?id=1&name=zhang")) //执行请求  
-            .andExpect(request().asyncStarted())  
-            .andExpect(request().asyncResult(CoreMatchers.instanceOf(User.class))) //默认会等10秒超时  
-            .andReturn();  
-        
-    mockMvc.perform(asyncDispatch(result))  
-            .andExpect(status().isOk())  
-            .andExpect(content().contentType(MediaType.APPLICATION_JSON))  
-            .andExpect(jsonPath("$.id").value(1));  
- 
+    //Callable
+    MvcResult result = mockMvc.perform(get("/user/async1?id=1&name=zhang")) //执行请求
+            .andExpect(request().asyncStarted())
+            .andExpect(request().asyncResult(CoreMatchers.instanceOf(User.class))) //默认会等10秒超时
+            .andReturn();
+
+    mockMvc.perform(asyncDispatch(result))
+            .andExpect(status().isOk())
+            .andExpect(content().contentType(MediaType.APPLICATION_JSON))
+            .andExpect(jsonPath("$.id").value(1));
+
 ### 7.全局配置
 
-    mockMvc = webAppContextSetup(wac)  
-            .defaultRequest(get("/user/1").requestAttr("default", true)) //默认请求 如果其是Mergeable类型的，会自动合并的哦mockMvc.perform中的RequestBuilder  
-            .alwaysDo(print())  //默认每次执行请求后都做的动作  
-            .alwaysExpect(request().attribute("default", true)) //默认每次执行后进行验证的断言  
-            .build();  
-      
-    mockMvc.perform(get("/user/1"))  
-            .andExpect(model().attributeExists("user"));  
+    mockMvc = webAppContextSetup(wac)
+            .defaultRequest(get("/user/1").requestAttr("default", true)) //默认请求 如果其是Mergeable类型的，会自动合并的哦mockMvc.perform中的RequestBuilder
+            .alwaysDo(print())  //默认每次执行请求后都做的动作
+            .alwaysExpect(request().attribute("default", true)) //默认每次执行后进行验证的断言
+            .build();
+
+    mockMvc.perform(get("/user/1"))
+            .andExpect(model().attributeExists("user"));

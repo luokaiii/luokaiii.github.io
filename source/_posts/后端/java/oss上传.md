@@ -1,11 +1,12 @@
 ---
-title: 通过 POI 将数据库中的数据上传至 OSS 对象存储
+title: OSS上传
 date: 2018-09-29 17:38:03
 tags:
- - poi
- - java
-categories: 
- - Java成神之路
+  - OSS
+  - hide
+categories:
+  - 后端
+  - java
 ---
 
 # 通过 POI 将数据库中的数据上传至 OSS 对象存储
@@ -173,7 +174,7 @@ private void setFirstRow(Sheet sheet, String[] cellTitles, XSSFCellStyle headerS
 
 ### `uploadWorkbook`方法
 
-该方法用于：`接收 Workbook 生成的流，并将其保存至 OSS 上`，本方法适用于 `aliyun` 的 `OSS 对象存储`，其他的具体实现都可以从官方API中查到。
+该方法用于：`接收 Workbook 生成的流，并将其保存至 OSS 上`，本方法适用于 `aliyun` 的 `OSS 对象存储`，其他的具体实现都可以从官方 API 中查到。
 
 ```java
 private String uploadWorkbook(ByteArrayOutputStream stream, String fileId) throws IOException {
@@ -194,68 +195,68 @@ private String uploadWorkbook(ByteArrayOutputStream stream, String fileId) throw
 2. 保存对象的媒体信息
 3. 上传至 `aliyun` 的 `OSS` 对象存储，具体实现可以看 [`第四部分`](#四、上传至OSS等对象存储)
 
-## 三、设置Excel单元格样式
+## 三、设置 Excel 单元格样式
 
-创建sheet
+创建 sheet
 
 ```java
-HSSFCellStyle cellStyle = wb.createCellStyle();  
+HSSFCellStyle cellStyle = wb.createCellStyle();
 ```
 
- 一、设置背景色:
+一、设置背景色:
 
 ```java
-cellStyle.setFillForegroundColor((short) 13);// 设置背景色  
-cellStyle.setFillPattern(HSSFCellStyle.SOLID_FOREGROUND);  
+cellStyle.setFillForegroundColor((short) 13);// 设置背景色
+cellStyle.setFillPattern(HSSFCellStyle.SOLID_FOREGROUND);
 ```
 
 二、设置边框:
 
 ```java
-cellStyle.setBorderBottom(HSSFCellStyle.BORDER_THIN); //下边框  
-cellStyle.setBorderLeft(HSSFCellStyle.BORDER_THIN);//左边框  
-cellStyle.setBorderTop(HSSFCellStyle.BORDER_THIN);//上边框  
-cellStyle.setBorderRight(HSSFCellStyle.BORDER_THIN);//右边框  
+cellStyle.setBorderBottom(HSSFCellStyle.BORDER_THIN); //下边框
+cellStyle.setBorderLeft(HSSFCellStyle.BORDER_THIN);//左边框
+cellStyle.setBorderTop(HSSFCellStyle.BORDER_THIN);//上边框
+cellStyle.setBorderRight(HSSFCellStyle.BORDER_THIN);//右边框
 ```
 
 三、设置居中:
 
 ```java
-cellStyle.setAlignment(HSSFCellStyle.ALIGN_CENTER); // 居中  
+cellStyle.setAlignment(HSSFCellStyle.ALIGN_CENTER); // 居中
 ```
 
 四、设置字体:
 
 ```java
-HSSFFont font = wb.createFont();  
-font.setFontName("黑体");  
-font.setFontHeightInPoints((short) 16);//设置字体大小  
-  
-HSSFFont font2 = wb.createFont();  
-font2.setFontName("仿宋_GB2312");  
-font2.setBoldweight(HSSFFont.BOLDWEIGHT_BOLD);//粗体显示  
-font2.setFontHeightInPoints((short) 12);  
-  
-cellStyle.setFont(font);//选择需要用到的字体格式  
+HSSFFont font = wb.createFont();
+font.setFontName("黑体");
+font.setFontHeightInPoints((short) 16);//设置字体大小
+
+HSSFFont font2 = wb.createFont();
+font2.setFontName("仿宋_GB2312");
+font2.setBoldweight(HSSFFont.BOLDWEIGHT_BOLD);//粗体显示
+font2.setFontHeightInPoints((short) 12);
+
+cellStyle.setFont(font);//选择需要用到的字体格式
 ```
 
 五、设置列宽:
 
 ```java
-sheet.setColumnWidth(0, 3766); //第一个参数代表列id(从0开始),第2个参数代表宽度值  参考 ："2012-08-10"的宽度为2500  
+sheet.setColumnWidth(0, 3766); //第一个参数代表列id(从0开始),第2个参数代表宽度值  参考 ："2012-08-10"的宽度为2500
 ```
 
 六、设置自动换行:
 
 ```java
-cellStyle.setWrapText(true);//设置自动换行  
+cellStyle.setWrapText(true);//设置自动换行
 ```
 
 七、合并单元格:
 
 ```java
 Region region1 = new Region(0, (short) 0, 0, (short) 6);//参数1：行号 参数2：起始列号 参数3：行号 参数4：终止列号
-//此方法在POI3.8中已经被废弃，建议使用下面一个  
+//此方法在POI3.8中已经被废弃，建议使用下面一个
 或者用
 
 CellRangeAddress region1 = new CellRangeAddress(rowNumber, rowNumber, (short) 0, (short) 11);
@@ -267,7 +268,7 @@ CellRangeAddress region1 = new CellRangeAddress(rowNumber, rowNumber, (short) 0,
 sheet.addMergedRegion(region1);
 ```
 
-## 四、上传至OSS等对象存储
+## 四、上传至 OSS 等对象存储
 
 作用：`上传 stream流 至 OSS`
 

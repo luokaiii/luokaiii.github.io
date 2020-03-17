@@ -1,6 +1,11 @@
 ---
 title: PM2 - 进程管理工具
 date: 2020-03-11
+tags:
+  - hide
+categories:
+  - 运维
+  - 进程管理工具
 ---
 
 介绍 `pm2` 的安装，并部署 `SpringBoot` 生成的 jar 文件。以及部分常用命令。

@@ -2,11 +2,14 @@
 title: POI之PPT转image,SmartArt解决方法
 date: 2018-11-16 15:56:03
 tags:
- - java
-categories: 
- - Java成神之路
+  - POI
+  - hide
+categories:
+  - 后端
+  - POI
 ---
-# POI之PPT转image,SmartArt解决方法
+
+# POI 之 PPT 转 image,SmartArt 解决方法
 
 关于使用 POI 将 PPT 转为 图片，随便就能查到以下代码。
 
@@ -20,17 +23,17 @@ import org.apache.poi.xslf.usermodel.XMLSlideShow;
 import org.apache.poi.xslf.usermodel.XSLFSlide;
 
 public class PpttoPNG {
-   
+
    public static void main(String args[]) throws IOException {
-      
+
       //creating an empty presentation
       File file = new File("addingimage.pptx");
       XMLSlideShow ppt = new XMLSlideShow(new FileInputStream(file));
-      
-      //getting the dimensions and size of the slide 
+
+      //getting the dimensions and size of the slide
       Dimension pgsize = ppt.getPageSize();
       XSLFSlide[] slide = ppt.getSlides();
-      
+
       for (int i = 0; i < slide.length; i++) {
          BufferedImage img = new BufferedImage(
             pgsize.width, pgsize.height,BufferedImage.TYPE_INT_RGB);
@@ -43,21 +46,21 @@ public class PpttoPNG {
          //render
          slide[i].draw(graphics);
       }
-      
+
       //creating an image file as output
       FileOutputStream out = new FileOutputStream("ppt_image.png");
       javax.imageio.ImageIO.write(img, "png", out);
       ppt.write(out);
-      
+
       System.out.println("Image successfully created");
-      out.close();	
+      out.close();
    }
 }
 ```
 
 但是问题显然不会这么简单，经过实验发现。
 
-通过POI导出的图片，出现以下几个问题：
+通过 POI 导出的图片，出现以下几个问题：
 
 1. 无法读取 SmartArt
 2. 艺术字只能显示为普通文本
@@ -78,9 +81,9 @@ public class PpttoPNG {
 
 无解，所以我们抛弃了 POI，改用其他方式导出。
 
-### 1.改用java调用Python
+### 1.改用 java 调用 Python
 
-如果你不会python，可以将下面的py代码放到项目下，通过 `jython` 解释器来执行。
+如果你不会 python，可以将下面的 py 代码放到项目下，通过 `jython` 解释器来执行。
 
 ```python
 import comtypes.client as client
@@ -117,7 +120,7 @@ if __name__ == "__main__":
 
 ### 2.使用第三方服务
 
-阿里云提供了一个“智能媒体管理”的服务，其中包含了许多的文档转换的API。省事
+阿里云提供了一个“智能媒体管理”的服务，其中包含了许多的文档转换的 API。省事
 
 ![收费标准](https://upload-images.jianshu.io/upload_images/13603359-0ebbce1f64d3e639.png)
 

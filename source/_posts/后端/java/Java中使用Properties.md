@@ -2,20 +2,21 @@
 title: 读取 Properties 文件的几种方式
 date: 2018-09-30 14:46:03
 tags:
- - java
- - SpringBoot
-categories: 
- - Java成神之路
+  - spring
+  - hide
+categories:
+  - 后端
+  - java
+  - 其它
 ---
-# 读取Properties文件的几种方式
 
-![读取Properties文件的几种方式](https://upload-images.jianshu.io/upload_images/13603359-9bc057f7c3fab711.png?imageMogr2/auto-orient/strip%7CimageView2/2/w/1240)
+读取 Properties 文件的几种方式
 
 <!-- More -->
 
 ## 读取 Properties 文件
 
-### 1.在xml 配置文件中使用"${}"
+### 1.在 xml 配置文件中使用"\${}"
 
 ```java
 <bean id="xxx" class="com.javadoop.Xxx">
@@ -23,16 +24,16 @@ categories:
 </bean>
 ```
 
-### 2. 通过@Value注解注入
+### 2. 通过@Value 注解注入
 
 ```java
 @Value("${javadoop.jdbc.url}")
 private String url;
 ```
 
-### 3.通过Environment获取
+### 3.通过 Environment 获取
 
-注意：只有使用注解 @PropertySource 的时候才可以使用，否则会 null ; 如果是 SpringBoot 的application.properties 注册 的，也可以
+注意：只有使用注解 @PropertySource 的时候才可以使用，否则会 null ; 如果是 SpringBoot 的 application.properties 注册 的，也可以
 
 ```java
 @Autowired
@@ -43,15 +44,15 @@ public String getUrl() {
 }
 ```
 
-## Properties的使用
+## Properties 的使用
 
-### 1.通过XML配置
+### 1.通过 XML 配置
 
 ```java
 <context:property-placeholder location="classpath:sys.properties" />
 ```
 
-### 2.通过@PropertySource配置
+### 2.通过@PropertySource 配置
 
 ```java
 @PropertySource("classpath:sys.properties")
@@ -61,7 +62,7 @@ public class JavaDoopConfig {
 }
 ```
 
-### 3.PropertyPlaceholderConfigurer(Spring3.1之前)
+### 3.PropertyPlaceholderConfigurer(Spring3.1 之前)
 
 ```java
 @Bean
@@ -88,13 +89,13 @@ java -Dspring.config.location=classpath:sys.properties -jar app.jar
 
 ### application-{env}.properties
 
-在 application.properties 的基础上，我们还需要新建 application-dev.properties 和application-prd.properties，用于配置环境相关的信息，然后启动的时候指定环境：
+在 application.properties 的基础上，我们还需要新建 application-dev.properties 和 application-prd.properties，用于配置环境相关的信息，然后启动的时候指定环境：
 
 ```java
 java -Dspring.profiles.active=prd -jar app.jar
 ```
 
-如果 application.properties 和 application-prd.properties 有key冲突，application-prd.properties 的优先级较高。
+如果 application.properties 和 application-prd.properties 有 key 冲突，application-prd.properties 的优先级较高。
 
 ### @ConfigurationProperties
 
@@ -106,7 +107,7 @@ javadoop.database.username=admin
 javadoop.database.password=admin123456
 ```
 
-java文件
+java 文件
 
 ```java
 @Configuration

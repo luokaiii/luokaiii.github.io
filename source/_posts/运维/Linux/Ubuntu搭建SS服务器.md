@@ -2,10 +2,12 @@
 title: Ubuntu搭建SS服务器
 date: 2018-09-08 14:46:03
 tags:
- - Linux
-categories: 
- - Linux学习之路
+  - Linux
+  - hide
+categories:
+  - Linux
 ---
+
 ## 一、准备工作
 
     1.更新软件源：

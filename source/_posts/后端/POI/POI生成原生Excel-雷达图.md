@@ -2,11 +2,12 @@
 title: 使用POI结合Excel的行列生成雷达图
 date: 2018-09-01 14:46:03
 tags:
- - POI
-categories: 
- - Java
+  - POI
+  - hide
+categories:
+  - 后端
+  - POI
 ---
-# 使用POI结合Excel的行列生成雷达图
 
 ## 一、先放最后输出的结果图：
 
@@ -149,9 +150,9 @@ categories:
     }
 ```
 
-## 三、XML结构
+## 三、XML 结构
 
-以上生成的图表，归根结底是属于XML的一种，通过 `RadarChart` 的继承关系可以看到，它其实是 `XmlObject`的一种实现。
+以上生成的图表，归根结底是属于 XML 的一种，通过 `RadarChart` 的继承关系可以看到，它其实是 `XmlObject`的一种实现。
 
 ```xml
 <xml-fragment xmlns:char="http://schemas.openxmlformats.org/drawingml/2006/chart" xmlns:main="http://schemas.openxmlformats.org/drawingml/2006/main">
@@ -245,4 +246,4 @@ categories:
 </xml-fragment>
 ```
 
-## 四、工具类，我放在 [POI生成原生图表-工具类](www.baidu.com) 中
+## 四、工具类，我放在 [POI 生成原生图表-工具类](www.baidu.com) 中

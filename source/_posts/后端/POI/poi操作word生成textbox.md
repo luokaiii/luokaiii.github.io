@@ -1,12 +1,15 @@
 ---
-title: poi²Ù×÷wordÉú³Étextbox
+title: POI Word textbox
 date: 2018-09-01 14:46:03
 tags:
- - POI
-categories: 
- - Java
+  - POI
+  - hide
+categories:
+  - åç«¯
+  - POI
 ---
-```java
+
+````java
 public static void main(String[] args) throws Exception {
 
 ?```
@@ -29,7 +32,7 @@ public static void main(String[] args) throws Exception {
 ?```
 
 ?```
-    FileOutputStream out = new FileOutputStream("C:\\Users\\user\\Desktop\\converter\\Êı¾İ.docx");
+    FileOutputStream out = new FileOutputStream("C:\\Users\\user\\Desktop\\converter\\ï¿½ï¿½ï¿½ï¿½.docx");
     document.write(out);
     out.close();
     document.close();
@@ -79,19 +82,17 @@ public static void appendCalloutShape(XWPFRun run, String left, String top, Stri
 ?```
 
 https://stackoverflow.com/questions/53834805/how-to-create-a-wedgerectcallout-shape-in-word-using-apache-poi
-```
-
-
+````
 
 ```java
 
-// ÎÄ±¾¿òÖĞµÄƒÈÈİºÜÂéŸ©
+// ï¿½Ä±ï¿½ï¿½ï¿½ï¿½ĞµÄƒï¿½ï¿½İºï¿½ï¿½éŸ©
         XmlObject object = paragraph.getCTP().getRArray(1);
         XmlCursor cursor = object.newCursor();
 
-        // ¿ÉÒÔ´òÓ¡XmlObject¶ÔÏóÀ´²é¿´µ±Ç°xmlÎÄ¼şÄÚÈİ
-        // Ò²¿ÉÍ¨¹ıXmlCursorµÄgetNameºÍgetTextValue·½·¨²é¿´µ±Ç°ËùÔÚNode¼°ÆäÖµ
-        // ÎÒµÄµÚÒ»¸öÒªĞŞ¸ÄµÄÄÚÈİËùÔÚnodeÎª:×¢Òâindex
+        // ï¿½ï¿½ï¿½Ô´ï¿½Ó¡XmlObjectï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½é¿´ï¿½ï¿½Ç°xmlï¿½Ä¼ï¿½ï¿½ï¿½ï¿½ï¿½
+        // Ò²ï¿½ï¿½Í¨ï¿½ï¿½XmlCursorï¿½ï¿½getNameï¿½ï¿½getTextValueï¿½ï¿½ï¿½ï¿½ï¿½é¿´ï¿½ï¿½Ç°ï¿½ï¿½ï¿½ï¿½Nodeï¿½ï¿½ï¿½ï¿½Öµ
+        // ï¿½ÒµÄµï¿½Ò»ï¿½ï¿½Òªï¿½Ş¸Äµï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½nodeÎª:×¢ï¿½ï¿½index
         // <xml-fragment> -> <w:pict> -> <v:shape> -> <v:textbox> ->
         // <w:txbxContent> -> <w:p> -> <w:r> -> <w:t>
         cursor.toChild(1);
@@ -104,7 +105,7 @@ https://stackoverflow.com/questions/53834805/how-to-create-a-wedgerectcallout-sh
         cursor.toChild(1);
         cursor.setTextValue("First");
 
-        // ÎÒµÄµÚ¶ş¸öÒªĞŞ¸ÄµÄÄÚÈİËùÔÚnodeÎª£º×¢Òâindex
+        // ï¿½ÒµÄµÚ¶ï¿½ï¿½ï¿½Òªï¿½Ş¸Äµï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½nodeÎªï¿½ï¿½×¢ï¿½ï¿½index
         // <w:txbxContent> -> <w:p> -> <w:r> -> <w:t>
         cursor.toParent();
         cursor.toParent();
@@ -115,4 +116,4 @@ https://stackoverflow.com/questions/53834805/how-to-create-a-wedgerectcallout-sh
         cursor.setTextValue("Second");
 ```
 
-Í¨¹ı freemarker + flying-saucer-pdf £¬½«Êı¾İäÖÈ¾µ½ html£¬ÔÙ½«html×ª³É pdf¡£ÎÊÌâÔÚÓÚ£ºÖ»ÄÜÖ§³Ö ËÎÌåºÍºÚÌå Á½ÖÖ×ÖÌå
+Í¨ï¿½ï¿½ freemarker + flying-saucer-pdf ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½È¾ï¿½ï¿½ htmlï¿½ï¿½ï¿½Ù½ï¿½html×ªï¿½ï¿½ pdfï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½Ú£ï¿½Ö»ï¿½ï¿½Ö§ï¿½ï¿½ ï¿½ï¿½ï¿½ï¿½Íºï¿½ï¿½ï¿½ ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½
