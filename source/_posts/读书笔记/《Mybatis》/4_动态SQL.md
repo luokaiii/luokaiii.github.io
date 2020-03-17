@@ -2,6 +2,8 @@
 title: 《MyBatis》读书笔记 - MyBatis 动态SQL
 date: 2019-09-05 16:10:20
 tags: 
+  - MyBatis
+categories:
   - 读书笔记
   - MyBatis
 visible: hide

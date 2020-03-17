@@ -1,4 +1,13 @@
-## 第二章 Spring Framework 的核心：IoC容器的实现
+---
+title: 《Spring技术内幕》第二章 Spring Framework 的核心：IoC容器的实现
+date: 2019-09-26 10:10:00
+tags:
+  - Spring技术内幕
+categories:
+  - 读书笔记
+  - Spring技术内幕
+visible: hide
+---
 
 通过 Spring 的核心 IoC 容器和 AOP 的设计和实现可以了解 Spring 所倡导的开发思路，如 **使用 POJO 开发企业应用**、提供**一致的编程模型**、**强调对接口编程**等。
 
@@ -8,7 +17,9 @@ IoC 容器很好地降低了框架的侵入性，在简化用户开发的同时�
 
 AOP 技术决定了 Spring 作为一个平台的地位，使 Spring 成为一个兼容并包的开放体系，通过 AOP 技术，使第三方解决方案能够尽可能地结合到 Spring 平台上。
 
-## 一、Spring IoC容器概述 
+<!-- more -->
+
+## 一、Spring IoC 容器概述
 
 ### 1.1 什么是依赖反转？
 
@@ -16,7 +27,7 @@ AOP 技术决定了 Spring 作为一个平台的地位，使 Spring 成为一个
 
 在面向对象系统中，对象封装了数据和对数据的处理，对象的依赖关系常常体现在对数据和方法的依赖上。
 
-这些依赖关系通过把对象的依赖注入交给IoC容器来完成，则可以很大程度上简化该复杂性。
+这些依赖关系通过把对象的依赖注入交给 IoC 容器来完成，则可以很大程度上简化该复杂性。
 
 > 控制反转是关于一个对象如何获取它所依赖的对象的应用。在这里，反转指的是责任的反转（将对象的依赖转到 IoC 容器中了）。
 
@@ -28,7 +39,7 @@ AOP 技术决定了 Spring 作为一个平台的地位，使 Spring 成为一个
 
 Spring 提供的服务与 EJB 并无太大区别，但两者在设计模式上有很大不同。
 
-Spring 通过 IoC 模式管理依赖关系，并通过依赖注入和 AOP 切面增强了为 JavaBean 这样的  POJO 对象赋予事务管理、生命周期管理等基本功能。
+Spring 通过 IoC 模式管理依赖关系，并通过依赖注入和 AOP 切面增强了为 JavaBean 这样的 POJO 对象赋予事务管理、生命周期管理等基本功能。
 
 也就是说 Spring 把 EJB 组件还原成了 POJO 对象或 JavaBean 对象，降低了应用开发对传统 J2EE 技术规范的依赖。
 
@@ -56,13 +67,13 @@ BeanFactory 接口定义了 IoC 容器最基本的形式，也是最基本的规
 
 BeanFactory 设计了 getBean 方法，用来通过名称获取 IoC 容器中管理的 Bean。
 
-有了BeanFactory 的定义，用户可以执行以下操作：
+有了 BeanFactory 的定义，用户可以执行以下操作：
 
-- containsBean，判断容器是否含有指定名称的Bean
+- containsBean，判断容器是否含有指定名称的 Bean
 - isSingleton，查询指定名称的 Bean 是否是 Singleton 类型
 - isPrototype，查询指定名称的 Bean 是否是 prototype 类型的
 - isTypeMatch，查询指定名称的 Bean 是否是特定的 Class 类型
-- getType，查询Bean 的 Class 类型
+- getType，查询 Bean 的 Class 类型
 - getAliases，查询 Bean 的所有别名
 
 通过以上的一系列接口，可以使用不同的 Bean 的检索方法，很方便地从 IoC 容器中得到需要的 Bean，从而忽略具体的 IoC 容器的实现。
@@ -77,7 +88,7 @@ public class XmlBeanFactory extends DefaultListableBeanFactory {
      * 初始化一个 XmlBeanDefinitionReader，用来处理 BeanDefinition
      */
     private final XmlBeanDefinitionReader reader = new XmlBeanDefinitionReader(this);
-    
+
     /**
      * 通过 Resource 获取存储 BeanDefinition 的 .xml 文件
      * 用来定位需要的 BeanDefinition 信息来对 Bean 完成容器的初始化和依赖注入过程
@@ -85,7 +96,7 @@ public class XmlBeanFactory extends DefaultListableBeanFactory {
     public XmlBeanFactory(Resource resource) throws BeansException {
         this(resource, null);
     }
-    
+
     /**
      * 通过指定的 xml 文件加载 BeanDefinition
      */
@@ -99,7 +110,7 @@ public class XmlBeanFactory extends DefaultListableBeanFactory {
 参考 XMLBeanFactory 的实现，大致可以将 IoC 容器的创建分为如下几个步骤：
 
 1. 创建 IoC 配置文件的抽象资源
-2. 创建一个 BeanFactory 
+2. 创建一个 BeanFactory
 3. 创建一个载入 BeanDefinition 的读取器
 4. 从定义好的资源读入配置信息
 5. 完成 IoC 容器中 Bean 的初始化
@@ -123,14 +134,14 @@ ApplicationContext 除了能够使用 IoC 容器的基本功能之外，还为�
  * ResourceLoader：加载文件资源的能力
  * ApplicationEventPublisher：发布应用事件的能力，这些事件和 Bean 的生命周期结合，为管理 Bean 提供了便利
  */
-public interface ApplicationContext extends EnvironmentCapable, ListableBeanFactory, HierarchicalBeanFactory, MessageSource, ApplicationEventPublisher, ResourcePatternResolver {   
-    @Nullable   
-    String getId();  
-    String getApplicationName();  
-    String getDisplayName();  
-    long getStartupDate();  
-    @Nullable   
-    ApplicationContext getParent();   
+public interface ApplicationContext extends EnvironmentCapable, ListableBeanFactory, HierarchicalBeanFactory, MessageSource, ApplicationEventPublisher, ResourcePatternResolver {
+    @Nullable
+    String getId();
+    String getApplicationName();
+    String getDisplayName();
+    long getStartupDate();
+    @Nullable
+    ApplicationContext getParent();
     AutowireCapableBeanFactory getAutowireCapableBeanFactory() throws IllegalStateException;
 }
 ```
@@ -142,7 +153,7 @@ public interface ApplicationContext extends EnvironmentCapable, ListableBeanFact
 ```java
 public class FileSystemXmlApplicationContext extends AbstractXmlApplicationContext {
     /**
-     * 除了实例化应用上下文的支持，还支持启动 IoC 容器的 refresh() 
+     * 除了实例化应用上下文的支持，还支持启动 IoC 容器的 refresh()
      * 在这个过程中，还通过下面的方法读取 文件系统中XML形式的 BeanDefinition 资源
      */
     public FileSystemXmlApplicationContext(
@@ -155,7 +166,7 @@ public class FileSystemXmlApplicationContext extends AbstractXmlApplicationConte
 			refresh();
 		}
 	}
-    
+
     /**
      * 获得 FileSystemResource 的资源定位
      */
@@ -287,13 +298,13 @@ DefaultListableBeanFactory 实现了 BeanDefinitionRegistry 的接口，用来�
 
 ![依赖注入的过程](https://i.loli.net/2019/10/29/L6lwDNeXrCmu97U.png)
 
-`createBeanInstance()` 生成了 Bean 所包含的 Java 对象，生成方式由相关的 BeanDefinition 指定(如工厂方法生成、容器autowire特性生成等)
+`createBeanInstance()` 生成了 Bean 所包含的 Java 对象，生成方式由相关的 BeanDefinition 指定(如工厂方法生成、容器 autowire 特性生成等)
 
 在 Bean 的创建和对象依赖注入的过程中，需要依据 BeanDefinition 中的信息来递归地完成依赖注入。
 
 这些递归都是以 getBean 为入口的。一个递归是在上下文体系中查找需要的 Bean 和创建 Bean 的递归调用；另一个递归是在依赖注入时，通过递归调用容器的 getBean 方法，得到当前 Bean 的依赖 Bean，同时也触发对依赖 Bean 的创建和注入。
 
-在对 Bean 的属性进行依赖注入时，解析的过程也是一个递归的过程。根据依赖关系，一层一层地完成 Bean 的创建和注入，知道完成当前 Bean  的创建。
+在对 Bean 的属性进行依赖注入时，解析的过程也是一个递归的过程。根据依赖关系，一层一层地完成 Bean 的创建和注入，知道完成当前 Bean 的创建。
 
 ## 五、容器其他相关特性的设计与实现
 
@@ -340,7 +351,7 @@ DefaultListableBeanFactory 实现了 BeanDefinitionRegistry 的接口，用来�
 - ApplicationContextAware - 获得 Bean 所在的应用上下文 ApplicationContext
 - MessageSourceAware - 获得消息源
 - ApplicationEventPublisherAware - 获得应用上下文的事件发布器
-- ResourceLoaderAware - 得到 ResourceLoader，可以在 Bean中加载外部对应的 Resource 资源
+- ResourceLoaderAware - 得到 ResourceLoader，可以在 Bean 中加载外部对应的 Resource 资源
 
 ## 六、总结
 

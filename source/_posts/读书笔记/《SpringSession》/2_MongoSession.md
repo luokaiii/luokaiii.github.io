@@ -1,10 +1,11 @@
 ---
 title: 《Spring Session》二、Spring Session MongoDB
 date: 2019-09-26 10:08:00
-tags: 
+tags:
   - Spring Session
 categories:
-  - Spring Framework
+  - 读书笔记
+  - Spring Session
 visible: hide
 ---
 

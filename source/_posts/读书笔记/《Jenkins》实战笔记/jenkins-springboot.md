@@ -2,10 +2,10 @@
 title: Jenkins 从零到有部署一个Java项目
 date: 2019-08-05 17:47:00
 tags: 
-  - jenkins
-  - java
+  - Jenkins部署
 categories:
-  - CICD
+  - 读书笔记
+  - Jenkins部署
 ---
 # Docker + Nginx + Jenkins 部署 SpringBoot Jar
 

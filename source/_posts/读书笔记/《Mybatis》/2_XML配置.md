@@ -2,6 +2,8 @@
 title: 《MyBatis》读书笔记 - MyBatis 中的 XML 详细配置
 date: 2019-09-05 10:10:20
 tags: 
+  - MyBatis
+categories:
   - 读书笔记
   - MyBatis
 visible: hide

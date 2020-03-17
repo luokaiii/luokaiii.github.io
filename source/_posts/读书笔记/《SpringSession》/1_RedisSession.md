@@ -1,10 +1,11 @@
 ---
 title: 《Spring Session》一、Spring Session Redis
 date: 2019-09-26 10:00:00
-tags: 
+tags:
   - Spring Session
 categories:
-  - Spring Framework
+  - 读书笔记
+  - Spring Session
 visible: hide
 ---
 
@@ -51,7 +52,7 @@ spring.redis.password=password
 
 ### 3. 如何工作的
 
-Spring Session 用 Redis 支持的实现来替换 HttpSession。当 Spring Security 的SecurityContextPersistenceFilter 将 SecurityContext 保存到 HttpSession 时，它将被持久化到 Redis 中。
+Spring Session 用 Redis 支持的实现来替换 HttpSession。当 Spring Security 的 SecurityContextPersistenceFilter 将 SecurityContext 保存到 HttpSession 时，它将被持久化到 Redis 中。
 
 当一个新的 HttpSession 被创建时，Spring Session 会在你的浏览器中创建一个名为 Session 的 cookie，该 cookie 包含会话的 ID，可以查看 cookies。
 
