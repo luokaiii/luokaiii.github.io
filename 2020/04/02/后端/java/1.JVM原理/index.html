@@ -1,0 +1,87 @@
+<!DOCTYPE html><html lang="zh-Hans"><head><meta name="generator" content="Hexo 3.9.0"><meta charset="UTF-8"><meta http-equiv="X-UA-Compatible" content="IE=edge"><meta name="viewport" content="width=device-width, initial-scale=1, maximum-scale=1"><meta name="description" content="JVM原理"><meta name="keywords" content="JVM"><meta name="author" content="koral"><meta name="copyright" content="koral"><title>JVM原理 | 凯</title><link rel="shortcut icon" href="/melody-favicon.ico"><link rel="stylesheet" href="/css/index.css?version=1.7.0"><link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/font-awesome@latest/css/font-awesome.min.css?version=1.7.0"><meta name="format-detection" content="telephone=no"><meta http-equiv="x-dns-prefetch-control" content="on"><link rel="dns-prefetch" href="https://cdn.jsdelivr.net"><meta http-equiv="Cache-Control" content="no-transform"><meta http-equiv="Cache-Control" content="no-siteapp"><script>var GLOBAL_CONFIG = { 
+  root: '/',
+  algolia: undefined,
+  localSearch: undefined,
+  copy: {
+    success: '复制成功',
+    error: '复制错误',
+    noSupport: '浏览器不支持'
+  }
+} </script></head><body><i class="fa fa-arrow-right" id="toggle-sidebar" aria-hidden="true"></i><div id="sidebar" data-display="true"><div class="toggle-sidebar-info text-center"><span data-toggle="切换文章详情">切换站点概览</span><hr></div><div class="sidebar-toc"><div class="sidebar-toc__title">目录</div><div class="sidebar-toc__progress"><span class="progress-notice">你已经读了</span><span class="progress-num">0</span><span class="progress-percentage">%</span><div class="sidebar-toc__progress-bar"></div></div><div class="sidebar-toc__content"><ol class="toc"><li class="toc-item toc-level-2"><a class="toc-link" href="#一、什么是JVM"><span class="toc-number">1.</span> <span class="toc-text">一、什么是JVM</span></a></li><li class="toc-item toc-level-2"><a class="toc-link" href="#二、JRE、JDK、JVM"><span class="toc-number">2.</span> <span class="toc-text">二、JRE、JDK、JVM</span></a></li><li class="toc-item toc-level-2"><a class="toc-link" href="#三、JVM原理"><span class="toc-number">3.</span> <span class="toc-text">三、JVM原理</span></a></li><li class="toc-item toc-level-2"><a class="toc-link" href="#四、JVM的体系结构"><span class="toc-number">4.</span> <span class="toc-text">四、JVM的体系结构</span></a></li><li class="toc-item toc-level-2"><a class="toc-link" href="#五、JVM运行时数据区"><span class="toc-number">5.</span> <span class="toc-text">五、JVM运行时数据区</span></a></li><li class="toc-item toc-level-2"><a class="toc-link" href="#六、判定“对象已死”的算法"><span class="toc-number">6.</span> <span class="toc-text">六、判定“对象已死”的算法</span></a></li><li class="toc-item toc-level-2"><a class="toc-link" href="#七、JVM垃圾回收"><span class="toc-number">7.</span> <span class="toc-text">七、JVM垃圾回收</span></a></li><li class="toc-item toc-level-2"><a class="toc-link" href="#八、垃圾收集算法"><span class="toc-number">8.</span> <span class="toc-text">八、垃圾收集算法</span></a><ol class="toc-child"><li class="toc-item toc-level-3"><a class="toc-link" href="#1、标记-清除算法"><span class="toc-number">8.1.</span> <span class="toc-text">1、标记-清除算法</span></a></li><li class="toc-item toc-level-3"><a class="toc-link" href="#2、复制算法"><span class="toc-number">8.2.</span> <span class="toc-text">2、复制算法</span></a></li><li class="toc-item toc-level-3"><a class="toc-link" href="#3、标记-整理算法"><span class="toc-number">8.3.</span> <span class="toc-text">3、标记-整理算法</span></a></li><li class="toc-item toc-level-3"><a class="toc-link" href="#4、分代收集算法（使用最广泛）"><span class="toc-number">8.4.</span> <span class="toc-text">4、分代收集算法（使用最广泛）</span></a></li><li class="toc-item toc-level-3"><a class="toc-link" href="#5、对象存活周期-GC回收流程"><span class="toc-number">8.5.</span> <span class="toc-text">5、对象存活周期/GC回收流程</span></a></li></ol></li><li class="toc-item toc-level-2"><a class="toc-link" href="#九、垃圾收集器"><span class="toc-number">9.</span> <span class="toc-text">九、垃圾收集器</span></a><ol class="toc-child"><li class="toc-item toc-level-3"><a class="toc-link" href="#1、Serial-收集器"><span class="toc-number">9.1.</span> <span class="toc-text">1、Serial 收集器</span></a></li><li class="toc-item toc-level-3"><a class="toc-link" href="#2、ParNew-收集器"><span class="toc-number">9.2.</span> <span class="toc-text">2、ParNew 收集器</span></a></li><li class="toc-item toc-level-3"><a class="toc-link" href="#3、Parallel-Scavenge-收集器"><span class="toc-number">9.3.</span> <span class="toc-text">3、Parallel Scavenge 收集器</span></a></li><li class="toc-item toc-level-3"><a class="toc-link" href="#4、Serial-Old-收集器"><span class="toc-number">9.4.</span> <span class="toc-text">4、Serial Old 收集器</span></a></li><li class="toc-item toc-level-3"><a class="toc-link" href="#5、Parallel-Old-收集器"><span class="toc-number">9.5.</span> <span class="toc-text">5、Parallel Old 收集器</span></a></li><li class="toc-item toc-level-3"><a class="toc-link" href="#6、CMS-收集器"><span class="toc-number">9.6.</span> <span class="toc-text">6、CMS 收集器</span></a></li><li class="toc-item toc-level-3"><a class="toc-link" href="#7、G1-收集器"><span class="toc-number">9.7.</span> <span class="toc-text">7、G1 收集器</span></a></li></ol></li><li class="toc-item toc-level-2"><a class="toc-link" href="#十、Java平台的逻辑结构"><span class="toc-number">10.</span> <span class="toc-text">十、Java平台的逻辑结构</span></a></li></ol></div></div><div class="author-info hide"><div class="author-info__avatar text-center"><img src="/img/avatar.png"></div><div class="author-info__name text-center">koral</div><div class="author-info__description text-center">回廊一寸相思地，落月成孤倚。背灯和月就花阴，已是十年踪迹十年心。</div><hr><div class="author-info-articles"><a class="author-info-articles__archives article-meta" href="/archives"><span class="pull-left">文章</span><span class="pull-right">214</span></a><a class="author-info-articles__tags article-meta" href="/tags"><span class="pull-left">标签</span><span class="pull-right">30</span></a><a class="author-info-articles__categories article-meta" href="/categories"><span class="pull-left">分类</span><span class="pull-right">39</span></a></div></div></div><div id="content-outer"><div class="no-bg" id="top-container"><div id="page-header"><span class="pull-left"> <a id="site-name" href="/index.html">凯</a></span><i class="fa fa-bars toggle-menu pull-right" aria-hidden="true"></i><span class="pull-right menus">   <a class="site-page" href="/">首页</a><a class="site-page" href="/archives">归档</a><a class="site-page" href="/tags">标签</a><a class="site-page" href="/categories">分类</a><a class="site-page" href="/about">关于我</a></span><span class="pull-right"></span></div><div id="post-info"><div id="post-title">JVM原理</div><div id="post-meta"><time class="post-meta__date"><i class="fa fa-calendar" aria-hidden="true"></i> 2020-04-02</time><span class="post-meta__separator">|</span><i class="fa fa-inbox post-meta__icon" aria-hidden="true"></i><a class="post-meta__categories" href="/categories/后端/">后端</a><i class="fa fa-angle-right" aria-hidden="true"></i><i class="fa fa-inbox post-meta__icon" aria-hidden="true"></i><a class="post-meta__categories" href="/categories/后端/java/">java</a><i class="fa fa-angle-right" aria-hidden="true"></i><i class="fa fa-inbox post-meta__icon" aria-hidden="true"></i><a class="post-meta__categories" href="/categories/后端/java/JVM/">JVM</a></div></div></div><div class="layout" id="content-inner"><article id="post"><div class="article-container" id="post-content"><h2 id="一、什么是JVM"><a href="#一、什么是JVM" class="headerlink" title="一、什么是JVM"></a>一、什么是JVM</h2><p>JVM全称为 Java Virtual Machine 即 Java虚拟机，是在真实计算机上模拟计算机功能的实现。</p>
+<p>Java虚拟机包含了一套字节码指令集、一组寄存器、一个栈、一个垃圾回收堆和一个存储方法域。</p>
+<h2 id="二、JRE、JDK、JVM"><a href="#二、JRE、JDK、JVM" class="headerlink" title="二、JRE、JDK、JVM"></a>二、JRE、JDK、JVM</h2><p>JRE：java运行环境，有JRE即可运行java程序。</p>
+<p>JDK：Java Development Kit，编译、调试Java程序的开发工具包。</p>
+<p>JVM：Java VirtualMachine，java虚拟机，是JRE的一部分。JVM拥有自己完善的硬件架构，如处理器、堆、栈、寄存器等，还有相应的指令系统。</p>
+<h2 id="三、JVM原理"><a href="#三、JVM原理" class="headerlink" title="三、JVM原理"></a>三、JVM原理</h2><p>JVM 将 .java 的源代码文件编译成字节码程序，再通过JVM将每一条指令翻译成不同的平台机器码，以实现特定平台运行。</p>
+<h2 id="四、JVM的体系结构"><a href="#四、JVM的体系结构" class="headerlink" title="四、JVM的体系结构"></a>四、JVM的体系结构</h2><p><img src="https://user-gold-cdn.xitu.io/2018/7/13/164942ae59b31e46?imageView2/0/w/1280/h/960/format/webp/ignore-error/1" alt></p>
+<ol>
+<li>类加载器 ClassLoader，用来装载 .class 文件</li>
+<li>执行引擎（执行字节码或本地方法）</li>
+<li>运行时数据区（方法区、堆、Java栈、pc寄存器、本地方法栈）</li>
+</ol>
+<h2 id="五、JVM运行时数据区"><a href="#五、JVM运行时数据区" class="headerlink" title="五、JVM运行时数据区"></a>五、JVM运行时数据区</h2><p><img src="https://luokaiii.oss-cn-shanghai.aliyuncs.com/blog/java-core/%E6%97%A0.png" alt="运行时数据区"></p>
+<h2 id="六、判定“对象已死”的算法"><a href="#六、判定“对象已死”的算法" class="headerlink" title="六、判定“对象已死”的算法"></a>六、判定“对象已死”的算法</h2><p>上图中，程序计数器、Java虚拟机栈、本地方法栈都是线程独享的，其占用的内存也是随线程结束而回收的。而Java堆和方法区不同，是线程共享的，几乎存放着所有对象的实例。</p>
+<p>GC需要判断哪些对象能够回收：</p>
+<ol>
+<li>引用计数算法：为对象添加一个引用计数器，每当对象被引用一次，计数器加1；当引用失效，计数器建议。当计数器为0时表示对象可回收。<ul>
+<li>缺点：难以解决两个对象之间相互引用的问题</li>
+</ul>
+</li>
+<li>可达性分析算法：通过一系列称之为“GC Roots”的对象作为七点，从这些节点向下搜索，搜索的路径称为引用链，当一个对象到 GC Roots 没有任何引用链相连（即对象到GC Roots不可达），则证明此对象已死、可回收。<ul>
+<li>Java中可作为GC Roots的对象包括：虚拟机栈中引用的对象、本地方法栈中的 Native方法引用的对象、方法区静态属性引用的对象、方法区常量引用的对象</li>
+</ul>
+</li>
+</ol>
+<h2 id="七、JVM垃圾回收"><a href="#七、JVM垃圾回收" class="headerlink" title="七、JVM垃圾回收"></a>七、JVM垃圾回收</h2><p>GC（Garbage Collection）：将内存中不再使用的对象进行回收。由于GC回收时需要消耗资源和时间，因此在对对象的生命周期特性进行分析后，按新生代、旧生代的方式对对象进行收集，以尽可能的缩短GC对应用资源的消耗。</p>
+<ul>
+<li>对新生代对象的收集称为 minor GC</li>
+<li>对旧生代对象的收集称为 Full GC</li>
+<li>程序中调用的 System.gc() 执行的是 Full GC</li>
+</ul>
+<p>对于不同的对象引用类型，GC 采用了不同的方法进行回收：</p>
+<ul>
+<li>强引用：默认情况下，对象采用的是强引用（即该对象实例没有其他对象引用，才会被回收）</li>
+<li>软引用：是Java提供的一种比较适合缓存场景的应用（只有在内存不够时才回收）</li>
+<li>弱引用：在GC时一定会被GC回收</li>
+<li>虚引用：只是用来得知对象是否被GC</li>
+</ul>
+<h2 id="八、垃圾收集算法"><a href="#八、垃圾收集算法" class="headerlink" title="八、垃圾收集算法"></a>八、垃圾收集算法</h2><p><img src="https://luokaiii.oss-cn-shanghai.aliyuncs.com/blog/java-core/%E5%9E%83%E5%9C%BE%E6%94%B6%E9%9B%86%E7%AE%97%E6%B3%95123.png" alt="前三种垃圾收集算法"></p>
+<h3 id="1、标记-清除算法"><a href="#1、标记-清除算法" class="headerlink" title="1、标记-清除算法"></a>1、标记-清除算法</h3><p>分为两个阶段：先标记需要回收的对象，在标记完成后统一回收所有被标记的对象。</p>
+<p>缺点：</p>
+<ol>
+<li>效率问题：标记和清除过程的效率都不高</li>
+<li>空间问题：标记清除后会产生大量不连续的内存碎片，空间碎片太多会导致分配大对象时无法找到足够的连续内存，而不得不提前触发另一次垃圾回收动作</li>
+</ol>
+<h3 id="2、复制算法"><a href="#2、复制算法" class="headerlink" title="2、复制算法"></a>2、复制算法</h3><p>为了解决效率问题，出现了“复制”算法。将可用内存按容量划分为大小相等的两块区域，每次只使用其中的一块。当一块内存用完后，将还存活的对象复制到另一块上面，再把刚刚的内存空间一次清理掉。</p>
+<p>缺点：</p>
+<ol>
+<li>可用内存为原先的一半</li>
+<li>当对象存活率较高时，会进行频繁的复制操作，效率降低</li>
+</ol>
+<h3 id="3、标记-整理算法"><a href="#3、标记-整理算法" class="headerlink" title="3、标记-整理算法"></a>3、标记-整理算法</h3><p>标记过程与“标记-清除算法”相同，但是后续不是直接清理对象。而是让所有存活对象向一侧移动，然后直接清理掉端边界以外的内存。</p>
+<h3 id="4、分代收集算法（使用最广泛）"><a href="#4、分代收集算法（使用最广泛）" class="headerlink" title="4、分代收集算法（使用最广泛）"></a>4、分代收集算法（使用最广泛）</h3><p><img src="https://luokaiii.oss-cn-shanghai.aliyuncs.com/blog/java-core/%E5%88%86%E4%BB%A3%E6%94%B6%E9%9B%86%E7%AE%97%E6%B3%95.png" alt="分代收集算法"></p>
+<p>根据对象存活周期，将堆分为新生代和老年代，方法区称为永久代。</p>
+<p>新生代中的对象，在每次GC时都会有大量对象被回收，少量存活，使用复制算法。</p>
+<p>老年代中的对象，因为对象存活率高，没有额外空间进行分配担保，使用标记-清除或标记-整理算法。</p>
+<h3 id="5、对象存活周期-GC回收流程"><a href="#5、对象存活周期-GC回收流程" class="headerlink" title="5、对象存活周期/GC回收流程"></a>5、对象存活周期/GC回收流程</h3><p><img src="https://luokaiii.oss-cn-shanghai.aliyuncs.com/blog/java-core/GC%E5%9B%9E%E6%94%B6%E6%B5%81%E7%A8%8B.png" alt="触发GC回收的流程"></p>
+<h2 id="九、垃圾收集器"><a href="#九、垃圾收集器" class="headerlink" title="九、垃圾收集器"></a>九、垃圾收集器</h2><h3 id="1、Serial-收集器"><a href="#1、Serial-收集器" class="headerlink" title="1、Serial 收集器"></a>1、Serial 收集器</h3><p>单线程，在收集时会暂停其它工作线程，直至收集结束。（最基本、历史最久、简单、高效）</p>
+<p>仍然是虚拟机在client 模式下的默认新生代收集器：简单而高效。</p>
+<h3 id="2、ParNew-收集器"><a href="#2、ParNew-收集器" class="headerlink" title="2、ParNew 收集器"></a>2、ParNew 收集器</h3><p>Serial 的多线程版本，如收集算法、stop the world、对象分配规则、回收策略等，与 Serial 收集器一样。</p>
+<p>是许多运行在Server模式下的 JVM 首选的 新生代收集器。</p>
+<h3 id="3、Parallel-Scavenge-收集器"><a href="#3、Parallel-Scavenge-收集器" class="headerlink" title="3、Parallel Scavenge 收集器"></a>3、Parallel Scavenge 收集器</h3><p>新生代、并行的多线程收集器。</p>
+<h3 id="4、Serial-Old-收集器"><a href="#4、Serial-Old-收集器" class="headerlink" title="4、Serial Old 收集器"></a>4、Serial Old 收集器</h3><p>Serial 收集器的老年代版本，单线程，“标记整理”算法，主要给client模式使用</p>
+<h3 id="5、Parallel-Old-收集器"><a href="#5、Parallel-Old-收集器" class="headerlink" title="5、Parallel Old 收集器"></a>5、Parallel Old 收集器</h3><p>Parallel Scavenge 的老年代版本，多线程，“标记整理”算法</p>
+<h3 id="6、CMS-收集器"><a href="#6、CMS-收集器" class="headerlink" title="6、CMS 收集器"></a>6、CMS 收集器</h3><p>Concurrent Mark Sweep，以获取最短回收停顿时间为目标的收集器，停顿时间短，用户体验号。</p>
+<h3 id="7、G1-收集器"><a href="#7、G1-收集器" class="headerlink" title="7、G1 收集器"></a>7、G1 收集器</h3><p>并行与并发，多CPU、多核、且能与用户线程并发执行；</p>
+<p>分代收集；</p>
+<p>空间整合：整体上采用标记整理算法，局部上采用复制算法；</p>
+<p>可预测的停顿：即收集时间不得超过指定M毫秒</p>
+<h2 id="十、Java平台的逻辑结构"><a href="#十、Java平台的逻辑结构" class="headerlink" title="十、Java平台的逻辑结构"></a>十、Java平台的逻辑结构</h2><p><img src="https://luokaiii.oss-cn-shanghai.aliyuncs.com/blog/java-core/java%20platform.png" alt="java platform"></p>
+<blockquote>
+<p>文章转载至：<a href="https://juejin.im/post/5b48bf155188251acf6077ad。仅作为自己的笔记使用。" target="_blank" rel="noopener">https://juejin.im/post/5b48bf155188251acf6077ad。仅作为自己的笔记使用。</a></p>
+</blockquote>
+</div></article><div class="post-copyright"><div class="post-copyright__author"><span class="post-copyright-meta">文章作者: </span><span class="post-copyright-info"><a href="mailto:undefined">koral</a></span></div><div class="post-copyright__type"><span class="post-copyright-meta">文章链接: </span><span class="post-copyright-info"><a href="http://luokaiii.github.io/2020/04/02/后端/java/1.JVM原理/">http://luokaiii.github.io/2020/04/02/后端/java/1.JVM原理/</a></span></div><div class="post-copyright__notice"><span class="post-copyright-meta">版权声明: </span><span class="post-copyright-info">本博客所有文章除特别声明外，均采用 <a href="https://creativecommons.org/licenses/by-nc-sa/4.0/">CC BY-NC-SA 4.0</a> 许可协议。转载请注明来自 <a href="http://luokaiii.github.io">凯</a>！</span></div></div><div class="post-meta__tag-list"><a class="post-meta__tags" href="/tags/JVM/">JVM</a></div><nav id="pagination"><div class="prev-post pull-left"><a href="/2020/12/30/blog/2020/"><i class="fa fa-chevron-left">  </i><span>2020年目标</span></a></div><div class="next-post pull-right"><a href="/2020/03/17/读书笔记/《Java核心知识点整理》/24.Hadoop/"><span>《JAVA 核心知识点整理》Hadoop</span><i class="fa fa-chevron-right"></i></a></div></nav></div></div><footer><div class="layout" id="footer"><div class="copyright">&copy;2013 - 2020 By koral</div><div class="framework-info"><span>驱动 - </span><a href="http://hexo.io"><span>Hexo</span></a><span class="footer-separator">|</span><span>主题 - </span><a href="https://github.com/Molunerfinn/hexo-theme-melody"><span>Melody</span></a></div><div class="busuanzi"><script async src="//busuanzi.ibruce.info/busuanzi/2.3/busuanzi.pure.mini.js"></script><span id="busuanzi_container_page_pv"><i class="fa fa-file"></i><span id="busuanzi_value_page_pv"></span><span></span></span></div></div></footer><i class="fa fa-arrow-up" id="go-up" aria-hidden="true"></i><script src="https://cdn.jsdelivr.net/npm/animejs@latest/anime.min.js"></script><script src="https://cdn.jsdelivr.net/npm/jquery@latest/dist/jquery.min.js"></script><script src="https://cdn.jsdelivr.net/npm/@fancyapps/fancybox@latest/dist/jquery.fancybox.min.js"></script><script src="https://cdn.jsdelivr.net/npm/velocity-animate@latest/velocity.min.js"></script><script src="https://cdn.jsdelivr.net/npm/velocity-ui-pack@latest/velocity.ui.min.js"></script><script src="/js/utils.js?version=1.7.0"></script><script src="/js/fancybox.js?version=1.7.0"></script><script src="/js/sidebar.js?version=1.7.0"></script><script src="/js/copy.js?version=1.7.0"></script><script src="/js/fireworks.js?version=1.7.0"></script><script src="/js/transition.js?version=1.7.0"></script><script src="/js/scroll.js?version=1.7.0"></script><script src="/js/head.js?version=1.7.0"></script><script>if(/Android|webOS|iPhone|iPod|iPad|BlackBerry/i.test(navigator.userAgent)) {
+  $('#nav').addClass('is-mobile')
+  $('footer').addClass('is-mobile')
+  $('#top-container').addClass('is-mobile')
+}</script></body></html>
