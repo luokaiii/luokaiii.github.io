@@ -1406,123 +1406,61 @@ class Client {
 </div><hr></div><div class="recent-post-item article-container"><a class="article-title" href="/2019/07/05/读书笔记/《JavaDesignPatterns》/8.建造者模式/">《Java Design Patterns》第六章 建造者模式 - 复杂对象的组装与创建</a><time class="post-meta__date"><i class="fa fa-calendar" aria-hidden="true"></i> 2019-07-05</time><span class="article-meta"><span class="article-meta__separator">|</span><i class="fa fa-inbox article-meta__icon" aria-hidden="true"></i><a class="article-meta__categories" href="/categories/读书笔记/">读书笔记</a><i class="fa fa-angle-right" aria-hidden="true"></i><i class="fa fa-inbox article-meta__icon" aria-hidden="true"></i><a class="article-meta__categories" href="/categories/读书笔记/设计模式/">设计模式</a></span><span class="article-meta tags"><span class="article-meta__separator">|</span><i class="fa fa-tag article-meta__icon" aria-hidden="true"></i><a class="article-meta__tags" href="/tags/hide/">hide</a><span class="article-meta__link">-</span><i class="fa fa-tag article-meta__icon" aria-hidden="true"></i><a class="article-meta__tags" href="/tags/设计模式/">设计模式</a></span><div class="content"><h1 id="第六章-建造者模式-复杂对象的组装与创建"><a href="#第六章-建造者模式-复杂对象的组装与创建" class="headerlink" title="第六章 建造者模式 - 复杂对象的组装与创建"></a>第六章 建造者模式 - 复杂对象的组装与创建</h1><h2 id="一、设计一个游戏角色"><a href="#一、设计一个游戏角色" class="headerlink" title="一、设计一个游戏角色"></a>一、设计一个游戏角色</h2><p>作为 RPG 游戏的一个重要组成部分，游戏角色拥有其特定的性别、脸型、服装、发型等外部特性。</p>
 <p>无论何种造型的游戏角色，它们的创建步骤都大同小异，都需要逐步创建其组成部分，再将各组成部分装配成一个完整的游戏角色。</p>
 <p>而建造者模式就是为了解决，各个组件组合为复杂对象的问题。</p>
-<p><img src="https://i.loli.net/2019/07/09/5d23ff6fa777253811.png" alt="建造者模式"></p></div><a class="more" href="/2019/07/05/读书笔记/《JavaDesignPatterns》/8.建造者模式/#more">阅读更多</a><hr></div><div class="recent-post-item article-container"><a class="article-title" href="/2019/06/27/读书笔记/《JavaDesignPatterns》/6.单例模式/">《Java Design Patterns》第四章 单例模式 - 确保对象的唯一性</a><time class="post-meta__date"><i class="fa fa-calendar" aria-hidden="true"></i> 2019-06-27</time><span class="article-meta"><span class="article-meta__separator">|</span><i class="fa fa-inbox article-meta__icon" aria-hidden="true"></i><a class="article-meta__categories" href="/categories/读书笔记/">读书笔记</a><i class="fa fa-angle-right" aria-hidden="true"></i><i class="fa fa-inbox article-meta__icon" aria-hidden="true"></i><a class="article-meta__categories" href="/categories/读书笔记/设计模式/">设计模式</a></span><span class="article-meta tags"><span class="article-meta__separator">|</span><i class="fa fa-tag article-meta__icon" aria-hidden="true"></i><a class="article-meta__tags" href="/tags/hide/">hide</a><span class="article-meta__link">-</span><i class="fa fa-tag article-meta__icon" aria-hidden="true"></i><a class="article-meta__tags" href="/tags/设计模式/">设计模式</a></span><div class="content"><h1 id="第四章-单例模式-确保对象的唯一性"><a href="#第四章-单例模式-确保对象的唯一性" class="headerlink" title="第四章 单例模式 - 确保对象的唯一性"></a>第四章 单例模式 - 确保对象的唯一性</h1><p>单例模式用于确保对象的唯一性，为了确保系统中某一个类只有一个唯一实例，当这个唯一实例创建后，无法再创建一个同类型的其他对象。</p>
-<h2 id="一、概述"><a href="#一、概述" class="headerlink" title="一、概述"></a>一、概述</h2><p>单例模式：确保一个类只有一个实例，而且自行实例化并向整个系统提供这个实例，这个类称为单例类，它提供全局访问的方法。属于对象创建型模式。</p>
-<h3 id="1-2-单例模式中的角色"><a href="#1-2-单例模式中的角色" class="headerlink" title="1.2 单例模式中的角色"></a>1.2 单例模式中的角色</h3><ul>
-<li>Singleton - 单例角色<ul>
-<li>在单例类内容实现只生成一个实例，同时提供一个静态工厂方法用于获取该唯一实例</li>
-<li>为了防止外部实例化，将其构造函数设计为私有</li>
-<li>单例类内部顶一个Singleton类型的静态对象，作为外部共享的唯一实例</li>
-</ul>
-</li>
-</ul>
-<h2 id="二、懒汉模式与饿汉模式"><a href="#二、懒汉模式与饿汉模式" class="headerlink" title="二、懒汉模式与饿汉模式"></a>二、懒汉模式与饿汉模式</h2><h3 id="2-1-饿汉式单例类-线程安全"><a href="#2-1-饿汉式单例类-线程安全" class="headerlink" title="2.1 饿汉式单例类 - 线程安全"></a>2.1 饿汉式单例类 - 线程安全</h3><p><img src="https://i.loli.net/2019/07/04/5d1da0231e7a752730.png" alt="懒汉单例模式"></p>
-<pre><code class="java">class EagerSingleton{
-    private static final EagerSingleton instance = new EagerSingleton();
-    private EagerSingleton(){}
-    public static EagerSingleton getInstance(){
-        return instance;
-    }
-}</code></pre>
-<p>饿汉模式实现起来最为简单，在类加载时，静态变量 instance 就会被初始化，此时类的私有构造函数会被调用，单例类的唯一实例将被创建。</p>
-<h3 id="2-2-懒汉式单例类（一）-线程安全"><a href="#2-2-懒汉式单例类（一）-线程安全" class="headerlink" title="2.2 懒汉式单例类（一） - 线程安全"></a>2.2 懒汉式单例类（一） - 线程安全</h3><p><img src="https://i.loli.net/2019/07/04/5d1da0b319cb857695.png" alt="懒汉单例模式"></p>
-<p>懒汉模式能将类进行 延迟加载，即在需要使用时再加载实例，为了避免多线程调用 getInstance() 时实例化多个 LazySingleton，这里使用 synchronized 关键字进行加锁。</p>
-<pre><code class="java">class LazySingleton{
-    private static LazySingleton instance = null;
-    private LazySingleton(){}
-    synchronized public static LazySingleton getInstance(){
-        if(instance == null)
-            instance = new LazySingleton();
-        return instance;
-    }
-}</code></pre>
-<h3 id="2-3-懒汉式单例类（二）-线程不安全"><a href="#2-3-懒汉式单例类（二）-线程不安全" class="headerlink" title="2.3 懒汉式单例类（二） - 线程不安全"></a>2.3 懒汉式单例类（二） - 线程不安全</h3><p>虽然 synchronized 关键字进行了线程锁定，但是每次调用 getInstance() 方法时都会进行加锁操作，在多线程高并发场景下，会导致系统性能大大降低。</p>
-<p>事实上，只需要在 new L:azySingleton() 时进行加锁即可，即第一次实例化实例时加锁。</p>
-<pre><code class="java">public static LazySingleton getInstance(){
-    if(instance == null){
-        synchronized(LazySingleton.class){
-            instance = new LazySingleton();
-        }
-    }
-    return instance;
-}</code></pre>
-<h3 id="2-4-懒汉模式单例类（三-DoubleCheck）-线程不安全"><a href="#2-4-懒汉模式单例类（三-DoubleCheck）-线程不安全" class="headerlink" title="2.4 懒汉模式单例类（三 DoubleCheck） - 线程不安全"></a>2.4 懒汉模式单例类（三 DoubleCheck） - 线程不安全</h3><p>如果当两个线程同时进行了 if 条件之中，当线程A完成实例化之后，线程B继续执行，依旧会进行一次实例化。违背了单例模式的设计思想。</p>
-<p>双重检测机制：因此我们需要在 synchronized 中在进行一次判断</p>
-<pre><code class="java">public static LazySingleton getInstance(){
-    if(instance == null){
-        synchronized(LazySingleton.class){
-            if(instance == null){
-                instance = new LazySingleton();
-            }
-        }
-    }
-    return instance;
-}</code></pre>
-<h3 id="2-5-懒汉模式单例类（四-volatile-DoubleCheck）-线程安全"><a href="#2-5-懒汉模式单例类（四-volatile-DoubleCheck）-线程安全" class="headerlink" title="2.5 懒汉模式单例类（四 volatile+DoubleCheck） - 线程安全"></a>2.5 懒汉模式单例类（四 volatile+DoubleCheck） - 线程安全</h3><p>上述代码看起来可能没什么问题，但是</p>
-<p>instance = new LazySingleton() 在内存中的指令顺序应该为：</p>
-<ol>
-<li>instance 分配内存地址</li>
-<li>实例化 LazySingleton</li>
-<li>将实例化地址指向instance</li>
+<p><img src="https://i.loli.net/2019/07/09/5d23ff6fa777253811.png" alt="建造者模式"></p></div><a class="more" href="/2019/07/05/读书笔记/《JavaDesignPatterns》/8.建造者模式/#more">阅读更多</a><hr></div><div class="recent-post-item article-container"><a class="article-title" href="/2019/06/27/读书笔记/《JavaDesignPatterns》/7.原型模式/">《Java Design Patterns》第五章 原型模式 - 对象的克隆</a><time class="post-meta__date"><i class="fa fa-calendar" aria-hidden="true"></i> 2019-06-27</time><span class="article-meta"><span class="article-meta__separator">|</span><i class="fa fa-inbox article-meta__icon" aria-hidden="true"></i><a class="article-meta__categories" href="/categories/读书笔记/">读书笔记</a><i class="fa fa-angle-right" aria-hidden="true"></i><i class="fa fa-inbox article-meta__icon" aria-hidden="true"></i><a class="article-meta__categories" href="/categories/读书笔记/设计模式/">设计模式</a></span><span class="article-meta tags"><span class="article-meta__separator">|</span><i class="fa fa-tag article-meta__icon" aria-hidden="true"></i><a class="article-meta__tags" href="/tags/hide/">hide</a><span class="article-meta__link">-</span><i class="fa fa-tag article-meta__icon" aria-hidden="true"></i><a class="article-meta__tags" href="/tags/设计模式/">设计模式</a></span><div class="content"><h1 id="第五章-原型模式-对象的克隆"><a href="#第五章-原型模式-对象的克隆" class="headerlink" title="第五章 原型模式 - 对象的克隆"></a>第五章 原型模式 - 对象的克隆</h1><p>原型模式：使用原型实例指定创建对象的种类，并且通过拷贝这些原型创建新的对象。属于一种对象创建型模式。</p>
+<h2 id="一、概述"><a href="#一、概述" class="headerlink" title="一、概述"></a>一、概述</h2><h3 id="1-1-原理"><a href="#1-1-原理" class="headerlink" title="1.1 原理"></a>1.1 原理</h3><p>原型模式的工作原理很简单：将一个原型对象传给那个要发动创建的对象，这个要发动创建的对象通过请求原型对象拷贝自己来实现创建过程。由于在软件系统中我们经常会遇到需要创建多个相同或者相似对象的情况，因此原型模式在真实开发中的使用频率还是非常高的。原型模式是一种“另类”的创建型模式，创建克隆对象的工厂就是原型类自身，工厂方法由克隆方法来实现。</p>
+<h3 id="1-2-原型模式中的几个角色"><a href="#1-2-原型模式中的几个角色" class="headerlink" title="1.2 原型模式中的几个角色"></a>1.2 原型模式中的几个角色</h3><ol>
+<li>Prototype - 抽象原型类<ol>
+<li>声明克隆方法的接口，是所有具体原型类的公共父类</li>
 </ol>
-<p>因为 JVM 的指令重排和优化，可能会导致以上执行顺序与所想像的不一致。最终导致单例出现问题，因此我们在静态实例 instance 前，加上 volatile 关键词，避免 instance 的实例化发生指令重排。</p>
-<blockquote>
-<p>因此<code>完整的懒汉模式</code>如下：</p>
-</blockquote>
-<pre><code class="java">class LazySingleton{
-    // 使用volatile 修改时静态实例，避免指令重排序
-    private volatile static LazySignleton instance = null;
-    // 构造方法私有化，防止外部实例
-    private LazySingleton(){}
-    // 静态工厂类，用于返回唯一实例，且使用延迟加载技术
-    public static LazySingleton getInstance(){
-        // 第一重检查，只有当instance 为空时才进行实例化
-        if(instance == null){
-            // 实例化时对当前类进行加锁，避免多线程同时实例化
-            synchronized(LazySingleton.class){
-                // 第二重检查，避免当前线程通过第一重检查后其他线程已实例化过
-                if(instance == null){
-                    instance = new LazySingleton();
-                }
-            }
+</li>
+<li>ConcretePrototype - 具体原型类<ol>
+<li>实现抽象原型类中声明的克隆方法，在克隆方法中返回自己的一个克隆对象</li>
+</ol>
+</li>
+<li>Client - 客户类<ol>
+<li>让一个原型对象克隆自身从而创建一个新的对象，在客户类中只需要直接实例化或通过工厂方法等方式创建一个原型对象，再通过调用该对象的克隆方法即可得到多个相同的对象。</li>
+</ol>
+</li>
+</ol>
+<h3 id="1-3-案例"><a href="#1-3-案例" class="headerlink" title="1.3 案例"></a>1.3 案例</h3><pre><code class="java">@Getter
+@Setter
+class WeeklyLog implements Clonealbe{
+    private String name;
+    private String date;
+    private String content;
+
+    publci WeekLog clone(){
+        Object obj = null;
+        try{
+            obj = super.clone();
+            return (WeekLog)obj;
+        } catch (CloneNotSupportedException e){
+            System.out.println(&quot;不支持复制&quot;);
+            return null;
         }
-        return instance;
     }
 }</code></pre>
+<h2 id="二、浅克隆与深克隆"><a href="#二、浅克隆与深克隆" class="headerlink" title="二、浅克隆与深克隆"></a>二、浅克隆与深克隆</h2><h3 id="2-1-浅克隆"><a href="#2-1-浅克隆" class="headerlink" title="2.1 浅克隆"></a>2.1 浅克隆</h3><p>在浅克隆中，如果原型对象的成员是值类型，将复制一份给克隆对象；如果原型对象的成员变量是引用类型，则将引用对象的地址复制一份给克隆对象。也就是说，原型对象的引用类型变量与克隆对象中的变量指向同一内存地址。</p>
+<p>即值类型成员变量会被复制，但是引用成员变量不会。</p>
+<h3 id="2-2-深克隆"><a href="#2-2-深克隆" class="headerlink" title="2.2 深克隆"></a>2.2 深克隆</h3><p>在深克隆中，无论原型对象的成员变量是值类型还是引用类型，都将复制一份给克隆对象。</p>
+<p>如果需要实现深克隆，可以通过序列化（Serialization）等方式实现：将对象写入到流，再从流中读出。</p>
 <blockquote>
-<p>缺点也很明显：1. volatile 关键词虽然能保证实例避免重排，但是只在1.5以上的版本才能生效 2. volatile关键词会屏蔽 JVM 的一些代码优化，可能导致系统运行效率降低</p>
+<p>Java语言提供的 Cloneable 接口和 Serializable 接口都是空接口，也称为标识接口。标识接口无任何方法定义，只提供告诉JRE这些接口的实现类是否支持克隆、序列化等功能。</p>
 </blockquote>
-<h2 id="三、一种更好的单例实现方法"><a href="#三、一种更好的单例实现方法" class="headerlink" title="三、一种更好的单例实现方法"></a>三、一种更好的单例实现方法</h2><h2 id="3-1-懒汉模式与饿汉模式的缺点"><a href="#3-1-懒汉模式与饿汉模式的缺点" class="headerlink" title="3.1 懒汉模式与饿汉模式的缺点"></a>3.1 懒汉模式与饿汉模式的缺点</h2><p>饿汉模式：不能实现延迟加载，不管实例是否使用都将占据内存</p>
-<p>饿汉模式：繁琐的线程安全控制，且性能会受到一定影响</p>
-<h2 id="3-2-静态内部类单例-IoDH-线程安全"><a href="#3-2-静态内部类单例-IoDH-线程安全" class="headerlink" title="3.2 静态内部类单例 - IoDH - 线程安全"></a>3.2 静态内部类单例 - IoDH - 线程安全</h2><pre><code class="java">class Signleton{
-    private Singleton(){}
-    // 静态内部类只有在第一次调用时才会进行加载
-    private static class HolderClass{
-        // 因为instance 不是Singleton的成员变量，所以不会在Singleton加载时实例化
-        private final static Singleton instance = new Singleton();
-    }
-    // 通过JVM特性来保证线程安全性，确保成员变量只能初始化一次
-    public static Singleton getInstance(){
-        return HolderClass.instance;
-    }
-}</code></pre>
-<p>Initialization Demand Holder 技术，在单例类内部增加一个静态内部类，在该内部类中创建单例对象，再将单例对象通过 getInstance() 方法返回给外部使用。</p>
-<blockquote>
-<p>但是IoDH依赖于JVM的特性，并不适用于所有语言。但是IoDH既可以实现延迟加载，又可以保证线程安全，又不影响性能，不失为一种最好的Java语言单例模式。</p>
-</blockquote>
-<h2 id="四、总结"><a href="#四、总结" class="headerlink" title="四、总结"></a>四、总结</h2><h3 id="优点"><a href="#优点" class="headerlink" title="优点"></a>优点</h3><ol>
-<li>单例模式提供了对唯一实例的受控访问。因为单例类封装了它的唯一实例，严格控制客户如何访问</li>
-<li>节约系统资源。因为内存中只存在一个对象，无需频繁的创建、销毁对象</li>
-<li>允许可变数目的实例。可以通过变种，让getInstance返回至多几个实例</li>
+<h2 id="三、总结"><a href="#三、总结" class="headerlink" title="三、总结"></a>三、总结</h2><h3 id="优点"><a href="#优点" class="headerlink" title="优点"></a>优点</h3><ol>
+<li>当创建新对象较为复杂时，可以使用原型模式简化对象的创建过程，复制一个已有实例以提高新实例的创建效率</li>
+<li>扩展性较好，由于在原型模式中提供了抽象原型类，在客户端可以针对抽象原型类进行编程，而将具体原型类写在配置文件中</li>
+<li>原型模式提供了简化的创建结构，工厂方法模式需要与产品等级结构对应的工厂等级结构，而原型模式则直接通过封装在原型类中的克隆方法实现</li>
+<li>深克隆方式可以保存对象的状态</li>
 </ol>
 <h3 id="缺点"><a href="#缺点" class="headerlink" title="缺点"></a>缺点</h3><ol>
-<li>由于单例类没有抽象层，很难进行扩展</li>
-<li>单例类职责过重，违背了“单一职责原则”。因为单例类即是工厂角色，提供工厂方法，又是产品角色，包含一些业务方法。将产品的创建和产品的功能融合到了一起</li>
-<li>许多面向对象语言（如Java、C#）的自动垃圾回收技术，如果实例化的共享变量长时间不被使用。GC 会自动销毁并回收资源，导致单例对象状态的丢失。</li>
+<li>需要每个类配置一个克隆方法，且位于类内部，当对类进行改造时需要修改源码，违反了“开闭原则”</li>
+<li>实现深克隆时较为复杂，对象的每一层子对象都需要进行深克隆</li>
 </ol>
 <h3 id="适用场景"><a href="#适用场景" class="headerlink" title="适用场景"></a>适用场景</h3><ol>
-<li>系统只需要一个实例对象。如资源消耗过大的对象、资源管理器等只能实例一次的对象</li>
-<li>客户调用类的单个实例只允许使用一个公共访问点，不能通过其他途径访问该实例。</li>
+<li>创建新对象成本较大（如初始化时间长、占用CPU资源多或网络资源占用多），新对象能够通过原型模式进行复制，复制相似对象再进行修改</li>
+<li>可以通过原型模式+备忘录模式，来实现保存对象的状态</li>
+<li>避免使用工厂模式来创建对象</li>
 </ol>
 </div><hr></div><nav id="pagination"><div class="pagination"><a class="extend prev" rel="prev" href="/page/11/"><i class="fa fa-chevron-left"></i></a><a class="page-number" href="/">1</a><span class="space">&hellip;</span><a class="page-number" href="/page/11/">11</a><span class="page-number current">12</span><a class="page-number" href="/page/13/">13</a><span class="space">&hellip;</span><a class="page-number" href="/page/22/">22</a><a class="extend next" rel="next" href="/page/13/"><i class="fa fa-chevron-right"></i></a></div></nav></div></div><footer><div class="layout" id="footer"><div class="copyright">&copy;2013 - 2020 By koral</div><div class="framework-info"><span>驱动 - </span><a href="http://hexo.io"><span>Hexo</span></a><span class="footer-separator">|</span><span>主题 - </span><a href="https://github.com/Molunerfinn/hexo-theme-melody"><span>Melody</span></a></div><div class="busuanzi"><script async src="//busuanzi.ibruce.info/busuanzi/2.3/busuanzi.pure.mini.js"></script><span id="busuanzi_container_site_uv"><i class="fa fa-user"></i><span id="busuanzi_value_site_uv"></span><span></span></span><span class="footer-separator">|</span><span id="busuanzi_container_site_pv"><i class="fa fa-eye"></i><span id="busuanzi_value_site_pv"></span><span></span></span></div></div></footer><i class="fa fa-arrow-up" id="go-up" aria-hidden="true"></i><script src="https://cdn.jsdelivr.net/npm/animejs@latest/anime.min.js"></script><script src="https://cdn.jsdelivr.net/npm/jquery@latest/dist/jquery.min.js"></script><script src="https://cdn.jsdelivr.net/npm/@fancyapps/fancybox@latest/dist/jquery.fancybox.min.js"></script><script src="https://cdn.jsdelivr.net/npm/velocity-animate@latest/velocity.min.js"></script><script src="https://cdn.jsdelivr.net/npm/velocity-ui-pack@latest/velocity.ui.min.js"></script><script src="/js/utils.js?version=1.7.0"></script><script src="/js/fancybox.js?version=1.7.0"></script><script src="/js/sidebar.js?version=1.7.0"></script><script src="/js/copy.js?version=1.7.0"></script><script src="/js/fireworks.js?version=1.7.0"></script><script src="/js/transition.js?version=1.7.0"></script><script src="/js/scroll.js?version=1.7.0"></script><script src="/js/head.js?version=1.7.0"></script><script>if(/Android|webOS|iPhone|iPod|iPad|BlackBerry/i.test(navigator.userAgent)) {
   $('#nav').addClass('is-mobile')
