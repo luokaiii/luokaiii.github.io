@@ -1,0 +1,144 @@
+<!DOCTYPE html><html lang="zh-Hans"><head><meta name="generator" content="Hexo 3.9.0"><meta charset="UTF-8"><meta http-equiv="X-UA-Compatible" content="IE=edge"><meta name="viewport" content="width=device-width, initial-scale=1, maximum-scale=1"><meta name="description" content="《高性能MySQL》第七章 MySQL 执行计划优化"><meta name="keywords" content="hide,高性能MySQL"><meta name="author" content="koral"><meta name="copyright" content="koral"><title>《高性能MySQL》第七章 MySQL 执行计划优化 | 凯</title><link rel="shortcut icon" href="/melody-favicon.ico"><link rel="stylesheet" href="/css/index.css?version=1.7.0"><link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/font-awesome@latest/css/font-awesome.min.css?version=1.7.0"><meta name="format-detection" content="telephone=no"><meta http-equiv="x-dns-prefetch-control" content="on"><link rel="dns-prefetch" href="https://cdn.jsdelivr.net"><meta http-equiv="Cache-Control" content="no-transform"><meta http-equiv="Cache-Control" content="no-siteapp"><script>var GLOBAL_CONFIG = { 
+  root: '/',
+  algolia: undefined,
+  localSearch: undefined,
+  copy: {
+    success: '复制成功',
+    error: '复制错误',
+    noSupport: '浏览器不支持'
+  }
+} </script></head><body><i class="fa fa-arrow-right" id="toggle-sidebar" aria-hidden="true"></i><div id="sidebar" data-display="true"><div class="toggle-sidebar-info text-center"><span data-toggle="切换文章详情">切换站点概览</span><hr></div><div class="sidebar-toc"><div class="sidebar-toc__title">目录</div><div class="sidebar-toc__progress"><span class="progress-notice">你已经读了</span><span class="progress-num">0</span><span class="progress-percentage">%</span><div class="sidebar-toc__progress-bar"></div></div><div class="sidebar-toc__content"><ol class="toc"><li class="toc-item toc-level-2"><a class="toc-link" href="#一、执行计划分析"><span class="toc-number">1.</span> <span class="toc-text">一、执行计划分析</span></a></li><li class="toc-item toc-level-2"><a class="toc-link" href="#二、执行计划中的内容"><span class="toc-number">2.</span> <span class="toc-text">二、执行计划中的内容</span></a></li><li class="toc-item toc-level-2"><a class="toc-link" href="#执行计划的限制"><span class="toc-number">3.</span> <span class="toc-text">执行计划的限制</span></a><ol class="toc-child"><li class="toc-item toc-level-3"><a class="toc-link" href="#《高性能MySQL》目录"><span class="toc-number">3.1.</span> <span class="toc-text">《高性能MySQL》目录</span></a></li></ol></li></ol></div></div><div class="author-info hide"><div class="author-info__avatar text-center"><img src="/img/avatar.png"></div><div class="author-info__name text-center">koral</div><div class="author-info__description text-center">回廊一寸相思地，落月成孤倚。背灯和月就花阴，已是十年踪迹十年心。</div><hr><div class="author-info-articles"><a class="author-info-articles__archives article-meta" href="/archives"><span class="pull-left">文章</span><span class="pull-right">221</span></a><a class="author-info-articles__tags article-meta" href="/tags"><span class="pull-left">标签</span><span class="pull-right">31</span></a><a class="author-info-articles__categories article-meta" href="/categories"><span class="pull-left">分类</span><span class="pull-right">40</span></a></div></div></div><div id="content-outer"><div class="no-bg" id="top-container"><div id="page-header"><span class="pull-left"> <a id="site-name" href="/index.html">凯</a></span><i class="fa fa-bars toggle-menu pull-right" aria-hidden="true"></i><span class="pull-right menus">   <a class="site-page" href="/">首页</a><a class="site-page" href="/archives">归档</a><a class="site-page" href="/tags">标签</a><a class="site-page" href="/categories">分类</a><a class="site-page" href="/about">关于我</a></span><span class="pull-right"></span></div><div id="post-info"><div id="post-title">《高性能MySQL》第七章 MySQL 执行计划优化</div><div id="post-meta"><time class="post-meta__date"><i class="fa fa-calendar" aria-hidden="true"></i> 2019-06-23</time><span class="post-meta__separator">|</span><i class="fa fa-inbox post-meta__icon" aria-hidden="true"></i><a class="post-meta__categories" href="/categories/读书笔记/">读书笔记</a><i class="fa fa-angle-right" aria-hidden="true"></i><i class="fa fa-inbox post-meta__icon" aria-hidden="true"></i><a class="post-meta__categories" href="/categories/读书笔记/高性能MySQL/">高性能MySQL</a></div></div></div><div class="layout" id="content-inner"><article id="post"><div class="article-container" id="post-content"><p>通过 EXPLAIN 对 SQL 语句的执行计划进行分析，以此来判断一条 SQL 的执行效率，并作出对应的优化调整。</p>
+<p>EXPLAIN 能够分析 <code>select</code> <code>update</code> <code>insert</code> <code>replace</code> <code>delete</code> 这些SQL。</p>
+<a id="more"></a>
+
+<h2 id="一、执行计划分析"><a href="#一、执行计划分析" class="headerlink" title="一、执行计划分析"></a>一、执行计划分析</h2><ol>
+<li>SQL 如何使用索引<ol>
+<li>并不是某一列上存在索引，sql 在执行时就必定会使用该索引。</li>
+</ol>
+</li>
+<li>联接查询的执行顺序</li>
+<li>查询扫描的数据行数</li>
+</ol>
+<h2 id="二、执行计划中的内容"><a href="#二、执行计划中的内容" class="headerlink" title="二、执行计划中的内容"></a>二、执行计划中的内容</h2><p>以下面的查询SQL 为例，解释执行计划中输出内容的含义</p>
+<pre><code class="sql">EXPLAIN
+SELECT customer_id,title,content 
+FROM `product_comment`
+WHERE audit_status = 1
+AND product_id = 199726
+LIMIT 0,5</code></pre>
+<ul>
+<li>id: 1<ul>
+<li>ID 列中的数据为一组数字，表示执行 SELECT 语句的顺序</li>
+<li>ID 值相同时，执行顺序由上至下</li>
+<li>ID 值越大优先级越高，执行越靠前</li>
+</ul>
+</li>
+<li>select_type: SIMPLE<ul>
+<li>SIMPLE：不包含子查询或是 UNION 操作的查询</li>
+<li>PRIMARY：查询中如果包含任何子查询，那么最外层的查询则被标记为 PRIMARY</li>
+<li>SUBQUERY：SELECT 列表中的子查询</li>
+<li>DEPENDENT SUBQUERY：依赖外部结果的子查询</li>
+<li>UNION：Union操作的第二个或是之后的查询的值为 union</li>
+<li>DEPENDENT UNION：当 UNION 作为子查询时，第二或是第二个后的查询的 select_type 值</li>
+<li>UNION RESULT：UNION 产生的结果集</li>
+<li>DERIVED：出现在 FROM 子句中的子查询</li>
+</ul>
+</li>
+<li>table: product_comment<ul>
+<li>输出数据行所在的表的名称</li>
+<li>&lt;unionM,N&gt;由ID 为 M，N 查询union 产生的结果集</li>
+<li><derivedn>/<subqueryn> 由 ID 为N 的查询结果的结果集</subqueryn></derivedn></li>
+</ul>
+</li>
+<li>partition: NULL<ul>
+<li>对于分区表，显示查询的分区ID</li>
+<li>对于非分区表，显示为 NULL</li>
+</ul>
+</li>
+<li>type: ALL<ul>
+<li>以下类型的性能从高到低依次排列</li>
+<li>system：这是 const 联接类型的一个特例，当查询的表只有一行时使用</li>
+<li>const：表中有且只有一个匹配的行时使用，如对主键或是唯一索引的查询，这是效率最高的联接方式</li>
+<li>eq_ref：唯一索引或是主键索引查找，对于每个索引键，表中只有一条记录与之匹配</li>
+<li>ref：非唯一索引查找，返回匹配某个单独值的所有行</li>
+<li>ref_or_null：类似于 ref 类型的查询，但是附加了对 NULL 值列的查询</li>
+<li>index_merge：该联接类型表示使用了索引合并优化方法</li>
+<li>range：索引范围扫描，常见于 between、&gt;、&lt; 这样的查询条件</li>
+<li>index：FULL index Scan 全索引扫描，同ALL 的区别是，遍历的是索引树</li>
+<li>ALL：FULL Table Scan 全表扫描，这是效率最差的联接方式</li>
+</ul>
+</li>
+<li>possible_keys: NULL <ul>
+<li>指出 MySQL 能使用哪些索引来优化查询，基于查询所使用到的列和过滤条件来判断的</li>
+<li>查询列所涉及到的列上的索引都会被列出，但不一定会被使用</li>
+</ul>
+</li>
+<li>key: NULL<ul>
+<li>查询优化器优化查询实际所使用的索引</li>
+<li>如果没有可用的索引，则显示为 NULL</li>
+<li>如果查询使用了覆盖索引，则该索引仅出现在 Key 列中</li>
+</ul>
+</li>
+<li>key_len: NULL<ul>
+<li>表示索引字段的最大可能长度</li>
+<li>ken_len的长度由字段定义计算而来，并非数据的实际长度</li>
+</ul>
+</li>
+<li>ref: NULL<ul>
+<li>表示那些列或常量被用于查找索引列上的值</li>
+</ul>
+</li>
+<li>rows: 9400<ul>
+<li>表示 MySQL 通过索引统计信息，估算的所需读取的行数</li>
+<li>Rows 值的大小是个统计抽样结果，并不十分准确</li>
+</ul>
+</li>
+<li>filtered: 1.00<ul>
+<li>表示返回结果的行数占需读取行数的百分比</li>
+<li>Filtered 列的值越大越好，越大表示过滤的比例越高，最大100%</li>
+<li>Filtered 列的值依赖统计信息，并不十分准确</li>
+</ul>
+</li>
+<li>Extra: Using where<ul>
+<li>Distinct：优化 distinct 操作，在找到第一匹配的元素后即停止找同样值的动作</li>
+<li>Not exists：使用 not exists 来优化操作</li>
+<li>Using filesort：使用额外操作进行排序，通常会出现在 order  by 或 group by 查询中</li>
+<li>Using index：使用了覆盖索引进行查询</li>
+<li>Using teporary：MySQL 需要使用临时表来处理查询，常见于排序、子查询和分组查询</li>
+<li>Using where：需要在 MySQL 服务器层使用 WHERE 条件来过滤数据</li>
+<li>select tables optimized away：直接通过索引来获取数据，不用访问表</li>
+</ul>
+</li>
+</ul>
+<p>通过上面的查询语句，以及索引的设计规范，应该在 where 语句查询的部分设置索引，这里使用联合索引。</p>
+<pre><code class="SQL">-- 查询表中，audit_status和product_id 的区分度，应该将区分度高的列放在联合索引的左侧
+SELECT COUNT(DISTINCT audit_status)/COUNT(*) AS audit_rate,
+COUNT(DISTINCT product_id)/COUNT(*) AS product_rate
+FROM product_comment;</code></pre>
+<p>假设 product_rate = 0.8 ，audit_rate = 0.2，则联合索引应该设计为：</p>
+<pre><code class="sql">CREATE INDEX idx_productID_auditStatus
+ON product_comment(product_id,audit_status);</code></pre>
+<h2 id="执行计划的限制"><a href="#执行计划的限制" class="headerlink" title="执行计划的限制"></a>执行计划的限制</h2><ol>
+<li>无法展示存储过程、触发器、UDF 对查询的影响</li>
+<li>无法使用 EXPLAIN 对存储过程进行分析</li>
+<li>早期版本的MySQL 只支持对 SELECT 语句进行分析</li>
+</ol>
+<h3 id="《高性能MySQL》目录"><a href="#《高性能MySQL》目录" class="headerlink" title="《高性能MySQL》目录"></a>《高性能MySQL》目录</h3><ol>
+<li>第一章 <a href="/2019/06/23/读书笔记/《高性能MySQL》/1.数据库设计规范/index.html">数据库设计规范</a></li>
+<li>第二章 <a href="/2019/06/22/读书笔记/《高性能MySQL》/2.数据库字段设计规范/index.html">数据库字段设计规范</a></li>
+<li>第三章 <a href="/2019/06/21/读书笔记/《高性能MySQL》/3.数据库SQL开发规范/index.html">数据库 SQL 开发规范</a></li>
+<li>第四章 <a href="/2019/06/20/读书笔记/《高性能MySQL》/4.数据库操作行为规范/index.html">数据库操作行为规范</a></li>
+<li>第五章 <a href="/2019/06/19/读书笔记/《高性能MySQL》/5.设计数据库分区表/index.html">设计数据库分区表</a></li>
+<li>第六章 <a href="/2019/06/18/读书笔记/《高性能MySQL》/6.MySQL存储引擎/index.html">MySQL存储引擎</a></li>
+<li>第七章 <a href="/2019/06/17/读书笔记/《高性能MySQL》/7.MySQL执行计划优化/index.html">MySQL 执行优化</a></li>
+<li>第八章 <a href="/2019/06/16/读书笔记/《高性能MySQL》/8.MySQL慢查日志/index.html">MySQL 慢查询日志</a></li>
+<li>第九章 <a href="/2019/06/15/读书笔记/《高性能MySQL》/9.数据库备份/index.html">MySQL 数据库备份与恢复</a></li>
+<li>第十章 <a href="/2019/06/14/读书笔记/《高性能MySQL》/10.MySQL架构拆分/index.html">MySQL构架拆分</a></li>
+<li>其他：<a href="/2019/06/12/读书笔记/《高性能MySQL》/20.数据库表结构实践/index.html">MySQL表结构实践sql</a></li>
+<li>其他2：<a href="/2019/06/13/读书笔记/《高性能MySQL》/11.MySQL常用命令/index.html">MySQL常用命令</a></li>
+</ol>
+</div></article><div class="post-copyright"><div class="post-copyright__author"><span class="post-copyright-meta">文章作者: </span><span class="post-copyright-info"><a href="mailto:undefined">koral</a></span></div><div class="post-copyright__type"><span class="post-copyright-meta">文章链接: </span><span class="post-copyright-info"><a href="http://luokaiii.github.io/2019/06/23/读书笔记/《高性能MySQL》/7.MySQL执行计划优化/">http://luokaiii.github.io/2019/06/23/读书笔记/《高性能MySQL》/7.MySQL执行计划优化/</a></span></div><div class="post-copyright__notice"><span class="post-copyright-meta">版权声明: </span><span class="post-copyright-info">本博客所有文章除特别声明外，均采用 <a href="https://creativecommons.org/licenses/by-nc-sa/4.0/">CC BY-NC-SA 4.0</a> 许可协议。转载请注明来自 <a href="http://luokaiii.github.io">凯</a>！</span></div></div><div class="post-meta__tag-list"><a class="post-meta__tags" href="/tags/hide/">hide</a><a class="post-meta__tags" href="/tags/高性能MySQL/">高性能MySQL</a></div><nav id="pagination"><div class="prev-post pull-left"><a href="/2019/06/23/读书笔记/《高性能MySQL》/6.MySQL存储引擎/"><i class="fa fa-chevron-left">  </i><span>《高性能MySQL》第六章 MySQL 中的存储引擎</span></a></div><div class="next-post pull-right"><a href="/2019/06/23/读书笔记/《高性能MySQL》/8.MySQL慢查日志/"><span>《高性能MySQL》第八章 MySQL 慢查询日志</span><i class="fa fa-chevron-right"></i></a></div></nav></div></div><footer><div class="layout" id="footer"><div class="copyright">&copy;2013 - 2020 By koral</div><div class="framework-info"><span>驱动 - </span><a href="http://hexo.io"><span>Hexo</span></a><span class="footer-separator">|</span><span>主题 - </span><a href="https://github.com/Molunerfinn/hexo-theme-melody"><span>Melody</span></a></div><div class="busuanzi"><script async src="//busuanzi.ibruce.info/busuanzi/2.3/busuanzi.pure.mini.js"></script><span id="busuanzi_container_page_pv"><i class="fa fa-file"></i><span id="busuanzi_value_page_pv"></span><span></span></span></div></div></footer><i class="fa fa-arrow-up" id="go-up" aria-hidden="true"></i><script src="https://cdn.jsdelivr.net/npm/animejs@latest/anime.min.js"></script><script src="https://cdn.jsdelivr.net/npm/jquery@latest/dist/jquery.min.js"></script><script src="https://cdn.jsdelivr.net/npm/@fancyapps/fancybox@latest/dist/jquery.fancybox.min.js"></script><script src="https://cdn.jsdelivr.net/npm/velocity-animate@latest/velocity.min.js"></script><script src="https://cdn.jsdelivr.net/npm/velocity-ui-pack@latest/velocity.ui.min.js"></script><script src="/js/utils.js?version=1.7.0"></script><script src="/js/fancybox.js?version=1.7.0"></script><script src="/js/sidebar.js?version=1.7.0"></script><script src="/js/copy.js?version=1.7.0"></script><script src="/js/fireworks.js?version=1.7.0"></script><script src="/js/transition.js?version=1.7.0"></script><script src="/js/scroll.js?version=1.7.0"></script><script src="/js/head.js?version=1.7.0"></script><script>if(/Android|webOS|iPhone|iPod|iPad|BlackBerry/i.test(navigator.userAgent)) {
+  $('#nav').addClass('is-mobile')
+  $('footer').addClass('is-mobile')
+  $('#top-container').addClass('is-mobile')
+}</script></body></html>

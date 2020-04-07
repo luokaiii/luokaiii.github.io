@@ -1,0 +1,50 @@
+<!DOCTYPE html><html lang="zh-Hans"><head><meta name="generator" content="Hexo 3.9.0"><meta charset="UTF-8"><meta http-equiv="X-UA-Compatible" content="IE=edge"><meta name="viewport" content="width=device-width, initial-scale=1, maximum-scale=1"><meta name="description" content="《Umijs》三、页面跳转与HTML模板"><meta name="keywords" content="hide,Umijs"><meta name="author" content="koral"><meta name="copyright" content="koral"><title>《Umijs》三、页面跳转与HTML模板 | 凯</title><link rel="shortcut icon" href="/melody-favicon.ico"><link rel="stylesheet" href="/css/index.css?version=1.7.0"><link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/font-awesome@latest/css/font-awesome.min.css?version=1.7.0"><meta name="format-detection" content="telephone=no"><meta http-equiv="x-dns-prefetch-control" content="on"><link rel="dns-prefetch" href="https://cdn.jsdelivr.net"><meta http-equiv="Cache-Control" content="no-transform"><meta http-equiv="Cache-Control" content="no-siteapp"><script>var GLOBAL_CONFIG = { 
+  root: '/',
+  algolia: undefined,
+  localSearch: undefined,
+  copy: {
+    success: '复制成功',
+    error: '复制错误',
+    noSupport: '浏览器不支持'
+  }
+} </script></head><body><i class="fa fa-arrow-right" id="toggle-sidebar" aria-hidden="true"></i><div id="sidebar" data-display="true"><div class="toggle-sidebar-info text-center"><span data-toggle="切换文章详情">切换站点概览</span><hr></div><div class="sidebar-toc"><div class="sidebar-toc__title">目录</div><div class="sidebar-toc__progress"><span class="progress-notice">你已经读了</span><span class="progress-num">0</span><span class="progress-percentage">%</span><div class="sidebar-toc__progress-bar"></div></div><div class="sidebar-toc__content"><ol class="toc"><li class="toc-item toc-level-2"><a class="toc-link" href="#一、页面跳转"><span class="toc-number">1.</span> <span class="toc-text">一、页面跳转</span></a><ol class="toc-child"><li class="toc-item toc-level-3"><a class="toc-link" href="#1-声明式"><span class="toc-number">1.1.</span> <span class="toc-text">1. 声明式</span></a></li><li class="toc-item toc-level-3"><a class="toc-link" href="#2-命令式"><span class="toc-number">1.2.</span> <span class="toc-text">2. 命令式</span></a></li></ol></li><li class="toc-item toc-level-2"><a class="toc-link" href="#二、HTML-模板"><span class="toc-number">2.</span> <span class="toc-text">二、HTML 模板</span></a></li></ol></div></div><div class="author-info hide"><div class="author-info__avatar text-center"><img src="/img/avatar.png"></div><div class="author-info__name text-center">koral</div><div class="author-info__description text-center">回廊一寸相思地，落月成孤倚。背灯和月就花阴，已是十年踪迹十年心。</div><hr><div class="author-info-articles"><a class="author-info-articles__archives article-meta" href="/archives"><span class="pull-left">文章</span><span class="pull-right">221</span></a><a class="author-info-articles__tags article-meta" href="/tags"><span class="pull-left">标签</span><span class="pull-right">31</span></a><a class="author-info-articles__categories article-meta" href="/categories"><span class="pull-left">分类</span><span class="pull-right">40</span></a></div></div></div><div id="content-outer"><div class="no-bg" id="top-container"><div id="page-header"><span class="pull-left"> <a id="site-name" href="/index.html">凯</a></span><i class="fa fa-bars toggle-menu pull-right" aria-hidden="true"></i><span class="pull-right menus">   <a class="site-page" href="/">首页</a><a class="site-page" href="/archives">归档</a><a class="site-page" href="/tags">标签</a><a class="site-page" href="/categories">分类</a><a class="site-page" href="/about">关于我</a></span><span class="pull-right"></span></div><div id="post-info"><div id="post-title">《Umijs》三、页面跳转与HTML模板</div><div id="post-meta"><time class="post-meta__date"><i class="fa fa-calendar" aria-hidden="true"></i> 2020-04-07</time><span class="post-meta__separator">|</span><i class="fa fa-inbox post-meta__icon" aria-hidden="true"></i><a class="post-meta__categories" href="/categories/读书笔记/">读书笔记</a><i class="fa fa-angle-right" aria-hidden="true"></i><i class="fa fa-inbox post-meta__icon" aria-hidden="true"></i><a class="post-meta__categories" href="/categories/读书笔记/Umijs/">Umijs</a></div></div></div><div class="layout" id="content-inner"><article id="post"><div class="article-container" id="post-content"><p>在 umi 中，页面之间的跳转由两种方式：声明式与命令式。</p>
+<a id="more"></a>
+
+<h2 id="一、页面跳转"><a href="#一、页面跳转" class="headerlink" title="一、页面跳转"></a>一、页面跳转</h2><h3 id="1-声明式"><a href="#1-声明式" class="headerlink" title="1. 声明式"></a>1. 声明式</h3><pre><code class="tsx">import { Link } from &#39;umi&#39;;
+
+export default () =&gt; &lt;Link to=&quot;/&quot;&gt;Go home&lt;/Link&gt;;</code></pre>
+<h3 id="2-命令式"><a href="#2-命令式" class="headerlink" title="2. 命令式"></a>2. 命令式</h3><pre><code class="tsx">import { history } from &#39;umi&#39;;
+
+function goHome() {
+  history.push(&#39;/&#39;);
+}</code></pre>
+<p>也可以直接从组件的属性中获取 history：</p>
+<pre><code class="tsx">export default (props: any) =&gt; (
+  &lt;Button onClick={() =&gt; props.history.push(&#39;/&#39;)}&gt;Go Home&lt;/Button&gt;
+);</code></pre>
+<h2 id="二、HTML-模板"><a href="#二、HTML-模板" class="headerlink" title="二、HTML 模板"></a>二、HTML 模板</h2><p>新建 <code>src/pages/document.ejs</code>，如果该文件存在，则作为默认模板：</p>
+<pre><code class="html">&lt;!DOCTYPE html&gt;
+&lt;html&gt;
+  &lt;head&gt;
+    &lt;meta charset=&quot;utf-8&quot; /&gt;
+    &lt;title&gt;Your App&lt;/title&gt;
+  &lt;/head&gt;
+  &lt;body&gt;
+    &lt;div id=&quot;root&quot;&gt;&lt;/div&gt;
+  &lt;/body&gt;
+&lt;/html&gt;</code></pre>
+<p>模板中可以通过 <code>context</code> 来获取到 umi 提供的变量，如</p>
+<ul>
+<li><code>route</code>：路由信息，需要打包出多个静态 HTML 时有效</li>
+<li><code>config</code>：用户配置信息</li>
+</ul>
+<pre><code class="html">&lt;link
+  rel=&quot;icon&quot;
+  type=&quot;image/x-icon&quot;
+  href=&quot;&lt;%= context.config.publicPath %&gt;favicon.png&quot;
+/&gt;&gt;</code></pre>
+</div></article><div class="post-copyright"><div class="post-copyright__author"><span class="post-copyright-meta">文章作者: </span><span class="post-copyright-info"><a href="mailto:undefined">koral</a></span></div><div class="post-copyright__type"><span class="post-copyright-meta">文章链接: </span><span class="post-copyright-info"><a href="http://luokaiii.github.io/2020/04/07/读书笔记/《Umijs》官方文档/3.页面跳转与HTML模板/">http://luokaiii.github.io/2020/04/07/读书笔记/《Umijs》官方文档/3.页面跳转与HTML模板/</a></span></div><div class="post-copyright__notice"><span class="post-copyright-meta">版权声明: </span><span class="post-copyright-info">本博客所有文章除特别声明外，均采用 <a href="https://creativecommons.org/licenses/by-nc-sa/4.0/">CC BY-NC-SA 4.0</a> 许可协议。转载请注明来自 <a href="http://luokaiii.github.io">凯</a>！</span></div></div><div class="post-meta__tag-list"><a class="post-meta__tags" href="/tags/hide/">hide</a><a class="post-meta__tags" href="/tags/Umijs/">Umijs</a></div><nav id="pagination"><div class="prev-post pull-left"><a href="/2020/04/07/读书笔记/《Umijs》官方文档/2.约定式路由/"><i class="fa fa-chevron-left">  </i><span>《Umijs》二、约定式路由</span></a></div><div class="next-post pull-right"><a href="/2020/04/07/读书笔记/《Umijs》官方文档/4.Mock数据/"><span>《Umijs》四、Mock数据</span><i class="fa fa-chevron-right"></i></a></div></nav></div></div><footer><div class="layout" id="footer"><div class="copyright">&copy;2013 - 2020 By koral</div><div class="framework-info"><span>驱动 - </span><a href="http://hexo.io"><span>Hexo</span></a><span class="footer-separator">|</span><span>主题 - </span><a href="https://github.com/Molunerfinn/hexo-theme-melody"><span>Melody</span></a></div><div class="busuanzi"><script async src="//busuanzi.ibruce.info/busuanzi/2.3/busuanzi.pure.mini.js"></script><span id="busuanzi_container_page_pv"><i class="fa fa-file"></i><span id="busuanzi_value_page_pv"></span><span></span></span></div></div></footer><i class="fa fa-arrow-up" id="go-up" aria-hidden="true"></i><script src="https://cdn.jsdelivr.net/npm/animejs@latest/anime.min.js"></script><script src="https://cdn.jsdelivr.net/npm/jquery@latest/dist/jquery.min.js"></script><script src="https://cdn.jsdelivr.net/npm/@fancyapps/fancybox@latest/dist/jquery.fancybox.min.js"></script><script src="https://cdn.jsdelivr.net/npm/velocity-animate@latest/velocity.min.js"></script><script src="https://cdn.jsdelivr.net/npm/velocity-ui-pack@latest/velocity.ui.min.js"></script><script src="/js/utils.js?version=1.7.0"></script><script src="/js/fancybox.js?version=1.7.0"></script><script src="/js/sidebar.js?version=1.7.0"></script><script src="/js/copy.js?version=1.7.0"></script><script src="/js/fireworks.js?version=1.7.0"></script><script src="/js/transition.js?version=1.7.0"></script><script src="/js/scroll.js?version=1.7.0"></script><script src="/js/head.js?version=1.7.0"></script><script>if(/Android|webOS|iPhone|iPod|iPad|BlackBerry/i.test(navigator.userAgent)) {
+  $('#nav').addClass('is-mobile')
+  $('footer').addClass('is-mobile')
+  $('#top-container').addClass('is-mobile')
+}</script></body></html>
