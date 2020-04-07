@@ -74,107 +74,6 @@
 </ol>
 </li>
 </ol>
-</div><hr></div><div class="recent-post-item article-container"><a class="article-title" href="/2019/08/05/读书笔记/《Jenkins》实战笔记/jenkins-react/">Jenkins 从零到有部署一个前端项目</a><time class="post-meta__date"><i class="fa fa-calendar" aria-hidden="true"></i> 2019-08-05</time><span class="article-meta"><span class="article-meta__separator">|</span><i class="fa fa-inbox article-meta__icon" aria-hidden="true"></i><a class="article-meta__categories" href="/categories/读书笔记/">读书笔记</a><i class="fa fa-angle-right" aria-hidden="true"></i><i class="fa fa-inbox article-meta__icon" aria-hidden="true"></i><a class="article-meta__categories" href="/categories/读书笔记/Jenkins部署/">Jenkins部署</a></span><span class="article-meta tags"><span class="article-meta__separator">|</span><i class="fa fa-tag article-meta__icon" aria-hidden="true"></i><a class="article-meta__tags" href="/tags/hide/">hide</a><span class="article-meta__link">-</span><i class="fa fa-tag article-meta__icon" aria-hidden="true"></i><a class="article-meta__tags" href="/tags/Jenkins部署/">Jenkins部署</a></span><div class="content"><h1 id="Jenkins-从零到有部署一个React项目"><a href="#Jenkins-从零到有部署一个React项目" class="headerlink" title="Jenkins 从零到有部署一个React项目"></a>Jenkins 从零到有部署一个React项目</h1><h2 id="一、下载并启动Jenkins"><a href="#一、下载并启动Jenkins" class="headerlink" title="一、下载并启动Jenkins"></a>一、下载并启动Jenkins</h2><p>从 <a href="https://jenkins.io/download/" target="_blank" rel="noopener">Jenkins 官网</a>下载所需的版本，这里使用 Docker 容器部署 Jenkins war(你也可以直接使用 <code>java -jar jenkins.war -httpPort=8080</code> 来启动，这样的话直接进入 [填写密码(锚点)](#1.  填写密码) 即可。)。</p>
-<blockquote>
-<p>注意：我们并没有使用 hub.docker.com 中提供的 jenkins/jenkins 这个镜像。因为我试了一下没装成功，哈哈。</p>
-</blockquote>
-<p>在 war 包的同级目录下，编写 Dockerfile，如下：</p>
-<pre><code class="dockerfile">FROM openjdk:8
-VOLUME /tmp
-COPY jenkins.war app.war
-ENTRYPOINT [&quot;java&quot;,&quot;-jar&quot;,&quot;app.war&quot;,&quot;--httpPort=8080&quot;]</code></pre>
-<p>构建 jenkins 镜像</p>
-<pre><code class="sh">#使用Dockerfile构建jenkins镜像
-docker build -t luokaiii.jenkins .</code></pre>
-<p>编写 jenkins 启动脚本， start.sh：</p>
-<pre><code class="sh">docker run \
-  --name luokaiii.jenkins \
-  -p 8080:8080 \
-  -p 50000:50000 \
-  -v jenkins_home:/var/jenkins_home \
-  -d luokaiii.jenkins</code></pre>
-<blockquote>
-<p>注意：1. 需要给 start.sh 文件授权，否则无法执行；2. 通过 -v 命令将jenkins文件挂载到本地；</p>
-</blockquote>
-<h2 id="二、环境初始化"><a href="#二、环境初始化" class="headerlink" title="二、环境初始化"></a>二、环境初始化</h2><h3 id="1-填写密码"><a href="#1-填写密码" class="headerlink" title="1.  填写密码"></a>1.  填写密码</h3><p>运行上面写的 start.sh 启动脚本，并打开 localhost:8080，稍等片刻就会提示我们输入初始密码。</p>
-<p>进入 jenkins 容器，<code>docker exec -it luokaiii.jenkins bash</code> （如果提示有误，则可以使用 container 的 id 来进入），找到位于 <code>/root/.jenkins/secrets/initialAdminPassword</code> 的密码并填写进入。</p>
-<h3 id="2-安装插件"><a href="#2-安装插件" class="headerlink" title="2. 安装插件"></a>2. 安装插件</h3><p>密码输入成功后，会提示我们选择需要安装的插件，这里我选择的是社区推荐插件。对于新入门的用户来说，推荐的往往够用了。</p>
-<p><img src="https://i.loli.net/2019/08/05/URXsYagSkyl96pP.png" alt="安装插件中..."></p>
-<p>在插件安装完成之后，我们需要加入以下额外的插件：</p>
-<ol>
-<li>Publish Over SSH     // 向服务器发送文件</li>
-<li>SSH         // 需要 SSH 来连接服务器</li>
-<li>Config File Provider</li>
-<li>NodeJS     // 因为我们的测试项目是使用 react 写的一个模拟项目，因此需要NodeJS 与 npm 进行编译</li>
-</ol>
-<blockquote>
-<p>添加插件的目录为：Manage Jenkins &gt; Manage Plugins &gt; 可选插件</p>
-</blockquote>
-<h3 id="3-新建一个管理员账户"><a href="#3-新建一个管理员账户" class="headerlink" title="3. 新建一个管理员账户"></a>3. 新建一个管理员账户</h3><p><img src="https://i.loli.net/2019/08/05/CYpL2sb3PlefOAi.png" alt="创建账户"></p>
-<p>ok，安装成功，进入我们的正题。</p>
-<p><img src="https://i.loli.net/2019/08/05/foPH29MNlGvrXsk.png" alt="欢迎来到 Jenkins"></p>
-<h2 id="三、使用-SSH-登录服务器"><a href="#三、使用-SSH-登录服务器" class="headerlink" title="三、使用 SSH 登录服务器"></a>三、使用 SSH 登录服务器</h2><p>配置 SSH Key 有两种方式，一种是在本地生成，然后将公钥发送至服务器；另一种是在服务器生成，将私钥拷贝至本地。(好像没啥区别啊)</p>
-<h3 id="1-在本地电脑生成-SSH"><a href="#1-在本地电脑生成-SSH" class="headerlink" title="1.  在本地电脑生成 SSH"></a>1.  在本地电脑生成 SSH</h3><ol>
-<li>打开命令行，生成ssh-key：<code>ssh-keygen -t rsa</code></li>
-<li>将ssh-key 发送至服务器：<code>ssh-copy-id -i ~/.ssh/id_rsa.pub root@xxx.xxx.xxx.xxx</code></li>
-<li>输入服务器密码，即可上传成功</li>
-<li>验证登录：<code>ssh root@xxx.xxx.xxx.xxx -i id_rsa</code> </li>
-<li>输入私钥的 password 即可</li>
-</ol>
-<h3 id="2-服务器端生成-SSH"><a href="#2-服务器端生成-SSH" class="headerlink" title="2.  服务器端生成 SSH"></a>2.  服务器端生成 SSH</h3><ol>
-<li>使用密码登录远程服务器</li>
-<li>执行命令 ssh-keygen ，输入文件地址、密码等信息，如名为 ssh_rsa</li>
-<li>将 生成的私钥拷贝出来，放到需要连接的电脑上(可以新建文件，把 ssh_rsa 的内容拷贝进去)</li>
-<li>重设本地文件的权限 chmod 0600 ssh_rsa</li>
-<li>开启 SSH Key 登录<ol>
-<li>在远程服务器中找到 /etc/ssh/sshd_config</li>
-<li>将以下两个参数设置为 on(默认为on)<ol>
-<li>RSAAuthentication on</li>
-<li>PubkeyAuthentication on</li>
-</ol>
-</li>
-</ol>
-</li>
-<li>关闭 密码 登录(可选，前提是你要确保之前的私钥备份好了，不然可就无法登陆了)<ol>
-<li>将 PasswordAuthentication 改为 no</li>
-</ol>
-</li>
-<li>测试使用 SSH Key 登录服务器<ol>
-<li>ssh <a href="mailto:root@xxx.xxx.xxx.xxx" target="_blank" rel="noopener">root@xxx.xxx.xxx.xxx</a> -p port -i ~/.ssh/id_rsa</li>
-<li>xxx.xxx.xxx.xxx 为服务器 ip 地址</li>
-<li>port 为服务器登录端口</li>
-<li>~/.ssh/id_rsa 为本地私钥地址</li>
-</ol>
-</li>
-</ol>
-<h2 id="四、配置SSH"><a href="#四、配置SSH" class="headerlink" title="四、配置SSH"></a>四、配置SSH</h2><p>进入 Manage Jenkins &gt;  Configure System，并作出以下两个修改：</p>
-<h3 id="1-SSH-remote-hosts"><a href="#1-SSH-remote-hosts" class="headerlink" title="1. SSH remote hosts"></a>1. SSH remote hosts</h3><p>配置远程服务器</p>
-<p><img src="https://i.loli.net/2019/08/05/ulX69MTxD1HFwYQ.png" alt="UTOOLS1564997986052.png"></p>
-<h3 id="2-Publish-over-SSH"><a href="#2-Publish-over-SSH" class="headerlink" title="2.Publish over SSH"></a>2.Publish over SSH</h3><p>配置推送文件时的服务器配置，使用 ssh key</p>
-<p><img src="C:%5CUsers%5Cuser%5CAppData%5CRoaming%5CTypora%5Ctypora-user-images%5C1564997904177.png" alt="1564997904177"></p>
-<h2 id="四、配置完整的任务"><a href="#四、配置完整的任务" class="headerlink" title="四、配置完整的任务"></a>四、配置完整的任务</h2><p>新建一个 <code>Freestyle project</code></p>
-<p><img src="http://img.pic35.com/uploads/allimg/170701/1-1FF11312380-L.jpg" alt="手动狗头"></p>
-<p>设置源码仓库地址，并添加用户名密码、或 SSHKey 的凭证</p>
-<p><img src="C:%5CUsers%5Cuser%5CAppData%5CRoaming%5CTypora%5Ctypora-user-images%5C1564996570789.png" alt="源码管理"></p>
-<p>构建前的环境配置，指定服务器地址、<a href>#NodeJS版本</a></p>
-<p><img src="https://i.loli.net/2019/08/05/MbAGENWmIod94rP.png" alt="构建环境"></p>
-<p>执行构建，并打印 Node 与 NPM 的版本，来确定是否安装成功；指定 npm 仓库为taobao镜像，并进行编译(react 编译后的文件放在 /build 下，其他语言参照各自特性而定)</p>
-<p><img src="https://i.loli.net/2019/08/05/XPuSnVHjb21pqG7.png" alt="构建"></p>
-<p>构建完成后，就是把生成的 build 目录发送至服务器指定目录了。如果您使用了 nginx 作了静态代理，则只需将 build 后的文件发送至该目录即可。</p>
-<p><img src="C:%5CUsers%5Cuser%5CAppData%5CRoaming%5CTypora%5Ctypora-user-images%5C1564996807629.png" alt="构建后操作"></p>
-<h2 id="五、测试是否正确安装及配置"><a href="#五、测试是否正确安装及配置" class="headerlink" title="五、测试是否正确安装及配置"></a>五、测试是否正确安装及配置</h2><h3 id="1-随便修改点文件，提交至github上"><a href="#1-随便修改点文件，提交至github上" class="headerlink" title="1. 随便修改点文件，提交至github上"></a>1. 随便修改点文件，提交至github上</h3><h3 id="2-点击立即构建"><a href="#2-点击立即构建" class="headerlink" title="2. 点击立即构建"></a>2. 点击立即构建</h3><p><img src="https://i.loli.net/2019/08/05/QlRNP3zxiLmOeJ6.png" alt="立即构建"></p>
-<h3 id="3-打开控制台输出，查看日志"><a href="#3-打开控制台输出，查看日志" class="headerlink" title="3. 打开控制台输出，查看日志"></a>3. 打开控制台输出，查看日志</h3><p>不出意外的话，控制台中会依次打印出一下日志(日志太长，这里就不贴了，仔细看一下应该都很好理解，也不是什么比较难的单词)</p>
-<ol>
-<li>git fetch –tags ….   // 从远程拉取代码</li>
-<li>node -v ； npm -v     // 打印的node版本</li>
-<li>npm  install –registry…    // 修改npm 镜像源</li>
-<li>npm run build        // 开始构建</li>
-<li>[SSH] executing post build script    // 连接并上传build目录</li>
-</ol>
-<h3 id="4-重新访问项目地址"><a href="#4-重新访问项目地址" class="headerlink" title="4. 重新访问项目地址"></a>4. 重新访问项目地址</h3></div><hr></div><div class="recent-post-item article-container"><a class="article-title" href="/2019/08/05/读书笔记/《Jenkins》实战笔记/jenkins/">《Jenkins》实战</a><span class="article-meta"><i class="fa fa-thumb-tack article-meta__icon sticky"></i><span class="sticky">置顶</span><span class="article-meta__separator" style="margin-right: 0.3rem">|</span></span><time class="post-meta__date"><i class="fa fa-calendar" aria-hidden="true"></i> 2019-08-05</time><span class="article-meta"><span class="article-meta__separator">|</span><i class="fa fa-inbox article-meta__icon" aria-hidden="true"></i><a class="article-meta__categories" href="/categories/读书笔记/">读书笔记</a><i class="fa fa-angle-right" aria-hidden="true"></i><i class="fa fa-inbox article-meta__icon" aria-hidden="true"></i><a class="article-meta__categories" href="/categories/读书笔记/Jenkins部署/">Jenkins部署</a></span><span class="article-meta tags"><span class="article-meta__separator">|</span><i class="fa fa-tag article-meta__icon" aria-hidden="true"></i><a class="article-meta__tags" href="/tags/Jenkins部署/">Jenkins部署</a></span><div class="content"><ul>
-<li><a href="/2019/08/05/读书笔记/《Jenkins》实战笔记/jenkins-react/index.html">Jenkins 部署 reactjs</a></li>
-<li><a href="/2019/08/05/读书笔记/《Jenkins》实战笔记/jenkins-springboot/index.html">Jenkins 部署 Java</a></li>
-</ul>
 </div><hr></div><div class="recent-post-item article-container"><a class="article-title" href="/2019/08/05/读书笔记/《Jenkins》实战笔记/jenkins-springboot/">Jenkins 从零到有部署一个Java项目</a><time class="post-meta__date"><i class="fa fa-calendar" aria-hidden="true"></i> 2019-08-05</time><span class="article-meta"><span class="article-meta__separator">|</span><i class="fa fa-inbox article-meta__icon" aria-hidden="true"></i><a class="article-meta__categories" href="/categories/读书笔记/">读书笔记</a><i class="fa fa-angle-right" aria-hidden="true"></i><i class="fa fa-inbox article-meta__icon" aria-hidden="true"></i><a class="article-meta__categories" href="/categories/读书笔记/Jenkins部署/">Jenkins部署</a></span><span class="article-meta tags"><span class="article-meta__separator">|</span><i class="fa fa-tag article-meta__icon" aria-hidden="true"></i><a class="article-meta__tags" href="/tags/hide/">hide</a><span class="article-meta__link">-</span><i class="fa fa-tag article-meta__icon" aria-hidden="true"></i><a class="article-meta__tags" href="/tags/Jenkins部署/">Jenkins部署</a></span><div class="content"><h1 id="Docker-Nginx-Jenkins-部署-SpringBoot-Jar"><a href="#Docker-Nginx-Jenkins-部署-SpringBoot-Jar" class="headerlink" title="Docker + Nginx + Jenkins 部署 SpringBoot Jar"></a>Docker + Nginx + Jenkins 部署 SpringBoot Jar</h1><p>本文能解决的问题：</p>
 <ol>
 <li>如何使用Docker 部署Jenkins</li>
@@ -332,6 +231,107 @@ server {
 <blockquote>
 <p>最后提一下我为什么会写两种构建方式，因为我先用步骤 四4 中的构建时，1M (上行才100多k，T_T)小水管发一个 jar 包快二十分钟了。所以想到同服务器还是直接拷贝的比较好。</p>
 </blockquote>
+</div><hr></div><div class="recent-post-item article-container"><a class="article-title" href="/2019/08/05/读书笔记/《Jenkins》实战笔记/jenkins-react/">Jenkins 从零到有部署一个前端项目</a><time class="post-meta__date"><i class="fa fa-calendar" aria-hidden="true"></i> 2019-08-05</time><span class="article-meta"><span class="article-meta__separator">|</span><i class="fa fa-inbox article-meta__icon" aria-hidden="true"></i><a class="article-meta__categories" href="/categories/读书笔记/">读书笔记</a><i class="fa fa-angle-right" aria-hidden="true"></i><i class="fa fa-inbox article-meta__icon" aria-hidden="true"></i><a class="article-meta__categories" href="/categories/读书笔记/Jenkins部署/">Jenkins部署</a></span><span class="article-meta tags"><span class="article-meta__separator">|</span><i class="fa fa-tag article-meta__icon" aria-hidden="true"></i><a class="article-meta__tags" href="/tags/hide/">hide</a><span class="article-meta__link">-</span><i class="fa fa-tag article-meta__icon" aria-hidden="true"></i><a class="article-meta__tags" href="/tags/Jenkins部署/">Jenkins部署</a></span><div class="content"><h1 id="Jenkins-从零到有部署一个React项目"><a href="#Jenkins-从零到有部署一个React项目" class="headerlink" title="Jenkins 从零到有部署一个React项目"></a>Jenkins 从零到有部署一个React项目</h1><h2 id="一、下载并启动Jenkins"><a href="#一、下载并启动Jenkins" class="headerlink" title="一、下载并启动Jenkins"></a>一、下载并启动Jenkins</h2><p>从 <a href="https://jenkins.io/download/" target="_blank" rel="noopener">Jenkins 官网</a>下载所需的版本，这里使用 Docker 容器部署 Jenkins war(你也可以直接使用 <code>java -jar jenkins.war -httpPort=8080</code> 来启动，这样的话直接进入 [填写密码(锚点)](#1.  填写密码) 即可。)。</p>
+<blockquote>
+<p>注意：我们并没有使用 hub.docker.com 中提供的 jenkins/jenkins 这个镜像。因为我试了一下没装成功，哈哈。</p>
+</blockquote>
+<p>在 war 包的同级目录下，编写 Dockerfile，如下：</p>
+<pre><code class="dockerfile">FROM openjdk:8
+VOLUME /tmp
+COPY jenkins.war app.war
+ENTRYPOINT [&quot;java&quot;,&quot;-jar&quot;,&quot;app.war&quot;,&quot;--httpPort=8080&quot;]</code></pre>
+<p>构建 jenkins 镜像</p>
+<pre><code class="sh">#使用Dockerfile构建jenkins镜像
+docker build -t luokaiii.jenkins .</code></pre>
+<p>编写 jenkins 启动脚本， start.sh：</p>
+<pre><code class="sh">docker run \
+  --name luokaiii.jenkins \
+  -p 8080:8080 \
+  -p 50000:50000 \
+  -v jenkins_home:/var/jenkins_home \
+  -d luokaiii.jenkins</code></pre>
+<blockquote>
+<p>注意：1. 需要给 start.sh 文件授权，否则无法执行；2. 通过 -v 命令将jenkins文件挂载到本地；</p>
+</blockquote>
+<h2 id="二、环境初始化"><a href="#二、环境初始化" class="headerlink" title="二、环境初始化"></a>二、环境初始化</h2><h3 id="1-填写密码"><a href="#1-填写密码" class="headerlink" title="1.  填写密码"></a>1.  填写密码</h3><p>运行上面写的 start.sh 启动脚本，并打开 localhost:8080，稍等片刻就会提示我们输入初始密码。</p>
+<p>进入 jenkins 容器，<code>docker exec -it luokaiii.jenkins bash</code> （如果提示有误，则可以使用 container 的 id 来进入），找到位于 <code>/root/.jenkins/secrets/initialAdminPassword</code> 的密码并填写进入。</p>
+<h3 id="2-安装插件"><a href="#2-安装插件" class="headerlink" title="2. 安装插件"></a>2. 安装插件</h3><p>密码输入成功后，会提示我们选择需要安装的插件，这里我选择的是社区推荐插件。对于新入门的用户来说，推荐的往往够用了。</p>
+<p><img src="https://i.loli.net/2019/08/05/URXsYagSkyl96pP.png" alt="安装插件中..."></p>
+<p>在插件安装完成之后，我们需要加入以下额外的插件：</p>
+<ol>
+<li>Publish Over SSH     // 向服务器发送文件</li>
+<li>SSH         // 需要 SSH 来连接服务器</li>
+<li>Config File Provider</li>
+<li>NodeJS     // 因为我们的测试项目是使用 react 写的一个模拟项目，因此需要NodeJS 与 npm 进行编译</li>
+</ol>
+<blockquote>
+<p>添加插件的目录为：Manage Jenkins &gt; Manage Plugins &gt; 可选插件</p>
+</blockquote>
+<h3 id="3-新建一个管理员账户"><a href="#3-新建一个管理员账户" class="headerlink" title="3. 新建一个管理员账户"></a>3. 新建一个管理员账户</h3><p><img src="https://i.loli.net/2019/08/05/CYpL2sb3PlefOAi.png" alt="创建账户"></p>
+<p>ok，安装成功，进入我们的正题。</p>
+<p><img src="https://i.loli.net/2019/08/05/foPH29MNlGvrXsk.png" alt="欢迎来到 Jenkins"></p>
+<h2 id="三、使用-SSH-登录服务器"><a href="#三、使用-SSH-登录服务器" class="headerlink" title="三、使用 SSH 登录服务器"></a>三、使用 SSH 登录服务器</h2><p>配置 SSH Key 有两种方式，一种是在本地生成，然后将公钥发送至服务器；另一种是在服务器生成，将私钥拷贝至本地。(好像没啥区别啊)</p>
+<h3 id="1-在本地电脑生成-SSH"><a href="#1-在本地电脑生成-SSH" class="headerlink" title="1.  在本地电脑生成 SSH"></a>1.  在本地电脑生成 SSH</h3><ol>
+<li>打开命令行，生成ssh-key：<code>ssh-keygen -t rsa</code></li>
+<li>将ssh-key 发送至服务器：<code>ssh-copy-id -i ~/.ssh/id_rsa.pub root@xxx.xxx.xxx.xxx</code></li>
+<li>输入服务器密码，即可上传成功</li>
+<li>验证登录：<code>ssh root@xxx.xxx.xxx.xxx -i id_rsa</code> </li>
+<li>输入私钥的 password 即可</li>
+</ol>
+<h3 id="2-服务器端生成-SSH"><a href="#2-服务器端生成-SSH" class="headerlink" title="2.  服务器端生成 SSH"></a>2.  服务器端生成 SSH</h3><ol>
+<li>使用密码登录远程服务器</li>
+<li>执行命令 ssh-keygen ，输入文件地址、密码等信息，如名为 ssh_rsa</li>
+<li>将 生成的私钥拷贝出来，放到需要连接的电脑上(可以新建文件，把 ssh_rsa 的内容拷贝进去)</li>
+<li>重设本地文件的权限 chmod 0600 ssh_rsa</li>
+<li>开启 SSH Key 登录<ol>
+<li>在远程服务器中找到 /etc/ssh/sshd_config</li>
+<li>将以下两个参数设置为 on(默认为on)<ol>
+<li>RSAAuthentication on</li>
+<li>PubkeyAuthentication on</li>
+</ol>
+</li>
+</ol>
+</li>
+<li>关闭 密码 登录(可选，前提是你要确保之前的私钥备份好了，不然可就无法登陆了)<ol>
+<li>将 PasswordAuthentication 改为 no</li>
+</ol>
+</li>
+<li>测试使用 SSH Key 登录服务器<ol>
+<li>ssh <a href="mailto:root@xxx.xxx.xxx.xxx" target="_blank" rel="noopener">root@xxx.xxx.xxx.xxx</a> -p port -i ~/.ssh/id_rsa</li>
+<li>xxx.xxx.xxx.xxx 为服务器 ip 地址</li>
+<li>port 为服务器登录端口</li>
+<li>~/.ssh/id_rsa 为本地私钥地址</li>
+</ol>
+</li>
+</ol>
+<h2 id="四、配置SSH"><a href="#四、配置SSH" class="headerlink" title="四、配置SSH"></a>四、配置SSH</h2><p>进入 Manage Jenkins &gt;  Configure System，并作出以下两个修改：</p>
+<h3 id="1-SSH-remote-hosts"><a href="#1-SSH-remote-hosts" class="headerlink" title="1. SSH remote hosts"></a>1. SSH remote hosts</h3><p>配置远程服务器</p>
+<p><img src="https://i.loli.net/2019/08/05/ulX69MTxD1HFwYQ.png" alt="UTOOLS1564997986052.png"></p>
+<h3 id="2-Publish-over-SSH"><a href="#2-Publish-over-SSH" class="headerlink" title="2.Publish over SSH"></a>2.Publish over SSH</h3><p>配置推送文件时的服务器配置，使用 ssh key</p>
+<p><img src="C:%5CUsers%5Cuser%5CAppData%5CRoaming%5CTypora%5Ctypora-user-images%5C1564997904177.png" alt="1564997904177"></p>
+<h2 id="四、配置完整的任务"><a href="#四、配置完整的任务" class="headerlink" title="四、配置完整的任务"></a>四、配置完整的任务</h2><p>新建一个 <code>Freestyle project</code></p>
+<p><img src="http://img.pic35.com/uploads/allimg/170701/1-1FF11312380-L.jpg" alt="手动狗头"></p>
+<p>设置源码仓库地址，并添加用户名密码、或 SSHKey 的凭证</p>
+<p><img src="C:%5CUsers%5Cuser%5CAppData%5CRoaming%5CTypora%5Ctypora-user-images%5C1564996570789.png" alt="源码管理"></p>
+<p>构建前的环境配置，指定服务器地址、<a href>#NodeJS版本</a></p>
+<p><img src="https://i.loli.net/2019/08/05/MbAGENWmIod94rP.png" alt="构建环境"></p>
+<p>执行构建，并打印 Node 与 NPM 的版本，来确定是否安装成功；指定 npm 仓库为taobao镜像，并进行编译(react 编译后的文件放在 /build 下，其他语言参照各自特性而定)</p>
+<p><img src="https://i.loli.net/2019/08/05/XPuSnVHjb21pqG7.png" alt="构建"></p>
+<p>构建完成后，就是把生成的 build 目录发送至服务器指定目录了。如果您使用了 nginx 作了静态代理，则只需将 build 后的文件发送至该目录即可。</p>
+<p><img src="C:%5CUsers%5Cuser%5CAppData%5CRoaming%5CTypora%5Ctypora-user-images%5C1564996807629.png" alt="构建后操作"></p>
+<h2 id="五、测试是否正确安装及配置"><a href="#五、测试是否正确安装及配置" class="headerlink" title="五、测试是否正确安装及配置"></a>五、测试是否正确安装及配置</h2><h3 id="1-随便修改点文件，提交至github上"><a href="#1-随便修改点文件，提交至github上" class="headerlink" title="1. 随便修改点文件，提交至github上"></a>1. 随便修改点文件，提交至github上</h3><h3 id="2-点击立即构建"><a href="#2-点击立即构建" class="headerlink" title="2. 点击立即构建"></a>2. 点击立即构建</h3><p><img src="https://i.loli.net/2019/08/05/QlRNP3zxiLmOeJ6.png" alt="立即构建"></p>
+<h3 id="3-打开控制台输出，查看日志"><a href="#3-打开控制台输出，查看日志" class="headerlink" title="3. 打开控制台输出，查看日志"></a>3. 打开控制台输出，查看日志</h3><p>不出意外的话，控制台中会依次打印出一下日志(日志太长，这里就不贴了，仔细看一下应该都很好理解，也不是什么比较难的单词)</p>
+<ol>
+<li>git fetch –tags ….   // 从远程拉取代码</li>
+<li>node -v ； npm -v     // 打印的node版本</li>
+<li>npm  install –registry…    // 修改npm 镜像源</li>
+<li>npm run build        // 开始构建</li>
+<li>[SSH] executing post build script    // 连接并上传build目录</li>
+</ol>
+<h3 id="4-重新访问项目地址"><a href="#4-重新访问项目地址" class="headerlink" title="4. 重新访问项目地址"></a>4. 重新访问项目地址</h3></div><hr></div><div class="recent-post-item article-container"><a class="article-title" href="/2019/08/05/读书笔记/《Jenkins》实战笔记/jenkins/">《Jenkins》实战</a><span class="article-meta"><i class="fa fa-thumb-tack article-meta__icon sticky"></i><span class="sticky">置顶</span><span class="article-meta__separator" style="margin-right: 0.3rem">|</span></span><time class="post-meta__date"><i class="fa fa-calendar" aria-hidden="true"></i> 2019-08-05</time><span class="article-meta"><span class="article-meta__separator">|</span><i class="fa fa-inbox article-meta__icon" aria-hidden="true"></i><a class="article-meta__categories" href="/categories/读书笔记/">读书笔记</a><i class="fa fa-angle-right" aria-hidden="true"></i><i class="fa fa-inbox article-meta__icon" aria-hidden="true"></i><a class="article-meta__categories" href="/categories/读书笔记/Jenkins部署/">Jenkins部署</a></span><span class="article-meta tags"><span class="article-meta__separator">|</span><i class="fa fa-tag article-meta__icon" aria-hidden="true"></i><a class="article-meta__tags" href="/tags/Jenkins部署/">Jenkins部署</a></span><div class="content"><ul>
+<li><a href="/2019/08/05/读书笔记/《Jenkins》实战笔记/jenkins-react/index.html">Jenkins 部署 reactjs</a></li>
+<li><a href="/2019/08/05/读书笔记/《Jenkins》实战笔记/jenkins-springboot/index.html">Jenkins 部署 Java</a></li>
+</ul>
 </div><hr></div><div class="recent-post-item article-container"><a class="article-title" href="/2019/07/24/读书笔记/《SpringSecurity》/22.ExpressionControl/">《Spring Security》第二十二章 Expression-Based Access Control - 基于表达式的访问控制</a><time class="post-meta__date"><i class="fa fa-calendar" aria-hidden="true"></i> 2019-07-24</time><span class="article-meta"><span class="article-meta__separator">|</span><i class="fa fa-inbox article-meta__icon" aria-hidden="true"></i><a class="article-meta__categories" href="/categories/读书笔记/">读书笔记</a><i class="fa fa-angle-right" aria-hidden="true"></i><i class="fa fa-inbox article-meta__icon" aria-hidden="true"></i><a class="article-meta__categories" href="/categories/读书笔记/Spring-Security/">Spring Security</a></span><span class="article-meta tags"><span class="article-meta__separator">|</span><i class="fa fa-tag article-meta__icon" aria-hidden="true"></i><a class="article-meta__tags" href="/tags/hide/">hide</a><span class="article-meta__link">-</span><i class="fa fa-tag article-meta__icon" aria-hidden="true"></i><a class="article-meta__tags" href="/tags/Spring-Security/">Spring Security</a></span><div class="content"><h1 id="第二十二章-Expression-Based-Access-Control-基于表达式的访问控制"><a href="#第二十二章-Expression-Based-Access-Control-基于表达式的访问控制" class="headerlink" title="第二十二章 Expression-Based Access Control - 基于表达式的访问控制"></a>第二十二章 Expression-Based Access Control - 基于表达式的访问控制</h1><p>Spring Security 使用 SpringEL 作为表达式支持。</p>
 <h2 id="一、常用的内置表达式"><a href="#一、常用的内置表达式" class="headerlink" title="一、常用的内置表达式"></a>一、常用的内置表达式</h2><table>
 <thead>

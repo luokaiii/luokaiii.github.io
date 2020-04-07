@@ -92,6 +92,14 @@ class ApplicationConfiguration {
 <p>以上是 Spring Data 的公共基础部分，再往下就是 MongoDBFactory 等的底层实现了。才疏学浅，看不下去啊。就到这里吧，第八章。</p>
 </blockquote>
 <p>文章总结于：<a href="https://docs.spring.io/spring-data/mongodb/docs/current/reference/html/#dependencies.spring-framework" target="_blank" rel="noopener">https://docs.spring.io/spring-data/mongodb/docs/current/reference/html/#dependencies.spring-framework</a></p>
+</div><hr></div><div class="recent-post-item article-container"><a class="article-title" href="/2018/09/01/分布式/SpringCloud/微服务重构/">SpringCloud-微服务重构</a><time class="post-meta__date"><i class="fa fa-calendar" aria-hidden="true"></i> 2018-09-01</time><span class="article-meta"><span class="article-meta__separator">|</span><i class="fa fa-inbox article-meta__icon" aria-hidden="true"></i><a class="article-meta__categories" href="/categories/Java/">Java</a></span><span class="article-meta tags"><span class="article-meta__separator">|</span><i class="fa fa-tag article-meta__icon" aria-hidden="true"></i><a class="article-meta__tags" href="/tags/hide/">hide</a><span class="article-meta__link">-</span><i class="fa fa-tag article-meta__icon" aria-hidden="true"></i><a class="article-meta__tags" href="/tags/Spring-Cloud/">Spring Cloud</a></span><div class="content"><h1 id="微服务重构"><a href="#微服务重构" class="headerlink" title="微服务重构"></a>微服务重构</h1><p>在重构应用中，可以通过以下几个方法梳理：</p>
+<ol>
+<li>每个 Rest 服务都是一个潜在的微服务</li>
+<li>每个 SOAP web 服务或 EJB 都是一个潜在的微服务</li>
+<li>使用领域驱动设计(domain-driven design)发现企业资产，这些资产可能是微服务。</li>
+</ol>
+<p>在<strong>重构数据</strong>方面，需要考虑以下几个方面：(1)<strong>寻找与其他数据关联不大的数据孤岛</strong>，检查系统的实体-关系图；如果有与其他数据断开的数据，就是一个潜在的数据重构点；(2)<strong>数据表非规范化</strong>，对高规范化数据库中非规范化一些数据表以将数据重组为更大的逻辑块，其目的是增加数据冗余度使其更容易被打破；(3)<strong>反向批数据更新</strong>，对数据重构时需要考虑数据重构失败时可批量地将新数据反向导回旧的数据模式；(4)<strong>使用主数据管理</strong>，对被广泛使用的数据实体组成一个单一的一致性视图，并开发相应的微服务与主数据一起工作；(5)在 SQL 数据库中<strong>寻找存储在 BLOB(二进制大对象)字段</strong>类型中的代码，转而将这些对象存储在 NoSQL 数据库中，例如以键值(Key-value)存储方式存储；(6)寻找活跃的记录模式，与其他无关的 Flat 对象，使用文档模式数据库进行存储，例如 Cloudant 或 Mongo 等。</p>
+<p>微服务重构后还需要<strong>重新打包应用</strong>，包括：(1)<strong>分割应用的 EAR 文件</strong>并打包成独立的 WAR 文件；(2)应用“<strong>一个容器一个服务</strong>”，分别部署每个 WAR 文件至其自有的 WebSphereLiberty 实例运行时或 Docker 容器中；(3)<strong>分别构建、部署和管理</strong>,为每个 WAR 文件使用独立的 DevOps 管线,每个 WAR 文件独立伸缩和管理。</p>
 </div><hr></div><div class="recent-post-item article-container"><a class="article-title" href="/2018/09/01/后端/POI/POI生成原生Excel-簇状柱状图/">使用POI结合Excel的生成簇状柱状图</a><time class="post-meta__date"><i class="fa fa-calendar" aria-hidden="true"></i> 2018-09-01</time><span class="article-meta"><span class="article-meta__separator">|</span><i class="fa fa-inbox article-meta__icon" aria-hidden="true"></i><a class="article-meta__categories" href="/categories/后端/">后端</a><i class="fa fa-angle-right" aria-hidden="true"></i><i class="fa fa-inbox article-meta__icon" aria-hidden="true"></i><a class="article-meta__categories" href="/categories/后端/POI/">POI</a></span><span class="article-meta tags"><span class="article-meta__separator">|</span><i class="fa fa-tag article-meta__icon" aria-hidden="true"></i><a class="article-meta__tags" href="/tags/hide/">hide</a><span class="article-meta__link">-</span><i class="fa fa-tag article-meta__icon" aria-hidden="true"></i><a class="article-meta__tags" href="/tags/POI/">POI</a></span><div class="content"><h1 id="使用POI结合Excel的行列生成原生散点图-XY图"><a href="#使用POI结合Excel的行列生成原生散点图-XY图" class="headerlink" title="使用POI结合Excel的行列生成原生散点图(XY图)"></a>使用POI结合Excel的行列生成原生散点图(XY图)</h1><h2 id="一、先放最后输出的结果图："><a href="#一、先放最后输出的结果图：" class="headerlink" title="一、先放最后输出的结果图："></a>一、先放最后输出的结果图：</h2><p><img src="https://koral-home.oss-cn-beijing.aliyuncs.com/blog/ScatterChart.png" alt="雷达图"></p>
 <h2 id="二、代码"><a href="#二、代码" class="headerlink" title="二、代码"></a>二、代码</h2><pre><code class="java">@Test
 public void createScatterChart() throws IOException {
@@ -496,209 +504,7 @@ public void createScatterChart() throws IOException {
   &lt;char:dispBlanksAs val=&quot;gap&quot;/&gt;
   &lt;char:showDLblsOverMax val=&quot;false&quot;/&gt;
 &lt;/xml-fragment&gt;</code></pre>
-<h2 id="四、工具类，我放在-POI生成原生图表-工具类-中"><a href="#四、工具类，我放在-POI生成原生图表-工具类-中" class="headerlink" title="四、工具类，我放在 POI生成原生图表-工具类 中"></a>四、工具类，我放在 <a href="www.baidu.com">POI生成原生图表-工具类</a> 中</h2></div><hr></div><div class="recent-post-item article-container"><a class="article-title" href="/2018/09/01/后端/POI/POI生成原生Excel-散点图/">使用POI结合Excel的行列生成原生散点图(XY图)</a><time class="post-meta__date"><i class="fa fa-calendar" aria-hidden="true"></i> 2018-09-01</time><span class="article-meta"><span class="article-meta__separator">|</span><i class="fa fa-inbox article-meta__icon" aria-hidden="true"></i><a class="article-meta__categories" href="/categories/后端/">后端</a><i class="fa fa-angle-right" aria-hidden="true"></i><i class="fa fa-inbox article-meta__icon" aria-hidden="true"></i><a class="article-meta__categories" href="/categories/后端/POI/">POI</a></span><span class="article-meta tags"><span class="article-meta__separator">|</span><i class="fa fa-tag article-meta__icon" aria-hidden="true"></i><a class="article-meta__tags" href="/tags/hide/">hide</a><span class="article-meta__link">-</span><i class="fa fa-tag article-meta__icon" aria-hidden="true"></i><a class="article-meta__tags" href="/tags/POI/">POI</a></span><div class="content"><h2 id="一、先放最后输出的结果图："><a href="#一、先放最后输出的结果图：" class="headerlink" title="一、先放最后输出的结果图："></a>一、先放最后输出的结果图：</h2><p><img src="https://koral-home.oss-cn-beijing.aliyuncs.com/blog/ScatterChart.png" alt="雷达图"></p>
-<h2 id="二、代码"><a href="#二、代码" class="headerlink" title="二、代码"></a>二、代码</h2><pre><code class="java">@Test
-public void createScatterChart() throws IOException {
-    XSSFWorkbook wb = new XSSFWorkbook();
-    XSSFSheet sheet = wb.createSheet(&quot;散点图&quot;);
-
-    Row row;
-    Cell cell;
-    for (int r = 0; r &lt; 105; r++) {
-        row = sheet.createRow(r);
-        cell = row.createCell(0);
-        cell.setCellValue(&quot;S&quot; + r);
-        cell = row.createCell(1);
-        cell.setCellValue(RandomUtils.nextInt(1,100));
-    }
-
-    XSSFDrawing drawing = sheet.createDrawingPatriarch();
-    ClientAnchor anchor = drawing.createAnchor(0, 0, 0, 0, 0, 0, 21, 40);
-
-    XSSFChart chart = drawing.createChart(anchor);
-
-    chart.setTitleText(&quot;预选赛项目得分分布图&quot;);
-    chart.setAutoTitleDeleted(false);
-
-    CTChart ctChart = chart.getCTChart();
-    ctChart.addNewPlotVisOnly().setVal(true);
-    ctChart.addNewDispBlanksAs().setVal(STDispBlanksAs.Enum.forInt(2));
-    ctChart.addNewShowDLblsOverMax().setVal(false);
-
-    // 创建一个散点图
-    CTPlotArea ctPlotArea = ctChart.getPlotArea();
-
-    CTScatterChart scatterChart = ctPlotArea.addNewScatterChart();
-    scatterChart.addNewScatterStyle().setVal(STScatterStyle.LINE_MARKER);
-    scatterChart.addNewVaryColors().setVal(false); // 不允许自定义颜色
-    scatterChart.addNewAxId().setVal(123456);
-    scatterChart.addNewAxId().setVal(123457);
-
-    CTCatAx ctCatAx = ctPlotArea.addNewCatAx();
-    ctCatAx.addNewAxId().setVal(123456);
-    CTScaling ctScaling = ctCatAx.addNewScaling();
-    ctScaling.addNewOrientation().setVal(MIN_MAX);
-    ctCatAx.addNewDelete().setVal(false);
-    ctCatAx.addNewAxPos().setVal(STAxPos.B);
-    ctCatAx.addNewCrossAx().setVal(123457);
-    ctCatAx.addNewTickLblPos().setVal(NEXT_TO);
-
-    // 设置Y坐标
-    CTValAx ctValAx = ctPlotArea.addNewValAx();
-    ctValAx.addNewAxId().setVal(123457);
-    CTScaling ctScaling1 = ctValAx.addNewScaling();
-    ctScaling1.addNewOrientation().setVal(MIN_MAX);
-    ctValAx.addNewDelete().setVal(false);
-    ctValAx.addNewAxPos().setVal(STAxPos.B);
-    ctValAx.addNewCrossAx().setVal(123456);
-    // Y轴的对比线
-    CTShapeProperties ctShapeProperties = ctValAx.addNewMajorGridlines().addNewSpPr();
-    CTLineProperties ctLineProperties = ctShapeProperties.addNewLn();
-    ctLineProperties.setW(9525);
-    ctLineProperties.setCap(STLineCap.Enum.forInt(3));
-    ctLineProperties.setCmpd(STCompoundLine.Enum.forInt(1));
-    ctLineProperties.setAlgn(STPenAlignment.Enum.forInt(1));
-    // 不显示Y轴上的坐标刻度线
-    ctValAx.addNewMajorTickMark().setVal(STTickMark.NONE);
-    ctValAx.addNewMinorTickMark().setVal(STTickMark.NONE);
-    ctValAx.addNewTickLblPos().setVal(NEXT_TO);
-
-    // 设置散点图内的信息
-    CTScatterSer ctScatterSer = scatterChart.addNewSer();
-    ctScatterSer.addNewIdx().setVal(0);
-    ctScatterSer.addNewOrder().setVal(0);
-    // 去掉连接线
-    ctPlotArea.getScatterChartArray(0).getSerArray(0).addNewSpPr().addNewLn().addNewNoFill();
-
-    // 设置散点图各图例的显示
-    CTDLbls ctdLbls = scatterChart.addNewDLbls();
-    ctdLbls.addNewShowVal().setVal(true);
-    ctdLbls.addNewShowLegendKey().setVal(false);
-    ctdLbls.addNewShowSerName().setVal(false);
-    ctdLbls.addNewShowCatName().setVal(false);
-    ctdLbls.addNewShowPercent().setVal(false);
-    ctdLbls.addNewShowBubbleSize().setVal(false);
-    // 设置标记的样式
-    CTMarker ctMarker = ctScatterSer.addNewMarker();
-    ctMarker.addNewSymbol().setVal(STMarkerStyle.Enum.forInt(3));
-    ctMarker.addNewSize().setVal((short) 5);
-    CTShapeProperties ctShapeProperties1 = ctMarker.addNewSpPr();
-    ctShapeProperties1.addNewSolidFill().addNewSchemeClr().setVal(STSchemeColorVal.Enum.forInt(5));
-    CTLineProperties ctLineProperties1 = ctShapeProperties1.addNewLn();
-    ctLineProperties1.setW(9525);
-    ctLineProperties1.addNewSolidFill().addNewSchemeClr().setVal(STSchemeColorVal.Enum.forInt(5));
-
-    CTAxDataSource ctAxDataSource = ctScatterSer.addNewXVal();
-    CTStrRef ctStrRef = ctAxDataSource.addNewStrRef();
-    ctStrRef.setF(&quot;散点图!$A$1:$A$100&quot;);
-    CTNumDataSource ctNumDataSource = ctScatterSer.addNewYVal();
-    CTNumRef ctNumRef = ctNumDataSource.addNewNumRef();
-    ctNumRef.setF(&quot;散点图!$B$1:$B$100&quot;);
-
-    System.out.println(ctChart);
-
-    FileOutputStream fileOut = new FileOutputStream(&quot;C:\\Users\\user\\Desktop\\out.xlsx&quot;);
-    wb.write(fileOut);
-    fileOut.close();
-}</code></pre>
-<h2 id="三、XML-结构"><a href="#三、XML-结构" class="headerlink" title="三、XML 结构"></a>三、XML 结构</h2><p>以上生成的图表，归根结底是属于 XML 的一种，通过 <code>Chart</code> 的继承关系可以看到，它其实是 <code>XmlObject</code>的一种实现。</p>
-<pre><code class="xml">&lt;xml-fragment xmlns:char=&quot;http://schemas.openxmlformats.org/drawingml/2006/chart&quot; xmlns:main=&quot;http://schemas.openxmlformats.org/drawingml/2006/main&quot;&gt;
-  &lt;char:title&gt;
-    &lt;char:tx&gt;
-      &lt;char:rich&gt;
-        &lt;main:bodyPr/&gt;
-        &lt;main:p&gt;
-          &lt;main:r&gt;
-            &lt;main:t&gt;预选赛项目得分分布图&lt;/main:t&gt;
-          &lt;/main:r&gt;
-        &lt;/main:p&gt;
-      &lt;/char:rich&gt;
-    &lt;/char:tx&gt;
-  &lt;/char:title&gt;
-  &lt;char:autoTitleDeleted val=&quot;false&quot;/&gt;
-  &lt;char:plotArea&gt;
-    &lt;char:layout/&gt;
-    &lt;char:scatterChart&gt;
-      &lt;char:scatterStyle val=&quot;lineMarker&quot;/&gt;
-      &lt;char:varyColors val=&quot;false&quot;/&gt;
-      &lt;char:ser&gt;
-        &lt;char:idx val=&quot;0&quot;/&gt;
-        &lt;char:order val=&quot;0&quot;/&gt;
-        &lt;char:spPr&gt;
-          &lt;main:ln&gt;
-            &lt;main:noFill/&gt;
-          &lt;/main:ln&gt;
-        &lt;/char:spPr&gt;
-        &lt;char:marker&gt;
-          &lt;char:symbol val=&quot;diamond&quot;/&gt;
-          &lt;char:size val=&quot;5&quot;/&gt;
-          &lt;char:spPr&gt;
-            &lt;main:solidFill&gt;
-              &lt;main:schemeClr val=&quot;accent1&quot;/&gt;
-            &lt;/main:solidFill&gt;
-            &lt;main:ln w=&quot;9525&quot;&gt;
-              &lt;main:solidFill&gt;
-                &lt;main:schemeClr val=&quot;accent1&quot;/&gt;
-              &lt;/main:solidFill&gt;
-            &lt;/main:ln&gt;
-          &lt;/char:spPr&gt;
-        &lt;/char:marker&gt;
-        &lt;char:xVal&gt;
-          &lt;char:strRef&gt;
-            &lt;char:f&gt;散点图!$A$1:$A$100&lt;/char:f&gt;
-          &lt;/char:strRef&gt;
-        &lt;/char:xVal&gt;
-        &lt;char:yVal&gt;
-          &lt;char:numRef&gt;
-            &lt;char:f&gt;散点图!$B$1:$B$100&lt;/char:f&gt;
-          &lt;/char:numRef&gt;
-        &lt;/char:yVal&gt;
-      &lt;/char:ser&gt;
-      &lt;char:dLbls&gt;
-        &lt;char:showLegendKey val=&quot;false&quot;/&gt;
-        &lt;char:showVal val=&quot;true&quot;/&gt;
-        &lt;char:showCatName val=&quot;false&quot;/&gt;
-        &lt;char:showSerName val=&quot;false&quot;/&gt;
-        &lt;char:showPercent val=&quot;false&quot;/&gt;
-        &lt;char:showBubbleSize val=&quot;false&quot;/&gt;
-      &lt;/char:dLbls&gt;
-      &lt;char:axId val=&quot;123456&quot;/&gt;
-      &lt;char:axId val=&quot;123457&quot;/&gt;
-    &lt;/char:scatterChart&gt;
-    &lt;char:catAx&gt;
-      &lt;char:axId val=&quot;123456&quot;/&gt;
-      &lt;char:scaling&gt;
-        &lt;char:orientation val=&quot;minMax&quot;/&gt;
-      &lt;/char:scaling&gt;
-      &lt;char:delete val=&quot;false&quot;/&gt;
-      &lt;char:axPos val=&quot;b&quot;/&gt;
-      &lt;char:tickLblPos val=&quot;nextTo&quot;/&gt;
-      &lt;char:crossAx val=&quot;123457&quot;/&gt;
-    &lt;/char:catAx&gt;
-    &lt;char:valAx&gt;
-      &lt;char:axId val=&quot;123457&quot;/&gt;
-      &lt;char:scaling&gt;
-        &lt;char:orientation val=&quot;minMax&quot;/&gt;
-      &lt;/char:scaling&gt;
-      &lt;char:delete val=&quot;false&quot;/&gt;
-      &lt;char:axPos val=&quot;b&quot;/&gt;
-      &lt;char:majorGridlines&gt;
-        &lt;char:spPr&gt;
-          &lt;main:ln w=&quot;9525&quot; cap=&quot;flat&quot; cmpd=&quot;sng&quot; algn=&quot;ctr&quot;/&gt;
-        &lt;/char:spPr&gt;
-      &lt;/char:majorGridlines&gt;
-      &lt;char:majorTickMark val=&quot;none&quot;/&gt;
-      &lt;char:minorTickMark val=&quot;none&quot;/&gt;
-      &lt;char:tickLblPos val=&quot;nextTo&quot;/&gt;
-      &lt;char:crossAx val=&quot;123456&quot;/&gt;
-    &lt;/char:valAx&gt;
-  &lt;/char:plotArea&gt;
-  &lt;char:plotVisOnly val=&quot;true&quot;/&gt;
-  &lt;char:plotVisOnly val=&quot;true&quot;/&gt;
-  &lt;char:dispBlanksAs val=&quot;gap&quot;/&gt;
-  &lt;char:showDLblsOverMax val=&quot;false&quot;/&gt;
-&lt;/xml-fragment&gt;</code></pre>
-<h2 id="四、工具类，我放在-POI-生成原生图表-工具类-中"><a href="#四、工具类，我放在-POI-生成原生图表-工具类-中" class="headerlink" title="四、工具类，我放在 POI 生成原生图表-工具类 中"></a>四、工具类，我放在 <a href="www.baidu.com">POI 生成原生图表-工具类</a> 中</h2></div><hr></div><div class="recent-post-item article-container"><a class="article-title" href="/2018/09/01/后端/POI/POI生成Excel-基础生成/">使用POI导出Excel</a><time class="post-meta__date"><i class="fa fa-calendar" aria-hidden="true"></i> 2018-09-01</time><span class="article-meta"><span class="article-meta__separator">|</span><i class="fa fa-inbox article-meta__icon" aria-hidden="true"></i><a class="article-meta__categories" href="/categories/后端/">后端</a><i class="fa fa-angle-right" aria-hidden="true"></i><i class="fa fa-inbox article-meta__icon" aria-hidden="true"></i><a class="article-meta__categories" href="/categories/后端/POI/">POI</a></span><span class="article-meta tags"><span class="article-meta__separator">|</span><i class="fa fa-tag article-meta__icon" aria-hidden="true"></i><a class="article-meta__tags" href="/tags/hide/">hide</a><span class="article-meta__link">-</span><i class="fa fa-tag article-meta__icon" aria-hidden="true"></i><a class="article-meta__tags" href="/tags/POI/">POI</a></span><div class="content"><h2 id="一、引入-POI4-0-的包"><a href="#一、引入-POI4-0-的包" class="headerlink" title="一、引入 POI4.0 的包"></a>一、引入 POI4.0 的包</h2><pre><code class="xml">&lt;dependency&gt;
+<h2 id="四、工具类，我放在-POI生成原生图表-工具类-中"><a href="#四、工具类，我放在-POI生成原生图表-工具类-中" class="headerlink" title="四、工具类，我放在 POI生成原生图表-工具类 中"></a>四、工具类，我放在 <a href="www.baidu.com">POI生成原生图表-工具类</a> 中</h2></div><hr></div><div class="recent-post-item article-container"><a class="article-title" href="/2018/09/01/后端/POI/POI生成Excel-基础生成/">使用POI导出Excel</a><time class="post-meta__date"><i class="fa fa-calendar" aria-hidden="true"></i> 2018-09-01</time><span class="article-meta"><span class="article-meta__separator">|</span><i class="fa fa-inbox article-meta__icon" aria-hidden="true"></i><a class="article-meta__categories" href="/categories/后端/">后端</a><i class="fa fa-angle-right" aria-hidden="true"></i><i class="fa fa-inbox article-meta__icon" aria-hidden="true"></i><a class="article-meta__categories" href="/categories/后端/POI/">POI</a></span><span class="article-meta tags"><span class="article-meta__separator">|</span><i class="fa fa-tag article-meta__icon" aria-hidden="true"></i><a class="article-meta__tags" href="/tags/hide/">hide</a><span class="article-meta__link">-</span><i class="fa fa-tag article-meta__icon" aria-hidden="true"></i><a class="article-meta__tags" href="/tags/POI/">POI</a></span><div class="content"><h2 id="一、引入-POI4-0-的包"><a href="#一、引入-POI4-0-的包" class="headerlink" title="一、引入 POI4.0 的包"></a>一、引入 POI4.0 的包</h2><pre><code class="xml">&lt;dependency&gt;
     &lt;groupId&gt;org.apache.poi&lt;/groupId&gt;
     &lt;artifactId&gt;poi&lt;/artifactId&gt;
     &lt;version&gt;4.0.1&lt;/version&gt;
@@ -777,362 +583,599 @@ public void generate() throws IOException {
 <p>通过以上代码可以看出，POI 操作 Excel 其实就是在操作 Row(行) 和 Col(列)，其数据可以抽象为一个 <code>二维数组</code>，只需要对二维数组进行遍历，即可渲染 Excel 数据。</p>
 </blockquote>
 <p>具体的方法工具类，<a href="www.baidu.com">贴在这里</a></p>
-</div><hr></div><div class="recent-post-item article-container"><a class="article-title" href="/2018/09/01/分布式/SpringCloud/微服务重构/">SpringCloud-微服务重构</a><time class="post-meta__date"><i class="fa fa-calendar" aria-hidden="true"></i> 2018-09-01</time><span class="article-meta"><span class="article-meta__separator">|</span><i class="fa fa-inbox article-meta__icon" aria-hidden="true"></i><a class="article-meta__categories" href="/categories/Java/">Java</a></span><span class="article-meta tags"><span class="article-meta__separator">|</span><i class="fa fa-tag article-meta__icon" aria-hidden="true"></i><a class="article-meta__tags" href="/tags/hide/">hide</a><span class="article-meta__link">-</span><i class="fa fa-tag article-meta__icon" aria-hidden="true"></i><a class="article-meta__tags" href="/tags/Spring-Cloud/">Spring Cloud</a></span><div class="content"><h1 id="微服务重构"><a href="#微服务重构" class="headerlink" title="微服务重构"></a>微服务重构</h1><p>在重构应用中，可以通过以下几个方法梳理：</p>
-<ol>
-<li>每个 Rest 服务都是一个潜在的微服务</li>
-<li>每个 SOAP web 服务或 EJB 都是一个潜在的微服务</li>
-<li>使用领域驱动设计(domain-driven design)发现企业资产，这些资产可能是微服务。</li>
-</ol>
-<p>在<strong>重构数据</strong>方面，需要考虑以下几个方面：(1)<strong>寻找与其他数据关联不大的数据孤岛</strong>，检查系统的实体-关系图；如果有与其他数据断开的数据，就是一个潜在的数据重构点；(2)<strong>数据表非规范化</strong>，对高规范化数据库中非规范化一些数据表以将数据重组为更大的逻辑块，其目的是增加数据冗余度使其更容易被打破；(3)<strong>反向批数据更新</strong>，对数据重构时需要考虑数据重构失败时可批量地将新数据反向导回旧的数据模式；(4)<strong>使用主数据管理</strong>，对被广泛使用的数据实体组成一个单一的一致性视图，并开发相应的微服务与主数据一起工作；(5)在 SQL 数据库中<strong>寻找存储在 BLOB(二进制大对象)字段</strong>类型中的代码，转而将这些对象存储在 NoSQL 数据库中，例如以键值(Key-value)存储方式存储；(6)寻找活跃的记录模式，与其他无关的 Flat 对象，使用文档模式数据库进行存储，例如 Cloudant 或 Mongo 等。</p>
-<p>微服务重构后还需要<strong>重新打包应用</strong>，包括：(1)<strong>分割应用的 EAR 文件</strong>并打包成独立的 WAR 文件；(2)应用“<strong>一个容器一个服务</strong>”，分别部署每个 WAR 文件至其自有的 WebSphereLiberty 实例运行时或 Docker 容器中；(3)<strong>分别构建、部署和管理</strong>,为每个 WAR 文件使用独立的 DevOps 管线,每个 WAR 文件独立伸缩和管理。</p>
 </div><hr></div><div class="recent-post-item article-container"><a class="article-title" href="/2018/09/01/分布式/SpringCloud/全链路监控/">待学习</a><time class="post-meta__date"><i class="fa fa-calendar" aria-hidden="true"></i> 2018-09-01</time><span class="article-meta"><span class="article-meta__separator">|</span><i class="fa fa-inbox article-meta__icon" aria-hidden="true"></i><a class="article-meta__categories" href="/categories/Java/">Java</a></span><span class="article-meta tags"><span class="article-meta__separator">|</span><i class="fa fa-tag article-meta__icon" aria-hidden="true"></i><a class="article-meta__tags" href="/tags/hide/">hide</a></span><div class="content"><h1 id="待学习博客"><a href="#待学习博客" class="headerlink" title="待学习博客"></a>待学习博客</h1><p><a href="https://juejin.im/post/5a7a9e0af265da4e914b46f1" target="_blank" rel="noopener">全链路监控</a></p>
-</div><hr></div><div class="recent-post-item article-container"><a class="article-title" href="/2018/09/01/后端/POI/POI生成原生Excel-雷达图/">使用POI结合Excel的行列生成雷达图</a><time class="post-meta__date"><i class="fa fa-calendar" aria-hidden="true"></i> 2018-09-01</time><span class="article-meta"><span class="article-meta__separator">|</span><i class="fa fa-inbox article-meta__icon" aria-hidden="true"></i><a class="article-meta__categories" href="/categories/后端/">后端</a><i class="fa fa-angle-right" aria-hidden="true"></i><i class="fa fa-inbox article-meta__icon" aria-hidden="true"></i><a class="article-meta__categories" href="/categories/后端/POI/">POI</a></span><span class="article-meta tags"><span class="article-meta__separator">|</span><i class="fa fa-tag article-meta__icon" aria-hidden="true"></i><a class="article-meta__tags" href="/tags/hide/">hide</a><span class="article-meta__link">-</span><i class="fa fa-tag article-meta__icon" aria-hidden="true"></i><a class="article-meta__tags" href="/tags/POI/">POI</a></span><div class="content"><h2 id="一、先放最后输出的结果图："><a href="#一、先放最后输出的结果图：" class="headerlink" title="一、先放最后输出的结果图："></a>一、先放最后输出的结果图：</h2><p><img src="https://koral-home.oss-cn-beijing.aliyuncs.com/blog/RadarChart.png" alt="雷达图"></p>
-<h2 id="二、代码"><a href="#二、代码" class="headerlink" title="二、代码"></a>二、代码</h2><pre><code class="java">    @Test
-    public void createRadar() throws IOException {
-        final String sheetName = &quot;RadarChart&quot;;
-        try (XSSFWorkbook workbook = new XSSFWorkbook()) {
-            XSSFSheet sheet = workbook.createSheet(sheetName);
+</div><hr></div><div class="recent-post-item article-container"><a class="article-title" href="/2018/09/01/后端/POI/POI生成Excel-图表生成/">POI+XChart图形报告</a><time class="post-meta__date"><i class="fa fa-calendar" aria-hidden="true"></i> 2018-09-01</time><span class="article-meta"><span class="article-meta__separator">|</span><i class="fa fa-inbox article-meta__icon" aria-hidden="true"></i><a class="article-meta__categories" href="/categories/后端/">后端</a><i class="fa fa-angle-right" aria-hidden="true"></i><i class="fa fa-inbox article-meta__icon" aria-hidden="true"></i><a class="article-meta__categories" href="/categories/后端/POI/">POI</a></span><span class="article-meta tags"><span class="article-meta__separator">|</span><i class="fa fa-tag article-meta__icon" aria-hidden="true"></i><a class="article-meta__tags" href="/tags/hide/">hide</a><span class="article-meta__link">-</span><i class="fa fa-tag article-meta__icon" aria-hidden="true"></i><a class="article-meta__tags" href="/tags/POI/">POI</a></span><div class="content"><h1 id="POI-XChart-图形报告"><a href="#POI-XChart-图形报告" class="headerlink" title="POI+XChart 图形报告"></a>POI+XChart 图形报告</h1><h2 id="一、基础示例，写入-Excel"><a href="#一、基础示例，写入-Excel" class="headerlink" title="一、基础示例，写入 Excel"></a>一、基础示例，写入 Excel</h2><p>生成一个图形，并将其写入 Excel 中。</p>
+<pre><code class="java">@Test
+public void generate() throws IOException {
+    String filePath = &quot;C:\\Users\\user\\Desktop\\first.xlsx&quot;;
+    double[] xData = new double[]{0.0, 1.0, 2.0};
+    double[] yData = new double[]{2.0, 1.0, 0.0};
 
-            for (int i = 0; i &lt; 16; i++) {
-                XSSFRow row = sheet.createRow(i);
-                XSSFCell cell = row.createCell(0);
-                cell.setCellValue(i + &quot;行&quot;);
-                XSSFCell cell1 = row.createCell(1);
-                cell1.setCellValue(RandomUtils.nextInt(0, 20));
-            }
+    // Create Chart
+    XYChart chart = QuickChart.getChart(&quot;Sample Chart&quot;, &quot;X&quot;, &quot;Y&quot;, &quot;y(x)&quot;, xData, yData);
+    // 将图表转换为byte数组
+    byte[] bytes = BitmapEncoder.getBitmapBytes(chart, BitmapEncoder.BitmapFormat.PNG);
 
-            XSSFDrawing drawing = sheet.createDrawingPatriarch();
-            XSSFClientAnchor anchor = drawing.createAnchor(0, 0, 0, 0, 2, 0, 7, 16);
-            XSSFChart chart = drawing.createChart(anchor);
+    try (XSSFWorkbook workbook = new XSSFWorkbook();
+         ByteArrayInputStream inputStream = new ByteArrayInputStream(bytes);
+         FileOutputStream outputStream = new FileOutputStream(filePath)) {
+        // 创建Excel
+        XSSFSheet sheet = workbook.createSheet(&quot;图表&quot;);
 
-            CTChart ctChart = chart.getCTChart();
-            ctChart.addNewAutoTitleDeleted().setVal(false);
-//            ctChart.addNewPlotVisOnly().setVal(true);
-//            ctChart.addNewDispBlanksAs().setVal(STDispBlanksAs.GAP);
-//            ctChart.addNewShowDLblsOverMax().setVal(false);
+        // 写入Excel的指定位置
+        XSSFDrawing shapes = sheet.createDrawingPatriarch();
+        XSSFClientAnchor anchor = new XSSFClientAnchor(0, 0, 0, 0, 0, 0, 6, 10);
+        shapes.createPicture(anchor, sheet.getWorkbook().addPicture(inputStream, HSSFWorkbook.PICTURE_TYPE_PNG));
 
-            CTPlotArea ctPlotArea = ctChart.addNewPlotArea();
-            ctPlotArea.addNewLayout();
-//            CTShapeProperties ctShapeProperties = ctPlotArea.addNewSpPr();
-//            ctShapeProperties.addNewNoFill();
-//            ctShapeProperties.addNewLn().addNewNoFill();
-//            ctShapeProperties.addNewEffectLst();
+        // 将Excel写到文件中
+        workbook.write(outputStream);
+    }
+}</code></pre>
+<p><img src="https://images.gitee.com/uploads/images/2019/0121/180421_34b56169_1872936.png" alt="生成的基础图片"></p>
+<blockquote>
+<p>上面我们演示了如何<code>将 XChart生成的图片导入 Excel</code>，下面的部分，都会将生成的图形导出为图片，如果需要导入 Excel 的话，只需要将 chart 套入第一章即可。</p>
+</blockquote>
+<h2 id="二、将生成的图形导出成为图片"><a href="#二、将生成的图形导出成为图片" class="headerlink" title="二、将生成的图形导出成为图片"></a>二、将生成的图形导出成为图片</h2><p>获取随机数的方法也是通用的，这里先给出，具体的数据应该根据业务而定：</p>
+<pre><code class="java">/**
+     * 获取随机数
+     * @param numPoints 随机的数量
+     * @return 随机数组
+     */
+    private double[] getRandomWalk(int numPoints) {
 
-            CTRadarChart ctRadarChart = ctPlotArea.addNewRadarChart();
-            // 这两个值应该对应着catAx和valAx
-            ctRadarChart.addNewAxId().setVal(123456);
-            ctRadarChart.addNewAxId().setVal(123457);
-            // 分类标签等是否显示
-            CTDLbls ctdLbls = ctRadarChart.addNewDLbls();
-            ctdLbls.addNewShowLegendKey().setVal(false);
-            ctdLbls.addNewShowVal().setVal(false);
-            ctdLbls.addNewShowCatName().setVal(false);
-            ctdLbls.addNewShowSerName().setVal(false);
-            ctdLbls.addNewShowPercent().setVal(false);
-            ctdLbls.addNewShowBubbleSize().setVal(false);
-            // 不允许自定义颜色、以及标记的形状
-            ctRadarChart.addNewRadarStyle().setVal(STRadarStyle.MARKER);
-            ctRadarChart.addNewVaryColors().setVal(false);
-
-            CTRadarSer ctRadarSer = ctRadarChart.addNewSer();
-            ctRadarSer.addNewIdx().setVal(0);
-            ctRadarSer.addNewOrder().setVal(0);
-            CTLineProperties ctLineProperties = ctRadarSer.addNewSpPr().addNewLn();
-            ctLineProperties.addNewRound();
-            ctLineProperties.addNewSolidFill().addNewSchemeClr().setVal(STSchemeColorVal.ACCENT_1);
-            // 渲染数据
-            ctRadarSer.addNewCat().addNewStrRef().setF(sheetName + &quot;!$A$1:$A$6&quot;);
-            ctRadarSer.addNewVal().addNewNumRef().setF(sheetName + &quot;!$B$2:$B$6&quot;);
-
-            CTCatAx ctCatAx = ctPlotArea.addNewCatAx();
-            ctCatAx.addNewAxId().setVal(123456);
-            ctCatAx.addNewScaling().addNewOrientation().setVal(MIN_MAX);
-            ctCatAx.addNewDelete().setVal(false);
-            ctCatAx.addNewAxPos().setVal(STAxPos.B);
-            ctCatAx.addNewCrossAx().setVal(123457);
-            ctCatAx.addNewMajorTickMark().setVal(STTickMark.NONE);
-            ctCatAx.addNewMinorTickMark().setVal(STTickMark.NONE);
-            ctCatAx.addNewTickLblPos().setVal(NEXT_TO);
-//            ctCatAx.addNewCrosses().setVal(STCrosses.AUTO_ZERO);
-//            ctCatAx.addNewAuto().setVal(true);
-//            ctCatAx.addNewLblAlgn().setVal(STLblAlgn.CTR);
-//            ctCatAx.addNewLblOffset().setVal(100);
-//            ctCatAx.addNewNoMultiLvlLbl().setVal(false);
-            // spPr
-//            CTShapeProperties ctShapeProperties = ctCatAx.addNewSpPr();
-//            ctShapeProperties.addNewNoFill();
-//            ctShapeProperties.addNewEffectLst();
-//            CTLineProperties ctLineProperties1 = ctShapeProperties.addNewLn();
-//            ctLineProperties1.setW(9525);
-//            ctLineProperties1.setCap(STLineCap.FLAT);
-//            ctLineProperties1.setCmpd(STCompoundLine.SNG);
-//            ctLineProperties1.setAlgn(STPenAlignment.CTR);
-//            CTSchemeColor ctSchemeColor = ctLineProperties1.addNewSolidFill().addNewSchemeClr();
-//            ctSchemeColor.setVal(STSchemeColorVal.TX_1);
-//            ctSchemeColor.addNewLumMod().setVal(15000);
-//            ctSchemeColor.addNewLumOff().setVal(85000);
-            // txPr
-//            CTTextBody ctTextBody = ctCatAx.addNewTxPr();
-//            CTTextCharacterProperties ctTextCharacterProperties = ctTextBody.addNewP().addNewPPr().addNewDefRPr();
-//            ctTextCharacterProperties.setU(STTextUnderlineType.NONE);
-//            ctTextCharacterProperties.setStrike(STTextStrikeType.NO_STRIKE);
-//            ctTextCharacterProperties.setSz(900);
-//            ctTextCharacterProperties.setB(false);
-//            ctTextCharacterProperties.setI(false);
-//            ctTextCharacterProperties.setBaseline(0);
-//            ctTextCharacterProperties.setKern(1200);
-//            CTSchemeColor ctSchemeColor = ctTextCharacterProperties.addNewSolidFill().addNewSchemeClr();
-//            ctSchemeColor.setVal(STSchemeColorVal.TX_1);
-//            ctSchemeColor.addNewLumMod().setVal(65000);
-//            ctSchemeColor.addNewLumOff().setVal(35000);
-
-
-            CTValAx ctValAx = ctPlotArea.addNewValAx();
-            ctValAx.addNewAxId().setVal(123457);
-            ctValAx.addNewScaling().addNewOrientation().setVal(MIN_MAX);
-            ctValAx.addNewDelete().setVal(false);
-            ctValAx.addNewAxPos().setVal(STAxPos.L);
-            ctValAx.addNewCrossAx().setVal(123456);
-            ctValAx.addNewMajorTickMark().setVal(STTickMark.NONE);
-            ctValAx.addNewMinorTickMark().setVal(STTickMark.NONE);
-            ctValAx.addNewTickLblPos().setVal(NEXT_TO);
-//            ctValAx.addNewCrosses().setVal(STCrosses.AUTO_ZERO);
-//            ctValAx.addNewCrossBetween().setVal(STCrossBetween.BETWEEN);
-            // 设置网格线
-            CTShapeProperties ctShapeProperties = ctValAx.addNewMajorGridlines().addNewSpPr();
-            CTLineProperties ctLineProperties1 = ctShapeProperties.addNewLn();
-            ctLineProperties1.setW(9525);
-            ctLineProperties1.setCap(STLineCap.FLAT);
-            ctLineProperties1.setCmpd(STCompoundLine.SNG);
-            ctLineProperties1.setAlgn(STPenAlignment.CTR);
-            // 值的纵坐标线，不显示
-            ctValAx.addNewSpPr().addNewLn().addNewNoFill();
-            // 值的纵坐标值，不显示
-            ctValAx.addNewTxPr().addNewP().addNewPPr().addNewDefRPr().addNewNoFill();
-
-            System.out.println(ctChart);
-
-            FileOutputStream outputStream =
-                    new FileOutputStream(&quot;C:\\Users\\user\\Desktop\\out.xlsx&quot;);
-            workbook.write(outputStream);
-            outputStream.flush();
-            outputStream.close();
+        double[] y = new double[numPoints];
+        y[0] = 0;
+        for (int i = 1; i &lt; y.length; i++) {
+            y[i] = y[i - 1] + Math.random() - .5;
         }
+        return y;
     }</code></pre>
-<h2 id="三、XML-结构"><a href="#三、XML-结构" class="headerlink" title="三、XML 结构"></a>三、XML 结构</h2><p>以上生成的图表，归根结底是属于 XML 的一种，通过 <code>RadarChart</code> 的继承关系可以看到，它其实是 <code>XmlObject</code>的一种实现。</p>
-<pre><code class="xml">&lt;xml-fragment xmlns:char=&quot;http://schemas.openxmlformats.org/drawingml/2006/chart&quot; xmlns:main=&quot;http://schemas.openxmlformats.org/drawingml/2006/main&quot;&gt;
-  &lt;char:autoTitleDeleted val=&quot;false&quot;/&gt;
-  &lt;char:plotArea&gt;
-    &lt;char:layout/&gt;
-  &lt;/char:plotArea&gt;
-  &lt;char:plotArea&gt;
-    &lt;char:layout/&gt;
-    &lt;char:radarChart&gt;
-      &lt;char:radarStyle val=&quot;marker&quot;/&gt;
-      &lt;char:varyColors val=&quot;false&quot;/&gt;
-      &lt;char:ser&gt;
-        &lt;char:idx val=&quot;0&quot;/&gt;
-        &lt;char:order val=&quot;0&quot;/&gt;
-        &lt;char:spPr&gt;
-          &lt;main:ln&gt;
-            &lt;main:solidFill&gt;
-              &lt;main:schemeClr val=&quot;accent1&quot;/&gt;
-            &lt;/main:solidFill&gt;
-            &lt;main:round/&gt;
-          &lt;/main:ln&gt;
-        &lt;/char:spPr&gt;
-        &lt;char:cat&gt;
-          &lt;char:strRef&gt;
-            &lt;char:f&gt;RadarChart!$A$1:$A$6&lt;/char:f&gt;
-          &lt;/char:strRef&gt;
-        &lt;/char:cat&gt;
-        &lt;char:val&gt;
-          &lt;char:numRef&gt;
-            &lt;char:f&gt;RadarChart!$B$2:$B$6&lt;/char:f&gt;
-          &lt;/char:numRef&gt;
-        &lt;/char:val&gt;
-      &lt;/char:ser&gt;
-      &lt;char:dLbls&gt;
-        &lt;char:showLegendKey val=&quot;false&quot;/&gt;
-        &lt;char:showVal val=&quot;false&quot;/&gt;
-        &lt;char:showCatName val=&quot;false&quot;/&gt;
-        &lt;char:showSerName val=&quot;false&quot;/&gt;
-        &lt;char:showPercent val=&quot;false&quot;/&gt;
-        &lt;char:showBubbleSize val=&quot;false&quot;/&gt;
-      &lt;/char:dLbls&gt;
-      &lt;char:axId val=&quot;123456&quot;/&gt;
-      &lt;char:axId val=&quot;123457&quot;/&gt;
-    &lt;/char:radarChart&gt;
-    &lt;char:catAx&gt;
-      &lt;char:axId val=&quot;123456&quot;/&gt;
-      &lt;char:scaling&gt;
-        &lt;char:orientation val=&quot;minMax&quot;/&gt;
-      &lt;/char:scaling&gt;
-      &lt;char:delete val=&quot;false&quot;/&gt;
-      &lt;char:axPos val=&quot;b&quot;/&gt;
-      &lt;char:majorTickMark val=&quot;none&quot;/&gt;
-      &lt;char:minorTickMark val=&quot;none&quot;/&gt;
-      &lt;char:tickLblPos val=&quot;nextTo&quot;/&gt;
-      &lt;char:crossAx val=&quot;123457&quot;/&gt;
-    &lt;/char:catAx&gt;
-    &lt;char:valAx&gt;
-      &lt;char:axId val=&quot;123457&quot;/&gt;
-      &lt;char:scaling&gt;
-        &lt;char:orientation val=&quot;minMax&quot;/&gt;
-      &lt;/char:scaling&gt;
-      &lt;char:delete val=&quot;false&quot;/&gt;
-      &lt;char:axPos val=&quot;l&quot;/&gt;
-      &lt;char:majorGridlines&gt;
-        &lt;char:spPr&gt;
-          &lt;main:ln w=&quot;9525&quot; cap=&quot;flat&quot; cmpd=&quot;sng&quot; algn=&quot;ctr&quot;/&gt;
-        &lt;/char:spPr&gt;
-      &lt;/char:majorGridlines&gt;
-      &lt;char:majorTickMark val=&quot;none&quot;/&gt;
-      &lt;char:minorTickMark val=&quot;none&quot;/&gt;
-      &lt;char:tickLblPos val=&quot;nextTo&quot;/&gt;
-      &lt;char:spPr&gt;
-        &lt;main:ln&gt;
-          &lt;main:noFill/&gt;
-        &lt;/main:ln&gt;
-      &lt;/char:spPr&gt;
-      &lt;char:txPr&gt;
-        &lt;main:p&gt;
-          &lt;main:pPr&gt;
-            &lt;main:defRPr&gt;
-              &lt;main:noFill/&gt;
-            &lt;/main:defRPr&gt;
-          &lt;/main:pPr&gt;
-        &lt;/main:p&gt;
-      &lt;/char:txPr&gt;
-      &lt;char:crossAx val=&quot;123456&quot;/&gt;
-    &lt;/char:valAx&gt;
-  &lt;/char:plotArea&gt;
-  &lt;char:plotVisOnly val=&quot;true&quot;/&gt;
-&lt;/xml-fragment&gt;</code></pre>
-<h2 id="四、工具类，我放在-POI-生成原生图表-工具类-中"><a href="#四、工具类，我放在-POI-生成原生图表-工具类-中" class="headerlink" title="四、工具类，我放在 POI 生成原生图表-工具类 中"></a>四、工具类，我放在 <a href="www.baidu.com">POI 生成原生图表-工具类</a> 中</h2></div><hr></div><div class="recent-post-item article-container"><a class="article-title" href="/2018/09/01/读书笔记/《SpringData》/MongoDB/Spring-Data-MongoDB（3）/">SpringDataMongoDB(三)</a><time class="post-meta__date"><i class="fa fa-calendar" aria-hidden="true"></i> 2018-09-01</time><span class="article-meta"><span class="article-meta__separator">|</span><i class="fa fa-inbox article-meta__icon" aria-hidden="true"></i><a class="article-meta__categories" href="/categories/读书笔记/">读书笔记</a><i class="fa fa-angle-right" aria-hidden="true"></i><i class="fa fa-inbox article-meta__icon" aria-hidden="true"></i><a class="article-meta__categories" href="/categories/读书笔记/Spring-Data-MongoDB/">Spring Data MongoDB</a></span><span class="article-meta tags"><span class="article-meta__separator">|</span><i class="fa fa-tag article-meta__icon" aria-hidden="true"></i><a class="article-meta__tags" href="/tags/hide/">hide</a><span class="article-meta__link">-</span><i class="fa fa-tag article-meta__icon" aria-hidden="true"></i><a class="article-meta__tags" href="/tags/Spring-Data-MongoDB/">Spring Data MongoDB</a></span><div class="content"><h1 id="Spring-Data-MongoDB-（三）-自定义converter"><a href="#Spring-Data-MongoDB-（三）-自定义converter" class="headerlink" title="Spring Data MongoDB （三） 自定义converter"></a>Spring Data MongoDB （三） 自定义converter</h1><pre><code class="java">package com.pgc.diagnose.config;
+<h3 id="折线图"><a href="#折线图" class="headerlink" title="折线图"></a>折线图</h3><pre><code class="java">@Test
+public void generate() throws IOException {
+    String filePath = &quot;C:\\Users\\user\\Desktop\\first.png&quot;;
 
-import com.mongodb.MongoClient;
-import org.springframework.beans.factory.annotation.Autowired;
-import org.springframework.beans.factory.annotation.Value;
-import org.springframework.boot.autoconfigure.EnableAutoConfiguration;
-import org.springframework.boot.autoconfigure.mongo.embedded.EmbeddedMongoAutoConfiguration;
-import org.springframework.context.annotation.Configuration;
-import org.springframework.context.annotation.Profile;
-import org.springframework.core.convert.converter.Converter;
-import org.springframework.data.convert.ReadingConverter;
-import org.springframework.data.mongodb.config.AbstractMongoConfiguration;
-import org.springframework.data.mongodb.core.convert.CustomConversions;
+    XYChart chart = new XYChartBuilder().xAxisTitle(&quot;X&quot;).yAxisTitle(&quot;Y&quot;).width(600).height(400).build();
+    chart.getStyler().setYAxisMin(-10.0);
+    chart.getStyler().setYAxisMax(10.0);
+    XYSeries series = chart.addSeries(&quot;新绿&quot;, null, getRandomWalk(200));
+    series.setMarker(SeriesMarkers.NONE);
 
-import java.util.ArrayList;
+    BitmapEncoder.saveBitmap(chart, filePath, BitmapEncoder.BitmapFormat.PNG);
+}</code></pre>
+<p>效果如下：</p>
+<p><img src="https://images.gitee.com/uploads/images/2019/0121/181356_e145341d_1872936.png" alt="输入图片说明" title="屏幕截图.png"></p>
+<h2 id="面积图"><a href="#面积图" class="headerlink" title="面积图"></a>面积图</h2><pre><code class="java">@Test
+public void generate() throws IOException {
+    String filePath = &quot;C:\\Users\\user\\Desktop\\first.png&quot;;
+
+    // Create Chart
+    XYChart chart = new XYChartBuilder().width(800).height(600).title(getClass().getSimpleName()).xAxisTitle(&quot;X&quot;).yAxisTitle(&quot;Y&quot;).build();
+
+    // Customize Chart
+    chart.getStyler().setLegendPosition(Styler.LegendPosition.InsideNE);
+    chart.getStyler().setAxisTitlesVisible(false);
+    chart.getStyler().setDefaultSeriesRenderStyle(XYSeries.XYSeriesRenderStyle.Area);
+
+    // Series
+    chart.addSeries(&quot;a&quot;, new double[] { 0, 3, 5, 7, 9 }, new double[] { -3, 5, 9, 6, 5 });
+    chart.addSeries(&quot;b&quot;, new double[] { 0, 2, 4, 6, 9 }, new double[] { -1, 6, 4, 0, 4 });
+    chart.addSeries(&quot;c&quot;, new double[] { 0, 1, 3, 8, 9 }, new double[] { -2, -1, 1, 0, 1 });
+
+    BitmapEncoder.saveBitmap(chart, filePath, BitmapEncoder.BitmapFormat.PNG);
+}</code></pre>
+<p><img src="https://images.gitee.com/uploads/images/2019/0121/182136_bba89ebf_1872936.png" alt="面积图" title="屏幕截图.png"></p>
+<h2 id="饼状图"><a href="#饼状图" class="headerlink" title="饼状图"></a>饼状图</h2><pre><code class="java">@Test
+public void generate() throws IOException {
+    String filePath = &quot;C:\\Users\\user\\Desktop\\first.png&quot;;
+
+    PieChart chart = new PieChartBuilder().width(800).height(600).title(getClass().getSimpleName()).build();
+
+    // Customize Chart
+    Color[] sliceColors = new Color[] { new Color(224, 68, 14), new Color(230, 105, 62), new Color(236, 143, 110), new Color(243, 180, 159), new Color(246, 199, 182) };
+    chart.getStyler().setSeriesColors(sliceColors);
+
+    // Series
+    chart.addSeries(&quot;Gold&quot;, 24);
+    chart.addSeries(&quot;Silver&quot;, 21);
+    chart.addSeries(&quot;Platinum&quot;, 39);
+    chart.addSeries(&quot;Copper&quot;, 17);
+    chart.addSeries(&quot;Zinc&quot;, 40);
+
+    BitmapEncoder.saveBitmap(chart, filePath, BitmapEncoder.BitmapFormat.PNG);
+}</code></pre>
+<p><img src="https://koral-home.oss-cn-beijing.aliyuncs.com/bignzhuang.png" alt="饼状图"></p>
+<h2 id="散点图"><a href="#散点图" class="headerlink" title="散点图"></a>散点图</h2><pre><code class="java">@Test
+public void generate() throws IOException {
+    String filePath = &quot;C:\\Users\\user\\Desktop\\first.png&quot;;
+
+    // Create Chart
+    XYChart chart = new XYChartBuilder().width(800).height(600).build();
+
+    // Customize Chart
+    chart.getStyler().setDefaultSeriesRenderStyle(XYSeries.XYSeriesRenderStyle.Scatter);
+    chart.getStyler().setChartTitleVisible(false);
+    chart.getStyler().setLegendPosition(Styler.LegendPosition.InsideSW);
+    chart.getStyler().setMarkerSize(16);
+
+    // Series
+    List&lt;Double&gt; xData = new LinkedList&lt;Double&gt;();
+    List&lt;Double&gt; yData = new LinkedList&lt;Double&gt;();
+    Random random = new Random();
+    int size = 1000;
+    for (int i = 0; i &lt; size; i++) {
+        xData.add(random.nextGaussian() / 1000);
+        yData.add(-1000000 + random.nextGaussian());
+    }
+    chart.addSeries(&quot;Gaussian Blob&quot;, xData, yData);
+
+
+    BitmapEncoder.saveBitmap(chart, filePath, BitmapEncoder.BitmapFormat.PNG);
+}</code></pre>
+<p><img src="https://koral-home.oss-cn-beijing.aliyuncs.com/sandian.png" alt="散点图"></p>
+<h2 id="柱状图"><a href="#柱状图" class="headerlink" title="柱状图"></a>柱状图</h2><pre><code class="java">@Test
+public void generate() throws IOException {
+    String filePath = &quot;C:\\Users\\user\\Desktop\\first.png&quot;;
+
+    // Create Chart
+    CategoryChart chart = new CategoryChartBuilder().width(800).height(600).title(&quot;Score Histogram&quot;).xAxisTitle(&quot;Score&quot;).yAxisTitle(&quot;Number&quot;).build();
+
+    // Customize Chart
+    chart.getStyler().setLegendPosition(Styler.LegendPosition.InsideNW);
+    chart.getStyler().setHasAnnotations(true);
+
+    // Series
+    chart.addSeries(&quot;test 1&quot;, Arrays.asList(0, 1, 2, 3, 4), Arrays.asList(4, 5, 9, 6, 5));
+
+    BitmapEncoder.saveBitmap(chart, filePath, BitmapEncoder.BitmapFormat.PNG);
+}</code></pre>
+<p><img src="https://koral-home.oss-cn-beijing.aliyuncs.com/zhuzhuang.png" alt="柱状图"></p>
+<h2 id="堆叠图"><a href="#堆叠图" class="headerlink" title="堆叠图"></a>堆叠图</h2><pre><code class="java">@Test
+public void generate() throws IOException {
+    String filePath = &quot;C:\\Users\\user\\Desktop\\first.png&quot;;
+
+    // Create Chart
+    CategoryChart chart = new CategoryChartBuilder().width(800).height(600).title(&quot;Score Histogram&quot;).xAxisTitle(&quot;Mean&quot;).yAxisTitle(&quot;Count&quot;).build();
+
+    // Customize Chart
+    chart.getStyler().setLegendPosition(Styler.LegendPosition.InsideNW);
+    chart.getStyler().setAvailableSpaceFill(.96);
+    chart.getStyler().setOverlapped(true);
+
+    // Series
+    Histogram histogram1 = new Histogram(getGaussianData(10000), 20, -20, 20);
+    Histogram histogram2 = new Histogram(getGaussianData(5000), 20, -20, 20);
+    chart.addSeries(&quot;histogram 1&quot;, histogram1.getxAxisData(), histogram1.getyAxisData());
+    chart.addSeries(&quot;histogram 2&quot;, histogram2.getxAxisData(), histogram2.getyAxisData());
+
+    BitmapEncoder.saveBitmap(chart, filePath, BitmapEncoder.BitmapFormat.PNG);
+}
+
+private List&lt;Double&gt; getGaussianData(int count) {
+    List&lt;Double&gt; data = new ArrayList&lt;Double&gt;(count);
+    Random r = new Random();
+    for (int i = 0; i &lt; count; i++) {
+        data.add(r.nextGaussian() * 10);
+    }
+    return data;
+}</code></pre>
+<p><img src="https://koral-home.oss-cn-beijing.aliyuncs.com/duidie.png" alt="堆叠图"></p>
+<h2 id="百分比堆叠柱状图"><a href="#百分比堆叠柱状图" class="headerlink" title="百分比堆叠柱状图"></a>百分比堆叠柱状图</h2><p>这个其实是堆叠图的变种。</p>
+<pre><code class="java">@Test
+public void generate() throws IOException {
+    String filePath = &quot;C:\\Users\\user\\Desktop\\first.png&quot;;
+
+    CategoryChart chart = new CategoryChartBuilder().width(800).height(600).build();
+    chart.getStyler().setChartBackgroundColor(Color.WHITE);
+    chart.getStyler().setLegendBorderColor(Color.WHITE);
+    chart.getStyler().setLegendPosition(Styler.LegendPosition.InsideNW);
+    chart.getStyler().setAvailableSpaceFill(0.7);
+    chart.getStyler().setStacked(true);
+
+    List&lt;String&gt; xData = Arrays.asList(&quot;学院A&quot;, &quot;学院B&quot;, &quot;学院C&quot;,&quot;学院D&quot;,&quot;学院E&quot;);
+
+    chart.addSeries(&quot;得分A&quot;, xData, getGaussianData(5));
+    chart.addSeries(&quot;得分B&quot;, xData, getGaussianData(5));
+    chart.addSeries(&quot;得分C&quot;, xData, getGaussianData(5));
+    chart.addSeries(&quot;得分D&quot;, xData, getGaussianData(5));
+
+    BitmapEncoder.saveBitmap(chart, filePath, BitmapEncoder.BitmapFormat.PNG);
+}
+
+private List&lt;Double&gt; getGaussianData(int count) {
+    List&lt;Double&gt; data = new ArrayList&lt;Double&gt;(count);
+    for (int i = 0; i &lt; count; i++) {
+        data.add(RandomUtils.nextDouble(0,1) * 10);
+    }
+    return data;
+}</code></pre>
+<p><img src="https://koral-home.oss-cn-beijing.aliyuncs.com/baifenbi.png" alt="百分比堆叠柱状图"></p>
+<p>参考：</p>
+<p>(1) <a href="https://knowm.org/open-source/xchart/xchart-example-code/index.html" target="_blank" rel="noopener">XChart Demo</a></p>
+<p>(2) 自己</p>
+</div><hr></div><div class="recent-post-item article-container"><a class="article-title" href="/2018/09/01/后端/SpringBootWebsocket/SpringBoot消息机制(四)-ActiveMQ介绍/">SpringBoot消息机制(四)-ActiveMQ介绍</a><time class="post-meta__date"><i class="fa fa-calendar" aria-hidden="true"></i> 2018-09-01</time><span class="article-meta"><span class="article-meta__separator">|</span><i class="fa fa-inbox article-meta__icon" aria-hidden="true"></i><a class="article-meta__categories" href="/categories/后端/">后端</a><i class="fa fa-angle-right" aria-hidden="true"></i><i class="fa fa-inbox article-meta__icon" aria-hidden="true"></i><a class="article-meta__categories" href="/categories/后端/java/">java</a><i class="fa fa-angle-right" aria-hidden="true"></i><i class="fa fa-inbox article-meta__icon" aria-hidden="true"></i><a class="article-meta__categories" href="/categories/后端/java/消息队列/">消息队列</a></span><span class="article-meta tags"><span class="article-meta__separator">|</span><i class="fa fa-tag article-meta__icon" aria-hidden="true"></i><a class="article-meta__tags" href="/tags/hide/">hide</a><span class="article-meta__link">-</span><i class="fa fa-tag article-meta__icon" aria-hidden="true"></i><a class="article-meta__tags" href="/tags/消息机制/">消息机制</a></span><div class="content"><p>#SpringBoot消息机制(四)-ActiveMQ介绍</p>
+</div><hr></div><div class="recent-post-item article-container"><a class="article-title" href="/2018/09/01/后端/POI/POI生成原生Excel-工具类/">POI生成原生Excel-工具类</a><time class="post-meta__date"><i class="fa fa-calendar" aria-hidden="true"></i> 2018-09-01</time><span class="article-meta"><span class="article-meta__separator">|</span><i class="fa fa-inbox article-meta__icon" aria-hidden="true"></i><a class="article-meta__categories" href="/categories/后端/">后端</a><i class="fa fa-angle-right" aria-hidden="true"></i><i class="fa fa-inbox article-meta__icon" aria-hidden="true"></i><a class="article-meta__categories" href="/categories/后端/POI/">POI</a></span><span class="article-meta tags"><span class="article-meta__separator">|</span><i class="fa fa-tag article-meta__icon" aria-hidden="true"></i><a class="article-meta__tags" href="/tags/hide/">hide</a><span class="article-meta__link">-</span><i class="fa fa-tag article-meta__icon" aria-hidden="true"></i><a class="article-meta__tags" href="/tags/POI/">POI</a></span><div class="content"><pre><code class="java">package com.pgc.diagnose.utils;
+
+import org.apache.poi.xssf.usermodel.XSSFChart;
+import org.apache.poi.xssf.usermodel.XSSFClientAnchor;
+import org.apache.poi.xssf.usermodel.XSSFDrawing;
+import org.apache.poi.xssf.usermodel.XSSFSheet;
+import org.openxmlformats.schemas.drawingml.x2006.chart.*;
+import org.openxmlformats.schemas.drawingml.x2006.main.*;
+
+import java.util.Iterator;
 import java.util.List;
 
-@Configuration
-//@EnableAutoConfiguration(exclude = {EmbeddedMongoAutoConfiguration.class})
-//@Profile(&quot;!testing&quot;)
-public class MongoConfig extends AbstractMongoConfiguration {
+import static org.openxmlformats.schemas.drawingml.x2006.chart.STOrientation.MIN_MAX;
+import static org.openxmlformats.schemas.drawingml.x2006.chart.STTickLblPos.NEXT_TO;
 
-    @Value(&quot;${spring.data.mongodb.uri}&quot;)
-    private String host;
+public class DrawUtils {
 
-    @Override
-    public MongoClient mongoClient() {
-        return new MongoClient(&quot;127.0.0.1&quot;, 27017);
+    public static void drawRadarChart(XSSFSheet sheet, Position start, Position end,
+                                      List&lt;String&gt; dataRef) {
+        XSSFDrawing drawing = sheet.createDrawingPatriarch();
+        XSSFClientAnchor anchor = drawing.createAnchor(0, 0, 100, 50, start.getX(), start.getY(), end.getX(), end.getY());
+        XSSFChart chart = drawing.createChart(anchor);
+
+        CTChart ctChart = chart.getCTChart();
+        CTPlotArea ctPlotArea = ctChart.addNewPlotArea();
+
+        CTRadarChart ctRadarChart = ctPlotArea.addNewRadarChart();
+        // 不允许自定义颜色、以及标记的形状
+//        ctRadarChart.addNewRadarStyle().setVal(STRadarStyle.MARKER);
+        ctRadarChart.addNewVaryColors().setVal(false);
+
+        setAxIds(ctRadarChart);
+        setCatAx(ctPlotArea);
+        setRadarValAx(ctPlotArea);
+        setDataLabel(ctRadarChart);
+        paddingData(ctRadarChart, dataRef);
     }
 
-    @Override
-    protected String getDatabaseName() {
-        return &quot;ch_node&quot;;
+    /**
+     * 散点图
+     */
+    public static void drawScatterChart(XSSFSheet sheet, Position start, Position end,
+                                        List&lt;String&gt; dataRef) {
+        XSSFDrawing drawing = sheet.createDrawingPatriarch();
+        XSSFClientAnchor anchor = drawing.createAnchor(0, 0, 100, 50, start.getX(), start.getY(), end.getX(), end.getY());
+
+        XSSFChart chart = drawing.createChart(anchor);
+        chart.setTitleText(sheet.getSheetName());
+
+        CTChart ctChart = chart.getCTChart();
+        CTPlotArea ctPlotArea = ctChart.getPlotArea();
+
+        CTScatterChart scatterChart = ctPlotArea.addNewScatterChart();
+        scatterChart.addNewVaryColors().setVal(true);
+
+        setAxIds(scatterChart);
+        setCatAx(ctPlotArea);
+        setScatterValAx(ctPlotArea);
+        setDataLabel(scatterChart);
+        paddingData(scatterChart, dataRef);
+        // 去掉连接线
+        ctPlotArea.getScatterChartArray(0).getSerArray(0).addNewSpPr().addNewLn().addNewNoFill();
     }
 
-    @Override
-    public CustomConversions customConversions() {
-        List&lt;Converter&lt;?, ?&gt;&gt; converters = new ArrayList&lt;&gt;();
-        converters.add(new StringToPointConverter2());
-        return new CustomConversions(converters);
+    /**
+     * 折线图
+     */
+    public static void drawCTLineChart(XSSFSheet sheet, Position start, Position end, List&lt;String&gt; xString, List&lt;String&gt; serTxName,
+                                       List&lt;String&gt; dataRef) {
+        // todo 折线图换成堆叠图
+        XSSFDrawing drawing = sheet.createDrawingPatriarch();
+        XSSFClientAnchor anchor = drawing.createAnchor(0, 0, 0, 0, start.getX(), start.getY(), end.getX(), end.getY());
+
+        XSSFChart chart = drawing.createChart(anchor);
+
+        CTChart ctChart = chart.getCTChart();
+        CTPlotArea ctPlotArea = ctChart.getPlotArea();
+        CTLineChart ctLineChart = ctPlotArea.addNewLineChart();
+
+        ctLineChart.addNewVaryColors().setVal(true);
+
+        // telling the Chart that it has axis and giving them Ids
+        setAxIds(ctLineChart);
+        // set cat axis
+        setCatAx(ctPlotArea);
+        // set val axis
+        setValAx(ctPlotArea);
+        // legend
+        setLegend(ctChart);
+        // set data lable
+        setDataLabel(ctLineChart);
+        // set chart title
+        setChartTitle(chart, sheet.getSheetName());
+
+        paddingData(ctLineChart, xString, serTxName, dataRef);
     }
-}
-</code></pre>
-<pre><code class="java">package com.pgc.diagnose.config;
 
-import com.pgc.common.exception.BadRequestException;
-import com.pgc.diagnose.model.Point;
-import org.springframework.core.convert.ConverterNotFoundException;
-import org.springframework.core.convert.TypeDescriptor;
-import org.springframework.core.convert.converter.ConditionalGenericConverter;
-import org.springframework.stereotype.Component;
+    /*
+     * @param position 图表坐标 起始行，起始列，终点行
+     *
+     * @param xString 横坐标
+     *
+     * @param serTxName 图形示例
+     *
+     * @param dataRef 柱状图数据范围 sheetName!$A$1:$A$12
+     */
+    public static void drawBarChart(XSSFSheet sheet, Position start, Position end, List&lt;String&gt; xString, List&lt;String&gt; serTxName,
+                                    List&lt;String&gt; dataRef) {
 
-import java.util.Collections;
-import java.util.Set;
+        XSSFDrawing drawing = sheet.createDrawingPatriarch();
+        XSSFClientAnchor anchor = drawing.createAnchor(0, 0, 0, 0, start.getX(), start.getY(), end.getX(), end.getY());
 
-@Component
-public class StringToPointConverter implements ConditionalGenericConverter {
+        XSSFChart chart = drawing.createChart(anchor);
 
-    @Override
-    public boolean matches(TypeDescriptor sourceType, TypeDescriptor targetType) {
-        return sourceType.getType().equals(String.class) &amp;&amp; targetType.getType().equals(Point.class);
+        CTChart ctChart = chart.getCTChart();
+        CTPlotArea ctPlotArea = ctChart.getPlotArea();
+        CTBarChart ctBarChart = ctPlotArea.addNewBarChart();
+
+        ctBarChart.addNewVaryColors().setVal(false);
+        ctBarChart.addNewBarDir().setVal(STBarDir.COL);
+
+        // telling the Chart that it has axis and giving them Ids
+        setAxIds(ctBarChart);
+        // set cat axis
+        setCatAx(ctPlotArea);
+        // set val axis
+        setValAx(ctPlotArea);
+        // add legend and set legend position
+        setLegend(ctChart);
+        // set data lable
+        setDataLabel(ctBarChart);
+        // set chart title
+        setChartTitle(chart, sheet.getSheetName());
+        // padding data to chart
+        paddingData(ctBarChart, xString, serTxName, dataRef);
     }
 
-    @Override
-    public Set&lt;ConvertiblePair&gt; getConvertibleTypes() {
-        return Collections.singleton(new ConvertiblePair(String.class, Point.class));
-    }
+    private static void paddingData(CTBarChart ctBarChart, List&lt;String&gt; xString, List&lt;String&gt; serTxName,
+                                    List&lt;String&gt; dataRef) {
+        Iterator&lt;String&gt; iterator = serTxName.iterator();
+        for (int r = 0, len = dataRef.size(); r &lt; len &amp;&amp; iterator.hasNext(); r++) {
+            CTBarSer ctBarSer = ctBarChart.addNewSer();
 
-    @Override
-    public Object convert(Object source, TypeDescriptor sourceType, TypeDescriptor targetType) {
-        String from = (String) source;
-
-        if (from != null){
-            String[] strings = from.split(&quot;#&quot;);
-
-            if (strings.length == 0 || strings.length &gt; 2)
-                throw new BadRequestException(&quot;String 转 Point 失败！&quot;);
-
-            if (strings.length == 1)
-                return Point.build(Point.Track.valueOf(strings[0]));
-
-            return Point.build(Point.Track.valueOf(strings[0]), Point.Industry.valueOf(strings[1]));
+            ctBarSer.addNewIdx().setVal(r);
+            // set legend value
+            setLegend(iterator.next(), ctBarSer.addNewTx());
+            // cat ax value
+            setChartCatAxLabel(ctBarSer.addNewCat(), xString);
+            // value range
+            ctBarSer.addNewVal().addNewNumRef().setF(dataRef.get(r));
+            // add border to chart
+            ctBarSer.addNewSpPr().addNewLn().addNewSolidFill().addNewSrgbClr().setVal(new byte[]{0, 0, 0});
         }
-
-        throw new ConverterNotFoundException(sourceType, targetType);
     }
-}
-</code></pre>
-<pre><code class="java">package com.pgc.diagnose.config;
 
-import com.pgc.common.exception.BadRequestException;
-import com.pgc.diagnose.model.Point;
-import org.springframework.core.convert.converter.Converter;
-import org.springframework.stereotype.Component;
+    private static void setLegend(String str, CTSerTx ctSerTx) {
+        if (str.contains(&quot;$&quot;))
+            // set legend by str ref
+            ctSerTx.addNewStrRef().setF(str);
+        else
+            // set legend by str
+            ctSerTx.setV(str);
+    }
 
-@Component
-public class StringToPointConverter2 implements Converter&lt;String, Point&gt; {
-    @Override
-    public Point convert(String from) {
-
-        if (from != null){
-            String[] strings = from.split(&quot;#&quot;);
-
-            if (strings.length == 0 || strings.length &gt; 2)
-                throw new BadRequestException(&quot;String 转 Point 失败！&quot;);
-
-            if (strings.length == 1)
-                return Point.build(Point.Track.valueOf(strings[0]));
-
-            return Point.build(Point.Track.valueOf(strings[0]), Point.Industry.valueOf(strings[1]));
+    private static void paddingData(CTLineChart ctLineChart, List&lt;String&gt; xString, List&lt;String&gt; serTxName,
+                                    List&lt;String&gt; dataRef) {
+        Iterator&lt;String&gt; iterator = serTxName.iterator();
+        for (int r = 0, len = dataRef.size(); r &lt; len &amp;&amp; iterator.hasNext(); r++) {
+            CTLineSer ctLineSer = ctLineChart.addNewSer();
+            ctLineSer.addNewIdx().setVal(r);
+            setLegend(iterator.next(), ctLineSer.addNewTx());
+            setChartCatAxLabel(ctLineSer.addNewCat(), xString);
+            ctLineSer.addNewVal().addNewNumRef().setF(dataRef.get(r));
+            ctLineSer.addNewSpPr().addNewLn().addNewSolidFill().addNewSrgbClr().setVal(new byte[]{0, 0, 0});
         }
-
-        return null;
     }
-}
-</code></pre>
-<pre><code class="java">package com.pgc.diagnose.config;
 
-import com.pgc.common.config.WebConfig;
-import org.springframework.context.annotation.Configuration;
+    private static void paddingData(CTScatterChart scatterChart, List&lt;String&gt; dataRef) {
+        // 设置散点图内的信息
+        CTScatterSer ctScatterSer = scatterChart.addNewSer();
+        ctScatterSer.addNewIdx().setVal(0);
+        ctScatterSer.addNewOrder().setVal(0);
+        // 设置标记的样式
+        CTMarker ctMarker = ctScatterSer.addNewMarker();
+        ctMarker.addNewSymbol().setVal(STMarkerStyle.Enum.forInt(3));
+        ctMarker.addNewSize().setVal((short) 8);
+        CTShapeProperties ctShapeProperties1 = ctMarker.addNewSpPr();
+        ctShapeProperties1.addNewSolidFill().addNewSchemeClr().setVal(STSchemeColorVal.Enum.forInt(5));
+        CTLineProperties ctLineProperties1 = ctShapeProperties1.addNewLn();
+        ctLineProperties1.setW(9525);
+        ctLineProperties1.addNewSolidFill().addNewSchemeClr().setVal(STSchemeColorVal.Enum.forInt(5));
 
-@Configuration
-public class DiagnoseAppWebConfig extends WebConfig {
+        CTNumDataSource ctNumDataSource = ctScatterSer.addNewYVal();
+        CTNumRef ctNumRef = ctNumDataSource.addNewNumRef();
+        ctNumRef.setF(dataRef.get(0));
+    }
 
+    private static void paddingData(CTRadarChart ctRadarChart, List&lt;String&gt; dataRef) {
+        CTRadarSer ctRadarSer = ctRadarChart.addNewSer();
+        ctRadarSer.addNewIdx().setVal(0);
+        ctRadarSer.addNewOrder().setVal(0);
+        CTLineProperties ctLineProperties = ctRadarSer.addNewSpPr().addNewLn();
+        ctLineProperties.addNewRound();
+        ctLineProperties.addNewSolidFill().addNewSchemeClr().setVal(STSchemeColorVal.ACCENT_1);
+        // 渲染数据
+        ctRadarSer.addNewCat().addNewStrRef().setF(dataRef.get(0));
+        ctRadarSer.addNewVal().addNewNumRef().setF(dataRef.get(1));
+    }
+
+    private static void setChartCatAxLabel(CTAxDataSource cttAxDataSource, List&lt;String&gt; xString) {
+        if (xString.size() == 1) {
+            cttAxDataSource.addNewStrRef().setF(xString.get(0));
+        } else {
+            CTStrData ctStrData = cttAxDataSource.addNewStrLit();
+            for (int m = 0, xlen = xString.size(); m &lt; xlen; m++) {
+                CTStrVal ctStrVal = ctStrData.addNewPt();
+                ctStrVal.setIdx((long) m);
+                ctStrVal.setV(xString.get(m));
+            }
+        }
+    }
+
+    private static void setDataLabel(CTBarChart ctBarChart) {
+        setDLShowOpts(ctBarChart.addNewDLbls());
+    }
+
+    private static void setDataLabel(CTLineChart ctLineChart) {
+        CTDLbls dlbls = ctLineChart.addNewDLbls();
+        setDLShowOpts(dlbls);
+        setDLPosition(dlbls, null);
+    }
+
+    /**
+     * 设置散点图各图例的显示
+     */
+    private static void setDataLabel(CTScatterChart scatterChart) {
+        CTDLbls ctdLbls = scatterChart.addNewDLbls();
+        ctdLbls.addNewShowVal().setVal(true);
+        ctdLbls.addNewShowLegendKey().setVal(false);
+        ctdLbls.addNewShowSerName().setVal(false);
+        ctdLbls.addNewShowCatName().setVal(false);
+        ctdLbls.addNewShowPercent().setVal(false);
+        ctdLbls.addNewShowBubbleSize().setVal(false);
+    }
+
+    private static void setDataLabel(CTRadarChart ctRadarChart) {
+        // 分类标签等是否显示
+        CTDLbls ctdLbls = ctRadarChart.addNewDLbls();
+        ctdLbls.addNewShowLegendKey().setVal(false);
+        ctdLbls.addNewShowVal().setVal(false);
+        ctdLbls.addNewShowCatName().setVal(false);
+        ctdLbls.addNewShowSerName().setVal(false);
+        ctdLbls.addNewShowPercent().setVal(false);
+        ctdLbls.addNewShowBubbleSize().setVal(false);
+    }
+
+    private static void setDLPosition(CTDLbls dlbls, STDLblPos.Enum e) {
+        if (e == null)
+            dlbls.addNewDLblPos().setVal(STDLblPos.T);
+        else
+            dlbls.addNewDLblPos().setVal(e);
+    }
+
+    private static void setDLShowOpts(CTDLbls dlbls) {
+        // 添加图形示例的字符串
+        dlbls.addNewShowSerName().setVal(false);
+        // 添加x轴的坐标字符
+        dlbls.addNewShowCatName().setVal(false);
+        // 添加图形示例的图
+        dlbls.addNewShowLegendKey().setVal(false);
+        // 添加x对应y的---
+        // dlbls.addNewShowVal().setVal(false);
+    }
+
+    private static void setAxIds(CTRadarChart ctRadarChart) {
+        ctRadarChart.addNewAxId().setVal(123456);
+        ctRadarChart.addNewAxId().setVal(123457);
+    }
+
+    private static void setAxIds(CTBarChart ctBarChart) {
+        ctBarChart.addNewAxId().setVal(123456);
+        ctBarChart.addNewAxId().setVal(123457);
+    }
+
+    private static void setAxIds(CTLineChart ctLineChart) {
+        ctLineChart.addNewAxId().setVal(123456);
+        ctLineChart.addNewAxId().setVal(123457);
+    }
+
+    private static void setAxIds(CTScatterChart scatterChart) {
+        scatterChart.addNewAxId().setVal(123456);
+        scatterChart.addNewAxId().setVal(123457);
+    }
+
+    private static void setLegend(CTChart ctChart) {
+        CTLegend ctLegend = ctChart.addNewLegend();
+        ctLegend.addNewLegendPos().setVal(STLegendPos.B);
+        ctLegend.addNewOverlay().setVal(false);
+    }
+
+    private static void setCatAx(CTPlotArea ctPlotArea) {
+        CTCatAx ctCatAx = ctPlotArea.addNewCatAx();
+        ctCatAx.addNewAxId().setVal(123456); // id of the cat axis
+        CTScaling ctScaling = ctCatAx.addNewScaling();
+        ctScaling.addNewOrientation().setVal(STOrientation.MIN_MAX);
+        ctCatAx.addNewDelete().setVal(false);
+        ctCatAx.addNewAxPos().setVal(STAxPos.B);
+        ctCatAx.addNewCrossAx().setVal(123457); // id of the val axis
+        ctCatAx.addNewTickLblPos().setVal(STTickLblPos.NEXT_TO);
+    }
+
+    private static void setScatterValAx(CTPlotArea ctPlotArea) {
+        // 设置Y坐标
+        CTValAx ctValAx = ctPlotArea.addNewValAx();
+        ctValAx.addNewAxId().setVal(123457);
+        CTScaling ctScaling1 = ctValAx.addNewScaling();
+        ctScaling1.addNewOrientation().setVal(MIN_MAX);
+        ctValAx.addNewDelete().setVal(false);
+        ctValAx.addNewAxPos().setVal(STAxPos.B);
+        ctValAx.addNewCrossAx().setVal(123456);
+        // Y轴的对比线
+        CTShapeProperties ctShapeProperties = ctValAx.addNewMajorGridlines().addNewSpPr();
+        CTLineProperties ctLineProperties = ctShapeProperties.addNewLn();
+        ctLineProperties.setW(9525);
+        ctLineProperties.setCap(STLineCap.Enum.forInt(3));
+        ctLineProperties.setCmpd(STCompoundLine.Enum.forInt(1));
+        ctLineProperties.setAlgn(STPenAlignment.Enum.forInt(1));
+        // 不显示Y轴上的坐标刻度线
+        ctValAx.addNewMajorTickMark().setVal(STTickMark.NONE);
+        ctValAx.addNewMinorTickMark().setVal(STTickMark.NONE);
+        ctValAx.addNewTickLblPos().setVal(NEXT_TO);
+    }
+
+    private static void setRadarValAx(CTPlotArea ctPlotArea) {
+        CTValAx ctValAx = ctPlotArea.addNewValAx();
+        ctValAx.addNewAxId().setVal(123457);
+        ctValAx.addNewScaling().addNewOrientation().setVal(MIN_MAX);
+        ctValAx.addNewDelete().setVal(false);
+        ctValAx.addNewAxPos().setVal(STAxPos.L);
+        ctValAx.addNewCrossAx().setVal(123456);
+        ctValAx.addNewMajorTickMark().setVal(STTickMark.NONE);
+        ctValAx.addNewMinorTickMark().setVal(STTickMark.NONE);
+        ctValAx.addNewTickLblPos().setVal(NEXT_TO);
+        // 设置网格线
+        CTShapeProperties ctShapeProperties = ctValAx.addNewMajorGridlines().addNewSpPr();
+        CTLineProperties ctLineProperties1 = ctShapeProperties.addNewLn();
+        ctLineProperties1.setW(9525);
+        ctLineProperties1.setCap(STLineCap.FLAT);
+        ctLineProperties1.setCmpd(STCompoundLine.SNG);
+        ctLineProperties1.setAlgn(STPenAlignment.CTR);
+        // 值的纵坐标线，不显示
+        ctValAx.addNewSpPr().addNewLn().addNewNoFill();
+        // 值的纵坐标值，不显示
+        ctValAx.addNewTxPr().addNewP().addNewPPr().addNewDefRPr().addNewNoFill();
+    }
+
+    // 不要y轴的标签，或者y轴尽可能的窄
+    private static void setValAx(CTPlotArea ctPlotArea) {
+        CTValAx ctValAx = ctPlotArea.addNewValAx();
+        ctValAx.addNewAxId().setVal(123457); // id of the val axis
+        CTScaling ctScaling = ctValAx.addNewScaling();
+        ctScaling.addNewOrientation().setVal(STOrientation.MIN_MAX);
+        // 不现实y轴
+//        ctValAx.addNewDelete().setVal(true);
+        ctValAx.addNewAxPos().setVal(STAxPos.L);
+        ctValAx.addNewCrossAx().setVal(123456); // id of the cat axis
+        ctValAx.addNewTickLblPos().setVal(STTickLblPos.NEXT_TO);
+    }
+
+    // 图标标题
+    private static void setChartTitle(XSSFChart xchart, String titleStr) {
+        CTChart ctChart = xchart.getCTChart();
+
+        CTTitle title = CTTitle.Factory.newInstance();
+        CTTx cttx = title.addNewTx();
+        CTStrData sd = CTStrData.Factory.newInstance();
+        CTStrVal str = sd.addNewPt();
+        str.setIdx(123459);
+        str.setV(titleStr);
+        cttx.addNewStrRef().setStrCache(sd);
+
+        ctChart.setTitle(title);
+    }
 }
 </code></pre>
 </div><hr></div><div class="recent-post-item article-container"><a class="article-title" href="/2018/09/01/读书笔记/《SpringData》/MongoDB/Spring-Data-MongoDB/">《Spring Data MongoDB》文档笔记</a><span class="article-meta"><i class="fa fa-thumb-tack article-meta__icon sticky"></i><span class="sticky">置顶</span><span class="article-meta__separator" style="margin-right: 0.3rem">|</span></span><time class="post-meta__date"><i class="fa fa-calendar" aria-hidden="true"></i> 2018-09-01</time><span class="article-meta"><span class="article-meta__separator">|</span><i class="fa fa-inbox article-meta__icon" aria-hidden="true"></i><a class="article-meta__categories" href="/categories/读书笔记/">读书笔记</a><i class="fa fa-angle-right" aria-hidden="true"></i><i class="fa fa-inbox article-meta__icon" aria-hidden="true"></i><a class="article-meta__categories" href="/categories/读书笔记/Spring-Data-MongoDB/">Spring Data MongoDB</a></span><span class="article-meta tags"><span class="article-meta__separator">|</span><i class="fa fa-tag article-meta__icon" aria-hidden="true"></i><a class="article-meta__tags" href="/tags/Spring-Data-MongoDB/">Spring Data MongoDB</a></span><div class="content"><ul>
