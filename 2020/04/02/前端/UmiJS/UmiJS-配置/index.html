@@ -1,0 +1,353 @@
+<!DOCTYPE html><html lang="zh-Hans"><head><meta name="generator" content="Hexo 3.9.0"><meta charset="UTF-8"><meta http-equiv="X-UA-Compatible" content="IE=edge"><meta name="viewport" content="width=device-width, initial-scale=1, maximum-scale=1"><meta name="description" content="《UmiJS》官网笔记"><meta name="keywords" content="hide,UmiJS"><meta name="author" content="koral"><meta name="copyright" content="koral"><title>《UmiJS》官网笔记 | 凯</title><link rel="shortcut icon" href="/melody-favicon.ico"><link rel="stylesheet" href="/css/index.css?version=1.7.0"><link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/font-awesome@latest/css/font-awesome.min.css?version=1.7.0"><meta name="format-detection" content="telephone=no"><meta http-equiv="x-dns-prefetch-control" content="on"><link rel="dns-prefetch" href="https://cdn.jsdelivr.net"><meta http-equiv="Cache-Control" content="no-transform"><meta http-equiv="Cache-Control" content="no-siteapp"><script>var GLOBAL_CONFIG = { 
+  root: '/',
+  algolia: undefined,
+  localSearch: undefined,
+  copy: {
+    success: '复制成功',
+    error: '复制错误',
+    noSupport: '浏览器不支持'
+  }
+} </script></head><body><i class="fa fa-arrow-right" id="toggle-sidebar" aria-hidden="true"></i><div id="sidebar" data-display="true"><div class="toggle-sidebar-info text-center"><span data-toggle="切换文章详情">切换站点概览</span><hr></div><div class="sidebar-toc"><div class="sidebar-toc__title">目录</div><div class="sidebar-toc__progress"><span class="progress-notice">你已经读了</span><span class="progress-num">0</span><span class="progress-percentage">%</span><div class="sidebar-toc__progress-bar"></div></div><div class="sidebar-toc__content"><ol class="toc"><li class="toc-item toc-level-1"><a class="toc-link" href="#UmiJS-配置"><span class="toc-number">1.</span> <span class="toc-text">UmiJS 配置</span></a></li></ol></div></div><div class="author-info hide"><div class="author-info__avatar text-center"><img src="/img/avatar.png"></div><div class="author-info__name text-center">koral</div><div class="author-info__description text-center">回廊一寸相思地，落月成孤倚。背灯和月就花阴，已是十年踪迹十年心。</div><hr><div class="author-info-articles"><a class="author-info-articles__archives article-meta" href="/archives"><span class="pull-left">文章</span><span class="pull-right">266</span></a><a class="author-info-articles__tags article-meta" href="/tags"><span class="pull-left">标签</span><span class="pull-right">34</span></a><a class="author-info-articles__categories article-meta" href="/categories"><span class="pull-left">分类</span><span class="pull-right">44</span></a></div></div></div><div id="content-outer"><div class="no-bg" id="top-container"><div id="page-header"><span class="pull-left"> <a id="site-name" href="/index.html">凯</a></span><i class="fa fa-bars toggle-menu pull-right" aria-hidden="true"></i><span class="pull-right menus">   <a class="site-page" href="/">首页</a><a class="site-page" href="/archives">归档</a><a class="site-page" href="/tags">标签</a><a class="site-page" href="/categories">分类</a><a class="site-page" href="/about">关于我</a></span><span class="pull-right"></span></div><div id="post-info"><div id="post-title">《UmiJS》官网笔记</div><div id="post-meta"><time class="post-meta__date"><i class="fa fa-calendar" aria-hidden="true"></i> 2020-04-02</time><span class="post-meta__separator">|</span><i class="fa fa-inbox post-meta__icon" aria-hidden="true"></i><a class="post-meta__categories" href="/categories/前端/">前端</a><i class="fa fa-angle-right" aria-hidden="true"></i><i class="fa fa-inbox post-meta__icon" aria-hidden="true"></i><a class="post-meta__categories" href="/categories/前端/UmiJS/">UmiJS</a></div></div></div><div class="layout" id="content-inner"><article id="post"><div class="article-container" id="post-content"><h1 id="UmiJS-配置"><a href="#UmiJS-配置" class="headerlink" title="UmiJS 配置"></a>UmiJS 配置</h1><pre><code class="ts">export default {
+  /**
+   * alias: 配置别名，对应用路径进行隐射。
+   * Umi 内置了以下别名：
+   * - @，项目的 src 目录
+   * - @@，临时目录，通常是 src/.umi 目录
+   * - umi，当前所运行的 umi 仓库目录
+   * - react-router 和 react-router-dom，底层路由库，锁定版本
+   * - react 和 react-dom，默认使用 16.x 版本，但会优先使用项目中依赖的版本
+   */
+  alias: {
+    // 在使用时， `import(&#39;foo&#39;)`，实际上就是 `import(&#39;/tmp/a/b/foo&#39;)`
+    &#39;foo&#39;: &#39;/tmp/a/b/foo&#39;
+  },
+  analyze: {
+    /**
+     * analyze: 包模块结构分析工具，可看到各项目各模块大小，按需优化。通过 `ANALYZE=1 umi build/dev` 开启，默认server端口号`8888`
+     */
+    analyzerMode: &#39;server&#39;,
+    analyzerPort: 8888,
+    openAnalyzer: true,
+    generateStatsFile: false,
+    statsFilename: &#39;stats.json&#39;,
+    logLevel: &#39;info&#39;,
+    defaultSizes: &#39;parsed&#39; // stat // gzip
+  },
+  /**
+   * autoprefixer：设置 autoprefixer 的配置项
+   * 注：`overrideBrowsersList` 被内部接管，不要设置，可通过 target 配置来选择要兼容的浏览器
+   */
+  autoprefixer: {
+    flexbox: &#39;no-2009&#39;
+  },
+  /**
+   * base：设置路由前缀，通常用于部署到非根目录
+   * Type：string，Default：/
+   */
+  base: &#39;/&#39;,
+  /**
+   * chainWebpack：通过 webpack-chain 的API修改 webpack 配置
+   * - memo，当前 webpack-chain 对象
+   * - env，当前环境，development、production或test等
+   * - webpack，webpack实例，用于获取内部插件
+   * - createCSSRule，用于扩展其他CSS实现，如sass，stylus
+   */
+  chainWebpack(memo, {env,webpack,createCSSRule}) {
+    // 设置 alias
+    memo.resolve.alias.set(&#39;foo&#39;, &#39;/tmp/a/b/foo&#39;);
+
+    // 删除 umi 内置插件
+    memo.plugins.delete(&#39;progress&#39;);
+    memo.plugins.delete(&#39;friendly-error&#39;);
+    memo.plugins.delete(&#39;copy&#39;);
+  },
+  /**
+   * chunks：默认是 `[&#39;umi&#39;]`
+   */
+  chunks: [&#39;umi&#39;],
+  /**
+   * 配置css-loader
+   */
+  cssLoader: {},
+  /**
+   * cssModulesTypescriptLoader：对按照css modules 方式引入的css或less文件，自动生成ts类型定义文件
+   * Default：undefined
+   */
+  cssModulesTypescriptLoader: {
+    mode: &#39;emit&#39;
+  },
+  /**
+   * 设置 cssnano 配置项，基于default 的配置集合
+   */
+  cssnano: {
+    normalizeUrl: false
+  },
+  /**
+   * copy：设置要复制到输出目录的文件或文件夹
+   */
+  copy: [],
+  /**
+   * define：用于提供给代码中可用的变量
+   */
+  define: {
+    // log(FOO) 会被编译成 log(&#39;bar&#39;)
+    FOO: &#39;bar&#39;
+  },
+  /**
+   * devServer：配置 开发服务器
+   */
+  devServer: {
+    port: 8888,
+    host: 0.0.0.0,
+    https: true,
+    http2: true
+  },
+  /**
+   * devtool：用户配置 sourcemap 类型
+   * Default：cheap-module-source-map(dev)/false(build)
+   * 常见可选值：
+   * - eval，最快的类型，但不支持低版本浏览器
+   * - source-map，最慢最全的类型
+   */
+  devtool: &#39;eval&#39;,
+
+  /**
+   * dynamicImport：是否启用按需加载
+   * Default：false，只会生成一个js和css
+   */
+  dynamicImport: {
+    // 子配置项，指定loading组件文件
+    loading: &#39;@/Loading&#39;
+  },
+  /**
+   * exportStatic，配置 html 输出形式
+   * 默认只输出 index.html
+   * 开启后，会针对每个路由输出html文件
+   * - htmlSuffix，启用 .html 后缀
+   * - dynamicRoot，部署到任意路径
+   */
+  exportStatic: {
+    htmlSuffix: true
+  },
+  /**
+   * externals：设置哪些模块可以不被打包，通过 &lt;script&gt; 或其他方式引入，通常需要和 scripts 或 headScripts 配置同时使用
+   * 即 `import react from &#39;react&#39;` 会被替换成 `const react = window.React`
+   */
+  externals: {
+    react: &#39;window.React&#39;
+  },
+  scripts: [
+    &#39;https://unpkg.com/browse/react@16.12.0/umd/react.production.min.js&#39;
+  ],
+  /**
+   * extraBabelPlugins：配置额外的 babel 插件
+   */
+  extraBabelPlugins: [
+    &#39;babel-plugin-react-require&#39;
+  ],
+  /**
+   * extraBabelPresets：配置额外的 babel 插件集
+   */
+  extraBabelPresets: [],
+  /**
+   * extraPostCSSPlugins：配置额外的 postcss 插件
+   */
+  extraPostCSSPlugins: [],
+  /**
+   * favicon：配置 favicon 地址
+   * 本地图片，请放到 public 目录
+   */
+  favicon: &#39;/assets/favicon.ico&#39;,
+  /**
+   * forkTSCheker：开启Typescript编译时类型检查
+   * 默认关闭
+   */
+  forkTSCheker: {},
+  /**
+   * hash：是否让生成的文件包含hash后缀
+   * 通常用于增量发布和避免浏览器加载缓存
+   * 注：html文件始终没有hash
+   */
+  hash: false,
+  /**
+   * headScripts：配置head里的额外脚本
+   */
+  headScripts: [],
+  /**
+   * history：配置history
+   * - type，可选browser、hash、memory
+   */
+  history: {},
+  /**
+   * ignoreMomentLocale：忽略 moment 的 locale 文件，用于减少尺寸
+   */
+  ignoreMomentLocale: false,
+  /**
+   * inlineLimit：配置图片文件是否走 base64 编译的阈值。大于配置项(默认10k)的图片，会被单独生成为文件
+   */
+  inlineLimit: 10000,
+  /**
+   * lessLoader：配置less-loader
+   */
+  lessLoader: {},
+  /**
+   * links：配置额外的link标签
+   */
+  links: [],
+  /**
+   * manifest：是否需要生成额外的manifest文件，默认生成asset-manifest.json
+   * - fileName，文件名 &#39;asset-manifest.json&#39;,
+   * - publicPath，默认为webpack的output.publicPath
+   * - basePath，给所有文件路径加前缀
+   */
+  manifest: {},
+  /**
+   * metas：配置额外的 mata标签
+   */
+  metas: [],
+  /**
+   * mock：配置mock属性
+   * - exclude，忽略不需要走mock的文件
+   */
+  mock: {
+    exclude: []
+  },
+  /**
+   * mountElementId：指定react渲染到html的id
+   */
+  mountElementId: &#39;root&#39;,
+  /**
+   * mpa：切换渲染模式为 mpa
+   * 特性：
+   * - 为每个页面输出html
+   * - 输出不包含 react-router、react-router-dom、history 等库
+   * - 渲染和url解绑，html放哪都能使用
+   * 注意：
+   * - 只支持一级路由配置
+   * - 不支持layout或嵌套路由配置
+   */
+  npa:{},
+  /**
+   * nodeModulesTransform：设置node_modules 目录下依赖文件的编译方式
+   * - type，可选all或none
+   *  - all：全部编译，通过exclude忽略
+   *  - none：全不编译，通过exclude包含
+   * - exclude，忽略的依赖库、包名，不支持绝对路径
+   */
+  nodeModulesTransform: {
+    type: &#39;all&#39;
+  },
+  /**
+   * outputPath：指定输出路径
+   * 不能为约定目录
+   */
+  outputPath: &#39;dist&#39;,
+  /**
+   * plugins: 配置额外的umi插件
+   */
+  plugins: [
+    // npm依赖
+    &#39;umi-plugin-hello&#39;,
+    // 相对路径，从根目录开始找
+    &#39;./plugin&#39;,
+    // 绝对路径
+    `${__dirname}/plugin.js`
+  ],
+  /**
+   * polyfill：设置按需引入polyfill
+   * 默认全量引入
+   */
+  polyfill: {
+    imports: []
+  },
+  /**
+   * postcssLoader：配置 postcss-loader
+   */
+  postcssLoader: {},
+  /**
+   * proxy：配置代理能力
+   */
+  proxy: {
+    &#39;/api&#39;: {
+      &#39;target&#39;: &#39;http://jsonplaceholder.typicode.com/&#39;,
+      &#39;changeOrigin&#39;: true,
+      &#39;pathRewrite&#39;: {
+        &#39;^/api&#39;: &#39;&#39;
+      }
+    }
+  },
+  /**
+   * publicPath
+   */
+  publicPath: &#39;/&#39;,
+  /**
+   * routes：配置路由
+   * umi 的路由基于 react-router@5 实现
+   */
+  routes: [
+    {
+      path: &#39;/&#39;,
+      component: &#39;@/pages/layout/index&#39;,
+      routes: [
+        { path: &#39;/home&#39;, component: &#39;@/pages/home&#39; },
+        { path: &#39;/faq&#39;, component: &#39;@/pages/faq&#39; },
+        { path: &#39;/me&#39;, component: &#39;@/pages/me&#39; },
+      ],
+    },
+  ],
+  /**
+   * runtimePublicPath：配置启用运行时 publicPath
+   */
+  runtimePublicPath: false,
+  /**
+   * scripts：同headScripts，配置在body里的脚本
+   */
+  scripts:[],
+  /**
+   * singular：配置是否启用单数模式的目录
+   */
+  singular: false,
+  /**
+   * styleLoader：启用并设置 style-loader配置
+   * 让css内联打包在js中，不输出额外的css文件
+   */
+  styleLoader: {},
+  /**
+   * styles：配置额外的css
+   */
+  styles: [
+    `body: {color: red}`,
+    `https://a.com/b.css`
+  ],
+  /**
+   * targets：配置需要兼容的浏览器最低版本
+   * 自动引入polyfill和语法转换
+   */
+  targets: {
+    chrome: 49, 
+    firefox: 64, 
+    safari: 10, 
+    edge: 13, 
+    ios: 10
+  },
+  /**
+   * theme：配置主题，实际上是配less变量
+   */
+  theme: {
+    &#39;@primary-color&#39;:&#39;#1DA57A&#39;
+  },
+  /**
+   * title：配置标题
+   * 还可以针对路由配置标题
+   * 注意：
+   * - 默认不会在HTML里输出title标签，而是通过动态渲染得到
+   * - 配置 exportStatic 后会为每个HTML输出title标签
+   * - 如果需要自行渲染title，可配置title：false，禁用内置title渲染机制
+   */
+  title: &#39;hi&#39;,
+}</code></pre>
+</div></article><div class="post-copyright"><div class="post-copyright__author"><span class="post-copyright-meta">文章作者: </span><span class="post-copyright-info"><a href="mailto:undefined">koral</a></span></div><div class="post-copyright__type"><span class="post-copyright-meta">文章链接: </span><span class="post-copyright-info"><a href="http://luokaiii.github.io/2020/04/02/前端/UmiJS/UmiJS-配置/">http://luokaiii.github.io/2020/04/02/前端/UmiJS/UmiJS-配置/</a></span></div><div class="post-copyright__notice"><span class="post-copyright-meta">版权声明: </span><span class="post-copyright-info">本博客所有文章除特别声明外，均采用 <a href="https://creativecommons.org/licenses/by-nc-sa/4.0/">CC BY-NC-SA 4.0</a> 许可协议。转载请注明来自 <a href="http://luokaiii.github.io">凯</a>！</span></div></div><div class="post-meta__tag-list"><a class="post-meta__tags" href="/tags/hide/">hide</a><a class="post-meta__tags" href="/tags/UmiJS/">UmiJS</a></div><nav id="pagination"><div class="prev-post pull-left"><a href="/2020/04/02/后端/java/1.JVM原理/"><i class="fa fa-chevron-left">  </i><span>JVM原理</span></a></div><div class="next-post pull-right"><a href="/2020/04/02/前端/UmiJS/UmiJS-API/"><span>《UmiJS》官网笔记</span><i class="fa fa-chevron-right"></i></a></div></nav></div></div><footer><div class="layout" id="footer"><div class="copyright">&copy;2013 - 2020 By koral</div><div class="framework-info"><span>驱动 - </span><a href="http://hexo.io"><span>Hexo</span></a><span class="footer-separator">|</span><span>主题 - </span><a href="https://github.com/Molunerfinn/hexo-theme-melody"><span>Melody</span></a></div><div class="busuanzi"><script async src="//busuanzi.ibruce.info/busuanzi/2.3/busuanzi.pure.mini.js"></script><span id="busuanzi_container_page_pv"><i class="fa fa-file"></i><span id="busuanzi_value_page_pv"></span><span></span></span></div></div></footer><i class="fa fa-arrow-up" id="go-up" aria-hidden="true"></i><script src="https://cdn.jsdelivr.net/npm/animejs@latest/anime.min.js"></script><script src="https://cdn.jsdelivr.net/npm/jquery@latest/dist/jquery.min.js"></script><script src="https://cdn.jsdelivr.net/npm/@fancyapps/fancybox@latest/dist/jquery.fancybox.min.js"></script><script src="https://cdn.jsdelivr.net/npm/velocity-animate@latest/velocity.min.js"></script><script src="https://cdn.jsdelivr.net/npm/velocity-ui-pack@latest/velocity.ui.min.js"></script><script src="/js/utils.js?version=1.7.0"></script><script src="/js/fancybox.js?version=1.7.0"></script><script src="/js/sidebar.js?version=1.7.0"></script><script src="/js/copy.js?version=1.7.0"></script><script src="/js/fireworks.js?version=1.7.0"></script><script src="/js/transition.js?version=1.7.0"></script><script src="/js/scroll.js?version=1.7.0"></script><script src="/js/head.js?version=1.7.0"></script><script>if(/Android|webOS|iPhone|iPod|iPad|BlackBerry/i.test(navigator.userAgent)) {
+  $('#nav').addClass('is-mobile')
+  $('footer').addClass('is-mobile')
+  $('#top-container').addClass('is-mobile')
+}</script></body></html>

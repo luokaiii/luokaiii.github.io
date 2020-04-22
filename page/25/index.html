@@ -1,0 +1,665 @@
+<!DOCTYPE html><html lang="zh-Hans"><head><meta name="generator" content="Hexo 3.9.0"><meta charset="UTF-8"><meta http-equiv="X-UA-Compatible" content="IE=edge"><meta name="viewport" content="width=device-width, initial-scale=1, maximum-scale=1"><meta name="description" content="回廊一寸相思地，落月成孤倚。背灯和月就花阴，已是十年踪迹十年心。"><meta name="keywords" content="1,2,3"><meta name="author" content="koral"><meta name="copyright" content="koral"><title>回廊一寸相思地，落月成孤倚。背灯和月就花阴，已是十年踪迹十年心。 | 凯</title><link rel="shortcut icon" href="/melody-favicon.ico"><link rel="stylesheet" href="/css/index.css?version=1.7.0"><link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/font-awesome@latest/css/font-awesome.min.css?version=1.7.0"><meta name="format-detection" content="telephone=no"><meta http-equiv="x-dns-prefetch-control" content="on"><link rel="dns-prefetch" href="https://cdn.jsdelivr.net"><meta http-equiv="Cache-Control" content="no-transform"><meta http-equiv="Cache-Control" content="no-siteapp"><script>var GLOBAL_CONFIG = { 
+  root: '/',
+  algolia: undefined,
+  localSearch: undefined,
+  copy: {
+    success: '复制成功',
+    error: '复制错误',
+    noSupport: '浏览器不支持'
+  }
+} </script></head><body><i class="fa fa-arrow-right" id="toggle-sidebar" aria-hidden="true"></i><div id="sidebar" data-display="false"><div class="author-info"><div class="author-info__avatar text-center"><img src="/img/avatar.png"></div><div class="author-info__name text-center">koral</div><div class="author-info__description text-center">回廊一寸相思地，落月成孤倚。背灯和月就花阴，已是十年踪迹十年心。</div><hr><div class="author-info-articles"><a class="author-info-articles__archives article-meta" href="/archives"><span class="pull-left">文章</span><span class="pull-right">266</span></a><a class="author-info-articles__tags article-meta" href="/tags"><span class="pull-left">标签</span><span class="pull-right">34</span></a><a class="author-info-articles__categories article-meta" href="/categories"><span class="pull-left">分类</span><span class="pull-right">44</span></a></div></div></div><nav class="no-bg" id="nav"><div id="page-header"><span class="pull-left"> <a id="site-name" href="/index.html">凯</a></span><i class="fa fa-bars toggle-menu pull-right" aria-hidden="true"></i><span class="pull-right menus">   <a class="site-page" href="/">首页</a><a class="site-page" href="/archives">归档</a><a class="site-page" href="/tags">标签</a><a class="site-page" href="/categories">分类</a><a class="site-page" href="/about">关于我</a></span><span class="pull-right"></span></div><div id="site-info"><div id="site-title">凯</div><div id="site-sub-title">回廊一寸相思地，落月成孤倚。背灯和月就花阴，已是十年踪迹十年心。</div></div></nav><div id="content-outer"><div class="layout" id="content-inner"><div class="recent-post-item article-container"><a class="article-title" href="/2018/09/08/运维/Linux/Ubuntu搭建SS服务器/">Ubuntu搭建SS服务器</a><time class="post-meta__date"><i class="fa fa-calendar" aria-hidden="true"></i> 2018-09-08</time><span class="article-meta"><span class="article-meta__separator">|</span><i class="fa fa-inbox article-meta__icon" aria-hidden="true"></i><a class="article-meta__categories" href="/categories/Linux/">Linux</a></span><span class="article-meta tags"><span class="article-meta__separator">|</span><i class="fa fa-tag article-meta__icon" aria-hidden="true"></i><a class="article-meta__tags" href="/tags/hide/">hide</a><span class="article-meta__link">-</span><i class="fa fa-tag article-meta__icon" aria-hidden="true"></i><a class="article-meta__tags" href="/tags/Linux/">Linux</a></span><div class="content"><h2 id="一、准备工作"><a href="#一、准备工作" class="headerlink" title="一、准备工作"></a>一、准备工作</h2><pre><code>1.更新软件源：
+    sudo apt-get update
+2. 安装 PIP 环境
+    sudo apt-get install python-pip
+3. 使用 pip 命令安装 shadowsocks
+    sudo pip install shadowsocks
+4. 如果出现异常，可以尝试升级pip
+    pip install -U pip</code></pre><h2 id="二、运行"><a href="#二、运行" class="headerlink" title="二、运行"></a>二、运行</h2><pre><code>(1). 命令启动
+    sudo ssserver -p 8388 -k mypassword -m -rc4md5 -d start
+(2). 配置文件
+    vim /etc/shadowsocks.json
+    添加如下内容：
+        {
+        &quot;server&quot;:&quot;my_server_ip&quot;,
+        &quot;server_port&quot;:8388,
+        &quot;local_address&quot;:&quot;127.0.0.1&quot;,
+        &quot;local_port&quot;:1080,
+        &quot;password&quot;:&quot;mypassword&quot;,
+        &quot;timeout&quot;:300,
+        &quot;method&quot;:&quot;rc4-md5&quot;
+        }
+        //多个用户的配置
+        {
+        &quot;server&quot;:&quot;my_server_ip&quot;,
+        &quot;port_password&quot;:{
+        &quot;9001&quot;:&quot;pwd001&quot;,
+        &quot;9002&quot;:&quot;pwd002&quot;,
+        &quot;9003&quot;:&quot;pwd003&quot;
+        },
+        &quot;local_address&quot;:&quot;127.0.0.1&quot;,
+        &quot;local_port&quot;:1080,
+        &quot;timeout&quot;:300,
+        &quot;method&quot;:&quot;rc4-md5&quot;
+        }
+    3. 赋予 shadowsocks.json 文件权限：
+        sudo apt-get install python - m2crypto
+    4. 使用配置文件在后台运行
+        sudo ssserver -c /etc/shadowsocks.json -d start
+    5. 配置开机启动
+        编辑 /etc/rc.local 文件
+            sudo vim /etc/rc.local
+        在 exit 0 上加入：
+            /usr/local/bin/ssserver - c /etc/shadowsocks.json
+            或
+            /usr/local/bin/ssserver -p 8388 -k password -m rc4md5 -d start</code></pre></div><hr></div><div class="recent-post-item article-container"><a class="article-title" href="/2018/09/08/运维/Linux/开发环境的初始化/">Linux开发环境初始化</a><time class="post-meta__date"><i class="fa fa-calendar" aria-hidden="true"></i> 2018-09-08</time><span class="article-meta"><span class="article-meta__separator">|</span><i class="fa fa-inbox article-meta__icon" aria-hidden="true"></i><a class="article-meta__categories" href="/categories/Linux/">Linux</a></span><span class="article-meta tags"><span class="article-meta__separator">|</span><i class="fa fa-tag article-meta__icon" aria-hidden="true"></i><a class="article-meta__tags" href="/tags/hide/">hide</a><span class="article-meta__link">-</span><i class="fa fa-tag article-meta__icon" aria-hidden="true"></i><a class="article-meta__tags" href="/tags/Linux/">Linux</a></span><div class="content"><h1 id="在-Linux-环境下初始化-Java-开发环境-Ubuntu16-0"><a href="#在-Linux-环境下初始化-Java-开发环境-Ubuntu16-0" class="headerlink" title="在 Linux 环境下初始化 Java 开发环境(Ubuntu16.0)"></a>在 Linux 环境下初始化 Java 开发环境(Ubuntu16.0)</h1><h2 id="一、安装-JDK"><a href="#一、安装-JDK" class="headerlink" title="一、安装 JDK"></a>一、安装 JDK</h2><pre><code class="java">安装 OpenJdk ：
+sudo apt-get update     //更新软件包列表
+sudo apt-get install openjdk-8-jdk      //安装openjdk-8-jdk
+java -version       //查看 java 版本</code></pre>
+<p>安装完后的 jdk 和 jre 放在”/usr/lib/jvm/java-8…”</p>
+<h2 id="二、安装-Tomcat"><a href="#二、安装-Tomcat" class="headerlink" title="二、安装 Tomcat"></a>二、安装 Tomcat</h2><ol>
+<li><p>到官网下载最新的 tomcat：使用 wget 命令下载</p>
+<pre><code class="js">http://mirror.bit.edu.cn/apache/tomcat/tomcat-8/v8.5.31/bin/apache-tomcat-8.5.31.tar.gz</code></pre>
+</li>
+<li><p>解压 tomcat：</p>
+<ol>
+<li>tar -zxvf apache-tomcat-8…</li>
+<li>注意：下载的压缩文件格式，对应着不同的解压缩命令</li>
+</ol>
+</li>
+<li><p>配置 tomcat：</p>
+<ol>
+<li><p>将解压后的文件夹修改文件夹 apache-tomcat… 为 tomcat:</p>
+<pre><code class="js">mv apache-tomcat... tomcat  //mv命令可以进行移动也可以进行文件名的修改</code></pre>
+</li>
+<li><p>将 tomcat 目录 复制到指定目录：</p>
+<pre><code class="js">sudo cp -r tomcat /opt</code></pre>
+</li>
+<li><p>进入 tomcat 目录：</p>
+<pre><code class="js">cd / opt / tomcat;</code></pre>
+</li>
+<li><p>打开启动的脚本文件</p>
+<pre><code class="js">sudo vi ./bin/startup.sh</code></pre>
+</li>
+<li><p>添加 jdk 和 jre 变量</p>
+<pre><code class="js">JAVA_HOME=/usr/lib/jvm/java-8-openjdk-amd64
+JRE_HOME=/usr/lib/jvm/java-8-openjdk-amd64/jre
+CLASS_PATH=.:$JAVA_HOME/lib/dt.jar:$JAVA_HOME/lib/tools.jar:$JRE_HOME/lib
+PATH=$JAVA_HOME/bin:$JRE_HOME/bin:$PATH
+TOMCAT_HOME=/opt/apache-tomcat-8.5.32</code></pre>
+<p>注意：这里的目录以真实存在的为主</p>
+</li>
+</ol>
+</li>
+<li><p>启动，测试:</p>
+<ol>
+<li>开启 tomcat : <code>sudo ./bin/startup.sh</code></li>
+<li>进入浏览器，查看 tomcat 是否配置和安装成功</li>
+<li>关闭 tomcat : <code>sudo ./bin/shutdown.sh</code></li>
+</ol>
+</li>
+</ol>
+<h2 id="三、安装-Git"><a href="#三、安装-Git" class="headerlink" title="三、安装 Git"></a>三、安装 Git</h2><pre><code>sudo apt-get install git-core
+除安装之外，其他命令同 Windows 下。</code></pre><h2 id="四、安装-MySQL-服务"><a href="#四、安装-MySQL-服务" class="headerlink" title="四、安装 MySQL 服务"></a>四、安装 MySQL 服务</h2><ol>
+<li><p>安装 mysql</p>
+<pre><code class="shell">sudo apt-get install mysql-server
+sudo apt install mysql-client
+sudo apt install libmysqlclient-dev</code></pre>
+</li>
+<li><p>测试是否安装成功</p>
+<pre><code class="shell">sudo netstat -tap | grep mysql</code></pre>
+<p>安装成功之后，显示下图：</p>
+<p><img src="http://static.zybuluo.com/xiangwanpeng/p81fqgz0k1782qpwbrtnhmce/image_1b6gfob7m1u4f2i0av11afd92m9.png" alt="安装成功后显示的图片"></p>
+</li>
+<li><p>测试 进入 mysql 服务</p>
+<pre><code class="shell">mysql -uroot -p</code></pre>
+</li>
+<li><p>设置 mysql 允许远程访问</p>
+<pre><code class="shell">sudo vi /etc/mysql/mysql.conf.d/mysqld.cnf</code></pre>
+<p><img src="http://static.zybuluo.com/xiangwanpeng/sl82tvc6dyqod7j2cnw4qi5b/image_1b6ggmf7h1d6b17o11iha1j1nhtem.png" alt="shell图"></p>
+<pre><code>将其中的 bind-address = 127.0.0.1 注释掉
+:wq 保存退出</code></pre></li>
+<li><p>进入 mysql 服务，执行授权命令：</p>
+<pre><code class="shell">grant all on *.* to root@&#39;%&#39; identified by &#39;密码&#39; with grant option;
+flush privileges;</code></pre>
+</li>
+<li><p>退出并重启 mysql 服务</p>
+<pre><code class="shell">service mysql restart</code></pre>
+</li>
+<li><p>远程连接测试</p>
+</li>
+</ol>
+<h2 id="四-2、卸载-MySQL-服务"><a href="#四-2、卸载-MySQL-服务" class="headerlink" title="四-2、卸载 MySQL 服务"></a>四-2、卸载 MySQL 服务</h2><ol>
+<li>查看 mysql 安装了哪些依赖<pre><code class="js">dpkg --list | grep mysql</code></pre>
+</li>
+<li>卸载 mysql-common 包<pre><code class="js">sudo apt-get remove mysql-common</code></pre>
+</li>
+<li>具体看版本<pre><code class="js">sudo apt-get autoremove --purge mysql-server-5.0</code></pre>
+</li>
+<li>再次查看 ，同 1</li>
+<li>清除残留数据：<pre><code class="js">dpkg -l |grep ^rc|awk &#39;{print $2}&#39; |sudo xargs dpkg -P</code></pre>
+</li>
+</ol>
+<h2 id="五、安装-MongoDB"><a href="#五、安装-MongoDB" class="headerlink" title="五、安装 MongoDB"></a>五、安装 MongoDB</h2><h3 id="1-安装-MongoDB"><a href="#1-安装-MongoDB" class="headerlink" title="1. 安装 MongoDB"></a>1. 安装 MongoDB</h3><ol>
+<li><p>导入软件源的公钥</p>
+<pre><code class="js">sudo apt-key adv --keyserver hkp://keyserver.ubuntu.com:80 --recv EA312927</code></pre>
+</li>
+<li><p>为 mongodb 创建软件源 list 文件</p>
+<pre><code class="js">echo &quot;deb http://repo.mongodb.org/apt/ubuntu xenial/mongodb-org/3.2 multiverse&quot; | sudo tee /etc/apt/sources.list.d/mongodb-org-3.2.list</code></pre>
+</li>
+<li><p>更新本地包数据库</p>
+<pre><code class="js">sudo apt-get update</code></pre>
+</li>
+<li><p>安装 MongoDB 包</p>
+<pre><code class="js">sudo apt-get install -y mongodb-org</code></pre>
+</li>
+<li><p>配置启动文件</p>
+<ol>
+<li>打开或者创建 <code>/lib/systemd/system/mongod.service</code></li>
+<li>加入以下配置：</li>
+</ol>
+<pre><code class="js">[Unit]
+Description=High-performance, schema-free document-oriented database
+After=network.target
+Documentation=https://docs.mongodb.org/manual
+
+[Service]
+User=mongodb
+Group=mongodb
+ExecStart=/usr/bin/mongod --quiet --config /etc/mongod.conf
+
+[Install]
+WantedBy=multi-user.target</code></pre>
+</li>
+<li><p>启动停止</p>
+<pre><code class="js">sudo service mongod start
+sudo service mongod stop
+sudo service mongod restart</code></pre>
+</li>
+<li><p>卸载 mongodb</p>
+<pre><code class="js">sudo service mongod stop        // 停止mongodb
+sudo apt-get purge mongodb-org* // 卸载软件
+sudo rm -r /var/log/mongodb     // 删除日志文件和数据库
+sudo rm -r /var/lib/mongodb</code></pre>
+</li>
+</ol>
+<h3 id="3-配置-MongoDB"><a href="#3-配置-MongoDB" class="headerlink" title="3. 配置 MongoDB"></a>3. 配置 MongoDB</h3><ol>
+<li><p>进入 MongoDB</p>
+<pre><code class="js">mongo;</code></pre>
+</li>
+<li><p>切换到 admin 数据库</p>
+<pre><code class="js">use admin</code></pre>
+</li>
+<li><p>创建一个管理员用户</p>
+<pre><code class="js">db.createUser({
+  user: &quot;admin&quot;,
+  pwd: &quot;123456&quot;,
+  roles: [{ role: &quot;userAdminAnyDatabase&quot;, db: &quot;admin&quot; }]
+});</code></pre>
+</li>
+<li><p>打开登录认证</p>
+<pre><code class="js">security: authorization: enabled;</code></pre>
+<p>启用登录后，需要使用 db.auth(‘admin’,’123456’)认证后，才能操作</p>
+</li>
+<li><p>启用远程连接</p>
+<p>打开 <code>/etc/mongd.conf</code> 找到 <code>bindIp</code>，注释掉；<br>或者将<code>bindIp</code> 换成 <code>0.0.0.0</code></p>
+<p>———————2018 年 9 月 10 日更新——- 1.导入软件源的公钥<br>sudo apt-key adv –keyserver hkp://keyserver.ubuntu.com:80 –recv EA312927 2.为 mongodb 创建软件源 list 文件<br>echo “deb <a href="http://repo.mongodb.org/apt/ubuntu" target="_blank" rel="noopener">http://repo.mongodb.org/apt/ubuntu</a> xenial/mongodb-org/3.2 multiverse” | sudo tee /etc/apt/sources.list.d/mongodb-org-3.2.list 3.更新软件源，安装 mongodb<br>sudo apt-get update<br>sudo apt-get install -y mongodb-org 4.配置启动文件<br>打开或者创建 /lib/systemd/system/mongod.service<br>加入以下配置：<br>[Unit]<br>Description=High-performance, schema-free document-oriented database<br>After=network.target<br>Documentation=<a href="https://docs.mongodb.org/manual" target="_blank" rel="noopener">https://docs.mongodb.org/manual</a></p>
+<pre><code>[Service]
+User=mongodb
+Group=mongodb
+ExecStart=/usr/bin/mongod --quiet --config /etc/mongod.conf
+
+[Install]
+WantedBy=multi-user.target</code></pre><p>5.启动停止<br>sudo service mongod start<br>sudo service mongod stop<br>sudo service mongod restart 6.卸载 mongodb<br>sudo service mongod stop // 停止 mongodb<br>sudo apt-get purge mongodb-org* // 卸载软件<br>sudo rm -r /var/log/mongodb // 删除日志文件和数据库<br>sudo rm -r /var/lib/mongodb</p>
+</li>
+</ol>
+<blockquote>
+<p><a href="https://www.chengxulvtu.com/2017/07/16/install-mongodb-on-ubuntu-16-04.html" target="_blank" rel="noopener">https://www.chengxulvtu.com/2017/07/16/install-mongodb-on-ubuntu-16-04.html</a></p>
+</blockquote>
+</div><hr></div><div class="recent-post-item article-container"><a class="article-title" href="/2018/09/01/后端/POI/POI生成原生Excel-雷达图/">使用POI结合Excel的行列生成雷达图</a><time class="post-meta__date"><i class="fa fa-calendar" aria-hidden="true"></i> 2018-09-01</time><span class="article-meta"><span class="article-meta__separator">|</span><i class="fa fa-inbox article-meta__icon" aria-hidden="true"></i><a class="article-meta__categories" href="/categories/后端/">后端</a><i class="fa fa-angle-right" aria-hidden="true"></i><i class="fa fa-inbox article-meta__icon" aria-hidden="true"></i><a class="article-meta__categories" href="/categories/后端/POI/">POI</a></span><span class="article-meta tags"><span class="article-meta__separator">|</span><i class="fa fa-tag article-meta__icon" aria-hidden="true"></i><a class="article-meta__tags" href="/tags/hide/">hide</a><span class="article-meta__link">-</span><i class="fa fa-tag article-meta__icon" aria-hidden="true"></i><a class="article-meta__tags" href="/tags/POI/">POI</a></span><div class="content"><h2 id="一、先放最后输出的结果图："><a href="#一、先放最后输出的结果图：" class="headerlink" title="一、先放最后输出的结果图："></a>一、先放最后输出的结果图：</h2><p><img src="https://koral-home.oss-cn-beijing.aliyuncs.com/blog/RadarChart.png" alt="雷达图"></p>
+<h2 id="二、代码"><a href="#二、代码" class="headerlink" title="二、代码"></a>二、代码</h2><pre><code class="java">    @Test
+    public void createRadar() throws IOException {
+        final String sheetName = &quot;RadarChart&quot;;
+        try (XSSFWorkbook workbook = new XSSFWorkbook()) {
+            XSSFSheet sheet = workbook.createSheet(sheetName);
+
+            for (int i = 0; i &lt; 16; i++) {
+                XSSFRow row = sheet.createRow(i);
+                XSSFCell cell = row.createCell(0);
+                cell.setCellValue(i + &quot;行&quot;);
+                XSSFCell cell1 = row.createCell(1);
+                cell1.setCellValue(RandomUtils.nextInt(0, 20));
+            }
+
+            XSSFDrawing drawing = sheet.createDrawingPatriarch();
+            XSSFClientAnchor anchor = drawing.createAnchor(0, 0, 0, 0, 2, 0, 7, 16);
+            XSSFChart chart = drawing.createChart(anchor);
+
+            CTChart ctChart = chart.getCTChart();
+            ctChart.addNewAutoTitleDeleted().setVal(false);
+//            ctChart.addNewPlotVisOnly().setVal(true);
+//            ctChart.addNewDispBlanksAs().setVal(STDispBlanksAs.GAP);
+//            ctChart.addNewShowDLblsOverMax().setVal(false);
+
+            CTPlotArea ctPlotArea = ctChart.addNewPlotArea();
+            ctPlotArea.addNewLayout();
+//            CTShapeProperties ctShapeProperties = ctPlotArea.addNewSpPr();
+//            ctShapeProperties.addNewNoFill();
+//            ctShapeProperties.addNewLn().addNewNoFill();
+//            ctShapeProperties.addNewEffectLst();
+
+            CTRadarChart ctRadarChart = ctPlotArea.addNewRadarChart();
+            // 这两个值应该对应着catAx和valAx
+            ctRadarChart.addNewAxId().setVal(123456);
+            ctRadarChart.addNewAxId().setVal(123457);
+            // 分类标签等是否显示
+            CTDLbls ctdLbls = ctRadarChart.addNewDLbls();
+            ctdLbls.addNewShowLegendKey().setVal(false);
+            ctdLbls.addNewShowVal().setVal(false);
+            ctdLbls.addNewShowCatName().setVal(false);
+            ctdLbls.addNewShowSerName().setVal(false);
+            ctdLbls.addNewShowPercent().setVal(false);
+            ctdLbls.addNewShowBubbleSize().setVal(false);
+            // 不允许自定义颜色、以及标记的形状
+            ctRadarChart.addNewRadarStyle().setVal(STRadarStyle.MARKER);
+            ctRadarChart.addNewVaryColors().setVal(false);
+
+            CTRadarSer ctRadarSer = ctRadarChart.addNewSer();
+            ctRadarSer.addNewIdx().setVal(0);
+            ctRadarSer.addNewOrder().setVal(0);
+            CTLineProperties ctLineProperties = ctRadarSer.addNewSpPr().addNewLn();
+            ctLineProperties.addNewRound();
+            ctLineProperties.addNewSolidFill().addNewSchemeClr().setVal(STSchemeColorVal.ACCENT_1);
+            // 渲染数据
+            ctRadarSer.addNewCat().addNewStrRef().setF(sheetName + &quot;!$A$1:$A$6&quot;);
+            ctRadarSer.addNewVal().addNewNumRef().setF(sheetName + &quot;!$B$2:$B$6&quot;);
+
+            CTCatAx ctCatAx = ctPlotArea.addNewCatAx();
+            ctCatAx.addNewAxId().setVal(123456);
+            ctCatAx.addNewScaling().addNewOrientation().setVal(MIN_MAX);
+            ctCatAx.addNewDelete().setVal(false);
+            ctCatAx.addNewAxPos().setVal(STAxPos.B);
+            ctCatAx.addNewCrossAx().setVal(123457);
+            ctCatAx.addNewMajorTickMark().setVal(STTickMark.NONE);
+            ctCatAx.addNewMinorTickMark().setVal(STTickMark.NONE);
+            ctCatAx.addNewTickLblPos().setVal(NEXT_TO);
+//            ctCatAx.addNewCrosses().setVal(STCrosses.AUTO_ZERO);
+//            ctCatAx.addNewAuto().setVal(true);
+//            ctCatAx.addNewLblAlgn().setVal(STLblAlgn.CTR);
+//            ctCatAx.addNewLblOffset().setVal(100);
+//            ctCatAx.addNewNoMultiLvlLbl().setVal(false);
+            // spPr
+//            CTShapeProperties ctShapeProperties = ctCatAx.addNewSpPr();
+//            ctShapeProperties.addNewNoFill();
+//            ctShapeProperties.addNewEffectLst();
+//            CTLineProperties ctLineProperties1 = ctShapeProperties.addNewLn();
+//            ctLineProperties1.setW(9525);
+//            ctLineProperties1.setCap(STLineCap.FLAT);
+//            ctLineProperties1.setCmpd(STCompoundLine.SNG);
+//            ctLineProperties1.setAlgn(STPenAlignment.CTR);
+//            CTSchemeColor ctSchemeColor = ctLineProperties1.addNewSolidFill().addNewSchemeClr();
+//            ctSchemeColor.setVal(STSchemeColorVal.TX_1);
+//            ctSchemeColor.addNewLumMod().setVal(15000);
+//            ctSchemeColor.addNewLumOff().setVal(85000);
+            // txPr
+//            CTTextBody ctTextBody = ctCatAx.addNewTxPr();
+//            CTTextCharacterProperties ctTextCharacterProperties = ctTextBody.addNewP().addNewPPr().addNewDefRPr();
+//            ctTextCharacterProperties.setU(STTextUnderlineType.NONE);
+//            ctTextCharacterProperties.setStrike(STTextStrikeType.NO_STRIKE);
+//            ctTextCharacterProperties.setSz(900);
+//            ctTextCharacterProperties.setB(false);
+//            ctTextCharacterProperties.setI(false);
+//            ctTextCharacterProperties.setBaseline(0);
+//            ctTextCharacterProperties.setKern(1200);
+//            CTSchemeColor ctSchemeColor = ctTextCharacterProperties.addNewSolidFill().addNewSchemeClr();
+//            ctSchemeColor.setVal(STSchemeColorVal.TX_1);
+//            ctSchemeColor.addNewLumMod().setVal(65000);
+//            ctSchemeColor.addNewLumOff().setVal(35000);
+
+
+            CTValAx ctValAx = ctPlotArea.addNewValAx();
+            ctValAx.addNewAxId().setVal(123457);
+            ctValAx.addNewScaling().addNewOrientation().setVal(MIN_MAX);
+            ctValAx.addNewDelete().setVal(false);
+            ctValAx.addNewAxPos().setVal(STAxPos.L);
+            ctValAx.addNewCrossAx().setVal(123456);
+            ctValAx.addNewMajorTickMark().setVal(STTickMark.NONE);
+            ctValAx.addNewMinorTickMark().setVal(STTickMark.NONE);
+            ctValAx.addNewTickLblPos().setVal(NEXT_TO);
+//            ctValAx.addNewCrosses().setVal(STCrosses.AUTO_ZERO);
+//            ctValAx.addNewCrossBetween().setVal(STCrossBetween.BETWEEN);
+            // 设置网格线
+            CTShapeProperties ctShapeProperties = ctValAx.addNewMajorGridlines().addNewSpPr();
+            CTLineProperties ctLineProperties1 = ctShapeProperties.addNewLn();
+            ctLineProperties1.setW(9525);
+            ctLineProperties1.setCap(STLineCap.FLAT);
+            ctLineProperties1.setCmpd(STCompoundLine.SNG);
+            ctLineProperties1.setAlgn(STPenAlignment.CTR);
+            // 值的纵坐标线，不显示
+            ctValAx.addNewSpPr().addNewLn().addNewNoFill();
+            // 值的纵坐标值，不显示
+            ctValAx.addNewTxPr().addNewP().addNewPPr().addNewDefRPr().addNewNoFill();
+
+            System.out.println(ctChart);
+
+            FileOutputStream outputStream =
+                    new FileOutputStream(&quot;C:\\Users\\user\\Desktop\\out.xlsx&quot;);
+            workbook.write(outputStream);
+            outputStream.flush();
+            outputStream.close();
+        }
+    }</code></pre>
+<h2 id="三、XML-结构"><a href="#三、XML-结构" class="headerlink" title="三、XML 结构"></a>三、XML 结构</h2><p>以上生成的图表，归根结底是属于 XML 的一种，通过 <code>RadarChart</code> 的继承关系可以看到，它其实是 <code>XmlObject</code>的一种实现。</p>
+<pre><code class="xml">&lt;xml-fragment xmlns:char=&quot;http://schemas.openxmlformats.org/drawingml/2006/chart&quot; xmlns:main=&quot;http://schemas.openxmlformats.org/drawingml/2006/main&quot;&gt;
+  &lt;char:autoTitleDeleted val=&quot;false&quot;/&gt;
+  &lt;char:plotArea&gt;
+    &lt;char:layout/&gt;
+  &lt;/char:plotArea&gt;
+  &lt;char:plotArea&gt;
+    &lt;char:layout/&gt;
+    &lt;char:radarChart&gt;
+      &lt;char:radarStyle val=&quot;marker&quot;/&gt;
+      &lt;char:varyColors val=&quot;false&quot;/&gt;
+      &lt;char:ser&gt;
+        &lt;char:idx val=&quot;0&quot;/&gt;
+        &lt;char:order val=&quot;0&quot;/&gt;
+        &lt;char:spPr&gt;
+          &lt;main:ln&gt;
+            &lt;main:solidFill&gt;
+              &lt;main:schemeClr val=&quot;accent1&quot;/&gt;
+            &lt;/main:solidFill&gt;
+            &lt;main:round/&gt;
+          &lt;/main:ln&gt;
+        &lt;/char:spPr&gt;
+        &lt;char:cat&gt;
+          &lt;char:strRef&gt;
+            &lt;char:f&gt;RadarChart!$A$1:$A$6&lt;/char:f&gt;
+          &lt;/char:strRef&gt;
+        &lt;/char:cat&gt;
+        &lt;char:val&gt;
+          &lt;char:numRef&gt;
+            &lt;char:f&gt;RadarChart!$B$2:$B$6&lt;/char:f&gt;
+          &lt;/char:numRef&gt;
+        &lt;/char:val&gt;
+      &lt;/char:ser&gt;
+      &lt;char:dLbls&gt;
+        &lt;char:showLegendKey val=&quot;false&quot;/&gt;
+        &lt;char:showVal val=&quot;false&quot;/&gt;
+        &lt;char:showCatName val=&quot;false&quot;/&gt;
+        &lt;char:showSerName val=&quot;false&quot;/&gt;
+        &lt;char:showPercent val=&quot;false&quot;/&gt;
+        &lt;char:showBubbleSize val=&quot;false&quot;/&gt;
+      &lt;/char:dLbls&gt;
+      &lt;char:axId val=&quot;123456&quot;/&gt;
+      &lt;char:axId val=&quot;123457&quot;/&gt;
+    &lt;/char:radarChart&gt;
+    &lt;char:catAx&gt;
+      &lt;char:axId val=&quot;123456&quot;/&gt;
+      &lt;char:scaling&gt;
+        &lt;char:orientation val=&quot;minMax&quot;/&gt;
+      &lt;/char:scaling&gt;
+      &lt;char:delete val=&quot;false&quot;/&gt;
+      &lt;char:axPos val=&quot;b&quot;/&gt;
+      &lt;char:majorTickMark val=&quot;none&quot;/&gt;
+      &lt;char:minorTickMark val=&quot;none&quot;/&gt;
+      &lt;char:tickLblPos val=&quot;nextTo&quot;/&gt;
+      &lt;char:crossAx val=&quot;123457&quot;/&gt;
+    &lt;/char:catAx&gt;
+    &lt;char:valAx&gt;
+      &lt;char:axId val=&quot;123457&quot;/&gt;
+      &lt;char:scaling&gt;
+        &lt;char:orientation val=&quot;minMax&quot;/&gt;
+      &lt;/char:scaling&gt;
+      &lt;char:delete val=&quot;false&quot;/&gt;
+      &lt;char:axPos val=&quot;l&quot;/&gt;
+      &lt;char:majorGridlines&gt;
+        &lt;char:spPr&gt;
+          &lt;main:ln w=&quot;9525&quot; cap=&quot;flat&quot; cmpd=&quot;sng&quot; algn=&quot;ctr&quot;/&gt;
+        &lt;/char:spPr&gt;
+      &lt;/char:majorGridlines&gt;
+      &lt;char:majorTickMark val=&quot;none&quot;/&gt;
+      &lt;char:minorTickMark val=&quot;none&quot;/&gt;
+      &lt;char:tickLblPos val=&quot;nextTo&quot;/&gt;
+      &lt;char:spPr&gt;
+        &lt;main:ln&gt;
+          &lt;main:noFill/&gt;
+        &lt;/main:ln&gt;
+      &lt;/char:spPr&gt;
+      &lt;char:txPr&gt;
+        &lt;main:p&gt;
+          &lt;main:pPr&gt;
+            &lt;main:defRPr&gt;
+              &lt;main:noFill/&gt;
+            &lt;/main:defRPr&gt;
+          &lt;/main:pPr&gt;
+        &lt;/main:p&gt;
+      &lt;/char:txPr&gt;
+      &lt;char:crossAx val=&quot;123456&quot;/&gt;
+    &lt;/char:valAx&gt;
+  &lt;/char:plotArea&gt;
+  &lt;char:plotVisOnly val=&quot;true&quot;/&gt;
+&lt;/xml-fragment&gt;</code></pre>
+<h2 id="四、工具类，我放在-POI-生成原生图表-工具类-中"><a href="#四、工具类，我放在-POI-生成原生图表-工具类-中" class="headerlink" title="四、工具类，我放在 POI 生成原生图表-工具类 中"></a>四、工具类，我放在 <a href="www.baidu.com">POI 生成原生图表-工具类</a> 中</h2></div><hr></div><div class="recent-post-item article-container"><a class="article-title" href="/2018/09/01/后端/POI/POI生成Excel-表格抽象工具类/">POI生成Excel工具类</a><time class="post-meta__date"><i class="fa fa-calendar" aria-hidden="true"></i> 2018-09-01</time><span class="article-meta"><span class="article-meta__separator">|</span><i class="fa fa-inbox article-meta__icon" aria-hidden="true"></i><a class="article-meta__categories" href="/categories/后端/">后端</a><i class="fa fa-angle-right" aria-hidden="true"></i><i class="fa fa-inbox article-meta__icon" aria-hidden="true"></i><a class="article-meta__categories" href="/categories/后端/POI/">POI</a></span><span class="article-meta tags"><span class="article-meta__separator">|</span><i class="fa fa-tag article-meta__icon" aria-hidden="true"></i><a class="article-meta__tags" href="/tags/hide/">hide</a><span class="article-meta__link">-</span><i class="fa fa-tag article-meta__icon" aria-hidden="true"></i><a class="article-meta__tags" href="/tags/POI/">POI</a></span><div class="content"><p>该工具类中，包含：创建表格（带默认样式）、自定义样式（通过重写 setDefaultStyle 和 setFirstCellStyle）、合并单元格、宽度自适应等。</p>
+<pre><code class="java">/**
+ * Excel操作工具类
+ */
+public class ExcelTools {
+
+    /**
+     * 默认的样式， 垂直水平居中、默认换行
+     */
+    private XSSFCellStyle defaultStyle;
+
+    /**
+     * 默认的行首样式
+     */
+    private XSSFCellStyle firstCellStyle;
+
+    private static SimpleDateFormat sdf = new SimpleDateFormat(&quot;yyyy.MM.dd hh:mm&quot;);
+
+    public XSSFWorkbook createWorkbook() {
+        XSSFWorkbook workbook = new XSSFWorkbook();
+
+        XSSFFont defaultFont = workbook.createFont();
+        defaultFont.setColor(IndexedColors.BLACK.getIndex());
+        defaultFont.setFontHeight(11);
+        defaultFont.setFontName(&quot;微软雅黑 Light&quot;);
+
+        XSSFCellStyle defaultStyle = workbook.createCellStyle();
+        defaultStyle.setWrapText(true);
+        defaultStyle.setAlignment(HorizontalAlignment.CENTER);
+        defaultStyle.setVerticalAlignment(VerticalAlignment.CENTER);
+        defaultStyle.setFont(defaultFont);
+
+        XSSFFont font = workbook.createFont();
+        font.setColor(IndexedColors.WHITE.getIndex());
+        font.setFontHeight(11);
+        font.setFontName(&quot;微软雅黑 Light&quot;);
+
+        XSSFCellStyle firstCellStyle = workbook.createCellStyle();
+        firstCellStyle.setAlignment(HorizontalAlignment.CENTER);
+        firstCellStyle.setVerticalAlignment(VerticalAlignment.CENTER);
+        firstCellStyle.setFillForegroundColor(IndexedColors.LIGHT_BLUE.getIndex());
+        firstCellStyle.setFillPattern(FillPatternType.SOLID_FOREGROUND);
+        firstCellStyle.setFont(font);
+        firstCellStyle.setBorderBottom(BorderStyle.THIN);
+        firstCellStyle.setBottomBorderColor(IndexedColors.LIGHT_BLUE.getIndex());
+        firstCellStyle.setLeftBorderColor(IndexedColors.LIGHT_BLUE.getIndex());
+        firstCellStyle.setRightBorderColor(IndexedColors.LIGHT_BLUE.getIndex());
+
+        setDefaultStyle(defaultStyle);
+        setFirstCellStyle(firstCellStyle);
+
+        return workbook;
+    }
+
+    // 创建页
+    public XSSFSheet createSheet(XSSFWorkbook workbook, String sheetName) {
+        return workbook.createSheet(sheetName);
+    }
+
+    /**
+     * 创建表格
+     *
+     * @param sheet           页 @NotNull
+     * @param titles          首行标题 @NotNull
+     * @param content         填充的内容 @NotNull
+     * @param rowNumber       开始的行号 @NotNull
+     * @param colNumber       开始的列号 @NotNull
+     * @param customRowHeight 自定义行高
+     * @param cellRangeList   需要合并的单元格
+     * @param customRowStyle  自定义样式,key 对应行，value 对应样式
+     * @param customColWidth  自定义宽度自适应
+     */
+    @SuppressWarnings(&quot;unchecked&quot;)
+    public void createTable(XSSFSheet sheet, String[] titles, Object[][] content,
+                            Integer rowNumber, Integer colNumber,
+                            boolean customRowHeight,
+                            List&lt;CellRange&gt; cellRangeList,
+                            Map&lt;Integer, XSSFCellStyle&gt; customRowStyle,
+                            Map&lt;Integer, Integer&gt; customColWidth) {
+        // 首行填充
+        setFirstRow(sheet, titles, getFirstCellStyle(), rowNumber, colNumber);
+        rowNumber++;
+        // 设置单元格宽度
+        autoWidth(sheet, titles, colNumber, customColWidth);
+        // 填充数据
+        for (int i = 0; i &lt; content.length; i++) {
+            Object[] rowContent = content[i];
+            XSSFRow row = sheet.getRow(rowNumber + i) == null ? sheet.createRow(rowNumber + i) : sheet.getRow(rowNumber + i);
+            row.setHeight(customRowHeight ? (short) 800 : -1);
+            XSSFCellStyle cellStyle = customRowStyle == null || customRowStyle.get(rowNumber + i) == null ?
+                    getDefaultStyle() : customRowStyle.get(rowNumber + i);
+            for (int j = 0; j &lt; rowContent.length; j++) {
+                Object colContent = rowContent[j];
+                XSSFCell cell = row.createCell(colNumber + j);
+                // 如果是基本数据类型，则转换为字符串填充; 日期转换输出; List转String输出
+                if (colContent instanceof Integer || colContent instanceof Double
+                        || colContent instanceof String || colContent instanceof Float
+                        || colContent instanceof Character || colContent instanceof Byte
+                        || colContent instanceof Short || colContent instanceof Boolean
+                        || colContent instanceof Long)
+                    cell.setCellValue(String.valueOf(colContent));
+                else if (colContent instanceof Date)
+                    cell.setCellValue(sdf.format(colContent));
+                else if (colContent instanceof Iterable)
+                    cell.setCellValue(new XSSFRichTextString(String.join(&quot; \n &quot;, (Iterable) colContent)));
+                else
+                    cell.setCellValue(&quot; - &quot;);
+                // 单元格样式
+                cell.setCellStyle(cellStyle);
+            }
+        }
+
+        // 合并单元格
+        mergeRegion(sheet, cellRangeList);
+    }
+
+    /**
+     * 合并单元格
+     */
+    public static void mergeRegion(XSSFSheet sheet, List&lt;CellRange&gt; cellRangeList) {
+        if (cellRangeList == null) return;
+        for (CellRange cellRange : cellRangeList) {
+            sheet.addMergedRegion(new CellRangeAddress(cellRange.getFirstRow(), cellRange.getLastRow(), cellRange.getFirstCol(), cellRange.getLastCol()));
+        }
+    }
+
+    /**
+     * 无需定制样式和宽度的表格
+     */
+    public void createTable(XSSFSheet sheet, String[] titles, Object[][] content,
+                            Integer rowNumber, Integer colNumber) {
+        createTable(sheet, titles, content, rowNumber, colNumber, true, null, null, null);
+    }
+
+
+    /**
+     * 填充首行数据
+     * 默认按照标题的长度设置单元格宽度
+     *
+     * @param sheet       页
+     * @param cellTitles  标题
+     * @param headerStyle 首行样式
+     * @param rowNum      起始行
+     * @param colNum      起始列
+     */
+    public static void setFirstRow(XSSFSheet sheet, String[] cellTitles, XSSFCellStyle headerStyle, int rowNum, int colNum) {
+        final XSSFRow row = sheet.getRow(rowNum) == null ? sheet.createRow(rowNum) : sheet.getRow(rowNum);
+        row.setHeight((short) 800);
+
+        for (String cellName : cellTitles) {
+            final Cell cell = row.createCell(colNum++);
+            cell.setCellValue(cellName);
+            cell.setCellStyle(headerStyle);
+        }
+    }
+
+    /**
+     * 宽度自适应
+     *
+     * @param sheet       页
+     * @param strings     行首
+     * @param colNumber   起始列
+     * @param customWidth 自定义宽度
+     */
+    public static void autoWidth(Sheet sheet, String[] strings, Integer colNumber, Map&lt;Integer, Integer&gt; customWidth) {
+        for (int s = 0; s &lt; strings.length; s++) {
+            int col = colNumber + s;
+            if (customWidth != null &amp;&amp; customWidth.keySet().contains(col)) {
+                sheet.setColumnWidth(col, customWidth.get(col));
+            } else {
+                sheet.autoSizeColumn(col, true);
+                sheet.setColumnWidth(col, sheet.getColumnWidth(col) * 17 / 10);
+            }
+        }
+    }
+
+    public XSSFCellStyle getDefaultStyle() {
+        return defaultStyle;
+    }
+
+    public void setDefaultStyle(XSSFCellStyle defaultStyle) {
+        this.defaultStyle = defaultStyle;
+    }
+
+    public XSSFCellStyle getFirstCellStyle() {
+        return firstCellStyle;
+    }
+
+    public void setFirstCellStyle(XSSFCellStyle firstCellStyle) {
+        this.firstCellStyle = firstCellStyle;
+    }
+}</code></pre>
+<p>合并单元格的对象：</p>
+<pre><code class="java">/**
+ * 需要合并的单元格
+ */
+@Setter
+@Getter
+public class CellRange {
+    private Integer firstRow;
+    private Integer lastRow;
+    private Integer firstCol;
+    private Integer lastCol;
+
+    private CellRange(Integer firstRow, Integer lastRow, Integer firstCol, Integer lastCol) {
+        this.firstRow = firstRow;
+        this.lastRow = lastRow;
+        this.firstCol = firstCol;
+        this.lastCol = lastCol;
+    }
+
+    public static CellRange build(Integer firstRow, Integer lastRow, Integer firstCol, Integer lastCol) {
+        return new CellRange(firstRow, lastRow, firstCol, lastCol);
+    }
+}</code></pre>
+</div><hr></div><div class="recent-post-item article-container"><a class="article-title" href="/2018/09/01/后端/SpringBootWebsocket/SpringBoot消息机制(四)-ActiveMQ介绍/">SpringBoot消息机制(四)-ActiveMQ介绍</a><time class="post-meta__date"><i class="fa fa-calendar" aria-hidden="true"></i> 2018-09-01</time><span class="article-meta"><span class="article-meta__separator">|</span><i class="fa fa-inbox article-meta__icon" aria-hidden="true"></i><a class="article-meta__categories" href="/categories/后端/">后端</a><i class="fa fa-angle-right" aria-hidden="true"></i><i class="fa fa-inbox article-meta__icon" aria-hidden="true"></i><a class="article-meta__categories" href="/categories/后端/java/">java</a><i class="fa fa-angle-right" aria-hidden="true"></i><i class="fa fa-inbox article-meta__icon" aria-hidden="true"></i><a class="article-meta__categories" href="/categories/后端/java/消息队列/">消息队列</a></span><span class="article-meta tags"><span class="article-meta__separator">|</span><i class="fa fa-tag article-meta__icon" aria-hidden="true"></i><a class="article-meta__tags" href="/tags/hide/">hide</a><span class="article-meta__link">-</span><i class="fa fa-tag article-meta__icon" aria-hidden="true"></i><a class="article-meta__tags" href="/tags/消息机制/">消息机制</a></span><div class="content"><p>#SpringBoot消息机制(四)-ActiveMQ介绍</p>
+</div><hr></div><div class="recent-post-item article-container"><a class="article-title" href="/2018/09/01/后端/SpringBootWebsocket/SpringBoot消息机制(六)-Apollo介绍与整合/">SpringBoot消息机制(六)-Apollo介绍与整合</a><time class="post-meta__date"><i class="fa fa-calendar" aria-hidden="true"></i> 2018-09-01</time><span class="article-meta"><span class="article-meta__separator">|</span><i class="fa fa-inbox article-meta__icon" aria-hidden="true"></i><a class="article-meta__categories" href="/categories/后端/">后端</a><i class="fa fa-angle-right" aria-hidden="true"></i><i class="fa fa-inbox article-meta__icon" aria-hidden="true"></i><a class="article-meta__categories" href="/categories/后端/java/">java</a><i class="fa fa-angle-right" aria-hidden="true"></i><i class="fa fa-inbox article-meta__icon" aria-hidden="true"></i><a class="article-meta__categories" href="/categories/后端/java/消息队列/">消息队列</a></span><span class="article-meta tags"><span class="article-meta__separator">|</span><i class="fa fa-tag article-meta__icon" aria-hidden="true"></i><a class="article-meta__tags" href="/tags/hide/">hide</a><span class="article-meta__link">-</span><i class="fa fa-tag article-meta__icon" aria-hidden="true"></i><a class="article-meta__tags" href="/tags/消息机制/">消息机制</a></span><div class="content"><p>#SpringBoot消息机制(六)-Apollo介绍与整合</p>
+</div><hr></div><div class="recent-post-item article-container"><a class="article-title" href="/2018/09/01/后端/SpringBootWebsocket/SpringBoot消息机制(五)-SpringBoot整合ActiveMQ/">SpringBoot消息机制(五)-SpringBoot整合ActiveMQ</a><time class="post-meta__date"><i class="fa fa-calendar" aria-hidden="true"></i> 2018-09-01</time><span class="article-meta"><span class="article-meta__separator">|</span><i class="fa fa-inbox article-meta__icon" aria-hidden="true"></i><a class="article-meta__categories" href="/categories/后端/">后端</a><i class="fa fa-angle-right" aria-hidden="true"></i><i class="fa fa-inbox article-meta__icon" aria-hidden="true"></i><a class="article-meta__categories" href="/categories/后端/java/">java</a><i class="fa fa-angle-right" aria-hidden="true"></i><i class="fa fa-inbox article-meta__icon" aria-hidden="true"></i><a class="article-meta__categories" href="/categories/后端/java/消息队列/">消息队列</a></span><span class="article-meta tags"><span class="article-meta__separator">|</span><i class="fa fa-tag article-meta__icon" aria-hidden="true"></i><a class="article-meta__tags" href="/tags/hide/">hide</a><span class="article-meta__link">-</span><i class="fa fa-tag article-meta__icon" aria-hidden="true"></i><a class="article-meta__tags" href="/tags/消息机制/">消息机制</a></span><div class="content"><p>#SpringBoot消息机制(五)-SpringBoot整合ActiveMQ</p>
+</div><hr></div><div class="recent-post-item article-container"><a class="article-title" href="/2018/09/01/后端/SpringBootWebsocket/SpringBoot消息机制(二)-Stomp协议/">SpringBoot消息机制(二)-Stomp协议</a><time class="post-meta__date"><i class="fa fa-calendar" aria-hidden="true"></i> 2018-09-01</time><span class="article-meta"><span class="article-meta__separator">|</span><i class="fa fa-inbox article-meta__icon" aria-hidden="true"></i><a class="article-meta__categories" href="/categories/后端/">后端</a><i class="fa fa-angle-right" aria-hidden="true"></i><i class="fa fa-inbox article-meta__icon" aria-hidden="true"></i><a class="article-meta__categories" href="/categories/后端/java/">java</a><i class="fa fa-angle-right" aria-hidden="true"></i><i class="fa fa-inbox article-meta__icon" aria-hidden="true"></i><a class="article-meta__categories" href="/categories/后端/java/消息队列/">消息队列</a></span><span class="article-meta tags"><span class="article-meta__separator">|</span><i class="fa fa-tag article-meta__icon" aria-hidden="true"></i><a class="article-meta__tags" href="/tags/hide/">hide</a><span class="article-meta__link">-</span><i class="fa fa-tag article-meta__icon" aria-hidden="true"></i><a class="article-meta__tags" href="/tags/消息机制/">消息机制</a></span><div class="content"><h1 id="SpringBoot消息机制-二-Stomp协议"><a href="#SpringBoot消息机制-二-Stomp协议" class="headerlink" title="SpringBoot消息机制(二)-Stomp协议"></a>SpringBoot消息机制(二)-Stomp协议</h1></div><hr></div><div class="recent-post-item article-container"><a class="article-title" href="/2018/09/01/后端/SpringBootWebsocket/SpringBoot消息机制(三)-搭建Websocket+Stomp服务/">SpringBoot消息机制(三)-搭建Websocket+Stomp服务</a><time class="post-meta__date"><i class="fa fa-calendar" aria-hidden="true"></i> 2018-09-01</time><span class="article-meta"><span class="article-meta__separator">|</span><i class="fa fa-inbox article-meta__icon" aria-hidden="true"></i><a class="article-meta__categories" href="/categories/后端/">后端</a><i class="fa fa-angle-right" aria-hidden="true"></i><i class="fa fa-inbox article-meta__icon" aria-hidden="true"></i><a class="article-meta__categories" href="/categories/后端/java/">java</a><i class="fa fa-angle-right" aria-hidden="true"></i><i class="fa fa-inbox article-meta__icon" aria-hidden="true"></i><a class="article-meta__categories" href="/categories/后端/java/消息队列/">消息队列</a></span><span class="article-meta tags"><span class="article-meta__separator">|</span><i class="fa fa-tag article-meta__icon" aria-hidden="true"></i><a class="article-meta__tags" href="/tags/hide/">hide</a><span class="article-meta__link">-</span><i class="fa fa-tag article-meta__icon" aria-hidden="true"></i><a class="article-meta__tags" href="/tags/消息机制/">消息机制</a></span><div class="content"><p>#SpringBoot消息机制(三)-搭建Websocket+Stomp服务</p>
+</div><hr></div><div class="recent-post-item article-container"><a class="article-title" href="/2018/09/01/后端/SpringBootWebsocket/SpringBoot消息机制(一)-WebSocket介绍/">SpringBoot消息机制(一)-WebSocket介绍</a><time class="post-meta__date"><i class="fa fa-calendar" aria-hidden="true"></i> 2018-09-01</time><span class="article-meta"><span class="article-meta__separator">|</span><i class="fa fa-inbox article-meta__icon" aria-hidden="true"></i><a class="article-meta__categories" href="/categories/后端/">后端</a><i class="fa fa-angle-right" aria-hidden="true"></i><i class="fa fa-inbox article-meta__icon" aria-hidden="true"></i><a class="article-meta__categories" href="/categories/后端/java/">java</a><i class="fa fa-angle-right" aria-hidden="true"></i><i class="fa fa-inbox article-meta__icon" aria-hidden="true"></i><a class="article-meta__categories" href="/categories/后端/java/消息队列/">消息队列</a></span><span class="article-meta tags"><span class="article-meta__separator">|</span><i class="fa fa-tag article-meta__icon" aria-hidden="true"></i><a class="article-meta__tags" href="/tags/hide/">hide</a><span class="article-meta__link">-</span><i class="fa fa-tag article-meta__icon" aria-hidden="true"></i><a class="article-meta__tags" href="/tags/消息机制/">消息机制</a></span><div class="content"><p>#SpringBoot 消息机制(一)-WebSocket 介绍<br><a href="https://my.oschina.net/genghz/blog/1796965" target="_blank" rel="noopener">https://my.oschina.net/genghz/blog/1796965</a></p>
+</div><hr></div><nav id="pagination"><div class="pagination"><a class="extend prev" rel="prev" href="/page/24/"><i class="fa fa-chevron-left"></i></a><a class="page-number" href="/">1</a><span class="space">&hellip;</span><a class="page-number" href="/page/24/">24</a><span class="page-number current">25</span><a class="page-number" href="/page/26/">26</a><a class="page-number" href="/page/27/">27</a><a class="extend next" rel="next" href="/page/26/"><i class="fa fa-chevron-right"></i></a></div></nav></div></div><footer><div class="layout" id="footer"><div class="copyright">&copy;2013 - 2020 By koral</div><div class="framework-info"><span>驱动 - </span><a href="http://hexo.io"><span>Hexo</span></a><span class="footer-separator">|</span><span>主题 - </span><a href="https://github.com/Molunerfinn/hexo-theme-melody"><span>Melody</span></a></div><div class="busuanzi"><script async src="//busuanzi.ibruce.info/busuanzi/2.3/busuanzi.pure.mini.js"></script><span id="busuanzi_container_site_uv"><i class="fa fa-user"></i><span id="busuanzi_value_site_uv"></span><span></span></span><span class="footer-separator">|</span><span id="busuanzi_container_site_pv"><i class="fa fa-eye"></i><span id="busuanzi_value_site_pv"></span><span></span></span></div></div></footer><i class="fa fa-arrow-up" id="go-up" aria-hidden="true"></i><script src="https://cdn.jsdelivr.net/npm/animejs@latest/anime.min.js"></script><script src="https://cdn.jsdelivr.net/npm/jquery@latest/dist/jquery.min.js"></script><script src="https://cdn.jsdelivr.net/npm/@fancyapps/fancybox@latest/dist/jquery.fancybox.min.js"></script><script src="https://cdn.jsdelivr.net/npm/velocity-animate@latest/velocity.min.js"></script><script src="https://cdn.jsdelivr.net/npm/velocity-ui-pack@latest/velocity.ui.min.js"></script><script src="/js/utils.js?version=1.7.0"></script><script src="/js/fancybox.js?version=1.7.0"></script><script src="/js/sidebar.js?version=1.7.0"></script><script src="/js/copy.js?version=1.7.0"></script><script src="/js/fireworks.js?version=1.7.0"></script><script src="/js/transition.js?version=1.7.0"></script><script src="/js/scroll.js?version=1.7.0"></script><script src="/js/head.js?version=1.7.0"></script><script>if(/Android|webOS|iPhone|iPod|iPad|BlackBerry/i.test(navigator.userAgent)) {
+  $('#nav').addClass('is-mobile')
+  $('footer').addClass('is-mobile')
+  $('#top-container').addClass('is-mobile')
+}</script></body></html>

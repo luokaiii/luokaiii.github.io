@@ -1,0 +1,444 @@
+<!DOCTYPE html><html lang="zh-Hans"><head><meta name="generator" content="Hexo 3.9.0"><meta charset="UTF-8"><meta http-equiv="X-UA-Compatible" content="IE=edge"><meta name="viewport" content="width=device-width, initial-scale=1, maximum-scale=1"><meta name="description" content="《Umi Hooks》官网笔记-useFormTable"><meta name="keywords" content="hide,Umi/Hooks"><meta name="author" content="koral"><meta name="copyright" content="koral"><title>《Umi Hooks》官网笔记-useFormTable | 凯</title><link rel="shortcut icon" href="/melody-favicon.ico"><link rel="stylesheet" href="/css/index.css?version=1.7.0"><link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/font-awesome@latest/css/font-awesome.min.css?version=1.7.0"><meta name="format-detection" content="telephone=no"><meta http-equiv="x-dns-prefetch-control" content="on"><link rel="dns-prefetch" href="https://cdn.jsdelivr.net"><meta http-equiv="Cache-Control" content="no-transform"><meta http-equiv="Cache-Control" content="no-siteapp"><script>var GLOBAL_CONFIG = { 
+  root: '/',
+  algolia: undefined,
+  localSearch: undefined,
+  copy: {
+    success: '复制成功',
+    error: '复制错误',
+    noSupport: '浏览器不支持'
+  }
+} </script></head><body><i class="fa fa-arrow-right" id="toggle-sidebar" aria-hidden="true"></i><div id="sidebar" data-display="true"><div class="toggle-sidebar-info text-center"><span data-toggle="切换文章详情">切换站点概览</span><hr></div><div class="sidebar-toc"><div class="sidebar-toc__title">目录</div><div class="sidebar-toc__progress"><span class="progress-notice">你已经读了</span><span class="progress-num">0</span><span class="progress-percentage">%</span><div class="sidebar-toc__progress-bar"></div></div><div class="sidebar-toc__content"><ol class="toc"><li class="toc-item toc-level-1"><a class="toc-link" href="#useFormTable"><span class="toc-number">1.</span> <span class="toc-text">useFormTable</span></a><ol class="toc-child"><li class="toc-item toc-level-2"><a class="toc-link" href="#一、Form-与-Table-联动"><span class="toc-number">1.1.</span> <span class="toc-text">一、Form 与 Table 联动</span></a></li><li class="toc-item toc-level-2"><a class="toc-link" href="#二、数据缓存"><span class="toc-number">1.2.</span> <span class="toc-text">二、数据缓存</span></a></li><li class="toc-item toc-level-2"><a class="toc-link" href="#三、API"><span class="toc-number">1.3.</span> <span class="toc-text">三、API</span></a></li></ol></li></ol></div></div><div class="author-info hide"><div class="author-info__avatar text-center"><img src="/img/avatar.png"></div><div class="author-info__name text-center">koral</div><div class="author-info__description text-center">回廊一寸相思地，落月成孤倚。背灯和月就花阴，已是十年踪迹十年心。</div><hr><div class="author-info-articles"><a class="author-info-articles__archives article-meta" href="/archives"><span class="pull-left">文章</span><span class="pull-right">266</span></a><a class="author-info-articles__tags article-meta" href="/tags"><span class="pull-left">标签</span><span class="pull-right">34</span></a><a class="author-info-articles__categories article-meta" href="/categories"><span class="pull-left">分类</span><span class="pull-right">44</span></a></div></div></div><div id="content-outer"><div class="no-bg" id="top-container"><div id="page-header"><span class="pull-left"> <a id="site-name" href="/index.html">凯</a></span><i class="fa fa-bars toggle-menu pull-right" aria-hidden="true"></i><span class="pull-right menus">   <a class="site-page" href="/">首页</a><a class="site-page" href="/archives">归档</a><a class="site-page" href="/tags">标签</a><a class="site-page" href="/categories">分类</a><a class="site-page" href="/about">关于我</a></span><span class="pull-right"></span></div><div id="post-info"><div id="post-title">《Umi Hooks》官网笔记-useFormTable</div><div id="post-meta"><time class="post-meta__date"><i class="fa fa-calendar" aria-hidden="true"></i> 2020-04-21</time><span class="post-meta__separator">|</span><i class="fa fa-inbox post-meta__icon" aria-hidden="true"></i><a class="post-meta__categories" href="/categories/前端/">前端</a><i class="fa fa-angle-right" aria-hidden="true"></i><i class="fa fa-inbox post-meta__icon" aria-hidden="true"></i><a class="post-meta__categories" href="/categories/前端/Umi-Hooks/">Umi/Hooks</a></div></div></div><div class="layout" id="content-inner"><article id="post"><div class="article-container" id="post-content"><h1 id="useFormTable"><a href="#useFormTable" class="headerlink" title="useFormTable"></a>useFormTable</h1><p>封装了常用的 AntD Form 与 AntD Table 联动逻辑，并且同时支持 AntD V3与V4.</p>
+<p>以下示例均为 AntD V4 版本。</p>
+<h2 id="一、Form-与-Table-联动"><a href="#一、Form-与-Table-联动" class="headerlink" title="一、Form 与 Table 联动"></a>一、Form 与 Table 联动</h2><pre><code class="tsx">/**
+ * title: Form与Table联动
+ * description: useFormTable 接收 form 实例后，会返回 search 对象。
+ */
+import React from &#39;react&#39;;
+import { Form, Row, Col, Input, Button, Select, Table } from &#39;antd&#39;;
+import { useFormTable } from &#39;@umijs/hooks&#39;;
+import { PaginatedParams } from &#39;@umijs/hooks/lib/useFormTable&#39;;
+
+interface Item {
+  name: {
+    last: string;
+  };
+  email: string;
+  phone: string;
+  gender: &#39;male&#39; | &#39;female&#39;;
+}
+
+interface Result {
+  total: number;
+  list: Item[];
+}
+
+const getTableData = (
+  { current, pageSize }: PaginatedParams[0],
+  formData: Object,
+): Promise&lt;Result&gt; =&gt; {
+  let query = `page=${current}&amp;size=${pageSize}`;
+  Object.entries(formData).forEach(([key, value]) =&gt; {
+    if (value) {
+      query += `&amp;${key}=${value}`;
+    }
+  });
+
+  return fetch(`https://randomuser.me/api?results=55&amp;${query}`)
+    .then((res) =&gt; res.json())
+    .then((res) =&gt; ({
+      total: res.info.results,
+      list: res.results,
+    }));
+};
+
+export default () =&gt; {
+  const [form] = Form.useForm();
+
+  const { tableProps, search } = useFormTable(getTableData, {
+    defaultPageSize: 5,
+    form,
+  });
+
+  const { type, changeType, submit, reset } = search;
+
+  const columns = [
+    {
+      title: &#39;name&#39;,
+      dataIndex: &#39;name.last&#39;,
+    },
+    {
+      title: &#39;email&#39;,
+      dataIndex: &#39;email&#39;,
+    },
+    {
+      title: &#39;phone&#39;,
+      dataIndex: &#39;phone&#39;,
+    },
+    {
+      title: &#39;gender&#39;,
+      dataIndex: &#39;gender&#39;,
+    },
+  ];
+
+  const advanceSearchForm = (
+    &lt;div&gt;
+      &lt;Form form={form}&gt;
+        &lt;Row gutter={24}&gt;
+          &lt;Col span={8}&gt;
+            &lt;Form.Item label=&quot;name&quot; name=&quot;name&quot;&gt;
+              &lt;Input /&gt;
+            &lt;/Form.Item&gt;
+          &lt;/Col&gt;
+          &lt;Col span={8}&gt;
+            &lt;Form.Item label=&quot;email&quot; name=&quot;email&quot;&gt;
+              &lt;Input /&gt;
+            &lt;/Form.Item&gt;
+          &lt;/Col&gt;
+          &lt;Col span={8}&gt;
+            &lt;Form.Item label=&quot;phone&quot; name=&quot;phone&quot;&gt;
+              &lt;Input /&gt;
+            &lt;/Form.Item&gt;
+          &lt;/Col&gt;
+        &lt;/Row&gt;
+        &lt;Row&gt;
+          &lt;Form.Item style={{ display: 'flex', justifyContent: 'flex-end' }}&gt;
+            &lt;Button type=&quot;primary&quot; onClick={submit}&gt;
+              Search
+            &lt;/Button&gt;
+            &lt;Button type=&quot;default&quot; onClick={reset}&gt;
+              reset
+            &lt;/Button&gt;
+            &lt;Button type=&quot;link&quot; onClick={changeType}&gt;
+              simple search
+            &lt;/Button&gt;
+          &lt;/Form.Item&gt;
+        &lt;/Row&gt;
+      &lt;/Form&gt;
+    &lt;/div&gt;
+  );
+
+  const searchForm = (
+    &lt;div style={{ marginBottom: 16 }}&gt;
+      &lt;Form form={form} style={{ display: 'flex', justifyContent: 'flex-end' }}&gt;
+        &lt;Form.Item name=&quot;gender&quot;&gt;
+          &lt;Select onChange={submit} style={{ width: 120, marginRight: 16 }}&gt;
+            &lt;Select.Option value=&quot;&quot;&gt;all&lt;/Select.Option&gt;
+            &lt;Select.Option value=&quot;male&quot;&gt;male&lt;/Select.Option&gt;
+            &lt;Select.Option value=&quot;female&quot;&gt;female&lt;/Select.Option&gt;
+          &lt;/Select&gt;
+        &lt;/Form.Item&gt;
+        &lt;Form.Item label=&quot;名称&quot; name=&quot;name&quot;&gt;
+          &lt;Input.Search style={{ width: 240 }} onSearch={submit} /&gt;
+        &lt;/Form.Item&gt;
+        &lt;Button type=&quot;link&quot; onClick={changeType}&gt;
+          Advanced Search
+        &lt;/Button&gt;
+      &lt;/Form&gt;
+    &lt;/div&gt;
+  );
+
+  return (
+    &lt;div&gt;
+      {type === &#39;simple&#39; ? searchForm : advanceSearchForm}
+      &lt;Table columns={columns} bordered rowKey=&quot;email&quot; {...tableProps} /&gt;
+    &lt;/div&gt;
+  );
+};</code></pre>
+<h2 id="二、数据缓存"><a href="#二、数据缓存" class="headerlink" title="二、数据缓存"></a>二、数据缓存</h2><pre><code class="tsx">/**
+ * title: 数据缓存
+ * desc: 通过 cacheKey 可以实现 Form 和 Table 数据缓存。
+ */
+import React, { useState } from &#39;react&#39;;
+import { Table, Input, Form, Button } from &#39;antd&#39;;
+import { useFormTable } from &#39;@umijs/hooks&#39;;
+import { PaginatedParams } from &#39;@umijs/hooks/lib/useFormTable&#39;;
+
+interface Item {
+  name: {
+    last: string;
+  };
+  email: string;
+  phone: string;
+  gender: &#39;male&#39; | &#39;female&#39;;
+}
+
+interface Result {
+  total: number;
+  list: Item[];
+}
+
+const getTableData = (
+  { current, pageSize }: PaginatedParams[0],
+  formData: Object,
+): Promise&lt;Result&gt; =&gt; {
+  let query = `page=${current}&amp;size=${pageSize}`;
+  Object.entries(formData).forEach(([key, value]) =&gt; {
+    if (value) {
+      query += `&amp;${key}=${value}`;
+    }
+  });
+
+  return fetch(`https://randomuser.me/api?results=55&amp;${query}`)
+    .then((res) =&gt; res.json())
+    .then((res) =&gt; ({
+      total: res.info.results,
+      list: res.results,
+    }));
+};
+
+const AppList = () =&gt; {
+  const [form] = Form.useForm();
+
+  const { tableProps, params, search } = useFormTable(getTableData, {
+    defaultPageSize: 5,
+    form,
+    cacheKey: &#39;tableProps&#39;,
+  });
+
+  const { sorter = {}, filters = {} } = params[0] || ({} as any);
+  const { type, changeType, submit, reset } = search || {};
+
+  const columns = [
+    {
+      title: &#39;name&#39;,
+      dataIndex: &#39;name.last&#39;,
+    },
+    {
+      title: &#39;email&#39;,
+      dataIndex: &#39;email&#39;,
+    },
+    {
+      title: &#39;phone&#39;,
+      dataIndex: &#39;phone&#39;,
+      sorter: true,
+      sortOrder: sorter.field === &#39;phone&#39; &amp;&amp; sorter.order,
+    },
+    {
+      title: &#39;gender&#39;,
+      dataIndex: &#39;gender&#39;,
+      filters: [
+        { text: &#39;male&#39;, value: &#39;male&#39; },
+        { text: &#39;female&#39;, value: &#39;female&#39; },
+      ],
+      filteredValue: filters.gender,
+    },
+  ];
+
+  const searchForm = (
+    &lt;div style={{ marginBottom: 16 }}&gt;
+      &lt;Form form={form} style={{ display: 'flex', justifyContent: 'flex-end' }}&gt;
+        &lt;Form.Item name=&quot;name&quot;&gt;
+          &lt;Input placeholder=&quot;enter name&quot; style={{ width: 140, marginRight: 16 }} /&gt;
+        &lt;/Form.Item&gt;
+
+        {type === &#39;advance&#39; &amp;&amp; (
+          &lt;&gt;
+            &lt;Form.Item name=&quot;email&quot;&gt;
+              &lt;Input placeholder=&quot;enter email&quot; style={{ width: 140, marginRight: 16 }} /&gt;
+            &lt;/Form.Item&gt;
+            &lt;Form.Item name=&quot;phone&quot;&gt;
+              &lt;Input placeholder=&quot;enter phone&quot; style={{ width: 140, marginRight: 16 }} /&gt;
+            &lt;/Form.Item&gt;
+          &lt;/&gt;
+        )}
+        &lt;Button type=&quot;primary&quot; onClick={submit}&gt;
+          Search
+        &lt;/Button&gt;
+        &lt;Button onClick={reset} style={{ marginLeft: 8 }}&gt;
+          Reset
+        &lt;/Button&gt;
+        &lt;Button type=&quot;link&quot; onClick={changeType}&gt;
+          {type === &#39;simple&#39; ? &#39;Expand&#39; : &#39;Close&#39;}
+        &lt;/Button&gt;
+      &lt;/Form&gt;
+    &lt;/div&gt;
+  );
+
+  return (
+    &lt;div&gt;
+      {searchForm}
+      &lt;Table columns={columns} rowKey=&quot;email&quot; {...tableProps} /&gt;
+    &lt;/div&gt;
+  );
+};
+
+export default () =&gt; {
+  const [show, setShow] = useState(true);
+
+  return (
+    &lt;div&gt;
+      &lt;Button onClick={() =&gt; setShow(!show)}&gt;toggle&lt;/Button&gt;
+      {show &amp;&amp; &lt;AppList /&gt;}
+    &lt;/div&gt;
+  );
+};</code></pre>
+<pre><code class="tsx">/**
+ * title: 使用 defaultParams
+ * desc: useFormTable 通过 defaultParams 设置初始化值，defaultParams 是一个数组，第一个值为分页相关参数，第二个值为表单相关数据。如果有第二个值，我们会帮您初始化表单！需要注意的是，初始化的表单数据可以填写 simple 与 advance 全量的表单数据，我们会帮您挑选当前激活的类型中的表单数据。
+ */
+import React from &#39;react&#39;;
+import { Button, Col, Form, Input, Row, Table, Select } from &#39;antd&#39;;
+import { WrappedFormUtils } from &#39;antd/lib/form/Form&#39;;
+import { useFormTable } from &#39;@umijs/hooks&#39;
+import { PaginatedParams } from &#39;@umijs/hooks/useFormTable/lib&#39;
+
+const { Option } = Select;
+
+interface Item {
+  name: {
+    last: string;
+  };
+  email: string;
+  phone: string;
+  gender: &#39;male&#39; | &#39;female&#39;;
+}
+
+interface Result {
+  total: number;
+  list: Item[];
+}
+
+interface AppListProps {
+  form: WrappedFormUtils;
+}
+
+const getTableData = ({ current, pageSize }: PaginatedParams[0], formData: Object): Promise&lt;Result&gt; =&gt; {
+  let query = `page=${current}&amp;size=${pageSize}`;
+  Object.entries(formData).forEach(([key, value]) =&gt; {
+    if (value) {
+      query += `&amp;${key}=${value}`
+    }
+  });
+
+  return fetch(`https://randomuser.me/api?results=55&amp;${query}`)
+    .then(res =&gt; res.json())
+    .then(res =&gt; ({
+      total: res.info.results,
+      list: res.results,
+    }));
+};
+
+const AppList = (props: AppListProps) =&gt; {
+  const { getFieldDecorator } = props.form;
+  const { tableProps, search } = useFormTable(getTableData, {
+    form: props.form,
+    defaultParams: [
+      { current: 2, pageSize: 5 },
+      { name: &#39;hello&#39;, email: &#39;abc@gmail.com&#39;, gender: &#39;female&#39; }
+    ],
+    defaultType: &#39;advance&#39;
+  });
+
+  const { type, changeType, submit, reset } = search;
+
+  const columns = [
+    {
+      title: &#39;name&#39;,
+      dataIndex: &#39;name.last&#39;,
+    },
+    {
+      title: &#39;email&#39;,
+      dataIndex: &#39;email&#39;,
+    },
+    {
+      title: &#39;phone&#39;,
+      dataIndex: &#39;phone&#39;,
+    },
+    {
+      title: &#39;gender&#39;,
+      dataIndex: &#39;gender&#39;,
+    },
+  ];
+
+  const advanceSearchForm = (
+    &lt;div&gt;
+      &lt;Form&gt;
+        &lt;Row gutter={24}&gt;
+          &lt;Col span={8}&gt;
+            &lt;Form.Item label=&quot;name&quot;&gt;
+              {getFieldDecorator(&#39;name&#39;)(&lt;Input placeholder=&quot;name&quot; /&gt;)}
+            &lt;/Form.Item&gt;
+          &lt;/Col&gt;
+          &lt;Col span={8}&gt;
+            &lt;Form.Item label=&quot;email&quot;&gt;
+              {getFieldDecorator(&#39;email&#39;)(&lt;Input placeholder=&quot;email&quot; /&gt;)}
+            &lt;/Form.Item&gt;
+          &lt;/Col&gt;
+          &lt;Col span={8}&gt;
+            &lt;Form.Item label=&quot;phone&quot;&gt;
+              {getFieldDecorator(&#39;phone&#39;)(&lt;Input placeholder=&quot;phone&quot; /&gt;)}
+            &lt;/Form.Item&gt;
+          &lt;/Col&gt;
+        &lt;/Row&gt;
+        &lt;Row&gt;
+          &lt;Form.Item style={{ display: 'flex', justifyContent: 'flex-end' }}&gt;
+            &lt;Button type=&quot;primary&quot; onClick={submit}&gt;
+              Search
+            &lt;/Button&gt;
+            &lt;Button onClick={reset} style={{ marginLeft: 16 }}&gt;
+              Reset
+            &lt;/Button&gt;
+            &lt;Button type=&quot;link&quot; onClick={changeType}&gt;
+              Simple Search
+            &lt;/Button&gt;
+          &lt;/Form.Item&gt;
+        &lt;/Row&gt;
+      &lt;/Form&gt;
+    &lt;/div&gt;
+  );
+
+  const searchFrom = (
+    &lt;div style={{ marginBottom: 16 }}&gt;
+      &lt;Form style={{ display: 'flex', justifyContent: 'flex-end' }}&gt;
+        {getFieldDecorator(&#39;gender&#39;, {
+          initialValue: &#39;male&#39;,
+        })(
+          &lt;Select style={{ width: 120, marginRight: 16 }} onChange={submit}&gt;
+            &lt;Option value=&quot;&quot;&gt;all&lt;/Option&gt;
+            &lt;Option value=&quot;male&quot;&gt;male&lt;/Option&gt;
+            &lt;Option value=&quot;female&quot;&gt;female&lt;/Option&gt;
+          &lt;/Select&gt;,
+        )}
+        {getFieldDecorator(&#39;name&#39;)(
+          &lt;Input.Search placeholder=&quot;enter name&quot; style={{ width: 240 }} onSearch={submit} /&gt;,
+        )}
+        &lt;Button type=&quot;link&quot; onClick={changeType}&gt;
+          Advanced Search
+        &lt;/Button&gt;
+      &lt;/Form&gt;
+    &lt;/div&gt;
+  );
+
+  return (
+    &lt;div&gt;
+      {type === &#39;simple&#39; ? searchFrom : advanceSearchForm}
+      &lt;Table columns={columns} rowKey=&quot;email&quot; {...tableProps} /&gt;
+    &lt;/div&gt;
+  );
+};
+
+export default Form.create()(AppList);</code></pre>
+<h2 id="三、API"><a href="#三、API" class="headerlink" title="三、API"></a>三、API</h2><p>useFormTable 基于 useRequest 实现，所有的 useRequest Pagination API 均可以直接使用。比如 cacheKey、manual 等。</p>
+<p>useFormTable 额外增加了 result.search 和 options.form。</p>
+<pre><code class="js">const {
+    ...,
+    search: {
+        type: &#39;simple&#39; | &#39;advance&#39;;
+        changeType: () =&gt; void;
+        submit: () =&gt; void;
+        reset: () =&gt; void;
+    };
+} = useFormTable(
+    service,
+    {
+        ...,
+        form,
+        defaultType: &#39;simple&#39; | &#39;advance&#39;,
+        defualtParams: [pagination, formData]
+    }
+)</code></pre>
+</div></article><div class="post-copyright"><div class="post-copyright__author"><span class="post-copyright-meta">文章作者: </span><span class="post-copyright-info"><a href="mailto:undefined">koral</a></span></div><div class="post-copyright__type"><span class="post-copyright-meta">文章链接: </span><span class="post-copyright-info"><a href="http://luokaiii.github.io/2020/04/21/前端/UmiHooks/Ant Design/useFormTable/">http://luokaiii.github.io/2020/04/21/前端/UmiHooks/Ant Design/useFormTable/</a></span></div><div class="post-copyright__notice"><span class="post-copyright-meta">版权声明: </span><span class="post-copyright-info">本博客所有文章除特别声明外，均采用 <a href="https://creativecommons.org/licenses/by-nc-sa/4.0/">CC BY-NC-SA 4.0</a> 许可协议。转载请注明来自 <a href="http://luokaiii.github.io">凯</a>！</span></div></div><div class="post-meta__tag-list"><a class="post-meta__tags" href="/tags/hide/">hide</a><a class="post-meta__tags" href="/tags/Umi-Hooks/">Umi/Hooks</a></div><nav id="pagination"><div class="prev-post pull-left"><a href="/2020/04/21/前端/UmiHooks/LifeCycle/useUnmount/"><i class="fa fa-chevron-left">  </i><span>《Umi Hooks》官网笔记-useUnmount</span></a></div><div class="next-post pull-right"><a href="/2020/04/21/前端/UmiHooks/Dom/useTextSelection/"><span>《Umi Hooks》官网笔记-useTextSelection</span><i class="fa fa-chevron-right"></i></a></div></nav></div></div><footer><div class="layout" id="footer"><div class="copyright">&copy;2013 - 2020 By koral</div><div class="framework-info"><span>驱动 - </span><a href="http://hexo.io"><span>Hexo</span></a><span class="footer-separator">|</span><span>主题 - </span><a href="https://github.com/Molunerfinn/hexo-theme-melody"><span>Melody</span></a></div><div class="busuanzi"><script async src="//busuanzi.ibruce.info/busuanzi/2.3/busuanzi.pure.mini.js"></script><span id="busuanzi_container_page_pv"><i class="fa fa-file"></i><span id="busuanzi_value_page_pv"></span><span></span></span></div></div></footer><i class="fa fa-arrow-up" id="go-up" aria-hidden="true"></i><script src="https://cdn.jsdelivr.net/npm/animejs@latest/anime.min.js"></script><script src="https://cdn.jsdelivr.net/npm/jquery@latest/dist/jquery.min.js"></script><script src="https://cdn.jsdelivr.net/npm/@fancyapps/fancybox@latest/dist/jquery.fancybox.min.js"></script><script src="https://cdn.jsdelivr.net/npm/velocity-animate@latest/velocity.min.js"></script><script src="https://cdn.jsdelivr.net/npm/velocity-ui-pack@latest/velocity.ui.min.js"></script><script src="/js/utils.js?version=1.7.0"></script><script src="/js/fancybox.js?version=1.7.0"></script><script src="/js/sidebar.js?version=1.7.0"></script><script src="/js/copy.js?version=1.7.0"></script><script src="/js/fireworks.js?version=1.7.0"></script><script src="/js/transition.js?version=1.7.0"></script><script src="/js/scroll.js?version=1.7.0"></script><script src="/js/head.js?version=1.7.0"></script><script>if(/Android|webOS|iPhone|iPod|iPad|BlackBerry/i.test(navigator.userAgent)) {
+  $('#nav').addClass('is-mobile')
+  $('footer').addClass('is-mobile')
+  $('#top-container').addClass('is-mobile')
+}</script></body></html>

@@ -7,922 +7,612 @@
     error: '复制错误',
     noSupport: '浏览器不支持'
   }
-} </script></head><body><i class="fa fa-arrow-right" id="toggle-sidebar" aria-hidden="true"></i><div id="sidebar" data-display="false"><div class="author-info"><div class="author-info__avatar text-center"><img src="/img/avatar.png"></div><div class="author-info__name text-center">koral</div><div class="author-info__description text-center">回廊一寸相思地，落月成孤倚。背灯和月就花阴，已是十年踪迹十年心。</div><hr><div class="author-info-articles"><a class="author-info-articles__archives article-meta" href="/archives"><span class="pull-left">文章</span><span class="pull-right">221</span></a><a class="author-info-articles__tags article-meta" href="/tags"><span class="pull-left">标签</span><span class="pull-right">31</span></a><a class="author-info-articles__categories article-meta" href="/categories"><span class="pull-left">分类</span><span class="pull-right">40</span></a></div></div></div><nav class="no-bg" id="nav"><div id="page-header"><span class="pull-left"> <a id="site-name" href="/index.html">凯</a></span><i class="fa fa-bars toggle-menu pull-right" aria-hidden="true"></i><span class="pull-right menus">   <a class="site-page" href="/">首页</a><a class="site-page" href="/archives">归档</a><a class="site-page" href="/tags">标签</a><a class="site-page" href="/categories">分类</a><a class="site-page" href="/about">关于我</a></span><span class="pull-right"></span></div><div id="site-info"><div id="site-title">凯</div><div id="site-sub-title">回廊一寸相思地，落月成孤倚。背灯和月就花阴，已是十年踪迹十年心。</div></div></nav><div id="content-outer"><div class="layout" id="content-inner"><div class="recent-post-item article-container"><a class="article-title" href="/2019/06/26/读书笔记/《JavaDesignPatterns》/5.抽象工厂模式/">《Java Design Patterns》第三章 抽象工厂模式</a><time class="post-meta__date"><i class="fa fa-calendar" aria-hidden="true"></i> 2019-06-26</time><span class="article-meta"><span class="article-meta__separator">|</span><i class="fa fa-inbox article-meta__icon" aria-hidden="true"></i><a class="article-meta__categories" href="/categories/读书笔记/">读书笔记</a><i class="fa fa-angle-right" aria-hidden="true"></i><i class="fa fa-inbox article-meta__icon" aria-hidden="true"></i><a class="article-meta__categories" href="/categories/读书笔记/设计模式/">设计模式</a></span><span class="article-meta tags"><span class="article-meta__separator">|</span><i class="fa fa-tag article-meta__icon" aria-hidden="true"></i><a class="article-meta__tags" href="/tags/hide/">hide</a><span class="article-meta__link">-</span><i class="fa fa-tag article-meta__icon" aria-hidden="true"></i><a class="article-meta__tags" href="/tags/设计模式/">设计模式</a></span><div class="content"><h1 id="第三章-抽象工厂模式"><a href="#第三章-抽象工厂模式" class="headerlink" title="第三章 抽象工厂模式"></a>第三章 抽象工厂模式</h1><p>在工厂方法模式中，通过引入工厂等级结构，解决了 简单工厂模式 中工厂类过于庞大，职责过重的问题。但是由于工厂方法模式中的每一个工厂只生产一类产品，导致系统中存在大量工厂类，增加系统开销。</p>
-<p>因此我们需要将一些相关的产品组成一个“产品族”，由同一个工厂生产。</p>
-<h2 id="一、抽象工厂模式"><a href="#一、抽象工厂模式" class="headerlink" title="一、抽象工厂模式"></a>一、抽象工厂模式</h2><h3 id="1-1-设计一款界面皮肤库"><a href="#1-1-设计一款界面皮肤库" class="headerlink" title="1.1 设计一款界面皮肤库"></a>1.1 设计一款界面皮肤库</h3><p>设计一款界面皮肤库，可以通过菜单来选择皮肤，不同的皮肤将提供视觉效果不同的按钮、文本框、组合框等。</p>
-<p>按照之前的 <code>工厂方法模式</code> 设计，如下：</p>
-<p><img src="https://i.loli.net/2019/07/04/5d1d5ce8d1f3176430.jpg" alt="工厂方法模式.jpg"></p>
-<p>当我们需要增加 Winter风格 的按钮时，只需要继承抽象工厂并生产出对应的按钮即可。该系统具备良好的灵活性和可扩展性，开发可以在不修改现有代码的基础上增加新的皮肤。</p>
-<h3 id="1-2-缺陷与问题"><a href="#1-2-缺陷与问题" class="headerlink" title="1.2 缺陷与问题"></a>1.2 缺陷与问题</h3><p>该设计模式提供了大量的工厂来创建具体的界面组件，可以灵活的配置风格，但是存在以下问题：</p>
+} </script></head><body><i class="fa fa-arrow-right" id="toggle-sidebar" aria-hidden="true"></i><div id="sidebar" data-display="false"><div class="author-info"><div class="author-info__avatar text-center"><img src="/img/avatar.png"></div><div class="author-info__name text-center">koral</div><div class="author-info__description text-center">回廊一寸相思地，落月成孤倚。背灯和月就花阴，已是十年踪迹十年心。</div><hr><div class="author-info-articles"><a class="author-info-articles__archives article-meta" href="/archives"><span class="pull-left">文章</span><span class="pull-right">266</span></a><a class="author-info-articles__tags article-meta" href="/tags"><span class="pull-left">标签</span><span class="pull-right">34</span></a><a class="author-info-articles__categories article-meta" href="/categories"><span class="pull-left">分类</span><span class="pull-right">44</span></a></div></div></div><nav class="no-bg" id="nav"><div id="page-header"><span class="pull-left"> <a id="site-name" href="/index.html">凯</a></span><i class="fa fa-bars toggle-menu pull-right" aria-hidden="true"></i><span class="pull-right menus">   <a class="site-page" href="/">首页</a><a class="site-page" href="/archives">归档</a><a class="site-page" href="/tags">标签</a><a class="site-page" href="/categories">分类</a><a class="site-page" href="/about">关于我</a></span><span class="pull-right"></span></div><div id="site-info"><div id="site-title">凯</div><div id="site-sub-title">回廊一寸相思地，落月成孤倚。背灯和月就花阴，已是十年踪迹十年心。</div></div></nav><div id="content-outer"><div class="layout" id="content-inner"><div class="recent-post-item article-container"><a class="article-title" href="/2019/09/04/分布式/SpringCloud/分布式并发问题/">分布式环境中的并发问题</a><time class="post-meta__date"><i class="fa fa-calendar" aria-hidden="true"></i> 2019-09-04</time><span class="article-meta"><span class="article-meta__separator">|</span><i class="fa fa-inbox article-meta__icon" aria-hidden="true"></i><a class="article-meta__categories" href="/categories/分布式/">分布式</a></span><span class="article-meta tags"><span class="article-meta__separator">|</span><i class="fa fa-tag article-meta__icon" aria-hidden="true"></i><a class="article-meta__tags" href="/tags/hide/">hide</a></span><div class="content"><p>分布式环境中，处理并发问题没发通过操作系统和 JVM 提供的工具来解决，因为 LOCK 命令、总线锁、缓存所、monitor 对象、锁、等并发工具都无法影响到其他服务器的线程。</p>
+<p>那么在分布式环境中，可以使用一下策略和方式处理：</p>
 <ol>
-<li>新增产品时，需要同时新增一个具体工厂类，类的个数成对增加，会增大系统的开销</li>
-<li>由于某一种风格的按钮、文本框、组合框通常都是一起使用的，但是因为其工厂方法分离，可能会导致使用时的选择失误</li>
-</ol>
-<h3 id="1-3-解决方案"><a href="#1-3-解决方案" class="headerlink" title="1.3 解决方案"></a>1.3 解决方案</h3><p>将一组产品类定义为一个“产品族”（如按钮、文本框、组合框统称为一个产品族），将之前一个产品对应一个具体工厂的模式改为-一个产品族对应一个产品工厂（如Spring风格工厂，能够生产Spring风格按钮、Spring风格文本框、Spring风格组合框）。</p>
-<h3 id="1-4-产品等级结构与产品族"><a href="#1-4-产品等级结构与产品族" class="headerlink" title="1.4 产品等级结构与产品族"></a>1.4 产品等级结构与产品族</h3><ol>
-<li>产品等级结构<ol>
-<li>在<code>1.3 解决方案</code> 中，抽象工厂与Spring风格工厂、Summer风格工厂之间的关系构成了一个产品等级结构</li>
-<li>抽象工厂类是父类，具体工厂类是子类</li>
-<li>产品等级扩展，只需要继续实现子类即可（如新增Winter风格工厂，用于生产Winter风格的按钮、文本框、组合框）</li>
+<li>避免并发<ol>
+<li>通过某些策略和业务来避免并发，如合理分配时间调度，避开共享资源的存取冲突等。</li>
+<li>可以通过 hash 算法的方式，使一个对象的数据计算和访问都交给同一个线程来完成</li>
 </ol>
 </li>
-<li>产品族：<ol>
-<li>即各个具体工厂生产的产品统称（如Spring风格工厂，能够生产Spring风格按钮、Spring风格文本框、Spring风格组合框）</li>
+<li>时间戳<ol>
+<li>每次系统 A 发送给系统 B 的时候都带上一个时间戳，B 在拿到通知后，比较时间戳</li>
+<li>这样只需要调用方保证时间戳的时序有效性即可</li>
 </ol>
 </li>
-</ol>
-<p>当系统所提供的工厂生产的具体产品并不是一个简单的对象，而是位于多个不同产品等级结构、属于不同类型的具体产品时就可以使用抽象工厂模式。</p>
-<h2 id="二、抽象工厂模式"><a href="#二、抽象工厂模式" class="headerlink" title="二、抽象工厂模式"></a>二、抽象工厂模式</h2><h3 id="2-1-概述"><a href="#2-1-概述" class="headerlink" title="2.1 概述"></a>2.1 概述</h3><p>抽象工厂模式：提供一个创建一系列相关或互相依赖对象的接口，而无须指定它们具体的类。</p>
-<p>抽象工厂模式又称为 Kit模式，属于对象创建型模式。</p>
-<p>在抽象工厂模式中，每一个具体工厂都提供多个工厂方法，用于生产多种不同类型的产品。这些产品构成了一个产品族。</p>
-<p><img src="https://i.loli.net/2019/07/04/5d1d63c564e9523844.jpg" alt="抽象工厂模式"></p>
-<p>从图中可以看出，如果需要新增其他风格的按钮、文本框，只需要新增一个具体工厂，由该工厂的多个工厂方法产出具体的产品。</p>
-<p>同时，缺点也很明显，如果我们想新增图片类型产品，必须同时修改抽象工厂及其所有的具体工厂。</p>
-<h3 id="2-2-抽象工厂模式中的几个角色"><a href="#2-2-抽象工厂模式中的几个角色" class="headerlink" title="2.2 抽象工厂模式中的几个角色"></a>2.2 抽象工厂模式中的几个角色</h3><ol>
-<li>AbstractFactory - 抽象工厂<ol>
-<li>声明了一组用于创建一族产品的方法，每一个方法对应一种产品</li>
+<li>串行化<ol>
+<li>串行化可能产生并发的问题，通过牺牲性能和扩展性，来满足对数据一致性的要求。</li>
+<li>比如分布式消息系统，没法保证消息的有序性，但是可以通过将分布式消息系统改为单一消息系统，就可以保证消息的有序性了。</li>
+<li>如果接收方无法保证处理的有序性，那么可以使用一个队列将调用信息缓存起来，再串行地处理这些调用</li>
 </ol>
 </li>
-<li>ConcreteFactory - 具体工厂<ol>
-<li>实现了在抽象工厂中声明的创建产品的方法，生成一组具体产品，这些产品构成一个产品族</li>
+<li>数据库<ol>
+<li>在分布式环境中，数据库是个服务器的共享点，可以通过数据库的高可靠一致性机制来满足需求。</li>
+<li>比如通过唯一性约束，来解决并发过程中重复数据的生产或重复任务的执行</li>
+<li>某些更新操作也尽量使用 SQL 来完成，在程序中计算后再更新，可能会出现脏复写的问题，但是通过一条 SQL 来完成计算和更新，就能通过数据库的锁机制来保证更新的一致性</li>
 </ol>
 </li>
-<li>AbstractProduct - 抽象产品<ol>
-<li>每种产品的抽象对象</li>
+<li>行锁<ol>
+<li>有些事务较为复杂时，无法通过一条 SQL 解决问题，并且可能存在并发问题，此时可以考虑使用行锁来解决问题</li>
+<li>如 select … for update ，在查询后将该行数据锁定，直到 commit。但是这么做会导致其他涉及该行的所有操作都会被挂起</li>
+<li>通过在表中增加一个标志锁的字段，每次操作之前通过 update，来模拟竞争锁的操作，操作完成后再 update 复位该标志，表示锁归还。（这种操作很类似 Redis 分布式锁、MongoDB 分布式锁，说白了就是自己定义一个模拟竞争锁的场景）</li>
 </ol>
 </li>
-<li>ConcreteProduct 具体产品<ol>
-<li>由具体工厂生产的具体产品对象</li>
+<li>统一触发途径<ol>
+<li>如果一个数据会被多个业务同时涉及到，就会有并发问题产生的隐患。因此可以通过前期架构和业务涉及，尽量统一触发途径，减少并发的可能，也有利于对并发问题的分析和判断。</li>
 </ol>
 </li>
 </ol>
-<h3 id="2-3-具体实践"><a href="#2-3-具体实践" class="headerlink" title="2.3 具体实践"></a>2.3 具体实践</h3><pre><code class="java">/**
- * 手机游戏软件
- * 针对 Symbian、Android、WindowsPhone 等多个智能手机平台，
- * 提供不同的游戏操作控制和游戏界面控制
- */
-public class Gaming {
-    // 抽象产品类
-    interface Operation{}
-    // 具体产品类
-    class SymbianOperation implements Operation{}
-    class AndroidOperation implements Operation{}
-    class WindowsPhoneOperation implements Operation{}
+<p><a href="https://blog.csdn.net/cutesource/article/details/5791350" target="_blank" rel="noopener">文章总结自 : https://blog.csdn.net/cutesource/article/details/5791350</a></p>
+</div><hr></div><div class="recent-post-item article-container"><a class="article-title" href="/2019/09/04/分布式/SpringBoot/SpringBoot常用Listener/">SpringBoot中的几种常见监听器</a><time class="post-meta__date"><i class="fa fa-calendar" aria-hidden="true"></i> 2019-09-04</time><span class="article-meta"><span class="article-meta__separator">|</span><i class="fa fa-inbox article-meta__icon" aria-hidden="true"></i><a class="article-meta__categories" href="/categories/分布式/">分布式</a></span><span class="article-meta tags"><span class="article-meta__separator">|</span><i class="fa fa-tag article-meta__icon" aria-hidden="true"></i><a class="article-meta__tags" href="/tags/hide/">hide</a></span><div class="content"><h1 id="SpringBoot-的几种常见监听器"><a href="#SpringBoot-的几种常见监听器" class="headerlink" title="SpringBoot 的几种常见监听器"></a>SpringBoot 的几种常见监听器</h1><p>例如：在 Web 项目启动时，需要执行一段代码，该写在哪里呢？<br>解决方法：注册监听器监听 ServletContext 创建的钩子函数，并重写自己的实现</p>
+<h2 id="1-创建-Listener"><a href="#1-创建-Listener" class="headerlink" title="1. 创建 Listener"></a>1. 创建 Listener</h2><pre><code class="java">@WebListener
+public class InitDemo implements ServletContextListener {
 
-    interface HML{}
-    class SymbianHML implements HML{}
-    class AndroidHML implements HML{}
-    class WindowsPhoneHML implements HML{}
+    @Override
+    public void contextInitialized(ServletContextEvent sce) {
+        System.out.println(&quot;Web Initialized!&quot;);
+    }
 
-    // 抽象工厂类
-    interface Factory{
-        Operation getOperation();
-        HML getHML();
-    }
-    // 具体工厂类
-    class SymbianFactory implements Factory{
-        @Override
-        public Operation getOperation() {
-            return new SymbianOperation();
-        }
-        @Override
-        public HML getHML() {
-            return new SymbianHML();
-        }
-    }
-    class AndroidFactory implements Factory{
-        @Override
-        public Operation getOperation() {
-            return new AndroidOperation();
-        }
-        @Override
-        public HML getHML() {
-            return new AndroidHML();
-        }
-    }
-    class WindowsPhoneFactory implements Factory{
-        @Override
-        public Operation getOperation() {
-            return new WindowsPhoneOperation();
-        }
-        @Override
-        public HML getHML() {
-            return new WindowsPhoneHML();
-        }
+    @Override
+    public void contextDestroyed(ServletContextEvent sce) {
+        System.out.println(&quot;Web Destroyed!&quot;);
     }
 }</code></pre>
-<h2 id="三、“开闭原则”的倾斜性"><a href="#三、“开闭原则”的倾斜性" class="headerlink" title="三、“开闭原则”的倾斜性"></a>三、“开闭原则”的倾斜性</h2><p>在抽象工厂模式中，增加新的产品族很方便（如增加Winter类型的界面），但是增加新的产品等级结构很麻烦（如增加单选框类型的产品，需要修改抽象工厂及其所有的具体工厂），这种性质被称为“开闭原则”的倾斜性。</p>
-<p>“开闭原则”要求系统对扩展开发，对修改封闭，通过扩展达到增强其功能的目的，对于设计多个产品族与多个产品等级结构的系统，其功能增强包括两方面：</p>
-<ol>
-<li>增加产品族，很好地支持了“开闭原则”，只需新增具体产品和新增一个具体工厂即可</li>
-<li>增加产品等级结构：违背了“开闭原则”，因为需要修改所有的抽象工厂与具体工厂才能实现扩展</li>
-</ol>
-<h2 id="四、总结"><a href="#四、总结" class="headerlink" title="四、总结"></a>四、总结</h2><h3 id="优点"><a href="#优点" class="headerlink" title="优点"></a>优点</h3><ol>
-<li>抽象工厂模式隔离了具体类的生成，使客户不需要知道何时被创建</li>
-<li>当一个产品族中的多个对象被设计为一起工作时，它能够保证客户端始终只使用一个产品族对象</li>
-<li>增加新的产品族很方便，无须修改已有系统，符合“开闭原则”</li>
-</ol>
-<h3 id="缺点"><a href="#缺点" class="headerlink" title="缺点"></a>缺点</h3><ol>
-<li>增加新的产品等级结构时，违背了“开闭原则”</li>
-</ol>
-<h3 id="适用场景"><a href="#适用场景" class="headerlink" title="适用场景"></a>适用场景</h3><ol>
-<li>系统不依赖于产品类的具体创建、组合及表达的细节</li>
-<li>系统中有多于一个的产品族，且每次只使用其中某一个产品族</li>
-<li>同一个产品族的产品配合使用</li>
-<li>产品等级结构稳定，设计完成后，不再修改系统中新的产品等级结构</li>
-</ol>
-</div><hr></div><div class="recent-post-item article-container"><a class="article-title" href="/2019/06/25/读书笔记/《JavaDesignPatterns》/2.面向对象设计原则/">《Java Design Patterns》7大原则</a><time class="post-meta__date"><i class="fa fa-calendar" aria-hidden="true"></i> 2019-06-25</time><span class="article-meta"><span class="article-meta__separator">|</span><i class="fa fa-inbox article-meta__icon" aria-hidden="true"></i><a class="article-meta__categories" href="/categories/读书笔记/">读书笔记</a><i class="fa fa-angle-right" aria-hidden="true"></i><i class="fa fa-inbox article-meta__icon" aria-hidden="true"></i><a class="article-meta__categories" href="/categories/读书笔记/设计模式/">设计模式</a></span><span class="article-meta tags"><span class="article-meta__separator">|</span><i class="fa fa-tag article-meta__icon" aria-hidden="true"></i><a class="article-meta__tags" href="/tags/hide/">hide</a><span class="article-meta__link">-</span><i class="fa fa-tag article-meta__icon" aria-hidden="true"></i><a class="article-meta__tags" href="/tags/设计模式/">设计模式</a></span><div class="content"><h1 id="面向对象设计原则"><a href="#面向对象设计原则" class="headerlink" title="面向对象设计原则"></a>面向对象设计原则</h1><table>
-<thead>
-<tr>
-<th>设计原则名称</th>
-<th>英文名称</th>
-<th>定义</th>
-</tr>
-</thead>
-<tbody><tr>
-<td>单一职责原则</td>
-<td>Single Responsibility Principle,SRP</td>
-<td>一个类只负责一个功能领域中的相应职责</td>
-</tr>
-<tr>
-<td>开闭原则</td>
-<td>Open-Closed Principle,OCP</td>
-<td>软件实体应对扩展开放，而对修改关闭</td>
-</tr>
-<tr>
-<td>里氏替换原则</td>
-<td>Liskov Substitution Principle,LSP</td>
-<td>所有引用基类对象的地方能够透明地使用其子类的对象</td>
-</tr>
-<tr>
-<td>依赖倒置原则</td>
-<td>Dependence Inversion Principle,DSP</td>
-<td>抽象不应该依赖于细节，细节应该依赖于抽象</td>
-</tr>
-<tr>
-<td>接口隔离原则</td>
-<td>Interface Segregation Principle,ISP</td>
-<td>使用多个专门的接口，而不使用单一的总接口</td>
-</tr>
-<tr>
-<td>合成复用原则</td>
-<td>Composite Reuse Principle,CRP</td>
-<td>尽量使用对象组合，而不是继承来达到复用的目的</td>
-</tr>
-<tr>
-<td>迪米特法则</td>
-<td>Law of Demetr,LoD</td>
-<td>一个软件实体应当尽可能少地与其他实体发生相互作用</td>
-</tr>
-<tr>
-<td></td>
-<td></td>
-<td></td>
-</tr>
-<tr>
-<td></td>
-<td></td>
-<td></td>
-</tr>
-<tr>
-<td></td>
-<td></td>
-<td></td>
-</tr>
-<tr>
-<td></td>
-<td></td>
-<td></td>
-</tr>
-<tr>
-<td></td>
-<td></td>
-<td></td>
-</tr>
-<tr>
-<td></td>
-<td></td>
-<td></td>
-</tr>
-<tr>
-<td></td>
-<td></td>
-<td></td>
-</tr>
-<tr>
-<td></td>
-<td></td>
-<td></td>
-</tr>
-<tr>
-<td></td>
-<td></td>
-<td></td>
-</tr>
-<tr>
-<td></td>
-<td></td>
-<td></td>
-</tr>
-</tbody></table>
-</div><hr></div><div class="recent-post-item article-container"><a class="article-title" href="/2019/06/24/读书笔记/《Java核心知识点整理》/16.设计模式/">《JAVA 核心知识点整理》第十六章 设计模式</a><time class="post-meta__date"><i class="fa fa-calendar" aria-hidden="true"></i> 2019-06-24</time><span class="article-meta"><span class="article-meta__separator">|</span><i class="fa fa-inbox article-meta__icon" aria-hidden="true"></i><a class="article-meta__categories" href="/categories/读书笔记/">读书笔记</a><i class="fa fa-angle-right" aria-hidden="true"></i><i class="fa fa-inbox article-meta__icon" aria-hidden="true"></i><a class="article-meta__categories" href="/categories/读书笔记/JAVA核心知识点整理/">JAVA核心知识点整理</a></span><span class="article-meta tags"><span class="article-meta__separator">|</span><i class="fa fa-tag article-meta__icon" aria-hidden="true"></i><a class="article-meta__tags" href="/tags/hide/">hide</a><span class="article-meta__link">-</span><i class="fa fa-tag article-meta__icon" aria-hidden="true"></i><a class="article-meta__tags" href="/tags/JAVA核心知识点整理/">JAVA核心知识点整理</a></span><div class="content"><h1 id="第十六章-设计模式"><a href="#第十六章-设计模式" class="headerlink" title="第十六章 设计模式"></a>第十六章 设计模式</h1><p>设计模式请详见我的另一篇博客： <a href="/2019/06/24/读书笔记/《JavaDesignPatterns》/0.目录/index.html">《JavaDesignPatterns》</a></p>
-<p>目录如下：</p>
-<ol>
-<li>设计原则</li>
-<li>工厂方法模式</li>
-<li>抽象工厂模式</li>
-<li>单例模式</li>
-<li>建造者模式</li>
-<li>原型模式</li>
-<li>适配器模式</li>
-<li>装饰器模式</li>
-<li>代理模式</li>
-<li>外观模式</li>
-<li>桥接模式</li>
-<li>组合模式</li>
-<li>享元模式</li>
-<li>策略模式</li>
-<li>模板方法模式</li>
-<li>观察者模式</li>
-<li>迭代子模式</li>
-<li>责任链模式</li>
-<li>命令模式</li>
-<li>备忘录模式</li>
-<li>状态模式</li>
-<li>访问者模式</li>
-<li>中介者模式</li>
-<li>解释器模式</li>
-</ol>
-</div><hr></div><div class="recent-post-item article-container"><a class="article-title" href="/2019/06/24/读书笔记/《JavaDesignPatterns》/1.常用设计模式一览/">《Java Design Patterns》常用设计模式一览</a><time class="post-meta__date"><i class="fa fa-calendar" aria-hidden="true"></i> 2019-06-24</time><span class="article-meta"><span class="article-meta__separator">|</span><i class="fa fa-inbox article-meta__icon" aria-hidden="true"></i><a class="article-meta__categories" href="/categories/读书笔记/">读书笔记</a><i class="fa fa-angle-right" aria-hidden="true"></i><i class="fa fa-inbox article-meta__icon" aria-hidden="true"></i><a class="article-meta__categories" href="/categories/读书笔记/设计模式/">设计模式</a></span><span class="article-meta tags"><span class="article-meta__separator">|</span><i class="fa fa-tag article-meta__icon" aria-hidden="true"></i><a class="article-meta__tags" href="/tags/hide/">hide</a><span class="article-meta__link">-</span><i class="fa fa-tag article-meta__icon" aria-hidden="true"></i><a class="article-meta__tags" href="/tags/设计模式/">设计模式</a></span><div class="content"><h1 id="常用设计模式一览表"><a href="#常用设计模式一览表" class="headerlink" title="常用设计模式一览表"></a>常用设计模式一览表</h1><table>
-<thead>
-<tr>
-<th>类型</th>
-<th>模式名称</th>
-<th>英文名</th>
-</tr>
-</thead>
-<tbody><tr>
-<td>创建型模式</td>
-<td>单例模式</td>
-<td>Single Pattern</td>
-</tr>
-<tr>
-<td>Creational Pattern</td>
-<td>简单工厂模式</td>
-<td>Simple Factory Pattern</td>
-</tr>
-<tr>
-<td></td>
-<td>工厂方法模式</td>
-<td>Factory Method Pattern</td>
-</tr>
-<tr>
-<td></td>
-<td>抽象工厂模式</td>
-<td>Abstract Factory Pattern</td>
-</tr>
-<tr>
-<td></td>
-<td>原型模式</td>
-<td>Prototype Pattern</td>
-</tr>
-<tr>
-<td></td>
-<td>建造者模式</td>
-<td>Builder Pattern</td>
-</tr>
-<tr>
-<td>结构型模式</td>
-<td>适配器模式</td>
-<td>Adapter Pattern</td>
-</tr>
-<tr>
-<td>Structural Pattern</td>
-<td>桥接模式</td>
-<td>Bridge Pattern</td>
-</tr>
-<tr>
-<td></td>
-<td>组合模式</td>
-<td>Composite Pattern</td>
-</tr>
-<tr>
-<td></td>
-<td>装饰模式</td>
-<td>Decorator Pattern</td>
-</tr>
-<tr>
-<td></td>
-<td>外观模式</td>
-<td>Facade Pattern</td>
-</tr>
-<tr>
-<td></td>
-<td>享元模式</td>
-<td>Flyweight Pattern</td>
-</tr>
-<tr>
-<td></td>
-<td>代理模式</td>
-<td>Proxy Pattern</td>
-</tr>
-<tr>
-<td>行为型模式</td>
-<td>责任链模式</td>
-<td>Chain Of Responsibility Pattern</td>
-</tr>
-<tr>
-<td>Behavioral Pattern</td>
-<td>命令模式</td>
-<td>Command Pattern</td>
-</tr>
-<tr>
-<td></td>
-<td>解释器模式</td>
-<td>Interpreter Pattern</td>
-</tr>
-<tr>
-<td></td>
-<td>迭代器模式</td>
-<td>Iterator Pattern</td>
-</tr>
-<tr>
-<td></td>
-<td>中介者模式</td>
-<td>Mediator Pattern</td>
-</tr>
-<tr>
-<td></td>
-<td>备忘录模式</td>
-<td>Memento Pattern</td>
-</tr>
-<tr>
-<td></td>
-<td>观察者模式</td>
-<td>Observer Pattern</td>
-</tr>
-<tr>
-<td></td>
-<td>状态模式</td>
-<td>State Pattern</td>
-</tr>
-<tr>
-<td></td>
-<td>策略模式</td>
-<td>Strategy Pattern</td>
-</tr>
-<tr>
-<td></td>
-<td>模板方法模式</td>
-<td>Template Method Pattern</td>
-</tr>
-<tr>
-<td></td>
-<td>访问者模式</td>
-<td>Visitor Pattern</td>
-</tr>
-</tbody></table>
-</div><hr></div><div class="recent-post-item article-container"><a class="article-title" href="/2019/06/24/读书笔记/《JavaDesignPatterns》/0.目录/">《Java Design Patterns》读书笔记</a><span class="article-meta"><i class="fa fa-thumb-tack article-meta__icon sticky"></i><span class="sticky">置顶</span><span class="article-meta__separator" style="margin-right: 0.3rem">|</span></span><time class="post-meta__date"><i class="fa fa-calendar" aria-hidden="true"></i> 2019-06-24</time><span class="article-meta"><span class="article-meta__separator">|</span><i class="fa fa-inbox article-meta__icon" aria-hidden="true"></i><a class="article-meta__categories" href="/categories/读书笔记/">读书笔记</a><i class="fa fa-angle-right" aria-hidden="true"></i><i class="fa fa-inbox article-meta__icon" aria-hidden="true"></i><a class="article-meta__categories" href="/categories/读书笔记/设计模式/">设计模式</a></span><span class="article-meta tags"><span class="article-meta__separator">|</span><i class="fa fa-tag article-meta__icon" aria-hidden="true"></i><a class="article-meta__tags" href="/tags/设计模式/">设计模式</a></span><div class="content"><p>本笔记来源于：《Java Design Pattern》一书。</p></div><a class="more" href="/2019/06/24/读书笔记/《JavaDesignPatterns》/0.目录/#more">阅读更多</a><hr></div><div class="recent-post-item article-container"><a class="article-title" href="/2019/06/23/读书笔记/《高性能MySQL》/1.数据库设计规范/">《高性能MySQL》第一章 数据库设计规范</a><time class="post-meta__date"><i class="fa fa-calendar" aria-hidden="true"></i> 2019-06-23</time><span class="article-meta"><span class="article-meta__separator">|</span><i class="fa fa-inbox article-meta__icon" aria-hidden="true"></i><a class="article-meta__categories" href="/categories/读书笔记/">读书笔记</a><i class="fa fa-angle-right" aria-hidden="true"></i><i class="fa fa-inbox article-meta__icon" aria-hidden="true"></i><a class="article-meta__categories" href="/categories/读书笔记/高性能MySQL/">高性能MySQL</a></span><span class="article-meta tags"><span class="article-meta__separator">|</span><i class="fa fa-tag article-meta__icon" aria-hidden="true"></i><a class="article-meta__tags" href="/tags/hide/">hide</a><span class="article-meta__link">-</span><i class="fa fa-tag article-meta__icon" aria-hidden="true"></i><a class="article-meta__tags" href="/tags/高性能MySQL/">高性能MySQL</a></span><div class="content"><h2 id="1-数据库-命名规范"><a href="#1-数据库-命名规范" class="headerlink" title="1. 数据库 - 命名规范"></a>1. 数据库 - 命名规范</h2><ol>
-<li>所有数据库对象名称必须使用小写字母并用下划线分割<ol>
-<li>eg：DbName != dbname</li>
-<li>eg: Table != table != tabLe</li>
-</ol>
-</li>
-<li>所有数据库对象名称禁止使用 MySQL 保留关键字<ol>
-<li>保留关键字：<a href="https://dev.mysql.com/doc/refman/8.0/en/keywords.html" target="_blank" rel="noopener">https://dev.mysql.com/doc/refman/8.0/en/keywords.html</a></li>
-</ol>
-</li>
-<li>数据库对象的命名要做到见名识义，并且最好不要超过 32 字符<ol>
-<li>数据库名过长，会增加网络开销</li>
-</ol>
-</li>
-<li>临时库必须以 tmp 为前缀，并以日期为后缀</li>
-<li>备份库、备份表必须以 bak 为前缀，并以日期为后缀</li>
-<li>所有存储相同数据的列名和列类型必须一致<ol>
-<li>即表A与表B的某个属性相同，则列名与类型必须一致</li>
-<li>如 A.cid与 B.cid，都必须是 <code>cid int unsigned not null</code></li>
-<li>这种属性一般用于关联列上，当保持一致时，对数据库查询效率有一定帮助</li>
-</ol>
-</li>
-</ol>
-<h2 id="2-数据库-基本设计规范"><a href="#2-数据库-基本设计规范" class="headerlink" title="2. 数据库 - 基本设计规范"></a>2. 数据库 - 基本设计规范</h2><ol>
-<li>所有表必须使用 Innodb 存储引擎<ol>
-<li>在 MySQL 5.5 之前，MylSAM 是默认的存储引擎，MylSAM 是表级锁，在高并发场景下，锁表会有很严重的性能问题</li>
-<li>InnoDB 是 5.6 以后的默认存储引擎</li>
-<li>InnoDB 支持事务，行级锁，拥有更好的恢复性，高并发场景下性能更好</li>
-</ol>
-</li>
-<li>数据库和表的字符集统一使用 UTF8<ol>
-<li>统一字符集可以避免由于字符集转换产生的乱码</li>
-<li>MySQL 中 UTF8 字符集汉字占 3 个字节，ASCII 码占一个字符</li>
-</ol>
-</li>
-<li>所有表和字段都需要添加注释<ol>
-<li>使用 comment 从句添加表和列的备注</li>
-<li>从一开始就进行数据字典的维护</li>
-</ol>
-</li>
-<li>尽量控制单表数据量的大小，建议控制在 500W 以内<ol>
-<li>500 W 并不是 MySQL 数据库的限制</li>
-<li>可以使用历史数据归档，分库分表等手段限制单表的数据量大小</li>
-</ol>
-</li>
-<li>谨慎使用 MySQL 分区表<ol>
-<li>分区表在物理上表现为多个文件，在逻辑上表现为一个表</li>
-<li>谨慎选择分区键，跨分区查询效率可能更低</li>
-<li>建议采用物理分表的方式管理大数据</li>
-</ol>
-</li>
-<li>尽量做到冷热数据分离，减小表的宽度<ol>
-<li>减少磁盘IO，保证热数据的内存缓存命中率</li>
-<li>更有效的利用缓存，避免读入无用的冷数据</li>
-<li>经常一起使用的列放在一个表中</li>
-</ol>
-</li>
-<li>禁止在表中建立预留字段<ol>
-<li>预留字段的命名很难做到见名识义</li>
-<li>预留字段无法确认存储的数据类型，所以无法选择合适的类型</li>
-<li>对预留字段类型的修改，会对表进行锁定<ol>
-<li>在 MySQL 中，对表类型修改的成本远远大于增加一个数据类型的成本</li>
-</ol>
-</li>
-</ol>
-</li>
-<li>禁止在数据库中存储图片，文件等二进制数据<ol>
-<li>blob、text 等类型</li>
-</ol>
-</li>
-<li>禁止在线上做数据库压力测试</li>
-<li>禁止从开发环境、测试环境直连生产环境数据库</li>
-</ol>
-<h2 id="3-数据库-索引设计规范"><a href="#3-数据库-索引设计规范" class="headerlink" title="3. 数据库 - 索引设计规范"></a>3. 数据库 - 索引设计规范</h2><ol>
-<li>限制每张表的索引数量，建议单张表索引不超过 5 个<ol>
-<li>索引并不是越多越好，过多的索引可能会降低效率</li>
-<li>禁止给表中的每一列都建立单独的索引</li>
-</ol>
-</li>
-<li>每个 InnoDB 表必须有一个主键<ol>
-<li>Innodb 是按照主键索引的顺序来组织表的，因此每个表必须有一个主键</li>
-<li>如果表中未设置主键，MySQL 会自动选择第一个非空唯一性的属性作为主键；如果没有非空唯一约束的属性，MySQL 会自动生成一个 6 字节的主键，但是效率不高</li>
-<li>不使用更新频繁的列作为主键，不使用多列主键</li>
-<li>不使用 UUID、MD5、HASH、字符串列作为主键</li>
-<li>主键建议选择使用主键自增ID</li>
-</ol>
-</li>
-<li>常见索引建议<ol>
-<li>SELECT、UPDATE、DELETE 语句的 WHERE 从句中的列</li>
-<li>包含在 ORDER BY、GROUP BY、DISTINCT 中的字段</li>
-<li>多表 JOIN 的字段</li>
-</ol>
-</li>
-<li>如何选择索引列的顺序<ol>
-<li>区分度最高的列放在联合索引的最左侧</li>
-<li>尽量把字段长度小的列放在联合索引的最左侧</li>
-<li>使用最频繁的列放在联合索引的最左侧</li>
-</ol>
-</li>
-<li>避免建议冗余索引和重复索引<ol>
-<li>eg: primary key(id) 、index(id)、unique index(id)</li>
-<li>eg: index(a,b,c)，index(a,b)，index(a)<ol>
-<li>对于冗余索引，MySQL 执行优化器会对查询到的索引进行选择，降低了索引使用的效率</li>
-</ol>
-</li>
-</ol>
-</li>
-<li>对于频繁的查询优先考虑使用覆盖索引<ol>
-<li>避免 Innodb 表进行索引的二次查找</li>
-<li>可以把随机 IO 变为顺序 IO，提高查询效率</li>
-</ol>
-</li>
-<li>尽量避免使用外键<ol>
-<li>不建议使用外键约束，但一定在表与表之间的关联键上建立索引</li>
-<li>外键可用于保证数据的参照完整性，但建议在业务端实现</li>
-<li>外键会影响父表和子表的写操作从而降低性能<ol>
-<li>存在外键约束的表在进行写操作时，会检查外键约束的完整性，降低写操作的性能</li>
-</ol>
-</li>
-</ol>
-</li>
-</ol>
-<h3 id="《高性能MySQL》目录"><a href="#《高性能MySQL》目录" class="headerlink" title="《高性能MySQL》目录"></a>《高性能MySQL》目录</h3><ol>
-<li>第一章 <a href="/2019/06/23/读书笔记/《高性能MySQL》/1.数据库设计规范/index.html">数据库设计规范</a></li>
-<li>第二章 <a href="/2019/06/22/读书笔记/《高性能MySQL》/2.数据库字段设计规范/index.html">数据库字段设计规范</a></li>
-<li>第三章 <a href="/2019/06/21/读书笔记/《高性能MySQL》/3.数据库SQL开发规范/index.html">数据库 SQL 开发规范</a></li>
-<li>第四章 <a href="/2019/06/20/读书笔记/《高性能MySQL》/4.数据库操作行为规范/index.html">数据库操作行为规范</a></li>
-<li>第五章 <a href="/2019/06/19/读书笔记/《高性能MySQL》/5.设计数据库分区表/index.html">设计数据库分区表</a></li>
-<li>第六章 <a href="/2019/06/18/读书笔记/《高性能MySQL》/6.MySQL存储引擎/index.html">MySQL存储引擎</a></li>
-<li>第七章 <a href="/2019/06/17/读书笔记/《高性能MySQL》/7.MySQL执行计划优化/index.html">MySQL 执行优化</a></li>
-<li>第八章 <a href="/2019/06/16/读书笔记/《高性能MySQL》/8.MySQL慢查日志/index.html">MySQL 慢查询日志</a></li>
-<li>第九章 <a href="/2019/06/15/读书笔记/《高性能MySQL》/9.数据库备份/index.html">MySQL 数据库备份与恢复</a></li>
-<li>第十章 <a href="/2019/06/14/读书笔记/《高性能MySQL》/10.MySQL架构拆分/index.html">MySQL构架拆分</a></li>
-<li>其他：<a href="/2019/06/12/读书笔记/《高性能MySQL》/20.数据库表结构实践/index.html">MySQL表结构实践sql</a></li>
-<li>其他2：<a href="/2019/06/13/读书笔记/《高性能MySQL》/11.MySQL常用命令/index.html">MySQL常用命令</a></li>
-</ol>
-</div><hr></div><div class="recent-post-item article-container"><a class="article-title" href="/2019/06/23/读书笔记/《高性能MySQL》/2.数据库字段设计规范/">《高性能MySQL》第二章 数据库字段设计规范</a><time class="post-meta__date"><i class="fa fa-calendar" aria-hidden="true"></i> 2019-06-23</time><span class="article-meta"><span class="article-meta__separator">|</span><i class="fa fa-inbox article-meta__icon" aria-hidden="true"></i><a class="article-meta__categories" href="/categories/读书笔记/">读书笔记</a><i class="fa fa-angle-right" aria-hidden="true"></i><i class="fa fa-inbox article-meta__icon" aria-hidden="true"></i><a class="article-meta__categories" href="/categories/读书笔记/高性能MySQL/">高性能MySQL</a></span><span class="article-meta tags"><span class="article-meta__separator">|</span><i class="fa fa-tag article-meta__icon" aria-hidden="true"></i><a class="article-meta__tags" href="/tags/hide/">hide</a><span class="article-meta__link">-</span><i class="fa fa-tag article-meta__icon" aria-hidden="true"></i><a class="article-meta__tags" href="/tags/高性能MySQL/">高性能MySQL</a></span><div class="content"><p>字段类型的选择，会直接影响数据库的性能。</p></div><a class="more" href="/2019/06/23/读书笔记/《高性能MySQL》/2.数据库字段设计规范/#more">阅读更多</a><hr></div><div class="recent-post-item article-container"><a class="article-title" href="/2019/06/23/读书笔记/《高性能MySQL》/3.数据库SQL开发规范/">《高性能MySQL》第三章 数据库SQL开发规范</a><time class="post-meta__date"><i class="fa fa-calendar" aria-hidden="true"></i> 2019-06-23</time><span class="article-meta"><span class="article-meta__separator">|</span><i class="fa fa-inbox article-meta__icon" aria-hidden="true"></i><a class="article-meta__categories" href="/categories/读书笔记/">读书笔记</a><i class="fa fa-angle-right" aria-hidden="true"></i><i class="fa fa-inbox article-meta__icon" aria-hidden="true"></i><a class="article-meta__categories" href="/categories/读书笔记/高性能MySQL/">高性能MySQL</a></span><span class="article-meta tags"><span class="article-meta__separator">|</span><i class="fa fa-tag article-meta__icon" aria-hidden="true"></i><a class="article-meta__tags" href="/tags/hide/">hide</a><span class="article-meta__link">-</span><i class="fa fa-tag article-meta__icon" aria-hidden="true"></i><a class="article-meta__tags" href="/tags/高性能MySQL/">高性能MySQL</a></span><div class="content"><ol>
-<li>建议使用预编译语句进行数据库操作<ol>
-<li>预编译语句可以重复使用执行计划</li>
-<li>可以有效避免动态 SQL 带来的 SQL 注入问题</li>
-<li>只传参数，比传递 SQL 语句更高效</li>
-<li>相同语句可以一次解析，多次使用，提高处理效率</li>
-</ol>
-</li>
-<li>避免数据类型的隐式转换<ol>
-<li>隐式转换会导致索引失效</li>
-<li>eg: select name,phone from customer where id = ‘111’</li>
-</ol>
-</li>
-<li>充分利用表上已经存在的索引<ol>
-<li>避免使用 双% 的查询条件。如 a like ‘%123%’</li>
-<li>一个 SQL 只能利用到复合索引中的一列进行范围查询</li>
-<li>使用 left join 或 not exists 来优化 not in 操作<ol>
-<li>not in 会使索引失效</li>
-</ol>
-</li>
-</ol>
-</li>
-<li>程序连接不同的数据库使用不同的账号，禁止夸库查询<ol>
-<li>为数据库迁移和分库分表留出余地</li>
-<li>降低业务耦合度</li>
-<li>避免权限过大而产生的安全风险</li>
-</ol>
-</li>
-<li>禁止使用 SELECT * ，必须使用 SELECT &lt;字段列表&gt; 查询<ol>
-<li>消耗更多的CPU和IO，以及网络带宽资源</li>
-<li>无法使用覆盖索引</li>
-<li>可减少表结构变更带来的影响</li>
-</ol>
-</li>
-<li>禁止使用不含字段列表的 INSERT 语句<ol>
-<li>eg：insert into tb_xx values(a,b,c) 错误</li>
-<li>eg：insert into t(c1,c2,c3) values(a,b,c) 正确</li>
-<li>避免因为字段变更，导致的插入失败</li>
-</ol>
-</li>
-<li>避免使用子查询，可以把子查询优化为 join 操作<ol>
-<li>子查询的结果集无法使用索引</li>
-<li>子查询会产生临时表操作，如果子查询数据量大则严重影响效率</li>
-<li>消耗过多的 CPU 及 IO 操作</li>
-<li>包含 GROUP BY、ORDER BY 等操作的子查询，无法转换为 JOIN 操作</li>
-</ol>
-</li>
-<li>避免使用 JOIN 关联<code>太多</code>的表<ol>
-<li>每 JOIN 一个表会多占用一部分内存</li>
-<li>会产生临时表操作，影响查询操作</li>
-<li>MySQl 最多允许关联 61 个表，建议不超过 5 个</li>
-</ol>
-</li>
-<li>减少同数据库的交互次数<ol>
-<li>数据库更适合处理批量操作</li>
-<li>合并多个相同的操作到一起，可以提高处理效率</li>
-<li>eg：alter table t1 add column c1 int, change column c2 c2 int</li>
-</ol>
-</li>
-<li>使用 in 代替 or<ol>
-<li>in 的值不要超过 500个</li>
-<li>in 操作可以有效的利用索引</li>
-</ol>
-</li>
-<li>禁止使用 order by rand() 进行随机排序<ol>
-<li>会把表中所有符合条件的数据装载到内存中进行排序</li>
-<li>会消耗大量的 CPU 和 IO 及内存资源</li>
-<li>推荐在程序中获取一个随机值，然后从数据库中获取数据的方式</li>
-</ol>
-</li>
-<li>where 从句中禁止对列进行函数转换和计算<ol>
-<li>对列进行函数转换或计算会导致无法使用索引</li>
-<li>eg：where date(createtime) = ‘20160901’<ol>
-<li>这样的话，无法使用到 createtime 列上的索引</li>
-<li>可以修改为：where createtime &gt;= ‘20160901’ and createtime &lt; ‘20160902’</li>
-</ol>
-</li>
-</ol>
-</li>
-<li>在明显不会有重复值时使用 UNION ALL 而不是 UNION<ol>
-<li>UNION 会把所有数据放到临时表中后再进行去重操作</li>
-<li>UNION ALL 不会再对结果集进行去重操作</li>
-</ol>
-</li>
-<li>拆分复杂的大 SQL 为多个小 SQL<ol>
-<li>MySQL 一个 SQL 只能使用一个 CPU 进行计算</li>
-<li>SQL 拆分后可以通过并行执行来提高处理效率<ol>
-<li>拆分 SQL 之后，多个小 SQL 能够更好的利用 CPU 资源</li>
-</ol>
-</li>
-<li>需要拆分的 SQL 为书写复杂，且执行时间长的。避免因 SQL 执行过长导致处理效率缓慢。</li>
-</ol>
-</li>
-</ol>
-<h3 id="《高性能MySQL》目录"><a href="#《高性能MySQL》目录" class="headerlink" title="《高性能MySQL》目录"></a>《高性能MySQL》目录</h3><ol>
-<li>第一章 <a href="/2019/06/23/读书笔记/《高性能MySQL》/1.数据库设计规范/index.html">数据库设计规范</a></li>
-<li>第二章 <a href="/2019/06/22/读书笔记/《高性能MySQL》/2.数据库字段设计规范/index.html">数据库字段设计规范</a></li>
-<li>第三章 <a href="/2019/06/21/读书笔记/《高性能MySQL》/3.数据库SQL开发规范/index.html">数据库 SQL 开发规范</a></li>
-<li>第四章 <a href="/2019/06/20/读书笔记/《高性能MySQL》/4.数据库操作行为规范/index.html">数据库操作行为规范</a></li>
-<li>第五章 <a href="/2019/06/19/读书笔记/《高性能MySQL》/5.设计数据库分区表/index.html">设计数据库分区表</a></li>
-<li>第六章 <a href="/2019/06/18/读书笔记/《高性能MySQL》/6.MySQL存储引擎/index.html">MySQL存储引擎</a></li>
-<li>第七章 <a href="/2019/06/17/读书笔记/《高性能MySQL》/7.MySQL执行计划优化/index.html">MySQL 执行优化</a></li>
-<li>第八章 <a href="/2019/06/16/读书笔记/《高性能MySQL》/8.MySQL慢查日志/index.html">MySQL 慢查询日志</a></li>
-<li>第九章 <a href="/2019/06/15/读书笔记/《高性能MySQL》/9.数据库备份/index.html">MySQL 数据库备份与恢复</a></li>
-<li>第十章 <a href="/2019/06/14/读书笔记/《高性能MySQL》/10.MySQL架构拆分/index.html">MySQL构架拆分</a></li>
-<li>其他：<a href="/2019/06/12/读书笔记/《高性能MySQL》/20.数据库表结构实践/index.html">MySQL表结构实践sql</a></li>
-<li>其他2：<a href="/2019/06/13/读书笔记/《高性能MySQL》/11.MySQL常用命令/index.html">MySQL常用命令</a></li>
-</ol>
-</div><hr></div><div class="recent-post-item article-container"><a class="article-title" href="/2019/06/23/读书笔记/《高性能MySQL》/4.数据库操作行为规范/">《高性能MySQL》第四章 数据库操作行为规范</a><time class="post-meta__date"><i class="fa fa-calendar" aria-hidden="true"></i> 2019-06-23</time><span class="article-meta"><span class="article-meta__separator">|</span><i class="fa fa-inbox article-meta__icon" aria-hidden="true"></i><a class="article-meta__categories" href="/categories/读书笔记/">读书笔记</a><i class="fa fa-angle-right" aria-hidden="true"></i><i class="fa fa-inbox article-meta__icon" aria-hidden="true"></i><a class="article-meta__categories" href="/categories/读书笔记/高性能MySQL/">高性能MySQL</a></span><span class="article-meta tags"><span class="article-meta__separator">|</span><i class="fa fa-tag article-meta__icon" aria-hidden="true"></i><a class="article-meta__tags" href="/tags/hide/">hide</a><span class="article-meta__link">-</span><i class="fa fa-tag article-meta__icon" aria-hidden="true"></i><a class="article-meta__tags" href="/tags/高性能MySQL/">高性能MySQL</a></span><div class="content"><ol>
-<li><p>超过 100W 行的批量写操作，要分批多次进行操作</p>
-<ol>
-<li>大批量的操作可能会造成严重的主从延迟</li>
-<li>binlog日志为 row 格式时会产生大量日志</li>
-<li>避免产生大事务操作<ol>
-<li>大的事务会导致数据库的阻塞时间过长</li>
-</ol>
-</li>
-</ol>
-</li>
-<li><p>对于大表使用 pt-online-schema-change 修改表结构</p>
-<ol>
-<li>避免大表修改产生的主从延迟</li>
-<li>避免对表修改时，产生的表锁问题</li>
-<li>pt-online-schema-change 修改表结构时的流程<ol>
-<li>建立一个和源表结构相同的新表</li>
-<li>在新表上进行表结构修改</li>
-<li>创建触发器，将源表的数据操作复制到新表中</li>
-<li>表复制完成后，将新表重命名为源表名，并删除源表</li>
-<li>以此来完成表结构的修改，而不产生对源表的加锁操作</li>
-</ol>
-</li>
-</ol>
-</li>
-<li><p>禁止为程序使用的账号赋予 super 权限</p>
-<ol>
-<li>当数据库连接达到最大限制时，还允许 1 个super权限的用户连接<ol>
-<li>如果滥用 super 权限的话，会导致 DBA 无法登陆数据库检查问题</li>
-</ol>
-</li>
-<li>super 权限只能留给 DBA 处理问题的账号使用</li>
-</ol>
-</li>
-<li><p>对于程序连接数据库账号，遵循权限注销原则</p>
-<ol>
-<li>程序使用数据库账号只能在一个 DB 下使用，不准跨库</li>
-<li>程序使用的账号原则上不准有 drop 权限</li>
-</ol>
-</li>
-<li><p>向DB 中插入 100W 条数据</p>
-<ol>
-<li><p>如果每次只插入一条数据，则会增加和数据库的交互次数</p>
-</li>
-<li><p>如果批量插入，虽然只有一次交互，但是会产生非常大的事务，可能造成内存溢出</p>
-</li>
-<li><p>分段批量插入</p>
-<ol>
-<li><p>JDBC 连接 URL 需要加上 <code>allowMultiQueries=true</code> 参数</p>
-</li>
-<li><p>example by Mybatis Batch:</p>
-</li>
-<li><pre><code class="java">// Java 代码
-pst.addBatch();
-if(i &gt; 0 &amp;&amp; i%1000 == 0){
-    pst.executeBatch();
-    pst.clearBatch();
-}</code></pre>
-</li>
-<li><pre><code class="xml">&lt;!-- MyBatis SQL --&gt;
-&lt;insert id=&quot;insertbatch&quot; parameterType=&quot;java.util.List&quot;&gt;
-    &lt;selectKey keyProperty=&quot;fetchTime&quot; order=&quot;BEFORE&quot; resultType=&quot;java.lang.String&quot;&gt;
-        insert into tb_user (username,password)
-        values
-        &lt;foreach collection=&quot;list&quot; item=&quot;item&quot; index=&quot;index&quot; separator=&quot;,&quot;&gt;
-            (
-                #{item.username},#{item.password}
-            )
-        &lt;/foreach&gt;
-    &lt;/selectKey&gt;
-&lt;/insert&gt;</code></pre>
-</li>
-</ol>
-</li>
-</ol>
-</li>
-</ol>
-<h3 id="《高性能MySQL》目录"><a href="#《高性能MySQL》目录" class="headerlink" title="《高性能MySQL》目录"></a>《高性能MySQL》目录</h3><ol>
-<li>第一章 <a href="/2019/06/23/读书笔记/《高性能MySQL》/1.数据库设计规范/index.html">数据库设计规范</a></li>
-<li>第二章 <a href="/2019/06/22/读书笔记/《高性能MySQL》/2.数据库字段设计规范/index.html">数据库字段设计规范</a></li>
-<li>第三章 <a href="/2019/06/21/读书笔记/《高性能MySQL》/3.数据库SQL开发规范/index.html">数据库 SQL 开发规范</a></li>
-<li>第四章 <a href="/2019/06/20/读书笔记/《高性能MySQL》/4.数据库操作行为规范/index.html">数据库操作行为规范</a></li>
-<li>第五章 <a href="/2019/06/19/读书笔记/《高性能MySQL》/5.设计数据库分区表/index.html">设计数据库分区表</a></li>
-<li>第六章 <a href="/2019/06/18/读书笔记/《高性能MySQL》/6.MySQL存储引擎/index.html">MySQL存储引擎</a></li>
-<li>第七章 <a href="/2019/06/17/读书笔记/《高性能MySQL》/7.MySQL执行计划优化/index.html">MySQL 执行优化</a></li>
-<li>第八章 <a href="/2019/06/16/读书笔记/《高性能MySQL》/8.MySQL慢查日志/index.html">MySQL 慢查询日志</a></li>
-<li>第九章 <a href="/2019/06/15/读书笔记/《高性能MySQL》/9.数据库备份/index.html">MySQL 数据库备份与恢复</a></li>
-<li>第十章 <a href="/2019/06/14/读书笔记/《高性能MySQL》/10.MySQL架构拆分/index.html">MySQL构架拆分</a></li>
-<li>其他：<a href="/2019/06/12/读书笔记/《高性能MySQL》/20.数据库表结构实践/index.html">MySQL表结构实践sql</a></li>
-<li>其他2：<a href="/2019/06/13/读书笔记/《高性能MySQL》/11.MySQL常用命令/index.html">MySQL常用命令</a></li>
-</ol>
-</div><hr></div><div class="recent-post-item article-container"><a class="article-title" href="/2019/06/23/读书笔记/《高性能MySQL》/5.设计数据库分区表/">《高性能MySQL》第五章 设计数据库分区表</a><time class="post-meta__date"><i class="fa fa-calendar" aria-hidden="true"></i> 2019-06-23</time><span class="article-meta"><span class="article-meta__separator">|</span><i class="fa fa-inbox article-meta__icon" aria-hidden="true"></i><a class="article-meta__categories" href="/categories/读书笔记/">读书笔记</a><i class="fa fa-angle-right" aria-hidden="true"></i><i class="fa fa-inbox article-meta__icon" aria-hidden="true"></i><a class="article-meta__categories" href="/categories/读书笔记/高性能MySQL/">高性能MySQL</a></span><span class="article-meta tags"><span class="article-meta__separator">|</span><i class="fa fa-tag article-meta__icon" aria-hidden="true"></i><a class="article-meta__tags" href="/tags/hide/">hide</a><span class="article-meta__link">-</span><i class="fa fa-tag article-meta__icon" aria-hidden="true"></i><a class="article-meta__tags" href="/tags/高性能MySQL/">高性能MySQL</a></span><div class="content"><h2 id="一、数据库设计三范式"><a href="#一、数据库设计三范式" class="headerlink" title="一、数据库设计三范式"></a>一、数据库设计三范式</h2><blockquote>
-<p>第一范式：数据库表中的字段都是单一属性，不可再分。<br>第二范式：数据库表中不存在非关键字段对任一候选关键字段的部分函数依赖。<br>第三范式：数据表中不能存在非关键字段对任一候选关键字段的传递函数依赖。</p>
-</blockquote>
-<p>翻译过来即：</p>
 <blockquote>
-<p>第一范式：表必须有主键，且每个字段原子性不可再分。<br>第二范式：要求所有非主键字段完全依赖主键，不能产生部分依赖<br>第三范式：所有非主键字段和主键字段之间不能产生传递依赖</p>
+<p>使用 @WebListener 注册声明类为监听器</p>
 </blockquote>
-<h2 id="二、MySQL-分区表"><a href="#二、MySQL-分区表" class="headerlink" title="二、MySQL 分区表"></a>二、MySQL 分区表</h2><h3 id="1-检查-MySQL-是否支持-分区功能"><a href="#1-检查-MySQL-是否支持-分区功能" class="headerlink" title="1. 检查 MySQL 是否支持 分区功能"></a>1. 检查 MySQL 是否支持 分区功能</h3><blockquote>
-<pre><code class="mysql">-- 查看MySQL 中的所有插件，如果存在 Name=partition；Status=ACTIVE，则表示支持分区功能
-SHOW PLUGINS;</code></pre>
-<p>分区表的特点：在逻辑上为一个表，在物理上存储在多个文件中。</p>
-</blockquote>
-<h3 id="2-分区表的使用方法"><a href="#2-分区表的使用方法" class="headerlink" title="2. 分区表的使用方法"></a>2. 分区表的使用方法</h3><blockquote>
-<p>注：PARTITION BY 必须是主键HASH之后，而不能是其它属性。</p>
-<p>在插入和查询时，与正常使用一致。</p>
-<h3 id="3-分区的几种方式"><a href="#3-分区的几种方式" class="headerlink" title="3. 分区的几种方式"></a>3. 分区的几种方式</h3></blockquote>
-<h4 id="1-HASH-分区"><a href="#1-HASH-分区" class="headerlink" title="1. HASH 分区"></a>1. HASH 分区</h4><ol>
-<li>根据 MOD(分区键、分区数) 的值把数据行存储到表的不同分区中</li>
-<li>数据可以平均的分布在各个分区中</li>
-<li>HASH 分区的键值必须是一个 INT 类型的值，或是通过函数可以转为 INT 类型<ol>
-<li>如果属性为整型，则可以 eg: PARTITION BY HASH(customer_id)</li>
-<li>如果属性为日期，则转换为整型后进行HASH：eg: PARTITION BY HASH(UNIX_TIMESTAMP(login_time))</li>
+<h2 id="2-添加-servlet-扫描"><a href="#2-添加-servlet-扫描" class="headerlink" title="2. 添加 servlet 扫描"></a>2. 添加 servlet 扫描</h2><pre><code class="java">@SpringBootApplication
+@ServletComponentScan(basePackages = &quot;com.test.*&quot;)
+public class App {
+    public static void main(String[] args){
+        SpringApplication.run(App.class,args);
+    }
+}</code></pre>
+<h2 id="3-测试"><a href="#3-测试" class="headerlink" title="3. 测试"></a>3. 测试</h2><p>启动项目，可在堆栈信息中找到对应的输出</p>
+<h2 id="4-常见监听器接口"><a href="#4-常见监听器接口" class="headerlink" title="4. 常见监听器接口"></a>4. 常见监听器接口</h2><ol>
+<li>ServletContextListener - 监听 ServletContext 对象的创建及销毁<ol>
+<li>contextInitialized(ServletContextEventsce) - web 应用程序初始化进程正在启动的通知</li>
+<li>contextDestroyed(ServletContextEvent sce) - 通知 servlet 上下文即将关闭。所有 servlet 和过滤器之前已经被销毁()</li>
+</ol>
+</li>
+<li>HttpSessionListener - 监听 session 对象的创建及销毁<ol>
+<li>sessionCreated(HttpSessionEvent se) - 创建会话的通知</li>
+<li>sessionDestroyed(HttpSessionEvent se) - 会话即将失效的通知</li>
+</ol>
+</li>
+<li>ServletRequestListener - 监听 request 对象的创建及销毁<ol>
+<li>requestDestroyed(ServletRequestEvent src) - 请求将超出 web 应用程序的范围</li>
+<li>requestInitialized(ServletRequestEvent src) - 请求将进入 web 应用程序的范围</li>
+</ol>
+</li>
+<li>ServletContextAttributeListener - 监听 servletContext 对象中属性的变化<ol>
+<li>attributeAdded(ServletContextAttributeEvent scae) - 通知 servlet 上下文中添加了一个新属性。在添加属性后调用</li>
+<li>attributeRemoved(ServletContextAttributeEvent scae) - 从 servlet 上下文中删除现有属性的通知。删除属性后调用</li>
+<li>attributeReplaced(ServletContextAttributeEvent scae) - 通知 servlet 上下文上的属性已被替换。替换属性后调用。</li>
+</ol>
+</li>
+<li>HttpSessionAttributeListener - 监听 session 对象中属性的改变<ol>
+<li>同 ServletContextAttributeListener</li>
+</ol>
+</li>
+<li>ServletRequestAttributeListener - 监听 request 对象中属性的改变<ol>
+<li>同 ServletContextAttributeListener</li>
 </ol>
 </li>
 </ol>
-<p>eg: 对用户登录日志表进行分区，分区规则为 customer_id 的 hash 值，并分为4个区</p>
-<pre><code class="sql">CREATE TABLE customer_login_log(
- customer_id INT UNSIGNED NOT NULL COMMENT &#39;登录用户ID&#39;,
- login_time TIMESTAMP NOT NULL COMMENT &#39;用户登录时间&#39;,
- login_ip INT UNSIGNED NOT NULL COMMENT &#39;登录IP&#39;,
- login_type TINYINT NOT NULL COMMENT &#39;登录类型：0 未成功，1 成功&#39;
-) engine = innodb DEFAULT CHARSET=utf8 COMMENT &#39;用户登录日志表&#39;
-PARTITION BY HASH(customer_id)
-PARTITIONS 4;</code></pre>
-<p>创建 HASH 分区表时可以使用到的函数</p>
-<table>
+</div><hr></div><div class="recent-post-item article-container"><a class="article-title" href="/2019/09/04/Interview/20190903上海基诺联生物/">20190903上海基诺联生物科技有限公司</a><time class="post-meta__date"><i class="fa fa-calendar" aria-hidden="true"></i> 2019-09-04</time><span class="article-meta"><span class="article-meta__separator">|</span><i class="fa fa-inbox article-meta__icon" aria-hidden="true"></i><a class="article-meta__categories" href="/categories/面试题/">面试题</a></span><span class="article-meta tags"><span class="article-meta__separator">|</span><i class="fa fa-tag article-meta__icon" aria-hidden="true"></i><a class="article-meta__tags" href="/tags/hide/">hide</a></span><div class="content"><ol>
+<li>公司最新的业务，为什么有两个云平台<ol>
+<li>一个教学平台，一个比赛平台，然后说一些业务</li>
+</ol>
+</li>
+<li>搭建过权限架构，使用的是什么框架？是如何实现 Spring Security 的？Spring Security 是如何实现权限验证的？<ol>
+<li>Spring Security，引入依赖，配置一个 Configure，开启 Security Method 验证，自定义实现 UserDetailsService，扩展 UserDetails，加载 Authority，默认存入 Session 中，可以将 Session 扩展到 Redis、MongoDB 等地方保存，即可加载出用户信息到 SecurityContext 中。</li>
+<li>通过@PreAuthorize 可以验证之前加载的 Authority 权限数组。</li>
+</ol>
+</li>
+<li>如果用户保存在 Session 中，那么权限变更后如何重新加载权限？<ol>
+<li>现在的解决方案：SpringSecurity 是通过 @PreAuthorize 的 SecurityExpressionOperations 实现类，如 hasAuthority()、hasAnyAuthority(…) 来验证的，那么我们只要实现一个 hasCustomAuthority() 改为从 Redis、MongoDB 等地直接获取用户存储的权限即可。通过使用自定义的接口，扩展 Security 的验证</li>
+<li>不用担心性能问题，因为我们的 Session 存储在 Redis、MongoDB 中，那么程序每次获取 Session 时，都会从 Redis、MongoDB 中取。那么自定义接口所修改的，只是从 spring_sessions 表改为了自己的用户权限表。</li>
+</ol>
+</li>
+<li>JDK 版本是多少？1.8 有哪些新特性？说说你对流式编程的理解？如何从 List<user>中取出所有的 username？<ol>
+<li>jdk8 主要增加了对集合类的流式操作，也就是所说的 lambda 表达式，使我们对集合的遍历等操作更加便利。</li>
+<li>userList.stream().map(val -&gt; val.getUsername()).collect(toList())</li>
+</ol>
+</user></li>
+<li>用过索引没？谈谈索引的作用？谈谈复合索引<ol>
+<li>索引的主要作用是优化查询，在数据库的某一个字段上创建了索引后，对该表的某一个字段查询时，将不再遍历整张表，而是遍历索引树。但是索引不应该创建的过多，如果索引树过于庞大的话，对性能也有很大的影响</li>
+<li>复合索引，就是以一个数组的方式保存多个字段，然后在查询时，依次按照索引的位置从左到右查询</li>
+<li>以下来自于“高性能 MySQL”中对索引设计的规范：<ol>
+<li>禁止给每个列都建立索引，单表索引建议不超过 5 个</li>
+<li>索引定义在 SELECT、UPDATE、DELETE 语句的 WHERE 从句中的列</li>
+<li>索引定义在 OrderBy、GroupBy、Distinct 中的字段</li>
+<li>多表 Join 的字段</li>
+<li>复合索引，区分度高的放左侧、字段长度小的放左侧、使用最频繁的放左侧</li>
+<li>避免冗余索引和重复索引，MySQL 在执行优化时需要选择具体的索引，降低了索引使用效率</li>
+<li>避免使用外键约束，建议在业务端保证数据的参照完整性，因为外键会影响父表和子表的写操作而降低性能</li>
+<li>不建议使用外键约束，但一定要在表与表的关联键上建立索引</li>
+</ol>
+</li>
+</ol>
+</li>
+<li>说一说数据库事务是什么？回滚是在什么情况下发生的(提示)？<ol>
+<li>我只说了数据隔离，然后被提示之后才想到一致性</li>
+<li>数据隔离，比如数据插入时阻塞其他插入操作，数据查询时阻塞其他插入操作等，这些由数据库的事务隔离级别来决定（还好没问我数据库的隔离级别，越简单的越不容易记），避免脏读</li>
+<li>回滚是为了保存数据的一致性，在同一个事务中执行的 SQL 会保持一致性，只能全部执行成功。如果某一个 SQL 出现了异常，会导致整个事务回滚到执行之前的状态。</li>
+</ol>
+</li>
+<li>什么是分布式锁？怎么实现分布式锁？<ol>
+<li>分布式锁就是为了解决集群环境时，JVM 和锁无法工作的问题。因为多台服务器的线程彼此之间没办法互相加锁，因此需要一些第三方中间件来帮助我们来模拟加锁行为。</li>
+<li>比如 Redis、Zookeeper、MongoDB 等中间件，我们定义一个标识位，在我们进行一些对数据有要求的插入等操作时，为了避免其他线程同时执行，我们需要在执行之前尝试获取这个标志位，如果获取成功了，那么执行，获取失败则等待、轮询、或者抛出异常。</li>
+</ol>
+</li>
+<li>Redis 是如何实现分布式锁的？<ol>
+<li>Redis 有一个 setNX 的语句，是一个 CAS 操作，会先比较某一个值是否存在，如果不存在才设置，存在则不设置。</li>
+<li>setNX 比直接查询再赋值，要原子化，将查询并修改合为一个操作。查询再赋值的操作再怎么快也是有时间间隔的。</li>
+</ol>
+</li>
+<li>Redis 有哪些数据结构？(对 Redis 不太熟悉，带过了)<ol>
+<li>string、hash、list、set、sorted set（后续查的）</li>
+</ol>
+</li>
+<li>公司是如何使用 Docker 的？Docker 是如何创建镜像的？<ol>
+<li>（白话）公司将 Nginx、后台的 Java Jar、前端编译后的包，都挂载到 docker 上，并使用容器的方式启动和运行。使用 Docker 能够保证每次容器运行时的环境都是隔离的。使用方法：在项目根目录下写一个 Dockerfile，然后在文件中指定所需的 jdk 版本、redis 等其他中间件服务。（后面这段没回答上来）然后通过 docker build 的方法生成镜像，然后将镜像通过 docker push 的方式推送到远程云上。push 之后我就不知道了。这些是从公司的 jenkins 上学到的。</li>
+</ol>
+</li>
+<li>你有什么要了解的吗？<ol>
+<li>打脸行为：</li>
+<li>问：技术栈听贴合的，那么公司用的什么 ORM 框架呢？答：Mybatis，你用的是 JPA？</li>
+<li>就这吧，嘟嘟嘟……</li>
+</ol>
+</li>
+</ol>
+</div><hr></div><div class="recent-post-item article-container"><a class="article-title" href="/2019/08/05/读书笔记/《Jenkins》实战笔记/jenkins/">《Jenkins》实战</a><span class="article-meta"><i class="fa fa-thumb-tack article-meta__icon sticky"></i><span class="sticky">置顶</span><span class="article-meta__separator" style="margin-right: 0.3rem">|</span></span><time class="post-meta__date"><i class="fa fa-calendar" aria-hidden="true"></i> 2019-08-05</time><span class="article-meta"><span class="article-meta__separator">|</span><i class="fa fa-inbox article-meta__icon" aria-hidden="true"></i><a class="article-meta__categories" href="/categories/读书笔记/">读书笔记</a><i class="fa fa-angle-right" aria-hidden="true"></i><i class="fa fa-inbox article-meta__icon" aria-hidden="true"></i><a class="article-meta__categories" href="/categories/读书笔记/Jenkins部署/">Jenkins部署</a></span><span class="article-meta tags"><span class="article-meta__separator">|</span><i class="fa fa-tag article-meta__icon" aria-hidden="true"></i><a class="article-meta__tags" href="/tags/Jenkins部署/">Jenkins部署</a></span><div class="content"><ul>
+<li><a href="/2019/08/05/读书笔记/《Jenkins》实战笔记/jenkins-react/index.html">Jenkins 部署 reactjs</a></li>
+<li><a href="/2019/08/05/读书笔记/《Jenkins》实战笔记/jenkins-springboot/index.html">Jenkins 部署 Java</a></li>
+</ul>
+</div><hr></div><div class="recent-post-item article-container"><a class="article-title" href="/2019/08/05/读书笔记/《Jenkins》实战笔记/jenkins-react/">Jenkins 从零到有部署一个前端项目</a><time class="post-meta__date"><i class="fa fa-calendar" aria-hidden="true"></i> 2019-08-05</time><span class="article-meta"><span class="article-meta__separator">|</span><i class="fa fa-inbox article-meta__icon" aria-hidden="true"></i><a class="article-meta__categories" href="/categories/读书笔记/">读书笔记</a><i class="fa fa-angle-right" aria-hidden="true"></i><i class="fa fa-inbox article-meta__icon" aria-hidden="true"></i><a class="article-meta__categories" href="/categories/读书笔记/Jenkins部署/">Jenkins部署</a></span><span class="article-meta tags"><span class="article-meta__separator">|</span><i class="fa fa-tag article-meta__icon" aria-hidden="true"></i><a class="article-meta__tags" href="/tags/hide/">hide</a><span class="article-meta__link">-</span><i class="fa fa-tag article-meta__icon" aria-hidden="true"></i><a class="article-meta__tags" href="/tags/Jenkins部署/">Jenkins部署</a></span><div class="content"><h1 id="Jenkins-从零到有部署一个React项目"><a href="#Jenkins-从零到有部署一个React项目" class="headerlink" title="Jenkins 从零到有部署一个React项目"></a>Jenkins 从零到有部署一个React项目</h1><h2 id="一、下载并启动Jenkins"><a href="#一、下载并启动Jenkins" class="headerlink" title="一、下载并启动Jenkins"></a>一、下载并启动Jenkins</h2><p>从 <a href="https://jenkins.io/download/" target="_blank" rel="noopener">Jenkins 官网</a>下载所需的版本，这里使用 Docker 容器部署 Jenkins war(你也可以直接使用 <code>java -jar jenkins.war -httpPort=8080</code> 来启动，这样的话直接进入 [填写密码(锚点)](#1.  填写密码) 即可。)。</p>
+<blockquote>
+<p>注意：我们并没有使用 hub.docker.com 中提供的 jenkins/jenkins 这个镜像。因为我试了一下没装成功，哈哈。</p>
+</blockquote>
+<p>在 war 包的同级目录下，编写 Dockerfile，如下：</p>
+<pre><code class="dockerfile">FROM openjdk:8
+VOLUME /tmp
+COPY jenkins.war app.war
+ENTRYPOINT [&quot;java&quot;,&quot;-jar&quot;,&quot;app.war&quot;,&quot;--httpPort=8080&quot;]</code></pre>
+<p>构建 jenkins 镜像</p>
+<pre><code class="sh">#使用Dockerfile构建jenkins镜像
+docker build -t luokaiii.jenkins .</code></pre>
+<p>编写 jenkins 启动脚本， start.sh：</p>
+<pre><code class="sh">docker run \
+  --name luokaiii.jenkins \
+  -p 8080:8080 \
+  -p 50000:50000 \
+  -v jenkins_home:/var/jenkins_home \
+  -d luokaiii.jenkins</code></pre>
+<blockquote>
+<p>注意：1. 需要给 start.sh 文件授权，否则无法执行；2. 通过 -v 命令将jenkins文件挂载到本地；</p>
+</blockquote>
+<h2 id="二、环境初始化"><a href="#二、环境初始化" class="headerlink" title="二、环境初始化"></a>二、环境初始化</h2><h3 id="1-填写密码"><a href="#1-填写密码" class="headerlink" title="1.  填写密码"></a>1.  填写密码</h3><p>运行上面写的 start.sh 启动脚本，并打开 localhost:8080，稍等片刻就会提示我们输入初始密码。</p>
+<p>进入 jenkins 容器，<code>docker exec -it luokaiii.jenkins bash</code> （如果提示有误，则可以使用 container 的 id 来进入），找到位于 <code>/root/.jenkins/secrets/initialAdminPassword</code> 的密码并填写进入。</p>
+<h3 id="2-安装插件"><a href="#2-安装插件" class="headerlink" title="2. 安装插件"></a>2. 安装插件</h3><p>密码输入成功后，会提示我们选择需要安装的插件，这里我选择的是社区推荐插件。对于新入门的用户来说，推荐的往往够用了。</p>
+<p><img src="https://i.loli.net/2019/08/05/URXsYagSkyl96pP.png" alt="安装插件中..."></p>
+<p>在插件安装完成之后，我们需要加入以下额外的插件：</p>
+<ol>
+<li>Publish Over SSH     // 向服务器发送文件</li>
+<li>SSH         // 需要 SSH 来连接服务器</li>
+<li>Config File Provider</li>
+<li>NodeJS     // 因为我们的测试项目是使用 react 写的一个模拟项目，因此需要NodeJS 与 npm 进行编译</li>
+</ol>
+<blockquote>
+<p>添加插件的目录为：Manage Jenkins &gt; Manage Plugins &gt; 可选插件</p>
+</blockquote>
+<h3 id="3-新建一个管理员账户"><a href="#3-新建一个管理员账户" class="headerlink" title="3. 新建一个管理员账户"></a>3. 新建一个管理员账户</h3><p><img src="https://i.loli.net/2019/08/05/CYpL2sb3PlefOAi.png" alt="创建账户"></p>
+<p>ok，安装成功，进入我们的正题。</p>
+<p><img src="https://i.loli.net/2019/08/05/foPH29MNlGvrXsk.png" alt="欢迎来到 Jenkins"></p>
+<h2 id="三、使用-SSH-登录服务器"><a href="#三、使用-SSH-登录服务器" class="headerlink" title="三、使用 SSH 登录服务器"></a>三、使用 SSH 登录服务器</h2><p>配置 SSH Key 有两种方式，一种是在本地生成，然后将公钥发送至服务器；另一种是在服务器生成，将私钥拷贝至本地。(好像没啥区别啊)</p>
+<h3 id="1-在本地电脑生成-SSH"><a href="#1-在本地电脑生成-SSH" class="headerlink" title="1.  在本地电脑生成 SSH"></a>1.  在本地电脑生成 SSH</h3><ol>
+<li>打开命令行，生成ssh-key：<code>ssh-keygen -t rsa</code></li>
+<li>将ssh-key 发送至服务器：<code>ssh-copy-id -i ~/.ssh/id_rsa.pub root@xxx.xxx.xxx.xxx</code></li>
+<li>输入服务器密码，即可上传成功</li>
+<li>验证登录：<code>ssh root@xxx.xxx.xxx.xxx -i id_rsa</code> </li>
+<li>输入私钥的 password 即可</li>
+</ol>
+<h3 id="2-服务器端生成-SSH"><a href="#2-服务器端生成-SSH" class="headerlink" title="2.  服务器端生成 SSH"></a>2.  服务器端生成 SSH</h3><ol>
+<li>使用密码登录远程服务器</li>
+<li>执行命令 ssh-keygen ，输入文件地址、密码等信息，如名为 ssh_rsa</li>
+<li>将 生成的私钥拷贝出来，放到需要连接的电脑上(可以新建文件，把 ssh_rsa 的内容拷贝进去)</li>
+<li>重设本地文件的权限 chmod 0600 ssh_rsa</li>
+<li>开启 SSH Key 登录<ol>
+<li>在远程服务器中找到 /etc/ssh/sshd_config</li>
+<li>将以下两个参数设置为 on(默认为on)<ol>
+<li>RSAAuthentication on</li>
+<li>PubkeyAuthentication on</li>
+</ol>
+</li>
+</ol>
+</li>
+<li>关闭 密码 登录(可选，前提是你要确保之前的私钥备份好了，不然可就无法登陆了)<ol>
+<li>将 PasswordAuthentication 改为 no</li>
+</ol>
+</li>
+<li>测试使用 SSH Key 登录服务器<ol>
+<li>ssh <a href="mailto:root@xxx.xxx.xxx.xxx" target="_blank" rel="noopener">root@xxx.xxx.xxx.xxx</a> -p port -i ~/.ssh/id_rsa</li>
+<li>xxx.xxx.xxx.xxx 为服务器 ip 地址</li>
+<li>port 为服务器登录端口</li>
+<li>~/.ssh/id_rsa 为本地私钥地址</li>
+</ol>
+</li>
+</ol>
+<h2 id="四、配置SSH"><a href="#四、配置SSH" class="headerlink" title="四、配置SSH"></a>四、配置SSH</h2><p>进入 Manage Jenkins &gt;  Configure System，并作出以下两个修改：</p>
+<h3 id="1-SSH-remote-hosts"><a href="#1-SSH-remote-hosts" class="headerlink" title="1. SSH remote hosts"></a>1. SSH remote hosts</h3><p>配置远程服务器</p>
+<p><img src="https://i.loli.net/2019/08/05/ulX69MTxD1HFwYQ.png" alt="UTOOLS1564997986052.png"></p>
+<h3 id="2-Publish-over-SSH"><a href="#2-Publish-over-SSH" class="headerlink" title="2.Publish over SSH"></a>2.Publish over SSH</h3><p>配置推送文件时的服务器配置，使用 ssh key</p>
+<p><img src="C:%5CUsers%5Cuser%5CAppData%5CRoaming%5CTypora%5Ctypora-user-images%5C1564997904177.png" alt="1564997904177"></p>
+<h2 id="四、配置完整的任务"><a href="#四、配置完整的任务" class="headerlink" title="四、配置完整的任务"></a>四、配置完整的任务</h2><p>新建一个 <code>Freestyle project</code></p>
+<p><img src="http://img.pic35.com/uploads/allimg/170701/1-1FF11312380-L.jpg" alt="手动狗头"></p>
+<p>设置源码仓库地址，并添加用户名密码、或 SSHKey 的凭证</p>
+<p><img src="C:%5CUsers%5Cuser%5CAppData%5CRoaming%5CTypora%5Ctypora-user-images%5C1564996570789.png" alt="源码管理"></p>
+<p>构建前的环境配置，指定服务器地址、<a href>#NodeJS版本</a></p>
+<p><img src="https://i.loli.net/2019/08/05/MbAGENWmIod94rP.png" alt="构建环境"></p>
+<p>执行构建，并打印 Node 与 NPM 的版本，来确定是否安装成功；指定 npm 仓库为taobao镜像，并进行编译(react 编译后的文件放在 /build 下，其他语言参照各自特性而定)</p>
+<p><img src="https://i.loli.net/2019/08/05/XPuSnVHjb21pqG7.png" alt="构建"></p>
+<p>构建完成后，就是把生成的 build 目录发送至服务器指定目录了。如果您使用了 nginx 作了静态代理，则只需将 build 后的文件发送至该目录即可。</p>
+<p><img src="C:%5CUsers%5Cuser%5CAppData%5CRoaming%5CTypora%5Ctypora-user-images%5C1564996807629.png" alt="构建后操作"></p>
+<h2 id="五、测试是否正确安装及配置"><a href="#五、测试是否正确安装及配置" class="headerlink" title="五、测试是否正确安装及配置"></a>五、测试是否正确安装及配置</h2><h3 id="1-随便修改点文件，提交至github上"><a href="#1-随便修改点文件，提交至github上" class="headerlink" title="1. 随便修改点文件，提交至github上"></a>1. 随便修改点文件，提交至github上</h3><h3 id="2-点击立即构建"><a href="#2-点击立即构建" class="headerlink" title="2. 点击立即构建"></a>2. 点击立即构建</h3><p><img src="https://i.loli.net/2019/08/05/QlRNP3zxiLmOeJ6.png" alt="立即构建"></p>
+<h3 id="3-打开控制台输出，查看日志"><a href="#3-打开控制台输出，查看日志" class="headerlink" title="3. 打开控制台输出，查看日志"></a>3. 打开控制台输出，查看日志</h3><p>不出意外的话，控制台中会依次打印出一下日志(日志太长，这里就不贴了，仔细看一下应该都很好理解，也不是什么比较难的单词)</p>
+<ol>
+<li>git fetch –tags ….   // 从远程拉取代码</li>
+<li>node -v ； npm -v     // 打印的node版本</li>
+<li>npm  install –registry…    // 修改npm 镜像源</li>
+<li>npm run build        // 开始构建</li>
+<li>[SSH] executing post build script    // 连接并上传build目录</li>
+</ol>
+<h3 id="4-重新访问项目地址"><a href="#4-重新访问项目地址" class="headerlink" title="4. 重新访问项目地址"></a>4. 重新访问项目地址</h3></div><hr></div><div class="recent-post-item article-container"><a class="article-title" href="/2019/08/05/读书笔记/《Jenkins》实战笔记/jenkins-springboot/">Jenkins 从零到有部署一个Java项目</a><time class="post-meta__date"><i class="fa fa-calendar" aria-hidden="true"></i> 2019-08-05</time><span class="article-meta"><span class="article-meta__separator">|</span><i class="fa fa-inbox article-meta__icon" aria-hidden="true"></i><a class="article-meta__categories" href="/categories/读书笔记/">读书笔记</a><i class="fa fa-angle-right" aria-hidden="true"></i><i class="fa fa-inbox article-meta__icon" aria-hidden="true"></i><a class="article-meta__categories" href="/categories/读书笔记/Jenkins部署/">Jenkins部署</a></span><span class="article-meta tags"><span class="article-meta__separator">|</span><i class="fa fa-tag article-meta__icon" aria-hidden="true"></i><a class="article-meta__tags" href="/tags/hide/">hide</a><span class="article-meta__link">-</span><i class="fa fa-tag article-meta__icon" aria-hidden="true"></i><a class="article-meta__tags" href="/tags/Jenkins部署/">Jenkins部署</a></span><div class="content"><h1 id="Docker-Nginx-Jenkins-部署-SpringBoot-Jar"><a href="#Docker-Nginx-Jenkins-部署-SpringBoot-Jar" class="headerlink" title="Docker + Nginx + Jenkins 部署 SpringBoot Jar"></a>Docker + Nginx + Jenkins 部署 SpringBoot Jar</h1><p>本文能解决的问题：</p>
+<ol>
+<li>如何使用Docker 部署Jenkins</li>
+<li>Jenkins 会重写url(使用三级域名)</li>
+<li>nginx 配置 jenkins、前端、后端</li>
+<li>部署 Maven 子项目(单 maven 项目更简单，我相信你们能举一反三)</li>
+</ol>
+<h2 id="一、docker-compose"><a href="#一、docker-compose" class="headerlink" title="一、docker-compose"></a>一、docker-compose</h2><p>编写 docker-compose，连接 nginx 与 jenkins。</p>
+<blockquote>
+<p>如果不是使用 Docker 做容器管理，此步可忽略。直接启动 Nginx 与 Jenkins 即可。</p>
+</blockquote>
+<pre><code class="sh">version: &#39;3&#39;
+
+services:
+  jenkins:
+    container_name: &#39;jenkins.ci&#39;
+    image: &#39;jenkins/jenkins:lts&#39;
+    #ports:  不对外暴露端口，直接使用nginx容器转到8080
+      #- &#39;8080:8080&#39;
+      #- &#39;50000:50000&#39;
+    volumes:
+      - &#39;/home/docker-images/jenkins/var/jenkins_home:/var/jenkins_home&#39;
+      - &#39;/home/docker-images/jenkins/html:/usr/share/jenkins/html&#39; #挂载编译打包后的存放路径
+  nginx:
+    container_name: &#39;nginx&#39;
+    depends_on:
+      - jenkins
+    image: nginx:alpine
+    volumes:
+      - &#39;/home/luokaiii/backstage_page/html:/usr/www/luokaiii/cn/html&#39;
+      - &#39;/home/docker-images/nginx/conf:/etc/nginx/conf.d&#39;
+      - &#39;/home/docker-images/nginx/cert:/etc/nginx/cert&#39;
+    ports:
+      - 80:80 # 对外统一使用80端口
+      - 443:443
+    restart: always
+</code></pre>
+<h2 id="二、nginx-conf"><a href="#二、nginx-conf" class="headerlink" title="二、nginx.conf"></a>二、nginx.conf</h2><pre><code class="sh">upstream apisupport {
+    # 自己部署的后端服务，因为是在容器访问外部服务，所以需要使用内网IP
+    # 第二种方法是在 docker-compose 中将 jar 作为一个 service 连接
+    server xxx.xx.xx.xxx:9000;
+}
+# 这里用到了 docker-compose 中的容器，如果没用docker，直接写localhost就可以了。
+upstream dk-jenkins {
+    server jenkins:8080;
+}
+server {
+    listen 80 default_server;
+    listen [::]:80 default_server;
+    server_name www.luokaiii.cn;
+    return    301 https://$server_name$request_uri; 
+}
+server {
+    listen 80;
+    # 我用了一个 三级域名来处理Jenkins的请求，因为 jenkins 会从根目录查找静态资源和发送请求，总是会重写url。
+    server_name jenkins.luokaiii.cn;
+    location / {
+        proxy_pass http://dk-jenkins/;
+    }
+}
+# 如果没有 https 证书，直接将 ssl 以下的部分写在 80 里就行了
+server { 
+    listen 443 ssl; 
+    server_name www.luokaiii.cn luokaiii.cn; 
+
+    # ssl config
+    ssl on;   #设置为on启用SSL功能。
+    ssl_certificate cert/2292046_www.luokaiii.cn.pem;
+    ssl_certificate_key cert/2292046_www.luokaiii.cn.key;
+    ssl_session_timeout 5m;
+    ssl_ciphers ECDHE-RSA-AES128-GCM-SHA256:ECDHE:ECDH:AES:HIGH:!NULL:!aNULL:!MD5:!ADH:!RC4;
+    ssl_protocols TLSv1 TLSv1.1 TLSv1.2;
+    ssl_prefer_server_ciphers on; 
+
+    # 压缩请求，这样服务返回会快一些，毕竟国内带宽很贵的
+    gzip on;
+    gzip_min_length 1k;
+    gzip_comp_level 9;
+    gzip_types text/plain application/javascript application/x-javascript text/css application/xml text/javascript application/x-httpd-php image/jpeg image/gif image/png;
+    gzip_vary on;
+    gzip_disable &quot;MSIE [1-6]\.&quot;;
+
+    # 静态资源代理，在Jenkins部署前端项目的文章中，就是把前端静态文件部署在该目录下，直接由nginx代理即可。
+    root /usr/www/luokaiii/cn/html;
+
+    location / {
+        try_files $uri $uri/ /index.html;
+    }
+
+    # 请求转发，将 /api/ 请求转发到 jar 服务上
+    location /api/ {
+        proxy_pass http://apisupport/;
+        proxy_redirect  http://api/support/ https://www.luokaiii.cn/api/;
+        proxy_set_header X-Forwarded-For $proxy_add_x_forwarded_for;
+        proxy_set_header Host  $host;
+        proxy_set_header X-Real_IP  $remote_addr;
+        proxy_set_header REMOTE-HOST $remote_addr;
+        proxy_set_header X-Nginx-Proxy true;
+        proxy_connect_timeout 300;
+        proxy_send_timeout 300;
+        proxy_read_timeout 600;
+        proxy_buffer_size 256k;
+        proxy_buffers 4 256k;
+        proxy_busy_buffers_size 256k;
+        proxy_temp_file_write_size 256k;
+        proxy_next_upstream error timeout invalid_header http_500 http_502 http_503 http_504 http_404;
+        proxy_max_temp_file_size 128m;
+        proxy_http_version 1.1;
+        #proxy_cache mycache;
+        #proxy_cache_valid 200 302 1h;
+        #proxy_cache_valid 301 1h;
+        #proxy_cache_valid any 1m;
+    }
+}</code></pre>
+<blockquote>
+<p>这里使用了一个三级域名来代理 Jenkins，因为 Jenkins 总是会从根目录查找静态资源，以及发送请求。如果是 <a href="http://www.luokaiii.cn/jenkins/" target="_blank" rel="noopener">www.luokaiii.cn/jenkins/</a> 的话总是会被重写为 <a href="http://www.luokaiii.cn，所以直接用三级域名，让它从根目录找好了。" target="_blank" rel="noopener">www.luokaiii.cn，所以直接用三级域名，让它从根目录找好了。</a></p>
+<p>如果有知道如何代理的大佬也可以告诉我，虚心请教，谢谢。</p>
+</blockquote>
+<h2 id="三、SpringBoot-项目"><a href="#三、SpringBoot-项目" class="headerlink" title="三、SpringBoot 项目"></a>三、SpringBoot 项目</h2><p>这里项目以我自己写的 Demo <a href="https://github.com/luokaiii/luokaiii.api" target="_blank" rel="noopener"><a href="https://github.com/luokaiii/luokaiii.api" target="_blank" rel="noopener">https://github.com/luokaiii/luokaiii.api</a></a> 为例，一个 Maven 多级项目，我们只部署其中的 admin-server 模块。</p>
+<p>具体的项目是怎么写的就不说了，大致是：打开idea  &gt; 新建 Spring Initializr &gt; 选择maven &gt; 在 Application 中写一个 GetMapping &gt; OK</p>
+<h2 id="四、进入正题"><a href="#四、进入正题" class="headerlink" title="四、进入正题"></a>四、进入正题</h2><p>打开Jenkins，并新建一个 Freestyle（即自由风格的软件项目）。</p>
+<p>除了上一节 <a href="https://www.jianshu.com/p/e34674f34242" target="_blank" rel="noopener">Jenkins部署前端React项目</a> 中所需的依赖之外，这里还需要 <code>Maven Integration</code> 依赖。</p>
+<h3 id="1-项目描述（随便写）"><a href="#1-项目描述（随便写）" class="headerlink" title="1. 项目描述（随便写）"></a>1. 项目描述（随便写）</h3><p><img src="https://i.loli.net/2019/08/06/3AErybK1UaCoXgv.png" alt="UTOOLS1565082361195.png"></p>
+<h3 id="2-源码管理"><a href="#2-源码管理" class="headerlink" title="2. 源码管理"></a>2. 源码管理</h3><p>刚创建的用户，Credentials 可能为空，创建一个 username+password(一般是你的git账号密码)就行，(如果觉得不安全，可以使用SSH的方式，自己百度)。</p>
+<p><img src="C:%5CUsers%5Cuser%5CAppData%5CRoaming%5CTypora%5Ctypora-user-images%5C1565082401841.png" alt="1565082401841"></p>
+<blockquote>
+<p>这里分支使用的是 <code>develop</code>，原因：在 Git Flow 中，develop 为开发分支(这里用来做测试服务器的分支)，master 为主分支(即正式服务器的分支)。</p>
+<p>因人而异，你想用 master 也行，反正不是我的项目，哈哈。</p>
+</blockquote>
+<h3 id="3-构建（jenkins与测试服务器在同一台服务器上）"><a href="#3-构建（jenkins与测试服务器在同一台服务器上）" class="headerlink" title="3. 构建（jenkins与测试服务器在同一台服务器上）"></a>3. 构建（jenkins与测试服务器在同一台服务器上）</h3><p>如果你的 jenkins 部署在测试服务器上，那么直接将打包后的 jar 文件移动至指定目录即可。</p>
+<ol>
+<li>调用顶层 Maven 目标，使用maven 打包项目<ol>
+<li>因为打包的是子项目，所以使用 -pl 参数指定需要打包的子项目，通过 -am 参数开启依赖项目的构建</li>
+<li>-Dmaven.test.skip=true 跳过测试(一般对单元测试有严格要求的都不应该跳过此步骤)</li>
+</ol>
+</li>
+<li>Send files or execute commands over SSH<ol>
+<li>通过 SSH发送文件或执行命令 </li>
+<li>因为jenkins与测试在一起，所以我们只需要执行mv命令即可</li>
+<li>下面的jenkins与服务器分开(比如正式服部署，总不能还浪费带宽吧)，就需要发送将jar发送到服务器然后运行</li>
+</ol>
+</li>
+</ol>
+<p><img src="https://i.loli.net/2019/08/06/nSx9yFpINqrEAlo.png" alt="UTOOLS1565082655139.png"></p>
+<blockquote>
+</blockquote>
+<h3 id="4-构建（jenkins与测试服务器分离）"><a href="#4-构建（jenkins与测试服务器分离）" class="headerlink" title="4. 构建（jenkins与测试服务器分离）"></a>4. 构建（jenkins与测试服务器分离）</h3><p>跟步骤3没什么太大的区别，只是将 jar 发送到服务器。</p>
+<p><img src="https://i.loli.net/2019/08/06/he49txiGX5PQgzT.png" alt="UTOOLS1565083626352.png"></p>
+<blockquote>
+<p>最后一句 <code>pm2 restart api-support</code> 类似于 <code>nohup java -jar xxx.jar</code> 我是使用 pm2 管理的jar包，有兴趣的可以自己查一下(或者推荐一下其他的进程管理工具也行)。</p>
+</blockquote>
+<h2 id="5-测试"><a href="#5-测试" class="headerlink" title="5. 测试"></a>5. 测试</h2><p>随便提交一次代码，点击立即构建。经过漫长的等待(maven首次更新、向服务器发送jar包)，打印出以下日志。</p>
+<p><img src="https://i.loli.net/2019/08/06/GaonXC9TAKLF1wr.png" alt="构建成功"></p>
+<p>完成，收工！</p>
+<blockquote>
+<p>最后提一下我为什么会写两种构建方式，因为我先用步骤 四4 中的构建时，1M (上行才100多k，T_T)小水管发一个 jar 包快二十分钟了。所以想到同服务器还是直接拷贝的比较好。</p>
+</blockquote>
+</div><hr></div><div class="recent-post-item article-container"><a class="article-title" href="/2019/07/24/读书笔记/《SpringSecurity》/22.ExpressionControl/">《Spring Security》第二十二章 Expression-Based Access Control - 基于表达式的访问控制</a><time class="post-meta__date"><i class="fa fa-calendar" aria-hidden="true"></i> 2019-07-24</time><span class="article-meta"><span class="article-meta__separator">|</span><i class="fa fa-inbox article-meta__icon" aria-hidden="true"></i><a class="article-meta__categories" href="/categories/读书笔记/">读书笔记</a><i class="fa fa-angle-right" aria-hidden="true"></i><i class="fa fa-inbox article-meta__icon" aria-hidden="true"></i><a class="article-meta__categories" href="/categories/读书笔记/Spring-Security/">Spring Security</a></span><span class="article-meta tags"><span class="article-meta__separator">|</span><i class="fa fa-tag article-meta__icon" aria-hidden="true"></i><a class="article-meta__tags" href="/tags/hide/">hide</a><span class="article-meta__link">-</span><i class="fa fa-tag article-meta__icon" aria-hidden="true"></i><a class="article-meta__tags" href="/tags/Spring-Security/">Spring Security</a></span><div class="content"><h1 id="第二十二章-Expression-Based-Access-Control-基于表达式的访问控制"><a href="#第二十二章-Expression-Based-Access-Control-基于表达式的访问控制" class="headerlink" title="第二十二章 Expression-Based Access Control - 基于表达式的访问控制"></a>第二十二章 Expression-Based Access Control - 基于表达式的访问控制</h1><p>Spring Security 使用 SpringEL 作为表达式支持。</p>
+<h2 id="一、常用的内置表达式"><a href="#一、常用的内置表达式" class="headerlink" title="一、常用的内置表达式"></a>一、常用的内置表达式</h2><table>
 <thead>
 <tr>
-<th>ABS()</th>
-<th>CEILING()</th>
-<th>DAY()</th>
+<th>Expression</th>
+<th>Description</th>
 </tr>
 </thead>
 <tbody><tr>
-<td>DAYOFMONTH()</td>
-<td>DAYOFWEEK()</td>
-<td>DAYOFYEAR()</td>
+<td>hasRole([role])</td>
+<td>主体是有具有指定角色</td>
 </tr>
 <tr>
-<td>DATEDIFF()</td>
-<td>EXTRACT()</td>
-<td>FLOOR()</td>
+<td>hasAnyRole([role…])</td>
+<td>主体是有具有指定角色之一</td>
 </tr>
 <tr>
-<td>HOUR()</td>
-<td>MICROSECOND()</td>
-<td>MINUTE()</td>
+<td>hasAuthority([authority])</td>
+<td>是否具有指定权限</td>
 </tr>
 <tr>
-<td>MOD()</td>
-<td>MONTH()</td>
-<td>QUARTER()</td>
+<td>hasAnyAuthority([authority…])</td>
+<td>是否具有指定权限之一</td>
 </tr>
 <tr>
-<td>SECOND()</td>
-<td>TIME_TO_SEC()</td>
-<td>TO_DAYS()</td>
+<td>principal</td>
+<td>允许直接访问主体对象</td>
 </tr>
 <tr>
-<td>TO_SECONDS()</td>
-<td>UNIX_TIMESTAMP()</td>
-<td>WEEKDAY()</td>
+<td>authentication</td>
+<td>允许直接从 SecurityContext 获取当前主体</td>
 </tr>
 <tr>
-<td>YEAR()</td>
-<td></td>
-<td>YEARWEEK()</td>
+<td>permitAll</td>
+<td>总是为true</td>
+</tr>
+<tr>
+<td>denyAll</td>
+<td>总是为false</td>
+</tr>
+<tr>
+<td>isAnonymous()</td>
+<td>是否是匿名用户</td>
+</tr>
+<tr>
+<td>isRememberMe()</td>
+<td>是否是 remember-me 用户</td>
+</tr>
+<tr>
+<td>isAuthenticated()</td>
+<td>是否不是匿名用户</td>
+</tr>
+<tr>
+<td>isFullyAuthenticated()</td>
+<td>是否不是匿名用户，且不是remember-me 用户</td>
+</tr>
+<tr>
+<td>hasPermission(Object target,Object permission)</td>
+<td>用户是否可以访问权限为permission的目标</td>
+</tr>
+<tr>
+<td>hasPermission(Object targetId,String targetType,Object permission)</td>
+<td>用户是否可以访问权限为permission的目标</td>
 </tr>
 </tbody></table>
-<h4 id="2-RANGE-分区"><a href="#2-RANGE-分区" class="headerlink" title="2. RANGE 分区"></a>2. RANGE 分区</h4><h5 id="按照范围分区，特点："><a href="#按照范围分区，特点：" class="headerlink" title="按照范围分区，特点："></a>按照范围分区，特点：</h5><ol>
-<li>根据分区键值的范围把数据行存储到表的不同分区中</li>
-<li>多个分区的范围要连续，但是不能重叠</li>
-<li>默认情况下使用 VALUES LESS THAN 属性，即每个分区不包含指定的那个值</li>
-</ol>
-<p>eg: 对用户id 进行分区，p0分区为 0<del>9999，依次类推，p3分区为 3000</del>max</p>
-<pre><code class="mysql">CREATE TABLE customer_login_log(
- customer_id INT UNSIGNED NOT NULL COMMENT &#39;登录用户ID&#39;,
- login_time TIMESTAMP NOT NULL COMMENT &#39;用户登录时间&#39;,
- login_ip INT UNSIGNED NOT NULL COMMENT &#39;登录IP&#39;,
- login_type TINYINT NOT NULL COMMENT &#39;登录类型：0 未成功，1 成功&#39;
-) engine = innodb DEFAULT CHARSET=utf8 COMMENT &#39;用户登录日志表&#39;
-PARTITION BY RANGE (customer_id) (
-    PARTITION p0 VALUES LESS THAN (10000),
-    PARTITION p1 VALUES LESS THAN (20000),
-    PARTITION p2 VALUES LESS THAN (30000),
-    PARTITION p3 VALUES LESS THAN MAXVALUE
-)</code></pre>
-<h5 id="RANGE-分区的适用场景："><a href="#RANGE-分区的适用场景：" class="headerlink" title="RANGE 分区的适用场景："></a>RANGE 分区的适用场景：</h5><ol>
-<li>分区键为日期或是时间类型<ol>
-<li>时间归档</li>
-</ol>
-</li>
-<li>所有查询中都包括分区键</li>
-<li>定期按分区范围清理数据</li>
-</ol>
-<h4 id="3-List-分区"><a href="#3-List-分区" class="headerlink" title="3. List 分区"></a>3. List 分区</h4><h5 id="List-分区的特点："><a href="#List-分区的特点：" class="headerlink" title="List 分区的特点："></a>List 分区的特点：</h5><ol>
-<li>按分区键取值的列表进行分区</li>
-<li>同范围分区一样，各分区的列表值不能重复</li>
-<li>每一行数据必须能找到对应的分区列表，否则数据插入失败</li>
-</ol>
-<h5 id="如何建立-LIST-分区："><a href="#如何建立-LIST-分区：" class="headerlink" title="如何建立 LIST 分区："></a>如何建立 LIST 分区：</h5><pre><code class="mysql">CREATE TABLE customer_login_log(
- customer_id INT UNSIGNED NOT NULL COMMENT &#39;登录用户ID&#39;,
- login_time TIMESTAMP NOT NULL COMMENT &#39;用户登录时间&#39;,
- login_ip INT UNSIGNED NOT NULL COMMENT &#39;登录IP&#39;,
- login_type TINYINT NOT NULL COMMENT &#39;登录类型：0 未成功，1 成功&#39;
-) engine = innodb DEFAULT CHARSET=utf8 COMMENT &#39;用户登录日志表&#39;
-PARTITION BY LIST (login_type) (
-  PARTITION p0 VALUES IN (1,3,5,7),
-  PARTITION p1 VALUES IN (2,4,6,8)
-)</code></pre>
-<h3 id="4-分区表的常见操作"><a href="#4-分区表的常见操作" class="headerlink" title="4. 分区表的常见操作"></a>4. 分区表的常见操作</h3><ol>
-<li><p>查询分区信息表</p>
+<h2 id="二、方法注解表达式"><a href="#二、方法注解表达式" class="headerlink" title="二、方法注解表达式"></a>二、方法注解表达式</h2><p><code>这两个注解 @PreAuthorize(&quot;hasRole(&#39;USER&#39;)&quot;)</code> 与 <code>@PreAuthorize(&quot;hasPermission(#contact, &#39;ADMIN&#39;)&quot;)</code> 能够使用在具体的方法上，以一个方法参数作为表达式的一部分，来决定当前用户是否拥有给定的权限。</p>
+</div><hr></div><div class="recent-post-item article-container"><a class="article-title" href="/2019/07/24/读书笔记/《SpringSecurity》/21.SecurityAOP/">《Spring Security》第二十一章 Security Object Implementations - 安全对象的实现</a><time class="post-meta__date"><i class="fa fa-calendar" aria-hidden="true"></i> 2019-07-24</time><span class="article-meta"><span class="article-meta__separator">|</span><i class="fa fa-inbox article-meta__icon" aria-hidden="true"></i><a class="article-meta__categories" href="/categories/读书笔记/">读书笔记</a><i class="fa fa-angle-right" aria-hidden="true"></i><i class="fa fa-inbox article-meta__icon" aria-hidden="true"></i><a class="article-meta__categories" href="/categories/读书笔记/Spring-Security/">Spring Security</a></span><span class="article-meta tags"><span class="article-meta__separator">|</span><i class="fa fa-tag article-meta__icon" aria-hidden="true"></i><a class="article-meta__tags" href="/tags/hide/">hide</a><span class="article-meta__link">-</span><i class="fa fa-tag article-meta__icon" aria-hidden="true"></i><a class="article-meta__tags" href="/tags/Spring-Security/">Spring Security</a></span><div class="content"><h1 id="第二十一章-Security-Object-Implementations-安全对象的实现"><a href="#第二十一章-Security-Object-Implementations-安全对象的实现" class="headerlink" title="第二十一章 Security Object Implementations - 安全对象的实现"></a>第二十一章 Security Object Implementations - 安全对象的实现</h1><p>Spring Security 在2.0之后，通过配置的 MethodSecurityInterceptor 来确保 MethodInvocation 能够拦截到特定的 Bean 或者在多个 Bean 之间共享。拦截器使用 MethodSecurityMetadataSource 实例获取应用于特定方法调用的配置属性。</p>
+<p>MapBasedMethodSecurityMetadataSource 用于存储由方法名称键值的配置属性，并在内部使用 <intercept-methods> 或 <protect-point> 标签来定义属性。</protect-point></intercept-methods></p>
+<p>大致的意思是，配置一个 MethodSecurityInterceptor 显式的方法安全拦截器，可以使用 Spring AOP 的代理机制结合 AspectJSecurityInterceptor，来拦截指定的方法。进行方法保护。</p>
+</div><hr></div><div class="recent-post-item article-container"><a class="article-title" href="/2019/07/24/读书笔记/《SpringSecurity》/20.AuthorizationArchitecture/">《Spring Security》第二十章 Authorization Architecture - 授权架构</a><time class="post-meta__date"><i class="fa fa-calendar" aria-hidden="true"></i> 2019-07-24</time><span class="article-meta"><span class="article-meta__separator">|</span><i class="fa fa-inbox article-meta__icon" aria-hidden="true"></i><a class="article-meta__categories" href="/categories/读书笔记/">读书笔记</a><i class="fa fa-angle-right" aria-hidden="true"></i><i class="fa fa-inbox article-meta__icon" aria-hidden="true"></i><a class="article-meta__categories" href="/categories/读书笔记/Spring-Security/">Spring Security</a></span><span class="article-meta tags"><span class="article-meta__separator">|</span><i class="fa fa-tag article-meta__icon" aria-hidden="true"></i><a class="article-meta__tags" href="/tags/hide/">hide</a><span class="article-meta__link">-</span><i class="fa fa-tag article-meta__icon" aria-hidden="true"></i><a class="article-meta__tags" href="/tags/Spring-Security/">Spring Security</a></span><div class="content"><h1 id="第二十章-Authorization-Architecture-授权架构"><a href="#第二十章-Authorization-Architecture-授权架构" class="headerlink" title="第二十章 Authorization Architecture - 授权架构"></a>第二十章 Authorization Architecture - 授权架构</h1><h2 id="一、Authorization"><a href="#一、Authorization" class="headerlink" title="一、Authorization"></a>一、Authorization</h2><p>所有的 Authentication 都存储着一个 GrantedAuthority 对象列表，这些对象代表了 Principal 所具有的权利。</p>
+<p>GrantedAuthority 由 AuthenticationManager 插入到 Authentication 对象中，然后由 AccessDecisionManager 在作出授权决策时读取。</p>
+<p>GrantedAuthority 只有一个方法接口： getAuthority()，该方法允许 AccessDecisionManager 获得 GrantedAuthority，通过字符串的形式返回。</p>
+<p>SimpleGrantedAuthority 实现了 GrantedAuthority，这将允许任何用户 将 String 转换为 GrantedAuthority，在 Spring Security 中，所有的 AuthenticationProvider 都是用 SimpleGrantedAuthority 来填充 Authentication 对象。</p>
+<h2 id="二、Pre-Invocation-Handling-预处理"><a href="#二、Pre-Invocation-Handling-预处理" class="headerlink" title="二、Pre-Invocation Handling - 预处理"></a>二、Pre-Invocation Handling - 预处理</h2><p>Spring Security 提供了 拦截器，用于控制安全对象的访问，比如方法调用或 web 请求等。AccessDecisionMananger 决定了是否允许进行调用。</p>
+<h3 id="2-1-The-AccessDecisionManager"><a href="#2-1-The-AccessDecisionManager" class="headerlink" title="2.1 The AccessDecisionManager"></a>2.1 The AccessDecisionManager</h3><p>AccessDecisionManager 由 AbstractSecurityInterceptor 调用，负责做出最终的访问控制决策。接口包含三个方法：</p>
+<pre><code class="java">/**
+ * 做出最终访问控制的决策
+ */
+public interface AccessDecisionManager {
+    // decide 方法传递它所需要的所有信息，以便做出授权决策
+    void decide(Authentication authentication, Object secureObject, Collection&lt;ConfigAttribute&gt; attrs) throws AccessDeniedException;
+
+    // 该方法用来确定 AccessDecisionManager 是否可以处理传入的 ConfigAttribute
+    boolean supports(ConfigAttribute attribute);
+
+    boolean supports(Class clazz);
+}</code></pre>
+<h3 id="2-2-Voting-Based-AccessDecisionManager-Implementations-基于投票的辅助决策管理器的实现"><a href="#2-2-Voting-Based-AccessDecisionManager-Implementations-基于投票的辅助决策管理器的实现" class="headerlink" title="2.2 Voting-Based AccessDecisionManager Implementations - 基于投票的辅助决策管理器的实现"></a>2.2 Voting-Based AccessDecisionManager Implementations - 基于投票的辅助决策管理器的实现</h3><p>Spring Security 包含了几个基于投票的 AccessDecisionManager 实现。用户也可以实现自己的 AccessDecisionManager 来控制授权的所有方面。</p>
+<p><img src="https://docs.spring.io/spring-security/site/docs/5.0.5.RELEASE/reference/htmlsingle/images/access-decision-voting.png" alt="Access-Decision-Voting"></p>
+<p>使用这种方法，会对一系列的 AccessDecisionVoter 进行轮询，然后 AccessDecisionManager 根据投票结果来决定是否抛出 AccessDeniedException。</p>
+<p>AccessDecisionVoter 接口有以下三种方法：</p>
+<pre><code class="java">public interface AccessDecisionVoter {
+    // 返回结果: ACCESS_GRANTED = 1 允许访问; ACCESS_DENIED = -1 拒绝访问; ACCESS_ABSTAIN = 0 弃权;
+    int vote(Authenticaiton authentication, Object object, Collection&lt;ConfigAttribute&gt; attrs);
+
+    boolean supports(ConfigAttribute attribute);
+
+    boolean supports(Class clazz);
+}</code></pre>
+<p>Spring Security 提供了三种具体的访问决策管理器来记录选票。</p>
 <ol>
-<li><pre><code class="mysql">SELECT 
- table_name,
- partition_name,
- partition_description,
- table_rows
-FROM 
- information_schema.`PARTITIONS`
-WHERE table_name = &#39;customer_login_log&#39;;</code></pre>
-</li>
+<li>UnanimousBased<ol>
+<li>无论投了多少 ACCESS_GRANTED 通过票，只要有 ACCESS_DENIED 反对票，则判断为不通过</li>
+<li>如果没有 ACCESS_DENIED 反对票，且有 ACCESS_GRANTED 通过票，则判断为通过</li>
 </ol>
 </li>
-<li><p>新增分区</p>
-<ol>
-<li><pre><code class="mysql">ALTER TABLE customer_login_log ADD PARTITION (PARTITION p3 VALUES LESS THAN (UNIX_TIMESTAMP(&#39;2021-01-01 00:00:00&#39;)))</code></pre>
-</li>
+<li>AffirmativeBased<ol>
+<li>只要有 ACCESS_GRANTED 通过票，则判断为通过</li>
+<li>如果没有 ACCESS_GRANTED 通过票，且 ACCESS_DENIED 反对票在两个及以上，则判断为不通过</li>
 </ol>
 </li>
-<li><p>删除分区及其中的数据</p>
-<ol>
-<li><pre><code class="mysql">ALTER TABLE customer_login_log DROP PARTITION p0;</code></pre>
-</li>
+<li>ConsensusBased<ol>
+<li>如果 ACCESS_GRANED 通过票数大于 ACCESS_DENIED 反对票数，则判断为通过</li>
+<li>如果 ACCESS_GRANED 通过票数小于 ACCESS_DENIED 反对票数，则判断为不通过</li>
+<li>如果 ACCESS_GRANED 通过票数等于 ACCESS_DENIED 反对票数，则根据配置的 allowIfEqualGrantedDeniedDecisions(默认为true)来进行判断</li>
 </ol>
 </li>
-<li><p>分区数据归档迁移：</p>
-<ol>
-<li><p>条件：</p>
-<ol>
-<li>MySQL &gt;= 5.7</li>
-<li>结构相同</li>
-<li>归档到的数据表一定要是非分区表</li>
-<li>非临时表；不能有外键约束</li>
-<li>归档引擎要是：archive<ol>
-<li>无法从该表中删除数据，仅能添加数据</li>
-<li>占用的空间更小</li>
+<li>RoleVoter<ol>
+<li>将配置属性当做简单的角色名称，如果用户存在该角色，则通过授权</li>
+</ol>
+</li>
+<li>AuthenticatedVoter<ol>
+<li>用来区分匿名、完全验证和 remember-me 用户</li>
 </ol>
 </li>
 </ol>
-</li>
-<li><p>创建数据归档表，用于存储用户登录日志的归档数据</p>
-<ol>
-<li><pre><code class="mysql">CREATE TABLE arch_customer_login_log(
- customer_id INT UNSIGNED NOT NULL COMMENT &#39;登录用户ID&#39;,
- login_time TIMESTAMP NOT NULL COMMENT &#39;用户登录时间&#39;,
- login_ip INT UNSIGNED NOT NULL COMMENT &#39;登录IP&#39;,
- login_type TINYINT NOT NULL COMMENT &#39;登录类型：0 未成功，1 成功&#39;
-) ENGINE = ARCHIVE COMMENT &#39;用户登录日志表归档&#39;</code></pre>
-</li>
-</ol>
-</li>
-<li><p>将 p1 分区(2018年用户的登录日志) 迁移到归档表中</p>
-<ol>
-<li><pre><code class="mysql">ALTER TABLE customer_login_log 
-EXCHANGE PARTITION p1 
-WITH TABLE arch_customer_login_log;</code></pre>
-</li>
-</ol>
-</li>
-<li><p>此时再查看 customer_login_log，已不存在 p1 分区中的数据了，全部转移到了 arch_customer_login_log 中。</p>
-</li>
-<li><p>迁移完成，删除 customer_login_log 中的 p1 分区</p>
-<ol>
-<li><pre><code class="mysql">ALTER TABLE customer_login_log DROP PARTITION p1;</code></pre>
-</li>
-</ol>
-</li>
-</ol>
-</li>
-</ol>
-<h3 id="《高性能MySQL》目录"><a href="#《高性能MySQL》目录" class="headerlink" title="《高性能MySQL》目录"></a>《高性能MySQL》目录</h3><ol>
-<li>第一章 <a href="/2019/06/23/读书笔记/《高性能MySQL》/1.数据库设计规范/index.html">数据库设计规范</a></li>
-<li>第二章 <a href="/2019/06/22/读书笔记/《高性能MySQL》/2.数据库字段设计规范/index.html">数据库字段设计规范</a></li>
-<li>第三章 <a href="/2019/06/21/读书笔记/《高性能MySQL》/3.数据库SQL开发规范/index.html">数据库 SQL 开发规范</a></li>
-<li>第四章 <a href="/2019/06/20/读书笔记/《高性能MySQL》/4.数据库操作行为规范/index.html">数据库操作行为规范</a></li>
-<li>第五章 <a href="/2019/06/19/读书笔记/《高性能MySQL》/5.设计数据库分区表/index.html">设计数据库分区表</a></li>
-<li>第六章 <a href="/2019/06/18/读书笔记/《高性能MySQL》/6.MySQL存储引擎/index.html">MySQL存储引擎</a></li>
-<li>第七章 <a href="/2019/06/17/读书笔记/《高性能MySQL》/7.MySQL执行计划优化/index.html">MySQL 执行优化</a></li>
-<li>第八章 <a href="/2019/06/16/读书笔记/《高性能MySQL》/8.MySQL慢查日志/index.html">MySQL 慢查询日志</a></li>
-<li>第九章 <a href="/2019/06/15/读书笔记/《高性能MySQL》/9.数据库备份/index.html">MySQL 数据库备份与恢复</a></li>
-<li>第十章 <a href="/2019/06/14/读书笔记/《高性能MySQL》/10.MySQL架构拆分/index.html">MySQL构架拆分</a></li>
-<li>其他：<a href="/2019/06/12/读书笔记/《高性能MySQL》/20.数据库表结构实践/index.html">MySQL表结构实践sql</a></li>
-<li>其他2：<a href="/2019/06/13/读书笔记/《高性能MySQL》/11.MySQL常用命令/index.html">MySQL常用命令</a></li>
-</ol>
-</div><hr></div><nav id="pagination"><div class="pagination"><a class="extend prev" rel="prev" href="/page/13/"><i class="fa fa-chevron-left"></i></a><a class="page-number" href="/">1</a><span class="space">&hellip;</span><a class="page-number" href="/page/13/">13</a><span class="page-number current">14</span><a class="page-number" href="/page/15/">15</a><span class="space">&hellip;</span><a class="page-number" href="/page/23/">23</a><a class="extend next" rel="next" href="/page/15/"><i class="fa fa-chevron-right"></i></a></div></nav></div></div><footer><div class="layout" id="footer"><div class="copyright">&copy;2013 - 2020 By koral</div><div class="framework-info"><span>驱动 - </span><a href="http://hexo.io"><span>Hexo</span></a><span class="footer-separator">|</span><span>主题 - </span><a href="https://github.com/Molunerfinn/hexo-theme-melody"><span>Melody</span></a></div><div class="busuanzi"><script async src="//busuanzi.ibruce.info/busuanzi/2.3/busuanzi.pure.mini.js"></script><span id="busuanzi_container_site_uv"><i class="fa fa-user"></i><span id="busuanzi_value_site_uv"></span><span></span></span><span class="footer-separator">|</span><span id="busuanzi_container_site_pv"><i class="fa fa-eye"></i><span id="busuanzi_value_site_pv"></span><span></span></span></div></div></footer><i class="fa fa-arrow-up" id="go-up" aria-hidden="true"></i><script src="https://cdn.jsdelivr.net/npm/animejs@latest/anime.min.js"></script><script src="https://cdn.jsdelivr.net/npm/jquery@latest/dist/jquery.min.js"></script><script src="https://cdn.jsdelivr.net/npm/@fancyapps/fancybox@latest/dist/jquery.fancybox.min.js"></script><script src="https://cdn.jsdelivr.net/npm/velocity-animate@latest/velocity.min.js"></script><script src="https://cdn.jsdelivr.net/npm/velocity-ui-pack@latest/velocity.ui.min.js"></script><script src="/js/utils.js?version=1.7.0"></script><script src="/js/fancybox.js?version=1.7.0"></script><script src="/js/sidebar.js?version=1.7.0"></script><script src="/js/copy.js?version=1.7.0"></script><script src="/js/fireworks.js?version=1.7.0"></script><script src="/js/transition.js?version=1.7.0"></script><script src="/js/scroll.js?version=1.7.0"></script><script src="/js/head.js?version=1.7.0"></script><script>if(/Android|webOS|iPhone|iPod|iPad|BlackBerry/i.test(navigator.userAgent)) {
+<h2 id="三、After-Invocation-Handling-处理后"><a href="#三、After-Invocation-Handling-处理后" class="headerlink" title="三、After Invocation Handling - 处理后"></a>三、After Invocation Handling - 处理后</h2><p><img src="https://docs.spring.io/spring-security/site/docs/5.0.5.RELEASE/reference/htmlsingle/images/after-invocation.png" alt="After Invocation Handling"></p>
+</div><hr></div><div class="recent-post-item article-container"><a class="article-title" href="/2019/07/24/读书笔记/《SpringSecurity》/19.WebSocket/">《Spring Security》第十九章 WebSocket Security</a><time class="post-meta__date"><i class="fa fa-calendar" aria-hidden="true"></i> 2019-07-24</time><span class="article-meta"><span class="article-meta__separator">|</span><i class="fa fa-inbox article-meta__icon" aria-hidden="true"></i><a class="article-meta__categories" href="/categories/读书笔记/">读书笔记</a><i class="fa fa-angle-right" aria-hidden="true"></i><i class="fa fa-inbox article-meta__icon" aria-hidden="true"></i><a class="article-meta__categories" href="/categories/读书笔记/Spring-Security/">Spring Security</a></span><span class="article-meta tags"><span class="article-meta__separator">|</span><i class="fa fa-tag article-meta__icon" aria-hidden="true"></i><a class="article-meta__tags" href="/tags/hide/">hide</a><span class="article-meta__link">-</span><i class="fa fa-tag article-meta__icon" aria-hidden="true"></i><a class="article-meta__tags" href="/tags/Spring-Security/">Spring Security</a></span><div class="content"><h1 id="第十九章-WebSocket-Security"><a href="#第十九章-WebSocket-Security" class="headerlink" title="第十九章 WebSocket Security"></a>第十九章 WebSocket Security</h1><h2 id="一、WebSocket-Configuration"><a href="#一、WebSocket-Configuration" class="headerlink" title="一、WebSocket Configuration"></a>一、WebSocket Configuration</h2><p>Spring Security 4.0 通过 Spring Messaging 抽象引入了对  WebSocket 的授权支持。如果需要使用 Java 配置授权，只需要扩展 AbstractSecurityWebSocketMessageBrokerConfigurer，并配置 MessageSecurityMetadataSourceRegistry。如：</p>
+<pre><code class="java">/**
+ * 1. 继承了 config 后，任何的入站 connect 消息都需要提供有效的 CSRF 令牌来实施同源策略
+ * 2. SecurityContextHolder 由入站请求中的额 simpUser 头部属性中的用户填充
+ */
+@Configuration
+public class WebSocketSecurityConfig extends AbstractSecurityWebSocketMessageBrokerConfigurer {
+
+    protected void configureInbound(MessageSecurityMetadataSourceRegistry messages) {
+        // 任何以 &quot;/user/&quot; 开头的入站请求都需要 ROLE_USER 权限
+        messages
+            .simpDestMatchers(&quot;/user/*&quot;).authenticated();
+    }
+}</code></pre>
+<p>也可以使用 XML 的方式进行配置，如下：</p>
+<pre><code class="xml">&lt;websocket-message-broker&gt;
+    &lt;intercept-message pattern=&quot;/user/**&quot; access=&quot;hasRole(&#39;USER&#39;)&quot; /&gt;
+&lt;/websocket-message-broker&gt;</code></pre>
+<h2 id="二、-WebSocket-Authentication-WebSocket-认证"><a href="#二、-WebSocket-Authentication-WebSocket-认证" class="headerlink" title="二、 WebSocket Authentication - WebSocket 认证"></a>二、 WebSocket Authentication - WebSocket 认证</h2><p>在创建与重连 WebSocket 连接时，在 HTTP 请求中发现的相同的认证信息。这意味着 HttpServletRequest 上的主体将会被移交给 websocket。</p>
+<h2 id="三、WebSocket-Authorization-WebSocket-授权"><a href="#三、WebSocket-Authorization-WebSocket-授权" class="headerlink" title="三、WebSocket Authorization - WebSocket 授权"></a>三、WebSocket Authorization - WebSocket 授权</h2><p>授权配置实例如下：</p>
+<pre><code class="java">@Configuration
+public class WebSocketSecurityConfig extends AbstractSecurityWebSocketMessageBrokerConfigurer {
+
+    @Override
+    protected void configureInbound(MessageSecurityMetadataSourceRegistry messages) {
+        messages
+            // 任何没有 destination 的消息都需要身份验证
+            .nullDestMatcher().authenticated()
+            // 任何人都可以订阅 /user/queue/errors
+            .simpSubscribeDestMatchers(&quot;/user/queue/errors&quot;).permitAll()
+            // 任何以 /app/ 开头的 destination 消息都需要 ROLE_USER 角色
+            .simpDestMatchers(&quot;/app/**&quot;).hasRole(&quot;USER&quot;)
+            // 任何以 /user/ 或 /topc/friends 开头的 SUBSCRIBE 订阅都需要 ROLE_USER 角色
+            .simpSubscribeDestMatchers(&quot;/user/**&quot;,&quot;/topic/friends/*&quot;).hasRole(&quot;USER&quot;)
+            // 任何其他 MESSAGE 或 SUBSCRIBE 类型的消息都将被拒绝
+            .simpTypeMatchers(MESSAGE, SUBSCRIBE).denyAll()
+            // 任何其他消息都将被拒绝(这样做，可以确保不会遗漏任何消息)
+            .anyMessage().denyAll();
+    }
+}</code></pre>
+<h2 id="四、WebSocket-Authorization-Notes"><a href="#四、WebSocket-Authorization-Notes" class="headerlink" title="四、WebSocket Authorization Notes"></a>四、WebSocket Authorization Notes</h2><h3 id="1-WebSocket-Authorization-on-Message-Types"><a href="#1-WebSocket-Authorization-on-Message-Types" class="headerlink" title="1. WebSocket Authorization on Message Types"></a>1. WebSocket Authorization on Message Types</h3><p>WebSocket 授权说明，一般情况下，我们只希望客户端订阅 “/topic/system/notifications”，而不希望客户端向该 destination 发送消息。</p>
+<p>如果我们允许客户端向 “/topic/system/notifications” 发送消息，那么客户端就可以直接向所有的订阅端点发送消息，并模拟系统。</p>
+<h3 id="2-WebSocket-Authorization-on-Destinations"><a href="#2-WebSocket-Authorization-on-Destinations" class="headerlink" title="2. WebSocket Authorization on Destinations"></a>2. WebSocket Authorization on Destinations</h3><p>WebSocket 订阅的授权。以聊天应用为例，我们希望客户端监听 “/user/queue”，它将转换为 “/queue/user/message-<sessionid>“，但是我们不希望客户机能够监听 “/queue/*”，这样客户端就能查看每个用户的消息了。</sessionid></p>
+<p>一般情况下，应用程序通常拒绝向以代理前缀(如”/topic”或”/queue”) 开头的消息发送任何订阅。</p>
+<h3 id="3-Outbound-Messages"><a href="#3-Outbound-Messages" class="headerlink" title="3. Outbound Messages"></a>3. Outbound Messages</h3><p>Spring 包含了一个名为 “Flow of Message(消息流)” 的部分，描述了消息如何在系统中流动。</p>
+<p>值得注意的是，Spring Security 只保护 clientInboundChannel，而不保护 clientOutboundChannel。</p>
+<p>这是因为每一条进入的信息，通常对应着更多发出的信息。因此为了性能考虑，Spring Security 鼓励保护端点的订阅。</p>
+<h2 id="五、Enforcing-Same-Origin-Policy-同源策略"><a href="#五、Enforcing-Same-Origin-Policy-同源策略" class="headerlink" title="五、Enforcing Same Origin Policy 同源策略"></a>五、Enforcing Same Origin Policy 同源策略</h2><p>假定在用户浏览器中，访问了某个网站并进行了身份验证，此时用户另打开一个标签页并访问了另一个网址，那么同源策略确保了网站二不能读写数据到网站一。</p>
+<p>而 websocket 与 SocketJS，都绕过了同源策略，因此开发人员需要显式地保护自己的应用不受外域攻击。</p>
+<h3 id="1-Adding-CSRF-to-Stomp-Headers"><a href="#1-Adding-CSRF-to-Stomp-Headers" class="headerlink" title="1. Adding CSRF to Stomp Headers"></a>1. Adding CSRF to Stomp Headers</h3><p>默认情况下，Spring Security 要求在任何 connect 消息中使用 CSRF 令牌，这确保只有访问 CSRF 令牌的站点才能连接。</p>
+<p>但是 SockJS 不允许这些，因此我们必须在 Stomp 头文件中包含 token。</p>
+<h3 id="2-Disable-CSRF-within-WebSockets"><a href="#2-Disable-CSRF-within-WebSockets" class="headerlink" title="2. Disable CSRF within WebSockets"></a>2. Disable CSRF within WebSockets</h3><p>如果允许其他域访问站点，可以禁用 SpringSecurity 的保护，配置如下：</p>
+<pre><code class="java">@Configuration
+public class WebSocketSecurityConfig extends AbstractSecurityWebSocketMessageBrokerConfigurer {
+
+    @Override
+    protected boolean smaeOriginDesabled() {
+        return true;
+    }
+}</code></pre>
+</div><hr></div><nav id="pagination"><div class="pagination"><a class="extend prev" rel="prev" href="/page/13/"><i class="fa fa-chevron-left"></i></a><a class="page-number" href="/">1</a><span class="space">&hellip;</span><a class="page-number" href="/page/13/">13</a><span class="page-number current">14</span><a class="page-number" href="/page/15/">15</a><span class="space">&hellip;</span><a class="page-number" href="/page/27/">27</a><a class="extend next" rel="next" href="/page/15/"><i class="fa fa-chevron-right"></i></a></div></nav></div></div><footer><div class="layout" id="footer"><div class="copyright">&copy;2013 - 2020 By koral</div><div class="framework-info"><span>驱动 - </span><a href="http://hexo.io"><span>Hexo</span></a><span class="footer-separator">|</span><span>主题 - </span><a href="https://github.com/Molunerfinn/hexo-theme-melody"><span>Melody</span></a></div><div class="busuanzi"><script async src="//busuanzi.ibruce.info/busuanzi/2.3/busuanzi.pure.mini.js"></script><span id="busuanzi_container_site_uv"><i class="fa fa-user"></i><span id="busuanzi_value_site_uv"></span><span></span></span><span class="footer-separator">|</span><span id="busuanzi_container_site_pv"><i class="fa fa-eye"></i><span id="busuanzi_value_site_pv"></span><span></span></span></div></div></footer><i class="fa fa-arrow-up" id="go-up" aria-hidden="true"></i><script src="https://cdn.jsdelivr.net/npm/animejs@latest/anime.min.js"></script><script src="https://cdn.jsdelivr.net/npm/jquery@latest/dist/jquery.min.js"></script><script src="https://cdn.jsdelivr.net/npm/@fancyapps/fancybox@latest/dist/jquery.fancybox.min.js"></script><script src="https://cdn.jsdelivr.net/npm/velocity-animate@latest/velocity.min.js"></script><script src="https://cdn.jsdelivr.net/npm/velocity-ui-pack@latest/velocity.ui.min.js"></script><script src="/js/utils.js?version=1.7.0"></script><script src="/js/fancybox.js?version=1.7.0"></script><script src="/js/sidebar.js?version=1.7.0"></script><script src="/js/copy.js?version=1.7.0"></script><script src="/js/fireworks.js?version=1.7.0"></script><script src="/js/transition.js?version=1.7.0"></script><script src="/js/scroll.js?version=1.7.0"></script><script src="/js/head.js?version=1.7.0"></script><script>if(/Android|webOS|iPhone|iPod|iPad|BlackBerry/i.test(navigator.userAgent)) {
   $('#nav').addClass('is-mobile')
   $('footer').addClass('is-mobile')
   $('#top-container').addClass('is-mobile')

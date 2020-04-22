@@ -7,812 +7,1859 @@
     error: '复制错误',
     noSupport: '浏览器不支持'
   }
-} </script></head><body><i class="fa fa-arrow-right" id="toggle-sidebar" aria-hidden="true"></i><div id="sidebar" data-display="false"><div class="author-info"><div class="author-info__avatar text-center"><img src="/img/avatar.png"></div><div class="author-info__name text-center">koral</div><div class="author-info__description text-center">回廊一寸相思地，落月成孤倚。背灯和月就花阴，已是十年踪迹十年心。</div><hr><div class="author-info-articles"><a class="author-info-articles__archives article-meta" href="/archives"><span class="pull-left">文章</span><span class="pull-right">221</span></a><a class="author-info-articles__tags article-meta" href="/tags"><span class="pull-left">标签</span><span class="pull-right">31</span></a><a class="author-info-articles__categories article-meta" href="/categories"><span class="pull-left">分类</span><span class="pull-right">40</span></a></div></div></div><nav class="no-bg" id="nav"><div id="page-header"><span class="pull-left"> <a id="site-name" href="/index.html">凯</a></span><i class="fa fa-bars toggle-menu pull-right" aria-hidden="true"></i><span class="pull-right menus">   <a class="site-page" href="/">首页</a><a class="site-page" href="/archives">归档</a><a class="site-page" href="/tags">标签</a><a class="site-page" href="/categories">分类</a><a class="site-page" href="/about">关于我</a></span><span class="pull-right"></span></div><div id="site-info"><div id="site-title">凯</div><div id="site-sub-title">回廊一寸相思地，落月成孤倚。背灯和月就花阴，已是十年踪迹十年心。</div></div></nav><div id="content-outer"><div class="layout" id="content-inner"><div class="recent-post-item article-container"><a class="article-title" href="/2019/05/13/读书笔记/《React》简书慕课/7.完整配置/">完整React配置</a><time class="post-meta__date"><i class="fa fa-calendar" aria-hidden="true"></i> 2019-05-13</time><span class="article-meta"><span class="article-meta__separator">|</span><i class="fa fa-inbox article-meta__icon" aria-hidden="true"></i><a class="article-meta__categories" href="/categories/读书笔记/">读书笔记</a><i class="fa fa-angle-right" aria-hidden="true"></i><i class="fa fa-inbox article-meta__icon" aria-hidden="true"></i><a class="article-meta__categories" href="/categories/读书笔记/React慕课/">React慕课</a></span><span class="article-meta tags"><span class="article-meta__separator">|</span><i class="fa fa-tag article-meta__icon" aria-hidden="true"></i><a class="article-meta__tags" href="/tags/hide/">hide</a><span class="article-meta__link">-</span><i class="fa fa-tag article-meta__icon" aria-hidden="true"></i><a class="article-meta__tags" href="/tags/React慕课/">React慕课</a></span><div class="content"><h1 id="React-入门"><a href="#React-入门" class="headerlink" title="React 入门"></a>React 入门</h1><h2 id="一、初始化项目结构"><a href="#一、初始化项目结构" class="headerlink" title="一、初始化项目结构"></a>一、初始化项目结构</h2><h3 id="1-创建-ReactApp"><a href="#1-创建-ReactApp" class="headerlink" title="1. 创建 ReactApp"></a>1. 创建 ReactApp</h3><blockquote>
-<p>create-react-app leetcode</p>
-</blockquote>
-<h3 id="2-引入其他可能用到的依赖"><a href="#2-引入其他可能用到的依赖" class="headerlink" title="2. 引入其他可能用到的依赖"></a>2. 引入其他可能用到的依赖</h3><blockquote>
-<p>yarn add antd // Ant Design 设计库<br>yarn add redux // Redux 数据层框架<br>yarn add react-redux // React-Redux React 更加方便集成 Redux<br>yarn add redux-thunk // Redux-Thunk 异步 Action<br>yarn add axios // Axios Http 请求工具<br>yarn add react-router-dom // ReactRouterDom 路由工具<br>yarn add immutable // Immutable 封装工具，将 store 封装起来<br>yarn add redux-immutable // ReactImmutable 子组件封装工具，将 store 的子 reducer 封装起来<br>yarn add styled-components // StyledComponents 使用 JS 编写 CSS 样式<br>yarn add react-loadable // 异步加载组件</p>
-</blockquote>
-<h3 id="3-创建-Redux-中的-Store，并使用-Redux-DevelopTools"><a href="#3-创建-Redux-中的-Store，并使用-Redux-DevelopTools" class="headerlink" title="3. 创建 Redux 中的 Store，并使用 Redux-DevelopTools"></a>3. 创建 Redux 中的 Store，并使用 Redux-DevelopTools</h3><h4 id="3-1-在-src-目录下，创建-store-reducer-js"><a href="#3-1-在-src-目录下，创建-store-reducer-js" class="headerlink" title="3.1 在 src 目录下，创建 store/reducer.js"></a>3.1 在 src 目录下，创建 store/reducer.js</h4><p>defaultState 为默认的 state，此文件导出一个函数，state 为 store 中存储的内容，action 为视图层发出的事件。</p>
-<blockquote>
-<p>需要先引入 redux。</p>
-</blockquote>
-<pre><code class="js">const defaultState = {};
-
-export default (state = defaultState, action) =&gt; {
-  return state;
-};</code></pre>
-<p>官方定义：Action 是把数据从应用（译者注：这里之所以不叫 view 是因为这些数据有可能是服务器响应，用户输入或其它非 view 的数据 ）传到 store 的有效载荷。<br>其格式大致为：</p>
-<pre><code class="js">const action = {
-  type: &quot;ADD_TODO&quot;,
-  value: &quot;xxx&quot;
-};
-dispatch(action);</code></pre>
-<p>通过 dispatch 发送至 store，再由具体的 reducer 对 action 进行处理，将修改之后的 state 返回给 store，由 store 自己更新 state。</p>
-<h4 id="3-2-在-src-目录下，创建-store-index-js"><a href="#3-2-在-src-目录下，创建-store-index-js" class="headerlink" title="3.2 在 src 目录下，创建 store/index.js"></a>3.2 在 src 目录下，创建 store/index.js</h4><p>Store 就是把它们联系到一起的对象。Store 有以下职责：</p>
-<ul>
-<li>维持应用的 state；</li>
-<li>提供 getState() 方法获取 state；</li>
-<li>提供 dispatch(action) 方法更新 state；</li>
-<li>通过 subscribe(listener) 注册监听器;</li>
-<li>通过 subscribe(listener) 返回的函数注销监听器。</li>
-</ul>
-<pre><code class="js">import { createStore } from &quot;redux&quot;;
-import reducer from &quot;./reducer&quot;;
-
-const store = createStore(
-  reducer,
-  window.__REDUX_DEVTOOLS_EXTENSION__ &amp;&amp; window.__REDUX_DEVTOOLS_EXTENSION__()
-);
-
-export default store;</code></pre>
-<blockquote>
-<p>注：<code>window.__REDUX_DEVTOOLS_EXTENSION__ &amp;&amp; window.__REDUX_DEVTOOLS_EXTENSION__()</code> 为开启 Redux_Devtools<br>在使用其他中间件时，需要引入 applyMiddleware,下面会有 <a href="xxx">示例</a>。</p>
-</blockquote>
-<h4 id="3-3-测试-store-是否可用"><a href="#3-3-测试-store-是否可用" class="headerlink" title="3.3 测试 store 是否可用"></a>3.3 测试 store 是否可用</h4><p>第一步：在 reducer 的 defaultState 中加入一个属性 value</p>
-<pre><code class="js">const defaultState = {
-  value: &quot;Hello World!&quot;
-};</code></pre>
-<p>第二步：在任意组件引入 store/index.js，并获取到该 value 值。这里以 src/App.js 为例：</p>
-<pre><code class="js">import React from &quot;react&quot;;
-import &quot;./App.css&quot;;
-import store from &quot;./store&quot;;
-
-function App() {
-  return &lt;div className=&quot;App&quot;&gt;{store.getState().value}&lt;/div&gt;;
-}
-
-export default App;</code></pre>
-<p>第三步：启动项目，访问首页即可看到 value 值。</p>
-<h3 id="4-使用-Immutable-封装-state"><a href="#4-使用-Immutable-封装-state" class="headerlink" title="4. 使用 Immutable 封装 state"></a>4. 使用 Immutable 封装 state</h3><p>immutable 是 facebook 开源的一个项目，用于实现 js 中的数据不可变，解决引用带来的副作用。</p>
-<p>非常类似 Java 中的封装特性，即将属性私有化，提供公有方法访问私有变量。</p>
-<blockquote>
-<p>需要先引入 immutable</p>
-</blockquote>
-<p>修改之前的 src/store/reducer.js，将 defaultState 使用 immutable 提供的 fromJS 方法进行封装。</p>
-<pre><code class="js">import { fromJS } from &quot;immutable&quot;;
-
-const defaultState = fromJS({
-  value: &quot;Hello World!&quot;
-});
-
-export default (state = defaultState, action) =&gt; {
-  return state;
-};</code></pre>
-<p>完成之后，也需要在调用 store.getState().value 的地方，将其改为 store.getState().get(‘value’)。如上面的 src/App.js：</p>
-<pre><code class="js">function App() {
-  return &lt;div className=&quot;App&quot;&gt;{store.getState().get(&quot;value&quot;)}&lt;/div&gt;;
+} </script></head><body><i class="fa fa-arrow-right" id="toggle-sidebar" aria-hidden="true"></i><div id="sidebar" data-display="false"><div class="author-info"><div class="author-info__avatar text-center"><img src="/img/avatar.png"></div><div class="author-info__name text-center">koral</div><div class="author-info__description text-center">回廊一寸相思地，落月成孤倚。背灯和月就花阴，已是十年踪迹十年心。</div><hr><div class="author-info-articles"><a class="author-info-articles__archives article-meta" href="/archives"><span class="pull-left">文章</span><span class="pull-right">266</span></a><a class="author-info-articles__tags article-meta" href="/tags"><span class="pull-left">标签</span><span class="pull-right">34</span></a><a class="author-info-articles__categories article-meta" href="/categories"><span class="pull-left">分类</span><span class="pull-right">44</span></a></div></div></div><nav class="no-bg" id="nav"><div id="page-header"><span class="pull-left"> <a id="site-name" href="/index.html">凯</a></span><i class="fa fa-bars toggle-menu pull-right" aria-hidden="true"></i><span class="pull-right menus">   <a class="site-page" href="/">首页</a><a class="site-page" href="/archives">归档</a><a class="site-page" href="/tags">标签</a><a class="site-page" href="/categories">分类</a><a class="site-page" href="/about">关于我</a></span><span class="pull-right"></span></div><div id="site-info"><div id="site-title">凯</div><div id="site-sub-title">回廊一寸相思地，落月成孤倚。背灯和月就花阴，已是十年踪迹十年心。</div></div></nav><div id="content-outer"><div class="layout" id="content-inner"><div class="recent-post-item article-container"><a class="article-title" href="/2019/07/18/读书笔记/《SpringSecurity》/0.目录/">《Spring Security》文档笔记</a><span class="article-meta"><i class="fa fa-thumb-tack article-meta__icon sticky"></i><span class="sticky">置顶</span><span class="article-meta__separator" style="margin-right: 0.3rem">|</span></span><time class="post-meta__date"><i class="fa fa-calendar" aria-hidden="true"></i> 2019-07-18</time><span class="article-meta"><span class="article-meta__separator">|</span><i class="fa fa-inbox article-meta__icon" aria-hidden="true"></i><a class="article-meta__categories" href="/categories/读书笔记/">读书笔记</a><i class="fa fa-angle-right" aria-hidden="true"></i><i class="fa fa-inbox article-meta__icon" aria-hidden="true"></i><a class="article-meta__categories" href="/categories/读书笔记/Spring-Security/">Spring Security</a></span><span class="article-meta tags"><span class="article-meta__separator">|</span><i class="fa fa-tag article-meta__icon" aria-hidden="true"></i><a class="article-meta__tags" href="/tags/Spring-Security/">Spring Security</a></span><div class="content"><blockquote>
+<p>SpringSecurity 是一个强大的、高度可定制的身份验证和访问控制框架，它是确保基于 Spring 的应用程序安全的事实标准。<br>Spring Security is a powerful and highly customizable authentication and access-control framework. It is the de-facto standard for securing Spring-based applications.</p>
+</blockquote></div><a class="more" href="/2019/07/18/读书笔记/《SpringSecurity》/0.目录/#more">阅读更多</a><hr></div><div class="recent-post-item article-container"><a class="article-title" href="/2019/07/17/读书笔记/《JavaDesignPatterns》/17.命令模式/">《Java Design Patterns》第十五章 命令模式 - 请求发送者和接收者解耦</a><time class="post-meta__date"><i class="fa fa-calendar" aria-hidden="true"></i> 2019-07-17</time><span class="article-meta"><span class="article-meta__separator">|</span><i class="fa fa-inbox article-meta__icon" aria-hidden="true"></i><a class="article-meta__categories" href="/categories/读书笔记/">读书笔记</a><i class="fa fa-angle-right" aria-hidden="true"></i><i class="fa fa-inbox article-meta__icon" aria-hidden="true"></i><a class="article-meta__categories" href="/categories/读书笔记/设计模式/">设计模式</a></span><span class="article-meta tags"><span class="article-meta__separator">|</span><i class="fa fa-tag article-meta__icon" aria-hidden="true"></i><a class="article-meta__tags" href="/tags/hide/">hide</a><span class="article-meta__link">-</span><i class="fa fa-tag article-meta__icon" aria-hidden="true"></i><a class="article-meta__tags" href="/tags/设计模式/">设计模式</a></span><div class="content"><h1 id="第十五章-命令模式-请求发送者和接收者解耦"><a href="#第十五章-命令模式-请求发送者和接收者解耦" class="headerlink" title="第十五章 命令模式 - 请求发送者和接收者解耦"></a>第十五章 命令模式 - 请求发送者和接收者解耦</h1><h2 id="一、命令模式"><a href="#一、命令模式" class="headerlink" title="一、命令模式"></a>一、命令模式</h2><p>命令模式（Command Pattern）：将一个请求封装为一个对象，从而让我们可用不同的请求对客户进行参数化；对请求排队或者记录请求日志，以及支持可撤销的操作。</p>
+<p>命令模式是一种对象行为型模式，又称为动作模式或事务模式。</p>
+<p>命令模式中包含的几个角色：</p>
+<ol>
+<li>Command - 抽象命令类<ol>
+<li>声明了用于执行请求的 execute() 等方法，通过这些方法可以调用请求接收者的相关操作</li>
+</ol>
+</li>
+<li>ConcreteCommand - 具体命令类<ol>
+<li>实现抽象命令类中声明的方法</li>
+<li>对应具体的接收者对象，将接收者对象的动作绑定其中</li>
+<li>在实现execute() 方法时，调用接收者对象的相关操作</li>
+</ol>
+</li>
+<li>Invoker - 调用者<ol>
+<li>请求的发送者，通过命令对象来执行请求</li>
+<li>调用者并不需要在设计时确定其接收者，因此它只与抽象命令类保持关联</li>
+<li>在程序运行时，注入一个具体命令对象，再调用具体命令对象的execute() 方法</li>
+<li>从而间接调用请求接收者的相关操作</li>
+</ol>
+</li>
+<li>Receiver - 接收者<ol>
+<li>接收者执行与请求相关的操作，它具体实现对请求的业务处理</li>
+</ol>
+</li>
+</ol>
+<p>命令模式的本质是对请求进行封装，一个请求对应一个命令，将发出命令的责任和执行命令的责任分隔开。</p>
+<h2 id="二、命令模式的关键-抽象命令类"><a href="#二、命令模式的关键-抽象命令类" class="headerlink" title="二、命令模式的关键 - 抽象命令类"></a>二、命令模式的关键 - 抽象命令类</h2><p>请求发送者只需要针对抽象命令类编程即可。</p>
+<pre><code class="java">// 抽象命令类
+abstract class Command {
+    // 声明公共的执行方法
+    public abstract void execute();
 }</code></pre>
-<h3 id="5-拆分-reducer，各组件分别管理各自的-reducer"><a href="#5-拆分-reducer，各组件分别管理各自的-reducer" class="headerlink" title="5. 拆分 reducer，各组件分别管理各自的 reducer"></a>5. 拆分 reducer，各组件分别管理各自的 reducer</h3><blockquote>
-<p>需要依赖 redux-immutable</p>
-</blockquote>
-<p>使用 redux 自身的 combineReducers 也可以做到管理子 reducer，如下：</p>
-<pre><code class="js">import { combineReducers } from &quot;redux&quot;;
-import { reducer as premiumReducer } from &quot;../premium/store&quot;;
+<pre><code class="java">// 请求发送者 - 调用者
+class Invoker {
+    // 请求发送者只需要针对 Command 编程即可，具体命令类在运行时指定
+    private Command command;
 
-const reducer = combineReducers({
-  premium: premiumReducer
-});
+    // 通过构造函数或者setter方法注入Command
+    public Invoker(Command command){
+        this.command = command;
+    }
 
-export default reducer;</code></pre>
-<p>但是 combineReducers 只能处理普通的 JS 对象，而 Store 中的所有属性已经被 Immutable 封装，此时我们要想使用子 reducer 中的属性时，需要这样写 <code>store.getState().premium.get(&#39;value&#39;)</code> 的方式获取数据。</p>
-<p>显然，premium 依然可以存在被修改的副作用。</p>
-<p>因此，我们只需要将 combineReducers 改为从 <code>redux-immutable</code> 中导入即可。</p>
-<pre><code class="js">import { combineReducers } from &quot;redux-immutable&quot;;
-import { reducer as premiumReducer } from &quot;../premium/store&quot;;
-
-const reducer = combineReducers({
-  premium: premiumReducer
-});
-
-export default reducer;</code></pre>
-<p>获取数据的方式也会变为：<code>store.getState().getIn([&#39;premium&#39;,&#39;value&#39;])</code></p>
-<h3 id="6-增加-Router-路由功能"><a href="#6-增加-Router-路由功能" class="headerlink" title="6. 增加 Router 路由功能"></a>6. 增加 Router 路由功能</h3><blockquote>
-<p>需要依赖 react-router-dom</p>
-</blockquote>
-<p>第一步：创建另一个组件 src/premium/index.js</p>
-<pre><code class="js">import React from &quot;react&quot;;
-
-function Premium() {
-  return &lt;div&gt;Premium page&lt;/div&gt;;
-}
-
-export default Premium;</code></pre>
-<p>第二步：修改 App.js，将其改为 Router.js</p>
-<p>定义两个路由， ‘/‘ 直接返回一个 Div dom；’/premium’ 返回刚刚创建的组件。</p>
-<pre><code class="js">import React from &quot;react&quot;;
-import { BrowserRouter, Route } from &quot;react-router-dom&quot;;
-import Premium from &quot;./premium&quot;;
-
-function Router() {
-  return (
-    &lt;div&gt;
-      &lt;BrowserRouter&gt;
-        &lt;Route path=&quot;/&quot; exact render={() =&gt; &lt;div&gt;Home Page&lt;/div&gt;} /&gt;
-        &lt;Route path=&quot;/premium&quot; exact component={Premium} /&gt;
-      &lt;/BrowserRouter&gt;
-    &lt;/div&gt;
-  );
-}
-
-export default Router;</code></pre>
-<p>同时，src/index.js 也需要将 App 组件名换成 Router。</p>
-<p>第三步：测试路由功能是否有效</p>
-<p>启动项目，分别访问 <code>localhost:3000</code> 和 <code>localhost:3000/premium</code> 即可。</p>
-<h3 id="7-使用-React-Redux-控制-Store"><a href="#7-使用-React-Redux-控制-Store" class="headerlink" title="7. 使用 React-Redux 控制 Store"></a>7. 使用 React-Redux 控制 Store</h3><p>通过 React-Redux 提供的 <code>&lt;Provider store&gt;</code> 标签，使 Provider 内的任何组件，都能够有权利使用 store 中的数据。</p>
-<p>前提是组件需要先通过 connect 进行连接。</p>
-<blockquote>
-<p>需要依赖 react-redux</p>
-</blockquote>
-<h4 id="7-1-修改-Router-js-原-App-js"><a href="#7-1-修改-Router-js-原-App-js" class="headerlink" title="7.1 修改 Router.js (原 App.js)"></a>7.1 修改 Router.js (原 App.js)</h4><p>将需要用到 store 存储的组件，放在 Provider 标签内。并指定所使用的 store</p>
-<pre><code class="js">import React from &quot;react&quot;;
-import { BrowserRouter, Route } from &quot;react-router-dom&quot;;
-import Premium from &quot;./premium&quot;;
-import { Provider } from &quot;react-redux&quot;;
-import store from &quot;./store&quot;;
-
-function Router() {
-  return (
-    &lt;Provider store={store}&gt;
-      &lt;BrowserRouter&gt;
-        &lt;Route path=&quot;/&quot; exact render={() =&gt; &lt;div&gt;Home Page&lt;/div&gt;} /&gt;
-        &lt;Route path=&quot;/premium&quot; exact component={Premium} /&gt;
-      &lt;/BrowserRouter&gt;
-    &lt;/Provider&gt;
-  );
-}
-
-export default Router;</code></pre>
-<h4 id="7-2-修改-premium-index-js"><a href="#7-2-修改-premium-index-js" class="headerlink" title="7.2 修改 premium/index.js"></a>7.2 修改 premium/index.js</h4><p>Premium 组件，使用 connect 进行连接。</p>
-<pre><code class="js">import React from &quot;react&quot;;
-import { connect } from &quot;react-redux&quot;;
-
-function Premium(props) {
-  const { value } = props;
-  return &lt;div&gt;{value}&lt;/div&gt;;
-}
-
-const mapStateToProps = state =&gt; ({
-  value: state.getIn([&quot;premium&quot;, &quot;value&quot;])
-});
-
-const mapDispatchToProps = dispatch =&gt; ({});
-
-export default connect(mapStateToProps, mapDispatchToProps)(Premium);</code></pre>
-<h4 id="7-3-connect-mapState-mapDispatch-module"><a href="#7-3-connect-mapState-mapDispatch-module" class="headerlink" title="7.3 connect(mapState,mapDispatch)(module)"></a>7.3 connect(mapState,mapDispatch)(module)</h4><p>mapStateToProps 函数，接收一个 state，即 store 中存储的 state，返回一个对象。该对象即组件的 props。<br>所以可以理解为，mapStateToProps 将 store 中的数据存入 this.props 中。</p>
-<p>mapDispatchToProps 函数，接收一个 dispatch，用来派发 action 给 store。由 reducer 接收并处理 action。</p>
-<p>module 即需要进行连接的组件。</p>
-<h3 id="8-测试-State-与-Action"><a href="#8-测试-State-与-Action" class="headerlink" title="8. 测试 State 与 Action"></a>8. 测试 State 与 Action</h3><p>一个简单的测试，使用一个 input，值为 store 中的 value，当 input 修改时，发送 action 修改 store 中的 value，与此同时更改 input 的 value。</p>
-<p>依旧使用 /premium/store/reducer 中的 value 作为测试数据。</p>
-<h4 id="8-1-修改-premium-index-js"><a href="#8-1-修改-premium-index-js" class="headerlink" title="8.1 修改 premium/index.js"></a>8.1 修改 premium/index.js</h4><pre><code class="js">import React from &quot;react&quot;;
-import { connect } from &quot;react-redux&quot;;
-
-function Premium(props) {
-  const { value, changeInputValue } = props;
-  return (
-    &lt;div&gt;
-      &lt;input value={value} onChange={changeInputValue} /&gt;
-    &lt;/div&gt;
-  );
-}
-
-const mapStateToProps = state =&gt; ({
-  value: state.getIn([&quot;premium&quot;, &quot;value&quot;])
-});
-
-const mapDispatchToProps = dispatch =&gt; ({
-  changeInputValue(e) {
-    const value = e.target.value;
-    const action = {
-      type: &quot;CHANGE_INPUT_VALUE&quot;,
-      value: value
-    };
-    dispatch(action);
-  }
-});
-
-export default connect(mapStateToProps, mapDispatchToProps)(Premium);</code></pre>
-<h4 id="8-2-修改-premium-store-reducer-js"><a href="#8-2-修改-premium-store-reducer-js" class="headerlink" title="8.2 修改 premium/store/reducer.js"></a>8.2 修改 premium/store/reducer.js</h4><p>reducer.js 接收 action，并进行处理，修改 store 中存储的 state 属性。</p>
-<pre><code class="js">import { fromJS } from &quot;immutable&quot;;
-
-const defaultState = fromJS({
-  value: &quot;Hello World!&quot;
-});
-
-export default (state = defaultState, action) =&gt; {
-  switch (action.type) {
-    case &quot;CHANGE_INPUT_VALUE&quot;:
-      return state.set(&quot;value&quot;, action.value);
-    default:
-      return state;
-  }
-};</code></pre>
-<h4 id="8-3-测试"><a href="#8-3-测试" class="headerlink" title="8.3 测试"></a>8.3 测试</h4><p>启动项目，并打开 Redux DevTools 控制台，更改 input 内容，观察 state 中的数据变动。</p>
-<p><img src="https://koral-home.oss-cn-beijing.aliyuncs.com/blog/ReduxDevTools.png" alt="Redux DevTools"></p>
-<h3 id="9-Redux-Thunk-异步加载数据"><a href="#9-Redux-Thunk-异步加载数据" class="headerlink" title="9. Redux-Thunk 异步加载数据"></a>9. Redux-Thunk 异步加载数据</h3><p>当某一时刻触发的事件，需要从后端接口请求数据渲染页面时。可以通过 Redux-Thunk 使 Action 支持异步函数(原 Action 只是返回一个带 type 属性的对象)。</p>
-<blockquote>
-<p>需要依赖 redux-thunk</p>
-</blockquote>
-<h4 id="9-1-添加-Redux-Thunk-中间件"><a href="#9-1-添加-Redux-Thunk-中间件" class="headerlink" title="9.1 添加 Redux-Thunk 中间件"></a>9.1 添加 Redux-Thunk 中间件</h4><p>在 Redux 的 Store 创建时，引入 thunk 中间件，并使用它。</p>
-<p>配置方法来源于 <a href="https://github.com/zalmoxisus/redux-devtools-extension#12-advanced-store-setup" target="_blank" rel="noopener">github：redux-devtools-extension</a></p>
-<pre><code class="js">import { createStore, applyMiddleware, compose } from &quot;redux&quot;;
-import reducer from &quot;./reducer&quot;;
-import thunk from &quot;redux-thunk&quot;;
-
-const composeEnhancers = window.__REDUX_DEVTOOLS_EXTENSION_COMPOSE__ || compose;
-
-const store = createStore(reducer, composeEnhancers(applyMiddleware(thunk)));
-
-export default store;</code></pre>
-<h4 id="9-2-Mock-数据-public-api-list-json"><a href="#9-2-Mock-数据-public-api-list-json" class="headerlink" title="9.2 Mock 数据 /public/api/list.json"></a>9.2 Mock 数据 /public/api/list.json</h4><p>在 src 同级的 public 目录下创建文件 <code>/public/api/list.json</code>：</p>
-<p>如果能使用后端语言直接返回也可以</p>
-<pre><code class="js">{
-    &quot;success&quot;:true,
-    &quot;data&quot;: [&quot;张三&quot;,&quot;李四&quot;,&quot;王五&quot;,&quot;刘六&quot;]
+    // 用于调用命令类的 execute 方法
+    public void call(){
+        command.execute();
+    }
 }</code></pre>
-<h4 id="9-3-修改-premium-index-js，发送-ajax-请求，获取-list-json"><a href="#9-3-修改-premium-index-js，发送-ajax-请求，获取-list-json" class="headerlink" title="9.3 修改 premium/index.js，发送 ajax 请求，获取 list.json"></a>9.3 修改 premium/index.js，发送 ajax 请求，获取 list.json</h4><blockquote>
-<p>需要依赖 axios</p>
-</blockquote>
-<p>点击 <code>获取数据</code> 的按钮时，触发事件 getList。获取 ajax 请求，并生成一个 action 发送给 store，替换 reducer 中的 list。</p>
-<pre><code class="js">import React from &#39;react&#39;;
-import { connect } from &#39;react-redux&#39;;
-import axios from &#39;axios&#39;;
-import { fromJS } from &#39;immutable&#39;;
+<pre><code class="java">// 具体命令类
+class ConcreteCommand extends Command {
+    // 维持一个对请求接收者对象的引用
+    private Receiver receiver; // 如果需要多个接收者，可以将该对象改为List等集合对象
 
-function Premium(props) {
-    const { list, getList } = props;
-    return (
-            &lt;button onClick={getList}&gt;获取数据&lt;/button&gt;
-            &lt;br/&gt;
-            {
-                list &amp;&amp; list.map((item) =&gt; (&lt;div key={item}&gt;{item}&lt;/div&gt;))
-            }
-        &lt;/div&gt;
-    );
-}
+    public void execute(){
+        // 调用请求接收者的业务处理方法
+        receiver.action();
+    }
+}</code></pre>
+<pre><code class="java">class Receiver {
+    public void action(){
+        // 具体操作
+    }
+}</code></pre>
+<h2 id="三、完整实现"><a href="#三、完整实现" class="headerlink" title="三、完整实现"></a>三、完整实现</h2><pre><code class="java">// 功能键设计窗口类
+class FBSettingWindow{
+    // 窗口标题
+    private String title;
+    // List集合，存储所有的功能按键
+    private List&lt;FunctionButton&gt; functionButtons = new ArrayList&lt;&gt;();
 
-const mapStateToProps = (state) =&gt; ({
-    list: state.getIn([&#39;premium&#39;,&#39;list&#39;])
-});
+    public String getTitle() {
+        return title;
+    }
 
-const mapDispatchToProps = (dispatch) =&gt; ({
-    getList() {
-        const action = () =&gt; {
-            axios.get(&#39;/api/list.json&#39;).then(res =&gt; {
-                const list = res.data.data;
-                const action2 = {
-                    type: &#39;UPDATE_LIST&#39;,
-                    // 注意这里：因为store中的数据是Immutable类型的，所以其属性也应该是Immutable类型的
-                    list: fromJS(list)
-                };
-                dispatch(action2);
-            }).catch(err =&gt; {
-                console.log(err);
-            })
+    public void setTitle(String title) {
+        this.title = title;
+    }
+
+    public void addFunctionButton(FunctionButton fb){
+        functionButtons.add(fb);
+    }
+
+    public void removeFunctionButton(FunctionButton fb){
+        functionButtons.remove(fb);
+    }
+
+    // 显示窗口及功能
+    public void display(){
+        System.out.println(&quot;显示窗口：&quot;+this.title);
+        System.out.println(&quot;显示功能键&quot;);
+        for (FunctionButton functionButton : functionButtons) {
+            System.out.println(functionButton.getName());
         }
-        dispatch(action);
-    }
-});
-
-export default connect(mapStateToProps, mapDispatchToProps)(Premium);</code></pre>
-<blockquote>
-<p>因为前面配置了 Redux-Thunk 中间件，所以 action 能够直接返回一个函数，并且在 dispatch 时自动执行。</p>
-</blockquote>
-<h4 id="9-4-premium-store-reducer-支持-UPDATE-LIST-的-Action"><a href="#9-4-premium-store-reducer-支持-UPDATE-LIST-的-Action" class="headerlink" title="9.4 premium/store/reducer 支持 UPDATE_LIST 的 Action"></a>9.4 premium/store/reducer 支持 UPDATE_LIST 的 Action</h4><p>reducer 接收 action，并将值设置到 state 中。</p>
-<pre><code class="js">const defaultState = fromJS({
-  list: []
-});
-
-export default (state = defaultState, action) =&gt; {
-  switch (action.type) {
-    case &quot;UPDATE_LIST&quot;:
-      return state.set(&quot;list&quot;, action.list);
-    default:
-      return state;
-  }
-};</code></pre>
-<h4 id="9-5-测试-ajax-异步获取数据"><a href="#9-5-测试-ajax-异步获取数据" class="headerlink" title="9.5 测试 ajax 异步获取数据"></a>9.5 测试 ajax 异步获取数据</h4><p>启动项目，点击 button 按钮。页面会显示 list.json 中的数据。</p>
-<h3 id="10-优化-Redux-层"><a href="#10-优化-Redux-层" class="headerlink" title="10. 优化 Redux 层"></a>10. 优化 Redux 层</h3><h4 id="10-1-将常量抽离"><a href="#10-1-将常量抽离" class="headerlink" title="10.1 将常量抽离"></a>10.1 将常量抽离</h4><p>将 premium/reducer.js 和 /premium/index.js 中 action.type 属性，抽离为一个单独的文件，在使用时直接调用该常量文件进行获取。方便进行调试和代码报错排查。</p>
-<h4 id="10-2-将-Action-的创建抽离"><a href="#10-2-将-Action-的创建抽离" class="headerlink" title="10.2 将 Action 的创建抽离"></a>10.2 将 Action 的创建抽离</h4><p>将 premium/index.js 中所有 action 的创建，抽离到一个 ActionCreator.js 中。</p>
-<h4 id="10-3-将抽离之后的文件统一管理"><a href="#10-3-将抽离之后的文件统一管理" class="headerlink" title="10.3 将抽离之后的文件统一管理"></a>10.3 将抽离之后的文件统一管理</h4><p>抽离之后的文件大致分为如下：</p>
-<ul>
-<li>public<ol>
-<li>api<ul>
-<li>list.json // 测试 ajax 请求的数据</li>
-</ul>
-</li>
-<li>favicon.ico</li>
-<li>index.html</li>
-<li>mainifest.json</li>
-</ol>
-</li>
-<li>src<ol>
-<li>premium<ol>
-<li>store<ul>
-<li>actionCreator.js // 管理 Action 的创建</li>
-<li>constants.js // 管理常量</li>
-<li>reducer.js // 处理 action</li>
-<li>index.js // 将上面三个文件导出</li>
-</ul>
-</li>
-<li>index.js // 首页</li>
-<li>style.js</li>
-</ol>
-</li>
-<li>store // redux 的存储层、redux-thunk、redux-devtools 的配置<ol>
-<li>index.js // 使用当前目录下的 reducer 创建 store</li>
-<li>reducer.js // react-redux 引入组件的 store/index.js，并管理子 reducer</li>
-</ol>
-</li>
-<li>index.js // React 项目的入口</li>
-<li>index.css</li>
-<li>router.js // 路由文件，包含 store 作用域的限制、路由的配置</li>
-</ol>
-</li>
-</ul>
-</div><hr></div><div class="recent-post-item article-container"><a class="article-title" href="/2019/05/12/读书笔记/《React》简书慕课/6.ReactRouterDom/">React-Router-Dom</a><time class="post-meta__date"><i class="fa fa-calendar" aria-hidden="true"></i> 2019-05-12</time><span class="article-meta"><span class="article-meta__separator">|</span><i class="fa fa-inbox article-meta__icon" aria-hidden="true"></i><a class="article-meta__categories" href="/categories/读书笔记/">读书笔记</a><i class="fa fa-angle-right" aria-hidden="true"></i><i class="fa fa-inbox article-meta__icon" aria-hidden="true"></i><a class="article-meta__categories" href="/categories/读书笔记/React慕课/">React慕课</a></span><span class="article-meta tags"><span class="article-meta__separator">|</span><i class="fa fa-tag article-meta__icon" aria-hidden="true"></i><a class="article-meta__tags" href="/tags/hide/">hide</a><span class="article-meta__link">-</span><i class="fa fa-tag article-meta__icon" aria-hidden="true"></i><a class="article-meta__tags" href="/tags/React慕课/">React慕课</a></span><div class="content"><h1 id="路由-ReactRouterDom"><a href="#路由-ReactRouterDom" class="headerlink" title="路由 ReactRouterDom"></a>路由 ReactRouterDom</h1><h2 id="1-引入依赖"><a href="#1-引入依赖" class="headerlink" title="1. 引入依赖"></a>1. 引入依赖</h2><blockquote>
-<p>yarn add react-router-dom</p>
-</blockquote>
-</div><hr></div><div class="recent-post-item article-container"><a class="article-title" href="/2019/05/11/读书笔记/《React》简书慕课/5.Immutable/">Immutable</a><time class="post-meta__date"><i class="fa fa-calendar" aria-hidden="true"></i> 2019-05-11</time><span class="article-meta"><span class="article-meta__separator">|</span><i class="fa fa-inbox article-meta__icon" aria-hidden="true"></i><a class="article-meta__categories" href="/categories/读书笔记/">读书笔记</a><i class="fa fa-angle-right" aria-hidden="true"></i><i class="fa fa-inbox article-meta__icon" aria-hidden="true"></i><a class="article-meta__categories" href="/categories/读书笔记/React慕课/">React慕课</a></span><span class="article-meta tags"><span class="article-meta__separator">|</span><i class="fa fa-tag article-meta__icon" aria-hidden="true"></i><a class="article-meta__tags" href="/tags/hide/">hide</a><span class="article-meta__link">-</span><i class="fa fa-tag article-meta__icon" aria-hidden="true"></i><a class="article-meta__tags" href="/tags/React慕课/">React慕课</a></span><div class="content"><h1 id="优化"><a href="#优化" class="headerlink" title="优化"></a>优化</h1><h2 id="拆分-reducer"><a href="#拆分-reducer" class="headerlink" title="拆分 reducer"></a>拆分 reducer</h2><p>当 Reducer 中需要接收的 action 过多，且各个组件都有自己的 action、reducer、constants 时，可以将 reducer.js 分散到各个组件模块中。在总的 reducer 中使用 combineReducers ，将各个子 reducer 连接起来。</p>
-<h3 id="关系图"><a href="#关系图" class="headerlink" title="关系图"></a>关系图</h3><p><img src="https://koral-home.oss-cn-beijing.aliyuncs.com/blog/Reducer%E6%8B%86%E5%88%86.jpg" alt="拆分Reducer"></p>
-<p>common/header - /store<br>/actionCreator.js<br>/constants.js<br>/reducer.js<br>/index.js - /index.js<br>store<br>/index.js<br>/reducer.js</p>
-<h2 id="Immutable-将-state-属性私有"><a href="#Immutable-将-state-属性私有" class="headerlink" title="Immutable 将 state 属性私有"></a>Immutable 将 state 属性私有</h2><p>在 Redux 的开发中，要求 store 中的 state，只能由其自己进行修改，因此我们可以使用 Immutable 来对 state 进行封装。将其改为一个不可变对象。</p>
-<p>只能通过操作 Immutable 提供的 get、set 方法来修改数据。</p>
-<h3 id="1-引入依赖"><a href="#1-引入依赖" class="headerlink" title="1. 引入依赖"></a>1. 引入依赖</h3><blockquote>
-<p>yarn add immutable // 项目中添加 Immutable 依赖</p>
-</blockquote>
-<h3 id="2-将-state-转换为-Immutable-对象"><a href="#2-将-state-转换为-Immutable-对象" class="headerlink" title="2. 将 state 转换为 Immutable 对象"></a>2. 将 state 转换为 Immutable 对象</h3><p>在使用时，将 state 通过 Immutable 提供的 fromJS 方法进行包装。包装之后的 state 便无法再通过 . 属性的方式获取到值。非常类似 Java 中的封装。</p>
-<p>下面是 Header 组件的 reducer.js：</p>
-<pre><code class="js">import { fromJS } from &quot;immutable&quot;;
-
-const defaultState = fromJS({
-  value: &quot;Hello React !&quot;,
-  focused: false
-});
-
-export default (state = defaultState, action) =&gt; {
-  switch (action.type) {
-    case &quot;aaa&quot;:
-      return state.set(&quot;value&quot;, action.value);
-    case &quot;bbb&quot;:
-      return state.set(&quot;focused&quot;, true);
-    default:
-      return state;
-  }
-};</code></pre>
-<h3 id="3-将子组件的-state-转换为-Immutable-对象"><a href="#3-将子组件的-state-转换为-Immutable-对象" class="headerlink" title="3. 将子组件的 state 转换为 Immutable 对象"></a>3. 将子组件的 state 转换为 Immutable 对象</h3><p>重点是将 combineReducers 方法，改为从 redux-immutalbe 中获取。</p>
-<pre><code class="js">import { combineReducers } from &quot;redux-immutable&quot;;
-import { reducer as headerReducer } from &quot;../common/header/store&quot;;
-
-const reducers = combineReducers({
-  header: headerReducer
-});
-
-export default reducers;</code></pre>
-<h3 id="4-Header-组件使用-state-header-value"><a href="#4-Header-组件使用-state-header-value" class="headerlink" title="4. Header 组件使用 state.header.value"></a>4. Header 组件使用 state.header.value</h3><p>下面是使用 redux-saga 进行组件与 store 的连接，请查阅 <a href="www.xx.cc">Redux-Saga</a></p>
-<pre><code class="js">class Header extends Component {
-    // ......
-}
-
-const mapStateToProps = (state) =&gt; {
-    return {
-        value: state.get(&#39;header&#39;).get(&#39;value&#39;),
-        focused: state.get(&#39;header&#39;).get(&#39;focused&#39;),
-        list: state.get(&#39;header&#39;).get(&#39;list&#39;)
     }
 }
 
-const mapDispatchToProps ...
+// 功能按键 - 请求发送者
+class FunctionButton {
+    // 按键名称
+    private String name;
+    // 维持一个抽象命令的引用
+    private Command command;
 
-export default connect(mapStateToProps,mapDispatchToProps)(Header);</code></pre>
-</div><hr></div><div class="recent-post-item article-container"><a class="article-title" href="/2019/05/10/读书笔记/《React》简书慕课/4.ReactRedux/">ReactRedux</a><time class="post-meta__date"><i class="fa fa-calendar" aria-hidden="true"></i> 2019-05-10</time><span class="article-meta"><span class="article-meta__separator">|</span><i class="fa fa-inbox article-meta__icon" aria-hidden="true"></i><a class="article-meta__categories" href="/categories/读书笔记/">读书笔记</a><i class="fa fa-angle-right" aria-hidden="true"></i><i class="fa fa-inbox article-meta__icon" aria-hidden="true"></i><a class="article-meta__categories" href="/categories/读书笔记/React慕课/">React慕课</a></span><span class="article-meta tags"><span class="article-meta__separator">|</span><i class="fa fa-tag article-meta__icon" aria-hidden="true"></i><a class="article-meta__tags" href="/tags/hide/">hide</a><span class="article-meta__link">-</span><i class="fa fa-tag article-meta__icon" aria-hidden="true"></i><a class="article-meta__tags" href="/tags/React慕课/">React慕课</a></span><div class="content"><h1 id="React-Redux-入门"><a href="#React-Redux-入门" class="headerlink" title="React-Redux 入门"></a>React-Redux 入门</h1><p>以下内容来源于 <img src="https://react-redux.js.org/introduction/quick-start" alt="React-Redux官网"></p>
-<p>使用 React-Redux + Redux-saga 重构 TodoList</p>
-<ol>
-<li>新增 Redux 依赖</li>
-<li>设置 Redux store</li>
-<li>添加 React-Redux 依赖</li>
-</ol>
-<h2 id="一、使用-Provider-标签"><a href="#一、使用-Provider-标签" class="headerlink" title="一、使用 Provider 标签"></a>一、使用 Provider 标签</h2><p>React Redux 提供了 <code>&lt;Provider/&gt;</code> 标签，使 Redux Store 可以用于被包含的程序组件内。</p>
-<pre><code class="js">import React from &quot;react&quot;;
-import ReactDOM from &quot;react-dom&quot;;
-
-import { Provider } from &quot;react-redux&quot;;
-import store from &quot;./store&quot;;
-
-import App from &quot;./App&quot;;
-
-const rootElement = document.getElementById(&quot;root&quot;);
-ReactDOM.render(
-  &lt;Provider store={store}&gt;
-    &lt;App /&gt;
-  &lt;/Provider&gt;,
-  rootElement
-);</code></pre>
-<h2 id="二、组件连接-Store"><a href="#二、组件连接-Store" class="headerlink" title="二、组件连接 Store"></a>二、组件连接 Store</h2><p>React Redux 提供了 connect 将组件连接到 store。</p>
-<pre><code class="js">import { connect } from &quot;react-redux&quot;;
-import { increment, decrement, reset } from &quot;./actionCreators&quot;;
-
-// const Counter = ...
-
-const mapStateToProps = (state /*, ownProps*/index.html) =&gt; {
-  return {
-    counter: state.counter
-  };
-};
-
-const mapDispatchToProps = { increment, decrement, reset };
-
-export default connect(mapStateToProps, mapDispatchToProps)(Counter);</code></pre>
-<h2 id="三、拆分-Reducer-js"><a href="#三、拆分-Reducer-js" class="headerlink" title="三、拆分 Reducer.js"></a>三、拆分 Reducer.js</h2><p>当 Reducer 中需要接收的 action 过多，且各个组件都有自己的 action、reducer、constants 时，可以将 reducer.js 分散到各个组件模块中。在总的 reducer 中使用 combineReducers ，将各个子 reducer 连接起来。</p>
-</div><hr></div><div class="recent-post-item article-container"><a class="article-title" href="/2019/05/09/读书笔记/《React》简书慕课/3.ReduxThunk/">ReduxThunk</a><time class="post-meta__date"><i class="fa fa-calendar" aria-hidden="true"></i> 2019-05-09</time><span class="article-meta"><span class="article-meta__separator">|</span><i class="fa fa-inbox article-meta__icon" aria-hidden="true"></i><a class="article-meta__categories" href="/categories/读书笔记/">读书笔记</a><i class="fa fa-angle-right" aria-hidden="true"></i><i class="fa fa-inbox article-meta__icon" aria-hidden="true"></i><a class="article-meta__categories" href="/categories/读书笔记/React慕课/">React慕课</a></span><span class="article-meta tags"><span class="article-meta__separator">|</span><i class="fa fa-tag article-meta__icon" aria-hidden="true"></i><a class="article-meta__tags" href="/tags/hide/">hide</a><span class="article-meta__link">-</span><i class="fa fa-tag article-meta__icon" aria-hidden="true"></i><a class="article-meta__tags" href="/tags/React慕课/">React慕课</a></span><div class="content"><h1 id="ReduxThunk"><a href="#ReduxThunk" class="headerlink" title="ReduxThunk"></a>ReduxThunk</h1><p>Redux Thunk 可以使 Redux 的 Action 不只是返回对象，也可以是一个函数。该函数在 Component 执行 dispatch(atcion) 时会自动执行。<br>使用原因：使用 Redux Thunk 替换在组件生命周期函数中，使用异步函数的问题。<br>解决因生命周期函数所需执行的内容过多问题。</p>
-<h2 id="Redux-Data-Flow"><a href="#Redux-Data-Flow" class="headerlink" title="Redux Data Flow"></a>Redux Data Flow</h2><p>Redux 的数据流程图：</p>
-<p><img src="https://koral-home.oss-cn-beijing.aliyuncs.com/blog/ReduxDataFlow.jpg" alt="Redux Data Flow"></p>
-<h2 id="引入依赖"><a href="#引入依赖" class="headerlink" title="引入依赖"></a>引入依赖</h2><blockquote>
-<p>yarn add redux-thunk</p>
-</blockquote>
-<h2 id="Redux-使用-Redux-thunk-中间件"><a href="#Redux-使用-Redux-thunk-中间件" class="headerlink" title="Redux 使用 Redux-thunk 中间件"></a>Redux 使用 Redux-thunk 中间件</h2><p>在创建 Redux 的 Store 时，应用所需使用的中间件。<br><a href="https://github.com/reduxjs/redux-thunk#installation" target="_blank" rel="noopener">来源于 github:redux-thunk</a></p>
-<pre><code class="js">import { createStore, applyMiddleware } from &quot;redux&quot;;
-import thunk from &quot;redux-thunk&quot;;
-import rootReducer from &quot;./reducers/index&quot;;
-
-// Note: this API requires redux@&gt;=3.1.0
-const store = createStore(rootReducer, applyMiddleware(thunk));</code></pre>
-<p>如果需要使用多个中间件，这里使用 Redux-DevTools 和 Redux-Thunk 两个中间件做演示，请使用下面的方式：<br><a href="https://github.com/zalmoxisus/redux-devtools-extension#12-advanced-store-setup" target="_blank" rel="noopener">来源于 github:redux-devtools-extension</a></p>
-<pre><code class="js">import { createStore, applyMiddleware, compose } from &quot;redux&quot;;
-import reducer from &quot;./reducer&quot;;
-import thunk from &quot;redux-thunk&quot;;
-
-const composeEnhancers =
-  typeof window === &quot;object&quot; &amp;&amp; window.__REDUX_DEVTOOLS_EXTENSION_COMPOSE__
-    ? window.__REDUX_DEVTOOLS_EXTENSION_COMPOSE__({})
-    : compose;
-
-const enhancer = composeEnhancers(
-  applyMiddleware(thunk) // 如果有其他中间件，可以在这里引入
-);
-
-const store = createStore(reducer, enhancer);
-
-export default store;</code></pre>
-</div><hr></div><div class="recent-post-item article-container"><a class="article-title" href="/2019/05/08/读书笔记/《React》简书慕课/2.ReduxFlow/">Redux入门</a><time class="post-meta__date"><i class="fa fa-calendar" aria-hidden="true"></i> 2019-05-08</time><span class="article-meta"><span class="article-meta__separator">|</span><i class="fa fa-inbox article-meta__icon" aria-hidden="true"></i><a class="article-meta__categories" href="/categories/读书笔记/">读书笔记</a><i class="fa fa-angle-right" aria-hidden="true"></i><i class="fa fa-inbox article-meta__icon" aria-hidden="true"></i><a class="article-meta__categories" href="/categories/读书笔记/React慕课/">React慕课</a></span><span class="article-meta tags"><span class="article-meta__separator">|</span><i class="fa fa-tag article-meta__icon" aria-hidden="true"></i><a class="article-meta__tags" href="/tags/hide/">hide</a><span class="article-meta__link">-</span><i class="fa fa-tag article-meta__icon" aria-hidden="true"></i><a class="article-meta__tags" href="/tags/React慕课/">React慕课</a></span><div class="content"><h1 id="Redux-入门"><a href="#Redux-入门" class="headerlink" title="Redux 入门"></a>Redux 入门</h1><p>使用 Redux 重构之前的 TodoList，使用全局 state 来实现。</p>
-<h2 id="Redux-Flow"><a href="#Redux-Flow" class="headerlink" title="Redux Flow"></a>Redux Flow</h2><p>Redux 的工作流：<br><img src="https://koral-home.oss-cn-beijing.aliyuncs.com/blog/ReduxFlow.jpg" alt="Redux Flow"></p>
-<h2 id="一、引入依赖"><a href="#一、引入依赖" class="headerlink" title="一、引入依赖"></a>一、引入依赖</h2><p>需要先引入 Ant Design 和 Redux</p>
-<blockquote>
-<p>yarn add antd<br>yarn add redux</p>
-</blockquote>
-<h2 id="二、创建全局-Store"><a href="#二、创建全局-Store" class="headerlink" title="二、创建全局 Store"></a>二、创建全局 Store</h2><p>第一步：创建 store/reducer.js<br>reducer 必须返回一个函数，state 参数为存储的内容</p>
-<pre><code class="javascript">const defaultState = {
-  // state默认值
-  inputValue: &quot;123&quot;,
-  list: [1, 2, 3]
-};
-
-export default (state = defaultState, action) =&gt; {
-  return state;
-};</code></pre>
-<p>第二步：创建 store/index.js<br>使用 redux 的 createStore 方法，使用之前创建的 reducer 作为参数，创建一个 store</p>
-<pre><code class="javascript">import { createStore } from &quot;redux&quot;;
-import reducer from &quot;./reducer&quot;;
-
-const store = createStore(reducer);
-
-export default store;</code></pre>
-<h2 id="使用与修改"><a href="#使用与修改" class="headerlink" title="使用与修改"></a>使用与修改</h2><p>一：使用 redux 的公共存储</p>
-<pre><code class="javascript">import store from &quot;./store/index.js&quot;;
-// import store from &#39;./store&#39; // 可以缩写为这样
-
-console.log(store.getState()); // 直接能打印出store中的内容</code></pre>
-<p>二：修改 redux 中的内容</p>
-<p>注意：redux 的 reducer 只支持读取 state，而不支持修改 state。如果需要修改，请深拷贝原有 state，修改新的 newState，并将 newState 返回。</p>
-<pre><code class="js">const defaultState = {
-  inputValue: &quot;Hello React !&quot;,
-  list: [&quot;1111&quot;, &quot;2222&quot;]
-};
-
-export default (state = defaultState, action) =&gt; {
-  if (action.type === &quot;change_input_value&quot;) {
-    const newState = JSON.parse(JSON.stringify(state));
-    newState.inputValue = action.value;
-    return newState;
-  } else if (action.type === &quot;add_list_item&quot;) {
-    const newState = JSON.parse(JSON.stringify(state));
-    newState.list.push(state.inputValue);
-    newState.inputValue = &quot;&quot;;
-    return newState;
-  } else if (action.type === &quot;del_list_item&quot;) {
-    const newState = JSON.parse(JSON.stringify(state));
-    newState.list.splice(action.index, 1);
-    return newState;
-  }
-  return state;
-};</code></pre>
-<p>三、监听 store 内容的修改</p>
-<pre><code class="js">    constructor(props) {
-        super(props);
-        this.state = store.getState();
-        this.handleStoreChange = this.handleStoreChange.bind(this);
-        store.subscribe(this.handleStoreChange);
+    public String getName() {
+        return name;
     }
 
-    render () {
-        ...
+    public Command getCommand() {
+        return command;
     }
 
-    handleStoreChange() {
-        this.setState(store.getState());
-    }</code></pre>
-<h2 id="整体使用如下："><a href="#整体使用如下：" class="headerlink" title="整体使用如下："></a>整体使用如下：</h2><h3 id="src-TodoList-js"><a href="#src-TodoList-js" class="headerlink" title="src/TodoList.js"></a>src/TodoList.js</h3><pre><code class="js">import React, { Component } from &quot;react&quot;;
-import store from &quot;./store&quot;;
-import &quot;antd/dist/antd.css&quot;;
-import { Input, Button, List } from &quot;antd&quot;;
-import {
-  getInputChangeAction,
-  getAddItemAction,
-  getDeleteItemAction
-} from &quot;./store/actionCreator&quot;;
+    public void setName(String name) {
+        this.name = name;
+    }
 
-class TodoList extends Component {
-  constructor(props) {
-    super(props);
-    this.state = store.getState();
-    this.handleInputChange = this.handleInputChange.bind(this);
-    this.handleStoreChange = this.handleStoreChange.bind(this);
-    this.handleBtnClick = this.handleBtnClick.bind(this);
-    this.handleDeleteItem = this.handleDeleteItem.bind(this);
-    store.subscribe(this.handleStoreChange);
-  }
+    public void setCommand(Command command) {
+        this.command = command;
+    }
 
-  render() {
-    return (
-      &lt;div style={{ marginTop: "10px", marginLeft: "10px" }}&gt;
-        &lt;Input
-          style={{ width: "300px", marginRight: "10px" }}
-          value={this.state.inputValue}
-          onChange={this.handleInputChange}
-        /&gt;
-        &lt;Button type=&quot;primary&quot; onClick={this.handleBtnClick}&gt;
-          æ��äº¤
-        &lt;/Button&gt;
-        &lt;br /&gt;
-        &lt;List
-          style={{ width: "300px" }}
-          bordered
-          dataSource={this.state.list}
-          renderItem={(item, index) =&gt; (
-            &lt;List.Item onClick={() =&gt; this.handleDeleteItem(index)}&gt;
-              {item}
-            &lt;/List.Item&gt;
-          )}
-        /&gt;
-      &lt;/div&gt;
-    );
-  }
-
-  handleInputChange(e) {
-    const value = e.target.value;
-    const action = getInputChangeAction(value);
-    store.dispatch(action);
-  }
-
-  handleStoreChange() {
-    this.setState(store.getState());
-  }
-
-  handleBtnClick() {
-    const action = getAddItemAction();
-    store.dispatch(action);
-  }
-
-  handleDeleteItem(index) {
-    const action = getDeleteItemAction(index);
-    store.dispatch(action);
-  }
+    public void onClick(){
+        System.out.println(&quot;点击按键：&quot;);
+        command.execute();
+    }
 }
 
-export default TodoList;</code></pre>
-<h3 id="src-store-index-js"><a href="#src-store-index-js" class="headerlink" title="src/store/index.js"></a>src/store/index.js</h3><pre><code class="js">import { createStore } from &quot;redux&quot;;
-import reducer from &quot;./reducer&quot;;
+// 抽象命令类
+abstract class Command {
+    public abstract void execute();
+}
 
-const store = createStore(
-  reducer,
-  window.__REDUX_DEVTOOLS_EXTENSION__ &amp;&amp; window.__REDUX_DEVTOOLS_EXTENSION__()
-);
+// 帮助命令类 - 具体命令类
+class HelpCommand extends Command {
+    private HelpHandler helpHandler;
 
-export default store;</code></pre>
-<h3 id="src-store-reducer-js"><a href="#src-store-reducer-js" class="headerlink" title="src/store/reducer.js"></a>src/store/reducer.js</h3><pre><code class="js">const defaultState = {
-  inputValue: &quot;Hello React !&quot;,
-  list: [&quot;1111&quot;, &quot;2222&quot;]
-};
+    public HelpCommand() {
+        helpHandler = new HelpHandler();
+    }
 
-export default (state = defaultState, action) =&gt; {
-  if (action.type === &quot;change_input_value&quot;) {
-    const newState = JSON.parse(JSON.stringify(state));
-    newState.inputValue = action.value;
-    return newState;
-  } else if (action.type === &quot;add_list_item&quot;) {
-    const newState = JSON.parse(JSON.stringify(state));
-    newState.list.push(state.inputValue);
-    newState.inputValue = &quot;&quot;;
-    return newState;
-  } else if (action.type === &quot;del_list_item&quot;) {
-    const newState = JSON.parse(JSON.stringify(state));
-    newState.list.splice(action.index, 1);
-    return newState;
-  }
-  return state;
-};</code></pre>
-<h3 id="src-store-actionTypes-js"><a href="#src-store-actionTypes-js" class="headerlink" title="src/store/actionTypes.js"></a>src/store/actionTypes.js</h3><p>将所有的 Action 类型提取为常量，统一管理。方便调试与代码定位。</p>
-<pre><code class="js">export const CHANGE_INPUT_VALUE = &quot;change_input_value&quot;;
-export const ADD_LIST_ITEM = &quot;add_list_item&quot;;
-export const DEL_LIST_ITEM = &quot;del_list_item&quot;;</code></pre>
-<h3 id="src-store-actionCreator-js"><a href="#src-store-actionCreator-js" class="headerlink" title="src/store/actionCreator.js"></a>src/store/actionCreator.js</h3><p>将 Action 的创建统一管理，使用 Creator 提供创建 Action 的方法。使流程更加清晰</p>
-<pre><code class="js">import {
-  CHANGE_INPUT_VALUE,
-  ADD_LIST_ITEM,
-  DEL_LIST_ITEM
-} from &quot;./actionTypes&quot;;
+    @Override
+    public void execute() {
+        helpHandler.action();
+    }
+}
 
-export const getInputChangeAction = value =&gt; ({
-  type: CHANGE_INPUT_VALUE,
-  value: value
-});
+// 最小化命令类 - 具体命令类
+class MinimizeCommand extends Command {
+    private MinimizeHandler handler;
 
-export const getAddItemAction = () =&gt; ({
-  type: ADD_LIST_ITEM
-});
+    public MinimizeCommand() {
+        handler = new MinimizeHandler();
+    }
 
-export const getDeleteItemAction = index =&gt; ({
-  type: DEL_LIST_ITEM,
-  index: index
-});</code></pre>
-</div><hr></div><div class="recent-post-item article-container"><a class="article-title" href="/2019/05/07/读书笔记/《React》简书慕课/1.基础语法/">React入门</a><time class="post-meta__date"><i class="fa fa-calendar" aria-hidden="true"></i> 2019-05-07</time><span class="article-meta"><span class="article-meta__separator">|</span><i class="fa fa-inbox article-meta__icon" aria-hidden="true"></i><a class="article-meta__categories" href="/categories/读书笔记/">读书笔记</a><i class="fa fa-angle-right" aria-hidden="true"></i><i class="fa fa-inbox article-meta__icon" aria-hidden="true"></i><a class="article-meta__categories" href="/categories/读书笔记/React慕课/">React慕课</a></span><span class="article-meta tags"><span class="article-meta__separator">|</span><i class="fa fa-tag article-meta__icon" aria-hidden="true"></i><a class="article-meta__tags" href="/tags/hide/">hide</a><span class="article-meta__link">-</span><i class="fa fa-tag article-meta__icon" aria-hidden="true"></i><a class="article-meta__tags" href="/tags/React慕课/">React慕课</a></span><div class="content"><h1 id="React入门"><a href="#React入门" class="headerlink" title="React入门"></a>React入门</h1><p>父组件向子组件传值：父组件可以通过向子组件传递属性，子组件通过props拿到该属性。<br>子组件向父组件传值：父组件先 将操作元素的方法 传递给子组件，子组件通过props调用父组件的方法。</p>
-<p>单向数据流：子组件只能读取父组件传递的属性，不能修改父组件的属性。</p>
-<p>当组件的state或props发生改变时，render函数就会重新执行</p>
-<p>React对性能的提升：<br>    使用虚拟DOM的方式来渲染页面，当组件的state和props发生改变时，会重新调用一次组件的render方法，重新生成一次页面。如果是直接使用新的DOM替换旧的DOM，非常损耗性能。而使用虚拟DOM可以极大地提升性能。</p>
-<p>React的虚拟DOM的流程：<br>    1. state 数据<br>    2. JSX 模板<br>    3. 数据 + 模板 生成虚拟DOM<br>        1. <code>[&#39;div&#39;, {id :&#39;abc&#39;}, [&#39;span&#39;,{},&#39;hello&#39;]]</code><br>    4. 使用虚拟DOM 生成真实的DOM<br>        1. <code>&lt;div id=&#39;abc&#39;&gt;&lt;span&gt;hello&lt;/span&gt;&lt;/div&gt;</code><br>    5. 数据(state、props)发生了改变<br>    6. 数据 + 模板 生成新的虚拟DOM<br>        1. <code>[&#39;div&#39;, {id :&#39;abc&#39;}, [&#39;span&#39;,{},&#39;bye bye&#39;]]</code><br>    7. 比较新的虚拟DOM 和原有的虚拟DOM，找出差异处<br>        1. Diff 算法：<br>        2. 将多个setState合为一个setState渲染<br>        3. 逐层比较，类似于异或<br>        4. 列表循环时，key值要保持稳定<br>    8. 使用新的虚拟DOM重新渲染差异处<br>优点：<br>    1. 极大地提升了性能<br>        1. 将直接生成真实DOM，改为先生成虚拟DOM，再通过虚拟DOM生成真实DOM<br>        2. 降低比较真实DOM的损耗，改为直接比较虚拟DOM<br>        3. 从直接渲染新的真实DOM，改为先比较虚拟DOM<br>        4. 使用虚拟DOM的差异重新渲染数据<br>    2. 使跨端应用得以实现（如React Native）<br>        1. 在第三步生成虚拟DOM之后，可以通过虚拟DOM生成如Android、IOS可使用的组件</p>
-<h2 id="React生命周期函数"><a href="#React生命周期函数" class="headerlink" title="React生命周期函数"></a>React生命周期函数</h2><p>在某一时刻，自动执行的函数</p>
-<ol>
-<li>Initialization 初始化阶段<ol>
-<li>constructor</li>
-</ol>
-</li>
-<li>Mounting 挂载阶段<ol>
-<li>componentWillMount 组件被挂载前，自动执行</li>
-<li>render 组件挂载时，自动执行</li>
-<li>componentDidMount 组件挂载完成时，自动执行</li>
-</ol>
-</li>
-<li>Updation 数据更新阶段<ol>
-<li>props 属性更新<ol>
-<li>componentWillReceiveProps 子组件重新接受Props时，自动执行</li>
-<li>shouldComponentUpdate 重新渲染render前，自动执行，且影响render是否执行</li>
-<li>componentWillUpdate 组件将被更新前、shouldComponentUpdate后，自动执行</li>
-<li>render</li>
-<li>componentDidUpdate 组件更新之后，自动执行</li>
-</ol>
-</li>
-<li>states 状态更新<ol>
-<li>shouldComponentUpdate 重新渲染render前，自动执行，且影响render是否执行</li>
-<li>componentWillUpdate 组件将被更新前、shouldComponentUpdate后，自动执行</li>
-<li>render</li>
-<li>componentDidUpdate 组件更新之后，自动执行</li>
-</ol>
-</li>
-</ol>
-</li>
-<li>Unmounting 移除挂载阶段<ol>
-<li>componentWillUnmount 子组件将被移除前，自动执行</li>
-</ol>
-</li>
-</ol>
-<h2 id="Axios"><a href="#Axios" class="headerlink" title="Axios"></a>Axios</h2><p>新增依赖</p>
-<blockquote>
-<p>yarn add axios</p>
-</blockquote>
-<h3 id="Charles-Mock数据"><a href="#Charles-Mock数据" class="headerlink" title="Charles Mock数据"></a>Charles Mock数据</h3><p>使用Charles进行数据的Mock</p>
-<h2 id="Ant-Design"><a href="#Ant-Design" class="headerlink" title="Ant Design"></a>Ant Design</h2><p>使用 <code>Ant Design</code> 重构代码样式布局。</p>
-<blockquote>
-<p>yarn add antd // 新增ant design依赖</p>
-</blockquote>
-<h2 id="Redux"><a href="#Redux" class="headerlink" title="Redux"></a>Redux</h2><p>详见 ReduxFlow</p>
-<h2 id="组件"><a href="#组件" class="headerlink" title="组件"></a>组件</h2><p>普通组件、UI组件、容器组件、无状态组件</p>
-</div><hr></div><div class="recent-post-item article-container"><a class="article-title" href="/2018/11/16/后端/POI/POI-PPT2IMG/">POI之PPT转image,SmartArt解决方法</a><time class="post-meta__date"><i class="fa fa-calendar" aria-hidden="true"></i> 2018-11-16</time><span class="article-meta"><span class="article-meta__separator">|</span><i class="fa fa-inbox article-meta__icon" aria-hidden="true"></i><a class="article-meta__categories" href="/categories/后端/">后端</a><i class="fa fa-angle-right" aria-hidden="true"></i><i class="fa fa-inbox article-meta__icon" aria-hidden="true"></i><a class="article-meta__categories" href="/categories/后端/POI/">POI</a></span><span class="article-meta tags"><span class="article-meta__separator">|</span><i class="fa fa-tag article-meta__icon" aria-hidden="true"></i><a class="article-meta__tags" href="/tags/hide/">hide</a><span class="article-meta__link">-</span><i class="fa fa-tag article-meta__icon" aria-hidden="true"></i><a class="article-meta__tags" href="/tags/POI/">POI</a></span><div class="content"><h1 id="POI-之-PPT-转-image-SmartArt-解决方法"><a href="#POI-之-PPT-转-image-SmartArt-解决方法" class="headerlink" title="POI 之 PPT 转 image,SmartArt 解决方法"></a>POI 之 PPT 转 image,SmartArt 解决方法</h1><p>关于使用 POI 将 PPT 转为 图片，随便就能查到以下代码。</p>
-<pre><code class="java">import java.io.File;
-import java.io.FileInputStream;
-import java.io.FileOutputStream;
-import java.io.IOException;
+    @Override
+    public void execute() {
+        handler.action();
+    }
+}
 
-import org.apache.poi.xslf.usermodel.XMLSlideShow;
-import org.apache.poi.xslf.usermodel.XSLFSlide;
+// 帮助处理类 - 请求接收者
+class HelpHandler {
+    public void action(){
+        System.out.println(&quot;显示文档&quot;);
+    }
+}
 
-public class PpttoPNG {
+// 最小化处理类 - 请求接收者
+class MinimizeHandler {
+    public void action (){
+        System.out.println(&quot;最小化！&quot;);
+    }
+}
 
-   public static void main(String args[]) throws IOException {
+public class CommandPattern {
+    public static void main(String[] args) {
+        final FBSettingWindow window = new FBSettingWindow();
+        window.setTitle(&quot;功能键设置&quot;);
 
-      //creating an empty presentation
-      File file = new File(&quot;addingimage.pptx&quot;);
-      XMLSlideShow ppt = new XMLSlideShow(new FileInputStream(file));
+        final FunctionButton button1 = new FunctionButton();
+        button1.setName(&quot;按钮1&quot;);
+        final FunctionButton button2 = new FunctionButton();
+        button2.setName(&quot;按钮2&quot;);
 
-      //getting the dimensions and size of the slide
-      Dimension pgsize = ppt.getPageSize();
-      XSLFSlide[] slide = ppt.getSlides();
+        final HelpCommand helpCommand = new HelpCommand();
+        final MinimizeCommand minimizeCommand = new MinimizeCommand();
 
-      for (int i = 0; i &lt; slide.length; i++) {
-         BufferedImage img = new BufferedImage(
-            pgsize.width, pgsize.height,BufferedImage.TYPE_INT_RGB);
-         Graphics2D graphics = img.createGraphics();
+        button1.setCommand(helpCommand);
+        button2.setCommand(minimizeCommand);
 
-         //clear the drawing area
-         graphics.setPaint(Color.white);
-         graphics.fill(new Rectangle2D.Float(0, 0, pgsize.width, pgsize.height));
+        window.addFunctionButton(button1);
+        window.addFunctionButton(button2);
+        window.display();
 
-         //render
-         slide[i].draw(graphics);
-      }
-
-      //creating an image file as output
-      FileOutputStream out = new FileOutputStream(&quot;ppt_image.png&quot;);
-      javax.imageio.ImageIO.write(img, &quot;png&quot;, out);
-      ppt.write(out);
-
-      System.out.println(&quot;Image successfully created&quot;);
-      out.close();
-   }
+        button1.onClick();
+        button2.onClick();
+    }
 }</code></pre>
-<p>但是问题显然不会这么简单，经过实验发现。</p>
-<p>通过 POI 导出的图片，出现以下几个问题：</p>
-<ol>
-<li>无法读取 SmartArt</li>
-<li>艺术字只能显示为普通文本</li>
-<li>图形阴影无法显示</li>
-<li>部分自定义几何图形显示异常</li>
+<blockquote>
+<p>如果需要增加一个新的命令，只需要增加一个具体命令类，将命令类与具体的处理类进行关联，并注入到某个功能键即可。原有代码无需修改，符合“开闭原则”。</p>
+</blockquote>
+<h2 id="四、命令队列"><a href="#四、命令队列" class="headerlink" title="四、命令队列"></a>四、命令队列</h2><p>当我们点击一个按钮后，需要执行多次命令操作，且命令是可重用的。此时我们可以使用“命令队列”的方式来设计，此时，请求发送者不再维护单独的一个Command，而是一个CommandQueue，存储多个命令对象:</p>
+<pre><code class="java">class FunctionButton {
+    private String name;
+    private CommandQueue commandQueue;
+}
+class CommandQueue {
+    private List&lt;Command&gt; commands = new ArrayList&lt;&gt;();
+
+    public void addCommand(Command command){
+        commands.add(command);
+    }
+
+    public void removeCommand(Command command){
+        commands.remove(command);
+    }
+
+    public void display(){
+        for(Command cd:commands){
+            cd.execute();
+        }
+    }
+}</code></pre>
+<blockquote>
+<p>命令队列类似于“批处理”的概念，可以对一组对象（命令）进行批量操作。如果请求接收者没有严格的先后次序，还可以通过多线程技术来并发调用对象的execute方法，从而提高程序执行效率。</p>
+<h2 id="五、撤销操作的实现"><a href="#五、撤销操作的实现" class="headerlink" title="五、撤销操作的实现"></a>五、撤销操作的实现</h2><p>在命令模式中，可以通过调用命令对象的 execute() 方法来实现对请求的处理，如果需要撤销操作，可以在命令类中增加一个逆向操作来实现。</p>
+<p>也可以通过保存对象的历史状态来实现撤销，如“备忘录模式”。</p>
+<p>我们可以在具体的Handler 中，保存上次执行时的状态，并提供一个方法以便恢复至保存的状态。</p>
+</blockquote>
+<pre><code class="java">class AdderHandler{
+    private int number;
+
+    public int add(int i){
+        number += i;
+        return number;
+    }
+}
+
+class AdderCommand extends Command {
+    private AdderHandler handler;
+    private int history;
+
+    public AdderCommand(AdderHandler handler){
+        this.handler = handler;
+    }
+
+    @Override
+    public void add(int value){
+        int result = handler.add(value);
+        history = value;
+        System.out.print(&quot;加法结果为：&quot;+result);
+    }
+
+    @Override
+    public void undo(){
+        // 使用保存的状态实现撤销操作
+        int result = handler.add(-history);
+        System.out.print(&quot;撤销后的结果为：&quot;+result);
+    }
+}</code></pre>
+<blockquote>
+<p>注，该撤销操作只能执行一次，如果需要执行多次，可以使用集合来保存 <code>histroy</code></p>
+</blockquote>
+<h2 id="六、宏命令"><a href="#六、宏命令" class="headerlink" title="六、宏命令"></a>六、宏命令</h2><p>宏命令（Macro Command）又称为组合命令，是组合模式和命令联合的产物。</p>
+<p>宏命令是一个具体的命令类，拥有一个集合属性，在该集合中包含了对其他命令对象的引用。通常宏命令不直接与请求接收者交互，而是通过它的成员来调用接收者的方法。</p>
+<p>当调用宏命令的 execute 方法时，会递归调用它的每个成员命令的 execute 方法，成员既可以是一个简单命令，也可以是宏命令。</p>
+<h2 id="七、总结"><a href="#七、总结" class="headerlink" title="七、总结"></a>七、总结</h2><p>命令模式是一种 <code>使用频率非常高</code> 的设计模式，可以将请求发送者和接收者解耦。发送者通过命令对象间接引用请求接收者，使得系统具有更好的灵活性和可扩展性。</p>
+<h3 id="优点"><a href="#优点" class="headerlink" title="优点"></a>优点</h3><ol>
+<li>降低系统耦合，请求发送者与接收者不直接引用，相互独立</li>
+<li>方便扩展，增加新的命令不会影响其他类，无需修改系统代码，符合“开闭原则”</li>
+<li>可以比较简单的设计一个命令队列或组合命令（宏命令）</li>
+<li>为请求的撤销、恢复操作提供了一种设计和实现方案</li>
 </ol>
-<p>然后就出现了这种状况：<br><code>PPT文件的内容：</code> <img src="https://upload-images.jianshu.io/upload_images/13603359-ddc7e137e2ff31cf.png?imageMogr2/auto-orient/strip%7CimageView2/2/w/1240" alt="PPT文件的内容"><br><code>导出的内容(这是什么鬼)：</code> <img src="https://upload-images.jianshu.io/upload_images/13603359-51403ce29c688f11.png" alt="image.png"></p>
-<p>然后上网查解决方法：</p>
-<p><img src="https://images.gitee.com/uploads/images/2018/1116/111529_aa242626_1872936.png" alt="stack overflow" title="屏幕截图.png"></p>
-<p><img src="https://upload-images.jianshu.io/upload_images/13603359-0b2c169e961ec894.png" alt="无解又是什么鬼"></p>
-<h2 id="解决方法"><a href="#解决方法" class="headerlink" title="解决方法"></a>解决方法</h2><p>无解，所以我们抛弃了 POI，改用其他方式导出。</p>
-<h3 id="1-改用-java-调用-Python"><a href="#1-改用-java-调用-Python" class="headerlink" title="1.改用 java 调用 Python"></a>1.改用 java 调用 Python</h3><p>如果你不会 python，可以将下面的 py 代码放到项目下，通过 <code>jython</code> 解释器来执行。</p>
-<pre><code class="python">import comtypes.client as client
-import os
-
-def init_powerpoint():
-    powerpoint = client.CreateObject(&quot;Powerpoint.Application&quot;)
-    powerpoint.Visible = 1
-    return powerpoint
-
-def ppt_to_pdf(powerpoint, inputFileName, outputFileName, formatType=32):
-    if outputFileName[-3:] != &#39;pdf&#39;:
-        outputFileName = outputFileName[0:-4] + &quot;pdf&quot;
-    deck = powerpoint.Presentations.Open(inputFileName)
-    deck.SaveAs(outputFileName, formatType)  # formatType = 32 for ppt to pdf
-    deck.SaveAs(inputFileName.rsplit(&#39;.&#39;)[0] + &#39;.jpg&#39;, 17)
-    deck.Close()
-
-def convert_files_in_folder(powerpoint, folder):
-    files = os.listdir(folder)
-    pptfiles = [f for f in files if f.endswith((&quot;.ppt&quot;, &quot;.pptx&quot;))]
-    for pptfile in pptfiles:
-        fullpath = os.path.join(cwd, pptfile)
-        ppt_to_pdf(powerpoint, fullpath, fullpath)
-
-if __name__ == &quot;__main__&quot;:
-    powerpoint = init_powerpoint()
-    cwd = os.getcwd()
-    convert_files_in_folder(powerpoint, cwd)
-    powerpoint.Quit()</code></pre>
-<p>这种方法应该是最适合的了，导出的图片接近完美。</p>
-<h3 id="2-使用第三方服务"><a href="#2-使用第三方服务" class="headerlink" title="2.使用第三方服务"></a>2.使用第三方服务</h3><p>阿里云提供了一个“智能媒体管理”的服务，其中包含了许多的文档转换的 API。省事</p>
-<p><img src="https://upload-images.jianshu.io/upload_images/13603359-0ebbce1f64d3e639.png" alt="收费标准"></p>
-<p><img src="https://upload-images.jianshu.io/upload_images/13603359-ab529c4e928c38f5.png" alt="转换服务"></p>
-</div><hr></div><div class="recent-post-item article-container"><a class="article-title" href="/2018/11/05/后端/Quartz/SpringBoot整合Quartz(六)/">SpringBoot整合Quartz(六)-使用Elastic-Job</a><time class="post-meta__date"><i class="fa fa-calendar" aria-hidden="true"></i> 2018-11-05</time><span class="article-meta"><span class="article-meta__separator">|</span><i class="fa fa-inbox article-meta__icon" aria-hidden="true"></i><a class="article-meta__categories" href="/categories/后端/">后端</a><i class="fa fa-angle-right" aria-hidden="true"></i><i class="fa fa-inbox article-meta__icon" aria-hidden="true"></i><a class="article-meta__categories" href="/categories/后端/Quartz/">Quartz</a></span><span class="article-meta tags"><span class="article-meta__separator">|</span><i class="fa fa-tag article-meta__icon" aria-hidden="true"></i><a class="article-meta__tags" href="/tags/hide/">hide</a><span class="article-meta__link">-</span><i class="fa fa-tag article-meta__icon" aria-hidden="true"></i><a class="article-meta__tags" href="/tags/Quartz/">Quartz</a></span><div class="content"><p>Elastic-Job 的底层还是使用的 Quartz，只是节点通过 Zookeeper 来进行分配。</p>
-<p>Quartz 只能解决 HA(高可用)</p>
-<ol>
-<li>But 这里有一个问题，ElasticJob 的开发代码中使用了 lombok，但是并没有引入该框架，所以需要我们在项目中引入 lombok。</li>
-<li>因为项目使用 Zookeeper 作为注册中心，所以需要自行安装和配置 Zookeeper。</li>
+<h3 id="缺点"><a href="#缺点" class="headerlink" title="缺点"></a>缺点</h3><ol>
+<li>可能会导致系统中存在过多的命令类，因为每个接收者都需要设计一个具体命令类来调用</li>
 </ol>
-</div><hr></div><div class="recent-post-item article-container"><a class="article-title" href="/2018/11/05/后端/Quartz/SpringBoot整合Quartz(五)/">SpringBoot整合Quartz(五)-集群测试</a><time class="post-meta__date"><i class="fa fa-calendar" aria-hidden="true"></i> 2018-11-05</time><span class="article-meta"><span class="article-meta__separator">|</span><i class="fa fa-inbox article-meta__icon" aria-hidden="true"></i><a class="article-meta__categories" href="/categories/后端/">后端</a><i class="fa fa-angle-right" aria-hidden="true"></i><i class="fa fa-inbox article-meta__icon" aria-hidden="true"></i><a class="article-meta__categories" href="/categories/后端/Quartz/">Quartz</a></span><span class="article-meta tags"><span class="article-meta__separator">|</span><i class="fa fa-tag article-meta__icon" aria-hidden="true"></i><a class="article-meta__tags" href="/tags/hide/">hide</a><span class="article-meta__link">-</span><i class="fa fa-tag article-meta__icon" aria-hidden="true"></i><a class="article-meta__tags" href="/tags/Quartz/">Quartz</a></span><div class="content"><h1 id="SpringBoot-整合-Quartz-五-集群测试"><a href="#SpringBoot-整合-Quartz-五-集群测试" class="headerlink" title="SpringBoot 整合 Quartz(五)-集群测试"></a>SpringBoot 整合 Quartz(五)-集群测试</h1><p>计划：(从 Quartz 的属性、方法、配置文件、配置类、持久化、集群等几个方面，写一些心得)</p>
-<p><img src="https://upload-images.jianshu.io/upload_images/13603359-55f97ba1d65bc00f.png" alt="Quartz"></p></div><a class="more" href="/2018/11/05/后端/Quartz/SpringBoot整合Quartz(五)/#more">阅读更多</a><hr></div><nav id="pagination"><div class="pagination"><a class="extend prev" rel="prev" href="/page/16/"><i class="fa fa-chevron-left"></i></a><a class="page-number" href="/">1</a><span class="space">&hellip;</span><a class="page-number" href="/page/16/">16</a><span class="page-number current">17</span><a class="page-number" href="/page/18/">18</a><span class="space">&hellip;</span><a class="page-number" href="/page/23/">23</a><a class="extend next" rel="next" href="/page/18/"><i class="fa fa-chevron-right"></i></a></div></nav></div></div><footer><div class="layout" id="footer"><div class="copyright">&copy;2013 - 2020 By koral</div><div class="framework-info"><span>驱动 - </span><a href="http://hexo.io"><span>Hexo</span></a><span class="footer-separator">|</span><span>主题 - </span><a href="https://github.com/Molunerfinn/hexo-theme-melody"><span>Melody</span></a></div><div class="busuanzi"><script async src="//busuanzi.ibruce.info/busuanzi/2.3/busuanzi.pure.mini.js"></script><span id="busuanzi_container_site_uv"><i class="fa fa-user"></i><span id="busuanzi_value_site_uv"></span><span></span></span><span class="footer-separator">|</span><span id="busuanzi_container_site_pv"><i class="fa fa-eye"></i><span id="busuanzi_value_site_pv"></span><span></span></span></div></div></footer><i class="fa fa-arrow-up" id="go-up" aria-hidden="true"></i><script src="https://cdn.jsdelivr.net/npm/animejs@latest/anime.min.js"></script><script src="https://cdn.jsdelivr.net/npm/jquery@latest/dist/jquery.min.js"></script><script src="https://cdn.jsdelivr.net/npm/@fancyapps/fancybox@latest/dist/jquery.fancybox.min.js"></script><script src="https://cdn.jsdelivr.net/npm/velocity-animate@latest/velocity.min.js"></script><script src="https://cdn.jsdelivr.net/npm/velocity-ui-pack@latest/velocity.ui.min.js"></script><script src="/js/utils.js?version=1.7.0"></script><script src="/js/fancybox.js?version=1.7.0"></script><script src="/js/sidebar.js?version=1.7.0"></script><script src="/js/copy.js?version=1.7.0"></script><script src="/js/fireworks.js?version=1.7.0"></script><script src="/js/transition.js?version=1.7.0"></script><script src="/js/scroll.js?version=1.7.0"></script><script src="/js/head.js?version=1.7.0"></script><script>if(/Android|webOS|iPhone|iPod|iPad|BlackBerry/i.test(navigator.userAgent)) {
+<h3 id="适用场景"><a href="#适用场景" class="headerlink" title="适用场景"></a>适用场景</h3><ol>
+<li>系统需要请求发送者与接收者解耦，彼此互不影响，互不相知</li>
+<li>系统需要使用一组命令或者宏命令</li>
+<li>系统需要支持撤销、恢复操作</li>
+<li>系统需要在不同的时间指定请求、将请求排队和执行请求</li>
+</ol>
+<h2 id="八、练习"><a href="#八、练习" class="headerlink" title="八、练习"></a>八、练习</h2><pre><code class="tex"> 命令模式
+ Sunny软件公司欲开发一个基于Windows平台的公告板系统。
+ 该系统提供了一个主菜单(Menu)，
+ 在主菜单中包含了一些菜单项(MenuItem)，
+ 可以通过Menu类的addMenuItem()方法增加菜单项。
+ 菜单项的主要方法是click()，
+ 每一个菜单项包含一个抽象命令类，
+ 具体命令类包括OpenCommand(打开命令)，CreateCommand(新建命令)，EditCommand(编辑命令)等，
+ 命令类具有一个execute()方法，
+ 用于调用公告板系统界面类(BoardScreen)的open()、create()、edit()等方法。
+ 试使用命令模式设计该系统，
+ 以便降低MenuItem类与BoardScreen类之间的耦合度</code></pre>
+<pre><code class="java">/**
+ * 命令模式
+ * Sunny软件公司欲开发一个基于Windows平台的公告板系统。
+ * 该系统提供了一个主菜单(Menu)，
+ * 在主菜单中包含了一些菜单项(MenuItem)，
+ * 可以通过Menu类的addMenuItem()方法增加菜单项。
+ * 菜单项的主要方法是click()，
+ * 每一个菜单项包含一个抽象命令类，
+ * 具体命令类包括OpenCommand(打开命令)，CreateCommand(新建命令)，EditCommand(编辑命令)等，
+ * 命令类具有一个execute()方法，
+ * 用于调用公告板系统界面类(BoardScreen)的open()、create()、edit()等方法。
+ * 试使用命令模式设计该系统，
+ * 以便降低MenuItem类与BoardScreen类之间的耦合度
+ */
+// 主菜单 - 类似于之前的窗口界面，包含多个按钮（菜单项）
+class Menu{
+    private List&lt;MenuItem&gt; menuItems = new ArrayList&lt;&gt;();
+
+    public void addItem(MenuItem item){
+        menuItems.add(item);
+    }
+
+    public void display(){
+        System.out.println(&quot;------显示菜单:-----&quot;);
+        for (MenuItem menuItem : menuItems) {
+            System.out.println(menuItem.getName());
+        }
+    }
+}
+
+// 菜单项 - 请求发送者
+class MenuItem {
+    private String name;
+    private Command command;
+
+    public MenuItem(String name){
+        this.name = name;
+    }
+
+    public String getName() {
+        return name;
+    }
+
+    public void setCommand(Command command){
+        this.command = command;
+    }
+
+    public void create(){
+        command.create();
+    }
+
+    public void edit(){
+        command.edit();
+    }
+
+    public void open(){
+        command.open();
+    }
+}
+
+// 抽象命令类
+abstract class Command {
+    abstract void create();
+    abstract void edit();
+    abstract void open();
+}
+
+// 宏命令 - 一组命令的集合，宏命令一般不直接操作接收者，而是通过集合中的对象属性来操作
+class MacroCommand extends Command {
+    private List&lt;Command&gt; commands = new ArrayList&lt;&gt;();
+
+    public void addCommand(Command command){
+        this.commands.add(command);
+    }
+
+    @Override
+    void create() {
+        for (Command command : commands) {
+            command.create();
+        }
+    }
+
+    @Override
+    void edit() {
+        for (Command command : commands) {
+            command.edit();
+        }
+    }
+
+    @Override
+    void open() {
+        for (Command command : commands) {
+            command.open();
+        }
+    }
+}
+
+// 具体命令类
+class BoardScreenCommand extends Command{
+    private BoardScreenHandler handler;
+
+    public BoardScreenCommand(){
+        handler = new BoardScreenHandler();
+    }
+
+    @Override
+    void create() {
+        handler.create();
+    }
+
+    @Override
+    void edit() {
+        handler.edit();
+    }
+
+    @Override
+    void open() {
+        handler.open();
+    }
+}
+
+// 请求接收者，也就是具体的处理类
+class BoardScreenHandler {
+    public void open(){
+        System.out.println(&quot;打开公告板&quot;);
+    }
+    public void create(){
+        System.out.println(&quot;创建公告板&quot;);
+    }
+    public void edit(){
+        System.out.println(&quot;修改公告板&quot;);
+    }
+}
+
+public class CommandPattern {
+    public static void main(String[] args) {
+        final Menu menu = new Menu();
+
+        final MenuItem menuItem = new MenuItem(&quot;公告板管理&quot;);
+        final MenuItem menuItem1 = new MenuItem(&quot;高噶&quot;);
+
+        final Command command = new BoardScreenCommand();
+
+        final MacroCommand command1 = new MacroCommand();
+        command1.addCommand(command);
+        command1.addCommand(command);
+
+        menuItem.setCommand(command);
+        menuItem1.setCommand(command1);
+
+        menu.addItem(menuItem);
+        menu.addItem(menuItem1);
+
+        menu.display();
+        menuItem.create();
+        menuItem.open();
+        System.out.println(&quot;----宏命令执行------&quot;);
+        menuItem1.create();
+        menuItem1.edit();
+        menuItem1.open();
+    }
+}</code></pre>
+</div><hr></div><div class="recent-post-item article-container"><a class="article-title" href="/2019/07/15/读书笔记/《JavaDesignPatterns》/16.责任链模式/">《Java Design Patterns》第十四章 责任链模式</a><time class="post-meta__date"><i class="fa fa-calendar" aria-hidden="true"></i> 2019-07-15</time><span class="article-meta"><span class="article-meta__separator">|</span><i class="fa fa-inbox article-meta__icon" aria-hidden="true"></i><a class="article-meta__categories" href="/categories/读书笔记/">读书笔记</a><i class="fa fa-angle-right" aria-hidden="true"></i><i class="fa fa-inbox article-meta__icon" aria-hidden="true"></i><a class="article-meta__categories" href="/categories/读书笔记/设计模式/">设计模式</a></span><span class="article-meta tags"><span class="article-meta__separator">|</span><i class="fa fa-tag article-meta__icon" aria-hidden="true"></i><a class="article-meta__tags" href="/tags/hide/">hide</a><span class="article-meta__link">-</span><i class="fa fa-tag article-meta__icon" aria-hidden="true"></i><a class="article-meta__tags" href="/tags/设计模式/">设计模式</a></span><div class="content"><p><img src="https://i.loli.net/2019/07/15/5d2c3670b923754379.png" alt="责任链模式"></p></div><a class="more" href="/2019/07/15/读书笔记/《JavaDesignPatterns》/16.责任链模式/#more">阅读更多</a><hr></div><div class="recent-post-item article-container"><a class="article-title" href="/2019/07/15/读书笔记/《JavaDesignPatterns》/15.代理模式/">《Java Design Patterns》第十三章 代理模式</a><time class="post-meta__date"><i class="fa fa-calendar" aria-hidden="true"></i> 2019-07-15</time><span class="article-meta"><span class="article-meta__separator">|</span><i class="fa fa-inbox article-meta__icon" aria-hidden="true"></i><a class="article-meta__categories" href="/categories/读书笔记/">读书笔记</a><i class="fa fa-angle-right" aria-hidden="true"></i><i class="fa fa-inbox article-meta__icon" aria-hidden="true"></i><a class="article-meta__categories" href="/categories/读书笔记/设计模式/">设计模式</a></span><span class="article-meta tags"><span class="article-meta__separator">|</span><i class="fa fa-tag article-meta__icon" aria-hidden="true"></i><a class="article-meta__tags" href="/tags/hide/">hide</a><span class="article-meta__link">-</span><i class="fa fa-tag article-meta__icon" aria-hidden="true"></i><a class="article-meta__tags" href="/tags/设计模式/">设计模式</a></span><div class="content"><h1 id="第十三章-代理模式"><a href="#第十三章-代理模式" class="headerlink" title="第十三章 代理模式"></a>第十三章 代理模式</h1><p>代理模式是常用的 <code>对象结构型设计模式</code> 之一，当无法直接访问某个对象时，可以通过一个代理对象来间接访问。</p>
+<p>为了保证客户端使用的透明性，所访问的真实对象与代理对象需要实现相同的接口。</p>
+<p>代理模式根据使用目的，又可以分为：保护代理、远程代理、虚拟代理、缓冲代理等。</p>
+<h2 id="一、代理模式概述"><a href="#一、代理模式概述" class="headerlink" title="一、代理模式概述"></a>一、代理模式概述</h2><p>日常生活中，我们通过网站购买商品，商品对应的就是“真实主题角色”，而商品网站则是“代理主题角色”。</p>
+<h2 id="1-1-定义"><a href="#1-1-定义" class="headerlink" title="1.1 定义"></a>1.1 定义</h2><p>代理模式：给某一个对象提供一个代理或占位符，并由代理对象来控制对原对象的访问。</p>
+<p>代理模式通过引入一个新的代理对象，在客户端对象和目标对象之间起到中介的作用，去掉客户不能看到的内容和服务，或者增添客户需要的额外的新服务。</p>
+<h3 id="1-2-代理模式的结构"><a href="#1-2-代理模式的结构" class="headerlink" title="1.2 代理模式的结构"></a>1.2 代理模式的结构</h3><p><img src="https://i.loli.net/2019/07/15/5d2bf3248bdec12565.png" alt="代理模式结构"></p>
+<p>代理模式的重点在于，1. 客户端针对 抽象角色 编程 2. 抽象对象实例化代理对象 3. 通过代理对象维护的真实角色对象，来调用真实业务，并通过代理对象实现的方法，来扩展真实业务员</p>
+<h3 id="1-3-代理模式中的几个角色"><a href="#1-3-代理模式中的几个角色" class="headerlink" title="1.3 代理模式中的几个角色"></a>1.3 代理模式中的几个角色</h3><ol>
+<li>Subject - 抽象主题角色<ol>
+<li>声明了真实主题和代理主题的共同接口</li>
+<li>客户端通常只需要针对抽象主题角色进行编程</li>
+</ol>
+</li>
+<li>Proxy - 代理主题角色<ol>
+<li>包含对真实主题的应用，可以在任何时候操作真实主题</li>
+<li>代理主题角色提供与真实主题角色相同的接口，以便在任何时候替代真实主题</li>
+<li>代理主题角色还能控制对真实主题的使用，负责在需要时创建、删除真实主题对象，对真实主题对象的使用加以约束</li>
+</ol>
+</li>
+<li>RealSubject - 真实主题角色<ol>
+<li>定义了真实的业务操作</li>
+<li>客户端可以通过代理角色，间接调用真实角色的操作</li>
+</ol>
+</li>
+</ol>
+<h3 id="1-4-代理模式的核心-代理主题角色-Proxy"><a href="#1-4-代理模式的核心-代理主题角色-Proxy" class="headerlink" title="1.4 代理模式的核心 - 代理主题角色 Proxy"></a>1.4 代理模式的核心 - 代理主题角色 Proxy</h3><pre><code class="java">class Proxy implements Subject {
+    // 维护一个对真实主题对象的引用
+    private RealSubject subject = new RealSubject(); 
+
+    public void preRequest(){
+        // ...
+    }
+
+    /**
+     * 实现Subject声明的抽象方法，调用真实主题角色的操作，并进行扩展
+     */
+    @Override
+    public void request(){
+        preRequest();
+        subject.request();
+        postRequest();
+    }
+
+    public void postRequest(){
+        // ...
+    }
+}</code></pre>
+<h2 id="二、几种常用的代理模式"><a href="#二、几种常用的代理模式" class="headerlink" title="二、几种常用的代理模式"></a>二、几种常用的代理模式</h2><ol>
+<li>远程代理 - Remote Proxy<ol>
+<li>为一个位于不同的地址空间的对象提供一个本地的代理对象</li>
+<li>远程代理又称为 大使 - Ambassador</li>
+<li>客户端无须关心实现具体业务的是谁，只需要按照服务接口定义的方式直接与本地主机中的代理对象交互即可</li>
+<li>DCOM、Web Service 都应用了远程代理模式</li>
+</ol>
+</li>
+<li>虚拟代理 - Virtual Proxy<ol>
+<li>如果需要创建一个资源消耗较大的对象，先创建一个消耗相对较小的对象来表示，真实对象只在需要时才会被真正创建<ol>
+<li>通常可以结合多线程技术，一个线程用于显示代理对象，其他线程用于加载真实对象</li>
+</ol>
+</li>
+</ol>
+</li>
+<li>保护代理 - Protect Proxy<ol>
+<li>控制对一个对象的访问，可以给不同的用户提供不同级别的使用权限</li>
+</ol>
+</li>
+<li>缓冲代理 - Cache Proxy<ol>
+<li>为某一个目标操作的结果提供临时的存储空间，以便多个客户端可以共享这些结果</li>
+</ol>
+</li>
+<li>智能引用代理 - Smart Reference Proxy<ol>
+<li>当一个对象被引用时，提供一些额外的操作，例如记录被调用的次数等</li>
+</ol>
+</li>
+</ol>
+<h2 id="三、完整实现"><a href="#三、完整实现" class="headerlink" title="三、完整实现"></a>三、完整实现</h2><pre><code class="java">/**
+ * 代理模式
+ */
+// 数据库验证类 - 业务类
+class AccessValidator {
+    public Boolean validate(String userId) {
+        System.out.println(&quot;在数据库中验证用户:&quot; + userId + &quot;，是否是合法用户？&quot;);
+        if (userId.contains(&quot;aa&quot;)) {
+            System.out.println(&quot;验证通过！&quot;);
+            return true;
+        } else {
+            System.out.println(&quot;验证失败！&quot;);
+            return false;
+        }
+    }
+}
+
+// 日志记录类 - 业务类
+class Logger {
+    public void log(String userId) {
+        System.out.println(&quot;记录用户 &quot; + userId + &quot; 登录日志&quot;);
+    }
+}
+
+// 抽象查询类 - 抽象主题角色
+interface Searcher {
+    String doSearch(String userId, String keyword);
+}
+
+// 具体查询类 - 真实主题角色
+class RealSearcher implements Searcher {
+    @Override
+    public String doSearch(String userId, String keyword) {
+        System.out.println(&quot;用户 &quot; + userId + &quot; 使用关键词 &quot; + keyword + &quot; 进行查询&quot;);
+        return &quot;查询到的具体内容&quot;;
+    }
+}
+
+// 代理查询类 - 代理主题角色，维持对业务类、真实主题角色对象的引用
+class ProxySearcher implements Searcher {
+    // 维持一个对真实主题的引用
+    private RealSearcher searcher = new RealSearcher();
+
+    // 业务类
+    private AccessValidator validator = new AccessValidator();
+    private Logger logger = new Logger();
+
+    @Override
+    public String doSearch(String userId, String keyword) {
+        // 如果身份验证成功，则继续执行
+        if (this.validate(userId)) {
+            // 调用真实主题对象的查询方法
+            final String result = searcher.doSearch(userId, keyword);
+            // 记录查询日志
+            this.logger(userId);
+            // 返回查询结果
+            return result;
+        }
+        return null;
+    }
+
+    public boolean validate(String userId) {
+        return validator.validate(userId);
+    }
+
+    public void logger(String userId) {
+        logger.log(userId);
+    }
+}
+
+public class ProxyPattern {
+    public static void main(String[] args) {
+        final ProxySearcher searcher = new ProxySearcher();
+        final String search = searcher.doSearch(&quot;aa张三&quot;, &quot;男士内衣&quot;);
+        System.out.println(&quot;查询结果：&quot;+search);
+    }
+}</code></pre>
+<p>执行结果如下：</p>
+<p><img src="https://i.loli.net/2019/07/12/5d284f8188eaa42868.png" alt="执行结果"></p>
+<h2 id="四、总结"><a href="#四、总结" class="headerlink" title="四、总结"></a>四、总结</h2><h3 id="优点"><a href="#优点" class="headerlink" title="优点"></a>优点</h3><p>代理模式各类型的共同优点：</p>
+<ol>
+<li>能够协调调用者和被调用者，一定程序上降低了系统耦合</li>
+<li>客户端可以针对 抽象主题角色 进行编程，增加和更换代理类无须修改源代码，符合开闭原则，系统具有良好的灵活性和可扩展性</li>
+</ol>
+<p>不同代理模式的特点：</p>
+<ol>
+<li>远程代理，为两个不同地址空间对象的访问提供了一种实现机制，可以将一些消耗资源较多的对象和操作 移至性能更好的计算机上，提高系统的整体运行效率</li>
+<li>虚拟代理通过一个消耗资源较少的对象来代表一个消耗资源较多的对象，可以在一定程度上节省系统的运行开销</li>
+<li>缓冲代理，为某一个操作 的结果提供临时的缓存存储空间，以便在后续使用中能够共享这些结果，优化系统性能，缩短执行时间</li>
+<li>保护代理，可以控制一个对象的访问权限，为不同用户提供不同级别的使用权限</li>
+</ol>
+<h3 id="缺点"><a href="#缺点" class="headerlink" title="缺点"></a>缺点</h3><ol>
+<li>由于增加了代理对象，可能会导致请求的处理速度变慢，如保护代理</li>
+<li>实现代理模式需要额外的工作，实现过程可能变得十分复杂，如远程代理</li>
+</ol>
+<h3 id="适用场景"><a href="#适用场景" class="headerlink" title="适用场景"></a>适用场景</h3><ol>
+<li>当客户端对象需要访问远程主机中的对象时，可以使用远程代理</li>
+<li>当需要用一个消耗资源较少的对象来代表一个消耗资源较多的对象时，可以使用虚拟代理<ol>
+<li>从而降低系统开销、缩短运行时间</li>
+</ol>
+</li>
+<li>为某一个需要频繁访问的操作结果提供一个临时存储空间，以供多个客户端共享访问时，可以使用缓冲代理</li>
+<li>需要控制对象的访问权限时，可以使用保护代理</li>
+<li>需要为一个对象的引用提供一些额外操作时，可以使用智能引用代理</li>
+</ol>
+</div><hr></div><div class="recent-post-item article-container"><a class="article-title" href="/2019/07/12/读书笔记/《JavaDesignPatterns》/14.享元模式/">《Java Design Patterns》第十二章 享元模式</a><time class="post-meta__date"><i class="fa fa-calendar" aria-hidden="true"></i> 2019-07-12</time><span class="article-meta"><span class="article-meta__separator">|</span><i class="fa fa-inbox article-meta__icon" aria-hidden="true"></i><a class="article-meta__categories" href="/categories/读书笔记/">读书笔记</a><i class="fa fa-angle-right" aria-hidden="true"></i><i class="fa fa-inbox article-meta__icon" aria-hidden="true"></i><a class="article-meta__categories" href="/categories/读书笔记/设计模式/">设计模式</a></span><span class="article-meta tags"><span class="article-meta__separator">|</span><i class="fa fa-tag article-meta__icon" aria-hidden="true"></i><a class="article-meta__tags" href="/tags/hide/">hide</a><span class="article-meta__link">-</span><i class="fa fa-tag article-meta__icon" aria-hidden="true"></i><a class="article-meta__tags" href="/tags/设计模式/">设计模式</a></span><div class="content"><h1 id="第十二章-享元模式"><a href="#第十二章-享元模式" class="headerlink" title="第十二章 享元模式"></a>第十二章 享元模式</h1><p>在Java开发或者面试过程中，经常会遇到一个面试题：</p>
+<pre><code class="java">String a = new String(&quot;abc&quot;); 
+String b = new String(&quot;abc&quot;);
+问：a == b ?</code></pre>
+<p>答案是肯定的，因为JVM在创建一个字符串后，会将其存储在 字符串池 中，下次new时会先去 字符串池 中查询是否已经存在。然后将引用地址返回。</p>
+<p>这就是一个典型的 <code>享元模式</code> 案例。</p>
+<h2 id="一、设计一个围棋软件"><a href="#一、设计一个围棋软件" class="headerlink" title="一、设计一个围棋软件"></a>一、设计一个围棋软件</h2><p>对于围棋软件而言，棋盘中包含大量的黑白色棋子，它们的形状、大小一致，但是出现的位置不同。如果将所有棋子都 new 一个对象存储在内存中，则该软件在运行时所需的内存空间会非常大。</p>
+<h3 id="解决方案"><a href="#解决方案" class="headerlink" title="解决方案"></a>解决方案</h3><p>享元模式通过共享技术实现相同或相似对象的重用，在逻辑上每一个出现的字符都有一个对象与之对应，然而在物理上它们却共享同一个享元对象。</p>
+<p>在享元模式中，存储这些共享实例对象的地方称为“享元池（Flyweight Pool）”</p>
+<h2 id="二、享元模式"><a href="#二、享元模式" class="headerlink" title="二、享元模式"></a>二、享元模式</h2><p>享元模式以共享方式，高效地支持大量细粒度对象的重用，享元对象能做到共享的关键是区分了 内部状态（Intrinsic State）和外部状态（Extrinsic State）。</p>
+<h3 id="内部状态"><a href="#内部状态" class="headerlink" title="内部状态"></a>内部状态</h3><p>内部状态是指存储在享元对象内部并且不会随环境变化而改变的状态，内部状态可以共享，但是不会被修改。</p>
+<h3 id="外部状态"><a href="#外部状态" class="headerlink" title="外部状态"></a>外部状态</h3><p>外部状态是随环境变化而变化的、不可以共享的状态。</p>
+<p>外部状态通常由客户端保存，并在享元对象被创建之后，需要使用的时候再传入享元对象内部。</p>
+<h3 id="享元模式的定义"><a href="#享元模式的定义" class="headerlink" title="享元模式的定义"></a>享元模式的定义</h3><p>享元模式（Flyweight Pattern）：运用共享技术有效地支持大量细粒度对象的复用。系统只使用少量的对象，而这些对象都很相似，状态变化很小，可以实现对象的多次复用。</p>
+<p>享元模式因其共享的是细粒度对象，因此又称为 <code>轻量级模式</code>，属于<code>对象结构型模式</code>。</p>
+<h3 id="享元模式中的几个角色"><a href="#享元模式中的几个角色" class="headerlink" title="享元模式中的几个角色"></a>享元模式中的几个角色</h3><ol>
+<li>Flyweight - 抽象享元类<ol>
+<li>接口或者抽象类，声明了具体享元类的公共方法</li>
+<li>这些方法可以向外界提供内部数据</li>
+<li>也可以有外界来设计外部数据</li>
+</ol>
+</li>
+<li>ConcreteFlyweight - 具体享元类<ol>
+<li>实现了抽象享元类，实例被称为享元对象</li>
+<li>具体享元类中为内部状态提供了存储空间</li>
+<li>通常使用单例模式来设计具体享元类</li>
+</ol>
+</li>
+<li>UnsharedConcreteFlyweight - 非共享具体享元类<ol>
+<li>不能被共享的子类可以设计为 非共享具体享元类</li>
+<li>在使用时可以直接通过实例化创建</li>
+</ol>
+</li>
+<li>FlyweightFactory - 享元工厂类<ol>
+<li>用于创建并管理享元对象，针对抽象享元类编程</li>
+<li>存储享元池，一般设计为“键值对”的集合</li>
+<li>可以结合工厂模式进行设计，返回唯一的实例</li>
+</ol>
+</li>
+</ol>
+<h2 id="三、享元模式的核心"><a href="#三、享元模式的核心" class="headerlink" title="三、享元模式的核心"></a>三、享元模式的核心</h2><h3 id="1-享元工厂类"><a href="#1-享元工厂类" class="headerlink" title="1. 享元工厂类"></a>1. 享元工厂类</h3><pre><code class="java">class FlyweightFactory {
+    // 定义享元池
+    private Map&lt;String,Flyweight&gt; flyweights = new HashMap();
+
+    public Flyweight getFlyweight(String key){
+        // 对象存在，则直接从享元池中取
+        if(flyweights.containsKey(key)){
+            return flyweights.get(key);
+        }
+        // 不存在，则创建一个享元对象，并放入享元池中返回
+        else {
+            Flyweight fy = new ConcreteFlyweight();
+            flyweights.put(key,fy);
+            return fy;
+        }
+    }
+}</code></pre>
+<h3 id="2-享元类"><a href="#2-享元类" class="headerlink" title="2. 享元类"></a>2. 享元类</h3><p>享元类将内部状态和外部状态分开处理，通常将内部状态作为享元类的成员变量，而外部状态通过注入的方式添加到享元模式中。</p>
+<pre><code class="java">class Flyweight {
+    // 内部状态，与享元对象的内部状态一致
+    private String intrinsicState;
+
+    public Flyweight(String intrinsicState){
+        this.intrinsicState = intrinsicState;
+    }
+
+    // 外部状态，在使用时由外部设置，不保存在享元对象中。
+    // 即使是同一个享元对象，每次使用时也可以传入不同的外部状态
+    public void operation(String extrinsicState){
+        .......
+    }
+}</code></pre>
+<h2 id="四、完整实现"><a href="#四、完整实现" class="headerlink" title="四、完整实现"></a>四、完整实现</h2><pre><code class="java">/**
+ * 享元模式
+ */
+// 围棋棋子类 - 抽象享元类
+abstract class IgoChessman {
+    // 抽象内部状态
+    public abstract String getColor();
+
+    // 在方法调用时，注入外部状态
+    public void display(Integer x, Integer y) {
+        System.out.println(&quot;棋子颜色:&quot; + getColor() + &quot;，当前棋子位置为：&quot; + x + &quot;,&quot; + y);
+    }
+}
+
+// 黑色棋子类 - 具体享元类
+class BlackIgoChessman extends IgoChessman {
+    @Override
+    public String getColor() {
+        return &quot;黑色&quot;;
+    }
+}
+
+// 白色棋子类 - 具体享元类
+class WhiteIgoChessman extends IgoChessman {
+    @Override
+    public String getColor() {
+        return &quot;白色&quot;;
+    }
+}
+
+// 围棋棋子工厂类 - 享元工厂类，使用单例模式进行设计
+class IgoChessmanFactory {
+    private static IgoChessmanFactory instance = new IgoChessmanFactory();
+    private static Hashtable&lt;String, IgoChessman&gt; ht; // 使用 Hashtable 来存储享元对象，充当享元池
+
+    private IgoChessmanFactory() {
+        ht = new Hashtable&lt;&gt;();
+        IgoChessman black = new BlackIgoChessman();
+        IgoChessman white = new WhiteIgoChessman();
+        ht.put(&quot;b&quot;, black);
+        ht.put(&quot;w&quot;, white);
+    }
+
+    // 返回享元工厂类的唯一实例
+    public static IgoChessmanFactory getInstance() {
+        return instance;
+    }
+
+    // 通过key来获取存储在 Hashtable 中的享元对象
+    public IgoChessman getIgoChessman(String color) {
+        return ht.get(color);
+    }
+}
+
+public class FlyweightPattern {
+    public static void main(String[] args) {
+        // 获取享元工厂对象
+        IgoChessmanFactory factory = IgoChessmanFactory.getInstance();
+
+        // 通过享元工厂获取棋子
+        IgoChessman black1 = factory.getIgoChessman(&quot;b&quot;);
+        IgoChessman black2 = factory.getIgoChessman(&quot;b&quot;);
+        IgoChessman black3 = factory.getIgoChessman(&quot;b&quot;);
+
+        IgoChessman white1 = factory.getIgoChessman(&quot;w&quot;);
+        IgoChessman white2 = factory.getIgoChessman(&quot;w&quot;);
+
+        black1.display(1,2);
+        black2.display(2,3);
+        black3.display(3,4);
+        white1.display(4,5);
+        white2.display(2,2);
+    }
+}</code></pre>
+<h2 id="五、单纯享元模式与复合享元模式"><a href="#五、单纯享元模式与复合享元模式" class="headerlink" title="五、单纯享元模式与复合享元模式"></a>五、单纯享元模式与复合享元模式</h2><h3 id="5-1-单纯享元模式"><a href="#5-1-单纯享元模式" class="headerlink" title="5.1 单纯享元模式"></a>5.1 单纯享元模式</h3><p>单纯享元模式中，所有具体享元类都是可以共享的，不存在非共享具体享元类。</p>
+<h3 id="5-2-复合享元模式"><a href="#5-2-复合享元模式" class="headerlink" title="5.2 复合享元模式"></a>5.2 复合享元模式</h3><p>将一些单纯享元对象使用组合模式进行组合，形成复合享元对象。复合享元对象本身不能共享，但是可以将组合后的享元对象分解为单纯享元对象，进行共享。</p>
+<h2 id="六、补充"><a href="#六、补充" class="headerlink" title="六、补充"></a>六、补充</h2><p>享元模式与其他模式的联用：</p>
+<ol>
+<li>享元工厂类通常提供一个 <code>静态的工厂方法</code> 用于返回享元对象，使用 <code>简单工厂模式</code> 来生成享元对象</li>
+<li>享元工厂通常是唯一的，可以使用 <code>单例模式</code> 进行设计</li>
+<li>可以使用 <code>组合模式</code> 形成复合享元模式，统一对多个享元对象设置外部状态</li>
+</ol>
+<h2 id="七、总结"><a href="#七、总结" class="headerlink" title="七、总结"></a>七、总结</h2><p>“节约内存，提高性能”</p>
+<h3 id="优点"><a href="#优点" class="headerlink" title="优点"></a>优点</h3><ol>
+<li>极大的减少内存中对象的数量，使得相同或相似对象在内存中只保存一份，从而节约系统资源，提高系统性能</li>
+<li>享元模式的外部状态相对独立，且不影响其内部状态，从而使得享元对象可以在不同环境中被共享</li>
+</ol>
+<h3 id="缺点"><a href="#缺点" class="headerlink" title="缺点"></a>缺点</h3><ol>
+<li>享元模式需要分离 内部状态和外部状态，使程序的逻辑更复杂</li>
+<li>为了使对象可以共享，享元模式需要将享元对象的部分状态外部化，而读取外部状态将使得运行时间变长</li>
+</ol>
+<h3 id="适用场景"><a href="#适用场景" class="headerlink" title="适用场景"></a>适用场景</h3><ol>
+<li>系统中有大量相同或相似的对象，造成大量的内存浪费</li>
+<li>对象的大部分状态都可以外部化，可以将这些外部状态传入对象中</li>
+<li>享元模式在运行时需要维护一个享元池，势必会使内存一直占用，因此享元池中的享元对象需要多次重复使用时才值得</li>
+</ol>
+<h2 id="八、练习"><a href="#八、练习" class="headerlink" title="八、练习"></a>八、练习</h2><blockquote>
+<p>Sunny软件公司欲开发一个多功能文档编辑器，在文本文档中可以插入图片、动画、视频等多媒体资料，为了节约系统资源，相同的图片、动画和视频在同一个文档中只需保存一份，但是可以多次重复出现，而且它们每次出现时位置和大小均可不同。试使用享元模式设计该文档编辑器。</p>
+<pre><code class="java">// 抽象享元类 - 声明公共方法，向外界提供内部数据，由外界提供外部数据
+abstract class Flyweight {
+    public abstract String type();
+
+    public void insert(String location, String size) {
+        System.out.println(&quot;插入类型：&quot; + type() + &quot;，位置：&quot; + location + &quot;，大小：&quot; + size);
+    }
+}
+
+// 具体享元类 - 实现抽象方法，内部数据的状态与对象状态一致，内部状态不能被修改
+class Picture extends Flyweight {
+    @Override
+    public String type() {
+        return &quot;图片类型&quot;;
+    }
+}
+
+class Cartoon extends Flyweight {
+    @Override
+    public String type() {
+        return &quot;动画类型&quot;;
+    }
+}
+
+class Video extends Flyweight {
+    @Override
+    public String type() {
+        return &quot;视频类型&quot;;
+    }
+}
+
+class FlyweightFactory {
+
+    // 使用单例模式，维持单一的工厂对象
+    private static FlyweightFactory factory = new FlyweightFactory();
+
+    private Map&lt;String, Flyweight&gt; map = new HashMap&lt;&gt;();
+
+    private FlyweightFactory() {
+        Flyweight picture = new Picture();
+        Flyweight cartoon = new Cartoon();
+        Flyweight video = new Video();
+        map.put(&quot;picture&quot;, picture);
+        map.put(&quot;cartoon&quot;, cartoon);
+        map.put(&quot;video&quot;, video);
+    }
+
+    // 静态工厂方法 - 返回工厂对象
+    public static FlyweightFactory getInstance(){
+        return factory;
+    }
+
+    public Flyweight getFlyweight(String key) {
+        if(map.containsKey(key)){
+            return map.get(key);
+        }
+        throw new RuntimeException(&quot;flyweight cann&#39;t support&quot;);
+    }
+}
+
+public class FlyweightPattern {
+    public static void main(String[] args) {
+        final FlyweightFactory factory = FlyweightFactory.getInstance();
+        Flyweight picture1 = factory.getFlyweight(&quot;picture&quot;);
+        Flyweight picture2 = factory.getFlyweight(&quot;picture&quot;);
+        Flyweight cartoon1 = factory.getFlyweight(&quot;cartoon&quot;);
+        Flyweight cartoon2 = factory.getFlyweight(&quot;cartoon&quot;);
+        Flyweight video = factory.getFlyweight(&quot;video&quot;);
+
+        picture1.insert(&quot;/Pic 下&quot;,&quot;273KB&quot;);
+        picture2.insert(&quot;/Pic 下&quot;,&quot;1.23MB&quot;);
+        cartoon1.insert(&quot;/cartoon 下&quot;,&quot;80MB&quot;);
+        cartoon2.insert(&quot;/cartoon 下&quot;,&quot;81MB&quot;);
+        video.insert(&quot;/video 下&quot;,&quot;1.3GB&quot;);
+    }
+}</code></pre>
+</blockquote>
+<p><img src="https://i.loli.net/2019/07/12/5d28459ba725023617.png" alt="运行结果"></p>
+</div><hr></div><div class="recent-post-item article-container"><a class="article-title" href="/2019/07/11/读书笔记/《JavaDesignPatterns》/13.外观模式/">《Java Design Patterns》第十一章 外观模式</a><time class="post-meta__date"><i class="fa fa-calendar" aria-hidden="true"></i> 2019-07-11</time><span class="article-meta"><span class="article-meta__separator">|</span><i class="fa fa-inbox article-meta__icon" aria-hidden="true"></i><a class="article-meta__categories" href="/categories/读书笔记/">读书笔记</a><i class="fa fa-angle-right" aria-hidden="true"></i><i class="fa fa-inbox article-meta__icon" aria-hidden="true"></i><a class="article-meta__categories" href="/categories/读书笔记/设计模式/">设计模式</a></span><span class="article-meta tags"><span class="article-meta__separator">|</span><i class="fa fa-tag article-meta__icon" aria-hidden="true"></i><a class="article-meta__tags" href="/tags/hide/">hide</a><span class="article-meta__link">-</span><i class="fa fa-tag article-meta__icon" aria-hidden="true"></i><a class="article-meta__tags" href="/tags/设计模式/">设计模式</a></span><div class="content"><h1 id="第十一章-外观模式"><a href="#第十一章-外观模式" class="headerlink" title="第十一章 外观模式"></a>第十一章 外观模式</h1><h2 id="一、外观模式"><a href="#一、外观模式" class="headerlink" title="一、外观模式"></a>一、外观模式</h2><p>在日常开发中，注册一个用户需要进行如下操作：验证手机验证码、生成用户类、存储至数据库、初始化用户积分等等操作。但是 客户端只需要调用一个 UserService.register() 即可，具体的其他对象的操作都交给 UserService 的实现来完成。</p>
+<p>还有如 MVC 模式中，Controller 层中通过调用 service 来解耦 Controller 层与 Dao 层，隔离各个层次，实现层次化结构。</p>
+<p>于 controller 而言，service 就是外观类，由service 来处理多个dao的交互。</p>
+<h3 id="1-1-定义"><a href="#1-1-定义" class="headerlink" title="1.1 定义"></a>1.1 定义</h3><p>外观模式，又称为门面模式，是一种使用频率非常高的结构型设计模式，通过引入一个外观对象来简化客户端与子系统之间的交互，为复杂的子系统调用提供一个统一的入口，降低子系统与客户端的耦合度，且客户端调用非常方便。</p>
+<p>外观模式是迪米特法则的一种具体实现，通过引入一个新的外观角色可以降低原油系统的复杂度，同时降低客户类与子系统的耦合。</p>
+<h3 id="1-2-外观模式"><a href="#1-2-外观模式" class="headerlink" title="1.2 外观模式"></a>1.2 外观模式</h3><p><img src="https://i.loli.net/2019/07/11/5d270855d1d7975835.png" alt="外观模式示意图"></p>
+<p>在日常生活中，自己泡茶和去茶馆喝茶的区别类似于上图显示的这样。自己泡需要与 热水、差距、茶叶 进行交互（系统耦合度十分的高），而去茶馆喝茶只需要与服务员（Facade）进行交互即可。</p>
+<h3 id="1-3-外观模式中的几个角色："><a href="#1-3-外观模式中的几个角色：" class="headerlink" title="1.3 外观模式中的几个角色："></a>1.3 外观模式中的几个角色：</h3><ol>
+<li>Facade - 外观角色<ol>
+<li>由客户端调用其中的方法，来访问相关子系统的功能</li>
+<li>由外观角色将客户端的请求委派到具体子系统中</li>
+</ol>
+</li>
+<li>SubSystem - 子系统角色<ol>
+<li>系统中可以存在一个或多个子系统角色</li>
+<li>每个可以被客户端调用，也可以被外观角色调用，用于处理请求</li>
+<li>子系统并不知道外观的存在，与它而言，外观角色仅仅是另一个客户端</li>
+</ol>
+</li>
+</ol>
+<h2 id="二、完整实现"><a href="#二、完整实现" class="headerlink" title="二、完整实现"></a>二、完整实现</h2><pre><code class="java">/**
+ * 外观模式
+ */
+class SubSystemA {
+    public void sayHello() {
+        System.out.println(&quot;大家好，我是系统A&quot;);
+    }
+}
+
+class SubSystemB {
+    public void byebye() {
+        System.out.println(&quot;再见，我是系统B&quot;);
+    }
+}
+
+class SubSystemC {
+    public void o() {
+        System.out.println(&quot;i don&#39;t wanna see you anymore.&quot;);
+    }
+}
+
+class Facade {
+    private SubSystemA a = new SubSystemA();
+    private SubSystemB b = new SubSystemB();
+    private SubSystemC c = new SubSystemC();
+
+    public void bb(){
+        a.sayHello();
+        c.o();
+        b.byebye();
+    }
+}
+
+public class FacadePattern {
+    public static void main(String[] args) {
+        // 通过外观类 Facade 减少了客户端与各个子系统的直接交互，降低耦合度
+        final Facade facade = new Facade();
+        facade.bb();
+    }
+}</code></pre>
+<h2 id="三、抽象外观类"><a href="#三、抽象外观类" class="headerlink" title="三、抽象外观类"></a>三、抽象外观类</h2><p>在标准外观模式中，如果需要增加、删除或更换与外观类交互的子系统类，必须修改外观类或客户端的代码。这将违背开闭原则。</p>
+<p>可以引入抽象外观类来对系统进行改进，客户端针对抽象外观类进行编程。</p>
+<h2 id="四、总结"><a href="#四、总结" class="headerlink" title="四、总结"></a>四、总结</h2><h3 id="优点"><a href="#优点" class="headerlink" title="优点"></a>优点</h3><ol>
+<li>对客户端屏蔽子系统组件，减少客户端所需处理的对象数目，使子系统的使用更加容易</li>
+<li>客户端与子系统间关联的对象会减少</li>
+<li>实现了子系统和客户端之间的松耦合，子系统的变化只需要调整外观类即可</li>
+<li>子系统的修改不会影响其他子系统，且子系统内部修改不会影响到外观类</li>
+</ol>
+<h3 id="缺点"><a href="#缺点" class="headerlink" title="缺点"></a>缺点</h3><ol>
+<li>由外观类来调用子系统类，减少了客户端直接调用时的灵活性和可变性</li>
+<li>如果设计不当，增加子系统时可能会修改外观类，违背了开闭原则</li>
+</ol>
+<h3 id="适用场景"><a href="#适用场景" class="headerlink" title="适用场景"></a>适用场景</h3><ol>
+<li>当需要为访问一系列复杂的子系统对象提供简单入口时，可以使用外观模式</li>
+<li>外观类可以将子系统与客户端解耦，从而提高子系统的独立性和可移植性</li>
+<li>在层次化结构中，可以使用外观模式定义系统中的每一层入口。层与层之间不直接产生联系，而通过外观类建立联系，降低层之间的耦合度</li>
+</ol>
+</div><hr></div><div class="recent-post-item article-container"><a class="article-title" href="/2019/07/11/读书笔记/《JavaDesignPatterns》/12.装饰模式/">《Java Design Patterns》第十章 装饰模式 - 扩展系统功能</a><time class="post-meta__date"><i class="fa fa-calendar" aria-hidden="true"></i> 2019-07-11</time><span class="article-meta"><span class="article-meta__separator">|</span><i class="fa fa-inbox article-meta__icon" aria-hidden="true"></i><a class="article-meta__categories" href="/categories/读书笔记/">读书笔记</a><i class="fa fa-angle-right" aria-hidden="true"></i><i class="fa fa-inbox article-meta__icon" aria-hidden="true"></i><a class="article-meta__categories" href="/categories/读书笔记/设计模式/">设计模式</a></span><span class="article-meta tags"><span class="article-meta__separator">|</span><i class="fa fa-tag article-meta__icon" aria-hidden="true"></i><a class="article-meta__tags" href="/tags/hide/">hide</a><span class="article-meta__link">-</span><i class="fa fa-tag article-meta__icon" aria-hidden="true"></i><a class="article-meta__tags" href="/tags/设计模式/">设计模式</a></span><div class="content"><h1 id="第十章-装饰模式-扩展系统功能"><a href="#第十章-装饰模式-扩展系统功能" class="headerlink" title="第十章 装饰模式 - 扩展系统功能"></a>第十章 装饰模式 - 扩展系统功能</h1><p>如果你买了一个毛坯房，那么剩下的就是装修。装修并没有改变原有房屋用于居住的本质，但是增加了实用性、美观性等特征。</p>
+<p>在软件设计中，装饰模式就是一种类似装修的技术，能对已有对象的功能进行扩展，以获得更符合用户需求的对象。</p>
+<h2 id="一、设计一款图形界面库"><a href="#一、设计一款图形界面库" class="headerlink" title="一、设计一款图形界面库"></a>一、设计一款图形界面库</h2><p>设计一款图形界面构件库，该库提供了大量基础构件，如窗体、文本框、列表框等。由于在使用时，需要定制一些特效，如带滚动条的窗体、带黑色边框的文本框、即带滚动条又带黑色边框的列表框等。即对原有的基础构件进行扩展，以增强其功能。</p>
+<h3 id="1-1-传统继承方式实现"><a href="#1-1-传统继承方式实现" class="headerlink" title="1.1 传统继承方式实现"></a>1.1 传统继承方式实现</h3><p><img src="https://i.loli.net/2019/07/11/5d269d7e4fdc421682.png" alt="传统继承的方式实现"></p>
+<h3 id="1-2-问题与缺陷"><a href="#1-2-问题与缺陷" class="headerlink" title="1.2 问题与缺陷"></a>1.2 问题与缺陷</h3><p>按照 1.1 中的实现方式，虽然可以满足系统的设计需求。但是，存在的问题也十分严重：</p>
+<ol>
+<li>系统扩展十分麻烦。当我们需要 “带滚动条和黑色边框的窗体类” 时，需要同时继承两种类型的窗体类。这在 <code>不支持多重继承</code> 的语言中是无法使用的</li>
+<li>代码重复。从设计图中可以看出，不只是 窗体类 需要滚动和边框，文本框类和列表框类同样需要。而设计滚动条与黑色边框的过程基本相同，代码重复。不利于对系统进行修改和维护。</li>
+<li>系统庞大，类的数目非常多。如果增加新的控件或者新的扩展功能，系统都需要增加大量的具体类，这将导致系统变得非常庞大。<ol>
+<li>如增加一个透明边框（基本控件）的功能，则需要对窗体、文本框、列表框各加一个实现类。</li>
+<li>如果需要组合各个功能的话，3种扩展方式则存在7种组合关系。</li>
+</ol>
+</li>
+</ol>
+<h3 id="1-3-解决方案"><a href="#1-3-解决方案" class="headerlink" title="1.3 解决方案"></a>1.3 解决方案</h3><p>直接继承的设计方法的问题在于 类的扩展十分不便，而且会导致类数目的急剧增加。</p>
+<p>其根本原因在于复用机制的不合理：上文采用了继承复用，如“带滚动的窗体”通过继承的方式来复用“窗体类”的“显示功能”，又增加了特定的方法。在复用父类的方法后再增加新的方法来扩展功能。</p>
+<p>根据“合成复用原则”，在实现功能复用时，要多用关联，少用继承。如将 “滚动功能” 抽离，封装在单独的类中，在这个类中定义一个 Component 类型的对象，通过调用 Comonent 的 “显示方法”，在通过调用“滚动功能”的方法来实现功能的扩展。</p>
+<p>根据“里氏替换原则”，只需要在程序运行时，向独立的类中注入具体的 Component 子类对象即可实现功能扩展。</p>
+<p>这个独立的类一般称为“装饰器 Decorator” 或装饰类。</p>
+<h2 id="二、装饰模式"><a href="#二、装饰模式" class="headerlink" title="二、装饰模式"></a>二、装饰模式</h2><p>装饰模式可以在不改变一个对象本身功能的基础上给对象增加额外的新行为。</p>
+<p>装饰模式是一种用于替代继承的技术，它通过一种无须定义子类的方式来给对象动态增加职责，使用对象之间的关联关系取代类之间的继承关系。通过装饰类调用待装饰的原有类的方法，还可以增加新的方法，以扩充原有类的功能。</p>
+<h3 id="2-1-定义"><a href="#2-1-定义" class="headerlink" title="2.1 定义"></a>2.1 定义</h3><p>装饰模式：动态地给一个对象增加一些额外的职责，就增加对象功能来说，装饰模式比生成子类实现更加灵活。装饰模式是一种对象结构型模式。</p>
+<p><img src="https://i.loli.net/2019/07/11/5d27016a49a1297684.png" alt="装饰模式"></p>
+<h3 id="2-2-装饰模式中的几个角色"><a href="#2-2-装饰模式中的几个角色" class="headerlink" title="2.2 装饰模式中的几个角色"></a>2.2 装饰模式中的几个角色</h3><ol>
+<li>Component - 抽象构件<ol>
+<li>具体构件和抽象装饰类的共同父类，声明了在具体构件中实现的业务方法</li>
+<li>引入抽象构件，可以使客户端以一致的方式处理未被装饰的对象，以及装饰之后的对象</li>
+<li>实现客户端的透明操作</li>
+</ol>
+</li>
+<li>ConcreteComponent - 具体构件<ol>
+<li>抽象构件的子类，用于定义具体的构件对象</li>
+<li>装饰器可以给它增加额外的职责（方法）</li>
+</ol>
+</li>
+<li>Decorator - 抽象装饰类<ol>
+<li>抽象构件的子类，用于给具体构件增加职责，但是具体职责在其子类中实现</li>
+<li>维护一个指向抽象构件对象的引用，通过该引用可以调用装饰之前构件对象的方法</li>
+<li>通过子类扩展该方法，以达到装饰的目的</li>
+</ol>
+</li>
+<li>ConcreteDecorator - 具体装饰类<ol>
+<li>抽象装饰类的子类，负责向构件添加新的职责</li>
+<li>每个具体装饰类都定义了一些新的行为，可以调用抽象装饰类中定义的方法，并增加新的方法用以扩充对象的行为</li>
+</ol>
+</li>
+</ol>
+<h3 id="2-3-装饰模式的核心-抽象装饰类-代码"><a href="#2-3-装饰模式的核心-抽象装饰类-代码" class="headerlink" title="2.3 装饰模式的核心 - 抽象装饰类 - 代码"></a>2.3 装饰模式的核心 - 抽象装饰类 - 代码</h3><pre><code class="java">class Decorator implements Component {
+    private Component component; // 维护一个对抽象构件对象的引用
+    public Decorator(Component component) { // 注入一个抽象构件类型的对象
+        this.component = component;
+    }
+
+    public void operation(){ // 调用原有业务方法
+        component.operation();
+    }
+}</code></pre>
+<p>抽象装饰类可以做到对装饰类进行再装饰，如对一张图表增加一个相框，还能继续在小相框外套大相框。因为它们都是 Component 的子类。</p>
+<p>抽象装饰类只是调用原有的 component 对象的 operation() 方法，它并没有真正的实施装饰，而是提供一个统一的接口，将具体装饰过程交给子类完成。</p>
+<pre><code class="java">class ConcreteDecorator extends Decorator {
+    public ConcreteDecorator(Component component){
+        super(component);
+    }
+
+    public void operation(){
+        super.operation();  // 调用原有业务方法
+        addedBehavior();   // 调用新增业务方法
+    }
+
+    // 新增的业务方法
+    public void addedBehavior(){
+        // ...
+    }
+}</code></pre>
+<blockquote>
+<p>装饰模式中是否存在独立变化的两个维度？ 试比较装饰模式和桥接模式的相同之处和不同之处？</p>
+</blockquote>
+<h2 id="三、完整实现"><a href="#三、完整实现" class="headerlink" title="三、完整实现"></a>三、完整实现</h2><pre><code class="java">/**
+ * 装饰模式
+ */
+// 抽象界面构件类 - 抽象构件类
+abstract class Component {
+    public abstract void display();
+}
+
+// 窗体类 - 具体构件类
+class Window extends Component {
+    @Override
+    public void display() {
+        System.out.println(&quot;显示窗体!&quot;);
+    }
+}
+
+// 文本框类 - 具体构件类
+class TextBox extends Component {
+    @Override
+    public void display() {
+        System.out.println(&quot;显示文本框!&quot;);
+    }
+}
+
+// 列表框类 - 具体构件类
+class ListBox extends Component {
+    @Override
+    public void display() {
+        System.out.println(&quot;显示列表框!&quot;);
+    }
+}
+
+// 构件装饰类 - 抽象装饰类
+class ComponentDecorator extends Component {
+    // 维持对抽象构件类型对象的引用
+    private Component component;
+
+    // 注入抽象构件类型的对象
+    public ComponentDecorator(Component component) {
+        this.component = component;
+    }
+
+    @Override
+    public void display() {
+        component.display();
+    }
+}
+
+// 滚动条装饰类 - 具体装饰类
+class ScrollBarDecorator extends ComponentDecorator {
+
+    public ScrollBarDecorator(Component component) {
+        super(component);
+    }
+
+    @Override
+    public void display() {
+        this.setScrollBar();
+        super.display();
+    }
+
+    public void setScrollBar() {
+        System.out.println(&quot;为构件增加滚动条!&quot;);
+    }
+}
+
+// 黑色边框装饰类 - 具体装饰类
+class BlackBorderDecorator extends ComponentDecorator {
+    public BlackBorderDecorator(Component component) {
+        super(component);
+    }
+
+    @Override
+    public void display() {
+        setBlackBorder();
+        super.display();
+    }
+
+    public void setBlackBorder() {
+        System.out.println(&quot;为构件增加黑色边框&quot;);
+    }
+}
+
+public class DecoratorPattern {
+
+    public static void main(String[] args) {
+        Component window = new Window();
+        Component scrollBarWindow = new ScrollBarDecorator(window);
+        scrollBarWindow.display();
+    }
+}</code></pre>
+<h2 id="四、透明装饰模式和半透明装饰模式"><a href="#四、透明装饰模式和半透明装饰模式" class="headerlink" title="四、透明装饰模式和半透明装饰模式"></a>四、透明装饰模式和半透明装饰模式</h2><p>如果我们需要在 “黑色边框装饰类” 中增加一个方法用于设置边框宽度。则修改后的类如下：</p>
+<pre><code class="java">// 黑色边框装饰类 - 具体装饰类
+class BlackBorderDecorator extends ComponentDecorator {
+    public BlackBorderDecorator(Component component) {
+        super(component);
+    }
+
+    @Override
+    public void display() {
+        setBlackBorder();
+        super.display();
+    }
+
+    public void setBlackBorder() {
+        System.out.println(&quot;为构件增加黑色边框&quot;);
+    }
+
+    public void setBorderWidth(Integer width){
+        // ...
+    }
+}</code></pre>
+<p>如果我们继续使用 <code>抽象构件类</code> ，则客户端无法调用新增的业务方法 <code>setBorderWidth(Integer width)</code>。因为在抽象构建类中，没有对该方法的声明。</p>
+<p>在实际使用中，必须使用具体装饰类对象来调用该方法，这种装饰模式就是 <code>半透明(Semi-transparent)装饰模式</code>，而标准的装饰模式是透明装饰模式。</p>
+<h3 id="透明装饰模式与半透明装饰模式的区别"><a href="#透明装饰模式与半透明装饰模式的区别" class="headerlink" title="透明装饰模式与半透明装饰模式的区别"></a>透明装饰模式与半透明装饰模式的区别</h3><p>透明装饰模式要求客户端完全针对抽象编程，所有的装饰类必须声明为抽象构件类型。</p>
+<ol>
+<li>优点：客户端无需关心具体构件类型，可以让客户端透明地使用装饰之前的对象和装饰之后的对象，无须关系它们的区别</li>
+<li>优点：能够对装饰过的对象进行多次装饰，得到更复杂、功能更强大的对象。</li>
+</ol>
+<p>而半透明装饰模式的设计难度较大，对于新增特有的方法，必须使用具体装饰类型来定义装饰后的对象。</p>
+<ol>
+<li>优点：半透明装饰模式可以给系统带来更多灵活性，设计相对简单，使用也比较方便</li>
+<li>缺点：不能对使用同一对象的多次装饰，且客户端需要区别对待装饰之前和装饰之后的对象</li>
+</ol>
+<h2 id="五、总结"><a href="#五、总结" class="headerlink" title="五、总结"></a>五、总结</h2><h3 id="优点"><a href="#优点" class="headerlink" title="优点"></a>优点</h3><ol>
+<li>对于扩展对象的功能，装饰模式比继承更加灵活，且类的个数不会急剧增加</li>
+<li>能够动态扩展对象功能，比如通过配置文件决定运行时的具体装饰类</li>
+<li>能够对一个对象进行多次装饰，通过使用不同的具体装饰类来获得不同行为的组合</li>
+<li>具体构件类和具体装饰类可以独立变化，符合“开闭原则”</li>
+</ol>
+<h3 id="缺点"><a href="#缺点" class="headerlink" title="缺点"></a>缺点</h3><ol>
+<li>装饰模式在使用时，会产生许多的对象。<ol>
+<li>例如通过对一个对象的多次包装，会产生多个具体包装类</li>
+<li>大量对象势必会占用更多的系统资源，一定程度上影响程序的性能</li>
+</ol>
+</li>
+<li>装饰模式虽然比继承更加灵活，但也意味着更加容易出错，排查问题更加困难。<ol>
+<li>对于多次装饰后的对象，调试问题可能需要逐级排查，较为繁琐</li>
+</ol>
+</li>
+</ol>
+<h3 id="适用场景"><a href="#适用场景" class="headerlink" title="适用场景"></a>适用场景</h3><ol>
+<li>在不影响其他对象的情况下，以动态、透明的方式给单个对象添加职责</li>
+<li>不能采用继承方式对系统扩展时。<ol>
+<li>系统中存在大量独立的扩展，增加扩展时会导致子类爆炸性增长</li>
+<li>类被定义为不能继承（如final修饰的类）</li>
+</ol>
+</li>
+</ol>
+<h2 id="六、练习"><a href="#六、练习" class="headerlink" title="六、练习"></a>六、练习</h2><blockquote>
+<p>Sunny软件公司欲开发了一个数据加密模块，可以对字符串进行加密。最简单的加密算法通过对字母进行移位来实现，同时还提供了稍复杂的逆向输出加密，还提供了更为高级的求模加密。用户先使用最简单的加密算法对字符串进行加密，如果觉得还不够可以对加密之后的结果使用其他加密算法进行二次加密，当然也可以进行第三次加密。试使用装饰模式设计该多重加密系统。</p>
+</blockquote>
+</div><hr></div><div class="recent-post-item article-container"><a class="article-title" href="/2019/07/09/读书笔记/《JavaDesignPatterns》/11.组合模式/">《Java Design Patterns》第九章 组合模式 - 树形结构的处理</a><time class="post-meta__date"><i class="fa fa-calendar" aria-hidden="true"></i> 2019-07-09</time><span class="article-meta"><span class="article-meta__separator">|</span><i class="fa fa-inbox article-meta__icon" aria-hidden="true"></i><a class="article-meta__categories" href="/categories/读书笔记/">读书笔记</a><i class="fa fa-angle-right" aria-hidden="true"></i><i class="fa fa-inbox article-meta__icon" aria-hidden="true"></i><a class="article-meta__categories" href="/categories/读书笔记/设计模式/">设计模式</a></span><span class="article-meta tags"><span class="article-meta__separator">|</span><i class="fa fa-tag article-meta__icon" aria-hidden="true"></i><a class="article-meta__tags" href="/tags/hide/">hide</a><span class="article-meta__link">-</span><i class="fa fa-tag article-meta__icon" aria-hidden="true"></i><a class="article-meta__tags" href="/tags/设计模式/">设计模式</a></span><div class="content"><h1 id="第九章-组合模式-树形结构的处理"><a href="#第九章-组合模式-树形结构的处理" class="headerlink" title="第九章 组合模式 - 树形结构的处理"></a>第九章 组合模式 - 树形结构的处理</h1><h2 id="一、杀毒软件的框架结构"><a href="#一、杀毒软件的框架结构" class="headerlink" title="一、杀毒软件的框架结构"></a>一、杀毒软件的框架结构</h2><h3 id="1-介绍"><a href="#1-介绍" class="headerlink" title="1. 介绍"></a>1. 介绍</h3><p>开发一个杀毒软件，既可以对某个文件夹（Folder）杀毒，也可以对指定文件（File）进行杀毒。</p>
+<h3 id="2-面向对象的解法"><a href="#2-面向对象的解法" class="headerlink" title="2. 面向对象的解法"></a>2. 面向对象的解法</h3><p>按照面向对象的设计思路，应该在 Folder 中包含图像、文本等文件类型的集合，以及文件夹的集合。</p>
+<pre><code class="java">class ImageFile {
+    // image property
+}
+
+class TextFile {
+    // text property
+}
+
+class Folder {
+    List&lt;ImageFile&gt; images = new ArrayList&lt;&gt;();
+    List&lt;TextFile&gt; texts = new ArrayList&lt;&gt;();
+    List&lt;Folder&gt; folders = new ArrayList&lt;&gt;();
+
+    void addFolder();
+    void addImage();
+    void addText();
+
+    // ... remove/find etc.
+}</code></pre>
+<h3 id="3-存在的问题"><a href="#3-存在的问题" class="headerlink" title="3. 存在的问题"></a>3. 存在的问题</h3><ol>
+<li>Folder 的设计和实现十分复杂，需要定义多个集合存储不同类型的成员，且需要针对不同成员提供各自的 增删改查方法，存在大量冗余代码，系统维护困难</li>
+<li>由于系统没有抽象层，客户端必须有区别地对待 文件夹和各类型的文件，无法对其进行统一处理</li>
+<li>系统灵活性和可扩展性差，增加新类型的叶子和容器都需要对原有代码进行修改</li>
+</ol>
+<h3 id="4-解决思路"><a href="#4-解决思路" class="headerlink" title="4. 解决思路"></a>4. 解决思路</h3><p>整个架构中包含两类不同的元素，文件夹和文件。文件夹中可以包含文件或文件夹、而文件不能再包含子文件或子文件夹。因此，我们可以将文件夹成为 容器（Container），不同类型的文件是其成员，也称为 叶子（Leaf）。</p>
+<h2 id="二、组合模式"><a href="#二、组合模式" class="headerlink" title="二、组合模式"></a>二、组合模式</h2><h3 id="1-定义"><a href="#1-定义" class="headerlink" title="1. 定义"></a>1. 定义</h3><p>对于树形结构，当容器对象（如文件夹）的某一个方法被调用时，将遍历整个属性结构，其中使用了递归调用的机制来对整个结构进行处理。由于容器对象和叶子对象在功能上的区别，在使用时必须有区别地对待。而大多数情况下我们希望一致地处理它们，因为对于这些对象的使用具有一致性。</p>
+<p>组合模式：组合多个对象形成树形结构，以表示具有“整体 - 部分” 关系的层次结构。组合模式对单个对象（叶子对象）和组合对象（容器对象）的使用具有一致性，组合模式又可以成为“整体 - 部分”模式，属于对象结构性模式。</p>
+<h3 id="2-组合模式中的几个角色"><a href="#2-组合模式中的几个角色" class="headerlink" title="2. 组合模式中的几个角色"></a>2. 组合模式中的几个角色</h3><ol>
+<li>Component - 抽象构件<ol>
+<li>接口或抽象类，为 Leaf 和 Composite 对象声明接口，在该角色中可以包含所有子类共有行为的声明和实现</li>
+</ol>
+</li>
+<li>Leaf - 叶子构件<ol>
+<li>叶子节点，没有子节点，实现了在抽象构件中定义的行为</li>
+<li>对于访问及管理子构件的方法，可以通过异常等方式进行处理</li>
+</ol>
+</li>
+<li>Composite - 容器构件<ol>
+<li>容器节点对象，包含子节点</li>
+<li>子节点可以是叶子节点，也可以是容器节点</li>
+<li>提供一个集合用于存储子节点，实现了抽象构件中定义的行为，包含那些访问及管理子节点的方法</li>
+<li>在业务方法中可以递归调用子节点的业务方法</li>
+</ol>
+</li>
+</ol>
+<h2 id="三、-完整解决方案"><a href="#三、-完整解决方案" class="headerlink" title="三、 完整解决方案"></a>三、 完整解决方案</h2><pre><code class="java">// 组合模式
+abstract class AbstractFile {
+    public abstract void add(AbstractFile file);
+
+    public abstract void remove(AbstractFile file);
+
+    public abstract AbstractFile getChild(int i);
+
+    public abstract void killVirus();
+}
+
+class ImageFile extends AbstractFile {
+    private String name;
+
+    public ImageFile(String name) {
+        this.name = name;
+    }
+
+    @Override
+    public void add(AbstractFile file) {
+        System.out.println(&quot;不支持该方法！&quot;);
+    }
+
+    @Override
+    public void remove(AbstractFile file) {
+        System.out.println(&quot;不支持该方法！&quot;);
+    }
+
+    @Override
+    public AbstractFile getChild(int i) {
+        System.out.println(&quot;不支持该方法！&quot;);
+        return null;
+    }
+
+    @Override
+    public void killVirus() {
+        System.out.println(&quot;对图像进行[&quot; + name + &quot;]杀毒&quot;);
+    }
+}
+
+class TextFile extends AbstractFile {
+    private String name;
+
+    public TextFile(String name) {
+        this.name = name;
+    }
+
+    @Override
+    public void add(AbstractFile file) {
+        System.out.println(&quot;不支持该方法！&quot;);
+    }
+
+    @Override
+    public void remove(AbstractFile file) {
+        System.out.println(&quot;不支持该方法！&quot;);
+    }
+
+    @Override
+    public AbstractFile getChild(int i) {
+        System.out.println(&quot;不支持该方法！&quot;);
+        return null;
+    }
+
+    @Override
+    public void killVirus() {
+        System.out.println(&quot;对文本进行[&quot; + name + &quot;]杀毒&quot;);
+    }
+}
+
+class Folder extends AbstractFile {
+    private List&lt;AbstractFile&gt; files = new ArrayList&lt;&gt;();
+    private String name;
+
+    public Folder(String name) {
+        this.name = name;
+    }
+
+    @Override
+    public void add(AbstractFile file) {
+        files.add(file);
+    }
+
+    @Override
+    public void remove(AbstractFile file) {
+        files.remove(file);
+    }
+
+    @Override
+    public AbstractFile getChild(int i) {
+        return files.get(i);
+    }
+
+    @Override
+    public void killVirus() {
+        System.out.println(&quot;对文件夹[&quot; + name + &quot;]进行杀毒&quot;);
+        for (AbstractFile file : files) {
+            file.killVirus();
+        }
+    }
+}
+
+public class CompositePattern {
+    public static void main(String[] args) {
+        AbstractFile folder1 = new Folder(&quot;图像文件夹&quot;);
+        AbstractFile folder2 = new Folder(&quot;文本文件夹&quot;);
+
+        AbstractFile file1 = new ImageFile(&quot;图片一&quot;);
+        AbstractFile file2 = new ImageFile(&quot;图片二&quot;);
+
+        AbstractFile file3 = new ImageFile(&quot;文本一&quot;);
+        AbstractFile file4 = new ImageFile(&quot;文本二&quot;);
+
+        folder1.add(file1);
+        folder1.add(file2);
+
+        folder2.add(file3);
+        folder2.add(file4);
+        folder2.add(folder1);
+
+        folder2.killVirus();
+    }
+}</code></pre>
+<h2 id="四、透明组合模式和安全组合模式"><a href="#四、透明组合模式和安全组合模式" class="headerlink" title="四、透明组合模式和安全组合模式"></a>四、透明组合模式和安全组合模式</h2><p>通过引入 组合模式，该杀毒软件具有良好的可扩展性，在新增文件类型时，只需要新增一个文件类继承 AbstractFile 即可。</p>
+<p>但是 Abstract 中声明了大量用于管理和访问成员构件的方法，如 add() remove() 等方法，提供对应的错误提示和异常处理。</p>
+<p>解决方案一：将叶子构件的add()、remove() 方法移至AbstractFile中，提供默认实现：</p>
+<pre><code class="java">abstract class AbstractFile {
+    public void add(AbstractFile file){
+        System.out.println(&quot;对不起，不支持该方法！&quot;)
+    }
+    public void remove(AbstractFile file){
+        System.out.println(&quot;对不起，不支持该方法！&quot;)
+    }
+    public AbstractFile getChild(int i){
+        System.out.println(&quot;对不起，不支持该方法！&quot;)
+    }
+
+    public abstract void killVirus();
+}</code></pre>
+<p>解决方案二：不提供 add()、remove() 等抽象方法，由具体需要的子构件自己提供。但是会导致客户端不得不使用容器类本身来声明容器构件对象，否则无法访问其中新增的方法。客户端代码无法通过容器构件的抽象构件来定义。</p>
+<h3 id="1-透明组合模式"><a href="#1-透明组合模式" class="headerlink" title="1. 透明组合模式"></a>1. 透明组合模式</h3><p>上面的解决方案一，就是透明组合模式的实现。由抽象构件提供子构件方法的默认实现。</p>
+<p>好处是确保所有构件类都有相同的接口，对客户端来说，叶子对象和容器对象的方法一致。</p>
+<p>缺点是，因为叶子对象和容器对象在本质上是有区别的，叶子对象不可能有下一层对象，因此不应该有 add()/remove() 等方法，在运行时可能会出现异常。</p>
+<h3 id="2-安全组合模式"><a href="#2-安全组合模式" class="headerlink" title="2. 安全组合模式"></a>2. 安全组合模式</h3><p>解决方案二，就是安全组合模式的实现。抽象构件中不声明管理成员对象的方法，而是在 Composite类中声明并实现这些方法。</p>
+<p>这种做法是安全的，因为叶子对象没有了管理成员对象的方法，客户端也就不能对叶子对象调用这些方法了。</p>
+<h2 id="五、总结"><a href="#五、总结" class="headerlink" title="五、总结"></a>五、总结</h2><p>组合模式使用面向对象的思想来实现树形结构的构建与处理，描述了如何将容器对象和叶子对象进行递归组合，实现简单，灵活型号。</p>
+<h3 id="优点"><a href="#优点" class="headerlink" title="优点"></a>优点</h3><ol>
+<li>组合模式可以清楚地定义分层次的复杂对象，表示对象的全部或部分层次，使客户端忽略了层次的差异，方便对整个层次结构进行控制</li>
+<li>客户端可以一致地使用一个组合结构或其中的单个对象，不必关系处理的是单个对象还是整个组合结构，简化客户端代码</li>
+<li>组合模式为树形结构的面向对象实现，提供了一种灵活的解决方案，通过叶子对象和容器对象的递归组合，可以形成复杂的树形结构，但对树形结构的控制却非常简单</li>
+</ol>
+<h3 id="缺点"><a href="#缺点" class="headerlink" title="缺点"></a>缺点</h3><ol>
+<li>增加新构件时很难对容器中的构件类型进行限制</li>
+</ol>
+<h2 id="适用场景"><a href="#适用场景" class="headerlink" title="适用场景"></a>适用场景</h2><ol>
+<li>在具有整合和部分的层次结构中，希望通过一种方式忽略整体与部分的差异，客户端可以一致地对待它们</li>
+<li>在一种使用面向对象语言开发的系统中需要处理一个树形结构</li>
+<li>在一个系统中能够分离出叶子对象和容器对象，而且它们的类型不固定，需要增加一些新的类型</li>
+</ol>
+<h2 id="六、练习"><a href="#六、练习" class="headerlink" title="六、练习"></a>六、练习</h2><blockquote>
+<p>Sunny软件公司欲开发一个界面控件库，界面控件分为两大类，一类是单元控件，例如按钮、文本框等，一类是容器控件，例如窗体、中间面板等，试用组合模式设计该界面控件库。</p>
+</blockquote>
+<pre><code class="java">/**
+ * 组合模式：
+ * Sunny软件公司欲开发一个界面控件库，
+ * 界面控件分为两大类，一类是单元控件，例如按钮、文本框等，
+ * 一类是容器控件，例如窗体、中间面板等，
+ * 试用组合模式设计该界面控件库。
+ */
+abstract class UI {
+    abstract void display();
+
+    void add(UI ui){
+        System.out.println(&quot;不支持该方法&quot;);
+    }
+}
+
+class ButtonUI extends UI {
+    @Override
+    void display() {
+        System.out.println(&quot;显示按钮&quot;);
+    }
+}
+
+class InputUI extends UI {
+    @Override
+    void display() {
+        System.out.println(&quot;显示输入框&quot;);
+    }
+}
+
+class Window extends UI{
+    List&lt;UI&gt; uis = new ArrayList&lt;&gt;();
+
+    @Override
+    void display() {
+        System.out.println(&quot;--开始显示窗口--&quot;);
+        for (UI ui : uis) {
+            ui.display();
+        }
+    }
+
+    @Override
+    void add(UI ui) {
+        uis.add(ui);
+    }
+}
+
+class Dashboard extends UI {
+    List&lt;UI&gt; uis = new ArrayList&lt;&gt;();
+
+    @Override
+    void display() {
+        System.out.println(&quot;--开始显示面板--&quot;);
+        for (UI ui : uis) {
+            ui.display();
+        }
+    }
+
+    @Override
+    void add(UI ui) {
+        uis.add(ui);
+    }
+}
+
+public class CompositePattern {
+    public static void main(String[] args) {
+        final UI ui1 = new ButtonUI();
+        final UI ui2 = new ButtonUI();
+        final UI ui3 = new InputUI();
+        final UI ui4 = new InputUI();
+
+        final UI window = new Window();
+        final UI dashboard = new Dashboard();
+
+        dashboard.add(ui1);
+        dashboard.add(ui4);
+        window.add(ui1);
+        window.add(ui3);
+        window.add(ui2);
+        window.add(dashboard);
+
+        window.display();
+    }
+}
+</code></pre>
+</div><hr></div><div class="recent-post-item article-container"><a class="article-title" href="/2019/07/08/读书笔记/《JavaDesignPatterns》/10.桥接模式/">《Java Design Patterns》第八章 桥接模式 - 处理多维度变化</a><time class="post-meta__date"><i class="fa fa-calendar" aria-hidden="true"></i> 2019-07-08</time><span class="article-meta"><span class="article-meta__separator">|</span><i class="fa fa-inbox article-meta__icon" aria-hidden="true"></i><a class="article-meta__categories" href="/categories/读书笔记/">读书笔记</a><i class="fa fa-angle-right" aria-hidden="true"></i><i class="fa fa-inbox article-meta__icon" aria-hidden="true"></i><a class="article-meta__categories" href="/categories/读书笔记/设计模式/">设计模式</a></span><span class="article-meta tags"><span class="article-meta__separator">|</span><i class="fa fa-tag article-meta__icon" aria-hidden="true"></i><a class="article-meta__tags" href="/tags/hide/">hide</a><span class="article-meta__link">-</span><i class="fa fa-tag article-meta__icon" aria-hidden="true"></i><a class="article-meta__tags" href="/tags/设计模式/">设计模式</a></span><div class="content"><h1 id="第八章-桥接模式-处理多维度变化"><a href="#第八章-桥接模式-处理多维度变化" class="headerlink" title="第八章 桥接模式 - 处理多维度变化"></a>第八章 桥接模式 - 处理多维度变化</h1><h2 id="一、基本概念"><a href="#一、基本概念" class="headerlink" title="一、基本概念"></a>一、基本概念</h2><h3 id="1-1-场景"><a href="#1-1-场景" class="headerlink" title="1.1 场景"></a>1.1 场景</h3><p>有两种文具，分别是毛笔和蜡笔。如果需要大中小三种型号的蜡笔，且每种型号需要有12种不同的颜色。</p>
+<p>则蜡笔需要各种型号的各种颜色 3*12 = 36支，而毛笔只需要大中小型号和12中颜色的颜料盒 3 + 12 = 15支。</p>
+<p>在蜡笔的模式中，无论是增加颜色，还是增加型号，都会影响另一个维度。耦合度非常的强。</p>
+<p>但在毛笔中，型号与颜色进行了解耦，只是在使用时组合使用，非常灵活，扩展也十分方便。</p>
+<h3 id="1-2-场景二-跨平台图像浏览系统"><a href="#1-2-场景二-跨平台图像浏览系统" class="headerlink" title="1.2 场景二 - 跨平台图像浏览系统"></a>1.2 场景二 - 跨平台图像浏览系统</h3><p>现有一个系统，需要该系统支持BMP、JPG、GIF等格式的图形文件，并且能在Windows、Linux、MacOS等多个系统上运行。首先将文件解析为像素矩阵，然后各系统使用各自的绘制函数，将矩阵显示在屏幕上。</p>
+<p>如果使用上面的“蜡笔模式” - 多层继承模式，可能会存在 Image -&gt; BMPImage、JPGImage、GIFIMAGE -&gt; BMPWindowsImage/BMPLinuxImage/BMPMacOSImage、JPGWindowsImage/JPGLinuxImage/JPGMacOSImage、GIFWindowsImage/GIFLinuxImage/GIFMacOSImage。</p>
+<h4 id="存在的问题："><a href="#存在的问题：" class="headerlink" title="存在的问题："></a>存在的问题：</h4><ol>
+<li>由于采用了多层继承，系统中的类个数非常多。具体类的个数 = 所支持的图像格式 * 所支持的操作系统</li>
+<li>系统扩展麻烦，如BMPWindowsImage，即包含图像文件格式，又包含操作系统信息。无论是增加图像格式还是操作系统，都需要增加大量具体类。</li>
+<li>违反了“单一职责原则”，因为具体类将图像文件解析和像素矩阵显示这两个完全不同的职责融合，任意职责发生改变，都需要修改所有。</li>
+</ol>
+<h4 id="解决方案："><a href="#解决方案：" class="headerlink" title="解决方案："></a>解决方案：</h4><p>引入桥接模式，将两个独立变化的维度设计为两个独立的继承等级结构，并且在抽象层建立一个抽象关联。</p>
+<h2 id="二、桥接模式"><a href="#二、桥接模式" class="headerlink" title="二、桥接模式"></a>二、桥接模式</h2><h3 id="2-1-定义"><a href="#2-1-定义" class="headerlink" title="2.1 定义"></a>2.1 定义</h3><p>桥接模式，又称为柄体模式或接口模式：将抽象部分与它的实现部分分离，使它们都可以独立地变化。是一种非常实用的结构性设计模式。</p>
+<p>如果软件系统中某个类存在两个独立变化的维度，通过该模式可以将这两个维度分离出来，使两者可以独立扩展，让系统更加符合“单一职责原则”。</p>
+<p>桥接模式用一种巧妙的方式处理多层继承存在的问题，用抽象关联取代传统的多层继承，将类之间的静态继承关系转换为动态的对象组合关系，使系统更加灵活，更易于扩展，同时有效控制了系统中类的个数。</p>
+<blockquote>
+<p>桥接模式是一个非常有用的模式，包含了很多面向对象设计原则的思想，如“单一职责原则”、“开闭原则”、“合成复用原则”、“里氏替换原则”、“依赖倒转原则”等。有助于我们深入理解设计原则，形成正确的设计思想和培养良好的设计风格。</p>
+</blockquote>
+<h3 id="2-2-桥接模式中的几个角色"><a href="#2-2-桥接模式中的几个角色" class="headerlink" title="2.2 桥接模式中的几个角色"></a>2.2 桥接模式中的几个角色</h3><ol>
+<li>Abstraction - 抽象类<ol>
+<li>用于定义抽象类的接口，他一般是抽象类而不是接口</li>
+<li>定义了一个 <code>Implementor实现类接口</code> 类型的对象，并可以维护该对象，它与实现类接口之间具有关联关系</li>
+<li>既可以包含抽象业务方法，也可以包含具体业务方法</li>
+</ol>
+</li>
+<li>RefinedAbstraction - 扩充抽象类<ol>
+<li>一般为具体类，实现了 <code>Abstraction抽象类</code> 中的抽象方法</li>
+<li>因为 <code>Abstraction抽象类</code> 中定义了实现类接口对象，所以<code>RefinedAbstraction扩充抽象类</code>中可以调用 <code>Implementor具体实现了类</code> 中定义的业务方法</li>
+</ol>
+</li>
+<li>Implementor - 实现类接口<ol>
+<li>定义实现类接口，提供基本操作</li>
+<li>具体实现交给其子类</li>
+<li>通过关联关系，在 <code>Abstraction抽象类</code> 中，可以直接调用 <code>Implementor及其子类</code> 的方法</li>
+<li>使用关联关系来代替继承关系</li>
+</ol>
+</li>
+<li>ConcreteImplementor - 具体实现类<ol>
+<li>实现 <code>Implementor接口</code>，不同的具体实现类提供不同的方法实现</li>
+<li>用于提供给 <code>Abstraction抽象类</code> 调用的具体实现</li>
+</ol>
+</li>
+</ol>
+<h3 id="2-3-具体实现"><a href="#2-3-具体实现" class="headerlink" title="2.3 具体实现"></a>2.3 具体实现</h3><pre><code class="java">// 桥接模式
+public class BridgePattern {
+
+    // 像素矩阵类：辅助类，各种格式的文件最终都被转化为像素矩阵，不同的操作系统提供不同的方式显示像素矩阵
+    static class Matrix {
+
+    }
+
+    // 抽象图像类：抽象类
+    static abstract class Image {
+        protected ImageImp imp;
+
+        public void setImp(ImageImp imp) {
+            this.imp = imp;
+        }
+
+        public abstract void parseFile(String fileName);
+    }
+
+    // JPG格式图像：扩充抽象类
+    static class JPGImage extends Image {
+        @Override
+        public void parseFile(String fileName) {
+            final Matrix matrix = new Matrix();
+            imp.doPaint(matrix);
+            System.out.println(fileName + &quot;,格式为JPG&quot;);
+        }
+    }
+
+    // PNG格式图像：扩充抽象类
+    static class PNGImage extends Image {
+        @Override
+        public void parseFile(String fileName) {
+            final Matrix matrix = new Matrix();
+            imp.doPaint(matrix);
+            System.out.println(fileName + &quot;,格式为PNG&quot;);
+        }
+    }
+
+    // 抽象操作系统实现类：实现类接口
+    static interface ImageImp {
+        public void doPaint(Matrix m); // 显示像素矩阵 m
+    }
+
+    // Windows 操作系统实现类：具体实现类
+    static class WindowsImp implements ImageImp {
+        @Override
+        public void doPaint(Matrix m) {
+            // 调用Windows系统的绘制函数，绘制像素矩阵
+            System.out.println(&quot;在Windows操作系统中显示图像&quot;);
+        }
+    }
+
+    // Linux 操作系统实现类：具体实现类
+    static class LinuxImp implements ImageImp {
+        @Override
+        public void doPaint(Matrix m) {
+            // 调用Linux系统的绘制函数，绘制像素矩阵
+            System.out.println(&quot;在Linux操作系统中显示图像&quot;);
+        }
+    }
+
+    public static void main(String[] args) {
+        Image img = new PNGImage();
+        ImageImp imp = new WindowsImp();
+        img.setImp(imp);
+        img.parseFile(&quot;死了都要爱.jpg&quot;);
+    }
+}</code></pre>
+<h2 id="三、总结"><a href="#三、总结" class="headerlink" title="三、总结"></a>三、总结</h2><p>在使用桥接模式时，我们应该先识别出一个类所具有的两个独立变化的维度，将它们设计为两个独立的继承等级结构，为两个维度都提供抽象层，并建立抽象耦合。通常情况下，我们将具有两个独立变化维度的类的一些普通业务方法，和与之关系最密切的维度设计为“抽象类”层次结构（抽象部分），而将另一个维度设计为“实现类”层次结构（实现部分）。</p>
+<p>如毛笔，由于型号是固有的维度，可以设计为抽象毛笔类，在该类中声明并部分实现毛笔的业务方法，将各种型号的毛笔作为子类。将颜色作为毛笔的另一个维度。</p>
+<p>增加新的毛笔类型，只需扩展左侧的“抽象部分”；增加新的颜色，只需扩展右侧的“实现部分”。</p>
+<h3 id="优点"><a href="#优点" class="headerlink" title="优点"></a>优点</h3><ol>
+<li>分离抽象解耦及其实现部分。解耦了抽象和实现之间的绑定关系，使抽象部分和实现部分都有自己的维度变化</li>
+<li>很多情况下，桥接模式可以取代多层继承方案。多层继承违背了“单一职责原则”，复用性较差，且类的个数较多</li>
+<li>桥接模式提供了系统的可扩展性，两个维度的扩展都不需要修改原有系统，符合“开闭原则”</li>
+</ol>
+<h3 id="缺点"><a href="#缺点" class="headerlink" title="缺点"></a>缺点</h3><ol>
+<li>桥接模式的使用，会增加系统的理解和设计难度，由于关联关系建立在抽象层，要求开发者一开始就针对抽象层进行设计和编程</li>
+<li>桥接模式要求正确识别出系统中两个独立变化的维度，因此其使用范围具有一定的局限性。</li>
+</ol>
+<h3 id="适用场景"><a href="#适用场景" class="headerlink" title="适用场景"></a>适用场景</h3><ol>
+<li>如果一个系统需要在抽象化和具体化之间增加更多的灵活性，避免在两个层次之间建立静态的继承关系，通过桥接模式可以使它们在抽象层建立一个关联关系</li>
+<li>“抽象部分”和“实现部分”可以以继承的方式独立扩展而不受影响，在程序运行时可以动态将一个抽象化子类的对象和一个实现化子类的对象进行组合，即系统需要对抽象化角色和实现化角色进行动态耦合</li>
+<li>一个类存在两个（或多个）独立变化的维度，且各维度都需要独立进行扩展</li>
+<li>对于不希望使用继承或多层继承的系统，导致系统类的个数急剧增加的系统，桥接模式非常适用</li>
+</ol>
+<h2 id="四、扩展"><a href="#四、扩展" class="headerlink" title="四、扩展"></a>四、扩展</h2><blockquote>
+<p>开发一个数据转换工具，可以将数据库中的数据转换成多种文件格式，例如txt、xml、pdf等格式，同时该工具需要支持多种不同的数据库。试使用桥接模式对其进行设计。</p>
+</blockquote>
+<pre><code class="java">// 桥接模式
+public class BridgePattern {
+
+    // 数据库抽象类
+    static abstract class Database {
+        protected FileFormat fileFormat;
+
+        public void setFileFormat(FileFormat fileFormat) {
+            this.fileFormat = fileFormat;
+        }
+
+        public abstract void transition();
+    }
+
+    // Oracle 数据库 - 抽象扩展类
+    static class OracleDatabase extends Database {
+        @Override
+        public void transition() {
+            System.out.println(&quot;Oracle数据库&quot;);
+            fileFormat.file();
+        }
+    }
+
+    // Microsoft 数据库 - 抽象扩展类
+    static class MCDatabase extends Database {
+        @Override
+        public void transition() {
+            System.out.println(&quot;Microsoft数据库&quot;);
+            fileFormat.file();
+        }
+    }
+
+    // 文件格式 - 实现类接口
+    interface FileFormat {
+        void file();
+    }
+
+    // txt 文件 - 具体实现类
+    static class TxtFileFormat implements FileFormat {
+        @Override
+        public void file() {
+            System.out.println(&quot;TXT 格式文本输出&quot;);
+        }
+    }
+
+    // pdf 文件 - 具体实现类
+    static class PDFFileFormat implements FileFormat {
+        @Override
+        public void file() {
+            System.out.println(&quot;PDF 格式文本输出&quot;);
+        }
+    }
+
+    public static void main(String[] args) {
+        Database db = new OracleDatabase();
+        FileFormat ff = new TxtFileFormat();
+        db.setFileFormat(ff);
+        db.transition();
+    }
+}</code></pre>
+</div><hr></div><div class="recent-post-item article-container"><a class="article-title" href="/2019/07/06/读书笔记/《JavaDesignPatterns》/9.适配器模式/">《Java Design Patterns》第七章 适配器模式 - 不兼容结构的协调</a><time class="post-meta__date"><i class="fa fa-calendar" aria-hidden="true"></i> 2019-07-06</time><span class="article-meta"><span class="article-meta__separator">|</span><i class="fa fa-inbox article-meta__icon" aria-hidden="true"></i><a class="article-meta__categories" href="/categories/读书笔记/">读书笔记</a><i class="fa fa-angle-right" aria-hidden="true"></i><i class="fa fa-inbox article-meta__icon" aria-hidden="true"></i><a class="article-meta__categories" href="/categories/读书笔记/设计模式/">设计模式</a></span><span class="article-meta tags"><span class="article-meta__separator">|</span><i class="fa fa-tag article-meta__icon" aria-hidden="true"></i><a class="article-meta__tags" href="/tags/hide/">hide</a><span class="article-meta__link">-</span><i class="fa fa-tag article-meta__icon" aria-hidden="true"></i><a class="article-meta__tags" href="/tags/设计模式/">设计模式</a></span><div class="content"><h1 id="第七章-适配器模式-不兼容结构的协调"><a href="#第七章-适配器模式-不兼容结构的协调" class="headerlink" title="第七章 适配器模式 - 不兼容结构的协调"></a>第七章 适配器模式 - 不兼容结构的协调</h1><h2 id="一、概念"><a href="#一、概念" class="headerlink" title="一、概念"></a>一、概念</h2><p>如笔记本的电源接口只支持20V电压，而家庭用电的电压为220V，肯定无法直接通过一根电线直接为笔记本提供电源。此时，就需要一个变压器电源，来将220V电压转换为20V电压。这个变压器就是适配器模式的一种。</p>
+<p>适配器模式：将一个类的接口与另一个类的接口匹配利用，而无须修改原来的适配者，解耦合抽象目标类接口。</p>
+<p>适配器模式可以是类结构型模式，也可以是对象结构型模式。</p>
+<h2 id="1-2-适配器模式中的几个角色"><a href="#1-2-适配器模式中的几个角色" class="headerlink" title="1.2 适配器模式中的几个角色"></a>1.2 适配器模式中的几个角色</h2><ol>
+<li>Target - 目标抽象类<ol>
+<li>目标抽象类定义客户所需接口</li>
+<li>抽象类、接口或具体类</li>
+<li>类似上面的笔记本</li>
+</ol>
+</li>
+<li>Adapter - 适配器类<ol>
+<li>适配器可以调用另一个接口，作为一个转换器，对 Adaptee 和 Target 进行适配</li>
+</ol>
+</li>
+<li>Adaptee - 适配者类<ol>
+<li>被适配的角色（如220V的家庭电源，我们需要将其转换为20V电压输出）</li>
+<li>它定义了一个已经存在的接口，这个接口需要适配</li>
+<li>适配者类一般是个具体类，包含了客户希望使用的业务方法</li>
+</ol>
+</li>
+</ol>
+<h3 id="1-3-对象适配器-实例"><a href="#1-3-对象适配器-实例" class="headerlink" title="1.3 对象适配器 - 实例"></a>1.3 对象适配器 - 实例</h3><pre><code class="java">// 抽象成绩操作类 - Target目标接口
+interface ScoreOperation {
+    public int[] sort(int array[]); // 成绩排序
+    public int search(int array[],int key); // 成绩查找
+}
+
+// 快速排序类 - Adaptee 适配者类
+class QuickSort{
+    public int[] quickSort(int array[]){
+        // 自己实现
+    }
+}
+
+// 二分查找类 - Adaptee 适配者类
+class BinarySearch{
+    public int binarySearch(int array[],intkey){
+        // 自己实现
+    }
+}
+
+// 操作适配器 - Adapter 适配器
+class OperationAdapter implements ScoreOperation{
+    private QuickSort sort = new QuickSort;
+    private BinarySearch search = new BinarySearch();
+
+    // 调用适配者类QuickSort的排序方法
+    public int[] sort(int array[]){
+        return sort.quickSort(array);
+    }
+
+    // 调用适配者类BinarySearch的查找方法
+    public int search(int array[],int key){
+        return search.binarySearch(array,key);
+    }
+}</code></pre>
+<h3 id="1-4-类适配器"><a href="#1-4-类适配器" class="headerlink" title="1.4 类适配器"></a>1.4 类适配器</h3><p>类适配器与对象适配器的区别在于：</p>
+<p>对象适配器与适配者之间的关系是<code>关联关系</code>，而类适配器中的关系则是<code>继承关系</code>。</p>
+<p>如下：</p>
+<pre><code class="java">class Adapter extends Adaptee implements Target{
+    public void request(){
+        specificRequest();
+    }
+}</code></pre>
+<blockquote>
+<p>由于Java、C#等语言不支持多重继承，因此类适配器在使用时受到诸多限制。如Target必须是接口，Adapter不能是Final类等等。</p>
+</blockquote>
+<h3 id="1-5-双向适配器"><a href="#1-5-双向适配器" class="headerlink" title="1.5 双向适配器"></a>1.5 双向适配器</h3><p>在对象适配器的使用过程中，如果在适配器中同时包含对目标类和适配者类的引用，适配者和目标类可以通过它调用彼此的方法，那么该适配器就是一个双向适配器。如下：</p>
+<pre><code class="java">class Adapter implements Adaptee,Target{
+    private Target target;
+    private Adaptee adaptee;
+
+    public Adapter(Target target){
+        this.target = target;
+    }
+
+    public Adapter(Adaptee adpatee){
+        this.adaptee = adaptee;
+    }
+
+    public void request(){
+        adaptee.specificRequest();
+    }
+
+    public void specificRequest(){
+        target.request();
+    }
+}</code></pre>
+<h3 id="1-6-缺省适配器"><a href="#1-6-缺省适配器" class="headerlink" title="1.6 缺省适配器"></a>1.6 缺省适配器</h3><p>缺省适配器模式(Default Adapter Pattern)：当不需要实现一个接口所提供的所有方法时，可先设计一个抽象类实现该接口，并为接口中每个方法提供一个默认实现（空方法），那么该抽象类的子类可以选择性地覆盖父类的某些方法来实现需求，它适用于不想使用一个接口中的所有方法的情况，又称为单接口适配器模式。</p>
+<h2 id="二、总结"><a href="#二、总结" class="headerlink" title="二、总结"></a>二、总结</h2><h3 id="优点"><a href="#优点" class="headerlink" title="优点"></a>优点</h3><ol>
+<li>目标类与适配者类解耦，通过引入一个适配器类来重用现有的适配者类</li>
+<li>增加类的透明性和复用性，具体业务过程封装在适配者类中，对客户端透明，提供了适配者的复用性，同一个适配者类可以在多个不同系统中复用</li>
+<li>灵活性和扩展性好，可以通过配置文件的方式更换适配器，符合“开闭原则”</li>
+</ol>
+<h3 id="缺点"><a href="#缺点" class="headerlink" title="缺点"></a>缺点</h3><ol>
+<li>Java、C#不支持多重继承，一次只能适配一个适配者类</li>
+<li>适配者类不能为最终类</li>
+<li>Java、C#中，类适配器模式的目标抽象类必须是接口</li>
+</ol>
+<h3 id="适用场景"><a href="#适用场景" class="headerlink" title="适用场景"></a>适用场景</h3><ol>
+<li>系统需要使用一些现有的类，但该类的接口不符合系统需要</li>
+<li>创建一个可重复使用的类，如上面的快速排序，可以做成一个适配者，为其它适配器类所调用</li>
+</ol>
+<h2 id="三、练习"><a href="#三、练习" class="headerlink" title="三、练习"></a>三、练习</h2><pre><code class="java">// SD卡接口及其具体实现
+public interface SDCard {
+    String readSD(); // 读SD卡
+    int writeSD(String message); // 写SD卡
+}
+class SDCardImpl implements SDCard {
+    public String readSD() {
+        return &quot;读取SD卡&quot;;
+    }
+    public int writeSD(String message) {
+        // 假装写入数据至SD卡中了
+        return 0;
+    }
+}
+
+// 电脑类，具有读取SD卡的功能
+class Computer {
+    String readSD(SDCard sdCard) {
+        return sdCard.readSD();
+    }
+}
+
+// ----- 新版的TF卡上市，系统需要在不修改原有SD卡接口的情况下，支持新版的TF卡  -----
+
+// TF卡接口及其实现
+interface TFCard {
+    String readTF(); // 读TF卡
+    int writeTF(String message); // 写TF卡
+}
+class TFCardImpl implements TFCard {
+    public String readTF() {
+        return &quot;读取TF卡&quot;;
+    }
+    public int writeTF(String message) {
+        return 0;
+    }
+}
+
+// TF卡的适配器，继承与目标接口，但是将SD卡接口适配为TF卡的接口
+class TFCardAdapter implements SDCard {
+    private TFCard tfCard;
+    public TFCardAdapter(TFCard tfCard) {
+        this.tfCard = tfCard;
+    }
+    @Override
+    public String readSD() {
+        return tfCard.readTF();
+    }
+    @Override
+    public int writeSD(String message) {
+        return tfCard.writeTF(message);
+    }
+}
+
+// 测试客户端
+class Client {
+    public static void main(String[] args) {
+        SDCard sdCard = new SDCardImpl();
+        SDCard tfCard = new TFCardAdapter(new TFCardImpl()); // 通过适配器，将TFCard适配为SDCard
+
+        Computer computer = new Computer();
+        String s = computer.readSD(sdCard);
+        String s1 = computer.readSD(tfCard);
+        System.out.println(s);
+        System.out.println(s1);
+    }
+}</code></pre>
+<blockquote>
+<blockquote>
+<p>适配器类的名称尽量做到见名知意，因为客户端表面上调用的是SDCard，但是内部却被适配成了TFCard，如果系统中存在大量这种代码，会使系统十分的混乱。</p>
+</blockquote>
+</blockquote>
+<p>如果适配器大量存在的话，可以考虑重构代码，而不是继续适配下去。</p>
+</div><hr></div><nav id="pagination"><div class="pagination"><a class="extend prev" rel="prev" href="/page/16/"><i class="fa fa-chevron-left"></i></a><a class="page-number" href="/">1</a><span class="space">&hellip;</span><a class="page-number" href="/page/16/">16</a><span class="page-number current">17</span><a class="page-number" href="/page/18/">18</a><span class="space">&hellip;</span><a class="page-number" href="/page/27/">27</a><a class="extend next" rel="next" href="/page/18/"><i class="fa fa-chevron-right"></i></a></div></nav></div></div><footer><div class="layout" id="footer"><div class="copyright">&copy;2013 - 2020 By koral</div><div class="framework-info"><span>驱动 - </span><a href="http://hexo.io"><span>Hexo</span></a><span class="footer-separator">|</span><span>主题 - </span><a href="https://github.com/Molunerfinn/hexo-theme-melody"><span>Melody</span></a></div><div class="busuanzi"><script async src="//busuanzi.ibruce.info/busuanzi/2.3/busuanzi.pure.mini.js"></script><span id="busuanzi_container_site_uv"><i class="fa fa-user"></i><span id="busuanzi_value_site_uv"></span><span></span></span><span class="footer-separator">|</span><span id="busuanzi_container_site_pv"><i class="fa fa-eye"></i><span id="busuanzi_value_site_pv"></span><span></span></span></div></div></footer><i class="fa fa-arrow-up" id="go-up" aria-hidden="true"></i><script src="https://cdn.jsdelivr.net/npm/animejs@latest/anime.min.js"></script><script src="https://cdn.jsdelivr.net/npm/jquery@latest/dist/jquery.min.js"></script><script src="https://cdn.jsdelivr.net/npm/@fancyapps/fancybox@latest/dist/jquery.fancybox.min.js"></script><script src="https://cdn.jsdelivr.net/npm/velocity-animate@latest/velocity.min.js"></script><script src="https://cdn.jsdelivr.net/npm/velocity-ui-pack@latest/velocity.ui.min.js"></script><script src="/js/utils.js?version=1.7.0"></script><script src="/js/fancybox.js?version=1.7.0"></script><script src="/js/sidebar.js?version=1.7.0"></script><script src="/js/copy.js?version=1.7.0"></script><script src="/js/fireworks.js?version=1.7.0"></script><script src="/js/transition.js?version=1.7.0"></script><script src="/js/scroll.js?version=1.7.0"></script><script src="/js/head.js?version=1.7.0"></script><script>if(/Android|webOS|iPhone|iPod|iPad|BlackBerry/i.test(navigator.userAgent)) {
   $('#nav').addClass('is-mobile')
   $('footer').addClass('is-mobile')
   $('#top-container').addClass('is-mobile')

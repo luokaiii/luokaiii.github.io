@@ -7,1352 +7,771 @@
     error: '复制错误',
     noSupport: '浏览器不支持'
   }
-} </script></head><body><i class="fa fa-arrow-right" id="toggle-sidebar" aria-hidden="true"></i><div id="sidebar" data-display="false"><div class="author-info"><div class="author-info__avatar text-center"><img src="/img/avatar.png"></div><div class="author-info__name text-center">koral</div><div class="author-info__description text-center">回廊一寸相思地，落月成孤倚。背灯和月就花阴，已是十年踪迹十年心。</div><hr><div class="author-info-articles"><a class="author-info-articles__archives article-meta" href="/archives"><span class="pull-left">文章</span><span class="pull-right">221</span></a><a class="author-info-articles__tags article-meta" href="/tags"><span class="pull-left">标签</span><span class="pull-right">31</span></a><a class="author-info-articles__categories article-meta" href="/categories"><span class="pull-left">分类</span><span class="pull-right">40</span></a></div></div></div><nav class="no-bg" id="nav"><div id="page-header"><span class="pull-left"> <a id="site-name" href="/index.html">凯</a></span><i class="fa fa-bars toggle-menu pull-right" aria-hidden="true"></i><span class="pull-right menus">   <a class="site-page" href="/">首页</a><a class="site-page" href="/archives">归档</a><a class="site-page" href="/tags">标签</a><a class="site-page" href="/categories">分类</a><a class="site-page" href="/about">关于我</a></span><span class="pull-right"></span></div><div id="site-info"><div id="site-title">凯</div><div id="site-sub-title">回廊一寸相思地，落月成孤倚。背灯和月就花阴，已是十年踪迹十年心。</div></div></nav><div id="content-outer"><div class="layout" id="content-inner"><div class="recent-post-item article-container"><a class="article-title" href="/2019/07/18/读书笔记/《SpringSecurity》/5.体系结构/">《Spring Security》第五章 SpringSecurity 中的核心组件</a><time class="post-meta__date"><i class="fa fa-calendar" aria-hidden="true"></i> 2019-07-18</time><span class="article-meta"><span class="article-meta__separator">|</span><i class="fa fa-inbox article-meta__icon" aria-hidden="true"></i><a class="article-meta__categories" href="/categories/读书笔记/">读书笔记</a><i class="fa fa-angle-right" aria-hidden="true"></i><i class="fa fa-inbox article-meta__icon" aria-hidden="true"></i><a class="article-meta__categories" href="/categories/读书笔记/Spring-Security/">Spring Security</a></span><span class="article-meta tags"><span class="article-meta__separator">|</span><i class="fa fa-tag article-meta__icon" aria-hidden="true"></i><a class="article-meta__tags" href="/tags/hide/">hide</a><span class="article-meta__link">-</span><i class="fa fa-tag article-meta__icon" aria-hidden="true"></i><a class="article-meta__tags" href="/tags/Spring-Security/">Spring Security</a></span><div class="content"><h1 id="第五章-SpringSecurity-中的核心组件"><a href="#第五章-SpringSecurity-中的核心组件" class="headerlink" title="第五章 SpringSecurity 中的核心组件"></a>第五章 SpringSecurity 中的核心组件</h1><p>通过前四章简单介绍了下 SpringSecurity 的命名空间配置和Java 配置，已经可以简单一个基于 Spring Security 的应用程序。</p>
-<p>下面，将会研究其中一些在整个框架中使用的中心接口、类和抽象概念，了解它们如何协同工作，以支持 Spring Security 中的身份验证和访问控制。</p>
-<h2 id="一、SecurityContextHolder"><a href="#一、SecurityContextHolder" class="headerlink" title="一、SecurityContextHolder"></a>一、SecurityContextHolder</h2><p>Spring-Security-Core 中对 SecurityContextHolder 的介绍如下：</p>
-<pre><code class="html">Associates a given {@link SecurityContext} with the current execution thread.
-将给定的{@link SecurityContext}与当前执行线程关联。</code></pre>
-<p>SecurityContextHolder 用于存储应用程序当前Security 上下文的地方，其中包含当前使用应用程序的主体的细节。</p>
-<p>默认情况下，SecurityContextHolder 使用ThreadLocal 来存储这些细节，如果在处理完当前主体的请求之后清除线程，那么这种方式就是非常安全的。</p>
-<p>一般没有必要修改SecurityContextHolder 的默认值，但是 SpringSecurity 提供了修改的途径。</p>
-<h2 id="二、SecurityContext"><a href="#二、SecurityContext" class="headerlink" title="二、SecurityContext"></a>二、SecurityContext</h2><pre><code class="html">Interface defining the minimum security information associated with the current thread of execution.</code></pre>
-<p>与安全信息相关的抽象接口，用来获取或设置 <code>Authentication</code> 。</p>
-<h2 id="三、Authentication"><a href="#三、Authentication" class="headerlink" title="三、Authentication"></a>三、Authentication</h2><p>实现了 <code>Principal</code> 与序列化的接口，包含了当前请求的主体信息。通常是保存在 <code>SecurityContext</code> 中。</p>
-<p>获取方法如下：</p>
-<pre><code class="java">public String getUsernameBySecurityContext(){
-    Object principal = SecurityContextHolder.getContext().getAuthentication().getPrincipal();
-    String username;
-    if(prinicpal instanceof UserDetails){
-        username = ((UserDetails)principal).getUsername();
+} </script></head><body><i class="fa fa-arrow-right" id="toggle-sidebar" aria-hidden="true"></i><div id="sidebar" data-display="false"><div class="author-info"><div class="author-info__avatar text-center"><img src="/img/avatar.png"></div><div class="author-info__name text-center">koral</div><div class="author-info__description text-center">回廊一寸相思地，落月成孤倚。背灯和月就花阴，已是十年踪迹十年心。</div><hr><div class="author-info-articles"><a class="author-info-articles__archives article-meta" href="/archives"><span class="pull-left">文章</span><span class="pull-right">266</span></a><a class="author-info-articles__tags article-meta" href="/tags"><span class="pull-left">标签</span><span class="pull-right">34</span></a><a class="author-info-articles__categories article-meta" href="/categories"><span class="pull-left">分类</span><span class="pull-right">44</span></a></div></div></div><nav class="no-bg" id="nav"><div id="page-header"><span class="pull-left"> <a id="site-name" href="/index.html">凯</a></span><i class="fa fa-bars toggle-menu pull-right" aria-hidden="true"></i><span class="pull-right menus">   <a class="site-page" href="/">首页</a><a class="site-page" href="/archives">归档</a><a class="site-page" href="/tags">标签</a><a class="site-page" href="/categories">分类</a><a class="site-page" href="/about">关于我</a></span><span class="pull-right"></span></div><div id="site-info"><div id="site-title">凯</div><div id="site-sub-title">回廊一寸相思地，落月成孤倚。背灯和月就花阴，已是十年踪迹十年心。</div></div></nav><div id="content-outer"><div class="layout" id="content-inner"><div class="recent-post-item article-container"><a class="article-title" href="/2019/09/21/读书笔记/《Docker全栈项目部署》/4.MariaDB/">Docker部署全栈：四、安装MySQL</a><time class="post-meta__date"><i class="fa fa-calendar" aria-hidden="true"></i> 2019-09-21</time><span class="article-meta"><span class="article-meta__separator">|</span><i class="fa fa-inbox article-meta__icon" aria-hidden="true"></i><a class="article-meta__categories" href="/categories/运维/">运维</a><i class="fa fa-angle-right" aria-hidden="true"></i><i class="fa fa-inbox article-meta__icon" aria-hidden="true"></i><a class="article-meta__categories" href="/categories/运维/Docker全栈部署/">Docker全栈部署</a></span><span class="article-meta tags"><span class="article-meta__separator">|</span><i class="fa fa-tag article-meta__icon" aria-hidden="true"></i><a class="article-meta__tags" href="/tags/hide/">hide</a><span class="article-meta__link">-</span><i class="fa fa-tag article-meta__icon" aria-hidden="true"></i><a class="article-meta__tags" href="/tags/Docker全栈部署/">Docker全栈部署</a></span><div class="content"><h1 id="Docker部署全栈项目：四、MySQL-镜像"><a href="#Docker部署全栈项目：四、MySQL-镜像" class="headerlink" title="Docker部署全栈项目：四、MySQL 镜像"></a>Docker部署全栈项目：四、MySQL 镜像</h1><p>这里使用的是 MariaDB 镜像，与 MySQL 一样。</p>
+<h2 id="一、编写启动脚本"><a href="#一、编写启动脚本" class="headerlink" title="一、编写启动脚本"></a>一、编写启动脚本</h2><h2 id="1-start-sh"><a href="#1-start-sh" class="headerlink" title="1. start.sh"></a>1. start.sh</h2><pre><code class="sh">#!/bin/bash
 
-    }else {
-        username = principal.toString();
-    }
-    return username;
-}</code></pre>
-<h2 id="四、GrantedAuthority"><a href="#四、GrantedAuthority" class="headerlink" title="四、GrantedAuthority"></a>四、GrantedAuthority</h2><p>除了用户主体之外，身份验证还提供了一额外的方法 getAuthorities()，该方法返回一个 GrantedAuthority 对象数组。</p>
-<p>GrantedAuthority 通常为“角色”，用于配置 web授权、方法授权、域对象授权等。该属性通常由 UserDetailsService 加载给 UserDetails。</p>
-<p>如果一个用户有几千个这种权限，内存的消耗将会是非常巨大的。</p>
-<h2 id="五、UserDetails"><a href="#五、UserDetails" class="headerlink" title="五、UserDetails"></a>五、UserDetails</h2><p>从上面代码可以看出 <code>Authentication</code> 在大部分情况下是可以直接转换为 <code>UserDetails</code> 对象的。他表示一个主体，可以看做是用户数据库与 SecurityContextHolder 之间的适配器。</p>
-<p>UserDetails 是 SpringSecurity 的核心接口，可以通过继承 UserDetails 来实现自定义的方法与属性。</p>
-<h3 id="扩展UserDetails"><a href="#扩展UserDetails" class="headerlink" title="扩展UserDetails"></a>扩展UserDetails</h3><p>通过自定义 UserDetails 的实现，我们可以将其作为数据库实体与Authentication 的适配者。</p>
-<p>数据库实体 User：</p>
-<pre><code class="java">@Data
-@Document(collection = &quot;db_user&quot;)
-class User{
-    @Id
-    private String id;
-    private String username;
-    private String password;
-    private String[] roles;
-}</code></pre>
-<p>适配器实体 CustomUserDetails：</p>
-<pre><code class="java">@EqualsAndHashCode(callSuper = true)
-@Data
-public class CustomUserDetails extends User implements UserDetails {
+# 启动前先尝试停止该服务
+docker stop luokaiii-mysql
+docker rm luokaiii-mysql
 
-    @Override
-    public Collection&lt;? extends GrantedAuthority&gt; getAuthorities() {
-        return AuthorityUtils.createAuthorityList(super.getRoles());
-    }
+# 运行服务
+docker run --name luokaiii-mysql \ # 指定容器服务名称
+        -p 3307:3306 \ # 将容器的3306端口映射到宿主机的3307端口
+        -v /${PWD}/conf/local.cnf:/etc/mysql/conf.d/local.cnf \ # 使用自定义的配置文件(Windows环境下必不可少！)
+        -v /${PWD}/data:/var/lib/mysql \ # 挂载数据目录
+        -e MYSQL_ROOT_PASSWORD=password \ # MySQL初始密码
+        -d mariadb:10.4.8 \ # 后台运行指定版本
+        --character-set-server=utf8mb4 \ # 指定字符集
+        --collation-server=utf8mb4_unicode_ci</code></pre>
+<h3 id="2-conf-local-cnf"><a href="#2-conf-local-cnf" class="headerlink" title="2. conf/local.cnf"></a>2. conf/local.cnf</h3><p>指定 InnoDB 的刷新方法，否则会出现数据目录无法挂载的异常。当出现该异常后，请先清空 <code>./data</code> 目录。</p>
+<pre><code class="cnf">[mysqld]
+innodb_flush_method=O_DSYNC</code></pre>
+<p><img src="https://i.loli.net/2019/09/23/6EcOuQZePBIXRvq.png" alt="数据无法挂载，data目录未清空"></p>
+<h2 id="二、执行启动脚本"><a href="#二、执行启动脚本" class="headerlink" title="二、执行启动脚本"></a>二、执行启动脚本</h2><pre><code class="sh">$ cd /home/luokaiii/images/mysql   # 脚本和DB文件的存放位置
 
-    @Override
-    public String getPassword() {
-        return super.getPassword();
-    }
+$ mkdir data   # 创建存储目录
+$ vim conf/local.cnf  # 编写配置文件，填入innodb_flush_method=O_DSYNC
 
-    @Override
-    public String getUsername() {
-        return super.getUsername();
-    }
+$ ./start.sh   # 运行刚刚写的脚本
+994e9e05bb42d1d.....  # 控制台打印这种的，即表示启动成功</code></pre>
+<h2 id="三、测试连接"><a href="#三、测试连接" class="headerlink" title="三、测试连接"></a>三、测试连接</h2><p><img src="https://i.loli.net/2019/09/23/EUrI5Cu6HRN2gSK.png" alt="连接MySQL"></p>
+<h2 id="四、遇到的问题"><a href="#四、遇到的问题" class="headerlink" title="四、遇到的问题"></a>四、遇到的问题</h2><h3 id="1-问题：在-Windows-环境下，无法挂载-数据目录-至容器中。"><a href="#1-问题：在-Windows-环境下，无法挂载-数据目录-至容器中。" class="headerlink" title="1. 问题：在 Windows 环境下，无法挂载 数据目录 至容器中。"></a>1. 问题：在 Windows 环境下，无法挂载 数据目录 至容器中。</h3><p><img src="https://i.loli.net/2019/09/24/dWpOrvMy5eXznNg.png" alt="图：启动失败，无法挂载数据目录"></p>
+<h3 id="原因："><a href="#原因：" class="headerlink" title="原因："></a>原因：</h3><p>未指定 <code>innodb_flush_method=O_DSYNC</code>。</p>
+<blockquote>
+<p>Linux 环境下不需要</p>
+</blockquote>
+<h3 id="解决方法："><a href="#解决方法：" class="headerlink" title="解决方法："></a>解决方法：</h3><ol>
+<li>编写 <code>/conf/local.cnf</code> 并挂载到 <code>mariadb 容器</code> 中</li>
+<li>删除之前 ./data 下的所有数据</li>
+<li>并重新执行启动脚本</li>
+</ol>
+<p>参考资料：</p>
+<ol>
+<li><a href="https://hub.docker.com/_/mariadb" target="_blank" rel="noopener">Docker Hub</a></li>
+<li><a href="https://github.com/docker-library/mariadb/issues/38" target="_blank" rel="noopener">Github Issue</a></li>
+</ol>
+<h2 id="项目地址"><a href="#项目地址" class="headerlink" title="项目地址"></a>项目地址</h2><ul>
+<li><p><a href="https://github.com/luokaiii/luokaiii.docker-images" target="_blank" rel="noopener">Github</a></p>
+</li>
+<li><p><a href="https://gitee.com/luokaiii/luokaiii.docker-images" target="_blank" rel="noopener">Gitee</a></p>
+</li>
+</ul>
+</div><hr></div><div class="recent-post-item article-container"><a class="article-title" href="/2019/09/20/读书笔记/《Docker全栈项目部署》/5.SpringBoot/">Docker部署全栈：五、Docker-Compose部署SpringBoot</a><time class="post-meta__date"><i class="fa fa-calendar" aria-hidden="true"></i> 2019-09-20</time><span class="article-meta"><span class="article-meta__separator">|</span><i class="fa fa-inbox article-meta__icon" aria-hidden="true"></i><a class="article-meta__categories" href="/categories/运维/">运维</a><i class="fa fa-angle-right" aria-hidden="true"></i><i class="fa fa-inbox article-meta__icon" aria-hidden="true"></i><a class="article-meta__categories" href="/categories/运维/Docker全栈部署/">Docker全栈部署</a></span><span class="article-meta tags"><span class="article-meta__separator">|</span><i class="fa fa-tag article-meta__icon" aria-hidden="true"></i><a class="article-meta__tags" href="/tags/hide/">hide</a><span class="article-meta__link">-</span><i class="fa fa-tag article-meta__icon" aria-hidden="true"></i><a class="article-meta__tags" href="/tags/Docker全栈部署/">Docker全栈部署</a></span><div class="content"><h1 id="Docker部署全栈项目：五、SpringBoot-Jar"><a href="#Docker部署全栈项目：五、SpringBoot-Jar" class="headerlink" title="Docker部署全栈项目：五、SpringBoot Jar"></a>Docker部署全栈项目：五、SpringBoot Jar</h1><h2 id="一、创建-SpringBoot-项目"><a href="#一、创建-SpringBoot-项目" class="headerlink" title="一、创建 SpringBoot 项目"></a>一、创建 SpringBoot 项目</h2><h3 id="1-创建接口"><a href="#1-创建接口" class="headerlink" title="1. 创建接口"></a>1. 创建接口</h3><pre><code class="java">@EntityScan(&quot;cn.luokaiii.api.entity&quot;)
+@RestController
+@SpringBootApplication
+public class ApiApplication {
 
-    @Override
-    public boolean isAccountNonExpired() {
-        return false;
-    }
+    private final UserMongoService mongoService;
 
-    @Override
-    public boolean isAccountNonLocked() {
-        return false;
-    }
+    private final UserMySQLService mySQLService;
 
-    @Override
-    public boolean isCredentialsNonExpired() {
-        return false;
-    }
-
-    @Override
-    public boolean isEnabled() {
-        return false;
-    }
-}</code></pre>
-<p>这样，我们就可以通过 CustomUserDetails 在 User 与 Authentication 之间相互转换，实现数据库认证 SpringSecurity。</p>
-<p>那么 UserDetails 对象是从哪里创建的呢？就是下面的 UserDetailsService 类。</p>
-<h2 id="六、UserDetailsService"><a href="#六、UserDetailsService" class="headerlink" title="六、UserDetailsService"></a>六、UserDetailsService</h2><p>UserDetailsService 只有一个特殊方法，接收一个 string 的用户名参数，并返回一个 UserDetails。</p>
-<pre><code class="java">UserDetails loadUserByUsername(String username) throws UsernameNotFoundException;</code></pre>
-<p>通过自定义实现 UserDetailsService，返回自己的 CustomUserDetails 对象。</p>
-<pre><code class="java">@Service
-public class CustomUserDetailsService implements UserDetailsService {
+    private final StringRedisTemplate stringRedisTemplate;
 
     @Autowired
-    private UserService userService;
+    public ApiApplication(UserMongoService mongoService,
+                          UserMySQLService mySQLService,
+                          StringRedisTemplate stringRedisTemplate) {
+        this.mongoService = mongoService;
+        this.mySQLService = mySQLService;
+        this.stringRedisTemplate = stringRedisTemplate;
+    }
 
-    @Override
-    public UserDetails loadUserByUsername(String username) throws UsernameNotFoundException {
-        User user = userService.findByUsername(username);
-        if(user == null)
-            throw new UsernameNotFoundException(&quot;user not found&quot;);
+    public static void main(String[] args) {
+        SpringApplication.run(ApiApplication.class, args);
+    }
 
-        final CustomUserDetails userDetails = new CustomUserDetails();
-        BeanUtils.copyProperties(user,userDetails);
-        // todo 一些其他附加属性等
-        return userDetails;
+    @PostMapping
+    public ResponseEntity createByMySql(@RequestBody Person person) {
+        final Person save = mySQLService.save(person);
+        final User user = mongoService.save(new User(person.getId().toString(), person.getName(), 22));
+        stringRedisTemplate.opsForValue().set(person.getName(), person.getSex().toString());
+        return ResponseEntity.ok(new UPDTO(save, user, null));
+    }
+
+    @GetMapping
+    public ResponseEntity getByMySql(@RequestParam String username) {
+        final Person person = mySQLService.findFirstByName(username);
+        final User user = mongoService.findFirstByName(username);
+        final String redis = stringRedisTemplate.opsForValue().get(username);
+        return ResponseEntity.ok(new UPDTO(person, user, redis));
     }
 }</code></pre>
-</div><hr></div><div class="recent-post-item article-container"><a class="article-title" href="/2019/07/18/读书笔记/《SpringSecurity》/4.示例/">《Spring Security》第四章 示例</a><time class="post-meta__date"><i class="fa fa-calendar" aria-hidden="true"></i> 2019-07-18</time><span class="article-meta"><span class="article-meta__separator">|</span><i class="fa fa-inbox article-meta__icon" aria-hidden="true"></i><a class="article-meta__categories" href="/categories/读书笔记/">读书笔记</a><i class="fa fa-angle-right" aria-hidden="true"></i><i class="fa fa-inbox article-meta__icon" aria-hidden="true"></i><a class="article-meta__categories" href="/categories/读书笔记/Spring-Security/">Spring Security</a></span><span class="article-meta tags"><span class="article-meta__separator">|</span><i class="fa fa-tag article-meta__icon" aria-hidden="true"></i><a class="article-meta__tags" href="/tags/hide/">hide</a><span class="article-meta__link">-</span><i class="fa fa-tag article-meta__icon" aria-hidden="true"></i><a class="article-meta__tags" href="/tags/Spring-Security/">Spring Security</a></span><div class="content"><h1 id="第四章-示例"><a href="#第四章-示例" class="headerlink" title="第四章 示例"></a>第四章 示例</h1><p>示例请参考  <a href="https://spring.io/spring-security/index.html" target="_blank" rel="noopener">官方网站：http://spring.io/spring-security/</a>，或者 <a href="https://github.com/spring-projects/spring-security/tree/master/samples" target="_blank" rel="noopener">Github</a></p>
-</div><hr></div><div class="recent-post-item article-container"><a class="article-title" href="/2019/07/18/读书笔记/《SpringSecurity》/3.方法级别的安全配置/">《Spring Security》第三章 基于方法级别的安全配置</a><time class="post-meta__date"><i class="fa fa-calendar" aria-hidden="true"></i> 2019-07-18</time><span class="article-meta"><span class="article-meta__separator">|</span><i class="fa fa-inbox article-meta__icon" aria-hidden="true"></i><a class="article-meta__categories" href="/categories/读书笔记/">读书笔记</a><i class="fa fa-angle-right" aria-hidden="true"></i><i class="fa fa-inbox article-meta__icon" aria-hidden="true"></i><a class="article-meta__categories" href="/categories/读书笔记/Spring-Security/">Spring Security</a></span><span class="article-meta tags"><span class="article-meta__separator">|</span><i class="fa fa-tag article-meta__icon" aria-hidden="true"></i><a class="article-meta__tags" href="/tags/hide/">hide</a><span class="article-meta__link">-</span><i class="fa fa-tag article-meta__icon" aria-hidden="true"></i><a class="article-meta__tags" href="/tags/Spring-Security/">Spring Security</a></span><div class="content"><h1 id="第三章-基于方法级别的安全配置"><a href="#第三章-基于方法级别的安全配置" class="headerlink" title="第三章 基于方法级别的安全配置"></a>第三章 基于方法级别的安全配置</h1><p>Spring Security 提供了两种方法级别的安全配置，一个是框架的原始注释 @secure ，另一个新的基于表达式的注释。</p>
+<h3 id="2-配置参数"><a href="#2-配置参数" class="headerlink" title="2. 配置参数"></a>2. 配置参数</h3><p>连上我们之前配置的MongoDB、MySQL、Redis容器。</p>
 <blockquote>
-<p>可以针对单个 Bean 进行保护，也可以使用 AspectJ 风格的切入点跨服务层保护多个 Bean。</p>
+<p>这里使用配置的 docker-compose 中的服务名称。这样服务会自动连接，而 <code>localhost</code> 或者 <code>127.0.0.1</code> 则表示 <code>luokaiii-api</code> 当前容器内部的端口号，肯定会连接失败的。</p>
 </blockquote>
-<h2 id="一、EnableGlobalMethodSecurity-注解"><a href="#一、EnableGlobalMethodSecurity-注解" class="headerlink" title="一、EnableGlobalMethodSecurity 注解"></a>一、EnableGlobalMethodSecurity 注解</h2><p>在任何 <code>@Configuration</code> 实例上使用 <code>@EnableGlobalMethodSecurity</code> 注释，启用基于注释的安全性。示例如下：</p>
-<pre><code class="java">@EnableGlobalMethodSecurity(securedEnabled = true)
-@Configuration
-public class MethodSecurityConfig {
-    // ...
-}</code></pre>
-<p>然后向方法添加注释，将相应地限制对该方法的访问。这些信息将会被传递给 AccessDecisionManager：</p>
-<pre><code class="java">public interface BankService {
-    @Secured(&quot;IS_AUTHENTICATED_ANONYMOUSLY&quot;)
-    public Account readAccount(Long id);
+<pre><code class="properties"># MongoDB 连接
+spring.data.mongodb.uri=mongodb://mongoadmin:password@mongo:27017/demo?authSource=admin
 
-    @Secured(&quot;IS_AUTHENTICATED_ANONYMOUSLY&quot;)
-    public Account[] findAccounts();
+# MySQL 连接
+spring.datasource.username=root
+spring.datasource.password=password
+spring.datasource.driver-class-name=com.mysql.cj.jdbc.Driver
+spring.datasource.url=jdbc:mysql://mariadb:3306/db_user?useUnicode=true&amp;characterEncoding=GBK&amp;useSSL=false
 
-    @Secured(&quot;ROLE_TELLER&quot;)
-    public Account post(Account account, double amount);
-}</code></pre>
-<p>或者使用 基于表达式的语法：</p>
-<pre><code class="java">@EnableGlobalMethodSecurity(prePostEnabled = true)
-@Configuration
-public class MethodSecurityConfig {
-    // ...
-}</code></pre>
-<pre><code class="java">public interface BankService {
-    @PreAuthorize(&quot;isAnnoymous()&quot;)
-    public Account readAccount(Long id);
+# Redis 连接
+spring.redis.host=redis
+spring.redis.port=6379
+spring.redis.password=password</code></pre>
+<h3 id="3-测试"><a href="#3-测试" class="headerlink" title="3. 测试"></a>3. 测试</h3><p>执行如下 Post 命令：</p>
+<pre><code class="sh"># Post 请求
+$ curl -i -X POST  -H &quot;Content-Type:application/json&quot; -d &#39;{ &quot;id&quot;:2, &quot;name&quot;:&quot;zhangsan&quot;, &quot;sex&quot;:1 }&#39; &#39;http://localhost:8080/&#39;
 
-    @PreAuthorize(&quot;isAnnoymous()&quot;)
-    public Account[] findAccounts();
+# 返回结果
+{&quot;mysql&quot;:{&quot;id&quot;:2,&quot;name&quot;:&quot;zhangsan&quot;,&quot;sex&quot;:1},&quot;mongo&quot;:{&quot;id&quot;:&quot;2&quot;,&quot;name&quot;:&quot;zhangsan&quot;,&quot;age&quot;:22},&quot;redis&quot;:null}</code></pre>
+<p>执行如下 Get 命令：</p>
+<pre><code class="sh"># Get 请求
+$ curl -i -X GET &#39;http://localhost:8080?username=zhangsan&#39;
 
-    @PreAuthorize(&quot;hasAuthority(&#39;ROLE_TELLER&#39;)&quot;)
-    public Account post(Account account, double amount);
-}</code></pre>
-<h2 id="二、自定义方法安全配置"><a href="#二、自定义方法安全配置" class="headerlink" title="二、自定义方法安全配置"></a>二、自定义方法安全配置</h2><p>如果需要执行比 @EnableGlobalMethodSecurity 注释提供的更复杂的操作，可以扩展 GlobalMethodSecurityConfiguration。</p>
-<pre><code class="java">@EnableGlobalMethodSecurity(prePostEnabled = true)
-public class methodSecurityConfig extends GlobalMethodSecurityConfiguration {
-    @Override
-    protected MethodSecurityExpressionHandler createExpressionHandler(){
-        // create and return custom handler
-        return expressionHandler;
-    }
-}</code></pre>
-</div><hr></div><div class="recent-post-item article-container"><a class="article-title" href="/2019/07/18/读书笔记/《SpringSecurity》/2.配置/">《Spring Security》第二章 Java配置SpringSecurity</a><time class="post-meta__date"><i class="fa fa-calendar" aria-hidden="true"></i> 2019-07-18</time><span class="article-meta"><span class="article-meta__separator">|</span><i class="fa fa-inbox article-meta__icon" aria-hidden="true"></i><a class="article-meta__categories" href="/categories/读书笔记/">读书笔记</a><i class="fa fa-angle-right" aria-hidden="true"></i><i class="fa fa-inbox article-meta__icon" aria-hidden="true"></i><a class="article-meta__categories" href="/categories/读书笔记/Spring-Security/">Spring Security</a></span><span class="article-meta tags"><span class="article-meta__separator">|</span><i class="fa fa-tag article-meta__icon" aria-hidden="true"></i><a class="article-meta__tags" href="/tags/hide/">hide</a><span class="article-meta__link">-</span><i class="fa fa-tag article-meta__icon" aria-hidden="true"></i><a class="article-meta__tags" href="/tags/Spring-Security/">Spring Security</a></span><div class="content"><h1 id="第二章-Java配置SpringSecurity"><a href="#第二章-Java配置SpringSecurity" class="headerlink" title="第二章 Java配置SpringSecurity"></a>第二章 Java配置SpringSecurity</h1><p>从 Spring 3.1 以后，Spring框架支持了对 Java 配置的支持，所以这里就不再细述 XML 的配置方式了。感兴趣的可以直接 <a href="https://docs.spring.io/spring-security/site/docs/5.0.5.RELEASE/reference/htmlsingle/#ns-config" target="_blank" rel="noopener">查看 SpringSecurity 文档</a>，里面详细描述了 Java Configuration 对应的XML Configuration。</p>
-<p>Spring Security 提供了许多 Java Configuration 的 Samples 示例，详见 <a href="https://github.com/spring-projects/spring-security/tree/master/samples/javaconfig" target="_blank" rel="noopener">Samples</a>。</p>
-<h2 id="一、创建-Spring-Security-Java-配置"><a href="#一、创建-Spring-Security-Java-配置" class="headerlink" title="一、创建 Spring Security Java 配置"></a>一、创建 Spring Security Java 配置</h2><pre><code class="java">@EnableWebSecurity
-public class WebSecurityConfig implements WebMvcConfigurer {
-    @Bean
-    public UserDetailsService userDetailsService() throws Exception {
-        InMemoryUserDetailsManager manager = new InMemoryUserDetailsManager();           
-        manager.createUser(
-            User.withDefaultPasswordEncoder()
-                .username(&quot;user&quot;)
-                .password(&quot;password&quot;)
-                .roles(&quot;USER&quot;)
-                .build()
-        );
-        return manager;
-    }
-}</code></pre>
-<p>查看 <code>@EnableWebSecurity</code> 的代码，可以发现其引入了 <code>WebSecurityConfiguration.class</code> 的配置类。</p>
-<p>该配置创建了一个 <code>SpringSecurityFilterChain</code> 的过滤器，负责应用程序内部的所有安全（如保护应用的URL、验证提交的用户名密码、重定向至登录表单等等）。</p>
-<p>其具有的主要功能如下：</p>
-<ol>
-<li>默认对应用程序中的每个 URL 进行身份验证</li>
-<li>生成一个登录表单</li>
-<li>允许用户使用表单的username、password进行身份认证</li>
-<li>允许用户使用 logout 注销</li>
-<li>预防 CSRF 攻击</li>
-<li>维持会话固定（Session Fixation）</li>
-<li>集成安全报头（Security Header）<ol>
-<li>X-Content-Type-Options</li>
-<li>Cache Control - 缓存控制</li>
-<li>X-XSS-Protection integration - 保护X-XSS一体化</li>
-<li>X-Frame-Options integration to help prevent - 防止点击劫持</li>
-</ol>
-</li>
-<li>与 Servlet API 集成<ol>
-<li>HttpServletRequset#getRemoteUser()</li>
-<li>HttpServletRequest#getUserPrincipal()</li>
-<li>HttpServletRequest#isUserInRole(String)</li>
-<li>HttpServletRequest#login(String,String)</li>
-<li>HttpServletRequest#logout()</li>
-</ol>
-</li>
-</ol>
-<h2 id="二、HttpSecurity-配置"><a href="#二、HttpSecurity-配置" class="headerlink" title="二、HttpSecurity 配置"></a>二、HttpSecurity 配置</h2><p>在开启 Java 配置之后，会默认开启所有路径的验证、表单登录、退出支持等等操作，但是我们并没有提供配置，这是因为 WebSecurityConfigurerAdapter 提供了一个默认的 <code>configure(HttpSecurity http)</code> 配置，如下所示：</p>
-<pre><code class="java">    /**
-     * Override this method to configure the {@link HttpSecurity}. Typically subclasses
-     * should not invoke this method by calling super as it may override their
-     * configuration. The default configuration is:
-     *
-     * &lt;pre&gt;
-     * http.authorizeRequests().anyRequest().authenticated().and().formLogin().and().httpBasic();
-     * &lt;/pre&gt;
-     *
-     * @param http the {@link HttpSecurity} to modify
-     * @throws Exception if an error occurs
-     */
-    // @formatter:off
-    protected void configure(HttpSecurity http) throws Exception {
-        logger.debug(&quot;Using default configure(HttpSecurity). If subclassed this will potentially override subclass configure(HttpSecurity).&quot;);
+# 返回结果
+{&quot;mysql&quot;:{&quot;id&quot;:2,&quot;name&quot;:&quot;zhangsan&quot;,&quot;sex&quot;:1},&quot;mongo&quot;:{&quot;id&quot;:&quot;2&quot;,&quot;name&quot;:&quot;zhangsan&quot;,&quot;age&quot;:22},&quot;redis&quot;:&quot;1&quot;}</code></pre>
+<h2 id="二、构建-Docker-镜像"><a href="#二、构建-Docker-镜像" class="headerlink" title="二、构建 Docker 镜像"></a>二、构建 Docker 镜像</h2><h3 id="1-pom-xml-中增加-docker-插件"><a href="#1-pom-xml-中增加-docker-插件" class="headerlink" title="1. pom.xml 中增加 docker 插件"></a>1. pom.xml 中增加 docker 插件</h3><p>完整的 <code>pom.xml</code> 如下：</p>
+<pre><code class="xml">&lt;?xml version=&quot;1.0&quot; encoding=&quot;UTF-8&quot;?&gt;
+&lt;project xmlns=&quot;http://maven.apache.org/POM/4.0.0&quot; xmlns:xsi=&quot;http://www.w3.org/2001/XMLSchema-instance&quot;
+         xsi:schemaLocation=&quot;http://maven.apache.org/POM/4.0.0 https://maven.apache.org/xsd/maven-4.0.0.xsd&quot;&gt;
+    &lt;modelVersion&gt;4.0.0&lt;/modelVersion&gt;
+    &lt;parent&gt;
+        &lt;groupId&gt;org.springframework.boot&lt;/groupId&gt;
+        &lt;artifactId&gt;spring-boot-starter-parent&lt;/artifactId&gt;
+        &lt;version&gt;2.1.8.RELEASE&lt;/version&gt;
+        &lt;relativePath/&gt; &lt;!-- lookup parent from repository --&gt;
+    &lt;/parent&gt;
+    &lt;!-- 当前项目的版本、名称等信息 --&gt;
+    &lt;groupId&gt;cn.luokaiii&lt;/groupId&gt;
+    &lt;artifactId&gt;api&lt;/artifactId&gt;
+    &lt;version&gt;0.0.1-SNAPSHOT&lt;/version&gt;
+    &lt;name&gt;api&lt;/name&gt;
+    &lt;description&gt;java api&lt;/description&gt;
 
-        http
-            .authorizeRequests()
-                .anyRequest().authenticated() // 配置对应用程序的所有请求都需要身份验证
-                .and()
-            .formLogin().and() // 开启表单登录
-            .httpBasic();  // 允许使用 Http Basic 方式登录
-    }</code></pre>
-<h2 id="三、Java-配置和表单登录"><a href="#三、Java-配置和表单登录" class="headerlink" title="三、Java 配置和表单登录"></a>三、Java 配置和表单登录</h2><p>一般情况下，我们会使用自己定义的登录页面，而不是SpringSecurity默认提供的登录页面。因此，我们可以修改 HttpSecurity 的配置：</p>
-<pre><code class="java">protected void configure(HttpSecurity http) throws Exception {
-    http
-        .authorizeRequests()
-        .anyRequest().authenticated()
-        .and()
-        .formLogin()
-            .loginPage(&quot;/login&quot;) // 指定登录页位置
-            .permitAll();  // 允许所有用户访问基于表单登录关联的所有url权限
-}</code></pre>
-<h2 id="四、授权请求"><a href="#四、授权请求" class="headerlink" title="四、授权请求"></a>四、授权请求</h2><p>默认情况下， HttpSecurity选择拦截所有的请求，并且只要有身份认证即可访问。我们可以通过 <code>http.authorizeRequest()</code> 方法添加多个子类来指定 url 的自定义需求。</p>
-<pre><code class="java">protected void configure(HttpSecurity http) throws Exception {
-    http
-        .authorizeRequests()    // 按照子类的顺序进行匹配
-            .antMatcher(&quot;/resources/**&quot;,&quot;signup&quot;,&quot;/about&quot;).permitAll() // 允许指定路径无需认证
-            .antMatcher(&quot;/admin/**&quot;).hasRole(&quot;ADMIN&quot;)    // 指定路径需要 ADMIN 权限
-            .antMatcher(&quot;/db/**&quot;).access(&quot;hasRole(&#39;ADMIN&#39;) and hasRole(&#39;DBA&#39;)&quot;) // 使用 hasRole 表达式，这样不需要 ROLE 前缀
-            .anyRequest().authenticated() // 其他所有请求都需要身份验证
-            .and()
-        .formLogin()
-            .loginPage(&quot;/login&quot;)
-            .permitAll();
-}</code></pre>
-<h2 id="五、登出处理"><a href="#五、登出处理" class="headerlink" title="五、登出处理"></a>五、登出处理</h2><p>在使用 <code>WebSecurityConfigurerAdapter</code> 时，将会自动开启注销功能，访问 <code>/logout</code> 后会执行如下操作使用户注销：</p>
-<ol>
-<li>使用 Http Session 无效</li>
-<li>清理任何与 RememberMe 相关的身份验证</li>
-<li>清理 SecurityContextHolder</li>
-<li>跳转到 “/login?logout”</li>
-</ol>
-<p>或者，也可以自定义注销需求：</p>
-<pre><code class="java">protected void configure(HttpSecurity http) throws Exception {
-    http
-        .authorizeRequests()
-            .antMatcher(&quot;/resources/**&quot;,&quot;signup&quot;,&quot;/about&quot;).permitAll()
-            .antMatcher(&quot;/admin/**&quot;).hasRole(&quot;ADMIN&quot;)
-            .antMatcher(&quot;/db/**&quot;).access(&quot;hasRole(&#39;ADMIN&#39;) and hasRole(&#39;DBA&#39;)&quot;)
-            .anyRequest().authenticated()
-            .and()
-        .formLogin()
-            .loginPage(&quot;/login&quot;)
-            .permitAll()
-            .and()
-        .logout()                                // 提供注销支持
-            .logoutUrl(&quot;/my/logout&quot;)            // 触发注销操作的 url，如果开启了 CSRF保护，则此请求需要是POST
-            .logoutSuccessUrl(&quot;/my/index&quot;)         // 注销后要重定向的URL，默认为 /login?logout
-            .logoutSuccessHandler(logoutSuccessHandler)    // 自定义登出成功处理器
-            .invalidateHttpSession(true)        // 在注销时是否需要使 HttpSession 无效
-            .addLogoutHandler(logoutHandler)    // 添加登出处理器
-            .deleteCookies(cookieNamesToClear);    // 注销成功时删除指定的 cookie，这是一种显式添加 CookieClearingLogoutHandler 的方式
-}</code></pre>
-<h3 id="5-1-LogoutHandler-登出处理器"><a href="#5-1-LogoutHandler-登出处理器" class="headerlink" title="5.1 LogoutHandler 登出处理器"></a>5.1 LogoutHandler 登出处理器</h3><p>LogoutHandler 实现能够参与注销处理的类，通过调用它们来执行必要的清理，且不会引发异常。各种实现如下：</p>
-<ol>
-<li>PersistentTokenBasedRememberMeServices</li>
-<li>TokenBasedRememberMeServices</li>
-<li>CookieClearingLogoutHandler</li>
-<li>CsrfLogoutHandler</li>
-<li>SecurityContextLogoutHandler</li>
-</ol>
-<p>以上处理器实现，大致能做到见名识义。</p>
-<h3 id="5-2-LogoutSuccessHandler-登出成功处理器"><a href="#5-2-LogoutSuccessHandler-登出成功处理器" class="headerlink" title="5.2 LogoutSuccessHandler 登出成功处理器"></a>5.2 LogoutSuccessHandler 登出成功处理器</h3><p>与 LogoutHandler 类似，但是可能会引发异常。在 LogoutFilter 成功注销之后，LogoutSuccessHandler 会处理例如重定向或转发到适当的目标，具体实现如下：</p>
-<ol>
-<li>SimpleUrlLogoutSuccessHandler<ol>
-<li>注销成功之后返回到指定 url，默认为 /login?logout</li>
-</ol>
-</li>
-<li>HttpStatusReturningLogoutSuccessHandler<ol>
-<li>允许在注销成功之后返回一个普通的 HTTP 状态码，而不是重定向至 URL</li>
-</ol>
-</li>
-</ol>
-<h3 id="5-3-其他的登出考虑"><a href="#5-3-其他的登出考虑" class="headerlink" title="5.3 其他的登出考虑"></a>5.3 其他的登出考虑</h3><ol>
-<li>测试登录</li>
-<li>csrf注意事项</li>
-<li>单点登出</li>
-</ol>
-<h2 id="六、WebFlux-Security"><a href="#六、WebFlux-Security" class="headerlink" title="六、WebFlux Security"></a>六、WebFlux Security</h2><p>关于 Spring-WebFlux 具体是什么，可以详见 <a href="https://blog.csdn.net/get_set/article/details/79480233" target="_blank" rel="noopener">《Spring-WebFlux》</a>。</p>
-<pre><code class="java">@EnableWebFluxSecurity
-public class HelloWebfluxSecurityConfig {
-    @Bean
-    public SecurityWebFilterChain spirngSecurityFilterChain(ServerHttpSecurity http) {
-        http
-            .authorizeExchange()
-                .anyExchange().authenticated()
-                .and()
-            .httpBasic()
-                .and()
-            .formLogin();
-    }
-}</code></pre>
-<h2 id="七、OAuth-2-0"><a href="#七、OAuth-2-0" class="headerlink" title="七、OAuth 2.0"></a>七、OAuth 2.0</h2><p>TODO：<a href="https://docs.spring.io/spring-security/site/docs/5.0.5.RELEASE/reference/htmlsingle/#jc-oauth2login" target="_blank" rel="noopener">@see</a></p>
-<h2 id="八、Authentication-认证"><a href="#八、Authentication-认证" class="headerlink" title="八、Authentication 认证"></a>八、Authentication 认证</h2><h3 id="8-1-内存认证-In-Memory-Authentication"><a href="#8-1-内存认证-In-Memory-Authentication" class="headerlink" title="8.1 内存认证(In-Memory Authentication)"></a>8.1 内存认证(In-Memory Authentication)</h3><p>直接在内存中配置多个用户，示例如下：</p>
-<pre><code class="java">@Bean
-public UserDetailsService userDetailsService() throws Exception {
-    UserBuilder user = User.withDefaultPasswordEncoder();
-    InMemoryUserDetailsManager manager = new InMemoryUserDetailsManager();
-    manager.createUser(users.username(&quot;user&quot;).password(&quot;password&quot;).roles(&quot;USER&quot;).build());
-    manager.createUser(users.username(&quot;admin&quot;).password(&quot;password&quot;).roles(&quot;ADMIN&quot;).build());
-    return manager;
-}</code></pre>
-<h3 id="8-2-JDBC认证"><a href="#8-2-JDBC认证" class="headerlink" title="8.2 JDBC认证"></a>8.2 JDBC认证</h3><pre><code class="java">@Autowired
-private DataSource dataSource;
+    &lt;!-- JDK版本 --&gt;
+    &lt;properties&gt;
+        &lt;java.version&gt;1.8&lt;/java.version&gt;
+    &lt;/properties&gt;
 
-@Autowired
-public void configureGlobal(AuthenticationManagerBuilder auth) throws Exception {
-    UserBuilder user = User.withDefaultPasswordEncoder();
-    auth
-        .jdbcAuthentication()
-        .dataSource(dataSource)
-        .withDefaultSchema()
-        .withUser(users.username(&quot;user&quot;).password(&quot;password&quot;).roles(&quot;USER&quot;))
-        .withUser(users.username(&quot;admin&quot;).password(&quot;password&quot;).roles(&quot;ADMIN&quot;));
-}</code></pre>
+    &lt;dependencies&gt;
+        &lt;!-- Spring Data JPA --&gt;
+        &lt;dependency&gt;
+            &lt;groupId&gt;org.springframework.boot&lt;/groupId&gt;
+            &lt;artifactId&gt;spring-boot-starter-data-jpa&lt;/artifactId&gt;
+        &lt;/dependency&gt;
+        &lt;!-- Spring Data MongoDB --&gt;
+        &lt;dependency&gt;
+            &lt;groupId&gt;org.springframework.boot&lt;/groupId&gt;
+            &lt;artifactId&gt;spring-boot-starter-data-mongodb&lt;/artifactId&gt;
+        &lt;/dependency&gt;
+        &lt;!-- Spring Data Redis --&gt;
+        &lt;dependency&gt;
+            &lt;groupId&gt;org.springframework.boot&lt;/groupId&gt;
+            &lt;artifactId&gt;spring-boot-starter-data-redis&lt;/artifactId&gt;
+        &lt;/dependency&gt;
+        &lt;!-- Web 服务器 --&gt;
+        &lt;dependency&gt;
+            &lt;groupId&gt;org.springframework.boot&lt;/groupId&gt;
+            &lt;artifactId&gt;spring-boot-starter-web&lt;/artifactId&gt;
+        &lt;/dependency&gt;
+        &lt;!-- MySQL驱动连接 --&gt;
+        &lt;dependency&gt;
+            &lt;groupId&gt;mysql&lt;/groupId&gt;
+            &lt;artifactId&gt;mysql-connector-java&lt;/artifactId&gt;
+        &lt;/dependency&gt;
+        &lt;!-- 测试 --&gt;
+        &lt;dependency&gt;
+            &lt;groupId&gt;org.springframework.boot&lt;/groupId&gt;
+            &lt;artifactId&gt;spring-boot-starter-test&lt;/artifactId&gt;
+            &lt;scope&gt;test&lt;/scope&gt;
+        &lt;/dependency&gt;
+    &lt;/dependencies&gt;
+
+    &lt;build&gt;
+        &lt;plugins&gt;
+            &lt;!-- Maven 插件 --&gt;
+            &lt;plugin&gt;
+                &lt;groupId&gt;org.springframework.boot&lt;/groupId&gt;
+                &lt;artifactId&gt;spring-boot-maven-plugin&lt;/artifactId&gt;
+            &lt;/plugin&gt;
+            &lt;!-- Docker Maven 插件 --&gt;
+            &lt;plugin&gt;
+                &lt;groupId&gt;com.spotify&lt;/groupId&gt;
+                &lt;artifactId&gt;docker-maven-plugin&lt;/artifactId&gt;
+                &lt;version&gt;1.2.0&lt;/version&gt;
+                &lt;configuration&gt;
+                    &lt;!-- 构建出的镜像名 --&gt;
+                    &lt;imageName&gt;luokaiii-api&lt;/imageName&gt;
+                    &lt;!-- 基础依赖的镜像 --&gt;
+                    &lt;baseImage&gt;openjdk:8-slim&lt;/baseImage&gt;
+
+                    &lt;entryPoint&gt;[&quot;java&quot;, &quot;-jar&quot;, &quot;/${project.build.finalName}.jar&quot;]&lt;/entryPoint&gt;
+                    &lt;resources&gt;
+                        &lt;resource&gt;
+                            &lt;targetPath&gt;/&lt;/targetPath&gt;
+                            &lt;directory&gt;${project.build.directory}&lt;/directory&gt;
+                            &lt;include&gt;${project.build.finalName}.jar&lt;/include&gt;
+                        &lt;/resource&gt;
+                    &lt;/resources&gt;
+                &lt;/configuration&gt;
+            &lt;/plugin&gt;
+        &lt;/plugins&gt;
+    &lt;/build&gt;
+
+&lt;/project&gt;</code></pre>
+<h3 id="2-构建镜像"><a href="#2-构建镜像" class="headerlink" title="2. 构建镜像"></a>2. 构建镜像</h3><pre><code class="sh"># mvn clean package 重新打包， -Dmaven.test.skip 跳过测试，docker:build 构建镜像
+$ mvn clean package -Dmaven.test.skip=true docker:build</code></pre>
 <blockquote>
-<p>其他如：LDAP认证、AuthenticationProvider、UseDetailsService不再赘述。</p>
+<p>正常的生产环境，应该有严格的单元测试。</p>
 </blockquote>
-<h2 id="九、多重-HttpSecurity-配置"><a href="#九、多重-HttpSecurity-配置" class="headerlink" title="九、多重 HttpSecurity 配置"></a>九、多重 HttpSecurity 配置</h2><pre><code class="java">@EnableWebSecurity
-public class MultiHttpSecurityConfig {
-    @Configuration
-    @Order(1)
-    public static class ApiWebSecurityConfigurationAdapter extends WebSecurityConfigurerAdapter {
-        protected void configure(HttpSecurity http) throws Exception {
-            http
-                .antMatch(&quot;/api/**&quot;)
-                .authorizeRequests()
-                    .anyRequest().hasRole(&quot;ADMIN&quot;)
-                    .and()
-                .httpBasic();
-        }
-    }
+<p>查看 Docker Images (<code>$ docker images</code>)，应该有如下几个镜像了：</p>
+<p><img src="https://i.loli.net/2019/09/24/XfK9C25qhBNSERr.png" alt="图：Docker Images"></p>
+<p>带上之前的镜像，一共有如下几个：<code>luokaiii-api</code> ，<code>mongo:4.0.12</code> ，<code>mariadb:10.4.8</code> ，<code>openjdk:8-slim</code>， <code>redis:4.0.14</code></p>
+<h3 id="3-测试-1"><a href="#3-测试-1" class="headerlink" title="3. 测试"></a>3. 测试</h3><h4 id="a-启动-luokaiii-api-镜像"><a href="#a-启动-luokaiii-api-镜像" class="headerlink" title="a) 启动 luokaiii-api 镜像"></a>a) 启动 <code>luokaiii-api</code> 镜像</h4><p>这里我们直接使用了 Docker-Compose 来启动该镜像，因为 <code>luokaiii-api</code> 依赖了如 <code>mongodb</code>，<code>mariadb</code>，<code>redis</code> 等其他镜像容器。</p>
+<h4 id="a-1-在父级目录下创建-docker-compose-yml-文件"><a href="#a-1-在父级目录下创建-docker-compose-yml-文件" class="headerlink" title="a.1 在父级目录下创建 docker-compose.yml 文件"></a>a.1 在父级目录下创建 docker-compose.yml 文件</h4><blockquote>
+<p> 不再开放mongo、mysql、redis的外部连接，统一改为容器内部通信，只对外提供一个 8080 端口用于访问。</p>
+</blockquote>
+<p><code>docker-compose.yml</code> 文件如下：</p>
+<pre><code class="yml"># Docker-Compose 的版本
+version: &#39;3&#39;
 
-    @Configuration
-    public static class FormLoginWebSecurityConfigurerAdapter extends WebSecurityConfigurerAdapter {
+# 服务声明
+services:
+  # MongoDB 服务
+  mongo:
+    container_name: &#39;luokaiii-mongo&#39;
+    image: &#39;mongo:4.0.12&#39;
+    volumes:
+      - mongodata:/data/db
+    environment:
+      MONGO_INITDB_ROOT_USERNAME: mongoadmin
+      MONGO_INITDB_ROOT_PASSWORD: password
+    restart: always
+    expose:    # 暴露端口，但不映射到宿主机
+      - &#39;27017&#39;
+  # MariaDB 服务
+  mariadb:
+    container_name: &#39;luokaiii-mysql&#39;
+    image: &#39;mariadb:10.4.8&#39;
+    volumes:
+      - &#39;./mysql/data/:/var/lib/mysql&#39;
+      - &#39;./mysql/conf/local.cnf:/etc/mysql/conf.d/local.cnf&#39;
+    environment:
+      MYSQL_ROOT_PASSWORD: password
+      MYSQL_DATABASE: db_user
+    command: [&#39;mysqld&#39;, &#39;--character-set-server=utf8mb4&#39;, &#39;--collation-server=utf8mb4_unicode_ci&#39;]
+    restart: always
+    expose:
+      - &#39;3306&#39;
+  # Redis 服务
+  redis:
+    container_name: &#39;luokaiii-redis&#39;
+    image: &#39;redis:4.0.14&#39;
+    volumes:
+      - &#39;./redis/data:/data&#39;
+    command: redis-server --requirepass password
+    restart: always
+    expose:
+      - &#39;6379&#39;
+  # Java API 服务
+  api:
+    container_name: &#39;luokaiii-api&#39;
+    depends_on: # 依赖其他容器(如DB连接等)
+      - mongo
+      - redis
+      - mariadb
+    image: &#39;luokaiii-api:latest&#39;
+    ports:    # 对外暴露 8080 端口
+      - &#39;8080:8080&#39;
+    restart: always
 
-        @Override
-        protected void configure(HttpSecurity http) throws Exception {
-            http
-                .authorizeRequests()
-                    .anyRequest().authenticated()
-                    .and()
-                .formLogin();
-        }
-    }
-}</code></pre>
-<p>如果请求的url以 /api/ 开头，将使用 <code>ApiWebSecurityConfigurationAdapter</code> 配置。其他请求使用 <code>FormLoginWebSecurityConfigurerAdapter</code> 配置。</p>
-</div><hr></div><div class="recent-post-item article-container"><a class="article-title" href="/2019/07/18/读书笔记/《SpringSecurity》/1.序言/">《Spring Security》第一章 SpringSecurity 介绍</a><time class="post-meta__date"><i class="fa fa-calendar" aria-hidden="true"></i> 2019-07-18</time><span class="article-meta"><span class="article-meta__separator">|</span><i class="fa fa-inbox article-meta__icon" aria-hidden="true"></i><a class="article-meta__categories" href="/categories/读书笔记/">读书笔记</a><i class="fa fa-angle-right" aria-hidden="true"></i><i class="fa fa-inbox article-meta__icon" aria-hidden="true"></i><a class="article-meta__categories" href="/categories/读书笔记/Spring-Security/">Spring Security</a></span><span class="article-meta tags"><span class="article-meta__separator">|</span><i class="fa fa-tag article-meta__icon" aria-hidden="true"></i><a class="article-meta__tags" href="/tags/hide/">hide</a><span class="article-meta__link">-</span><i class="fa fa-tag article-meta__icon" aria-hidden="true"></i><a class="article-meta__tags" href="/tags/Spring-Security/">Spring Security</a></span><div class="content"><h1 id="第一章-SpringSecurity-介绍"><a href="#第一章-SpringSecurity-介绍" class="headerlink" title="第一章 SpringSecurity 介绍"></a>第一章 SpringSecurity 介绍</h1><p>应用程序的安全性主要体现在两个方面：<code>身份验证(authentication)</code> 和<code>授权(authorization)（或叫做 访问控制(access-control)）</code>，同样，这也是 SpringSecurity 的两大目标。</p>
-<h2 id="一、身份验证-Authentication"><a href="#一、身份验证-Authentication" class="headerlink" title="一、身份验证 Authentication"></a>一、身份验证 Authentication</h2><p>Spring Security 支持以下的技术集成，这里只写几种常见的并简单介绍：</p>
+# 容器能够使用的数据卷
+volumes:
+  mongodata:</code></pre>
+<h4 id="a-2-修改之前的-application-properties"><a href="#a-2-修改之前的-application-properties" class="headerlink" title="a.2 修改之前的 application.properties"></a>a.2 修改之前的 application.properties</h4><p>将 <code>localhost</code> 全部改为对应 <code>Compose</code> 的服务名称，这样 容器在运行时会动态加载对应的服务及端口。</p>
+<pre><code class="properties"># MongoDB 连接
+spring.data.mongodb.uri=mongodb://mongoadmin:password@mongo:27017/demo?authSource=admin
+
+# MySQL 连接
+spring.datasource.username=root
+spring.datasource.password=password
+spring.datasource.driver-class-name=com.mysql.cj.jdbc.Driver
+spring.datasource.url=jdbc:mysql://mariadb:3306/db_user?useUnicode=true&amp;characterEncoding=GBK&amp;useSSL=false
+
+# Redis 连接
+spring.redis.host=redis
+spring.redis.port=6379
+spring.redis.password=password</code></pre>
+<h4 id="a-3-运行-docker-compose"><a href="#a-3-运行-docker-compose" class="headerlink" title="a.3 运行 docker-compose"></a>a.3 运行 docker-compose</h4><pre><code class="sh"># 后台运行所有容器
+$ docker-compose -d up
+
+# 停止所有容器
+# docker-compose down
+
+# 停止单个容器
+# docker-compose stop luokaiii-api
+
+# 运行单个容器(停止状态)
+# docker-compose start luokaiii-api
+
+# 运行单个容器(被删除后)
+# docker-compose run --name luokaiii-api luokaiii-api</code></pre>
+<h4 id="a-4-依次查看容器的日志"><a href="#a-4-依次查看容器的日志" class="headerlink" title="a.4 依次查看容器的日志"></a>a.4 依次查看容器的日志</h4><p>控制台打印的日志太过混乱，这里我们一个一个的查看：</p>
+<pre><code class="sh"># 查看 MongoDB 运行情况
+$ docker logs luokaiii-mongo</code></pre>
+<p><img src="https://i.loli.net/2019/09/24/VDTEhsdHlyFC1Zi.png" alt="MongoDB运行情况"></p>
+<pre><code class="sh"># 查看 MariaDB 运行情况
+$ docker logs luokaiii-mysql</code></pre>
+<p><img src="https://i.loli.net/2019/09/24/POFBid9THoQbWNg.png" alt="MariaDB运行情况"></p>
+<pre><code class="sh"># 查看 Redis 运行情况
+$ docker logs luokaiii-redis</code></pre>
+<p><img src="C:%5CUsers%5Cuser%5CAppData%5CRoaming%5CTypora%5Ctypora-user-images%5C1569306056942.png" alt="Redis 运行情况"></p>
+<pre><code class="sh"># 查看 JAVA Server 运行情况
+$ docker logs luokaiii-api</code></pre>
+<p><img src="https://i.loli.net/2019/09/24/tUzEfZaIGOLouvP.png" alt="Java运行状况"></p>
+<h3 id="b-生成数据表"><a href="#b-生成数据表" class="headerlink" title="b. 生成数据表"></a>b. 生成数据表</h3><p>进入 <code>luokaiii-mysql</code> 容器，进入 MySQL，生成 person 表。 发送请求即可。</p>
+<h2 id="遇到的问题"><a href="#遇到的问题" class="headerlink" title="遇到的问题"></a>遇到的问题</h2><h3 id="1-MongoDB无法挂载data目录"><a href="#1-MongoDB无法挂载data目录" class="headerlink" title="1. MongoDB无法挂载data目录"></a>1. MongoDB无法挂载data目录</h3><p>按照正常来说，<code>mongo</code> 服务的编排应该如下所示：</p>
+<pre><code class="yml">services:
+  mongo:
+    container_name: &#39;luokaiii-mongo&#39;
+    image: &#39;mongo:4.0.12&#39;
+    volumes:
+      - ./mongo/db:/data/db
+    environment:
+      MONGO_INITDB_ROOT_USERNAME: mongoadmin
+      MONGO_INITDB_ROOT_PASSWORD: password
+    restart: always
+    expose:
+      - &#39;27017&#39;
+......</code></pre>
+<h4 id="问题："><a href="#问题：" class="headerlink" title="问题："></a>问题：</h4><p>这样的挂载，却会抛出文件无法打开、无法读取、无法写入的问题。详见 <a href="https://github.com/docker-library/mongo/issues/74" target="_blank" rel="noopener">Github Issue</a>。</p>
+<h4 id="原因："><a href="#原因：" class="headerlink" title="原因："></a>原因：</h4><p>Docker 中的 Mongo 容器无法使用部分文件。</p>
+<h4 id="解决方案："><a href="#解决方案：" class="headerlink" title="解决方案："></a>解决方案：</h4><p>手动创建一个共享卷，即如下改动：</p>
+<pre><code class="yml">services:
+  mongo:
+    container_name: &#39;luokaiii-mongo&#39;
+    image: &#39;mongo:4.0.12&#39;
+    volumes:
+      - mongodata:/data/db   # 这里改为下面声明的卷
+    environment:
+      MONGO_INITDB_ROOT_USERNAME: mongoadmin
+      MONGO_INITDB_ROOT_PASSWORD: password
+    restart: always
+    expose:
+      - &#39;27017&#39;
+......
+volumes:
+  mongodata:</code></pre>
+<blockquote>
+<p><code>$ docker volume list</code> 能够查看所有共享的卷</p>
+<p><code>$ docker volume inspect &lt;name&gt;</code> 能够查看具体的卷信息(如实际地址等)</p>
+</blockquote>
+<h3 id="2-MySQL-初始密码未生效"><a href="#2-MySQL-初始密码未生效" class="headerlink" title="2. MySQL 初始密码未生效"></a>2. MySQL 初始密码未生效</h3><h4 id="问题：-1"><a href="#问题：-1" class="headerlink" title="问题："></a>问题：</h4><p>在使用 <code>docker-compose up</code> 启动完所有程序后，<code>luokaiii-api</code> 项目抛出 “无法连接 MySQL 数据库的异常”。</p>
+<p>而我们在 <code>docker-compose.yml</code> 中已经指定了具体的初始密码:</p>
+<pre><code class="yml">MYSQL_ROOT_PASSWORD: password</code></pre>
+<h4 id="原因：-1"><a href="#原因：-1" class="headerlink" title="原因："></a>原因：</h4><p>经排查发现，是 <code>luokaiii-mysql</code> 容器的密码未初始化。</p>
+<h4 id="解决方案：-1"><a href="#解决方案：-1" class="headerlink" title="解决方案："></a>解决方案：</h4><p>依次运行以下代码：</p>
+<pre><code class="sh"># 进入 MySQL 容器(Windows需要加上 `winpty`)
+$ docker exec -it luokaiii-mysql bash
+
+# 匹配环境变量
+root@xx/# env | grep -i password
+MYSQL_ROOT_PASSWORD=password
+
+# 尝试无密码登录 - 失败
+root@xx/# mysql -Uroot
+ERROR 1045 (28000): Access denied for user &#39;root&#39;@&#39;localhost&#39; (using password: NO)
+
+# 尝试使用密码登录，成功？？？？为什么？？？
+root@xx/# mysql -Uroot -ppassword</code></pre>
+<p>详见 <a href="https://github.com/docker-library/mysql/issues/557" target="_blank" rel="noopener">Github Issue</a>。</p>
+<blockquote>
+<p>首次操作即可，往后未出现该bug。</p>
+</blockquote>
+<p>参考资料：</p>
 <ol>
-<li>HTTP BASIC authentication headers<ol>
-<li>请求头身份验证</li>
-<li>需要在请求头中添加 “Authorization： Basic 用户和密码的base64加密字符串”</li>
-<li>或者在url中添加用户名和密码：“<a href="http://username:password@api.luokaiii.cn/login”" target="_blank" rel="noopener">http://username:password@api.luokaiii.cn/login”</a></li>
+<li><a href="https://github.com/spotify/docker-maven-plugin" target="_blank" rel="noopener">Docker-maven-plugin</a></li>
+<li><a href="https://hub.docker.com/_/openjdk" target="_blank" rel="noopener">Docker Hub OpenJDK</a></li>
+<li><a href="https://stackoverflow.com/questions/45729326/how-to-change-the-default-character-set-of-mysql-using-docker-compose" target="_blank" rel="noopener">https://stackoverflow.com/questions/45729326/how-to-change-the-default-character-set-of-mysql-using-docker-compose</a></li>
+<li><a href="https://www.hi-linux.com/posts/12554.html" target="_blank" rel="noopener">运维之美</a></li>
+<li><a href="https://github.com/docker-library/mysql/issues/557" target="_blank" rel="noopener">https://github.com/docker-library/mysql/issues/557</a></li>
 </ol>
+<h2 id="项目地址"><a href="#项目地址" class="headerlink" title="项目地址"></a>项目地址</h2><ul>
+<li><p><a href="https://github.com/luokaiii/luokaiii.docker-images" target="_blank" rel="noopener">Github</a></p>
 </li>
-<li>LDAP<ol>
-<li>一种非常常见的跨平台身份验证，常见于大型服务</li>
-<li>通过WSS3.0 和轻量级目录协议LDAP一起搭建的认证方式</li>
-<li>做法是：将用户数据放在LDAP服务器上，通过LDAP服务器上的数据对用户进行认证处理。</li>
-<li>即登录时将用户名密码，发送给 LDAP服务器进行匹配，判断是否通过认证</li>
-</ol>
+<li><p><a href="https://gitee.com/luokaiii/luokaiii.docker-images" target="_blank" rel="noopener">Gitee</a></p>
 </li>
-<li>Form-based authentication<ol>
-<li>表单身份验证</li>
+</ul>
+</div><hr></div><div class="recent-post-item article-container"><a class="article-title" href="/2019/09/19/读书笔记/《Docker全栈项目部署》/6.Nginx/">Docker部署全栈：六、部署Nginx和React</a><time class="post-meta__date"><i class="fa fa-calendar" aria-hidden="true"></i> 2019-09-19</time><span class="article-meta"><span class="article-meta__separator">|</span><i class="fa fa-inbox article-meta__icon" aria-hidden="true"></i><a class="article-meta__categories" href="/categories/运维/">运维</a><i class="fa fa-angle-right" aria-hidden="true"></i><i class="fa fa-inbox article-meta__icon" aria-hidden="true"></i><a class="article-meta__categories" href="/categories/运维/Docker全栈部署/">Docker全栈部署</a></span><span class="article-meta tags"><span class="article-meta__separator">|</span><i class="fa fa-tag article-meta__icon" aria-hidden="true"></i><a class="article-meta__tags" href="/tags/hide/">hide</a><span class="article-meta__link">-</span><i class="fa fa-tag article-meta__icon" aria-hidden="true"></i><a class="article-meta__tags" href="/tags/Docker全栈部署/">Docker全栈部署</a></span><div class="content"><h1 id="Docker部署全栈项目：六、部署Nginx和React"><a href="#Docker部署全栈项目：六、部署Nginx和React" class="headerlink" title="Docker部署全栈项目：六、部署Nginx和React"></a>Docker部署全栈项目：六、部署Nginx和React</h1><p>前端项目不论是 vue 还是 react，编译之后都是 html + css +js 的模板。</p>
+<p>因此这里使用 <code>React Demo</code> 来演示如何部署前端项目至，Nginx的代理中。</p>
+<h2 id="一、创建React项目"><a href="#一、创建React项目" class="headerlink" title="一、创建React项目"></a>一、创建React项目</h2><p>如果你使用的是其它前端语言，或者直接是纯JS写法，都是大同小异。</p>
+<pre><code class="sh"># 创建React项目
+$ create-react-app web
+
+# 进入前端项目
+$ cd web
+
+# 构建项目(或者使用 npm run build)
+$ yarn build 
+
+# 构建完成后，会出现 build/ 目录，存放所有的静态资源文件</code></pre>
+<p>将构建后的数据，放到 nginx/html 目录下。</p>
+<blockquote>
+<p>如果是远程服务器，可以使用 scp、pscp 等命令发送文件。</p>
+</blockquote>
+<h2 id="二、启动Nginx"><a href="#二、启动Nginx" class="headerlink" title="二、启动Nginx"></a>二、启动Nginx</h2><h3 id="1-编写-start-sh"><a href="#1-编写-start-sh" class="headerlink" title="1. 编写 start.sh"></a>1. 编写 start.sh</h3><pre><code class="sh">#!/bin/bash
+
+# 启动前停止容器
+docker stop luokaiii-nginx
+docker rm luokaiii-nginx
+
+# 运行容器
+docker run --name luokaiii-nginx \ # 指定容器名
+        -p 80:80 \    # 暴露80端口至宿主机
+        -v /${PWD}/conf:/etc/nginx/conf.d \    # 挂载额外的配置文件
+        -v /${PWD}/html:/usr/www/luokaiii/cn/html \    # 挂载静态资源
+        -d nginx:alpine     # 后台运行nginx</code></pre>
+<h3 id="2-编写-conf-nginx-conf"><a href="#2-编写-conf-nginx-conf" class="headerlink" title="2. 编写 conf/nginx.conf"></a>2. 编写 conf/nginx.conf</h3><pre><code class="sh">server {
+        listen 80;
+
+        root /usr/www/luokaiii/cn/html;
+
+        location / {
+                try_files $uri $uri/ /index.html;
+        }
+}</code></pre>
+<h3 id="3-运行脚本"><a href="#3-运行脚本" class="headerlink" title="3. 运行脚本"></a>3. 运行脚本</h3><pre><code class="sh"># 运行脚本
+$ ./start.sh</code></pre>
+<h3 id="4-访问端口"><a href="#4-访问端口" class="headerlink" title="4. 访问端口"></a>4. 访问端口</h3><p><img src="https://i.loli.net/2019/09/24/ur4k3zwVv1AYeZX.png" alt="访问80端口"></p>
+<h2 id="三、使用Nginx代理接口服务"><a href="#三、使用Nginx代理接口服务" class="headerlink" title="三、使用Nginx代理接口服务"></a>三、使用Nginx代理接口服务</h2><p>既然我们的接口使用的是容器服务，那么我可以把 <code>luokaiii-api</code> 的外部端口关闭，改为 nginx 的请求转发。</p>
+<p>修改 nginx.conf：</p>
+<pre><code class="sh">upstream apisupport {
+        server api:8080;
+}
+server {
+        listen 80;
+
+        root /usr/www/luokaiii/cn/html;
+
+        location / {
+                try_files $uri $uri/ /index.html;
+        }
+
+        # 将 /api/ 请求转发至 `luokaiii-api` 服务
+        location /api/ {
+                proxy_pass http://apisupport/;
+        }
+}
+</code></pre>
+<p>请求测试：</p>
+<p><img src="https://i.loli.net/2019/09/24/zx2qnsV7OCurgSH.png" alt="请求结果"></p>
+<p>参考资料：</p>
+<ol>
+<li><a href="https://hub.docker.com/_/nginx" target="_blank" rel="noopener">Docker Hub</a></li>
 </ol>
+<h2 id="项目地址"><a href="#项目地址" class="headerlink" title="项目地址"></a>项目地址</h2><ul>
+<li><p><a href="https://github.com/luokaiii/luokaiii.docker-images" target="_blank" rel="noopener">Github</a></p>
 </li>
-<li>OpenID authentication<ol>
-<li>一种去中心化的网上身份认证系统</li>
-<li>使用方法：在一个支持OpenID身份提供者的网站上进行注册，然后使用该网站提供的url来进行认证</li>
-</ol>
+<li><p><a href="https://gitee.com/luokaiii/luokaiii.docker-images" target="_blank" rel="noopener">Gitee</a></p>
 </li>
-<li>Jasig Central Authentication Service（CAS）<ol>
-<li>CAS 集中式认证服务封路系统，也是一个流行的开源单点登录系统</li>
-<li>CAS 系统一般分为 CAS Server(负责对用户进行认证) 和 CAS Client(处理用户名、密码等凭证)</li>
-<li>流程为：用户访问Client服务 》 Client重定向至SSO服务器 》 身份认证 》 返回一个 Service Ticket 》 SSO服务器验证Ticket 》 允许访问</li>
-</ol>
+</ul>
+</div><hr></div><div class="recent-post-item article-container"><a class="article-title" href="/2019/09/18/读书笔记/《Docker全栈项目部署》/7.Docker-Compose/">Docker部署全栈：六、部署Nginx和React</a><time class="post-meta__date"><i class="fa fa-calendar" aria-hidden="true"></i> 2019-09-18</time><span class="article-meta"><span class="article-meta__separator">|</span><i class="fa fa-inbox article-meta__icon" aria-hidden="true"></i><a class="article-meta__categories" href="/categories/运维/">运维</a><i class="fa fa-angle-right" aria-hidden="true"></i><i class="fa fa-inbox article-meta__icon" aria-hidden="true"></i><a class="article-meta__categories" href="/categories/运维/Docker全栈部署/">Docker全栈部署</a></span><span class="article-meta tags"><span class="article-meta__separator">|</span><i class="fa fa-tag article-meta__icon" aria-hidden="true"></i><a class="article-meta__tags" href="/tags/hide/">hide</a><span class="article-meta__link">-</span><i class="fa fa-tag article-meta__icon" aria-hidden="true"></i><a class="article-meta__tags" href="/tags/Docker全栈部署/">Docker全栈部署</a></span><div class="content"><h1 id="Docker部署全栈项目：七、Docker-Compose"><a href="#Docker部署全栈项目：七、Docker-Compose" class="headerlink" title="Docker部署全栈项目：七、Docker-Compose"></a>Docker部署全栈项目：七、Docker-Compose</h1><p>完整的 <code>docker-compose.yml</code> 如下：</p>
+<pre><code class="yml">version: &#39;3&#39;
+
+services:
+  mongo:
+    container_name: &#39;luokaiii-mongo&#39;
+    image: &#39;mongo:4.0.12&#39;
+    volumes:
+      - mongodata:/data/db
+    environment:
+      MONGO_INITDB_ROOT_USERNAME: mongoadmin
+      MONGO_INITDB_ROOT_PASSWORD: password
+    restart: always
+    expose:
+      - &#39;27017&#39;
+  mariadb:
+    container_name: &#39;luokaiii-mysql&#39;
+    image: &#39;mariadb:10.4.8&#39;
+    volumes:
+      - &#39;./mysql/data/:/var/lib/mysql&#39;
+      - &#39;./mysql/conf/local.cnf:/etc/mysql/conf.d/local.cnf&#39;
+    environment:
+      MYSQL_ROOT_PASSWORD: password
+      MYSQL_DATABASE: db_user
+    command: [&#39;mysqld&#39;, &#39;--character-set-server=utf8mb4&#39;, &#39;--collation-server=utf8mb4_unicode_ci&#39;]
+    restart: always
+    expose:
+      - &#39;3306&#39;
+  redis:
+    container_name: &#39;luokaiii-redis&#39;
+    image: &#39;redis:4.0.14&#39;
+    volumes:
+      - &#39;./redis/data:/data&#39;
+    command: redis-server --requirepass password
+    restart: always
+    expose:
+      - &#39;6379&#39;
+  api:
+    container_name: &#39;luokaiii-api&#39;
+    depends_on:
+      - mongo
+      - redis
+      - mariadb
+    image: &#39;luokaiii-api:latest&#39;
+    ports:
+      - &#39;8080:8080&#39;
+    restart: always
+  nginx:
+    container_name: &#39;luokaiii-nginx&#39;
+    depends_on:
+      - api
+    image: &#39;nginx:alpine&#39;
+    volumes:
+      - &#39;./nginx/conf:/etc/nginx/conf.d&#39;
+      - &#39;./nginx/html:/usr/www/luokaiii/cn/html&#39;
+    ports:
+      - &#39;80:80&#39;
+    restart: always
+volumes:
+  mongodata:</code></pre>
+<p>部署后的效果如下：</p>
+<p><img src="https://i.loli.net/2019/09/24/sGQzv4oBC9cyTN2.png" alt="Docker单机服务"></p>
+<p>至此，整个项目在Docker上的部署已经完成。</p>
+<blockquote>
+<p>如果有需要，您也可以将 MongoDB、Redis、MySQL等服务暴露给宿主机，以供外部连接。</p>
+</blockquote>
+<h2 id="项目地址"><a href="#项目地址" class="headerlink" title="项目地址"></a>项目地址</h2><ul>
+<li><p><a href="https://github.com/luokaiii/luokaiii.docker-images" target="_blank" rel="noopener">Github</a></p>
 </li>
-<li>Automatic ‘remember-me’ authentication<ol>
-<li>记住我</li>
-</ol>
+<li><p><a href="https://gitee.com/luokaiii/luokaiii.docker-images" target="_blank" rel="noopener">Gitee</a></p>
 </li>
-<li>Anonymous authentication<ol>
-<li>你们身份验证</li>
-</ol>
-</li>
-<li>Java Open Source Single Sing-On<ol>
-<li>Java 开源的单点登录 JOSSO</li>
-</ol>
-</li>
-</ol>
-<h2 id="二、Spring-Security-依赖管理"><a href="#二、Spring-Security-依赖管理" class="headerlink" title="二、Spring Security 依赖管理"></a>二、Spring Security 依赖管理</h2><p>获取 Spring Security 的最小依赖如下：</p>
-<pre><code class="xml">&lt;dependencies&gt;
-&lt;!-- ... other dependency elements ... --&gt;
-&lt;dependency&gt;
-    &lt;groupId&gt;org.springframework.security&lt;/groupId&gt;
-    &lt;artifactId&gt;spring-security-web&lt;/artifactId&gt;
-    &lt;version&gt;5.0.5.RELEASE&lt;/version&gt;
-&lt;/dependency&gt;
-&lt;dependency&gt;
-    &lt;groupId&gt;org.springframework.security&lt;/groupId&gt;
-    &lt;artifactId&gt;spring-security-config&lt;/artifactId&gt;
-    &lt;version&gt;5.0.5.RELEASE&lt;/version&gt;
-&lt;/dependency&gt;
-&lt;/dependencies&gt;</code></pre>
-<h3 id="Core-spring-security-core-jar"><a href="#Core-spring-security-core-jar" class="headerlink" title="Core - spring-security-core.jar"></a>Core - spring-security-core.jar</h3><p>包含核心身份验证和访问控制类、接口、远程处理支持和基本的API。是 Spring Security 应用程序的基础包。</p>
+</ul>
+</div><hr></div><div class="recent-post-item article-container"><a class="article-title" href="/2019/09/17/读书笔记/《Docker全栈项目部署》/8.DC命令/">Docker部署全栈：七、DockerCompose命令</a><time class="post-meta__date"><i class="fa fa-calendar" aria-hidden="true"></i> 2019-09-17</time><span class="article-meta"><span class="article-meta__separator">|</span><i class="fa fa-inbox article-meta__icon" aria-hidden="true"></i><a class="article-meta__categories" href="/categories/运维/">运维</a><i class="fa fa-angle-right" aria-hidden="true"></i><i class="fa fa-inbox article-meta__icon" aria-hidden="true"></i><a class="article-meta__categories" href="/categories/运维/Docker全栈部署/">Docker全栈部署</a></span><span class="article-meta tags"><span class="article-meta__separator">|</span><i class="fa fa-tag article-meta__icon" aria-hidden="true"></i><a class="article-meta__tags" href="/tags/hide/">hide</a><span class="article-meta__link">-</span><i class="fa fa-tag article-meta__icon" aria-hidden="true"></i><a class="article-meta__tags" href="/tags/Docker全栈部署/">Docker全栈部署</a></span><div class="content"><h1 id="Docker-Compose"><a href="#Docker-Compose" class="headerlink" title="Docker-Compose"></a>Docker-Compose</h1><h2 id="一、Compose-简介"><a href="#一、Compose-简介" class="headerlink" title="一、Compose 简介"></a>一、Compose 简介</h2><p>通过创建 <code>Dockerfile</code> 模板文件，可以使用户很方便的定义一个单独的应用容器。然而，在日常工作中，经常会碰到需要多个容器相互配合来完成任务的情况。</p>
+<p>例如，一个常见的 Web 项目，除了 Web 服务容器本身，往往还需要加上后端的数据库服务容器，甚至还包括负载均衡容器等。</p>
+<p><code>Compose</code> 中有两个重要的概念：</p>
 <ul>
-<li>org.springframework.security.core<ul>
-<li>包含Context上下文、UserDetails、UserDetailsService、jdbc验证、memory验证、token、Authority、Principal等支持</li>
+<li>服务 <code>service</code> ：一个应用的容器，实际上包含若干运行相关镜像的容器</li>
+<li>项目 <code>project</code> ：由一组关联的应用容器组成的一个完整业务单元，在 <code>docker-compose</code> 中定义。</li>
 </ul>
+<h2 id="二、安装与卸载"><a href="#二、安装与卸载" class="headerlink" title="二、安装与卸载"></a>二、安装与卸载</h2><h3 id="使用二进制包安装"><a href="#使用二进制包安装" class="headerlink" title="使用二进制包安装"></a>使用二进制包安装</h3><ol>
+<li><p>从 <a href="https://github.com/docker/compose/releases" target="_blank" rel="noopener">官方 GitHub Release</a> 处下载编译好的二进制文件</p>
+<pre><code>1. </code></pre><pre><code>   curl -L https://github.com/docker/compose/releases/download/1.25.0-rc2/docker-compose-`uname -s`-`uname -m` -o /usr/local/bin/docker-compose
+
+   chmod +x /usr/local/bin/docker-compose</code></pre></li>
+<li><p>查看 Compose 是否安装成功</p>
+<ol>
+<li><code>docker-compose --version</code></li>
+</ol>
 </li>
-<li>org.springframework.security.access<ul>
-<li>访问控制类和接口</li>
-<li>包含Method拦截器、AccessDeniedException、认证失败事件、无授权事件、日志监听、访问拦截器等</li>
-</ul>
-</li>
-<li>org.springframework.security.authentication<ul>
-<li>包含数据库验证、RememberMe、Test、Token、Exception等支持</li>
-</ul>
-</li>
-<li>org.springframework.security.provisioning<ul>
-<li>包含创建、更新、删除、修改密码等操作UserDetails的接口，支持memory、JDBC两种类型</li>
-</ul>
-</li>
-</ul>
-<h3 id="Web-spring-security-web-jar"><a href="#Web-spring-security-web-jar" class="headerlink" title="Web - spring-security-web.jar"></a>Web - spring-security-web.jar</h3><p>包含过滤器和相关的网络安全基础设施代码。</p>
-<p>是 web 身份验证服务和基于 url 访问控制的基础。</p>
-<h3 id="Config-spring-security-config-jar"><a href="#Config-spring-security-config-jar" class="headerlink" title="Config - spring-security-config.jar"></a>Config - spring-security-config.jar</h3><p>包含 安全名称空间解析代码(或者Java配置代码)，即xml配置和java配置。</p>
-<blockquote>
-<p> — 以下包都是可选的 —-</p>
-</blockquote>
-<h3 id="CAS-spring-security-cas-jar"><a href="#CAS-spring-security-cas-jar" class="headerlink" title="CAS - spring-security-cas.jar"></a>CAS - spring-security-cas.jar</h3><p>Spring Security 的 CAS 客户端集成，对 CAS 单点登录服务器使用 。SpringSecurityWeb 身份验证的基础。</p>
-<h3 id="Test-spring-security-test-jar"><a href="#Test-spring-security-test-jar" class="headerlink" title="Test - spring-security-test.jar"></a>Test - spring-security-test.jar</h3><p>支持使用 Spring Security 进行测试。后面会详细说明 Spring Security 是如何进行测试的。</p>
-<h3 id="LDAP-spring-security-ldap-jar"><a href="#LDAP-spring-security-ldap-jar" class="headerlink" title="LDAP - spring-security-ldap.jar"></a>LDAP - spring-security-ldap.jar</h3><p>LDAP 身份验证和配置代码，如果需要使用 LDAP 身份验证或管理 LDAP 用户条目，则必须使用此依赖</p>
-<h3 id="OAuth-2-0-Core-spring-security-oauth2-core-jar"><a href="#OAuth-2-0-Core-spring-security-oauth2-core-jar" class="headerlink" title="OAuth 2.0 Core - spring-security-oauth2-core.jar"></a>OAuth 2.0 Core - spring-security-oauth2-core.jar</h3><p>OAuth 2.0 授权框架和 OpenID Connect Core 1.0 的核心类和接口。</p>
-<p>客户机、资源服务器、授权服务器都需要此依赖。</p>
-<h3 id="OAuth-2-0-Client-spring-security-oauth2-client-jar"><a href="#OAuth-2-0-Client-spring-security-oauth2-client-jar" class="headerlink" title="OAuth 2.0 Client - spring-security-oauth2-client.jar"></a>OAuth 2.0 Client - spring-security-oauth2-client.jar</h3><p>OAuth 2.0 客户端，当需要使用 OAuth2.0 登录或者 OAuth客户端支持时使用。</p>
-<h3 id="OAuth-2-0-JOSE-spring-security-oauth2-jose-jar"><a href="#OAuth-2-0-JOSE-spring-security-oauth2-jose-jar" class="headerlink" title="OAuth 2.0 JOSE - spring-security-oauth2-jose.jar"></a>OAuth 2.0 JOSE - spring-security-oauth2-jose.jar</h3><p>包含 Spring Security 对 JOSE(JavaScritp 对象签名和加密)框架的支持，包含如下规范：</p>
+</ol>
+<h2 id="三、使用"><a href="#三、使用" class="headerlink" title="三、使用"></a>三、使用</h2><h3 id="1-Web应用"><a href="#1-Web应用" class="headerlink" title="1. Web应用"></a>1. Web应用</h3><p>SpringBoot  应用如下：</p>
+<pre><code class="java">@SpringBootApplication
+@RestController
+public class App {
+    public static void main(String[] args) {
+        SpringApplication.run(App.class, args);
+    }
+
+    @GetMapping(&quot;/&quot;)
+    public String hello() {
+        return &quot;Hello World!&quot;;
+    }
+}</code></pre>
+<h3 id="2-Dockerfile"><a href="#2-Dockerfile" class="headerlink" title="2. Dockerfile"></a>2. Dockerfile</h3><p>在项目根目录下，创建 <code>Dockerfile</code> 文件：</p>
+<pre><code class="dockerfile">FROM openjdk:8-slim
+EXPOSE 8080
+ENV TZ Asia/Shanghai
+COPY build/libs/app-1.0.0.jar /opt/app.jar
+ENTRYPOINT [&quot;/opt/app.jar&quot;]</code></pre>
+<h3 id="3-docker-compose-yml"><a href="#3-docker-compose-yml" class="headerlink" title="3. docker-compose.yml"></a>3. docker-compose.yml</h3><p>编写 <code>docker-compose.yml</code> ，这是 Compose 使用的主模板文件：</p>
+<pre><code class="yml">version: &#39;3&#39;
+services:
+    web:
+        build: .
+        ports:
+         - &quot;8080:8080&quot;
+    redis:
+        image: &quot;redis:alpine&quot;</code></pre>
+<h3 id="4-运行-Compose-项目"><a href="#4-运行-Compose-项目" class="headerlink" title="4. 运行 Compose 项目"></a>4. 运行 Compose 项目</h3><p><code>docker-compose up</code></p>
+<h2 id="四、Compose-命令"><a href="#四、Compose-命令" class="headerlink" title="四、Compose 命令"></a>四、Compose 命令</h2><h3 id="1-命令对象与格式"><a href="#1-命令对象与格式" class="headerlink" title="1. 命令对象与格式"></a>1. 命令对象与格式</h3><p><code>docker-compose</code> 命令的基本使用格式是：</p>
+<pre><code class="sh">docker-compose [-f=&lt;arg&gt;...] [options] [COMMAND] [ARGS...]</code></pre>
 <ul>
-<li>JSON Web Token - JWT</li>
-<li>JSON Web Signature - JWS</li>
-<li>JSON Web Encryption - JWE</li>
-<li>JSON Web Key - JWK</li>
+<li><code>-f, --file FILE</code> 指定使用的 Compose 模板文件，默认为 docker-compose.yml</li>
+<li><code>-p, --project-name</code> NAME 指定项目名称，默认为所在目录</li>
+<li><code>--x-networking</code> 使用 Docker 的可拔插网络后端特性</li>
+<li><code>--x-network-driver DRIVER</code> 指定网络后端的驱动，默认为bridge</li>
+<li><code>--verbose</code> 输出更多调试信息</li>
+<li><code>-v, --version</code> 打印版本并退出</li>
 </ul>
-<h3 id="OpenID-spring-security-openid-jar"><a href="#OpenID-spring-security-openid-jar" class="headerlink" title="OpenID - spring-security-openid.jar"></a>OpenID - spring-security-openid.jar</h3><p>支持 OpenID web 身份验证，用于根据外部 OpenID服务器对用户进行身份验证。</p>
-<h3 id="ACL-spring-security-acl-jar"><a href="#ACL-spring-security-acl-jar" class="headerlink" title="ACL - spring-security-acl.jar"></a>ACL - spring-security-acl.jar</h3><p>专用域对象 ACL 的实现。</p>
-</div><hr></div><div class="recent-post-item article-container"><a class="article-title" href="/2019/07/18/读书笔记/《SpringSecurity》/0.目录/">《Spring Security》文档笔记</a><span class="article-meta"><i class="fa fa-thumb-tack article-meta__icon sticky"></i><span class="sticky">置顶</span><span class="article-meta__separator" style="margin-right: 0.3rem">|</span></span><time class="post-meta__date"><i class="fa fa-calendar" aria-hidden="true"></i> 2019-07-18</time><span class="article-meta"><span class="article-meta__separator">|</span><i class="fa fa-inbox article-meta__icon" aria-hidden="true"></i><a class="article-meta__categories" href="/categories/读书笔记/">读书笔记</a><i class="fa fa-angle-right" aria-hidden="true"></i><i class="fa fa-inbox article-meta__icon" aria-hidden="true"></i><a class="article-meta__categories" href="/categories/读书笔记/Spring-Security/">Spring Security</a></span><span class="article-meta tags"><span class="article-meta__separator">|</span><i class="fa fa-tag article-meta__icon" aria-hidden="true"></i><a class="article-meta__tags" href="/tags/Spring-Security/">Spring Security</a></span><div class="content"><blockquote>
-<p>SpringSecurity 是一个强大的、高度可定制的身份验证和访问控制框架，它是确保基于 Spring 的应用程序安全的事实标准。<br>Spring Security is a powerful and highly customizable authentication and access-control framework. It is the de-facto standard for securing Spring-based applications.</p>
-</blockquote></div><a class="more" href="/2019/07/18/读书笔记/《SpringSecurity》/0.目录/#more">阅读更多</a><hr></div><div class="recent-post-item article-container"><a class="article-title" href="/2019/07/17/读书笔记/《JavaDesignPatterns》/17.命令模式/">《Java Design Patterns》第十五章 命令模式 - 请求发送者和接收者解耦</a><time class="post-meta__date"><i class="fa fa-calendar" aria-hidden="true"></i> 2019-07-17</time><span class="article-meta"><span class="article-meta__separator">|</span><i class="fa fa-inbox article-meta__icon" aria-hidden="true"></i><a class="article-meta__categories" href="/categories/读书笔记/">读书笔记</a><i class="fa fa-angle-right" aria-hidden="true"></i><i class="fa fa-inbox article-meta__icon" aria-hidden="true"></i><a class="article-meta__categories" href="/categories/读书笔记/设计模式/">设计模式</a></span><span class="article-meta tags"><span class="article-meta__separator">|</span><i class="fa fa-tag article-meta__icon" aria-hidden="true"></i><a class="article-meta__tags" href="/tags/hide/">hide</a><span class="article-meta__link">-</span><i class="fa fa-tag article-meta__icon" aria-hidden="true"></i><a class="article-meta__tags" href="/tags/设计模式/">设计模式</a></span><div class="content"><h1 id="第十五章-命令模式-请求发送者和接收者解耦"><a href="#第十五章-命令模式-请求发送者和接收者解耦" class="headerlink" title="第十五章 命令模式 - 请求发送者和接收者解耦"></a>第十五章 命令模式 - 请求发送者和接收者解耦</h1><h2 id="一、命令模式"><a href="#一、命令模式" class="headerlink" title="一、命令模式"></a>一、命令模式</h2><p>命令模式（Command Pattern）：将一个请求封装为一个对象，从而让我们可用不同的请求对客户进行参数化；对请求排队或者记录请求日志，以及支持可撤销的操作。</p>
-<p>命令模式是一种对象行为型模式，又称为动作模式或事务模式。</p>
-<p>命令模式中包含的几个角色：</p>
+<h3 id="2-命令说明"><a href="#2-命令说明" class="headerlink" title="2. 命令说明"></a>2. 命令说明</h3><h4 id="1-build"><a href="#1-build" class="headerlink" title="1. build"></a>1. build</h4><blockquote>
+<p>构建（重新构建）项目中的服务容器</p>
+</blockquote>
+<h4 id="2-config"><a href="#2-config" class="headerlink" title="2. config"></a>2. config</h4><blockquote>
+<p>验证 Compose 文件格式是否正确</p>
+</blockquote>
+<h4 id="3-down"><a href="#3-down" class="headerlink" title="3. down"></a>3. down</h4><blockquote>
+<p>停止 up 命令所启动的容器，并移除网络</p>
+</blockquote>
+<h4 id="4-exec"><a href="#4-exec" class="headerlink" title="4. exec"></a>4. exec</h4><blockquote>
+<p>进入指定的容器</p>
+</blockquote>
+<h4 id="5-help"><a href="#5-help" class="headerlink" title="5. help"></a>5. help</h4><blockquote>
+<p>获得一个命令的帮助</p>
+</blockquote>
+<h4 id="6-images"><a href="#6-images" class="headerlink" title="6. images"></a>6. images</h4><blockquote>
+<p>列出 Compose 文件中包含的镜像</p>
+</blockquote>
+<h4 id="7-kill"><a href="#7-kill" class="headerlink" title="7. kill"></a>7. kill</h4><blockquote>
+<p>通过发送 SIGKILL<a href="https://blog.csdn.net/DLUTBruceZhang/article/details/8821690" target="_blank" rel="noopener">(Linux 信号列表)</a> 信号来强制停止服务容器。</p>
+</blockquote>
+<h4 id="8-logs"><a href="#8-logs" class="headerlink" title="8. logs"></a>8. logs</h4><blockquote>
+<p>查看服务容器的输出</p>
+</blockquote>
+<h4 id="9-pause"><a href="#9-pause" class="headerlink" title="9. pause"></a>9. pause</h4><blockquote>
+<p>暂停一个服务容器</p>
+</blockquote>
+<h4 id="10-port"><a href="#10-port" class="headerlink" title="10. port"></a>10. port</h4><blockquote>
+<p>打印某个容器端口所映射的公共端口</p>
+</blockquote>
+<h4 id="11-ps"><a href="#11-ps" class="headerlink" title="11. ps"></a>11. ps</h4><blockquote>
+<p>列出项目中目前的所有容器</p>
+</blockquote>
+<h4 id="12-pull"><a href="#12-pull" class="headerlink" title="12. pull"></a>12. pull</h4><blockquote>
+<p>拉取服务依赖的镜像</p>
+</blockquote>
+<h4 id="13-push"><a href="#13-push" class="headerlink" title="13. push"></a>13. push</h4><blockquote>
+<p>推送服务依赖的镜像到 Docker 镜像仓库</p>
+</blockquote>
+<h4 id="14-restart"><a href="#14-restart" class="headerlink" title="14. restart"></a>14. restart</h4><blockquote>
+<p>重启项目中的服务</p>
+</blockquote>
+<h4 id="15-rm"><a href="#15-rm" class="headerlink" title="15. rm"></a>15. rm</h4><blockquote>
+<p>删除所有(停止状态的)服务容器</p>
+</blockquote>
+<h4 id="16-run"><a href="#16-run" class="headerlink" title="16. run"></a>16. run</h4><blockquote>
+<p>在指定服务上执行一个命令</p>
+</blockquote>
+<h4 id="17-scale"><a href="#17-scale" class="headerlink" title="17. scale"></a>17. scale</h4><blockquote>
+<p>设置指定服务运行的容器个数</p>
+</blockquote>
+<h4 id="18-start"><a href="#18-start" class="headerlink" title="18. start"></a>18. start</h4><blockquote>
+<p>启动已经存在的服务容器</p>
+</blockquote>
+<h4 id="19-stop"><a href="#19-stop" class="headerlink" title="19. stop"></a>19. stop</h4><blockquote>
+<p>停止运行中的容器，但不删除它</p>
+</blockquote>
+<h4 id="20-top"><a href="#20-top" class="headerlink" title="20. top"></a>20. top</h4><blockquote>
+<p>查看各个服务容器内运行的进程</p>
+</blockquote>
+<h4 id="21-unpause"><a href="#21-unpause" class="headerlink" title="21. unpause"></a>21. unpause</h4><blockquote>
+<p>恢复暂停状态的服务</p>
+</blockquote>
+<h4 id="22-up"><a href="#22-up" class="headerlink" title="22. up"></a>22. up</h4><blockquote>
+<p>自动完成：构建镜像 &gt; (重新)创建服务 &gt; 启动服务 &gt; 关联服务容器</p>
+</blockquote>
+<h4 id="23-version"><a href="#23-version" class="headerlink" title="23. version"></a>23. version</h4><blockquote>
+<p>打印版本信息</p>
+</blockquote>
+<h2 id="五、Compose-模板文件"><a href="#五、Compose-模板文件" class="headerlink" title="五、Compose 模板文件"></a>五、Compose 模板文件</h2><h2 id="六、实战-Java-Web"><a href="#六、实战-Java-Web" class="headerlink" title="六、实战 Java Web"></a>六、实战 Java Web</h2><pre><code class="yml">version: &#39;3&#39;
+
+services:
+  jenkins:
+    container_name: &#39;jenkins.ci&#39;
+    image: &#39;jenkins/jenkins:lts&#39;
+    #ports:  不对外暴露端口，直接使用nginx容器转到8080
+      #- &#39;8080:8080&#39;
+      #- &#39;50000:50000&#39;
+    volumes:
+      - &#39;/home/docker-images/jenkins/var/jenkins_home:/var/jenkins_home&#39;
+      - &#39;/home/docker-images/jenkins/html:/usr/share/jenkins/html&#39; #挂载编译打包后的存放路径
+  nginx:
+    container_name: &#39;nginx&#39;
+    depends_on:
+      - jenkins
+    image: nginx:alpine
+    volumes:
+      - &#39;/home/luokaiii/backstage_page/html:/usr/www/luokaiii/cn/html&#39;
+      - &#39;/home/docker-images/nginx/conf:/etc/nginx/conf.d&#39;
+      - &#39;/home/docker-images/nginx/cert:/etc/nginx/cert&#39;
+    ports:
+      - 80:80 # 对外统一使用80端口
+      - 443:443
+    restart: always
+</code></pre>
+</div><hr></div><div class="recent-post-item article-container"><a class="article-title" href="/2019/09/16/读书笔记/《Docker全栈项目部署》/9.Docker版本升级/">Docker部署全栈：八、Docker升级</a><time class="post-meta__date"><i class="fa fa-calendar" aria-hidden="true"></i> 2019-09-16</time><span class="article-meta"><span class="article-meta__separator">|</span><i class="fa fa-inbox article-meta__icon" aria-hidden="true"></i><a class="article-meta__categories" href="/categories/运维/">运维</a><i class="fa fa-angle-right" aria-hidden="true"></i><i class="fa fa-inbox article-meta__icon" aria-hidden="true"></i><a class="article-meta__categories" href="/categories/运维/Docker全栈部署/">Docker全栈部署</a></span><span class="article-meta tags"><span class="article-meta__separator">|</span><i class="fa fa-tag article-meta__icon" aria-hidden="true"></i><a class="article-meta__tags" href="/tags/hide/">hide</a><span class="article-meta__link">-</span><i class="fa fa-tag article-meta__icon" aria-hidden="true"></i><a class="article-meta__tags" href="/tags/Docker全栈部署/">Docker全栈部署</a></span><div class="content"><h1 id="升级Docker版本"><a href="#升级Docker版本" class="headerlink" title="升级Docker版本"></a>升级Docker版本</h1><ol>
+<li>sudo apt-get remove docker docker-engine docker.io # 移除旧版本</li>
+<li>sudo apt-get update # 更新软件源</li>
+<li>sudo apt-get install apt-transport-https ca-certificates curl software-properties-common # 安装依赖包</li>
+<li>curl -fsSL <a href="https://download.docker.com/linux/ubuntu/gpg" target="_blank" rel="noopener">https://download.docker.com/linux/ubuntu/gpg</a> | sudo apt-get add - # 添加官方密钥</li>
+<li>sudo add-apt-repository “deb [arch=amd64] <a href="https://download.docker.com/linux/ubuntu" target="_blank" rel="noopener">https://download.docker.com/linux/ubuntu</a> $(lsb_release -cs) stable” # 添加仓库</li>
+<li>sudo apt-get update # 更新软件源</li>
+<li>sudo apt-get install docker-ce # 安装docker</li>
+<li>docker -v # 查看docker版本</li>
+</ol>
+<h1 id="Docker-API版本异常"><a href="#Docker-API版本异常" class="headerlink" title="Docker API版本异常"></a>Docker API版本异常</h1><p>异常：Error response from daemon: client is newer than server (client API version: 1.23, server API version: 1.20)</p>
+<p>原因：客户端与服务端的版本不一致，导致docker命令无法使用。</p>
+<p>解决方法：export DOCKER_API_VERSION=1.2.0，将客户端版本将至与服务端一致。或者将服务端版本升级到1.23</p>
+<h1 id="Docker-启动、重启命令"><a href="#Docker-启动、重启命令" class="headerlink" title="Docker 启动、重启命令"></a>Docker 启动、重启命令</h1><ol>
+<li>systemctl start docker 启动</li>
+<li>sudo systemctl daemon-reload 守护进程重启</li>
+<li>systemctl restart docker 重启</li>
+<li>sudo service docker restart 重启</li>
+<li>service docker stop 关闭</li>
+<li>systemctl stop docker 关闭</li>
+</ol>
+</div><hr></div><div class="recent-post-item article-container"><a class="article-title" href="/2019/09/12/读书笔记/《React》官方文档/0.目录/">《React》文档笔记</a><span class="article-meta"><i class="fa fa-thumb-tack article-meta__icon sticky"></i><span class="sticky">置顶</span><span class="article-meta__separator" style="margin-right: 0.3rem">|</span></span><time class="post-meta__date"><i class="fa fa-calendar" aria-hidden="true"></i> 2019-09-12</time><span class="article-meta"><span class="article-meta__separator">|</span><i class="fa fa-inbox article-meta__icon" aria-hidden="true"></i><a class="article-meta__categories" href="/categories/读书笔记/">读书笔记</a><i class="fa fa-angle-right" aria-hidden="true"></i><i class="fa fa-inbox article-meta__icon" aria-hidden="true"></i><a class="article-meta__categories" href="/categories/读书笔记/React/">React</a></span><span class="article-meta tags"><span class="article-meta__separator">|</span><i class="fa fa-tag article-meta__icon" aria-hidden="true"></i><a class="article-meta__tags" href="/tags/React/">React</a></span><div class="content"><p><img src="https://i.loli.net/2019/09/25/T6tIHkAJMZm2yXB.png" alt="React官方文档 - 读书笔记"></p>
+<ul>
+<li><a href="/2019/09/12/读书笔记/《MyBatis》/1_入门/index.html">第一章 创建 React 应用</a></li>
+<li><a href="/2019/09/12/读书笔记/《MyBatis》/2_XML配置/index.html">第二章 XML 配置</a></li>
+<li><a href="/2019/09/12/读书笔记/《MyBatis》/3_XML映射文件/index.html">第三章 XML 映射文件</a></li>
+<li><a href="/2019/09/12/读书笔记/《MyBatis》/4_动态SQL/index.html">第四章 动态 SQL</a></li>
+<li>第五章 Java API</li>
+</ul></div><a class="more" href="/2019/09/12/读书笔记/《React》官方文档/0.目录/#more">阅读更多</a><hr></div><div class="recent-post-item article-container"><a class="article-title" href="/2019/09/12/读书笔记/《React》官方文档/1_创建React应用/">《React官方文档》创建React应用</a><time class="post-meta__date"><i class="fa fa-calendar" aria-hidden="true"></i> 2019-09-12</time><span class="article-meta"><span class="article-meta__separator">|</span><i class="fa fa-inbox article-meta__icon" aria-hidden="true"></i><a class="article-meta__categories" href="/categories/读书笔记/">读书笔记</a><i class="fa fa-angle-right" aria-hidden="true"></i><i class="fa fa-inbox article-meta__icon" aria-hidden="true"></i><a class="article-meta__categories" href="/categories/读书笔记/React/">React</a></span><span class="article-meta tags"><span class="article-meta__separator">|</span><i class="fa fa-tag article-meta__icon" aria-hidden="true"></i><a class="article-meta__tags" href="/tags/hide/">hide</a><span class="article-meta__link">-</span><i class="fa fa-tag article-meta__icon" aria-hidden="true"></i><a class="article-meta__tags" href="/tags/React/">React</a></span><div class="content"><p>React 推荐的工具链：</p>
 <ol>
-<li>Command - 抽象命令类<ol>
-<li>声明了用于执行请求的 execute() 等方法，通过这些方法可以调用请求接收者的相关操作</li>
+<li>学习 React 或创建一个新的单页应用，可使用 Create React App</li>
+<li>用 Node.js 构建服务端渲染的网站，可使用 Next.js</li>
+<li>构建面向内容的静态网站，可使用 Gatsby</li>
+<li>打造组件库或将 React 集成到现有代码仓库，可尝试更灵活的工具链</li>
 </ol>
-</li>
-<li>ConcreteCommand - 具体命令类<ol>
-<li>实现抽象命令类中声明的方法</li>
-<li>对应具体的接收者对象，将接收者对象的动作绑定其中</li>
-<li>在实现execute() 方法时，调用接收者对象的相关操作</li>
-</ol>
-</li>
-<li>Invoker - 调用者<ol>
-<li>请求的发送者，通过命令对象来执行请求</li>
-<li>调用者并不需要在设计时确定其接收者，因此它只与抽象命令类保持关联</li>
-<li>在程序运行时，注入一个具体命令对象，再调用具体命令对象的execute() 方法</li>
-<li>从而间接调用请求接收者的相关操作</li>
-</ol>
-</li>
-<li>Receiver - 接收者<ol>
-<li>接收者执行与请求相关的操作，它具体实现对请求的业务处理</li>
-</ol>
-</li>
-</ol>
-<p>命令模式的本质是对请求进行封装，一个请求对应一个命令，将发出命令的责任和执行命令的责任分隔开。</p>
-<h2 id="二、命令模式的关键-抽象命令类"><a href="#二、命令模式的关键-抽象命令类" class="headerlink" title="二、命令模式的关键 - 抽象命令类"></a>二、命令模式的关键 - 抽象命令类</h2><p>请求发送者只需要针对抽象命令类编程即可。</p>
-<pre><code class="java">// 抽象命令类
-abstract class Command {
-    // 声明公共的执行方法
-    public abstract void execute();
-}</code></pre>
-<pre><code class="java">// 请求发送者 - 调用者
-class Invoker {
-    // 请求发送者只需要针对 Command 编程即可，具体命令类在运行时指定
-    private Command command;
-
-    // 通过构造函数或者setter方法注入Command
-    public Invoker(Command command){
-        this.command = command;
-    }
-
-    // 用于调用命令类的 execute 方法
-    public void call(){
-        command.execute();
-    }
-}</code></pre>
-<pre><code class="java">// 具体命令类
-class ConcreteCommand extends Command {
-    // 维持一个对请求接收者对象的引用
-    private Receiver receiver; // 如果需要多个接收者，可以将该对象改为List等集合对象
-
-    public void execute(){
-        // 调用请求接收者的业务处理方法
-        receiver.action();
-    }
-}</code></pre>
-<pre><code class="java">class Receiver {
-    public void action(){
-        // 具体操作
-    }
-}</code></pre>
-<h2 id="三、完整实现"><a href="#三、完整实现" class="headerlink" title="三、完整实现"></a>三、完整实现</h2><pre><code class="java">// 功能键设计窗口类
-class FBSettingWindow{
-    // 窗口标题
-    private String title;
-    // List集合，存储所有的功能按键
-    private List&lt;FunctionButton&gt; functionButtons = new ArrayList&lt;&gt;();
-
-    public String getTitle() {
-        return title;
-    }
-
-    public void setTitle(String title) {
-        this.title = title;
-    }
-
-    public void addFunctionButton(FunctionButton fb){
-        functionButtons.add(fb);
-    }
-
-    public void removeFunctionButton(FunctionButton fb){
-        functionButtons.remove(fb);
-    }
-
-    // 显示窗口及功能
-    public void display(){
-        System.out.println(&quot;显示窗口：&quot;+this.title);
-        System.out.println(&quot;显示功能键&quot;);
-        for (FunctionButton functionButton : functionButtons) {
-            System.out.println(functionButton.getName());
-        }
-    }
-}
-
-// 功能按键 - 请求发送者
-class FunctionButton {
-    // 按键名称
-    private String name;
-    // 维持一个抽象命令的引用
-    private Command command;
-
-    public String getName() {
-        return name;
-    }
-
-    public Command getCommand() {
-        return command;
-    }
-
-    public void setName(String name) {
-        this.name = name;
-    }
-
-    public void setCommand(Command command) {
-        this.command = command;
-    }
-
-    public void onClick(){
-        System.out.println(&quot;点击按键：&quot;);
-        command.execute();
-    }
-}
-
-// 抽象命令类
-abstract class Command {
-    public abstract void execute();
-}
-
-// 帮助命令类 - 具体命令类
-class HelpCommand extends Command {
-    private HelpHandler helpHandler;
-
-    public HelpCommand() {
-        helpHandler = new HelpHandler();
-    }
-
-    @Override
-    public void execute() {
-        helpHandler.action();
-    }
-}
-
-// 最小化命令类 - 具体命令类
-class MinimizeCommand extends Command {
-    private MinimizeHandler handler;
-
-    public MinimizeCommand() {
-        handler = new MinimizeHandler();
-    }
-
-    @Override
-    public void execute() {
-        handler.action();
-    }
-}
-
-// 帮助处理类 - 请求接收者
-class HelpHandler {
-    public void action(){
-        System.out.println(&quot;显示文档&quot;);
-    }
-}
-
-// 最小化处理类 - 请求接收者
-class MinimizeHandler {
-    public void action (){
-        System.out.println(&quot;最小化！&quot;);
-    }
-}
-
-public class CommandPattern {
-    public static void main(String[] args) {
-        final FBSettingWindow window = new FBSettingWindow();
-        window.setTitle(&quot;功能键设置&quot;);
-
-        final FunctionButton button1 = new FunctionButton();
-        button1.setName(&quot;按钮1&quot;);
-        final FunctionButton button2 = new FunctionButton();
-        button2.setName(&quot;按钮2&quot;);
-
-        final HelpCommand helpCommand = new HelpCommand();
-        final MinimizeCommand minimizeCommand = new MinimizeCommand();
-
-        button1.setCommand(helpCommand);
-        button2.setCommand(minimizeCommand);
-
-        window.addFunctionButton(button1);
-        window.addFunctionButton(button2);
-        window.display();
-
-        button1.onClick();
-        button2.onClick();
-    }
-}</code></pre>
+<h2 id="Create-React-App"><a href="#Create-React-App" class="headerlink" title="Create React App"></a>Create React App</h2><p><code>Create React App</code> 是创建 单页应用 的最佳方式。</p>
 <blockquote>
-<p>如果需要增加一个新的命令，只需要增加一个具体命令类，将命令类与具体的处理类进行关联，并注入到某个功能键即可。原有代码无需修改，符合“开闭原则”。</p>
+<p>需要 Node &gt;= 8.10 和 npm &gt;= 5.6</p>
 </blockquote>
-<h2 id="四、命令队列"><a href="#四、命令队列" class="headerlink" title="四、命令队列"></a>四、命令队列</h2><p>当我们点击一个按钮后，需要执行多次命令操作，且命令是可重用的。此时我们可以使用“命令队列”的方式来设计，此时，请求发送者不再维护单独的一个Command，而是一个CommandQueue，存储多个命令对象:</p>
-<pre><code class="java">class FunctionButton {
-    private String name;
-    private CommandQueue commandQueue;
-}
-class CommandQueue {
-    private List&lt;Command&gt; commands = new ArrayList&lt;&gt;();
-
-    public void addCommand(Command command){
-        commands.add(command);
-    }
-
-    public void removeCommand(Command command){
-        commands.remove(command);
-    }
-
-    public void display(){
-        for(Command cd:commands){
-            cd.execute();
-        }
-    }
-}</code></pre>
-<blockquote>
-<p>命令队列类似于“批处理”的概念，可以对一组对象（命令）进行批量操作。如果请求接收者没有严格的先后次序，还可以通过多线程技术来并发调用对象的execute方法，从而提高程序执行效率。</p>
-<h2 id="五、撤销操作的实现"><a href="#五、撤销操作的实现" class="headerlink" title="五、撤销操作的实现"></a>五、撤销操作的实现</h2><p>在命令模式中，可以通过调用命令对象的 execute() 方法来实现对请求的处理，如果需要撤销操作，可以在命令类中增加一个逆向操作来实现。</p>
-<p>也可以通过保存对象的历史状态来实现撤销，如“备忘录模式”。</p>
-<p>我们可以在具体的Handler 中，保存上次执行时的状态，并提供一个方法以便恢复至保存的状态。</p>
-</blockquote>
-<pre><code class="java">class AdderHandler{
-    private int number;
-
-    public int add(int i){
-        number += i;
-        return number;
-    }
-}
-
-class AdderCommand extends Command {
-    private AdderHandler handler;
-    private int history;
-
-    public AdderCommand(AdderHandler handler){
-        this.handler = handler;
-    }
-
-    @Override
-    public void add(int value){
-        int result = handler.add(value);
-        history = value;
-        System.out.print(&quot;加法结果为：&quot;+result);
-    }
-
-    @Override
-    public void undo(){
-        // 使用保存的状态实现撤销操作
-        int result = handler.add(-history);
-        System.out.print(&quot;撤销后的结果为：&quot;+result);
+<p>创建项目，可以执行：</p>
+<pre><code class="sh">npx create-react-app my-app
+cd my-app
+npm start</code></pre>
+<p>Create React App 只是创建一个前端构建流水线，它在内部使用 <code>Babel</code> 和 <code>Webpack</code>。</p>
+<h2 id="Next-js"><a href="#Next-js" class="headerlink" title="Next.js"></a>Next.js</h2><p>Next.js 是一个流行的、轻量级的框架，用于配合 React 打造静态化和服务端渲染应用。包括开箱即用的样式和路由方案。</p>
+<h2 id="Gatsby"><a href="#Gatsby" class="headerlink" title="Gatsby"></a>Gatsby</h2><p>Gatsby 是用 React 创建静态网站的最佳方式。它让你能使用 React 组件，但输出预渲染的 HTML 和 CSS 以保证最快的加载速度。</p>
+<h2 id="更灵活的工具链"><a href="#更灵活的工具链" class="headerlink" title="更灵活的工具链"></a>更灵活的工具链</h2><ul>
+<li>Neutrino 把 webpack 的强大功能和简单预设结合在一起。</li>
+<li>nwb 适合将 React 组件发布到 npm</li>
+<li>Parcel 是一个快速的、零配置的网页应用打包器</li>
+<li>Razzle 是一个无需配置的服务端渲染框架</li>
+</ul>
+<h2 id="从头开始打造工具链"><a href="#从头开始打造工具链" class="headerlink" title="从头开始打造工具链"></a>从头开始打造工具链</h2><ul>
+<li>package 管理器，如 Yarn、npm</li>
+<li>打包器：如 webpack、Parcel</li>
+<li>编译器：如 Babel</li>
+</ul>
+</div><hr></div><div class="recent-post-item article-container"><a class="article-title" href="/2019/09/12/读书笔记/《React》官方文档/2_JSX简介/">《React官方文档》JSX简介</a><time class="post-meta__date"><i class="fa fa-calendar" aria-hidden="true"></i> 2019-09-12</time><span class="article-meta"><span class="article-meta__separator">|</span><i class="fa fa-inbox article-meta__icon" aria-hidden="true"></i><a class="article-meta__categories" href="/categories/读书笔记/">读书笔记</a><i class="fa fa-angle-right" aria-hidden="true"></i><i class="fa fa-inbox article-meta__icon" aria-hidden="true"></i><a class="article-meta__categories" href="/categories/读书笔记/React/">React</a></span><span class="article-meta tags"><span class="article-meta__separator">|</span><i class="fa fa-tag article-meta__icon" aria-hidden="true"></i><a class="article-meta__tags" href="/tags/hide/">hide</a><span class="article-meta__link">-</span><i class="fa fa-tag article-meta__icon" aria-hidden="true"></i><a class="article-meta__tags" href="/tags/React/">React</a></span><div class="content"><h2 id="JSX-简介"><a href="#JSX-简介" class="headerlink" title="JSX 简介"></a>JSX 简介</h2><p>React 认为渲染逻辑本质上与其他 UI 逻辑内在耦合，比如，在 UI 中需要绑定处理事件、在某些时刻状态发生变化时需要通知 UI，以及需要在 UI 中展示准备好的数据。</p>
+<h3 id="JSX-防止注入攻击"><a href="#JSX-防止注入攻击" class="headerlink" title="JSX 防止注入攻击"></a>JSX 防止注入攻击</h3><pre><code class="js">const title = response.potentiallyMaliciousInput
+// 直接使用是安全的
+const element = &lt;h1&gt;{title}&lt;/h1&gt;</code></pre>
+<p>React DOM 在渲染所有输入内容之前，默认会进行转义。它可以确保在你的应用中，永远不会注入那些非自己明确编写的内容。所有内容在渲染之前都被转换成了字符串。这样可以有效地防止 XSS 攻击。</p>
+<h3 id="JSX-表示对象"><a href="#JSX-表示对象" class="headerlink" title="JSX 表示对象"></a>JSX 表示对象</h3><pre><code class="js">const element = (
+    &lt;h1 className=&quot;greeting&quot;&gt;
+        Hello,World!
+    &lt;/h1&gt;
+)</code></pre>
+<p>Babel 会把 JSX 转译成一个名为 React.createElement() 的函数调用。React.createElement() 会预先执行一些检查，以帮助你编写无错代码：</p>
+<pre><code class="javascript">// 这是简化的过程，真实的要复杂的多
+const element = {
+    type: &#39;h1&#39;,
+    props: {
+        className: &#39;greeting&#39;,
+        children: &#39;Hello,World!&#39;
     }
 }</code></pre>
-<blockquote>
-<p>注，该撤销操作只能执行一次，如果需要执行多次，可以使用集合来保存 <code>histroy</code></p>
-</blockquote>
-<h2 id="六、宏命令"><a href="#六、宏命令" class="headerlink" title="六、宏命令"></a>六、宏命令</h2><p>宏命令（Macro Command）又称为组合命令，是组合模式和命令联合的产物。</p>
-<p>宏命令是一个具体的命令类，拥有一个集合属性，在该集合中包含了对其他命令对象的引用。通常宏命令不直接与请求接收者交互，而是通过它的成员来调用接收者的方法。</p>
-<p>当调用宏命令的 execute 方法时，会递归调用它的每个成员命令的 execute 方法，成员既可以是一个简单命令，也可以是宏命令。</p>
-<h2 id="七、总结"><a href="#七、总结" class="headerlink" title="七、总结"></a>七、总结</h2><p>命令模式是一种 <code>使用频率非常高</code> 的设计模式，可以将请求发送者和接收者解耦。发送者通过命令对象间接引用请求接收者，使得系统具有更好的灵活性和可扩展性。</p>
-<h3 id="优点"><a href="#优点" class="headerlink" title="优点"></a>优点</h3><ol>
-<li>降低系统耦合，请求发送者与接收者不直接引用，相互独立</li>
-<li>方便扩展，增加新的命令不会影响其他类，无需修改系统代码，符合“开闭原则”</li>
-<li>可以比较简单的设计一个命令队列或组合命令（宏命令）</li>
-<li>为请求的撤销、恢复操作提供了一种设计和实现方案</li>
-</ol>
-<h3 id="缺点"><a href="#缺点" class="headerlink" title="缺点"></a>缺点</h3><ol>
-<li>可能会导致系统中存在过多的命令类，因为每个接收者都需要设计一个具体命令类来调用</li>
-</ol>
-<h3 id="适用场景"><a href="#适用场景" class="headerlink" title="适用场景"></a>适用场景</h3><ol>
-<li>系统需要请求发送者与接收者解耦，彼此互不影响，互不相知</li>
-<li>系统需要使用一组命令或者宏命令</li>
-<li>系统需要支持撤销、恢复操作</li>
-<li>系统需要在不同的时间指定请求、将请求排队和执行请求</li>
-</ol>
-<h2 id="八、练习"><a href="#八、练习" class="headerlink" title="八、练习"></a>八、练习</h2><pre><code class="tex"> 命令模式
- Sunny软件公司欲开发一个基于Windows平台的公告板系统。
- 该系统提供了一个主菜单(Menu)，
- 在主菜单中包含了一些菜单项(MenuItem)，
- 可以通过Menu类的addMenuItem()方法增加菜单项。
- 菜单项的主要方法是click()，
- 每一个菜单项包含一个抽象命令类，
- 具体命令类包括OpenCommand(打开命令)，CreateCommand(新建命令)，EditCommand(编辑命令)等，
- 命令类具有一个execute()方法，
- 用于调用公告板系统界面类(BoardScreen)的open()、create()、edit()等方法。
- 试使用命令模式设计该系统，
- 以便降低MenuItem类与BoardScreen类之间的耦合度</code></pre>
-<pre><code class="java">/**
- * 命令模式
- * Sunny软件公司欲开发一个基于Windows平台的公告板系统。
- * 该系统提供了一个主菜单(Menu)，
- * 在主菜单中包含了一些菜单项(MenuItem)，
- * 可以通过Menu类的addMenuItem()方法增加菜单项。
- * 菜单项的主要方法是click()，
- * 每一个菜单项包含一个抽象命令类，
- * 具体命令类包括OpenCommand(打开命令)，CreateCommand(新建命令)，EditCommand(编辑命令)等，
- * 命令类具有一个execute()方法，
- * 用于调用公告板系统界面类(BoardScreen)的open()、create()、edit()等方法。
- * 试使用命令模式设计该系统，
- * 以便降低MenuItem类与BoardScreen类之间的耦合度
- */
-// 主菜单 - 类似于之前的窗口界面，包含多个按钮（菜单项）
-class Menu{
-    private List&lt;MenuItem&gt; menuItems = new ArrayList&lt;&gt;();
-
-    public void addItem(MenuItem item){
-        menuItems.add(item);
-    }
-
-    public void display(){
-        System.out.println(&quot;------显示菜单:-----&quot;);
-        for (MenuItem menuItem : menuItems) {
-            System.out.println(menuItem.getName());
-        }
-    }
-}
-
-// 菜单项 - 请求发送者
-class MenuItem {
-    private String name;
-    private Command command;
-
-    public MenuItem(String name){
-        this.name = name;
-    }
-
-    public String getName() {
-        return name;
-    }
-
-    public void setCommand(Command command){
-        this.command = command;
-    }
-
-    public void create(){
-        command.create();
-    }
-
-    public void edit(){
-        command.edit();
-    }
-
-    public void open(){
-        command.open();
-    }
-}
-
-// 抽象命令类
-abstract class Command {
-    abstract void create();
-    abstract void edit();
-    abstract void open();
-}
-
-// 宏命令 - 一组命令的集合，宏命令一般不直接操作接收者，而是通过集合中的对象属性来操作
-class MacroCommand extends Command {
-    private List&lt;Command&gt; commands = new ArrayList&lt;&gt;();
-
-    public void addCommand(Command command){
-        this.commands.add(command);
-    }
-
-    @Override
-    void create() {
-        for (Command command : commands) {
-            command.create();
-        }
-    }
-
-    @Override
-    void edit() {
-        for (Command command : commands) {
-            command.edit();
-        }
-    }
-
-    @Override
-    void open() {
-        for (Command command : commands) {
-            command.open();
-        }
-    }
-}
-
-// 具体命令类
-class BoardScreenCommand extends Command{
-    private BoardScreenHandler handler;
-
-    public BoardScreenCommand(){
-        handler = new BoardScreenHandler();
-    }
-
-    @Override
-    void create() {
-        handler.create();
-    }
-
-    @Override
-    void edit() {
-        handler.edit();
-    }
-
-    @Override
-    void open() {
-        handler.open();
-    }
-}
-
-// 请求接收者，也就是具体的处理类
-class BoardScreenHandler {
-    public void open(){
-        System.out.println(&quot;打开公告板&quot;);
-    }
-    public void create(){
-        System.out.println(&quot;创建公告板&quot;);
-    }
-    public void edit(){
-        System.out.println(&quot;修改公告板&quot;);
-    }
-}
-
-public class CommandPattern {
-    public static void main(String[] args) {
-        final Menu menu = new Menu();
-
-        final MenuItem menuItem = new MenuItem(&quot;公告板管理&quot;);
-        final MenuItem menuItem1 = new MenuItem(&quot;高噶&quot;);
-
-        final Command command = new BoardScreenCommand();
-
-        final MacroCommand command1 = new MacroCommand();
-        command1.addCommand(command);
-        command1.addCommand(command);
-
-        menuItem.setCommand(command);
-        menuItem1.setCommand(command1);
-
-        menu.addItem(menuItem);
-        menu.addItem(menuItem1);
-
-        menu.display();
-        menuItem.create();
-        menuItem.open();
-        System.out.println(&quot;----宏命令执行------&quot;);
-        menuItem1.create();
-        menuItem1.edit();
-        menuItem1.open();
-    }
-}</code></pre>
-</div><hr></div><div class="recent-post-item article-container"><a class="article-title" href="/2019/07/15/读书笔记/《JavaDesignPatterns》/16.责任链模式/">《Java Design Patterns》第十四章 责任链模式</a><time class="post-meta__date"><i class="fa fa-calendar" aria-hidden="true"></i> 2019-07-15</time><span class="article-meta"><span class="article-meta__separator">|</span><i class="fa fa-inbox article-meta__icon" aria-hidden="true"></i><a class="article-meta__categories" href="/categories/读书笔记/">读书笔记</a><i class="fa fa-angle-right" aria-hidden="true"></i><i class="fa fa-inbox article-meta__icon" aria-hidden="true"></i><a class="article-meta__categories" href="/categories/读书笔记/设计模式/">设计模式</a></span><span class="article-meta tags"><span class="article-meta__separator">|</span><i class="fa fa-tag article-meta__icon" aria-hidden="true"></i><a class="article-meta__tags" href="/tags/hide/">hide</a><span class="article-meta__link">-</span><i class="fa fa-tag article-meta__icon" aria-hidden="true"></i><a class="article-meta__tags" href="/tags/设计模式/">设计模式</a></span><div class="content"><p><img src="https://i.loli.net/2019/07/15/5d2c3670b923754379.png" alt="责任链模式"></p></div><a class="more" href="/2019/07/15/读书笔记/《JavaDesignPatterns》/16.责任链模式/#more">阅读更多</a><hr></div><div class="recent-post-item article-container"><a class="article-title" href="/2019/07/15/读书笔记/《JavaDesignPatterns》/15.代理模式/">《Java Design Patterns》第十三章 代理模式</a><time class="post-meta__date"><i class="fa fa-calendar" aria-hidden="true"></i> 2019-07-15</time><span class="article-meta"><span class="article-meta__separator">|</span><i class="fa fa-inbox article-meta__icon" aria-hidden="true"></i><a class="article-meta__categories" href="/categories/读书笔记/">读书笔记</a><i class="fa fa-angle-right" aria-hidden="true"></i><i class="fa fa-inbox article-meta__icon" aria-hidden="true"></i><a class="article-meta__categories" href="/categories/读书笔记/设计模式/">设计模式</a></span><span class="article-meta tags"><span class="article-meta__separator">|</span><i class="fa fa-tag article-meta__icon" aria-hidden="true"></i><a class="article-meta__tags" href="/tags/hide/">hide</a><span class="article-meta__link">-</span><i class="fa fa-tag article-meta__icon" aria-hidden="true"></i><a class="article-meta__tags" href="/tags/设计模式/">设计模式</a></span><div class="content"><h1 id="第十三章-代理模式"><a href="#第十三章-代理模式" class="headerlink" title="第十三章 代理模式"></a>第十三章 代理模式</h1><p>代理模式是常用的 <code>对象结构型设计模式</code> 之一，当无法直接访问某个对象时，可以通过一个代理对象来间接访问。</p>
-<p>为了保证客户端使用的透明性，所访问的真实对象与代理对象需要实现相同的接口。</p>
-<p>代理模式根据使用目的，又可以分为：保护代理、远程代理、虚拟代理、缓冲代理等。</p>
-<h2 id="一、代理模式概述"><a href="#一、代理模式概述" class="headerlink" title="一、代理模式概述"></a>一、代理模式概述</h2><p>日常生活中，我们通过网站购买商品，商品对应的就是“真实主题角色”，而商品网站则是“代理主题角色”。</p>
-<h2 id="1-1-定义"><a href="#1-1-定义" class="headerlink" title="1.1 定义"></a>1.1 定义</h2><p>代理模式：给某一个对象提供一个代理或占位符，并由代理对象来控制对原对象的访问。</p>
-<p>代理模式通过引入一个新的代理对象，在客户端对象和目标对象之间起到中介的作用，去掉客户不能看到的内容和服务，或者增添客户需要的额外的新服务。</p>
-<h3 id="1-2-代理模式的结构"><a href="#1-2-代理模式的结构" class="headerlink" title="1.2 代理模式的结构"></a>1.2 代理模式的结构</h3><p><img src="https://i.loli.net/2019/07/15/5d2bf3248bdec12565.png" alt="代理模式结构"></p>
-<p>代理模式的重点在于，1. 客户端针对 抽象角色 编程 2. 抽象对象实例化代理对象 3. 通过代理对象维护的真实角色对象，来调用真实业务，并通过代理对象实现的方法，来扩展真实业务员</p>
-<h3 id="1-3-代理模式中的几个角色"><a href="#1-3-代理模式中的几个角色" class="headerlink" title="1.3 代理模式中的几个角色"></a>1.3 代理模式中的几个角色</h3><ol>
-<li>Subject - 抽象主题角色<ol>
-<li>声明了真实主题和代理主题的共同接口</li>
-<li>客户端通常只需要针对抽象主题角色进行编程</li>
-</ol>
-</li>
-<li>Proxy - 代理主题角色<ol>
-<li>包含对真实主题的应用，可以在任何时候操作真实主题</li>
-<li>代理主题角色提供与真实主题角色相同的接口，以便在任何时候替代真实主题</li>
-<li>代理主题角色还能控制对真实主题的使用，负责在需要时创建、删除真实主题对象，对真实主题对象的使用加以约束</li>
-</ol>
-</li>
-<li>RealSubject - 真实主题角色<ol>
-<li>定义了真实的业务操作</li>
-<li>客户端可以通过代理角色，间接调用真实角色的操作</li>
-</ol>
-</li>
-</ol>
-<h3 id="1-4-代理模式的核心-代理主题角色-Proxy"><a href="#1-4-代理模式的核心-代理主题角色-Proxy" class="headerlink" title="1.4 代理模式的核心 - 代理主题角色 Proxy"></a>1.4 代理模式的核心 - 代理主题角色 Proxy</h3><pre><code class="java">class Proxy implements Subject {
-    // 维护一个对真实主题对象的引用
-    private RealSubject subject = new RealSubject(); 
-
-    public void preRequest(){
-        // ...
-    }
-
-    /**
-     * 实现Subject声明的抽象方法，调用真实主题角色的操作，并进行扩展
-     */
-    @Override
-    public void request(){
-        preRequest();
-        subject.request();
-        postRequest();
-    }
-
-    public void postRequest(){
-        // ...
-    }
-}</code></pre>
-<h2 id="二、几种常用的代理模式"><a href="#二、几种常用的代理模式" class="headerlink" title="二、几种常用的代理模式"></a>二、几种常用的代理模式</h2><ol>
-<li>远程代理 - Remote Proxy<ol>
-<li>为一个位于不同的地址空间的对象提供一个本地的代理对象</li>
-<li>远程代理又称为 大使 - Ambassador</li>
-<li>客户端无须关心实现具体业务的是谁，只需要按照服务接口定义的方式直接与本地主机中的代理对象交互即可</li>
-<li>DCOM、Web Service 都应用了远程代理模式</li>
-</ol>
-</li>
-<li>虚拟代理 - Virtual Proxy<ol>
-<li>如果需要创建一个资源消耗较大的对象，先创建一个消耗相对较小的对象来表示，真实对象只在需要时才会被真正创建<ol>
-<li>通常可以结合多线程技术，一个线程用于显示代理对象，其他线程用于加载真实对象</li>
-</ol>
-</li>
-</ol>
-</li>
-<li>保护代理 - Protect Proxy<ol>
-<li>控制对一个对象的访问，可以给不同的用户提供不同级别的使用权限</li>
-</ol>
-</li>
-<li>缓冲代理 - Cache Proxy<ol>
-<li>为某一个目标操作的结果提供临时的存储空间，以便多个客户端可以共享这些结果</li>
-</ol>
-</li>
-<li>智能引用代理 - Smart Reference Proxy<ol>
-<li>当一个对象被引用时，提供一些额外的操作，例如记录被调用的次数等</li>
-</ol>
-</li>
-</ol>
-<h2 id="三、完整实现"><a href="#三、完整实现" class="headerlink" title="三、完整实现"></a>三、完整实现</h2><pre><code class="java">/**
- * 代理模式
- */
-// 数据库验证类 - 业务类
-class AccessValidator {
-    public Boolean validate(String userId) {
-        System.out.println(&quot;在数据库中验证用户:&quot; + userId + &quot;，是否是合法用户？&quot;);
-        if (userId.contains(&quot;aa&quot;)) {
-            System.out.println(&quot;验证通过！&quot;);
-            return true;
-        } else {
-            System.out.println(&quot;验证失败！&quot;);
-            return false;
-        }
-    }
-}
-
-// 日志记录类 - 业务类
-class Logger {
-    public void log(String userId) {
-        System.out.println(&quot;记录用户 &quot; + userId + &quot; 登录日志&quot;);
-    }
-}
-
-// 抽象查询类 - 抽象主题角色
-interface Searcher {
-    String doSearch(String userId, String keyword);
-}
-
-// 具体查询类 - 真实主题角色
-class RealSearcher implements Searcher {
-    @Override
-    public String doSearch(String userId, String keyword) {
-        System.out.println(&quot;用户 &quot; + userId + &quot; 使用关键词 &quot; + keyword + &quot; 进行查询&quot;);
-        return &quot;查询到的具体内容&quot;;
-    }
-}
-
-// 代理查询类 - 代理主题角色，维持对业务类、真实主题角色对象的引用
-class ProxySearcher implements Searcher {
-    // 维持一个对真实主题的引用
-    private RealSearcher searcher = new RealSearcher();
-
-    // 业务类
-    private AccessValidator validator = new AccessValidator();
-    private Logger logger = new Logger();
-
-    @Override
-    public String doSearch(String userId, String keyword) {
-        // 如果身份验证成功，则继续执行
-        if (this.validate(userId)) {
-            // 调用真实主题对象的查询方法
-            final String result = searcher.doSearch(userId, keyword);
-            // 记录查询日志
-            this.logger(userId);
-            // 返回查询结果
-            return result;
-        }
-        return null;
-    }
-
-    public boolean validate(String userId) {
-        return validator.validate(userId);
-    }
-
-    public void logger(String userId) {
-        logger.log(userId);
-    }
-}
-
-public class ProxyPattern {
-    public static void main(String[] args) {
-        final ProxySearcher searcher = new ProxySearcher();
-        final String search = searcher.doSearch(&quot;aa张三&quot;, &quot;男士内衣&quot;);
-        System.out.println(&quot;查询结果：&quot;+search);
-    }
-}</code></pre>
-<p>执行结果如下：</p>
-<p><img src="https://i.loli.net/2019/07/12/5d284f8188eaa42868.png" alt="执行结果"></p>
-<h2 id="四、总结"><a href="#四、总结" class="headerlink" title="四、总结"></a>四、总结</h2><h3 id="优点"><a href="#优点" class="headerlink" title="优点"></a>优点</h3><p>代理模式各类型的共同优点：</p>
-<ol>
-<li>能够协调调用者和被调用者，一定程序上降低了系统耦合</li>
-<li>客户端可以针对 抽象主题角色 进行编程，增加和更换代理类无须修改源代码，符合开闭原则，系统具有良好的灵活性和可扩展性</li>
-</ol>
-<p>不同代理模式的特点：</p>
-<ol>
-<li>远程代理，为两个不同地址空间对象的访问提供了一种实现机制，可以将一些消耗资源较多的对象和操作 移至性能更好的计算机上，提高系统的整体运行效率</li>
-<li>虚拟代理通过一个消耗资源较少的对象来代表一个消耗资源较多的对象，可以在一定程度上节省系统的运行开销</li>
-<li>缓冲代理，为某一个操作 的结果提供临时的缓存存储空间，以便在后续使用中能够共享这些结果，优化系统性能，缩短执行时间</li>
-<li>保护代理，可以控制一个对象的访问权限，为不同用户提供不同级别的使用权限</li>
-</ol>
-<h3 id="缺点"><a href="#缺点" class="headerlink" title="缺点"></a>缺点</h3><ol>
-<li>由于增加了代理对象，可能会导致请求的处理速度变慢，如保护代理</li>
-<li>实现代理模式需要额外的工作，实现过程可能变得十分复杂，如远程代理</li>
-</ol>
-<h3 id="适用场景"><a href="#适用场景" class="headerlink" title="适用场景"></a>适用场景</h3><ol>
-<li>当客户端对象需要访问远程主机中的对象时，可以使用远程代理</li>
-<li>当需要用一个消耗资源较少的对象来代表一个消耗资源较多的对象时，可以使用虚拟代理<ol>
-<li>从而降低系统开销、缩短运行时间</li>
-</ol>
-</li>
-<li>为某一个需要频繁访问的操作结果提供一个临时存储空间，以供多个客户端共享访问时，可以使用缓冲代理</li>
-<li>需要控制对象的访问权限时，可以使用保护代理</li>
-<li>需要为一个对象的引用提供一些额外操作时，可以使用智能引用代理</li>
-</ol>
-</div><hr></div><div class="recent-post-item article-container"><a class="article-title" href="/2019/07/12/读书笔记/《JavaDesignPatterns》/14.享元模式/">《Java Design Patterns》第十二章 享元模式</a><time class="post-meta__date"><i class="fa fa-calendar" aria-hidden="true"></i> 2019-07-12</time><span class="article-meta"><span class="article-meta__separator">|</span><i class="fa fa-inbox article-meta__icon" aria-hidden="true"></i><a class="article-meta__categories" href="/categories/读书笔记/">读书笔记</a><i class="fa fa-angle-right" aria-hidden="true"></i><i class="fa fa-inbox article-meta__icon" aria-hidden="true"></i><a class="article-meta__categories" href="/categories/读书笔记/设计模式/">设计模式</a></span><span class="article-meta tags"><span class="article-meta__separator">|</span><i class="fa fa-tag article-meta__icon" aria-hidden="true"></i><a class="article-meta__tags" href="/tags/hide/">hide</a><span class="article-meta__link">-</span><i class="fa fa-tag article-meta__icon" aria-hidden="true"></i><a class="article-meta__tags" href="/tags/设计模式/">设计模式</a></span><div class="content"><h1 id="第十二章-享元模式"><a href="#第十二章-享元模式" class="headerlink" title="第十二章 享元模式"></a>第十二章 享元模式</h1><p>在Java开发或者面试过程中，经常会遇到一个面试题：</p>
-<pre><code class="java">String a = new String(&quot;abc&quot;); 
-String b = new String(&quot;abc&quot;);
-问：a == b ?</code></pre>
-<p>答案是肯定的，因为JVM在创建一个字符串后，会将其存储在 字符串池 中，下次new时会先去 字符串池 中查询是否已经存在。然后将引用地址返回。</p>
-<p>这就是一个典型的 <code>享元模式</code> 案例。</p>
-<h2 id="一、设计一个围棋软件"><a href="#一、设计一个围棋软件" class="headerlink" title="一、设计一个围棋软件"></a>一、设计一个围棋软件</h2><p>对于围棋软件而言，棋盘中包含大量的黑白色棋子，它们的形状、大小一致，但是出现的位置不同。如果将所有棋子都 new 一个对象存储在内存中，则该软件在运行时所需的内存空间会非常大。</p>
-<h3 id="解决方案"><a href="#解决方案" class="headerlink" title="解决方案"></a>解决方案</h3><p>享元模式通过共享技术实现相同或相似对象的重用，在逻辑上每一个出现的字符都有一个对象与之对应，然而在物理上它们却共享同一个享元对象。</p>
-<p>在享元模式中，存储这些共享实例对象的地方称为“享元池（Flyweight Pool）”</p>
-<h2 id="二、享元模式"><a href="#二、享元模式" class="headerlink" title="二、享元模式"></a>二、享元模式</h2><p>享元模式以共享方式，高效地支持大量细粒度对象的重用，享元对象能做到共享的关键是区分了 内部状态（Intrinsic State）和外部状态（Extrinsic State）。</p>
-<h3 id="内部状态"><a href="#内部状态" class="headerlink" title="内部状态"></a>内部状态</h3><p>内部状态是指存储在享元对象内部并且不会随环境变化而改变的状态，内部状态可以共享，但是不会被修改。</p>
-<h3 id="外部状态"><a href="#外部状态" class="headerlink" title="外部状态"></a>外部状态</h3><p>外部状态是随环境变化而变化的、不可以共享的状态。</p>
-<p>外部状态通常由客户端保存，并在享元对象被创建之后，需要使用的时候再传入享元对象内部。</p>
-<h3 id="享元模式的定义"><a href="#享元模式的定义" class="headerlink" title="享元模式的定义"></a>享元模式的定义</h3><p>享元模式（Flyweight Pattern）：运用共享技术有效地支持大量细粒度对象的复用。系统只使用少量的对象，而这些对象都很相似，状态变化很小，可以实现对象的多次复用。</p>
-<p>享元模式因其共享的是细粒度对象，因此又称为 <code>轻量级模式</code>，属于<code>对象结构型模式</code>。</p>
-<h3 id="享元模式中的几个角色"><a href="#享元模式中的几个角色" class="headerlink" title="享元模式中的几个角色"></a>享元模式中的几个角色</h3><ol>
-<li>Flyweight - 抽象享元类<ol>
-<li>接口或者抽象类，声明了具体享元类的公共方法</li>
-<li>这些方法可以向外界提供内部数据</li>
-<li>也可以有外界来设计外部数据</li>
-</ol>
-</li>
-<li>ConcreteFlyweight - 具体享元类<ol>
-<li>实现了抽象享元类，实例被称为享元对象</li>
-<li>具体享元类中为内部状态提供了存储空间</li>
-<li>通常使用单例模式来设计具体享元类</li>
-</ol>
-</li>
-<li>UnsharedConcreteFlyweight - 非共享具体享元类<ol>
-<li>不能被共享的子类可以设计为 非共享具体享元类</li>
-<li>在使用时可以直接通过实例化创建</li>
-</ol>
-</li>
-<li>FlyweightFactory - 享元工厂类<ol>
-<li>用于创建并管理享元对象，针对抽象享元类编程</li>
-<li>存储享元池，一般设计为“键值对”的集合</li>
-<li>可以结合工厂模式进行设计，返回唯一的实例</li>
-</ol>
-</li>
-</ol>
-<h2 id="三、享元模式的核心"><a href="#三、享元模式的核心" class="headerlink" title="三、享元模式的核心"></a>三、享元模式的核心</h2><h3 id="1-享元工厂类"><a href="#1-享元工厂类" class="headerlink" title="1. 享元工厂类"></a>1. 享元工厂类</h3><pre><code class="java">class FlyweightFactory {
-    // 定义享元池
-    private Map&lt;String,Flyweight&gt; flyweights = new HashMap();
-
-    public Flyweight getFlyweight(String key){
-        // 对象存在，则直接从享元池中取
-        if(flyweights.containsKey(key)){
-            return flyweights.get(key);
-        }
-        // 不存在，则创建一个享元对象，并放入享元池中返回
-        else {
-            Flyweight fy = new ConcreteFlyweight();
-            flyweights.put(key,fy);
-            return fy;
-        }
-    }
-}</code></pre>
-<h3 id="2-享元类"><a href="#2-享元类" class="headerlink" title="2. 享元类"></a>2. 享元类</h3><p>享元类将内部状态和外部状态分开处理，通常将内部状态作为享元类的成员变量，而外部状态通过注入的方式添加到享元模式中。</p>
-<pre><code class="java">class Flyweight {
-    // 内部状态，与享元对象的内部状态一致
-    private String intrinsicState;
-
-    public Flyweight(String intrinsicState){
-        this.intrinsicState = intrinsicState;
-    }
-
-    // 外部状态，在使用时由外部设置，不保存在享元对象中。
-    // 即使是同一个享元对象，每次使用时也可以传入不同的外部状态
-    public void operation(String extrinsicState){
-        .......
-    }
-}</code></pre>
-<h2 id="四、完整实现"><a href="#四、完整实现" class="headerlink" title="四、完整实现"></a>四、完整实现</h2><pre><code class="java">/**
- * 享元模式
- */
-// 围棋棋子类 - 抽象享元类
-abstract class IgoChessman {
-    // 抽象内部状态
-    public abstract String getColor();
-
-    // 在方法调用时，注入外部状态
-    public void display(Integer x, Integer y) {
-        System.out.println(&quot;棋子颜色:&quot; + getColor() + &quot;，当前棋子位置为：&quot; + x + &quot;,&quot; + y);
-    }
-}
-
-// 黑色棋子类 - 具体享元类
-class BlackIgoChessman extends IgoChessman {
-    @Override
-    public String getColor() {
-        return &quot;黑色&quot;;
-    }
-}
-
-// 白色棋子类 - 具体享元类
-class WhiteIgoChessman extends IgoChessman {
-    @Override
-    public String getColor() {
-        return &quot;白色&quot;;
-    }
-}
-
-// 围棋棋子工厂类 - 享元工厂类，使用单例模式进行设计
-class IgoChessmanFactory {
-    private static IgoChessmanFactory instance = new IgoChessmanFactory();
-    private static Hashtable&lt;String, IgoChessman&gt; ht; // 使用 Hashtable 来存储享元对象，充当享元池
-
-    private IgoChessmanFactory() {
-        ht = new Hashtable&lt;&gt;();
-        IgoChessman black = new BlackIgoChessman();
-        IgoChessman white = new WhiteIgoChessman();
-        ht.put(&quot;b&quot;, black);
-        ht.put(&quot;w&quot;, white);
-    }
-
-    // 返回享元工厂类的唯一实例
-    public static IgoChessmanFactory getInstance() {
-        return instance;
-    }
-
-    // 通过key来获取存储在 Hashtable 中的享元对象
-    public IgoChessman getIgoChessman(String color) {
-        return ht.get(color);
-    }
-}
-
-public class FlyweightPattern {
-    public static void main(String[] args) {
-        // 获取享元工厂对象
-        IgoChessmanFactory factory = IgoChessmanFactory.getInstance();
-
-        // 通过享元工厂获取棋子
-        IgoChessman black1 = factory.getIgoChessman(&quot;b&quot;);
-        IgoChessman black2 = factory.getIgoChessman(&quot;b&quot;);
-        IgoChessman black3 = factory.getIgoChessman(&quot;b&quot;);
-
-        IgoChessman white1 = factory.getIgoChessman(&quot;w&quot;);
-        IgoChessman white2 = factory.getIgoChessman(&quot;w&quot;);
-
-        black1.display(1,2);
-        black2.display(2,3);
-        black3.display(3,4);
-        white1.display(4,5);
-        white2.display(2,2);
-    }
-}</code></pre>
-<h2 id="五、单纯享元模式与复合享元模式"><a href="#五、单纯享元模式与复合享元模式" class="headerlink" title="五、单纯享元模式与复合享元模式"></a>五、单纯享元模式与复合享元模式</h2><h3 id="5-1-单纯享元模式"><a href="#5-1-单纯享元模式" class="headerlink" title="5.1 单纯享元模式"></a>5.1 单纯享元模式</h3><p>单纯享元模式中，所有具体享元类都是可以共享的，不存在非共享具体享元类。</p>
-<h3 id="5-2-复合享元模式"><a href="#5-2-复合享元模式" class="headerlink" title="5.2 复合享元模式"></a>5.2 复合享元模式</h3><p>将一些单纯享元对象使用组合模式进行组合，形成复合享元对象。复合享元对象本身不能共享，但是可以将组合后的享元对象分解为单纯享元对象，进行共享。</p>
-<h2 id="六、补充"><a href="#六、补充" class="headerlink" title="六、补充"></a>六、补充</h2><p>享元模式与其他模式的联用：</p>
-<ol>
-<li>享元工厂类通常提供一个 <code>静态的工厂方法</code> 用于返回享元对象，使用 <code>简单工厂模式</code> 来生成享元对象</li>
-<li>享元工厂通常是唯一的，可以使用 <code>单例模式</code> 进行设计</li>
-<li>可以使用 <code>组合模式</code> 形成复合享元模式，统一对多个享元对象设置外部状态</li>
-</ol>
-<h2 id="七、总结"><a href="#七、总结" class="headerlink" title="七、总结"></a>七、总结</h2><p>“节约内存，提高性能”</p>
-<h3 id="优点"><a href="#优点" class="headerlink" title="优点"></a>优点</h3><ol>
-<li>极大的减少内存中对象的数量，使得相同或相似对象在内存中只保存一份，从而节约系统资源，提高系统性能</li>
-<li>享元模式的外部状态相对独立，且不影响其内部状态，从而使得享元对象可以在不同环境中被共享</li>
-</ol>
-<h3 id="缺点"><a href="#缺点" class="headerlink" title="缺点"></a>缺点</h3><ol>
-<li>享元模式需要分离 内部状态和外部状态，使程序的逻辑更复杂</li>
-<li>为了使对象可以共享，享元模式需要将享元对象的部分状态外部化，而读取外部状态将使得运行时间变长</li>
-</ol>
-<h3 id="适用场景"><a href="#适用场景" class="headerlink" title="适用场景"></a>适用场景</h3><ol>
-<li>系统中有大量相同或相似的对象，造成大量的内存浪费</li>
-<li>对象的大部分状态都可以外部化，可以将这些外部状态传入对象中</li>
-<li>享元模式在运行时需要维护一个享元池，势必会使内存一直占用，因此享元池中的享元对象需要多次重复使用时才值得</li>
-</ol>
-<h2 id="八、练习"><a href="#八、练习" class="headerlink" title="八、练习"></a>八、练习</h2><blockquote>
-<p>Sunny软件公司欲开发一个多功能文档编辑器，在文本文档中可以插入图片、动画、视频等多媒体资料，为了节约系统资源，相同的图片、动画和视频在同一个文档中只需保存一份，但是可以多次重复出现，而且它们每次出现时位置和大小均可不同。试使用享元模式设计该文档编辑器。</p>
-<pre><code class="java">// 抽象享元类 - 声明公共方法，向外界提供内部数据，由外界提供外部数据
-abstract class Flyweight {
-    public abstract String type();
-
-    public void insert(String location, String size) {
-        System.out.println(&quot;插入类型：&quot; + type() + &quot;，位置：&quot; + location + &quot;，大小：&quot; + size);
-    }
-}
-
-// 具体享元类 - 实现抽象方法，内部数据的状态与对象状态一致，内部状态不能被修改
-class Picture extends Flyweight {
-    @Override
-    public String type() {
-        return &quot;图片类型&quot;;
-    }
-}
-
-class Cartoon extends Flyweight {
-    @Override
-    public String type() {
-        return &quot;动画类型&quot;;
-    }
-}
-
-class Video extends Flyweight {
-    @Override
-    public String type() {
-        return &quot;视频类型&quot;;
-    }
-}
-
-class FlyweightFactory {
-
-    // 使用单例模式，维持单一的工厂对象
-    private static FlyweightFactory factory = new FlyweightFactory();
-
-    private Map&lt;String, Flyweight&gt; map = new HashMap&lt;&gt;();
-
-    private FlyweightFactory() {
-        Flyweight picture = new Picture();
-        Flyweight cartoon = new Cartoon();
-        Flyweight video = new Video();
-        map.put(&quot;picture&quot;, picture);
-        map.put(&quot;cartoon&quot;, cartoon);
-        map.put(&quot;video&quot;, video);
-    }
-
-    // 静态工厂方法 - 返回工厂对象
-    public static FlyweightFactory getInstance(){
-        return factory;
-    }
-
-    public Flyweight getFlyweight(String key) {
-        if(map.containsKey(key)){
-            return map.get(key);
-        }
-        throw new RuntimeException(&quot;flyweight cann&#39;t support&quot;);
-    }
-}
-
-public class FlyweightPattern {
-    public static void main(String[] args) {
-        final FlyweightFactory factory = FlyweightFactory.getInstance();
-        Flyweight picture1 = factory.getFlyweight(&quot;picture&quot;);
-        Flyweight picture2 = factory.getFlyweight(&quot;picture&quot;);
-        Flyweight cartoon1 = factory.getFlyweight(&quot;cartoon&quot;);
-        Flyweight cartoon2 = factory.getFlyweight(&quot;cartoon&quot;);
-        Flyweight video = factory.getFlyweight(&quot;video&quot;);
-
-        picture1.insert(&quot;/Pic 下&quot;,&quot;273KB&quot;);
-        picture2.insert(&quot;/Pic 下&quot;,&quot;1.23MB&quot;);
-        cartoon1.insert(&quot;/cartoon 下&quot;,&quot;80MB&quot;);
-        cartoon2.insert(&quot;/cartoon 下&quot;,&quot;81MB&quot;);
-        video.insert(&quot;/video 下&quot;,&quot;1.3GB&quot;);
-    }
-}</code></pre>
-</blockquote>
-<p><img src="https://i.loli.net/2019/07/12/5d28459ba725023617.png" alt="运行结果"></p>
-</div><hr></div><nav id="pagination"><div class="pagination"><a class="extend prev" rel="prev" href="/page/11/"><i class="fa fa-chevron-left"></i></a><a class="page-number" href="/">1</a><span class="space">&hellip;</span><a class="page-number" href="/page/11/">11</a><span class="page-number current">12</span><a class="page-number" href="/page/13/">13</a><span class="space">&hellip;</span><a class="page-number" href="/page/23/">23</a><a class="extend next" rel="next" href="/page/13/"><i class="fa fa-chevron-right"></i></a></div></nav></div></div><footer><div class="layout" id="footer"><div class="copyright">&copy;2013 - 2020 By koral</div><div class="framework-info"><span>驱动 - </span><a href="http://hexo.io"><span>Hexo</span></a><span class="footer-separator">|</span><span>主题 - </span><a href="https://github.com/Molunerfinn/hexo-theme-melody"><span>Melody</span></a></div><div class="busuanzi"><script async src="//busuanzi.ibruce.info/busuanzi/2.3/busuanzi.pure.mini.js"></script><span id="busuanzi_container_site_uv"><i class="fa fa-user"></i><span id="busuanzi_value_site_uv"></span><span></span></span><span class="footer-separator">|</span><span id="busuanzi_container_site_pv"><i class="fa fa-eye"></i><span id="busuanzi_value_site_pv"></span><span></span></span></div></div></footer><i class="fa fa-arrow-up" id="go-up" aria-hidden="true"></i><script src="https://cdn.jsdelivr.net/npm/animejs@latest/anime.min.js"></script><script src="https://cdn.jsdelivr.net/npm/jquery@latest/dist/jquery.min.js"></script><script src="https://cdn.jsdelivr.net/npm/@fancyapps/fancybox@latest/dist/jquery.fancybox.min.js"></script><script src="https://cdn.jsdelivr.net/npm/velocity-animate@latest/velocity.min.js"></script><script src="https://cdn.jsdelivr.net/npm/velocity-ui-pack@latest/velocity.ui.min.js"></script><script src="/js/utils.js?version=1.7.0"></script><script src="/js/fancybox.js?version=1.7.0"></script><script src="/js/sidebar.js?version=1.7.0"></script><script src="/js/copy.js?version=1.7.0"></script><script src="/js/fireworks.js?version=1.7.0"></script><script src="/js/transition.js?version=1.7.0"></script><script src="/js/scroll.js?version=1.7.0"></script><script src="/js/head.js?version=1.7.0"></script><script>if(/Android|webOS|iPhone|iPod|iPad|BlackBerry/i.test(navigator.userAgent)) {
+<p>这些对象被称为”React元素”，描述了屏幕前看到的内容，React通过读取这些对象，然后使用它们来构建 DOM 以及保持随时更新。</p>
+</div><hr></div><div class="recent-post-item article-container"><a class="article-title" href="/2019/09/12/读书笔记/《React》官方文档/API/">《React》API</a><time class="post-meta__date"><i class="fa fa-calendar" aria-hidden="true"></i> 2019-09-12</time><span class="article-meta"><span class="article-meta__separator">|</span><i class="fa fa-inbox article-meta__icon" aria-hidden="true"></i><a class="article-meta__categories" href="/categories/读书笔记/">读书笔记</a><i class="fa fa-angle-right" aria-hidden="true"></i><i class="fa fa-inbox article-meta__icon" aria-hidden="true"></i><a class="article-meta__categories" href="/categories/读书笔记/React/">React</a></span><span class="article-meta tags"><span class="article-meta__separator">|</span><i class="fa fa-tag article-meta__icon" aria-hidden="true"></i><a class="article-meta__tags" href="/tags/hide/">hide</a><span class="article-meta__link">-</span><i class="fa fa-tag article-meta__icon" aria-hidden="true"></i><a class="article-meta__tags" href="/tags/React/">React</a></span><div class="content"></div><hr></div><nav id="pagination"><div class="pagination"><a class="extend prev" rel="prev" href="/page/11/"><i class="fa fa-chevron-left"></i></a><a class="page-number" href="/">1</a><span class="space">&hellip;</span><a class="page-number" href="/page/11/">11</a><span class="page-number current">12</span><a class="page-number" href="/page/13/">13</a><span class="space">&hellip;</span><a class="page-number" href="/page/27/">27</a><a class="extend next" rel="next" href="/page/13/"><i class="fa fa-chevron-right"></i></a></div></nav></div></div><footer><div class="layout" id="footer"><div class="copyright">&copy;2013 - 2020 By koral</div><div class="framework-info"><span>驱动 - </span><a href="http://hexo.io"><span>Hexo</span></a><span class="footer-separator">|</span><span>主题 - </span><a href="https://github.com/Molunerfinn/hexo-theme-melody"><span>Melody</span></a></div><div class="busuanzi"><script async src="//busuanzi.ibruce.info/busuanzi/2.3/busuanzi.pure.mini.js"></script><span id="busuanzi_container_site_uv"><i class="fa fa-user"></i><span id="busuanzi_value_site_uv"></span><span></span></span><span class="footer-separator">|</span><span id="busuanzi_container_site_pv"><i class="fa fa-eye"></i><span id="busuanzi_value_site_pv"></span><span></span></span></div></div></footer><i class="fa fa-arrow-up" id="go-up" aria-hidden="true"></i><script src="https://cdn.jsdelivr.net/npm/animejs@latest/anime.min.js"></script><script src="https://cdn.jsdelivr.net/npm/jquery@latest/dist/jquery.min.js"></script><script src="https://cdn.jsdelivr.net/npm/@fancyapps/fancybox@latest/dist/jquery.fancybox.min.js"></script><script src="https://cdn.jsdelivr.net/npm/velocity-animate@latest/velocity.min.js"></script><script src="https://cdn.jsdelivr.net/npm/velocity-ui-pack@latest/velocity.ui.min.js"></script><script src="/js/utils.js?version=1.7.0"></script><script src="/js/fancybox.js?version=1.7.0"></script><script src="/js/sidebar.js?version=1.7.0"></script><script src="/js/copy.js?version=1.7.0"></script><script src="/js/fireworks.js?version=1.7.0"></script><script src="/js/transition.js?version=1.7.0"></script><script src="/js/scroll.js?version=1.7.0"></script><script src="/js/head.js?version=1.7.0"></script><script>if(/Android|webOS|iPhone|iPod|iPad|BlackBerry/i.test(navigator.userAgent)) {
   $('#nav').addClass('is-mobile')
   $('footer').addClass('is-mobile')
   $('#top-container').addClass('is-mobile')

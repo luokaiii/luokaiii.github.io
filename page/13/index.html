@@ -7,1429 +7,1505 @@
     error: '复制错误',
     noSupport: '浏览器不支持'
   }
-} </script></head><body><i class="fa fa-arrow-right" id="toggle-sidebar" aria-hidden="true"></i><div id="sidebar" data-display="false"><div class="author-info"><div class="author-info__avatar text-center"><img src="/img/avatar.png"></div><div class="author-info__name text-center">koral</div><div class="author-info__description text-center">回廊一寸相思地，落月成孤倚。背灯和月就花阴，已是十年踪迹十年心。</div><hr><div class="author-info-articles"><a class="author-info-articles__archives article-meta" href="/archives"><span class="pull-left">文章</span><span class="pull-right">221</span></a><a class="author-info-articles__tags article-meta" href="/tags"><span class="pull-left">标签</span><span class="pull-right">31</span></a><a class="author-info-articles__categories article-meta" href="/categories"><span class="pull-left">分类</span><span class="pull-right">40</span></a></div></div></div><nav class="no-bg" id="nav"><div id="page-header"><span class="pull-left"> <a id="site-name" href="/index.html">凯</a></span><i class="fa fa-bars toggle-menu pull-right" aria-hidden="true"></i><span class="pull-right menus">   <a class="site-page" href="/">首页</a><a class="site-page" href="/archives">归档</a><a class="site-page" href="/tags">标签</a><a class="site-page" href="/categories">分类</a><a class="site-page" href="/about">关于我</a></span><span class="pull-right"></span></div><div id="site-info"><div id="site-title">凯</div><div id="site-sub-title">回廊一寸相思地，落月成孤倚。背灯和月就花阴，已是十年踪迹十年心。</div></div></nav><div id="content-outer"><div class="layout" id="content-inner"><div class="recent-post-item article-container"><a class="article-title" href="/2019/07/11/读书笔记/《JavaDesignPatterns》/13.外观模式/">《Java Design Patterns》第十一章 外观模式</a><time class="post-meta__date"><i class="fa fa-calendar" aria-hidden="true"></i> 2019-07-11</time><span class="article-meta"><span class="article-meta__separator">|</span><i class="fa fa-inbox article-meta__icon" aria-hidden="true"></i><a class="article-meta__categories" href="/categories/读书笔记/">读书笔记</a><i class="fa fa-angle-right" aria-hidden="true"></i><i class="fa fa-inbox article-meta__icon" aria-hidden="true"></i><a class="article-meta__categories" href="/categories/读书笔记/设计模式/">设计模式</a></span><span class="article-meta tags"><span class="article-meta__separator">|</span><i class="fa fa-tag article-meta__icon" aria-hidden="true"></i><a class="article-meta__tags" href="/tags/hide/">hide</a><span class="article-meta__link">-</span><i class="fa fa-tag article-meta__icon" aria-hidden="true"></i><a class="article-meta__tags" href="/tags/设计模式/">设计模式</a></span><div class="content"><h1 id="第十一章-外观模式"><a href="#第十一章-外观模式" class="headerlink" title="第十一章 外观模式"></a>第十一章 外观模式</h1><h2 id="一、外观模式"><a href="#一、外观模式" class="headerlink" title="一、外观模式"></a>一、外观模式</h2><p>在日常开发中，注册一个用户需要进行如下操作：验证手机验证码、生成用户类、存储至数据库、初始化用户积分等等操作。但是 客户端只需要调用一个 UserService.register() 即可，具体的其他对象的操作都交给 UserService 的实现来完成。</p>
-<p>还有如 MVC 模式中，Controller 层中通过调用 service 来解耦 Controller 层与 Dao 层，隔离各个层次，实现层次化结构。</p>
-<p>于 controller 而言，service 就是外观类，由service 来处理多个dao的交互。</p>
-<h3 id="1-1-定义"><a href="#1-1-定义" class="headerlink" title="1.1 定义"></a>1.1 定义</h3><p>外观模式，又称为门面模式，是一种使用频率非常高的结构型设计模式，通过引入一个外观对象来简化客户端与子系统之间的交互，为复杂的子系统调用提供一个统一的入口，降低子系统与客户端的耦合度，且客户端调用非常方便。</p>
-<p>外观模式是迪米特法则的一种具体实现，通过引入一个新的外观角色可以降低原油系统的复杂度，同时降低客户类与子系统的耦合。</p>
-<h3 id="1-2-外观模式"><a href="#1-2-外观模式" class="headerlink" title="1.2 外观模式"></a>1.2 外观模式</h3><p><img src="https://i.loli.net/2019/07/11/5d270855d1d7975835.png" alt="外观模式示意图"></p>
-<p>在日常生活中，自己泡茶和去茶馆喝茶的区别类似于上图显示的这样。自己泡需要与 热水、差距、茶叶 进行交互（系统耦合度十分的高），而去茶馆喝茶只需要与服务员（Facade）进行交互即可。</p>
-<h3 id="1-3-外观模式中的几个角色："><a href="#1-3-外观模式中的几个角色：" class="headerlink" title="1.3 外观模式中的几个角色："></a>1.3 外观模式中的几个角色：</h3><ol>
-<li>Facade - 外观角色<ol>
-<li>由客户端调用其中的方法，来访问相关子系统的功能</li>
-<li>由外观角色将客户端的请求委派到具体子系统中</li>
-</ol>
-</li>
-<li>SubSystem - 子系统角色<ol>
-<li>系统中可以存在一个或多个子系统角色</li>
-<li>每个可以被客户端调用，也可以被外观角色调用，用于处理请求</li>
-<li>子系统并不知道外观的存在，与它而言，外观角色仅仅是另一个客户端</li>
-</ol>
-</li>
-</ol>
-<h2 id="二、完整实现"><a href="#二、完整实现" class="headerlink" title="二、完整实现"></a>二、完整实现</h2><pre><code class="java">/**
- * 外观模式
- */
-class SubSystemA {
-    public void sayHello() {
-        System.out.println(&quot;大家好，我是系统A&quot;);
-    }
-}
-
-class SubSystemB {
-    public void byebye() {
-        System.out.println(&quot;再见，我是系统B&quot;);
-    }
-}
-
-class SubSystemC {
-    public void o() {
-        System.out.println(&quot;i don&#39;t wanna see you anymore.&quot;);
-    }
-}
-
-class Facade {
-    private SubSystemA a = new SubSystemA();
-    private SubSystemB b = new SubSystemB();
-    private SubSystemC c = new SubSystemC();
-
-    public void bb(){
-        a.sayHello();
-        c.o();
-        b.byebye();
-    }
-}
-
-public class FacadePattern {
-    public static void main(String[] args) {
-        // 通过外观类 Facade 减少了客户端与各个子系统的直接交互，降低耦合度
-        final Facade facade = new Facade();
-        facade.bb();
-    }
-}</code></pre>
-<h2 id="三、抽象外观类"><a href="#三、抽象外观类" class="headerlink" title="三、抽象外观类"></a>三、抽象外观类</h2><p>在标准外观模式中，如果需要增加、删除或更换与外观类交互的子系统类，必须修改外观类或客户端的代码。这将违背开闭原则。</p>
-<p>可以引入抽象外观类来对系统进行改进，客户端针对抽象外观类进行编程。</p>
-<h2 id="四、总结"><a href="#四、总结" class="headerlink" title="四、总结"></a>四、总结</h2><h3 id="优点"><a href="#优点" class="headerlink" title="优点"></a>优点</h3><ol>
-<li>对客户端屏蔽子系统组件，减少客户端所需处理的对象数目，使子系统的使用更加容易</li>
-<li>客户端与子系统间关联的对象会减少</li>
-<li>实现了子系统和客户端之间的松耦合，子系统的变化只需要调整外观类即可</li>
-<li>子系统的修改不会影响其他子系统，且子系统内部修改不会影响到外观类</li>
-</ol>
-<h3 id="缺点"><a href="#缺点" class="headerlink" title="缺点"></a>缺点</h3><ol>
-<li>由外观类来调用子系统类，减少了客户端直接调用时的灵活性和可变性</li>
-<li>如果设计不当，增加子系统时可能会修改外观类，违背了开闭原则</li>
-</ol>
-<h3 id="适用场景"><a href="#适用场景" class="headerlink" title="适用场景"></a>适用场景</h3><ol>
-<li>当需要为访问一系列复杂的子系统对象提供简单入口时，可以使用外观模式</li>
-<li>外观类可以将子系统与客户端解耦，从而提高子系统的独立性和可移植性</li>
-<li>在层次化结构中，可以使用外观模式定义系统中的每一层入口。层与层之间不直接产生联系，而通过外观类建立联系，降低层之间的耦合度</li>
-</ol>
-</div><hr></div><div class="recent-post-item article-container"><a class="article-title" href="/2019/07/11/读书笔记/《JavaDesignPatterns》/12.装饰模式/">《Java Design Patterns》第十章 装饰模式 - 扩展系统功能</a><time class="post-meta__date"><i class="fa fa-calendar" aria-hidden="true"></i> 2019-07-11</time><span class="article-meta"><span class="article-meta__separator">|</span><i class="fa fa-inbox article-meta__icon" aria-hidden="true"></i><a class="article-meta__categories" href="/categories/读书笔记/">读书笔记</a><i class="fa fa-angle-right" aria-hidden="true"></i><i class="fa fa-inbox article-meta__icon" aria-hidden="true"></i><a class="article-meta__categories" href="/categories/读书笔记/设计模式/">设计模式</a></span><span class="article-meta tags"><span class="article-meta__separator">|</span><i class="fa fa-tag article-meta__icon" aria-hidden="true"></i><a class="article-meta__tags" href="/tags/hide/">hide</a><span class="article-meta__link">-</span><i class="fa fa-tag article-meta__icon" aria-hidden="true"></i><a class="article-meta__tags" href="/tags/设计模式/">设计模式</a></span><div class="content"><h1 id="第十章-装饰模式-扩展系统功能"><a href="#第十章-装饰模式-扩展系统功能" class="headerlink" title="第十章 装饰模式 - 扩展系统功能"></a>第十章 装饰模式 - 扩展系统功能</h1><p>如果你买了一个毛坯房，那么剩下的就是装修。装修并没有改变原有房屋用于居住的本质，但是增加了实用性、美观性等特征。</p>
-<p>在软件设计中，装饰模式就是一种类似装修的技术，能对已有对象的功能进行扩展，以获得更符合用户需求的对象。</p>
-<h2 id="一、设计一款图形界面库"><a href="#一、设计一款图形界面库" class="headerlink" title="一、设计一款图形界面库"></a>一、设计一款图形界面库</h2><p>设计一款图形界面构件库，该库提供了大量基础构件，如窗体、文本框、列表框等。由于在使用时，需要定制一些特效，如带滚动条的窗体、带黑色边框的文本框、即带滚动条又带黑色边框的列表框等。即对原有的基础构件进行扩展，以增强其功能。</p>
-<h3 id="1-1-传统继承方式实现"><a href="#1-1-传统继承方式实现" class="headerlink" title="1.1 传统继承方式实现"></a>1.1 传统继承方式实现</h3><p><img src="https://i.loli.net/2019/07/11/5d269d7e4fdc421682.png" alt="传统继承的方式实现"></p>
-<h3 id="1-2-问题与缺陷"><a href="#1-2-问题与缺陷" class="headerlink" title="1.2 问题与缺陷"></a>1.2 问题与缺陷</h3><p>按照 1.1 中的实现方式，虽然可以满足系统的设计需求。但是，存在的问题也十分严重：</p>
-<ol>
-<li>系统扩展十分麻烦。当我们需要 “带滚动条和黑色边框的窗体类” 时，需要同时继承两种类型的窗体类。这在 <code>不支持多重继承</code> 的语言中是无法使用的</li>
-<li>代码重复。从设计图中可以看出，不只是 窗体类 需要滚动和边框，文本框类和列表框类同样需要。而设计滚动条与黑色边框的过程基本相同，代码重复。不利于对系统进行修改和维护。</li>
-<li>系统庞大，类的数目非常多。如果增加新的控件或者新的扩展功能，系统都需要增加大量的具体类，这将导致系统变得非常庞大。<ol>
-<li>如增加一个透明边框（基本控件）的功能，则需要对窗体、文本框、列表框各加一个实现类。</li>
-<li>如果需要组合各个功能的话，3种扩展方式则存在7种组合关系。</li>
-</ol>
-</li>
-</ol>
-<h3 id="1-3-解决方案"><a href="#1-3-解决方案" class="headerlink" title="1.3 解决方案"></a>1.3 解决方案</h3><p>直接继承的设计方法的问题在于 类的扩展十分不便，而且会导致类数目的急剧增加。</p>
-<p>其根本原因在于复用机制的不合理：上文采用了继承复用，如“带滚动的窗体”通过继承的方式来复用“窗体类”的“显示功能”，又增加了特定的方法。在复用父类的方法后再增加新的方法来扩展功能。</p>
-<p>根据“合成复用原则”，在实现功能复用时，要多用关联，少用继承。如将 “滚动功能” 抽离，封装在单独的类中，在这个类中定义一个 Component 类型的对象，通过调用 Comonent 的 “显示方法”，在通过调用“滚动功能”的方法来实现功能的扩展。</p>
-<p>根据“里氏替换原则”，只需要在程序运行时，向独立的类中注入具体的 Component 子类对象即可实现功能扩展。</p>
-<p>这个独立的类一般称为“装饰器 Decorator” 或装饰类。</p>
-<h2 id="二、装饰模式"><a href="#二、装饰模式" class="headerlink" title="二、装饰模式"></a>二、装饰模式</h2><p>装饰模式可以在不改变一个对象本身功能的基础上给对象增加额外的新行为。</p>
-<p>装饰模式是一种用于替代继承的技术，它通过一种无须定义子类的方式来给对象动态增加职责，使用对象之间的关联关系取代类之间的继承关系。通过装饰类调用待装饰的原有类的方法，还可以增加新的方法，以扩充原有类的功能。</p>
-<h3 id="2-1-定义"><a href="#2-1-定义" class="headerlink" title="2.1 定义"></a>2.1 定义</h3><p>装饰模式：动态地给一个对象增加一些额外的职责，就增加对象功能来说，装饰模式比生成子类实现更加灵活。装饰模式是一种对象结构型模式。</p>
-<p><img src="https://i.loli.net/2019/07/11/5d27016a49a1297684.png" alt="装饰模式"></p>
-<h3 id="2-2-装饰模式中的几个角色"><a href="#2-2-装饰模式中的几个角色" class="headerlink" title="2.2 装饰模式中的几个角色"></a>2.2 装饰模式中的几个角色</h3><ol>
-<li>Component - 抽象构件<ol>
-<li>具体构件和抽象装饰类的共同父类，声明了在具体构件中实现的业务方法</li>
-<li>引入抽象构件，可以使客户端以一致的方式处理未被装饰的对象，以及装饰之后的对象</li>
-<li>实现客户端的透明操作</li>
-</ol>
-</li>
-<li>ConcreteComponent - 具体构件<ol>
-<li>抽象构件的子类，用于定义具体的构件对象</li>
-<li>装饰器可以给它增加额外的职责（方法）</li>
-</ol>
-</li>
-<li>Decorator - 抽象装饰类<ol>
-<li>抽象构件的子类，用于给具体构件增加职责，但是具体职责在其子类中实现</li>
-<li>维护一个指向抽象构件对象的引用，通过该引用可以调用装饰之前构件对象的方法</li>
-<li>通过子类扩展该方法，以达到装饰的目的</li>
-</ol>
-</li>
-<li>ConcreteDecorator - 具体装饰类<ol>
-<li>抽象装饰类的子类，负责向构件添加新的职责</li>
-<li>每个具体装饰类都定义了一些新的行为，可以调用抽象装饰类中定义的方法，并增加新的方法用以扩充对象的行为</li>
-</ol>
-</li>
-</ol>
-<h3 id="2-3-装饰模式的核心-抽象装饰类-代码"><a href="#2-3-装饰模式的核心-抽象装饰类-代码" class="headerlink" title="2.3 装饰模式的核心 - 抽象装饰类 - 代码"></a>2.3 装饰模式的核心 - 抽象装饰类 - 代码</h3><pre><code class="java">class Decorator implements Component {
-    private Component component; // 维护一个对抽象构件对象的引用
-    public Decorator(Component component) { // 注入一个抽象构件类型的对象
-        this.component = component;
-    }
-
-    public void operation(){ // 调用原有业务方法
-        component.operation();
-    }
-}</code></pre>
-<p>抽象装饰类可以做到对装饰类进行再装饰，如对一张图表增加一个相框，还能继续在小相框外套大相框。因为它们都是 Component 的子类。</p>
-<p>抽象装饰类只是调用原有的 component 对象的 operation() 方法，它并没有真正的实施装饰，而是提供一个统一的接口，将具体装饰过程交给子类完成。</p>
-<pre><code class="java">class ConcreteDecorator extends Decorator {
-    public ConcreteDecorator(Component component){
-        super(component);
-    }
-
-    public void operation(){
-        super.operation();  // 调用原有业务方法
-        addedBehavior();   // 调用新增业务方法
-    }
-
-    // 新增的业务方法
-    public void addedBehavior(){
-        // ...
-    }
-}</code></pre>
+} </script></head><body><i class="fa fa-arrow-right" id="toggle-sidebar" aria-hidden="true"></i><div id="sidebar" data-display="false"><div class="author-info"><div class="author-info__avatar text-center"><img src="/img/avatar.png"></div><div class="author-info__name text-center">koral</div><div class="author-info__description text-center">回廊一寸相思地，落月成孤倚。背灯和月就花阴，已是十年踪迹十年心。</div><hr><div class="author-info-articles"><a class="author-info-articles__archives article-meta" href="/archives"><span class="pull-left">文章</span><span class="pull-right">266</span></a><a class="author-info-articles__tags article-meta" href="/tags"><span class="pull-left">标签</span><span class="pull-right">34</span></a><a class="author-info-articles__categories article-meta" href="/categories"><span class="pull-left">分类</span><span class="pull-right">44</span></a></div></div></div><nav class="no-bg" id="nav"><div id="page-header"><span class="pull-left"> <a id="site-name" href="/index.html">凯</a></span><i class="fa fa-bars toggle-menu pull-right" aria-hidden="true"></i><span class="pull-right menus">   <a class="site-page" href="/">首页</a><a class="site-page" href="/archives">归档</a><a class="site-page" href="/tags">标签</a><a class="site-page" href="/categories">分类</a><a class="site-page" href="/about">关于我</a></span><span class="pull-right"></span></div><div id="site-info"><div id="site-title">凯</div><div id="site-sub-title">回廊一寸相思地，落月成孤倚。背灯和月就花阴，已是十年踪迹十年心。</div></div></nav><div id="content-outer"><div class="layout" id="content-inner"><div class="recent-post-item article-container"><a class="article-title" href="/2019/09/12/读书笔记/《React》官方文档/HOOK/">《React》React Hook</a><time class="post-meta__date"><i class="fa fa-calendar" aria-hidden="true"></i> 2019-09-12</time><span class="article-meta"><span class="article-meta__separator">|</span><i class="fa fa-inbox article-meta__icon" aria-hidden="true"></i><a class="article-meta__categories" href="/categories/读书笔记/">读书笔记</a><i class="fa fa-angle-right" aria-hidden="true"></i><i class="fa fa-inbox article-meta__icon" aria-hidden="true"></i><a class="article-meta__categories" href="/categories/读书笔记/React/">React</a></span><span class="article-meta tags"><span class="article-meta__separator">|</span><i class="fa fa-tag article-meta__icon" aria-hidden="true"></i><a class="article-meta__tags" href="/tags/hide/">hide</a><span class="article-meta__link">-</span><i class="fa fa-tag article-meta__icon" aria-hidden="true"></i><a class="article-meta__tags" href="/tags/React/">React</a></span><div class="content"></div><hr></div><div class="recent-post-item article-container"><a class="article-title" href="/2019/09/12/读书笔记/《React》官方文档/核心概念/">《React》核心概念</a><time class="post-meta__date"><i class="fa fa-calendar" aria-hidden="true"></i> 2019-09-12</time><span class="article-meta"><span class="article-meta__separator">|</span><i class="fa fa-inbox article-meta__icon" aria-hidden="true"></i><a class="article-meta__categories" href="/categories/读书笔记/">读书笔记</a><i class="fa fa-angle-right" aria-hidden="true"></i><i class="fa fa-inbox article-meta__icon" aria-hidden="true"></i><a class="article-meta__categories" href="/categories/读书笔记/React/">React</a></span><span class="article-meta tags"><span class="article-meta__separator">|</span><i class="fa fa-tag article-meta__icon" aria-hidden="true"></i><a class="article-meta__tags" href="/tags/hide/">hide</a><span class="article-meta__link">-</span><i class="fa fa-tag article-meta__icon" aria-hidden="true"></i><a class="article-meta__tags" href="/tags/React/">React</a></span><div class="content"></div><hr></div><div class="recent-post-item article-container"><a class="article-title" href="/2019/09/12/读书笔记/《React》官方文档/高级指引/">《React》高级指引</a><time class="post-meta__date"><i class="fa fa-calendar" aria-hidden="true"></i> 2019-09-12</time><span class="article-meta"><span class="article-meta__separator">|</span><i class="fa fa-inbox article-meta__icon" aria-hidden="true"></i><a class="article-meta__categories" href="/categories/读书笔记/">读书笔记</a><i class="fa fa-angle-right" aria-hidden="true"></i><i class="fa fa-inbox article-meta__icon" aria-hidden="true"></i><a class="article-meta__categories" href="/categories/读书笔记/React/">React</a></span><span class="article-meta tags"><span class="article-meta__separator">|</span><i class="fa fa-tag article-meta__icon" aria-hidden="true"></i><a class="article-meta__tags" href="/tags/hide/">hide</a><span class="article-meta__link">-</span><i class="fa fa-tag article-meta__icon" aria-hidden="true"></i><a class="article-meta__tags" href="/tags/React/">React</a></span><div class="content"></div><hr></div><div class="recent-post-item article-container"><a class="article-title" href="/2019/09/05/读书笔记/《Mybatis》/0_目录/">《MyBatis》读书笔记</a><span class="article-meta"><i class="fa fa-thumb-tack article-meta__icon sticky"></i><span class="sticky">置顶</span><span class="article-meta__separator" style="margin-right: 0.3rem">|</span></span><time class="post-meta__date"><i class="fa fa-calendar" aria-hidden="true"></i> 2019-09-05</time><span class="article-meta"><span class="article-meta__separator">|</span><i class="fa fa-inbox article-meta__icon" aria-hidden="true"></i><a class="article-meta__categories" href="/categories/读书笔记/">读书笔记</a><i class="fa fa-angle-right" aria-hidden="true"></i><i class="fa fa-inbox article-meta__icon" aria-hidden="true"></i><a class="article-meta__categories" href="/categories/读书笔记/MyBatis/">MyBatis</a></span><span class="article-meta tags"><span class="article-meta__separator">|</span><i class="fa fa-tag article-meta__icon" aria-hidden="true"></i><a class="article-meta__tags" href="/tags/MyBatis/">MyBatis</a></span><div class="content"><p>笔记来源于 <a href="http://www.mybatis.org/mybatis-3/zh/index.html" target="_blank" rel="noopener">MyBatis 官方文档：http://www.mybatis.org/mybatis-3/zh/index.html</a></p></div><a class="more" href="/2019/09/05/读书笔记/《Mybatis》/0_目录/#more">阅读更多</a><hr></div><div class="recent-post-item article-container"><a class="article-title" href="/2019/09/05/读书笔记/《Mybatis》/4_动态SQL/">《MyBatis》读书笔记 - MyBatis 动态SQL</a><time class="post-meta__date"><i class="fa fa-calendar" aria-hidden="true"></i> 2019-09-05</time><span class="article-meta"><span class="article-meta__separator">|</span><i class="fa fa-inbox article-meta__icon" aria-hidden="true"></i><a class="article-meta__categories" href="/categories/读书笔记/">读书笔记</a><i class="fa fa-angle-right" aria-hidden="true"></i><i class="fa fa-inbox article-meta__icon" aria-hidden="true"></i><a class="article-meta__categories" href="/categories/读书笔记/MyBatis/">MyBatis</a></span><span class="article-meta tags"><span class="article-meta__separator">|</span><i class="fa fa-tag article-meta__icon" aria-hidden="true"></i><a class="article-meta__tags" href="/tags/hide/">hide</a><span class="article-meta__link">-</span><i class="fa fa-tag article-meta__icon" aria-hidden="true"></i><a class="article-meta__tags" href="/tags/MyBatis/">MyBatis</a></span><div class="content"><h1 id="四、MyBatis-动态SQL"><a href="#四、MyBatis-动态SQL" class="headerlink" title="四、MyBatis 动态SQL"></a>四、MyBatis 动态SQL</h1><p>MyBatis 提供了可以被用在任意 SQL 映射语句中的动态SQL。动态 SQL 元素和 JSTL 或基于 XML 的文本处理器相似。</p>
+<p>MyBatis 采用基于 OGNL 的表达式来淘汰其他元素。</p>
+<ul>
+<li>if</li>
+<li>choose(when,otherwise)</li>
+<li>trim(where,set)</li>
+<li>foreach</li>
+</ul>
+<h2 id="if"><a href="#if" class="headerlink" title="if"></a>if</h2><p>动态 SQL 通常要做的事情是根据条件包含 where 子句的一部分，如：</p>
+<pre><code class="xml">&lt;select id=&quot;findActive&quot; resultType=&quot;Blog&quot;&gt;
+    select * from blog
+    where  state=&#39;active&#39;
+    &lt;if test=&quot;title != null&quot;&gt;
+        and title like #{title}
+    &lt;/if&gt;
+&lt;/select&gt;</code></pre>
+<p>需要多个条件，可以使用 and 连接</p>
+<h2 id="choose、when、otherwise"><a href="#choose、when、otherwise" class="headerlink" title="choose、when、otherwise"></a>choose、when、otherwise</h2><pre><code class="xml">&lt;select id=&quot;findActive&quot; resultType=&quot;Blog&quot;&gt;
+    select * from blog
+    where state=&quot;active&quot;
+    &lt;choose&gt;
+        &lt;when test=&quot;title != null&quot;&gt;
+            and title like #{title}
+        &lt;/when&gt;
+        &lt;when test=&quot;author != null and author.name != null&quot;&gt;
+            and author_name like #{author.name}
+        &lt;/when&gt;
+        &lt;otherwise&gt;
+            and featured = 1
+        &lt;/otherwise&gt;
+    &lt;/choose&gt;
+&lt;/select&gt;</code></pre>
+<h2 id="trim、where、set"><a href="#trim、where、set" class="headerlink" title="trim、where、set"></a>trim、where、set</h2><p>如果上面的 where 语句中，去掉了 “state=active”，当所有条件都不匹配时，sql 就不正常了。此时，可以使用 where 标签来解决</p>
+<pre><code class="xml">&lt;select id=&quot;findActive&quot; resultType=&quot;Blog&quot;&gt;
+     select * from blog
+    &lt;where&gt;
+        &lt;if test=&quot;state != null&quot;&gt;
+            state = #{state}
+        &lt;/if&gt;
+        &lt;if test=&quot;title != null&quot;&gt;
+            and title like #{title}
+        &lt;/if&gt;
+    &lt;/where&gt;
+&lt;/select&gt;</code></pre>
+<p>where 元素会在至少有一个子元素的条件返回 SQL 子句的情况下才去插入 where 子句。</p>
+<p>若语句开头为 AND 或 OR ，where 元素也会将它们去除。</p>
+<p>和 where 元素等价的自定义 trim 元素：</p>
+<pre><code class="xml">&lt;trim prefix=&quot;where&quot; prefixOverrides=&quot;AND | OR&quot;&gt;
+     ...
+&lt;/trim&gt;</code></pre>
+<p>set 元素可以用于动态包含需要更新的列，而舍去其他的，如：</p>
+<pre><code class="xml">&lt;update id=&quot;updateActive&quot;&gt;
+    update Author
+    &lt;set&gt;
+        &lt;if test=&quot;username != null&quot;&gt;username=#{username},&lt;/if&gt;
+        &lt;if test=&quot;password != null&quot;&gt;password=#{password},&lt;/if&gt;
+        &lt;if test=&quot;email != null&quot;&gt;email=#{email}&lt;/if&gt;
+    &lt;/set&gt;
+&lt;/update&gt;</code></pre>
+<h2 id="foreach"><a href="#foreach" class="headerlink" title="foreach"></a>foreach</h2><p>动态 SQL 的另一个常用操作是对一个集合进行遍历，通常是在构建 IN 条件语句的时候，如：</p>
+<pre><code class="xml">&lt;select id=&quot;selectPostIn&quot; resultType=&quot;Post&quot;&gt;
+    select * from post p
+    where id in
+    &lt;foreach item=&quot;item&quot; index=&quot;index&quot; collection=&quot;list&quot;
+             open=&quot;(&quot; separator=&quot;,&quot; close=&quot;)&quot;&gt;
+        #{item}
+    &lt;/foreach&gt;
+&lt;/select&gt;</code></pre>
 <blockquote>
-<p>装饰模式中是否存在独立变化的两个维度？ 试比较装饰模式和桥接模式的相同之处和不同之处？</p>
+<p>foreach 可迭代的对象如 List、Set、Map或数组都可以作为参数。</p>
 </blockquote>
-<h2 id="三、完整实现"><a href="#三、完整实现" class="headerlink" title="三、完整实现"></a>三、完整实现</h2><pre><code class="java">/**
- * 装饰模式
+<h2 id="script"><a href="#script" class="headerlink" title="script"></a>script</h2><p>如果要在注解中使用动态SQL，可以使用 script 元素：</p>
+<pre><code class="java">    @Update({&quot;&lt;script&gt;&quot;,
+      &quot;update Author&quot;,
+      &quot;  &lt;set&gt;&quot;,
+      &quot;    &lt;if test=&#39;username != null&#39;&gt;username=#{username},&lt;/if&gt;&quot;,
+      &quot;    &lt;if test=&#39;password != null&#39;&gt;password=#{password},&lt;/if&gt;&quot;,
+      &quot;    &lt;if test=&#39;email != null&#39;&gt;email=#{email},&lt;/if&gt;&quot;,
+      &quot;    &lt;if test=&#39;bio != null&#39;&gt;bio=#{bio}&lt;/if&gt;&quot;,
+      &quot;  &lt;/set&gt;&quot;,
+      &quot;where id=#{id}&quot;,
+      &quot;&lt;/script&gt;&quot;})
+    void updateAuthorValues(Author author);</code></pre>
+<h2 id="bind"><a href="#bind" class="headerlink" title="bind"></a>bind</h2><p>bind 元素可以从 OGNL 表达式中创建一个变量并将其绑定到上下文中：</p>
+<pre><code class="xml">&lt;select id=&quot;selectBlogs&quot; resultType=&quot;Blog&quot;&gt;
+    &lt;bind name=&quot;pattern&quot; value=&quot;&#39;%&#39; + _parameter.getTitle() + &#39;%&#39;&quot;/&gt;
+    select * from blog
+    where title like #{pattern}
+&lt;/select&gt;</code></pre>
+<h2 id="多数据库支持"><a href="#多数据库支持" class="headerlink" title="多数据库支持"></a>多数据库支持</h2><pre><code class="xml">&lt;insert id=&quot;insert&quot;&gt;
+  &lt;selectKey keyProperty=&quot;id&quot; resultType=&quot;int&quot; order=&quot;BEFORE&quot;&gt;
+    &lt;if test=&quot;_databaseId == &#39;oracle&#39;&quot;&gt;
+      select seq_users.nextval from dual
+    &lt;/if&gt;
+    &lt;if test=&quot;_databaseId == &#39;db2&#39;&quot;&gt;
+      select nextval for seq_users from sysibm.sysdummy1&quot;
+    &lt;/if&gt;
+  &lt;/selectKey&gt;
+  insert into users values (#{id}, #{name})
+&lt;/insert&gt;</code></pre>
+</div><hr></div><div class="recent-post-item article-container"><a class="article-title" href="/2019/09/05/读书笔记/《Mybatis》/3_XML映射文件/">《MyBatis》读书笔记 - MyBatis XML 映射文件</a><time class="post-meta__date"><i class="fa fa-calendar" aria-hidden="true"></i> 2019-09-05</time><span class="article-meta"><span class="article-meta__separator">|</span><i class="fa fa-inbox article-meta__icon" aria-hidden="true"></i><a class="article-meta__categories" href="/categories/读书笔记/">读书笔记</a><i class="fa fa-angle-right" aria-hidden="true"></i><i class="fa fa-inbox article-meta__icon" aria-hidden="true"></i><a class="article-meta__categories" href="/categories/读书笔记/MyBatis/">MyBatis</a></span><span class="article-meta tags"><span class="article-meta__separator">|</span><i class="fa fa-tag article-meta__icon" aria-hidden="true"></i><a class="article-meta__tags" href="/tags/hide/">hide</a><span class="article-meta__link">-</span><i class="fa fa-tag article-meta__icon" aria-hidden="true"></i><a class="article-meta__tags" href="/tags/MyBatis/">MyBatis</a></span><div class="content"><h1 id="三、MyBatis-XML-映射文件"><a href="#三、MyBatis-XML-映射文件" class="headerlink" title="三、MyBatis XML 映射文件"></a>三、MyBatis XML 映射文件</h1><p>MyBatis 通过映射 XML 文件的方式，减少了 JDBC 的样板代码，十分的简单。</p>
+<p>SQL 映射文件只有少数几个顶级约束：</p>
+<ul>
+<li>cache - 对给定命名空间的缓存配置</li>
+<li>cache-ref - 对其他命名空间缓存配置的引用</li>
+<li>resultMap - 描述如何从数据库结果集中加载对象</li>
+<li><del>parameterMap - 废弃，参数映射</del></li>
+<li>sql - 可重用语句块</li>
+<li>insert - 插入语句</li>
+<li>update - 更新语句</li>
+<li>delete - 删除语句</li>
+<li>select - 查询语句</li>
+</ul>
+<h2 id="一、select"><a href="#一、select" class="headerlink" title="一、select"></a>一、select</h2><p>查询语句，如：</p>
+<pre><code class="xml">&lt;select id=&quot;selectPerson&quot; parameterType=&quot;int&quot; resultType=&quot;hashmap&quot;&gt;
+    SELECT * FROM PERSON WHERE ID = #{id}
+&lt;/select&gt;</code></pre>
+<p>select 元素允许你配置很多属性来配置每条语句的作用细节</p>
+<pre><code class="xml">&lt;select
+          id=&quot;selectPerson&quot;
+        parameterType=&quot;int&quot;
+        parameterMap=&quot;deprecated&quot;
+        result=&quot;hashMap&quot;
+        resultMap=&quot;personResultMap&quot;
+        flushCache=&quot;false&quot;
+        useCache=&quot;true&quot;
+        timeout=&quot;10&quot;
+        fetchSize=&quot;256&quot;
+        statementType=&quot;PREPARED&quot;
+        resultSetType=&quot;FORWARD_ONLY&quot;
+        &gt;
+
+&lt;/select&gt;</code></pre>
+<table>
+<thead>
+<tr>
+<th>属性</th>
+<th>描述</th>
+</tr>
+</thead>
+<tbody><tr>
+<td>id</td>
+<td>命名空间中的唯一标识符，用来引用该语句</td>
+</tr>
+<tr>
+<td>parameterType</td>
+<td>传入的参数的完全限定名，可选。MyBatis会通过类型处理器推断具体传入的参数类型</td>
+</tr>
+<tr>
+<td><del>parameterMap</del></td>
+<td><del>引用外部 parametermap 的方法</del></td>
+</tr>
+<tr>
+<td>resultType</td>
+<td>返回的期望乐行的类的完全限定名或别名。如果结果为集合，则应该设置为集合包含的类型，而不是集合本身。</td>
+</tr>
+<tr>
+<td>resultMap</td>
+<td>外部 resultMap 的命名引用。与resultType不能同时使用</td>
+</tr>
+<tr>
+<td>flushCache</td>
+<td>默认为false。为true时，只要语句被调用，都会导致本地缓存和二级缓存被清空</td>
+</tr>
+<tr>
+<td>useCache</td>
+<td>默认对select元素为true。将本条语句的结果使用二级缓存缓存起来</td>
+</tr>
+<tr>
+<td>timeout</td>
+<td>驱动程序等待数据库返回请求结果的秒数，而后抛出异常</td>
+</tr>
+<tr>
+<td>fetchSize</td>
+<td>尝试让驱动程序每次批量返回的结果行数和设置的值相等</td>
+</tr>
+<tr>
+<td>statementType</td>
+<td>STATEMENT、PREPARED(默认)、CALLABLE中的一个</td>
+</tr>
+<tr>
+<td>resultSetType</td>
+<td>FORWARD_ONLY、SCROLL_SENSITIVE、SCROLL_INSENSITIVE、DEFAULT中的一个</td>
+</tr>
+<tr>
+<td>databaseId</td>
+<td>数据库厂商标识</td>
+</tr>
+<tr>
+<td>resultOrdered</td>
+<td>仅针对嵌套select，如果为true，则假设包含了嵌套结果集或是分组，这样返回一个主结果行的时候，就不会发生有对前面结果集的引用的情况。使得在获取嵌套结果集时不至于导致内存不够用</td>
+</tr>
+<tr>
+<td>resultSets</td>
+<td>针对多结果集情况。将列出语句执行后返回的结果集并给每个结果集一个名称</td>
+</tr>
+</tbody></table>
+<h2 id="二、insert、update、delete"><a href="#二、insert、update、delete" class="headerlink" title="二、insert、update、delete"></a>二、insert、update、delete</h2><p>与 select 参数相似，以一个示例来说明：</p>
+<pre><code class="xml">&lt;insert id=&quot;insertAuthor&quot; useGeneratedKeys=&quot;true&quot; keyProperty=&quot;id&quot;&gt;
+   insert into  Author(username,password,email) values 
+   &lt;foreach item=&quot;item&quot; collection=&quot;list&quot; separator=&quot;,&quot;&gt;
+       (#{item.username},#{item.password},#{item.email})
+   &lt;/foreach&gt;
+&lt;/insert&gt;
+
+&lt;update id=&quot;updateAuthor&quot;&gt;
+    update Author set
+     username=#{username},
+     password=#{password},
+     email=#{email}
+    where id=#{id}
+&lt;/update&gt;
+
+&lt;delete id=&quot;deleteAuthor&quot;&gt;
+    delete from Author where id=#{id}
+&lt;/delete&gt;</code></pre>
+<h2 id="三、sql"><a href="#三、sql" class="headerlink" title="三、sql"></a>三、sql</h2><p>该元素可以被用来定义可重用的 SQL 代码段，这些 SQL 代码可以被包含在其他语句中。它可以在加载的时候被静态地设置参数。在不同的包含语句中可以设置不同的值到参数占位符上，如：</p>
+<pre><code class="xml">&lt;sql id=&quot;userColumns&quot;&gt; ${alias}.id,${alias}.username,${alias}.password&lt;/sql&gt;</code></pre>
+<pre><code class="xml">&lt;select id=&quot;selectUsers&quot; resultType=&quot;map&quot;&gt;
+    select
+     &lt;includ refid=&quot;userColumns&quot;&gt;&lt;property name=&quot;alias&quot; value=&quot;t1&quot;/&gt;&lt;/includ&gt;
+     &lt;includ refid=&quot;userColumns&quot;&gt;&lt;property name=&quot;alias&quot; value=&quot;t1&quot;/&gt;&lt;/includ&gt;
+    from some_table t1
+    cross join some_table t2
+&lt;/select&gt;</code></pre>
+<blockquote>
+<p>cross join 表示笛卡尔积，t1+t2的所有情况</p>
+</blockquote>
+<p>属性值也可以被用在 include 元素的 refid 属性里或 include 元素的内部语句中，如：</p>
+<pre><code class="xml">&lt;sql id=&quot;sometable&quot;&gt;
+    ${prefix}Table
+&lt;/sql&gt;
+
+&lt;sql id=&quot;someinclud&quot;&gt;
+      from
+     &lt;includ refid=&quot;${include_target}&quot;/&gt;
+&lt;/sql&gt;
+
+&lt;select id=&quot;select&quot; resultType=&quot;map&quot;&gt;
+    select
+     field1,field2,field3
+    &lt;includ refid=&quot;someinclud&quot;&gt;
+     &lt;property name=&quot;prefix&quot; value=&quot;Some&quot;/&gt;
+     &lt;property name=&quot;includ_target&quot; value=&quot;sometable&quot;/&gt;
+    &lt;/includ&gt;
+&lt;/select&gt;</code></pre>
+<h2 id="四、参数"><a href="#四、参数" class="headerlink" title="四、参数"></a>四、参数</h2><pre><code class="xml">&lt;insert id=&quot;selectUser&quot; parameterType=&quot;User&quot;&gt;
+    insert into users (id,username,password)
+    values (#{id},#{username},#{password})
+&lt;/insert&gt;</code></pre>
+<p>上面的语句中，User 类型的参数对象传递到了语句中，id、username、password 属性会被查找，然后将它们的值传入预处理语句的参数中。</p>
+<p>参数也可以指定一个特殊的数据类型：</p>
+<blockquote>
+<p>#{property,javaType=int,jdbcType=NUMERIC}</p>
+</blockquote>
+<p>也可以指定一个特殊的类型处理器类：</p>
+<blockquote>
+<p>#{age,javaType=int,jdbcType=NUMERIC,typeHandler=MyTypeHandler}</p>
+</blockquote>
+<p>需要保留小数点的数值类型：</p>
+<blockquote>
+<p>#{height,javaType=double,jdbcType=NUMERIC,numericScale=2}</p>
+</blockquote>
+<p>尽管该选项功能强大，但大多数情况下只需要简单地指定属性名，MyBatis 会自己推断类型，顶多<code>需要为可能为空的列指定 jdbcType</code>。</p>
+<h3 id="字符串替换"><a href="#字符串替换" class="headerlink" title="字符串替换"></a>字符串替换</h3><p>默认情况下，使用 <code>#{}</code> 格式的语法会导致 MyBatis 创建 PreparedStatement 参数占位符并安全地设置参数(就像？一样)。不过有时想直接在 SQL 中插入一个不转义的字符串，如：</p>
+<blockquote>
+<p>order by ${columnName}</p>
+</blockquote>
+<p>这样，MyBatis 不会修改或转义字符串。</p>
+<p>有时，替换字符串会非常有用，如：</p>
+<pre><code class="java">@Select(&quot;select * from user where id=#{id}&quot;)
+User findById(@Param(&quot;id&quot;) long id);
+
+@Select(&quot;select * from user where name=#{name}&quot;)
+User findByName(@Param(&quot;name&quot;) String name);
+
+@Select(&quot;select * from user where email=#{email}&quot;)
+User findByEmail(@Param(&quot;email&quot;) long email);</code></pre>
+<p>可以只写一个方法：</p>
+<pre><code class="java">@Select(&quot;select * from user where ${column}=#{email}&quot;)
+User findByColumn(@Param(&quot;column&quot;) String column, @Param(&quot;email&quot;) long email);</code></pre>
+<p>使用的时候，可以如下调用：</p>
+<pre><code class="java">User u1 = userMapper.findByColumn(&quot;id&quot;,1L);
+User u2 = userMapper.findByColumn(&quot;name&quot;,&quot;zhangsan&quot;);
+User u3 = userMapper.findByColumn(&quot;email&quot;,&quot;xx@qq.com&quot;);</code></pre>
+<h2 id="五、结果映射"><a href="#五、结果映射" class="headerlink" title="五、结果映射"></a>五、结果映射</h2><p>resultMap 可以将返回结果映射到JavaBean或POJO上。如：</p>
+<pre><code class="xml">&lt;select id=&quot;selectUsers&quot; resultType=&quot;cn.luokaiii.model.User&quot;&gt;
+    select id,username
+    from tb_user
+    where id=#{id}
+&lt;/select&gt;</code></pre>
+<p>也可以使用类型别名，来代替完全限定名：</p>
+<pre><code class="xml">&lt;typeAlias type=&quot;cn.luokaiii.model.User&quot; alias=&quot;User&quot;/&gt;
+
+&lt;select id=&quot;selectUsers&quot; resultType=&quot;User&quot;&gt;
+    select id,username
+    from tb_user
+    where id=#{id}
+&lt;/select&gt;</code></pre>
+<p>如果列名与属性名没有精确匹配，可以在 SELECT 语句中对列使用别名来匹配标签，如：</p>
+<pre><code class="xml">&lt;select id=&quot;selectUsers&quot; resultType=&quot;cn.luokaiii.model.User&quot;&gt;
+    select 
+     id        as &quot;id&quot;,
+     username  as &quot;userName&quot;
+    from tb_user
+    where id=#{id}
+&lt;/select&gt;</code></pre>
+<p>或者使用外部的 <code>resultMap</code> 来映射：</p>
+<pre><code class="xml">&lt;resultMap id=&quot;userResultMap&quot; type=&quot;User&quot;&gt;
+    &lt;id property=&quot;id&quot; column=&quot;user_id&quot;/&gt;
+    &lt;result property=&quot;username&quot; column=&quot;user_name&quot;/&gt;
+    &lt;result property=&quot;password&quot; column=&quot;hashed_password&quot;/&gt;
+&lt;/resultMap&gt;</code></pre>
+<pre><code class="xml">&lt;select id=&quot;selectUsers&quot; resultMap=&quot;userResultMap&quot;&gt;
+    select id,username
+    from tb_user
+    where id=#{id}
+&lt;/select&gt;</code></pre>
+<h3 id="高级结果映射"><a href="#高级结果映射" class="headerlink" title="高级结果映射"></a>高级结果映射</h3><pre><code class="xml">&lt;!-- 非常复杂的语句 --&gt;
+&lt;select id=&quot;selectBlogDetails&quot; resultMap=&quot;detailedBlogResultMap&quot;&gt;
+  select
+       B.id as blog_id,
+       B.title as blog_title,
+       B.author_id as blog_author_id,
+       A.id as author_id,
+       A.username as author_username,
+       A.password as author_password,
+       A.email as author_email,
+       A.bio as author_bio,
+       A.favourite_section as author_favourite_section,
+       P.id as post_id,
+       P.blog_id as post_blog_id,
+       P.author_id as post_author_id,
+       P.created_on as post_created_on,
+       P.section as post_section,
+       P.subject as post_subject,
+       P.draft as draft,
+       P.body as post_body,
+       C.id as comment_id,
+       C.post_id as comment_post_id,
+       C.name as comment_name,
+       C.comment as comment_text,
+       T.id as tag_id,
+       T.name as tag_name
+  from Blog B
+       left outer join Author A on B.author_id = A.id
+       left outer join Post P on B.id = P.blog_id
+       left outer join Comment C on P.id = C.post_id
+       left outer join Post_Tag PT on PT.post_id = P.id
+       left outer join Tag T on PT.tag_id = T.id
+  where B.id = #{id}
+&lt;/select&gt;</code></pre>
+<pre><code class="xml">&lt;!-- 非常复杂的结果映射 --&gt;
+&lt;resultMap id=&quot;detailedBlogResultMap&quot; type=&quot;Blog&quot;&gt;
+  &lt;constructor&gt;
+    &lt;idArg column=&quot;blog_id&quot; javaType=&quot;int&quot;/&gt;
+  &lt;/constructor&gt;
+  &lt;result property=&quot;title&quot; column=&quot;blog_title&quot;/&gt;
+  &lt;association property=&quot;author&quot; javaType=&quot;Author&quot;&gt;
+    &lt;id property=&quot;id&quot; column=&quot;author_id&quot;/&gt;
+    &lt;result property=&quot;username&quot; column=&quot;author_username&quot;/&gt;
+    &lt;result property=&quot;password&quot; column=&quot;author_password&quot;/&gt;
+    &lt;result property=&quot;email&quot; column=&quot;author_email&quot;/&gt;
+    &lt;result property=&quot;bio&quot; column=&quot;author_bio&quot;/&gt;
+    &lt;result property=&quot;favouriteSection&quot; column=&quot;author_favourite_section&quot;/&gt;
+  &lt;/association&gt;
+  &lt;collection property=&quot;posts&quot; ofType=&quot;Post&quot;&gt;
+    &lt;id property=&quot;id&quot; column=&quot;post_id&quot;/&gt;
+    &lt;result property=&quot;subject&quot; column=&quot;post_subject&quot;/&gt;
+    &lt;association property=&quot;author&quot; javaType=&quot;Author&quot;/&gt;
+    &lt;collection property=&quot;comments&quot; ofType=&quot;Comment&quot;&gt;
+      &lt;id property=&quot;id&quot; column=&quot;comment_id&quot;/&gt;
+    &lt;/collection&gt;
+    &lt;collection property=&quot;tags&quot; ofType=&quot;Tag&quot; &gt;
+      &lt;id property=&quot;id&quot; column=&quot;tag_id&quot;/&gt;
+    &lt;/collection&gt;
+    &lt;discriminator javaType=&quot;int&quot; column=&quot;draft&quot;&gt;
+      &lt;case value=&quot;1&quot; resultType=&quot;DraftPost&quot;/&gt;
+    &lt;/discriminator&gt;
+  &lt;/collection&gt;
+&lt;/resultMap&gt;</code></pre>
+<h3 id="结果映射（resultMap）"><a href="#结果映射（resultMap）" class="headerlink" title="结果映射（resultMap）"></a>结果映射（resultMap）</h3><ul>
+<li>constructor - 用于在实例化类时，注入结果到构造方法中<ul>
+<li>idArg - ID参数，标记出ID，可以帮助提高整体性能</li>
+<li>arg - 将被注入到构造方法的一个普通结果</li>
+</ul>
+</li>
+<li>id - 一个ID结果</li>
+<li>result - 注入到字段或 JavaBean 属性的普通结果</li>
+<li>association - 一个复杂类型的关联；许多结果将包装成这种类型<ul>
+<li>嵌套结果映射 - 集合本身可以是一个 resultMap 元素，或者从别处引用一个</li>
+</ul>
+</li>
+<li>collection - 一个复杂类型的集合<ul>
+<li>嵌套结果映射 - 集合本身可以是一个 resultMap 元素，或者从别处引用一个</li>
+</ul>
+</li>
+<li>discriminator - 使用结果值来决定使用哪个 resultMap<ul>
+<li>case - 基于某些值的结果映射<ul>
+<li>嵌套结果映射 - case 本身可以是一个 resultMap 元素，因此可以具有相同的结构和元素，或者从别处引用一个</li>
+</ul>
+</li>
+</ul>
+</li>
+</ul>
+<h3 id="id-amp-result"><a href="#id-amp-result" class="headerlink" title="id &amp; result"></a>id &amp; result</h3><p>id 和 result 元素都将一个列的值映射到一个简单数据类型的属性或字段。</p>
+<pre><code class="xml">&lt;id property=&quot;id&quot; column=&quot;post_id&quot;/&gt;
+&lt;result property=&quot;subject&quot; column=&quot;post_subject&quot;/&gt;</code></pre>
+<h3 id="构造方法"><a href="#构造方法" class="headerlink" title="构造方法"></a>构造方法</h3><p>有时，需要使用不可变类来接收，即在构造方法中注入允许在初始化时设置的值，而不暴露出公有方法。</p>
+<pre><code class="java">public class User {
+    // ...property
+    public User(Integer id, String userName, int age){
+        // ...set
+    }
+
+    // private setter and getter
+}</code></pre>
+<pre><code class="xml">&lt;constructor&gt;
+    &lt;idArg column=&quot;id&quot; javaType=&quot;int&quot; name=&quot;id&quot;/&gt;
+    &lt;arg column=&quot;username&quot; javaType=&quot;String&quot; name=&quot;userName&quot;/&gt;
+    &lt;arg column=&quot;age&quot; javaType=&quot;_int&quot; name=&quot;age&quot;/&gt;
+&lt;/constructor&gt;</code></pre>
+<h3 id="关联"><a href="#关联" class="headerlink" title="关联"></a>关联</h3><p>关联（association）元素处理“有一个”类型的关系。</p>
+<pre><code class="xml">&lt;association property=&quot;author&quot; cloumn=&quot;blog_author_id&quot; javaType=&quot;Author&quot;&gt;
+    &lt;id property=&quot;id&quot; column=&quot;author_id&quot;/&gt;
+    &lt;result property=&quot;username&quot; column=&quot;author_username&quot;/&gt;
+&lt;/association&gt;</code></pre>
+<p>MyBatis 有两种方式加载关联：</p>
+<ul>
+<li>嵌套 Select 查询：通过执行另一个 SQL 映射语句来加载期望的复杂类型</li>
+<li>嵌套结果映射：使用嵌套的结果映射来处理连接结果的重复子集</li>
+</ul>
+<h3 id="关联的嵌套Select查询"><a href="#关联的嵌套Select查询" class="headerlink" title="关联的嵌套Select查询"></a>关联的嵌套Select查询</h3><pre><code class="xml">&lt;resultMap id=&quot;blogResult&quot; type=&quot;Blog&quot;&gt;
+    &lt;association property=&quot;author&quot; column=&quot;author_id&quot; javaType=&quot;Author&quot; select=&quot;selectAuthor&quot;/&gt;
+&lt;/resultMap&gt;
+
+&lt;select id=&quot;selectBlog&quot; resultMap=&quot;blogResult&quot;&gt;
+    select * from blog where id=#{id}
+&lt;/select&gt;
+
+&lt;select id=&quot;selectAuthor&quot; resultType=&quot;Author&quot;&gt;
+    select * from Author where id=#{id}
+&lt;/select&gt;</code></pre>
+<p>selectBlog 用来加载博客，selectAuthor 用来加载作者，而 blogResult 结果映射描述了应该使用 selectAuthor 语句加载它的 author 属性。</p>
+<p>这种方式虽然简单，但是<code>在大型数据集或大型数据表上表现不佳</code>。这个问题被称为“N+1查询问题”：</p>
+<ul>
+<li>执行了一个单独的 SQL 语句来获取结果的一个列表（就是+1）</li>
+<li>对列表返回的每条记录，执行一个 select 查询语句来加载详细信息（就是N）</li>
+</ul>
+<p>虽然 MyBatis 能够对这样的查询进行延迟加载，但是如果你在加载完记录表后，立即进行了遍历。此时就会触发所有的延迟加载查询，性能会变得很糟糕。</p>
+<blockquote>
+<p>解决方法：使用联合查询来避免N+1问题</p>
+</blockquote>
+<pre><code class="xml">&lt;select id=&quot;selectBlog&quot; resultMap=&quot;blogResult&quot;&gt;
+  select
+    B.id            as blog_id,
+    B.title         as blog_title,
+    B.author_id     as blog_author_id,
+    A.id            as author_id,
+    A.username      as author_username,
+    A.password      as author_password,
+    A.email         as author_email,
+    A.bio           as author_bio
+  from Blog B left outer join Author A on B.author_id = A.id
+  where B.id = #{id}
+&lt;/select&gt;</code></pre>
+<pre><code class="xml">&lt;resultMap id=&quot;blogResult&quot; type=&quot;Blog&quot;&gt;
+  &lt;id property=&quot;id&quot; column=&quot;blog_id&quot; /&gt;
+  &lt;result property=&quot;title&quot; column=&quot;blog_title&quot;/&gt;
+  &lt;association property=&quot;author&quot; column=&quot;blog_author_id&quot; javaType=&quot;Author&quot; resultMap=&quot;authorResult&quot;/&gt;
+&lt;/resultMap&gt;
+
+&lt;resultMap id=&quot;authorResult&quot; type=&quot;Author&quot;&gt;
+  &lt;id property=&quot;id&quot; column=&quot;author_id&quot;/&gt;
+  &lt;result property=&quot;username&quot; column=&quot;author_username&quot;/&gt;
+  &lt;result property=&quot;password&quot; column=&quot;author_password&quot;/&gt;
+  &lt;result property=&quot;email&quot; column=&quot;author_email&quot;/&gt;
+  &lt;result property=&quot;bio&quot; column=&quot;author_bio&quot;/&gt;
+&lt;/resultMap&gt;</code></pre>
+<h3 id="集合"><a href="#集合" class="headerlink" title="集合"></a>集合</h3><p>集合元素和关联元素几乎是一样的</p>
+<pre><code class="xml">&lt;collection property=&quot;posts&quot; ofType=&quot;domain.blog.Post&quot;&gt;
+    &lt;id property=&quot;id&quot; column=&quot;post_id&quot;/&gt;
+    &lt;result property=&quot;subject&quot; column=&quot;post_subject&quot;/&gt;
+    &lt;result property=&quot;body&quot; column=&quot;post_body&quot;/&gt;
+&lt;/collection&gt;</code></pre>
+<h4 id="集合的嵌套-Select-查询"><a href="#集合的嵌套-Select-查询" class="headerlink" title="集合的嵌套 Select 查询"></a>集合的嵌套 Select 查询</h4><pre><code class="xml">&lt;resultMap id=&quot;blogResult&quot; type=&quot;Blog&quot;&gt;
+    &lt;collection property=&quot;posts&quot; javaType=&quot;ArrayList&quot; column=&quot;id&quot; ofType=&quot;Post&quot; select=&quot;selectPostsForBlog&quot;/&gt;
+&lt;/resultMap&gt;
+
+&lt;select id=&quot;selectBlog&quot; resultMap=&quot;blogResult&quot;&gt;
+    select * from blog where id=#{id}
+&lt;/select&gt;
+
+&lt;select id=&quot;selectPostsForBlog&quot; resultType=&quot;Post&quot;&gt;
+    select * from post where blog_id=#{id}
+&lt;/select&gt;</code></pre>
+<blockquote>
+<p><code>javaType=&quot;ArrayList&quot; ofType=&quot;Post&quot;</code> 等同于结果为：ArrayList<post></post></p>
+</blockquote>
+<h4 id="集合的嵌套结果映射"><a href="#集合的嵌套结果映射" class="headerlink" title="集合的嵌套结果映射"></a>集合的嵌套结果映射</h4><pre><code class="xml">&lt;select id=&quot;selectBlog&quot; resultMap=&quot;blogResult&quot;&gt;
+  select
+  B.id as blog_id,
+  B.title as blog_title,
+  B.author_id as blog_author_id,
+  P.id as post_id,
+  P.subject as post_subject,
+  P.body as post_body,
+  from Blog B
+  left outer join Post P on B.id = P.blog_id
+  where B.id = #{id}
+&lt;/select&gt;</code></pre>
+<pre><code class="xml">&lt;resultMap id=&quot;blogResult&quot; type=&quot;Blog&quot;&gt;
+  &lt;id property=&quot;id&quot; column=&quot;blog_id&quot; /&gt;
+  &lt;result property=&quot;title&quot; column=&quot;blog_title&quot;/&gt;
+  &lt;collection property=&quot;posts&quot; ofType=&quot;Post&quot;&gt;
+    &lt;id property=&quot;id&quot; column=&quot;post_id&quot;/&gt;
+    &lt;result property=&quot;subject&quot; column=&quot;post_subject&quot;/&gt;
+    &lt;result property=&quot;body&quot; column=&quot;post_body&quot;/&gt;
+  &lt;/collection&gt;
+&lt;/resultMap&gt;</code></pre>
+<h4 id="集合的多结果集（ResultSet）"><a href="#集合的多结果集（ResultSet）" class="headerlink" title="集合的多结果集（ResultSet）"></a>集合的多结果集（ResultSet）</h4><p>可以通过执行存储过程来实现，存储过程会执行两个查询并返回两个结果集。</p>
+<pre><code class="sql">SELECT * FROM BLOG WHERE ID = #{id}
+
+SELECT * FROM POST WHERE BLOG_ID = #{id}</code></pre>
+<p>在映射时，必须通过 resultSets 属性为每个结果集指定一个名字，使用逗号隔开。</p>
+<pre><code class="xml">&lt;select id=&quot;selectBlog&quot; resultSets=&quot;blogs,posts&quot; resultMap=&quot;blogResult&quot;&gt;
+  {call getBlogsAndPosts(#{id,jdbcType=INTEGER,mode=IN})}
+&lt;/select&gt;</code></pre>
+<p>指定结果集的数据进行填充</p>
+<pre><code class="xml">&lt;resultMap id=&quot;blogResult&quot; type=&quot;Blog&quot;&gt;
+  &lt;id property=&quot;id&quot; column=&quot;id&quot; /&gt;
+  &lt;result property=&quot;title&quot; column=&quot;title&quot;/&gt;
+  &lt;collection property=&quot;posts&quot; ofType=&quot;Post&quot; resultSet=&quot;posts&quot; column=&quot;id&quot; foreignColumn=&quot;blog_id&quot;&gt;
+    &lt;id property=&quot;id&quot; column=&quot;id&quot;/&gt;
+    &lt;result property=&quot;subject&quot; column=&quot;subject&quot;/&gt;
+    &lt;result property=&quot;body&quot; column=&quot;body&quot;/&gt;
+  &lt;/collection&gt;
+&lt;/resultMap&gt;</code></pre>
+<h3 id="鉴别器（discriminator）"><a href="#鉴别器（discriminator）" class="headerlink" title="鉴别器（discriminator）"></a>鉴别器（discriminator）</h3><p>有时，一个数据库查询可能会返回多个不同的结果集。鉴别器元素就是被设计出来应对这种情况的，也能处理如类的继承层次结构的问题。类似于 java 语言中的 switch 语句。</p>
+<pre><code class="xml">&lt;resultMap id=&quot;vehicleResult&quot; type=&quot;Vehicle&quot;&gt;
+  &lt;id property=&quot;id&quot; column=&quot;id&quot; /&gt;
+  &lt;result property=&quot;vin&quot; column=&quot;vin&quot;/&gt;
+  &lt;result property=&quot;year&quot; column=&quot;year&quot;/&gt;
+  &lt;result property=&quot;make&quot; column=&quot;make&quot;/&gt;
+  &lt;result property=&quot;model&quot; column=&quot;model&quot;/&gt;
+  &lt;result property=&quot;color&quot; column=&quot;color&quot;/&gt;
+  &lt;discriminator javaType=&quot;int&quot; column=&quot;vehicle_type&quot;&gt;
+    &lt;case value=&quot;1&quot; resultMap=&quot;carResult&quot;/&gt;
+    &lt;case value=&quot;2&quot; resultMap=&quot;truckResult&quot;/&gt;
+    &lt;case value=&quot;3&quot; resultMap=&quot;vanResult&quot;/&gt;
+    &lt;case value=&quot;4&quot; resultMap=&quot;suvResult&quot;/&gt;
+  &lt;/discriminator&gt;
+&lt;/resultMap&gt;</code></pre>
+<h3 id="自动映射"><a href="#自动映射" class="headerlink" title="自动映射"></a>自动映射</h3><p>在简单的场景下，MyBatis 可以为你自动映射查询结果。但如果遇到复杂的场景，则需要自行构建一个结果映射。</p>
+<h2 id="六、缓存"><a href="#六、缓存" class="headerlink" title="六、缓存"></a>六、缓存</h2><p>MyBatis 内置了一个强大的事务性查询缓存机制，可以非常方便地配置和定制。</p>
+<p>默认情况下，只启用了本地的会话缓存，仅对一个会话中的数据进行缓存。要启用全局的二级缓存，只需要在你的 SQL 映射文件中添加一行：</p>
+<blockquote>
+<cache>
+</cache></blockquote>
+<p>其效果如下：</p>
+<ul>
+<li>映射语句文件中的所有 select 结果都将被缓存</li>
+<li>映射语句文件中的所有 insert、update、delete 都会刷新缓存</li>
+<li>缓存会使用 最少使用算法 来清除不需要的缓存</li>
+<li>缓存不会定时进行刷新</li>
+<li>缓存会保存列表或对象的1024个引用</li>
+<li>缓存会被视为读/写缓存，意味着获取到的对象并不是共享的，可以安全地被调用者修改，而不干扰其他调用者或县城所做的潜在修改</li>
+</ul>
+<blockquote>
+<p>缓存只作用于 cache 标签所在的映射文件中的语句。混用 API和XML，在共用接口中的语句将不会被默认缓存。 可以修改cache 元素的属性：</p>
+</blockquote>
+<pre><code class="xml">&lt;cache 
+       eviction=&quot;FIFO&quot; // FIFO缓存
+       flushInerval=&quot;60000&quot; // 每隔60秒刷新
+       size=&quot;512&quot;         // 最多可存512个引用
+       readOnly=&quot;true&quot;  // 返回对象只读
+/&gt;</code></pre>
+<p>可用的清除策略：</p>
+<ul>
+<li>LRU - 最近最少使用：移除最长时间不被使用的对象</li>
+<li>FIFO - 先进先出：按对象进入缓存的顺序来移除他们</li>
+<li>SOFT - 软引用：基于垃圾回收器状态和软引用规则移除对象</li>
+<li>WEAK - 弱引用：更积极地基于垃圾回收期状态和弱引用规则移除对象</li>
+</ul>
+<h4 id="使用自定义缓存"><a href="#使用自定义缓存" class="headerlink" title="使用自定义缓存"></a>使用自定义缓存</h4><p>通过实现 Cache 接口或者第三方缓存方案，来完全覆盖缓存行为。</p>
+<pre><code class="xml">&lt;cache type=&quot;com.domain.something.MyCustomCache&quot;/&gt;</code></pre>
+<blockquote>
+<p>上面说到的缓存配置（如清除策略、可读写等），不适用于自定义缓存</p>
+</blockquote>
+</div><hr></div><div class="recent-post-item article-container"><a class="article-title" href="/2019/09/05/读书笔记/《SpringSecurity》/23.自定义权限验证/">《Spring Security》自定义权限验证@PreAuthorize</a><time class="post-meta__date"><i class="fa fa-calendar" aria-hidden="true"></i> 2019-09-05</time><span class="article-meta"><span class="article-meta__separator">|</span><i class="fa fa-inbox article-meta__icon" aria-hidden="true"></i><a class="article-meta__categories" href="/categories/读书笔记/">读书笔记</a><i class="fa fa-angle-right" aria-hidden="true"></i><i class="fa fa-inbox article-meta__icon" aria-hidden="true"></i><a class="article-meta__categories" href="/categories/读书笔记/Spring-Security/">Spring Security</a></span><span class="article-meta tags"><span class="article-meta__separator">|</span><i class="fa fa-tag article-meta__icon" aria-hidden="true"></i><a class="article-meta__tags" href="/tags/hide/">hide</a><span class="article-meta__link">-</span><i class="fa fa-tag article-meta__icon" aria-hidden="true"></i><a class="article-meta__tags" href="/tags/Spring-Security/">Spring Security</a></span><div class="content"><h1 id="自定义安全表达式"><a href="#自定义安全表达式" class="headerlink" title="自定义安全表达式"></a>自定义安全表达式</h1><pre><code class="java">/**
+ * Base root object for use in Spring Security expression evaluations.
+ *
+ * @author Luke Taylor
+ * @since 3.0
  */
-// 抽象界面构件类 - 抽象构件类
-abstract class Component {
-    public abstract void display();
-}
-
-// 窗体类 - 具体构件类
-class Window extends Component {
-    @Override
-    public void display() {
-        System.out.println(&quot;显示窗体!&quot;);
-    }
-}
-
-// 文本框类 - 具体构件类
-class TextBox extends Component {
-    @Override
-    public void display() {
-        System.out.println(&quot;显示文本框!&quot;);
-    }
-}
-
-// 列表框类 - 具体构件类
-class ListBox extends Component {
-    @Override
-    public void display() {
-        System.out.println(&quot;显示列表框!&quot;);
-    }
-}
-
-// 构件装饰类 - 抽象装饰类
-class ComponentDecorator extends Component {
-    // 维持对抽象构件类型对象的引用
-    private Component component;
-
-    // 注入抽象构件类型的对象
-    public ComponentDecorator(Component component) {
-        this.component = component;
-    }
-
-    @Override
-    public void display() {
-        component.display();
-    }
-}
-
-// 滚动条装饰类 - 具体装饰类
-class ScrollBarDecorator extends ComponentDecorator {
-
-    public ScrollBarDecorator(Component component) {
-        super(component);
-    }
-
-    @Override
-    public void display() {
-        this.setScrollBar();
-        super.display();
-    }
-
-    public void setScrollBar() {
-        System.out.println(&quot;为构件增加滚动条!&quot;);
-    }
-}
-
-// 黑色边框装饰类 - 具体装饰类
-class BlackBorderDecorator extends ComponentDecorator {
-    public BlackBorderDecorator(Component component) {
-        super(component);
-    }
-
-    @Override
-    public void display() {
-        setBlackBorder();
-        super.display();
-    }
-
-    public void setBlackBorder() {
-        System.out.println(&quot;为构件增加黑色边框&quot;);
-    }
-}
-
-public class DecoratorPattern {
-
-    public static void main(String[] args) {
-        Component window = new Window();
-        Component scrollBarWindow = new ScrollBarDecorator(window);
-        scrollBarWindow.display();
-    }
-}</code></pre>
-<h2 id="四、透明装饰模式和半透明装饰模式"><a href="#四、透明装饰模式和半透明装饰模式" class="headerlink" title="四、透明装饰模式和半透明装饰模式"></a>四、透明装饰模式和半透明装饰模式</h2><p>如果我们需要在 “黑色边框装饰类” 中增加一个方法用于设置边框宽度。则修改后的类如下：</p>
-<pre><code class="java">// 黑色边框装饰类 - 具体装饰类
-class BlackBorderDecorator extends ComponentDecorator {
-    public BlackBorderDecorator(Component component) {
-        super(component);
-    }
-
-    @Override
-    public void display() {
-        setBlackBorder();
-        super.display();
-    }
-
-    public void setBlackBorder() {
-        System.out.println(&quot;为构件增加黑色边框&quot;);
-    }
-
-    public void setBorderWidth(Integer width){
-        // ...
-    }
-}</code></pre>
-<p>如果我们继续使用 <code>抽象构件类</code> ，则客户端无法调用新增的业务方法 <code>setBorderWidth(Integer width)</code>。因为在抽象构建类中，没有对该方法的声明。</p>
-<p>在实际使用中，必须使用具体装饰类对象来调用该方法，这种装饰模式就是 <code>半透明(Semi-transparent)装饰模式</code>，而标准的装饰模式是透明装饰模式。</p>
-<h3 id="透明装饰模式与半透明装饰模式的区别"><a href="#透明装饰模式与半透明装饰模式的区别" class="headerlink" title="透明装饰模式与半透明装饰模式的区别"></a>透明装饰模式与半透明装饰模式的区别</h3><p>透明装饰模式要求客户端完全针对抽象编程，所有的装饰类必须声明为抽象构件类型。</p>
+public abstract class SecurityExpressionRoot implements SecurityExpressionOperations</code></pre>
+<p>SecurityExpressionRoot 是所有安全表达式的基类，我们需要做的就是：</p>
 <ol>
-<li>优点：客户端无需关心具体构件类型，可以让客户端透明地使用装饰之前的对象和装饰之后的对象，无须关系它们的区别</li>
-<li>优点：能够对装饰过的对象进行多次装饰，得到更复杂、功能更强大的对象。</li>
+<li>继承 SecurityExpressionRoot，自定义 MethodSecurity 表达式</li>
+<li>继承 DefaultMethodSecurityExpressionHandler，自定义方法级别的安全校验处理器</li>
+<li>继承 GlobalMethodSecurityConfiguration，添加自定义的表达式处理器</li>
 </ol>
-<p>而半透明装饰模式的设计难度较大，对于新增特有的方法，必须使用具体装饰类型来定义装饰后的对象。</p>
-<ol>
-<li>优点：半透明装饰模式可以给系统带来更多灵活性，设计相对简单，使用也比较方便</li>
-<li>缺点：不能对使用同一对象的多次装饰，且客户端需要区别对待装饰之前和装饰之后的对象</li>
-</ol>
-<h2 id="五、总结"><a href="#五、总结" class="headerlink" title="五、总结"></a>五、总结</h2><h3 id="优点"><a href="#优点" class="headerlink" title="优点"></a>优点</h3><ol>
-<li>对于扩展对象的功能，装饰模式比继承更加灵活，且类的个数不会急剧增加</li>
-<li>能够动态扩展对象功能，比如通过配置文件决定运行时的具体装饰类</li>
-<li>能够对一个对象进行多次装饰，通过使用不同的具体装饰类来获得不同行为的组合</li>
-<li>具体构件类和具体装饰类可以独立变化，符合“开闭原则”</li>
-</ol>
-<h3 id="缺点"><a href="#缺点" class="headerlink" title="缺点"></a>缺点</h3><ol>
-<li>装饰模式在使用时，会产生许多的对象。<ol>
-<li>例如通过对一个对象的多次包装，会产生多个具体包装类</li>
-<li>大量对象势必会占用更多的系统资源，一定程度上影响程序的性能</li>
-</ol>
-</li>
-<li>装饰模式虽然比继承更加灵活，但也意味着更加容易出错，排查问题更加困难。<ol>
-<li>对于多次装饰后的对象，调试问题可能需要逐级排查，较为繁琐</li>
-</ol>
-</li>
-</ol>
-<h3 id="适用场景"><a href="#适用场景" class="headerlink" title="适用场景"></a>适用场景</h3><ol>
-<li>在不影响其他对象的情况下，以动态、透明的方式给单个对象添加职责</li>
-<li>不能采用继承方式对系统扩展时。<ol>
-<li>系统中存在大量独立的扩展，增加扩展时会导致子类爆炸性增长</li>
-<li>类被定义为不能继承（如final修饰的类）</li>
-</ol>
-</li>
-</ol>
-<h2 id="六、练习"><a href="#六、练习" class="headerlink" title="六、练习"></a>六、练习</h2><blockquote>
-<p>Sunny软件公司欲开发了一个数据加密模块，可以对字符串进行加密。最简单的加密算法通过对字母进行移位来实现，同时还提供了稍复杂的逆向输出加密，还提供了更为高级的求模加密。用户先使用最简单的加密算法对字符串进行加密，如果觉得还不够可以对加密之后的结果使用其他加密算法进行二次加密，当然也可以进行第三次加密。试使用装饰模式设计该多重加密系统。</p>
-</blockquote>
-</div><hr></div><div class="recent-post-item article-container"><a class="article-title" href="/2019/07/09/读书笔记/《JavaDesignPatterns》/11.组合模式/">《Java Design Patterns》第九章 组合模式 - 树形结构的处理</a><time class="post-meta__date"><i class="fa fa-calendar" aria-hidden="true"></i> 2019-07-09</time><span class="article-meta"><span class="article-meta__separator">|</span><i class="fa fa-inbox article-meta__icon" aria-hidden="true"></i><a class="article-meta__categories" href="/categories/读书笔记/">读书笔记</a><i class="fa fa-angle-right" aria-hidden="true"></i><i class="fa fa-inbox article-meta__icon" aria-hidden="true"></i><a class="article-meta__categories" href="/categories/读书笔记/设计模式/">设计模式</a></span><span class="article-meta tags"><span class="article-meta__separator">|</span><i class="fa fa-tag article-meta__icon" aria-hidden="true"></i><a class="article-meta__tags" href="/tags/hide/">hide</a><span class="article-meta__link">-</span><i class="fa fa-tag article-meta__icon" aria-hidden="true"></i><a class="article-meta__tags" href="/tags/设计模式/">设计模式</a></span><div class="content"><h1 id="第九章-组合模式-树形结构的处理"><a href="#第九章-组合模式-树形结构的处理" class="headerlink" title="第九章 组合模式 - 树形结构的处理"></a>第九章 组合模式 - 树形结构的处理</h1><h2 id="一、杀毒软件的框架结构"><a href="#一、杀毒软件的框架结构" class="headerlink" title="一、杀毒软件的框架结构"></a>一、杀毒软件的框架结构</h2><h3 id="1-介绍"><a href="#1-介绍" class="headerlink" title="1. 介绍"></a>1. 介绍</h3><p>开发一个杀毒软件，既可以对某个文件夹（Folder）杀毒，也可以对指定文件（File）进行杀毒。</p>
-<h3 id="2-面向对象的解法"><a href="#2-面向对象的解法" class="headerlink" title="2. 面向对象的解法"></a>2. 面向对象的解法</h3><p>按照面向对象的设计思路，应该在 Folder 中包含图像、文本等文件类型的集合，以及文件夹的集合。</p>
-<pre><code class="java">class ImageFile {
-    // image property
-}
-
-class TextFile {
-    // text property
-}
-
-class Folder {
-    List&lt;ImageFile&gt; images = new ArrayList&lt;&gt;();
-    List&lt;TextFile&gt; texts = new ArrayList&lt;&gt;();
-    List&lt;Folder&gt; folders = new ArrayList&lt;&gt;();
-
-    void addFolder();
-    void addImage();
-    void addText();
-
-    // ... remove/find etc.
-}</code></pre>
-<h3 id="3-存在的问题"><a href="#3-存在的问题" class="headerlink" title="3. 存在的问题"></a>3. 存在的问题</h3><ol>
-<li>Folder 的设计和实现十分复杂，需要定义多个集合存储不同类型的成员，且需要针对不同成员提供各自的 增删改查方法，存在大量冗余代码，系统维护困难</li>
-<li>由于系统没有抽象层，客户端必须有区别地对待 文件夹和各类型的文件，无法对其进行统一处理</li>
-<li>系统灵活性和可扩展性差，增加新类型的叶子和容器都需要对原有代码进行修改</li>
-</ol>
-<h3 id="4-解决思路"><a href="#4-解决思路" class="headerlink" title="4. 解决思路"></a>4. 解决思路</h3><p>整个架构中包含两类不同的元素，文件夹和文件。文件夹中可以包含文件或文件夹、而文件不能再包含子文件或子文件夹。因此，我们可以将文件夹成为 容器（Container），不同类型的文件是其成员，也称为 叶子（Leaf）。</p>
-<h2 id="二、组合模式"><a href="#二、组合模式" class="headerlink" title="二、组合模式"></a>二、组合模式</h2><h3 id="1-定义"><a href="#1-定义" class="headerlink" title="1. 定义"></a>1. 定义</h3><p>对于树形结构，当容器对象（如文件夹）的某一个方法被调用时，将遍历整个属性结构，其中使用了递归调用的机制来对整个结构进行处理。由于容器对象和叶子对象在功能上的区别，在使用时必须有区别地对待。而大多数情况下我们希望一致地处理它们，因为对于这些对象的使用具有一致性。</p>
-<p>组合模式：组合多个对象形成树形结构，以表示具有“整体 - 部分” 关系的层次结构。组合模式对单个对象（叶子对象）和组合对象（容器对象）的使用具有一致性，组合模式又可以成为“整体 - 部分”模式，属于对象结构性模式。</p>
-<h3 id="2-组合模式中的几个角色"><a href="#2-组合模式中的几个角色" class="headerlink" title="2. 组合模式中的几个角色"></a>2. 组合模式中的几个角色</h3><ol>
-<li>Component - 抽象构件<ol>
-<li>接口或抽象类，为 Leaf 和 Composite 对象声明接口，在该角色中可以包含所有子类共有行为的声明和实现</li>
-</ol>
-</li>
-<li>Leaf - 叶子构件<ol>
-<li>叶子节点，没有子节点，实现了在抽象构件中定义的行为</li>
-<li>对于访问及管理子构件的方法，可以通过异常等方式进行处理</li>
-</ol>
-</li>
-<li>Composite - 容器构件<ol>
-<li>容器节点对象，包含子节点</li>
-<li>子节点可以是叶子节点，也可以是容器节点</li>
-<li>提供一个集合用于存储子节点，实现了抽象构件中定义的行为，包含那些访问及管理子节点的方法</li>
-<li>在业务方法中可以递归调用子节点的业务方法</li>
-</ol>
-</li>
-</ol>
-<h2 id="三、-完整解决方案"><a href="#三、-完整解决方案" class="headerlink" title="三、 完整解决方案"></a>三、 完整解决方案</h2><pre><code class="java">// 组合模式
-abstract class AbstractFile {
-    public abstract void add(AbstractFile file);
-
-    public abstract void remove(AbstractFile file);
-
-    public abstract AbstractFile getChild(int i);
-
-    public abstract void killVirus();
-}
-
-class ImageFile extends AbstractFile {
-    private String name;
-
-    public ImageFile(String name) {
-        this.name = name;
-    }
-
-    @Override
-    public void add(AbstractFile file) {
-        System.out.println(&quot;不支持该方法！&quot;);
-    }
-
-    @Override
-    public void remove(AbstractFile file) {
-        System.out.println(&quot;不支持该方法！&quot;);
-    }
-
-    @Override
-    public AbstractFile getChild(int i) {
-        System.out.println(&quot;不支持该方法！&quot;);
-        return null;
-    }
-
-    @Override
-    public void killVirus() {
-        System.out.println(&quot;对图像进行[&quot; + name + &quot;]杀毒&quot;);
-    }
-}
-
-class TextFile extends AbstractFile {
-    private String name;
-
-    public TextFile(String name) {
-        this.name = name;
-    }
-
-    @Override
-    public void add(AbstractFile file) {
-        System.out.println(&quot;不支持该方法！&quot;);
-    }
-
-    @Override
-    public void remove(AbstractFile file) {
-        System.out.println(&quot;不支持该方法！&quot;);
-    }
-
-    @Override
-    public AbstractFile getChild(int i) {
-        System.out.println(&quot;不支持该方法！&quot;);
-        return null;
-    }
-
-    @Override
-    public void killVirus() {
-        System.out.println(&quot;对文本进行[&quot; + name + &quot;]杀毒&quot;);
-    }
-}
-
-class Folder extends AbstractFile {
-    private List&lt;AbstractFile&gt; files = new ArrayList&lt;&gt;();
-    private String name;
-
-    public Folder(String name) {
-        this.name = name;
-    }
-
-    @Override
-    public void add(AbstractFile file) {
-        files.add(file);
-    }
-
-    @Override
-    public void remove(AbstractFile file) {
-        files.remove(file);
-    }
-
-    @Override
-    public AbstractFile getChild(int i) {
-        return files.get(i);
-    }
-
-    @Override
-    public void killVirus() {
-        System.out.println(&quot;对文件夹[&quot; + name + &quot;]进行杀毒&quot;);
-        for (AbstractFile file : files) {
-            file.killVirus();
-        }
-    }
-}
-
-public class CompositePattern {
-    public static void main(String[] args) {
-        AbstractFile folder1 = new Folder(&quot;图像文件夹&quot;);
-        AbstractFile folder2 = new Folder(&quot;文本文件夹&quot;);
-
-        AbstractFile file1 = new ImageFile(&quot;图片一&quot;);
-        AbstractFile file2 = new ImageFile(&quot;图片二&quot;);
-
-        AbstractFile file3 = new ImageFile(&quot;文本一&quot;);
-        AbstractFile file4 = new ImageFile(&quot;文本二&quot;);
-
-        folder1.add(file1);
-        folder1.add(file2);
-
-        folder2.add(file3);
-        folder2.add(file4);
-        folder2.add(folder1);
-
-        folder2.killVirus();
-    }
-}</code></pre>
-<h2 id="四、透明组合模式和安全组合模式"><a href="#四、透明组合模式和安全组合模式" class="headerlink" title="四、透明组合模式和安全组合模式"></a>四、透明组合模式和安全组合模式</h2><p>通过引入 组合模式，该杀毒软件具有良好的可扩展性，在新增文件类型时，只需要新增一个文件类继承 AbstractFile 即可。</p>
-<p>但是 Abstract 中声明了大量用于管理和访问成员构件的方法，如 add() remove() 等方法，提供对应的错误提示和异常处理。</p>
-<p>解决方案一：将叶子构件的add()、remove() 方法移至AbstractFile中，提供默认实现：</p>
-<pre><code class="java">abstract class AbstractFile {
-    public void add(AbstractFile file){
-        System.out.println(&quot;对不起，不支持该方法！&quot;)
-    }
-    public void remove(AbstractFile file){
-        System.out.println(&quot;对不起，不支持该方法！&quot;)
-    }
-    public AbstractFile getChild(int i){
-        System.out.println(&quot;对不起，不支持该方法！&quot;)
-    }
-
-    public abstract void killVirus();
-}</code></pre>
-<p>解决方案二：不提供 add()、remove() 等抽象方法，由具体需要的子构件自己提供。但是会导致客户端不得不使用容器类本身来声明容器构件对象，否则无法访问其中新增的方法。客户端代码无法通过容器构件的抽象构件来定义。</p>
-<h3 id="1-透明组合模式"><a href="#1-透明组合模式" class="headerlink" title="1. 透明组合模式"></a>1. 透明组合模式</h3><p>上面的解决方案一，就是透明组合模式的实现。由抽象构件提供子构件方法的默认实现。</p>
-<p>好处是确保所有构件类都有相同的接口，对客户端来说，叶子对象和容器对象的方法一致。</p>
-<p>缺点是，因为叶子对象和容器对象在本质上是有区别的，叶子对象不可能有下一层对象，因此不应该有 add()/remove() 等方法，在运行时可能会出现异常。</p>
-<h3 id="2-安全组合模式"><a href="#2-安全组合模式" class="headerlink" title="2. 安全组合模式"></a>2. 安全组合模式</h3><p>解决方案二，就是安全组合模式的实现。抽象构件中不声明管理成员对象的方法，而是在 Composite类中声明并实现这些方法。</p>
-<p>这种做法是安全的，因为叶子对象没有了管理成员对象的方法，客户端也就不能对叶子对象调用这些方法了。</p>
-<h2 id="五、总结"><a href="#五、总结" class="headerlink" title="五、总结"></a>五、总结</h2><p>组合模式使用面向对象的思想来实现树形结构的构建与处理，描述了如何将容器对象和叶子对象进行递归组合，实现简单，灵活型号。</p>
-<h3 id="优点"><a href="#优点" class="headerlink" title="优点"></a>优点</h3><ol>
-<li>组合模式可以清楚地定义分层次的复杂对象，表示对象的全部或部分层次，使客户端忽略了层次的差异，方便对整个层次结构进行控制</li>
-<li>客户端可以一致地使用一个组合结构或其中的单个对象，不必关系处理的是单个对象还是整个组合结构，简化客户端代码</li>
-<li>组合模式为树形结构的面向对象实现，提供了一种灵活的解决方案，通过叶子对象和容器对象的递归组合，可以形成复杂的树形结构，但对树形结构的控制却非常简单</li>
-</ol>
-<h3 id="缺点"><a href="#缺点" class="headerlink" title="缺点"></a>缺点</h3><ol>
-<li>增加新构件时很难对容器中的构件类型进行限制</li>
-</ol>
-<h2 id="适用场景"><a href="#适用场景" class="headerlink" title="适用场景"></a>适用场景</h2><ol>
-<li>在具有整合和部分的层次结构中，希望通过一种方式忽略整体与部分的差异，客户端可以一致地对待它们</li>
-<li>在一种使用面向对象语言开发的系统中需要处理一个树形结构</li>
-<li>在一个系统中能够分离出叶子对象和容器对象，而且它们的类型不固定，需要增加一些新的类型</li>
-</ol>
-<h2 id="六、练习"><a href="#六、练习" class="headerlink" title="六、练习"></a>六、练习</h2><blockquote>
-<p>Sunny软件公司欲开发一个界面控件库，界面控件分为两大类，一类是单元控件，例如按钮、文本框等，一类是容器控件，例如窗体、中间面板等，试用组合模式设计该界面控件库。</p>
-</blockquote>
+<h2 id="一、MethodSecurityConfig"><a href="#一、MethodSecurityConfig" class="headerlink" title="一、MethodSecurityConfig"></a>一、MethodSecurityConfig</h2><p>开启方法级别的安全校验，注入登录用户时加载 UserDetails 的DB服务对象，通过 createExpressionHandler 注入自定义的表达式处理器。</p>
 <pre><code class="java">/**
- * 组合模式：
- * Sunny软件公司欲开发一个界面控件库，
- * 界面控件分为两大类，一类是单元控件，例如按钮、文本框等，
- * 一类是容器控件，例如窗体、中间面板等，
- * 试用组合模式设计该界面控件库。
+ * 配置 MethodSecurity 表达式
  */
-abstract class UI {
-    abstract void display();
+@Configuration
+@EnableGlobalMethodSecurity(prePostEnabled = true)
+public class MethodSecurityConfig extends GlobalMethodSecurityConfiguration {
 
-    void add(UI ui){
-        System.out.println(&quot;不支持该方法&quot;);
-    }
-}
+    private final LoginDetailService loginDetailService;
 
-class ButtonUI extends UI {
-    @Override
-    void display() {
-        System.out.println(&quot;显示按钮&quot;);
-    }
-}
-
-class InputUI extends UI {
-    @Override
-    void display() {
-        System.out.println(&quot;显示输入框&quot;);
-    }
-}
-
-class Window extends UI{
-    List&lt;UI&gt; uis = new ArrayList&lt;&gt;();
-
-    @Override
-    void display() {
-        System.out.println(&quot;--开始显示窗口--&quot;);
-        for (UI ui : uis) {
-            ui.display();
-        }
+    public MethodSecurityConfig(LoginDetailService loginDetailService) {
+        this.loginDetailService = loginDetailService;
     }
 
     @Override
-    void add(UI ui) {
-        uis.add(ui);
+    protected MethodSecurityExpressionHandler createExpressionHandler() {
+        return new ResourceMethodSecurityExpressionHandler(loginDetailService);
     }
-}
+}</code></pre>
+<h2 id="二、ResourceMethodSecurityExpressionHandler"><a href="#二、ResourceMethodSecurityExpressionHandler" class="headerlink" title="二、ResourceMethodSecurityExpressionHandler"></a>二、ResourceMethodSecurityExpressionHandler</h2><p>接收 UserDetailsService，并创建一个处理表达式的操作类</p>
+<pre><code class="java">/**
+ * 自定义方法级别的安全校验处理器
+ */
+public class ResourceMethodSecurityExpressionHandler extends DefaultMethodSecurityExpressionHandler {
 
-class Dashboard extends UI {
-    List&lt;UI&gt; uis = new ArrayList&lt;&gt;();
+    private final LoginDetailService loginDetailService;
+
+    private AuthenticationTrustResolver trustResolver = new AuthenticationTrustResolverImpl();
+
+    public ResourceMethodSecurityExpressionHandler(LoginDetailService loginDetailService) {
+        this.loginDetailService = loginDetailService;
+    }
 
     @Override
-    void display() {
-        System.out.println(&quot;--开始显示面板--&quot;);
-        for (UI ui : uis) {
-            ui.display();
-        }
-    }
-
-    @Override
-    void add(UI ui) {
-        uis.add(ui);
-    }
-}
-
-public class CompositePattern {
-    public static void main(String[] args) {
-        final UI ui1 = new ButtonUI();
-        final UI ui2 = new ButtonUI();
-        final UI ui3 = new InputUI();
-        final UI ui4 = new InputUI();
-
-        final UI window = new Window();
-        final UI dashboard = new Dashboard();
-
-        dashboard.add(ui1);
-        dashboard.add(ui4);
-        window.add(ui1);
-        window.add(ui3);
-        window.add(ui2);
-        window.add(dashboard);
-
-        window.display();
-    }
-}
-</code></pre>
-</div><hr></div><div class="recent-post-item article-container"><a class="article-title" href="/2019/07/08/读书笔记/《JavaDesignPatterns》/10.桥接模式/">《Java Design Patterns》第八章 桥接模式 - 处理多维度变化</a><time class="post-meta__date"><i class="fa fa-calendar" aria-hidden="true"></i> 2019-07-08</time><span class="article-meta"><span class="article-meta__separator">|</span><i class="fa fa-inbox article-meta__icon" aria-hidden="true"></i><a class="article-meta__categories" href="/categories/读书笔记/">读书笔记</a><i class="fa fa-angle-right" aria-hidden="true"></i><i class="fa fa-inbox article-meta__icon" aria-hidden="true"></i><a class="article-meta__categories" href="/categories/读书笔记/设计模式/">设计模式</a></span><span class="article-meta tags"><span class="article-meta__separator">|</span><i class="fa fa-tag article-meta__icon" aria-hidden="true"></i><a class="article-meta__tags" href="/tags/hide/">hide</a><span class="article-meta__link">-</span><i class="fa fa-tag article-meta__icon" aria-hidden="true"></i><a class="article-meta__tags" href="/tags/设计模式/">设计模式</a></span><div class="content"><h1 id="第八章-桥接模式-处理多维度变化"><a href="#第八章-桥接模式-处理多维度变化" class="headerlink" title="第八章 桥接模式 - 处理多维度变化"></a>第八章 桥接模式 - 处理多维度变化</h1><h2 id="一、基本概念"><a href="#一、基本概念" class="headerlink" title="一、基本概念"></a>一、基本概念</h2><h3 id="1-1-场景"><a href="#1-1-场景" class="headerlink" title="1.1 场景"></a>1.1 场景</h3><p>有两种文具，分别是毛笔和蜡笔。如果需要大中小三种型号的蜡笔，且每种型号需要有12种不同的颜色。</p>
-<p>则蜡笔需要各种型号的各种颜色 3*12 = 36支，而毛笔只需要大中小型号和12中颜色的颜料盒 3 + 12 = 15支。</p>
-<p>在蜡笔的模式中，无论是增加颜色，还是增加型号，都会影响另一个维度。耦合度非常的强。</p>
-<p>但在毛笔中，型号与颜色进行了解耦，只是在使用时组合使用，非常灵活，扩展也十分方便。</p>
-<h3 id="1-2-场景二-跨平台图像浏览系统"><a href="#1-2-场景二-跨平台图像浏览系统" class="headerlink" title="1.2 场景二 - 跨平台图像浏览系统"></a>1.2 场景二 - 跨平台图像浏览系统</h3><p>现有一个系统，需要该系统支持BMP、JPG、GIF等格式的图形文件，并且能在Windows、Linux、MacOS等多个系统上运行。首先将文件解析为像素矩阵，然后各系统使用各自的绘制函数，将矩阵显示在屏幕上。</p>
-<p>如果使用上面的“蜡笔模式” - 多层继承模式，可能会存在 Image -&gt; BMPImage、JPGImage、GIFIMAGE -&gt; BMPWindowsImage/BMPLinuxImage/BMPMacOSImage、JPGWindowsImage/JPGLinuxImage/JPGMacOSImage、GIFWindowsImage/GIFLinuxImage/GIFMacOSImage。</p>
-<h4 id="存在的问题："><a href="#存在的问题：" class="headerlink" title="存在的问题："></a>存在的问题：</h4><ol>
-<li>由于采用了多层继承，系统中的类个数非常多。具体类的个数 = 所支持的图像格式 * 所支持的操作系统</li>
-<li>系统扩展麻烦，如BMPWindowsImage，即包含图像文件格式，又包含操作系统信息。无论是增加图像格式还是操作系统，都需要增加大量具体类。</li>
-<li>违反了“单一职责原则”，因为具体类将图像文件解析和像素矩阵显示这两个完全不同的职责融合，任意职责发生改变，都需要修改所有。</li>
-</ol>
-<h4 id="解决方案："><a href="#解决方案：" class="headerlink" title="解决方案："></a>解决方案：</h4><p>引入桥接模式，将两个独立变化的维度设计为两个独立的继承等级结构，并且在抽象层建立一个抽象关联。</p>
-<h2 id="二、桥接模式"><a href="#二、桥接模式" class="headerlink" title="二、桥接模式"></a>二、桥接模式</h2><h3 id="2-1-定义"><a href="#2-1-定义" class="headerlink" title="2.1 定义"></a>2.1 定义</h3><p>桥接模式，又称为柄体模式或接口模式：将抽象部分与它的实现部分分离，使它们都可以独立地变化。是一种非常实用的结构性设计模式。</p>
-<p>如果软件系统中某个类存在两个独立变化的维度，通过该模式可以将这两个维度分离出来，使两者可以独立扩展，让系统更加符合“单一职责原则”。</p>
-<p>桥接模式用一种巧妙的方式处理多层继承存在的问题，用抽象关联取代传统的多层继承，将类之间的静态继承关系转换为动态的对象组合关系，使系统更加灵活，更易于扩展，同时有效控制了系统中类的个数。</p>
-<blockquote>
-<p>桥接模式是一个非常有用的模式，包含了很多面向对象设计原则的思想，如“单一职责原则”、“开闭原则”、“合成复用原则”、“里氏替换原则”、“依赖倒转原则”等。有助于我们深入理解设计原则，形成正确的设计思想和培养良好的设计风格。</p>
-</blockquote>
-<h3 id="2-2-桥接模式中的几个角色"><a href="#2-2-桥接模式中的几个角色" class="headerlink" title="2.2 桥接模式中的几个角色"></a>2.2 桥接模式中的几个角色</h3><ol>
-<li>Abstraction - 抽象类<ol>
-<li>用于定义抽象类的接口，他一般是抽象类而不是接口</li>
-<li>定义了一个 <code>Implementor实现类接口</code> 类型的对象，并可以维护该对象，它与实现类接口之间具有关联关系</li>
-<li>既可以包含抽象业务方法，也可以包含具体业务方法</li>
-</ol>
-</li>
-<li>RefinedAbstraction - 扩充抽象类<ol>
-<li>一般为具体类，实现了 <code>Abstraction抽象类</code> 中的抽象方法</li>
-<li>因为 <code>Abstraction抽象类</code> 中定义了实现类接口对象，所以<code>RefinedAbstraction扩充抽象类</code>中可以调用 <code>Implementor具体实现了类</code> 中定义的业务方法</li>
-</ol>
-</li>
-<li>Implementor - 实现类接口<ol>
-<li>定义实现类接口，提供基本操作</li>
-<li>具体实现交给其子类</li>
-<li>通过关联关系，在 <code>Abstraction抽象类</code> 中，可以直接调用 <code>Implementor及其子类</code> 的方法</li>
-<li>使用关联关系来代替继承关系</li>
-</ol>
-</li>
-<li>ConcreteImplementor - 具体实现类<ol>
-<li>实现 <code>Implementor接口</code>，不同的具体实现类提供不同的方法实现</li>
-<li>用于提供给 <code>Abstraction抽象类</code> 调用的具体实现</li>
-</ol>
-</li>
-</ol>
-<h3 id="2-3-具体实现"><a href="#2-3-具体实现" class="headerlink" title="2.3 具体实现"></a>2.3 具体实现</h3><pre><code class="java">// 桥接模式
-public class BridgePattern {
-
-    // 像素矩阵类：辅助类，各种格式的文件最终都被转化为像素矩阵，不同的操作系统提供不同的方式显示像素矩阵
-    static class Matrix {
-
-    }
-
-    // 抽象图像类：抽象类
-    static abstract class Image {
-        protected ImageImp imp;
-
-        public void setImp(ImageImp imp) {
-            this.imp = imp;
-        }
-
-        public abstract void parseFile(String fileName);
-    }
-
-    // JPG格式图像：扩充抽象类
-    static class JPGImage extends Image {
-        @Override
-        public void parseFile(String fileName) {
-            final Matrix matrix = new Matrix();
-            imp.doPaint(matrix);
-            System.out.println(fileName + &quot;,格式为JPG&quot;);
-        }
-    }
-
-    // PNG格式图像：扩充抽象类
-    static class PNGImage extends Image {
-        @Override
-        public void parseFile(String fileName) {
-            final Matrix matrix = new Matrix();
-            imp.doPaint(matrix);
-            System.out.println(fileName + &quot;,格式为PNG&quot;);
-        }
-    }
-
-    // 抽象操作系统实现类：实现类接口
-    static interface ImageImp {
-        public void doPaint(Matrix m); // 显示像素矩阵 m
-    }
-
-    // Windows 操作系统实现类：具体实现类
-    static class WindowsImp implements ImageImp {
-        @Override
-        public void doPaint(Matrix m) {
-            // 调用Windows系统的绘制函数，绘制像素矩阵
-            System.out.println(&quot;在Windows操作系统中显示图像&quot;);
-        }
-    }
-
-    // Linux 操作系统实现类：具体实现类
-    static class LinuxImp implements ImageImp {
-        @Override
-        public void doPaint(Matrix m) {
-            // 调用Linux系统的绘制函数，绘制像素矩阵
-            System.out.println(&quot;在Linux操作系统中显示图像&quot;);
-        }
-    }
-
-    public static void main(String[] args) {
-        Image img = new PNGImage();
-        ImageImp imp = new WindowsImp();
-        img.setImp(imp);
-        img.parseFile(&quot;死了都要爱.jpg&quot;);
+    protected MethodSecurityExpressionOperations createSecurityExpressionRoot(Authentication authentication, MethodInvocation invocation) {
+        final ResourceMethodSecurityExpressionRoot root = new ResourceMethodSecurityExpressionRoot(authentication, loginDetailService);
+        root.setPermissionEvaluator(getPermissionEvaluator());
+        root.setTrustResolver(this.trustResolver);
+        root.setRoleHierarchy(getRoleHierarchy());
+        return root;
     }
 }</code></pre>
-<h2 id="三、总结"><a href="#三、总结" class="headerlink" title="三、总结"></a>三、总结</h2><p>在使用桥接模式时，我们应该先识别出一个类所具有的两个独立变化的维度，将它们设计为两个独立的继承等级结构，为两个维度都提供抽象层，并建立抽象耦合。通常情况下，我们将具有两个独立变化维度的类的一些普通业务方法，和与之关系最密切的维度设计为“抽象类”层次结构（抽象部分），而将另一个维度设计为“实现类”层次结构（实现部分）。</p>
-<p>如毛笔，由于型号是固有的维度，可以设计为抽象毛笔类，在该类中声明并部分实现毛笔的业务方法，将各种型号的毛笔作为子类。将颜色作为毛笔的另一个维度。</p>
-<p>增加新的毛笔类型，只需扩展左侧的“抽象部分”；增加新的颜色，只需扩展右侧的“实现部分”。</p>
-<h3 id="优点"><a href="#优点" class="headerlink" title="优点"></a>优点</h3><ol>
-<li>分离抽象解耦及其实现部分。解耦了抽象和实现之间的绑定关系，使抽象部分和实现部分都有自己的维度变化</li>
-<li>很多情况下，桥接模式可以取代多层继承方案。多层继承违背了“单一职责原则”，复用性较差，且类的个数较多</li>
-<li>桥接模式提供了系统的可扩展性，两个维度的扩展都不需要修改原有系统，符合“开闭原则”</li>
-</ol>
-<h3 id="缺点"><a href="#缺点" class="headerlink" title="缺点"></a>缺点</h3><ol>
-<li>桥接模式的使用，会增加系统的理解和设计难度，由于关联关系建立在抽象层，要求开发者一开始就针对抽象层进行设计和编程</li>
-<li>桥接模式要求正确识别出系统中两个独立变化的维度，因此其使用范围具有一定的局限性。</li>
-</ol>
-<h3 id="适用场景"><a href="#适用场景" class="headerlink" title="适用场景"></a>适用场景</h3><ol>
-<li>如果一个系统需要在抽象化和具体化之间增加更多的灵活性，避免在两个层次之间建立静态的继承关系，通过桥接模式可以使它们在抽象层建立一个关联关系</li>
-<li>“抽象部分”和“实现部分”可以以继承的方式独立扩展而不受影响，在程序运行时可以动态将一个抽象化子类的对象和一个实现化子类的对象进行组合，即系统需要对抽象化角色和实现化角色进行动态耦合</li>
-<li>一个类存在两个（或多个）独立变化的维度，且各维度都需要独立进行扩展</li>
-<li>对于不希望使用继承或多层继承的系统，导致系统类的个数急剧增加的系统，桥接模式非常适用</li>
-</ol>
-<h2 id="四、扩展"><a href="#四、扩展" class="headerlink" title="四、扩展"></a>四、扩展</h2><blockquote>
-<p>开发一个数据转换工具，可以将数据库中的数据转换成多种文件格式，例如txt、xml、pdf等格式，同时该工具需要支持多种不同的数据库。试使用桥接模式对其进行设计。</p>
-</blockquote>
-<pre><code class="java">// 桥接模式
-public class BridgePattern {
+<h2 id="三、ResourceMethodSecurityExpressionRoot"><a href="#三、ResourceMethodSecurityExpressionRoot" class="headerlink" title="三、ResourceMethodSecurityExpressionRoot"></a>三、ResourceMethodSecurityExpressionRoot</h2><p>仿照 hasAuthority，编写一个自己的实现</p>
+<pre><code class="java">/**
+ * 自定义 MethodSecurity 表达式
+ */
+@Slf4j
+public class ResourceMethodSecurityExpressionRoot extends SecurityExpressionRoot implements MethodSecurityExpressionOperations {
 
-    // 数据库抽象类
-    static abstract class Database {
-        protected FileFormat fileFormat;
+    private LoginDetailService loginDetailService;
 
-        public void setFileFormat(FileFormat fileFormat) {
-            this.fileFormat = fileFormat;
-        }
+    private Object filterObject;
+    private Object returnObject;
+    private Object target;
 
-        public abstract void transition();
+    public ResourceMethodSecurityExpressionRoot(Authentication authentication, LoginDetailService loginDetailService) {
+        super(authentication);
+        this.loginDetailService = loginDetailService;
     }
 
-    // Oracle 数据库 - 抽象扩展类
-    static class OracleDatabase extends Database {
-        @Override
-        public void transition() {
-            System.out.println(&quot;Oracle数据库&quot;);
-            fileFormat.file();
-        }
+    /**
+     * 自定义接口，是否允许对该id的访问
+     */
+    public boolean canReadCourse(String courseId) {
+        log.debug(&quot;method params courseId&quot;, courseId);
+        log.debug(&quot;current principal {}&quot;, getPrincipal());
+        return true;
     }
 
-    // Microsoft 数据库 - 抽象扩展类
-    static class MCDatabase extends Database {
-        @Override
-        public void transition() {
-            System.out.println(&quot;Microsoft数据库&quot;);
-            fileFormat.file();
-        }
+    public final boolean hasGlobalAuthority(String authority) {
+        return hasAnyGlobalAuthority(authority);
     }
 
-    // 文件格式 - 实现类接口
-    interface FileFormat {
-        void file();
+    public final boolean hasAnyGlobalAuthority(String... authorities) {
+        return hasAnyGlobalAuthorityName(null, authorities);
     }
 
-    // txt 文件 - 具体实现类
-    static class TxtFileFormat implements FileFormat {
-        @Override
-        public void file() {
-            System.out.println(&quot;TXT 格式文本输出&quot;);
-        }
-    }
+    private boolean hasAnyGlobalAuthorityName(String prefix, String... roles) {
+        final String username = ((UserDetails) getPrincipal()).getUsername();
+        final UserDetails details = loginDetailService.loadUserByUsername(username);
 
-    // pdf 文件 - 具体实现类
-    static class PDFFileFormat implements FileFormat {
-        @Override
-        public void file() {
-            System.out.println(&quot;PDF 格式文本输出&quot;);
-        }
-    }
+        if (details.getAuthorities() != null) {
+            final Set&lt;String&gt; roleSet = details.getAuthorities().stream()
+                    .map(GrantedAuthority::getAuthority).collect(Collectors.toSet());
 
-    public static void main(String[] args) {
-        Database db = new OracleDatabase();
-        FileFormat ff = new TxtFileFormat();
-        db.setFileFormat(ff);
-        db.transition();
-    }
-}</code></pre>
-</div><hr></div><div class="recent-post-item article-container"><a class="article-title" href="/2019/07/06/读书笔记/《JavaDesignPatterns》/9.适配器模式/">《Java Design Patterns》第七章 适配器模式 - 不兼容结构的协调</a><time class="post-meta__date"><i class="fa fa-calendar" aria-hidden="true"></i> 2019-07-06</time><span class="article-meta"><span class="article-meta__separator">|</span><i class="fa fa-inbox article-meta__icon" aria-hidden="true"></i><a class="article-meta__categories" href="/categories/读书笔记/">读书笔记</a><i class="fa fa-angle-right" aria-hidden="true"></i><i class="fa fa-inbox article-meta__icon" aria-hidden="true"></i><a class="article-meta__categories" href="/categories/读书笔记/设计模式/">设计模式</a></span><span class="article-meta tags"><span class="article-meta__separator">|</span><i class="fa fa-tag article-meta__icon" aria-hidden="true"></i><a class="article-meta__tags" href="/tags/hide/">hide</a><span class="article-meta__link">-</span><i class="fa fa-tag article-meta__icon" aria-hidden="true"></i><a class="article-meta__tags" href="/tags/设计模式/">设计模式</a></span><div class="content"><h1 id="第七章-适配器模式-不兼容结构的协调"><a href="#第七章-适配器模式-不兼容结构的协调" class="headerlink" title="第七章 适配器模式 - 不兼容结构的协调"></a>第七章 适配器模式 - 不兼容结构的协调</h1><h2 id="一、概念"><a href="#一、概念" class="headerlink" title="一、概念"></a>一、概念</h2><p>如笔记本的电源接口只支持20V电压，而家庭用电的电压为220V，肯定无法直接通过一根电线直接为笔记本提供电源。此时，就需要一个变压器电源，来将220V电压转换为20V电压。这个变压器就是适配器模式的一种。</p>
-<p>适配器模式：将一个类的接口与另一个类的接口匹配利用，而无须修改原来的适配者，解耦合抽象目标类接口。</p>
-<p>适配器模式可以是类结构型模式，也可以是对象结构型模式。</p>
-<h2 id="1-2-适配器模式中的几个角色"><a href="#1-2-适配器模式中的几个角色" class="headerlink" title="1.2 适配器模式中的几个角色"></a>1.2 适配器模式中的几个角色</h2><ol>
-<li>Target - 目标抽象类<ol>
-<li>目标抽象类定义客户所需接口</li>
-<li>抽象类、接口或具体类</li>
-<li>类似上面的笔记本</li>
-</ol>
-</li>
-<li>Adapter - 适配器类<ol>
-<li>适配器可以调用另一个接口，作为一个转换器，对 Adaptee 和 Target 进行适配</li>
-</ol>
-</li>
-<li>Adaptee - 适配者类<ol>
-<li>被适配的角色（如220V的家庭电源，我们需要将其转换为20V电压输出）</li>
-<li>它定义了一个已经存在的接口，这个接口需要适配</li>
-<li>适配者类一般是个具体类，包含了客户希望使用的业务方法</li>
-</ol>
-</li>
-</ol>
-<h3 id="1-3-对象适配器-实例"><a href="#1-3-对象适配器-实例" class="headerlink" title="1.3 对象适配器 - 实例"></a>1.3 对象适配器 - 实例</h3><pre><code class="java">// 抽象成绩操作类 - Target目标接口
-interface ScoreOperation {
-    public int[] sort(int array[]); // 成绩排序
-    public int search(int array[],int key); // 成绩查找
-}
-
-// 快速排序类 - Adaptee 适配者类
-class QuickSort{
-    public int[] quickSort(int array[]){
-        // 自己实现
-    }
-}
-
-// 二分查找类 - Adaptee 适配者类
-class BinarySearch{
-    public int binarySearch(int array[],intkey){
-        // 自己实现
-    }
-}
-
-// 操作适配器 - Adapter 适配器
-class OperationAdapter implements ScoreOperation{
-    private QuickSort sort = new QuickSort;
-    private BinarySearch search = new BinarySearch();
-
-    // 调用适配者类QuickSort的排序方法
-    public int[] sort(int array[]){
-        return sort.quickSort(array);
-    }
-
-    // 调用适配者类BinarySearch的查找方法
-    public int search(int array[],int key){
-        return search.binarySearch(array,key);
-    }
-}</code></pre>
-<h3 id="1-4-类适配器"><a href="#1-4-类适配器" class="headerlink" title="1.4 类适配器"></a>1.4 类适配器</h3><p>类适配器与对象适配器的区别在于：</p>
-<p>对象适配器与适配者之间的关系是<code>关联关系</code>，而类适配器中的关系则是<code>继承关系</code>。</p>
-<p>如下：</p>
-<pre><code class="java">class Adapter extends Adaptee implements Target{
-    public void request(){
-        specificRequest();
-    }
-}</code></pre>
-<blockquote>
-<p>由于Java、C#等语言不支持多重继承，因此类适配器在使用时受到诸多限制。如Target必须是接口，Adapter不能是Final类等等。</p>
-</blockquote>
-<h3 id="1-5-双向适配器"><a href="#1-5-双向适配器" class="headerlink" title="1.5 双向适配器"></a>1.5 双向适配器</h3><p>在对象适配器的使用过程中，如果在适配器中同时包含对目标类和适配者类的引用，适配者和目标类可以通过它调用彼此的方法，那么该适配器就是一个双向适配器。如下：</p>
-<pre><code class="java">class Adapter implements Adaptee,Target{
-    private Target target;
-    private Adaptee adaptee;
-
-    public Adapter(Target target){
-        this.target = target;
-    }
-
-    public Adapter(Adaptee adpatee){
-        this.adaptee = adaptee;
-    }
-
-    public void request(){
-        adaptee.specificRequest();
-    }
-
-    public void specificRequest(){
-        target.request();
-    }
-}</code></pre>
-<h3 id="1-6-缺省适配器"><a href="#1-6-缺省适配器" class="headerlink" title="1.6 缺省适配器"></a>1.6 缺省适配器</h3><p>缺省适配器模式(Default Adapter Pattern)：当不需要实现一个接口所提供的所有方法时，可先设计一个抽象类实现该接口，并为接口中每个方法提供一个默认实现（空方法），那么该抽象类的子类可以选择性地覆盖父类的某些方法来实现需求，它适用于不想使用一个接口中的所有方法的情况，又称为单接口适配器模式。</p>
-<h2 id="二、总结"><a href="#二、总结" class="headerlink" title="二、总结"></a>二、总结</h2><h3 id="优点"><a href="#优点" class="headerlink" title="优点"></a>优点</h3><ol>
-<li>目标类与适配者类解耦，通过引入一个适配器类来重用现有的适配者类</li>
-<li>增加类的透明性和复用性，具体业务过程封装在适配者类中，对客户端透明，提供了适配者的复用性，同一个适配者类可以在多个不同系统中复用</li>
-<li>灵活性和扩展性好，可以通过配置文件的方式更换适配器，符合“开闭原则”</li>
-</ol>
-<h3 id="缺点"><a href="#缺点" class="headerlink" title="缺点"></a>缺点</h3><ol>
-<li>Java、C#不支持多重继承，一次只能适配一个适配者类</li>
-<li>适配者类不能为最终类</li>
-<li>Java、C#中，类适配器模式的目标抽象类必须是接口</li>
-</ol>
-<h3 id="适用场景"><a href="#适用场景" class="headerlink" title="适用场景"></a>适用场景</h3><ol>
-<li>系统需要使用一些现有的类，但该类的接口不符合系统需要</li>
-<li>创建一个可重复使用的类，如上面的快速排序，可以做成一个适配者，为其它适配器类所调用</li>
-</ol>
-<h2 id="三、练习"><a href="#三、练习" class="headerlink" title="三、练习"></a>三、练习</h2><pre><code class="java">// SD卡接口及其具体实现
-public interface SDCard {
-    String readSD(); // 读SD卡
-    int writeSD(String message); // 写SD卡
-}
-class SDCardImpl implements SDCard {
-    public String readSD() {
-        return &quot;读取SD卡&quot;;
-    }
-    public int writeSD(String message) {
-        // 假装写入数据至SD卡中了
-        return 0;
-    }
-}
-
-// 电脑类，具有读取SD卡的功能
-class Computer {
-    String readSD(SDCard sdCard) {
-        return sdCard.readSD();
-    }
-}
-
-// ----- 新版的TF卡上市，系统需要在不修改原有SD卡接口的情况下，支持新版的TF卡  -----
-
-// TF卡接口及其实现
-interface TFCard {
-    String readTF(); // 读TF卡
-    int writeTF(String message); // 写TF卡
-}
-class TFCardImpl implements TFCard {
-    public String readTF() {
-        return &quot;读取TF卡&quot;;
-    }
-    public int writeTF(String message) {
-        return 0;
-    }
-}
-
-// TF卡的适配器，继承与目标接口，但是将SD卡接口适配为TF卡的接口
-class TFCardAdapter implements SDCard {
-    private TFCard tfCard;
-    public TFCardAdapter(TFCard tfCard) {
-        this.tfCard = tfCard;
-    }
-    @Override
-    public String readSD() {
-        return tfCard.readTF();
-    }
-    @Override
-    public int writeSD(String message) {
-        return tfCard.writeTF(message);
-    }
-}
-
-// 测试客户端
-class Client {
-    public static void main(String[] args) {
-        SDCard sdCard = new SDCardImpl();
-        SDCard tfCard = new TFCardAdapter(new TFCardImpl()); // 通过适配器，将TFCard适配为SDCard
-
-        Computer computer = new Computer();
-        String s = computer.readSD(sdCard);
-        String s1 = computer.readSD(tfCard);
-        System.out.println(s);
-        System.out.println(s1);
-    }
-}</code></pre>
-<blockquote>
-<blockquote>
-<p>适配器类的名称尽量做到见名知意，因为客户端表面上调用的是SDCard，但是内部却被适配成了TFCard，如果系统中存在大量这种代码，会使系统十分的混乱。</p>
-</blockquote>
-</blockquote>
-<p>如果适配器大量存在的话，可以考虑重构代码，而不是继续适配下去。</p>
-</div><hr></div><div class="recent-post-item article-container"><a class="article-title" href="/2019/07/05/读书笔记/《JavaDesignPatterns》/8.建造者模式/">《Java Design Patterns》第六章 建造者模式 - 复杂对象的组装与创建</a><time class="post-meta__date"><i class="fa fa-calendar" aria-hidden="true"></i> 2019-07-05</time><span class="article-meta"><span class="article-meta__separator">|</span><i class="fa fa-inbox article-meta__icon" aria-hidden="true"></i><a class="article-meta__categories" href="/categories/读书笔记/">读书笔记</a><i class="fa fa-angle-right" aria-hidden="true"></i><i class="fa fa-inbox article-meta__icon" aria-hidden="true"></i><a class="article-meta__categories" href="/categories/读书笔记/设计模式/">设计模式</a></span><span class="article-meta tags"><span class="article-meta__separator">|</span><i class="fa fa-tag article-meta__icon" aria-hidden="true"></i><a class="article-meta__tags" href="/tags/hide/">hide</a><span class="article-meta__link">-</span><i class="fa fa-tag article-meta__icon" aria-hidden="true"></i><a class="article-meta__tags" href="/tags/设计模式/">设计模式</a></span><div class="content"><h1 id="第六章-建造者模式-复杂对象的组装与创建"><a href="#第六章-建造者模式-复杂对象的组装与创建" class="headerlink" title="第六章 建造者模式 - 复杂对象的组装与创建"></a>第六章 建造者模式 - 复杂对象的组装与创建</h1><h2 id="一、设计一个游戏角色"><a href="#一、设计一个游戏角色" class="headerlink" title="一、设计一个游戏角色"></a>一、设计一个游戏角色</h2><p>作为 RPG 游戏的一个重要组成部分，游戏角色拥有其特定的性别、脸型、服装、发型等外部特性。</p>
-<p>无论何种造型的游戏角色，它们的创建步骤都大同小异，都需要逐步创建其组成部分，再将各组成部分装配成一个完整的游戏角色。</p>
-<p>而建造者模式就是为了解决，各个组件组合为复杂对象的问题。</p>
-<p><img src="https://i.loli.net/2019/07/09/5d23ff6fa777253811.png" alt="建造者模式"></p></div><a class="more" href="/2019/07/05/读书笔记/《JavaDesignPatterns》/8.建造者模式/#more">阅读更多</a><hr></div><div class="recent-post-item article-container"><a class="article-title" href="/2019/06/27/读书笔记/《JavaDesignPatterns》/7.原型模式/">《Java Design Patterns》第五章 原型模式 - 对象的克隆</a><time class="post-meta__date"><i class="fa fa-calendar" aria-hidden="true"></i> 2019-06-27</time><span class="article-meta"><span class="article-meta__separator">|</span><i class="fa fa-inbox article-meta__icon" aria-hidden="true"></i><a class="article-meta__categories" href="/categories/读书笔记/">读书笔记</a><i class="fa fa-angle-right" aria-hidden="true"></i><i class="fa fa-inbox article-meta__icon" aria-hidden="true"></i><a class="article-meta__categories" href="/categories/读书笔记/设计模式/">设计模式</a></span><span class="article-meta tags"><span class="article-meta__separator">|</span><i class="fa fa-tag article-meta__icon" aria-hidden="true"></i><a class="article-meta__tags" href="/tags/hide/">hide</a><span class="article-meta__link">-</span><i class="fa fa-tag article-meta__icon" aria-hidden="true"></i><a class="article-meta__tags" href="/tags/设计模式/">设计模式</a></span><div class="content"><h1 id="第五章-原型模式-对象的克隆"><a href="#第五章-原型模式-对象的克隆" class="headerlink" title="第五章 原型模式 - 对象的克隆"></a>第五章 原型模式 - 对象的克隆</h1><p>原型模式：使用原型实例指定创建对象的种类，并且通过拷贝这些原型创建新的对象。属于一种对象创建型模式。</p>
-<h2 id="一、概述"><a href="#一、概述" class="headerlink" title="一、概述"></a>一、概述</h2><h3 id="1-1-原理"><a href="#1-1-原理" class="headerlink" title="1.1 原理"></a>1.1 原理</h3><p>原型模式的工作原理很简单：将一个原型对象传给那个要发动创建的对象，这个要发动创建的对象通过请求原型对象拷贝自己来实现创建过程。由于在软件系统中我们经常会遇到需要创建多个相同或者相似对象的情况，因此原型模式在真实开发中的使用频率还是非常高的。原型模式是一种“另类”的创建型模式，创建克隆对象的工厂就是原型类自身，工厂方法由克隆方法来实现。</p>
-<h3 id="1-2-原型模式中的几个角色"><a href="#1-2-原型模式中的几个角色" class="headerlink" title="1.2 原型模式中的几个角色"></a>1.2 原型模式中的几个角色</h3><ol>
-<li>Prototype - 抽象原型类<ol>
-<li>声明克隆方法的接口，是所有具体原型类的公共父类</li>
-</ol>
-</li>
-<li>ConcretePrototype - 具体原型类<ol>
-<li>实现抽象原型类中声明的克隆方法，在克隆方法中返回自己的一个克隆对象</li>
-</ol>
-</li>
-<li>Client - 客户类<ol>
-<li>让一个原型对象克隆自身从而创建一个新的对象，在客户类中只需要直接实例化或通过工厂方法等方式创建一个原型对象，再通过调用该对象的克隆方法即可得到多个相同的对象。</li>
-</ol>
-</li>
-</ol>
-<h3 id="1-3-案例"><a href="#1-3-案例" class="headerlink" title="1.3 案例"></a>1.3 案例</h3><pre><code class="java">@Getter
-@Setter
-class WeeklyLog implements Clonealbe{
-    private String name;
-    private String date;
-    private String content;
-
-    publci WeekLog clone(){
-        Object obj = null;
-        try{
-            obj = super.clone();
-            return (WeekLog)obj;
-        } catch (CloneNotSupportedException e){
-            System.out.println(&quot;不支持复制&quot;);
-            return null;
-        }
-    }
-}</code></pre>
-<h2 id="二、浅克隆与深克隆"><a href="#二、浅克隆与深克隆" class="headerlink" title="二、浅克隆与深克隆"></a>二、浅克隆与深克隆</h2><h3 id="2-1-浅克隆"><a href="#2-1-浅克隆" class="headerlink" title="2.1 浅克隆"></a>2.1 浅克隆</h3><p>在浅克隆中，如果原型对象的成员是值类型，将复制一份给克隆对象；如果原型对象的成员变量是引用类型，则将引用对象的地址复制一份给克隆对象。也就是说，原型对象的引用类型变量与克隆对象中的变量指向同一内存地址。</p>
-<p>即值类型成员变量会被复制，但是引用成员变量不会。</p>
-<h3 id="2-2-深克隆"><a href="#2-2-深克隆" class="headerlink" title="2.2 深克隆"></a>2.2 深克隆</h3><p>在深克隆中，无论原型对象的成员变量是值类型还是引用类型，都将复制一份给克隆对象。</p>
-<p>如果需要实现深克隆，可以通过序列化（Serialization）等方式实现：将对象写入到流，再从流中读出。</p>
-<blockquote>
-<p>Java语言提供的 Cloneable 接口和 Serializable 接口都是空接口，也称为标识接口。标识接口无任何方法定义，只提供告诉JRE这些接口的实现类是否支持克隆、序列化等功能。</p>
-</blockquote>
-<h2 id="三、总结"><a href="#三、总结" class="headerlink" title="三、总结"></a>三、总结</h2><h3 id="优点"><a href="#优点" class="headerlink" title="优点"></a>优点</h3><ol>
-<li>当创建新对象较为复杂时，可以使用原型模式简化对象的创建过程，复制一个已有实例以提高新实例的创建效率</li>
-<li>扩展性较好，由于在原型模式中提供了抽象原型类，在客户端可以针对抽象原型类进行编程，而将具体原型类写在配置文件中</li>
-<li>原型模式提供了简化的创建结构，工厂方法模式需要与产品等级结构对应的工厂等级结构，而原型模式则直接通过封装在原型类中的克隆方法实现</li>
-<li>深克隆方式可以保存对象的状态</li>
-</ol>
-<h3 id="缺点"><a href="#缺点" class="headerlink" title="缺点"></a>缺点</h3><ol>
-<li>需要每个类配置一个克隆方法，且位于类内部，当对类进行改造时需要修改源码，违反了“开闭原则”</li>
-<li>实现深克隆时较为复杂，对象的每一层子对象都需要进行深克隆</li>
-</ol>
-<h3 id="适用场景"><a href="#适用场景" class="headerlink" title="适用场景"></a>适用场景</h3><ol>
-<li>创建新对象成本较大（如初始化时间长、占用CPU资源多或网络资源占用多），新对象能够通过原型模式进行复制，复制相似对象再进行修改</li>
-<li>可以通过原型模式+备忘录模式，来实现保存对象的状态</li>
-<li>避免使用工厂模式来创建对象</li>
-</ol>
-</div><hr></div><div class="recent-post-item article-container"><a class="article-title" href="/2019/06/27/读书笔记/《JavaDesignPatterns》/6.单例模式/">《Java Design Patterns》第四章 单例模式 - 确保对象的唯一性</a><time class="post-meta__date"><i class="fa fa-calendar" aria-hidden="true"></i> 2019-06-27</time><span class="article-meta"><span class="article-meta__separator">|</span><i class="fa fa-inbox article-meta__icon" aria-hidden="true"></i><a class="article-meta__categories" href="/categories/读书笔记/">读书笔记</a><i class="fa fa-angle-right" aria-hidden="true"></i><i class="fa fa-inbox article-meta__icon" aria-hidden="true"></i><a class="article-meta__categories" href="/categories/读书笔记/设计模式/">设计模式</a></span><span class="article-meta tags"><span class="article-meta__separator">|</span><i class="fa fa-tag article-meta__icon" aria-hidden="true"></i><a class="article-meta__tags" href="/tags/hide/">hide</a><span class="article-meta__link">-</span><i class="fa fa-tag article-meta__icon" aria-hidden="true"></i><a class="article-meta__tags" href="/tags/设计模式/">设计模式</a></span><div class="content"><h1 id="第四章-单例模式-确保对象的唯一性"><a href="#第四章-单例模式-确保对象的唯一性" class="headerlink" title="第四章 单例模式 - 确保对象的唯一性"></a>第四章 单例模式 - 确保对象的唯一性</h1><p>单例模式用于确保对象的唯一性，为了确保系统中某一个类只有一个唯一实例，当这个唯一实例创建后，无法再创建一个同类型的其他对象。</p>
-<h2 id="一、概述"><a href="#一、概述" class="headerlink" title="一、概述"></a>一、概述</h2><p>单例模式：确保一个类只有一个实例，而且自行实例化并向整个系统提供这个实例，这个类称为单例类，它提供全局访问的方法。属于对象创建型模式。</p>
-<h3 id="1-2-单例模式中的角色"><a href="#1-2-单例模式中的角色" class="headerlink" title="1.2 单例模式中的角色"></a>1.2 单例模式中的角色</h3><ul>
-<li>Singleton - 单例角色<ul>
-<li>在单例类内容实现只生成一个实例，同时提供一个静态工厂方法用于获取该唯一实例</li>
-<li>为了防止外部实例化，将其构造函数设计为私有</li>
-<li>单例类内部顶一个Singleton类型的静态对象，作为外部共享的唯一实例</li>
-</ul>
-</li>
-</ul>
-<h2 id="二、懒汉模式与饿汉模式"><a href="#二、懒汉模式与饿汉模式" class="headerlink" title="二、懒汉模式与饿汉模式"></a>二、懒汉模式与饿汉模式</h2><h3 id="2-1-饿汉式单例类-线程安全"><a href="#2-1-饿汉式单例类-线程安全" class="headerlink" title="2.1 饿汉式单例类 - 线程安全"></a>2.1 饿汉式单例类 - 线程安全</h3><p><img src="https://i.loli.net/2019/07/04/5d1da0231e7a752730.png" alt="懒汉单例模式"></p>
-<pre><code class="java">class EagerSingleton{
-    private static final EagerSingleton instance = new EagerSingleton();
-    private EagerSingleton(){}
-    public static EagerSingleton getInstance(){
-        return instance;
-    }
-}</code></pre>
-<p>饿汉模式实现起来最为简单，在类加载时，静态变量 instance 就会被初始化，此时类的私有构造函数会被调用，单例类的唯一实例将被创建。</p>
-<h3 id="2-2-懒汉式单例类（一）-线程安全"><a href="#2-2-懒汉式单例类（一）-线程安全" class="headerlink" title="2.2 懒汉式单例类（一） - 线程安全"></a>2.2 懒汉式单例类（一） - 线程安全</h3><p><img src="https://i.loli.net/2019/07/04/5d1da0b319cb857695.png" alt="懒汉单例模式"></p>
-<p>懒汉模式能将类进行 延迟加载，即在需要使用时再加载实例，为了避免多线程调用 getInstance() 时实例化多个 LazySingleton，这里使用 synchronized 关键字进行加锁。</p>
-<pre><code class="java">class LazySingleton{
-    private static LazySingleton instance = null;
-    private LazySingleton(){}
-    synchronized public static LazySingleton getInstance(){
-        if(instance == null)
-            instance = new LazySingleton();
-        return instance;
-    }
-}</code></pre>
-<h3 id="2-3-懒汉式单例类（二）-线程不安全"><a href="#2-3-懒汉式单例类（二）-线程不安全" class="headerlink" title="2.3 懒汉式单例类（二） - 线程不安全"></a>2.3 懒汉式单例类（二） - 线程不安全</h3><p>虽然 synchronized 关键字进行了线程锁定，但是每次调用 getInstance() 方法时都会进行加锁操作，在多线程高并发场景下，会导致系统性能大大降低。</p>
-<p>事实上，只需要在 new L:azySingleton() 时进行加锁即可，即第一次实例化实例时加锁。</p>
-<pre><code class="java">public static LazySingleton getInstance(){
-    if(instance == null){
-        synchronized(LazySingleton.class){
-            instance = new LazySingleton();
-        }
-    }
-    return instance;
-}</code></pre>
-<h3 id="2-4-懒汉模式单例类（三-DoubleCheck）-线程不安全"><a href="#2-4-懒汉模式单例类（三-DoubleCheck）-线程不安全" class="headerlink" title="2.4 懒汉模式单例类（三 DoubleCheck） - 线程不安全"></a>2.4 懒汉模式单例类（三 DoubleCheck） - 线程不安全</h3><p>如果当两个线程同时进行了 if 条件之中，当线程A完成实例化之后，线程B继续执行，依旧会进行一次实例化。违背了单例模式的设计思想。</p>
-<p>双重检测机制：因此我们需要在 synchronized 中在进行一次判断</p>
-<pre><code class="java">public static LazySingleton getInstance(){
-    if(instance == null){
-        synchronized(LazySingleton.class){
-            if(instance == null){
-                instance = new LazySingleton();
-            }
-        }
-    }
-    return instance;
-}</code></pre>
-<h3 id="2-5-懒汉模式单例类（四-volatile-DoubleCheck）-线程安全"><a href="#2-5-懒汉模式单例类（四-volatile-DoubleCheck）-线程安全" class="headerlink" title="2.5 懒汉模式单例类（四 volatile+DoubleCheck） - 线程安全"></a>2.5 懒汉模式单例类（四 volatile+DoubleCheck） - 线程安全</h3><p>上述代码看起来可能没什么问题，但是</p>
-<p>instance = new LazySingleton() 在内存中的指令顺序应该为：</p>
-<ol>
-<li>instance 分配内存地址</li>
-<li>实例化 LazySingleton</li>
-<li>将实例化地址指向instance</li>
-</ol>
-<p>因为 JVM 的指令重排和优化，可能会导致以上执行顺序与所想像的不一致。最终导致单例出现问题，因此我们在静态实例 instance 前，加上 volatile 关键词，避免 instance 的实例化发生指令重排。</p>
-<blockquote>
-<p>因此<code>完整的懒汉模式</code>如下：</p>
-</blockquote>
-<pre><code class="java">class LazySingleton{
-    // 使用volatile 修改时静态实例，避免指令重排序
-    private volatile static LazySignleton instance = null;
-    // 构造方法私有化，防止外部实例
-    private LazySingleton(){}
-    // 静态工厂类，用于返回唯一实例，且使用延迟加载技术
-    public static LazySingleton getInstance(){
-        // 第一重检查，只有当instance 为空时才进行实例化
-        if(instance == null){
-            // 实例化时对当前类进行加锁，避免多线程同时实例化
-            synchronized(LazySingleton.class){
-                // 第二重检查，避免当前线程通过第一重检查后其他线程已实例化过
-                if(instance == null){
-                    instance = new LazySingleton();
+            for (String role : roles) {
+                String defaultedRole = getRoleWithDefaultPrefix(prefix, role);
+                if (roleSet.contains(defaultedRole)) {
+                    return true;
                 }
             }
         }
-        return instance;
+
+        return false;
+    }
+
+    private static String getRoleWithDefaultPrefix(String defaultRolePrefix, String role) {
+        if (role == null) {
+            return role;
+        }
+        if (defaultRolePrefix == null || defaultRolePrefix.length() == 0) {
+            return role;
+        }
+        if (role.startsWith(defaultRolePrefix)) {
+            return role;
+        }
+        return defaultRolePrefix + role;
+    }
+
+    @Override
+    public void setFilterObject(Object filterObject) {
+        this.filterObject = filterObject;
+    }
+
+    @Override
+    public Object getFilterObject() {
+        return filterObject;
+    }
+
+    @Override
+    public void setReturnObject(Object returnObject) {
+        this.returnObject = returnObject;
+    }
+
+    @Override
+    public Object getReturnObject() {
+        return returnObject;
+    }
+
+    @Override
+    public Object getThis() {
+        return target;
+    }
+
+    public void setTarget(Object target) {
+        this.target = target;
+    }
+
+    @Override
+    public void setRoleHierarchy(RoleHierarchy roleHierarchy) {
+        super.setRoleHierarchy(roleHierarchy);
     }
 }</code></pre>
+</div><hr></div><div class="recent-post-item article-container"><a class="article-title" href="/2019/09/05/读书笔记/《Mybatis》/2_XML配置/">《MyBatis》读书笔记 - MyBatis 中的 XML 详细配置</a><time class="post-meta__date"><i class="fa fa-calendar" aria-hidden="true"></i> 2019-09-05</time><span class="article-meta"><span class="article-meta__separator">|</span><i class="fa fa-inbox article-meta__icon" aria-hidden="true"></i><a class="article-meta__categories" href="/categories/读书笔记/">读书笔记</a><i class="fa fa-angle-right" aria-hidden="true"></i><i class="fa fa-inbox article-meta__icon" aria-hidden="true"></i><a class="article-meta__categories" href="/categories/读书笔记/MyBatis/">MyBatis</a></span><span class="article-meta tags"><span class="article-meta__separator">|</span><i class="fa fa-tag article-meta__icon" aria-hidden="true"></i><a class="article-meta__tags" href="/tags/hide/">hide</a><span class="article-meta__link">-</span><i class="fa fa-tag article-meta__icon" aria-hidden="true"></i><a class="article-meta__tags" href="/tags/MyBatis/">MyBatis</a></span><div class="content"><h1 id="二、MyBatis-中的-XML-详细配置"><a href="#二、MyBatis-中的-XML-详细配置" class="headerlink" title="二、MyBatis 中的 XML 详细配置"></a>二、MyBatis 中的 XML 详细配置</h1><p>MyBatis 的配置文件包含了深深影响 MyBatis 行为的设置和属性信息。配置文档的顶层结构如下：</p>
+<ul>
+<li>configuration(配置)<ul>
+<li>properties(属性)</li>
+<li>settings(设置)</li>
+<li>typealiases(类型别名)</li>
+<li>typeHandlers(类型处理器)</li>
+<li>objectFactory(对象工厂)</li>
+<li>plugins(插件)</li>
+<li>environments(环境配置)<ul>
+<li>environment(环境变量)<ul>
+<li>transactionManager(事务管理器)</li>
+<li>dataSource(数据源)</li>
+</ul>
+</li>
+</ul>
+</li>
+<li>databaseIdProvider(数据库厂商标识)</li>
+<li>mappers(映射器)</li>
+</ul>
+</li>
+</ul>
+<h2 id="一、属性（Properties）"><a href="#一、属性（Properties）" class="headerlink" title="一、属性（Properties）"></a>一、属性（Properties）</h2><p>这些属性都是可外部配置且可动态替换的，如：</p>
+<pre><code class="xml">&lt;properties resource=&quot;org/mybatis/example/config.properties&quot;&gt;
+    &lt;property name=&quot;username&quot; value=&quot;dev_user&quot;/&gt;
+    &lt;property name=&quot;password&quot; value=&quot;12345678&quot;/&gt;
+&lt;/properties&gt;</code></pre>
+<p>可替换的动态配置属性值：</p>
+<pre><code class="xml">&lt;dataSource type=&quot;POOLED&quot;&gt;
+    &lt;property name=&quot;driver&quot; value=&quot;${driver}&quot;/&gt;
+    &lt;property name=&quot;url&quot; value=&quot;${url}&quot;/&gt;
+    &lt;property name=&quot;username&quot; value=&quot;${username}&quot;/&gt;
+    &lt;property name=&quot;password&quot; value=&quot;${password}&quot;/&gt;
+&lt;/dataSource&gt;</code></pre>
+<p>如果属性不值在一个地方进行了配置，那么 MyBatis 的加载顺序如下：</p>
+<ul>
+<li>首先读取在 properties 元素体内属性值</li>
+<li>根据 properties 元素中的 resource 属性读取类路径下的文件或 url 读取属性文件，并覆盖已读取的同名属性</li>
+<li>最后读取作为方法参数传递的属性，并覆盖已读取的同名属性</li>
+</ul>
+<p>因此，方法参数传递的属性优先级最高，其次是 resource/url 指定的配置文件，最后是 properties 中指定的属性。</p>
+<p>在 MyBatis 3.4.2 开始，可以为占位符制定一个默认值，如：</p>
+<pre><code class="xml">&lt;dataSource type=&quot;POOLED&quot;&gt;
+    &lt;!-- 如果属性 username 没有配置，那么默认值为 ut_user --&gt;
+     &lt;property name=&quot;username&quot; value=&quot;${username:ut_user}&quot;/&gt;
+&lt;/dataSource&gt;</code></pre>
+<p>这个特性默认是关闭的，应该添加一个指定的属性来开启这个特性，如：</p>
+<pre><code class="xml">&lt;properties resoure=&quot;org/mybatis/example/config.properties&quot;&gt;
+    &lt;!-- 启用默认值特性 --&gt;
+    &lt;property name=&quot;org.apache.ibatis.parsing.PropertyParser.enable-default-value&quot; value=&quot;true&quot; /&gt;
+&lt;/properties&gt;</code></pre>
+<h2 id="二、设置（settings）"><a href="#二、设置（settings）" class="headerlink" title="二、设置（settings）"></a>二、设置（settings）</h2><p>MyBatis 中极为重要的调整设置，它们会改变 MyBatis 的运行时行为，下标描述了设置中各项的意图、默认值等。</p>
+<table>
+<thead>
+<tr>
+<th>设置名</th>
+<th>描述</th>
+</tr>
+</thead>
+<tbody><tr>
+<td>cacheEnabled</td>
+<td>全局地开关映射器中已经配置的缓存</td>
+</tr>
+<tr>
+<td>lazyLoadingEnabled</td>
+<td>延迟加载的全局开关，所有关联对象都会延迟加载，可以通过 fetchType 来覆盖该项</td>
+</tr>
+<tr>
+<td>aggressiveLazyLoading</td>
+<td>开启时，任何方法的调用都会加载该对象的所有属性。否则，每个对象会按需加载</td>
+</tr>
+<tr>
+<td>multipleResultSetsEnabled</td>
+<td>是否允许单一语句返回多结果集（需要驱动支持）</td>
+</tr>
+<tr>
+<td>useColumnLabel</td>
+<td>使用列标签代替列名</td>
+</tr>
+<tr>
+<td>useGeneratedKeys</td>
+<td>允许 JDBC 支持自动生成主键</td>
+</tr>
+<tr>
+<td>autoMappingBehavior</td>
+<td>指定MyBatis应如何自动映射列到字段或属性。NONE：取消自动映射；PARTIAL：自动映射没有定义嵌套结果集的；FULL：自动映射任意复杂的结果集</td>
+</tr>
+<tr>
+<td>autoMappingUnknownColumnBehavior</td>
+<td>指定发现自动映射目标未知列（或未知属性）的行为。NONE：不做任何反应；WARNING：输出提醒日志；FAILING：映射失败（抛出SqlSessionException）</td>
+</tr>
+<tr>
+<td>defaultExecutorType</td>
+<td>配置默认的执行器。SIMPLE：普通执行器；REUSE 执行器会重用预处理语句；BATCH：执行器将重用语句并执行批量更新</td>
+</tr>
+<tr>
+<td>defaultStatementTimeout</td>
+<td>设置超时时间，决定驱动等待数据库响应的描述</td>
+</tr>
+<tr>
+<td>defaultFetchSize</td>
+<td>为驱动的结果集获取数量（fetchSize）设置一个提示值</td>
+</tr>
+<tr>
+<td>defaultResultSetType</td>
+<td>指定每个语句的省略滚动策略</td>
+</tr>
+<tr>
+<td>safeRowBoundsEnabled</td>
+<td>允许在嵌套语句中使用分页（RowBounds）。false为允许</td>
+</tr>
+<tr>
+<td>safeResultHandlerEnabled</td>
+<td>允许在嵌套局域中使用分页(RowHandler)。false为允许</td>
+</tr>
+<tr>
+<td>mapUnderscoreToCamelCase</td>
+<td>是否开启自动驼峰命名规则映射，即从列名 A_COLUMN 到 Java 属性名 aColumn 的类似映射</td>
+</tr>
+<tr>
+<td>localCacheScope</td>
+<td>MyBatis 利用本地缓存机制防止循环引用和加速重复嵌套查询。SESSION：默认，会缓存一个会话中执行的所有查询；STATEMENT：仅用在局域执行上，对相同的 SqlSession 的不同调用不会共享数据</td>
+</tr>
+<tr>
+<td>jdbcTypeForNull</td>
+<td>当没有参数提供特定的 JDBC 类型时，为空值指定 JDBC 类型</td>
+</tr>
+<tr>
+<td>lazyLoadTriggerMethods</td>
+<td>指定哪个对象的方法触发一次延迟加载</td>
+</tr>
+<tr>
+<td>defaultScriptingLanguage</td>
+<td>指定动态 SQL 生成的默认语言</td>
+</tr>
+<tr>
+<td>defaultEnumTypeHandler</td>
+<td>指定 Enum 使用的默认 TypeHandler(3.4.5)</td>
+</tr>
+<tr>
+<td>callSettersOnNulls</td>
+<td>指定当结果集中值为 null 时，是否调用映射对象的 setter 方法。</td>
+</tr>
+<tr>
+<td>returnInstanceForEmptyRow</td>
+<td>当返回的列都是空时，MyBatis默认返回 null。开启后，会返回一个空实例</td>
+</tr>
+<tr>
+<td>logPrefix</td>
+<td>指定 MyBatis 增加到日志名称的前缀</td>
+</tr>
+<tr>
+<td>logImpl</td>
+<td>指定 MyBatis 所用日志的具体实现，未指定时将自动查找</td>
+</tr>
+<tr>
+<td>proxyFactory</td>
+<td>指定 MyBatis 创建具有延迟加载能力的对象所用到的代理工具</td>
+</tr>
+<tr>
+<td>vfsImpl</td>
+<td>指定 VFS 的实现</td>
+</tr>
+<tr>
+<td>useActualParamName</td>
+<td>允许使用方法签名中的名称作为语句参数名称。需要java 8编译，并加上 -parameters 选项</td>
+</tr>
+<tr>
+<td>configurationFactory</td>
+<td>指定一个提供 Configuration 实例的类。这个被返回的 Configuration 实例用来加载被反序列化对象的延迟加载属性值。这个类必须包含一个签名为 static Configuration getConfiguration() 的方法(3.2.3)</td>
+</tr>
+</tbody></table>
+<p>一个完整的 settings 元素示例如下：</p>
+<pre><code class="xml">&lt;settings&gt;
+    &lt;setting name=&quot;cacheEnabled&quot; value=&quot;true&quot;/&gt;
+    &lt;setting name=&quot;lazyLoadingEnabled&quot; value=&quot;true&quot;/&gt;
+    &lt;setting name=&quot;multipleResultSetEnabled&quot; value=&quot;true&quot;/&gt;
+    &lt;setting name=&quot;useColumnLabel&quot; value=&quot;true&quot;/&gt;
+    &lt;setting name=&quot;useGeneratedKeys&quot; value=&quot;false&quot;/&gt;
+    &lt;setting name=&quot;autoMappingBehavior&quot; value=&quot;PARTIAL&quot;/&gt;
+    &lt;setting name=&quot;autoMappingUnknownColumnBehavior&quot; value=&quot;WARNING&quot;/&gt;
+    &lt;setting name=&quot;defaultExecutorType&quot; value=&quot;EXAMPLE&quot;/&gt;
+    &lt;setting name=&quot;defaultStatementTimeout&quot; value=&quot;25&quot;/&gt;
+    &lt;setting name=&quot;defaultFetchSize&quot; value=&quot;100&quot;/&gt;
+    &lt;setting name=&quot;safeRowBoundsEnabled&quot; value=&quot;false&quot;/&gt;
+    &lt;setting name=&quot;mapUnderscoreToCamelCase&quot; value=&quot;false&quot;/&gt;
+    &lt;setting name=&quot;localCacheScope&quot; value=&quot;SESSION&quot;/&gt;
+    &lt;setting name=&quot;jdbcTypeForNull&quot; value=&quot;OTHER&quot;/&gt;
+    &lt;setting name=&quot;lazyLoadTriggerMethods&quot; value=&quot;equals,clone,hashCode,toString&quot;/&gt;
+&lt;/settings&gt;</code></pre>
+<h2 id="三、类型别名（typeAliases）"><a href="#三、类型别名（typeAliases）" class="headerlink" title="三、类型别名（typeAliases）"></a>三、类型别名（typeAliases）</h2><p>类型别名用来减少类完全限定名的冗余，如：</p>
+<pre><code class="xml">&lt;typeAliases&gt;
+    &lt;typeAlias alias=&quot;Author&quot; type=&quot;cn.luokaiii.adminservice.model.Author&quot;/&gt;
+    &lt;typeAlias alias=&quot;Teacher&quot; type=&quot;cn.luokaiii.adminservice.model.Teacher&quot;/&gt;
+&lt;/typeAliases&gt;</code></pre>
+<p>也可以指定一个报名，MyBatis 会在包名下搜索 Java Bean，在没有注解的情况下，会使用Bean 的首字母小写的非限定类名来作为它的别名，如：</p>
+<pre><code class="xml">&lt;typeAliases&gt;
+    &lt;package name=&quot;domain.blog&quot; /&gt;
+&lt;/typeAliases&gt;</code></pre>
+<p>或者使用注解的方式，如：</p>
+<pre><code class="java">@Alias(&quot;author&quot;)
+public class Author {
+    ......
+}</code></pre>
+<p>Java 类型内建的相应类型别名（不区分大小写）：</p>
+<table>
+<thead>
+<tr>
+<th>别名</th>
+<th>映射的类型</th>
+</tr>
+</thead>
+<tbody><tr>
+<td>_byte</td>
+<td>byte</td>
+</tr>
+<tr>
+<td>_long</td>
+<td>long</td>
+</tr>
+<tr>
+<td>_short</td>
+<td>short</td>
+</tr>
+<tr>
+<td>_int</td>
+<td>int</td>
+</tr>
+<tr>
+<td>_integer</td>
+<td>int</td>
+</tr>
+<tr>
+<td>_double</td>
+<td>double</td>
+</tr>
+<tr>
+<td>_float</td>
+<td>float</td>
+</tr>
+<tr>
+<td>_boolean</td>
+<td>boolean</td>
+</tr>
+<tr>
+<td>string</td>
+<td>String</td>
+</tr>
+<tr>
+<td>byte</td>
+<td>Byte</td>
+</tr>
+<tr>
+<td>long</td>
+<td>Long</td>
+</tr>
+<tr>
+<td>short</td>
+<td>Short</td>
+</tr>
+<tr>
+<td>int</td>
+<td>Integer</td>
+</tr>
+<tr>
+<td>integer</td>
+<td>Integer</td>
+</tr>
+<tr>
+<td>double</td>
+<td>Double</td>
+</tr>
+<tr>
+<td>float</td>
+<td>Float</td>
+</tr>
+<tr>
+<td>boolean</td>
+<td>Boolean</td>
+</tr>
+<tr>
+<td>date</td>
+<td>Date</td>
+</tr>
+<tr>
+<td>decimal</td>
+<td>BigDecimal</td>
+</tr>
+<tr>
+<td>bigdecimal</td>
+<td>BigDecimal</td>
+</tr>
+<tr>
+<td>object</td>
+<td>Object</td>
+</tr>
+<tr>
+<td>map</td>
+<td>Map</td>
+</tr>
+<tr>
+<td>hashMap</td>
+<td>HashMap</td>
+</tr>
+<tr>
+<td>list</td>
+<td>List</td>
+</tr>
+<tr>
+<td>arraylist</td>
+<td>ArrayList</td>
+</tr>
+<tr>
+<td>collection</td>
+<td>Collection</td>
+</tr>
+<tr>
+<td>iterator</td>
+<td>Iterator</td>
+</tr>
+</tbody></table>
+<h2 id="四、类型处理器（typeHandlers）"><a href="#四、类型处理器（typeHandlers）" class="headerlink" title="四、类型处理器（typeHandlers）"></a>四、类型处理器（typeHandlers）</h2><p>无论是 MyBatis 在预处理语句（PreparedStatement）中设置一个参数时，还是从结果集中取出一个值时，都会用类型处理器将获取的值以合适的方式转换为 Java 类型。</p>
+<table>
+<thead>
+<tr>
+<th>类型处理器</th>
+<th>Java 类型</th>
+<th>JDBC 类型</th>
+</tr>
+</thead>
+<tbody><tr>
+<td>BooleanTypeHandler</td>
+<td>Java.lang.Boolean,boolean</td>
+<td>BOOLEAN</td>
+</tr>
+<tr>
+<td>ByteTypeHandler</td>
+<td>java.lang.Byte,byte</td>
+<td>NUMERIC,BYTE</td>
+</tr>
+<tr>
+<td>ShortTypeHandler</td>
+<td>java.lang.Short,short</td>
+<td>NUMERIC,SMALLINT</td>
+</tr>
+<tr>
+<td>IntegerTypeHandler</td>
+<td>java.lang.Integer,int</td>
+<td>NUMERIC,INTEGER</td>
+</tr>
+<tr>
+<td>FloatTypeHandler</td>
+<td>java.lang.Float,float</td>
+<td>NUMERIC,FLOAT</td>
+</tr>
+<tr>
+<td>DoubleTypeHandler</td>
+<td>java.lang.Double,double</td>
+<td>NUMERIC,DOUBLE</td>
+</tr>
+<tr>
+<td>BigDecimalTypeHandler</td>
+<td>java.math.BigDecimal</td>
+<td>NUMERIC,DECIMAL</td>
+</tr>
+<tr>
+<td>StringTypeHandler</td>
+<td>java.lang.String</td>
+<td>CHAR,VARCHAR</td>
+</tr>
+<tr>
+<td>ClobReaderTypeHandler</td>
+<td>java.io.Reader</td>
+<td>-</td>
+</tr>
+<tr>
+<td>ClobTypeHandler</td>
+<td>java.lang.String</td>
+<td>CLOB,LONGVARCHAR</td>
+</tr>
+<tr>
+<td>NStringTypeHandler</td>
+<td>java.lang.String</td>
+<td>NVARCHAR,NCHAR</td>
+</tr>
+<tr>
+<td>NClobTypeHandler</td>
+<td>java.lang.String</td>
+<td>NCLOB</td>
+</tr>
+<tr>
+<td>BlobInputStreamTypeHandler</td>
+<td>java.io.InputStream</td>
+<td>-</td>
+</tr>
+<tr>
+<td>ByteArrayTypeHandler</td>
+<td>byte[]</td>
+<td></td>
+</tr>
+<tr>
+<td>DateTypeHandler</td>
+<td>byte[]</td>
+<td>L</td>
+</tr>
+<tr>
+<td>DateOnlyTypeHandler</td>
+<td>java.util.Date</td>
+<td>TIMESTAMP</td>
+</tr>
+<tr>
+<td>TimeOnlyTypeHandler</td>
+<td>java.util.Date</td>
+<td>DATE</td>
+</tr>
+<tr>
+<td>SqlTimestampTypeHandler</td>
+<td>java.sql.Timestamp</td>
+<td>TIMESTAMP</td>
+</tr>
+<tr>
+<td>SqlDateTypeHandler</td>
+<td>java.sql.Date</td>
+<td>DATE</td>
+</tr>
+<tr>
+<td>SqlTimeTypeHandler</td>
+<td>java.sql.Time</td>
+<td>TIME</td>
+</tr>
+<tr>
+<td>ObjectTypeHandler</td>
+<td>Any</td>
+<td>OTHER</td>
+</tr>
+<tr>
+<td>EnumTypeHandler</td>
+<td>Enum</td>
+<td>VARCHAR</td>
+</tr>
+<tr>
+<td>EnumOrdinalTypeHandler</td>
+<td>Enum</td>
+<td>NUMERIC,DOUBLE</td>
+</tr>
+<tr>
+<td>SqlxmlTypeHandler</td>
+<td>java.lang.String</td>
+<td>SQLXML</td>
+</tr>
+<tr>
+<td>InstantTypeHandler</td>
+<td>java.time.Instant</td>
+<td>TIMESTAMP</td>
+</tr>
+<tr>
+<td>LocalDateTimeTypeHandler</td>
+<td>java.time.LocalDateTime</td>
+<td>TIMESTAMP</td>
+</tr>
+<tr>
+<td>LocalDateTypeHandler</td>
+<td>java.time.LocalDate</td>
+<td>DATE</td>
+</tr>
+<tr>
+<td>OffsetTimeTypeHandler</td>
+<td>java.time.OffsetDateTime</td>
+<td>TIMESTAMP</td>
+</tr>
+<tr>
+<td>ZonedDateTimeTypeHandler</td>
+<td>java.time.ZonedDateTime</td>
+<td>TIMESTAMP</td>
+</tr>
+<tr>
+<td>YearTypeHandler</td>
+<td>java.time.Year</td>
+<td>INTEGER</td>
+</tr>
+<tr>
+<td>MonthTypeHandler</td>
+<td>java.time.Month</td>
+<td>INTEGER</td>
+</tr>
+<tr>
+<td>YearMonthTypeHandler</td>
+<td>java.time.YearMonth</td>
+<td>VARCHAR,LONGVARCHAR</td>
+</tr>
+<tr>
+<td>JapaneseDateTypeHandler</td>
+<td>java.time.chrono.JapaneseDate</td>
+<td>DATE</td>
+</tr>
+</tbody></table>
+<p>可以通过重写类型处理器或创建自己的类型处理器来处理不支持的或非标准的类型。具体做法为：实现 org.apache.ibatis.type.TypeHandler 或集成 org.apache.ibatis.type.BaseTypeHandler，然后将它映射到一个 JDBC 类型：</p>
+<pre><code class="java">@MappedJdbcTypes(JdbcType.VARCHAR)
+public class ExampleTypeHandler extends BaseTypeHandler&lt;String&gt; {
+  @Override
+  public void setNonNullParameter(PreparedStatement ps, int i, String parameter, JdbcType jdbcType) throws SQLException {
+    ps.setString(i, parameter);
+  }
+
+  @Override
+  public String getNullableResult(ResultSet rs, String columnName) throws SQLException {
+    return rs.getString(columnName);
+  }
+
+  @Override
+  public String getNullableResult(ResultSet rs, int columnIndex) throws SQLException {
+    return rs.getString(columnIndex);
+  }
+
+  @Override
+  public String getNullableResult(CallableStatement cs, int columnIndex) throws SQLException {
+    return cs.getString(columnIndex);
+  }
+}</code></pre>
+<pre><code class="xml">&lt;typeHandlers&gt;
+    &lt;typeHandler handler=&quot;org.mybatis.example.ExampleTypeHandler&quot;/&gt;
+&lt;/typeHandlers&gt;</code></pre>
+<h2 id="五、对象工厂（objectFactory）"><a href="#五、对象工厂（objectFactory）" class="headerlink" title="五、对象工厂（objectFactory）"></a>五、对象工厂（objectFactory）</h2><p>MyBatis 每次创建结果对象的新实例时，都会使用一个对象工厂（ObjectFactory）实例来完成。要么通过默认构造方法，要么在参数映射存在的时候通过参数构造方法来实例化。</p>
+<p>如何想覆盖对象工厂的默认行为，可以通过创建自己的对象工厂来实现，如：</p>
+<pre><code class="java">public class ExampleObjectFactory extends DefaultObjectFactory {
+    // 包含两个创建方法
+    // 处理默认构造方法
+    public Object create(Class type){
+        return super.create(type);
+    }
+
+    // 处理带参数的构造方法
+    public Object create(Class type,List&lt;Class&gt; constructorArgTypes,List&lt;Object&gt; constructorArgs){
+        return super.create(type,constructorArgTypes,constructorArgs);
+    }
+
+    // 可以被用来配置 ObjectFactory，在初始化ObjectFactory后，objectFactory元素体中定义的属性会被传递给 setProperties 方法
+    public void setProperties(Properties properties){
+        super.setProperties(properties);
+    }
+
+    public &lt;T&gt; boolean isCollection(Class&lt;T&gt; type){
+        return Collection.class.isAssignableFrom(type);
+    }
+}</code></pre>
+<pre><code class="xml">&lt;objectFactory type=&quot;org.mybatis.example.ExampleObjectFactory&quot;&gt;
+    &lt;property name=&quot;someProperty&quot; value=&quot;100&quot;/&gt;
+&lt;/objectFactory&gt;</code></pre>
+<h2 id="六、插件（Plugins）"><a href="#六、插件（Plugins）" class="headerlink" title="六、插件（Plugins）"></a>六、插件（Plugins）</h2><p>MyBatis 允许你在已映射语句执行过程中的某一点进行拦截调用。默认情况下，MyBatis 允许使用插件来拦截的方法调用包含：</p>
+<ul>
+<li>Executor（update、query、flushStatements、commit、rollback、getTransaction、close、isClosed）</li>
+<li>ParameterHandler（getParameterObject、setParameters）</li>
+<li>ResultSetHandler（handleResultSets、handleOutputParameters）</li>
+<li>StatementHandler（prepare、parameterize、batch、update、query）</li>
+</ul>
+<p>这些都是很底层的类和方法，如果在试图修改或重写已有方法的行为时，很可能会破坏 MyBatis的核心模块，因此在使用插件的时候要当心。</p>
+<h2 id="七、环境配置（environments）"><a href="#七、环境配置（environments）" class="headerlink" title="七、环境配置（environments）"></a>七、环境配置（environments）</h2><p>MyBatis 可以配置成适应多种环境，这种机制有助于将 SQL 映射应用于多种数据库之中。</p>
+<p>如开发、测试、生产环境需要不同的配置；或者现在相同 Schema 的多个库中使用相同的 SQL 映射。</p>
 <blockquote>
-<p>缺点也很明显：1. volatile 关键词虽然能保证实例避免重排，但是只在1.5以上的版本才能生效 2. volatile关键词会屏蔽 JVM 的一些代码优化，可能导致系统运行效率降低</p>
+<p>尽管可以配置多个环境，但是每个 SqlSessionFactory 实例只能选择一种环境</p>
 </blockquote>
-<h2 id="三、一种更好的单例实现方法"><a href="#三、一种更好的单例实现方法" class="headerlink" title="三、一种更好的单例实现方法"></a>三、一种更好的单例实现方法</h2><h2 id="3-1-懒汉模式与饿汉模式的缺点"><a href="#3-1-懒汉模式与饿汉模式的缺点" class="headerlink" title="3.1 懒汉模式与饿汉模式的缺点"></a>3.1 懒汉模式与饿汉模式的缺点</h2><p>饿汉模式：不能实现延迟加载，不管实例是否使用都将占据内存</p>
-<p>饿汉模式：繁琐的线程安全控制，且性能会受到一定影响</p>
-<h2 id="3-2-静态内部类单例-IoDH-线程安全"><a href="#3-2-静态内部类单例-IoDH-线程安全" class="headerlink" title="3.2 静态内部类单例 - IoDH - 线程安全"></a>3.2 静态内部类单例 - IoDH - 线程安全</h2><pre><code class="java">class Signleton{
-    private Singleton(){}
-    // 静态内部类只有在第一次调用时才会进行加载
-    private static class HolderClass{
-        // 因为instance 不是Singleton的成员变量，所以不会在Singleton加载时实例化
-        private final static Singleton instance = new Singleton();
-    }
-    // 通过JVM特性来保证线程安全性，确保成员变量只能初始化一次
-    public static Singleton getInstance(){
-        return HolderClass.instance;
-    }
-}</code></pre>
-<p>Initialization Demand Holder 技术，在单例类内部增加一个静态内部类，在该内部类中创建单例对象，再将单例对象通过 getInstance() 方法返回给外部使用。</p>
+<p>环境元素定义了如何配置环境：</p>
+<pre><code class="xml">&lt;enviroments default=&quot;development&quot;&gt;
+    &lt;enviroment id=&quot;development&quot;&gt;
+        &lt;transactionManager type=&quot;JDBC&quot;&gt;
+            &lt;property name=&quot;...&quot; value=&quot;...&quot;/&gt;
+        &lt;/transactionManager&gt;
+        &lt;dataSource type=&quot;POOLED&quot;&gt;
+            &lt;property name=&quot;driver&quot; value=&quot;...&quot;/&gt;
+            ...
+        &lt;/dataSource&gt;
+    &lt;/enviroment&gt;
+&lt;/enviroments&gt;</code></pre>
+<p>这里的关键：</p>
+<ul>
+<li>默认使用的环境ID（default=”development”）</li>
+<li>每个元素都有一个环境ID</li>
+<li>事务管理器的配置</li>
+<li>数据源的配置</li>
+</ul>
+<h3 id="1-事务管理器（transactionManager）"><a href="#1-事务管理器（transactionManager）" class="headerlink" title="1. 事务管理器（transactionManager）"></a>1. 事务管理器（transactionManager）</h3><p>MyBatis 有两种类型的事务管理器：</p>
+<ol>
+<li>JDBC - 直接使用 JDBC 的提交和回滚设置，依赖于从数据源得到的连接来管理事务作用域</li>
+<li>MANAGED - 让容器来管理事务的整个生命周期。默认会关闭连接，然而一些容器不希望这样，因此需要将 closeConnection 设置为 false 来阻止它默认的关闭行为</li>
+</ol>
 <blockquote>
-<p>但是IoDH依赖于JVM的特性，并不适用于所有语言。但是IoDH既可以实现延迟加载，又可以保证线程安全，又不影响性能，不失为一种最好的Java语言单例模式。</p>
+<p>如果使用 Spring+MyBatis，则没必要配置事务管理器，因为 Spring 模块会使用自带的管理器来覆盖前面的配置。</p>
 </blockquote>
-<h2 id="四、总结"><a href="#四、总结" class="headerlink" title="四、总结"></a>四、总结</h2><h3 id="优点"><a href="#优点" class="headerlink" title="优点"></a>优点</h3><ol>
-<li>单例模式提供了对唯一实例的受控访问。因为单例类封装了它的唯一实例，严格控制客户如何访问</li>
-<li>节约系统资源。因为内存中只存在一个对象，无需频繁的创建、销毁对象</li>
-<li>允许可变数目的实例。可以通过变种，让getInstance返回至多几个实例</li>
-</ol>
-<h3 id="缺点"><a href="#缺点" class="headerlink" title="缺点"></a>缺点</h3><ol>
-<li>由于单例类没有抽象层，很难进行扩展</li>
-<li>单例类职责过重，违背了“单一职责原则”。因为单例类即是工厂角色，提供工厂方法，又是产品角色，包含一些业务方法。将产品的创建和产品的功能融合到了一起</li>
-<li>许多面向对象语言（如Java、C#）的自动垃圾回收技术，如果实例化的共享变量长时间不被使用。GC 会自动销毁并回收资源，导致单例对象状态的丢失。</li>
-</ol>
-<h3 id="适用场景"><a href="#适用场景" class="headerlink" title="适用场景"></a>适用场景</h3><ol>
-<li>系统只需要一个实例对象。如资源消耗过大的对象、资源管理器等只能实例一次的对象</li>
-<li>客户调用类的单个实例只允许使用一个公共访问点，不能通过其他途径访问该实例。</li>
-</ol>
-</div><hr></div><div class="recent-post-item article-container"><a class="article-title" href="/2019/06/26/读书笔记/《JavaDesignPatterns》/4.工厂方法模式/">《Java Design Patterns》第二章 工厂方法模式</a><time class="post-meta__date"><i class="fa fa-calendar" aria-hidden="true"></i> 2019-06-26</time><span class="article-meta"><span class="article-meta__separator">|</span><i class="fa fa-inbox article-meta__icon" aria-hidden="true"></i><a class="article-meta__categories" href="/categories/读书笔记/">读书笔记</a><i class="fa fa-angle-right" aria-hidden="true"></i><i class="fa fa-inbox article-meta__icon" aria-hidden="true"></i><a class="article-meta__categories" href="/categories/读书笔记/设计模式/">设计模式</a></span><span class="article-meta tags"><span class="article-meta__separator">|</span><i class="fa fa-tag article-meta__icon" aria-hidden="true"></i><a class="article-meta__tags" href="/tags/hide/">hide</a><span class="article-meta__link">-</span><i class="fa fa-tag article-meta__icon" aria-hidden="true"></i><a class="article-meta__tags" href="/tags/设计模式/">设计模式</a></span><div class="content"><h1 id="第二章-工厂方法模式"><a href="#第二章-工厂方法模式" class="headerlink" title="第二章 工厂方法模式"></a>第二章 工厂方法模式</h1><p>工厂方法模式又称为工厂模式、虚拟构造模式或多态工厂模式，是一种类创建型模式。</p>
-<h2 id="一、设计一个日志记录器"><a href="#一、设计一个日志记录器" class="headerlink" title="一、设计一个日志记录器"></a>一、设计一个日志记录器</h2><p>设计一个日志记录器，可以通过多种途径保存系统的运行日志，如文件记录或数据库记录等。</p>
-<h3 id="1-1-简单模式实现"><a href="#1-1-简单模式实现" class="headerlink" title="1.1 简单模式实现"></a>1.1 简单模式实现</h3><pre><code class="java">// 抽象产品类
-interface Logger{
-    void writeLog();
-}
-// 具体产品类
-class FileLogger implements Logger{
-    @Override
-    void writeLog(){
-        System.out.println(&quot;文件日志记录&quot;);
-    }
-}
-class DatabaseLogger implements Logger{
-    @Override
-    void writeLog(){
-        System.out.println(&quot;数据库日志记录&quot;);
-    }
-}
-// 工厂类
-class LoggerFactory{
-    public static Logger createLogger(String type){
-        switch(type){
-            case &quot;file&quot;:
-                // 创建文件、初始化文件日志、等其他操作
-                return new FileLogger();
-            case &quot;db&quot;:
-                // 连接数据库、创建数据库日志、等其他操作
-                return new DatabaseLogger();
-            default:
-                throw new UnSupportOperationException();
-        }
-    }
+<h3 id="2-数据源（DataSource）"><a href="#2-数据源（DataSource）" class="headerlink" title="2. 数据源（DataSource）"></a>2. 数据源（DataSource）</h3><p>dataSource 元素使用标准的 JDBC 数据源接口来配置 JDBC 连接对象的资源。</p>
+<p>MyBatis 提供了三种内建的数据源类型。</p>
+<h4 id="UNPOOLED"><a href="#UNPOOLED" class="headerlink" title="UNPOOLED"></a>UNPOOLED</h4><p>每次被请求时打开和关闭连接</p>
+<h4 id="POOLED"><a href="#POOLED" class="headerlink" title="POOLED"></a>POOLED</h4><p>使用连接池的方式，避免创建新实例时所需的初始化和认证时间</p>
+<h4 id="JNDI"><a href="#JNDI" class="headerlink" title="JNDI"></a>JNDI</h4><p>为了能在如 EJB 或应用服务器这类容器汇总使用，容器可以集成或在外部配置数据源</p>
+<h4 id="第三方数据源"><a href="#第三方数据源" class="headerlink" title="第三方数据源"></a>第三方数据源</h4><p>可以通过实现接口 <code>org.apache.ibatis.datasource.DataSourceFactory</code> 来使用第三方数据源。</p>
+<h2 id="八、数据库厂商标识（databaseIdProvider）"><a href="#八、数据库厂商标识（databaseIdProvider）" class="headerlink" title="八、数据库厂商标识（databaseIdProvider）"></a>八、数据库厂商标识（databaseIdProvider）</h2><h2 id="九、映射器（mappers）"><a href="#九、映射器（mappers）" class="headerlink" title="九、映射器（mappers）"></a>九、映射器（mappers）</h2><p>mappers 定义 SQL 映射语句，告诉 MyBatis 去哪里找这些语句。如：</p>
+<pre><code class="xml">&lt;!-- 使用相对于类路径的资源引用 --&gt;
+&lt;mappers&gt;
+    &lt;mapper resource=&quot;org/mybatis/builder/AuthorMapper.xml&quot;/&gt;
+&lt;/mappers&gt;</code></pre>
+<pre><code class="xml">&lt;!-- 使用完全限定资源定位符 URL --&gt;
+&lt;mappers&gt;
+    &lt;mapper url=&quot;file:///var/mappers/AuthorMapper.xml&quot;/&gt;
+&lt;/mappers&gt;</code></pre>
+<pre><code class="xml">&lt;!-- 使用映射器接口实现类的完全限定类名 --&gt;
+&lt;mappers&gt;
+    &lt;mapper class=&quot;org.mybatis.builder.AuthorMapper&quot;/&gt;
+&lt;/mappers&gt;</code></pre>
+<pre><code class="xml">&lt;!-- 将包内的映射器接口实现全部注册为映射器 --&gt;
+&lt;mappers&gt;
+    &lt;package name=&quot;org.mybatis.builder&quot;/&gt;
+&lt;/mappers&gt;</code></pre>
+</div><hr></div><div class="recent-post-item article-container"><a class="article-title" href="/2019/09/05/读书笔记/《Mybatis》/1_入门/">《MyBatis》读书笔记 - 入门</a><time class="post-meta__date"><i class="fa fa-calendar" aria-hidden="true"></i> 2019-09-05</time><span class="article-meta"><span class="article-meta__separator">|</span><i class="fa fa-inbox article-meta__icon" aria-hidden="true"></i><a class="article-meta__categories" href="/categories/读书笔记/">读书笔记</a><i class="fa fa-angle-right" aria-hidden="true"></i><i class="fa fa-inbox article-meta__icon" aria-hidden="true"></i><a class="article-meta__categories" href="/categories/读书笔记/MyBatis/">MyBatis</a></span><span class="article-meta tags"><span class="article-meta__separator">|</span><i class="fa fa-tag article-meta__icon" aria-hidden="true"></i><a class="article-meta__tags" href="/tags/hide/">hide</a><span class="article-meta__link">-</span><i class="fa fa-tag article-meta__icon" aria-hidden="true"></i><a class="article-meta__tags" href="/tags/MyBatis/">MyBatis</a></span><div class="content"><h1 id="一、入门"><a href="#一、入门" class="headerlink" title="一、入门"></a>一、入门</h1><h2 id="1-安装"><a href="#1-安装" class="headerlink" title="1. 安装"></a>1. 安装</h2><p>构建项目，需要引入如下的 dependency 到 pom.xml 中：</p>
+<pre><code class="xml">&lt;dependency&gt;
+  &lt;groupId&gt;or.mybatis&lt;/groupId&gt;
+  &lt;artifactId&gt;mybatis&lt;/artifactId&gt;
+  &lt;version&gt;x.x.x&lt;/version&gt;
+&lt;/dependency&gt;</code></pre>
+<h2 id="2-从XML配置SQLSessionFactory"><a href="#2-从XML配置SQLSessionFactory" class="headerlink" title="2. 从XML配置SQLSessionFactory"></a>2. 从XML配置SQLSessionFactory</h2><p>每个基于 MyBatis 的应用都是以一个 SqlSessionFactory 的实例为核心的。</p>
+<p>以下 XML 配置文件中包含了对 MyBatis 系统的核心设置，如获取数据源(DataSource)和决定事务作用于和控制方式的事务管理器(TransactionManager)：</p>
+<pre><code class="xml">&lt;?xml version=&quot;1.0&quot; encoding=&quot;UTF-8&quot; ?&gt;
+&lt;!DOCTYPE configuration PUBLIC &quot;-//mybatis.org//DTD Config 3.0//EN&quot; &quot;http://mybatis.org/dtd/mybatis-3-config.dtd&quot;&gt;
+&lt;configuration&gt;
+    &lt;environments id=&quot;development&quot;&gt;
+        &lt;transactionManager type=&quot;JDBC&quot; /&gt;
+        &lt;dataSource type=&quot;POOLED&quot;&gt;
+            &lt;property name=&quot;driver&quot; value=&quot;${driver}&quot;/&gt;
+            &lt;property name=&quot;url&quot; value=&quot;${url}&quot;/&gt;
+            &lt;property name=&quot;username&quot; value=&quot;${username}&quot;/&gt;
+            &lt;property name=&quot;password&quot; value=&quot;${password}&quot;/&gt;
+        &lt;/dataSource&gt;
+    &lt;/environments&gt;
+    &lt;mappers&gt;
+        &lt;mapper resource=&quot;org/mybatis/example/BlogMapper.xml&quot;/&gt;
+    &lt;/mappers&gt;
+&lt;/configuration&gt;</code></pre>
+<p>使用类路径下的资源文件进行配置，构建 SqlSessionFactory 实例：</p>
+<pre><code class="java">String resource = &quot;org/mybatis/example/mybatis-config.xml&quot;;
+InputStream inputStream = Resources.getResourceAsStream(resource);
+SqlSessionFactory sqlSessionFactory = new SqlSessionFactoryBuilder().build(inputStream);</code></pre>
+<h2 id="3-从SqlSessionFactory-获取-SqlSession"><a href="#3-从SqlSessionFactory-获取-SqlSession" class="headerlink" title="3. 从SqlSessionFactory 获取 SqlSession"></a>3. 从SqlSessionFactory 获取 SqlSession</h2><p>SqlSession 中完全包含了面向数据库执行 SQL 命令所需的所有方法，例如：</p>
+<pre><code class="java">try(SqlSession session = sqlSessionFactory.openSession()){
+    Blog blog = (Blog)session.selectOne(&quot;org.mybatis.example.BlogMapper.selectBlog&quot;,101);
 }</code></pre>
-<h3 id="1-2-缺陷与问题"><a href="#1-2-缺陷与问题" class="headerlink" title="1.2 缺陷与问题"></a>1.2 缺陷与问题</h3><p>虽然简单工厂模式实现了对象的创建和使用分离，但是仍然存在以下问题：</p>
+<p>或者使用一种更简单的方式：</p>
+<pre><code class="java">try(SqlSession session = sqlSessionFactory.openSession()){
+    BlogMapper mapper = session.getMapper(BlogMapper.class);
+    Blog blog = mapper.selectBlog(101);
+}</code></pre>
+<h3 id="提示：命名空间（Namespaces）"><a href="#提示：命名空间（Namespaces）" class="headerlink" title="提示：命名空间（Namespaces）"></a>提示：命名空间（Namespaces）</h3><p>命名空间的作用有两个，一个是利用更长的完全限定名来将不同的语句隔离开来，同时也实现了接口绑定。</p>
+<p>命名解析：为了减少输入量，MyBatis 对所有的命名配置元素（包括语句，结果映射，缓存等）使用了如下的命名解析规则。</p>
 <ol>
-<li>工厂类过于庞大，包含了许多的条件判断，导致维护和测试难度增大</li>
-<li>系统扩展不灵活，如果新增其他类型的日志记录器，必须修改静态工厂方法的业务逻辑，违反“开闭原则”</li>
+<li>完全限定名，将被直接用于查找和使用</li>
+<li>短名称，如果全局唯一也可作为单独的应用。如果不唯一，那么使用时就会出现错误，此时就需要使用完全限定名</li>
 </ol>
-<h3 id="1-3-解决思路"><a href="#1-3-解决思路" class="headerlink" title="1.3 解决思路"></a>1.3 解决思路</h3><p>简单工厂方法的缺陷在于违反了“开闭原则”，每次新增新类型时必须修改静态工厂方法的业务逻辑。所有的产品都由一个工厂来创建，工厂职责较重，业务逻辑较为复杂，具体产品和工厂类之间耦合度高。严重影响了系统的灵活性和扩展性。</p>
-<p>通过引入工厂方法模式，将工厂与产品拆分，降低耦合，提高系统灵活性。</p>
-<h2 id="二、工厂方法模式"><a href="#二、工厂方法模式" class="headerlink" title="二、工厂方法模式"></a>二、工厂方法模式</h2><h3 id="2-1-概述"><a href="#2-1-概述" class="headerlink" title="2.1 概述"></a>2.1 概述</h3><p>在工厂方法模式中，不再提供一个统一的工厂类来创建所有的产品对象，而是针对不同的产品提供不同的工厂，系统提供一个与产品等级结构对应的工厂等级结构。</p>
-<p>工厂方法模式：定义一个用于创建对象的接口，让子类决定将哪一个类实例化。这样可以将类的实例化延迟到其子类。</p>
-<h3 id="2-2-工厂方法模式中的角色"><a href="#2-2-工厂方法模式中的角色" class="headerlink" title="2.2 工厂方法模式中的角色"></a>2.2 工厂方法模式中的角色</h3><ol>
-<li>Product（抽象产品）：产品对象的公共父类</li>
-<li>ConcreteProduct（具体产品）：实现抽象产品接口，由具体工厂创建，一一对应</li>
-<li>Factory（抽象工厂）：在抽象工厂中，声明了工厂方法，用于返回一个产品。<ol>
-<li>抽象工厂是工厂方法模式的核心，所有创建对象的工厂类都必须实现该接口</li>
-</ol>
-</li>
-<li>ConcreteFactory（具体工厂）：抽象工厂的子类，实现了抽象工厂中定义的方法，通过调用工厂方法，返回一个具体产品类的实例。</li>
-</ol>
-<p>工厂方法模式与简单方法模式的区别就在于，多了一个抽象工厂类。</p>
-<p>在抽象工厂中声明工厂方法，有具体工厂类来创建子类，不同的具体工厂可以创建不同的具体产品。</p>
-<p>在实际使用中，还可以在具体工厂中做一些初始化工作，如资源加载、环境配置等工作。</p>
-<p>而客户端只需针对抽象工厂编程即可。</p>
-<h2 id="三、解决方案"><a href="#三、解决方案" class="headerlink" title="三、解决方案"></a>三、解决方案</h2><pre><code class="java">// 抽象产品类
-interface Logger{
-    void writeLog();
-}
-// 具体产品类
-class FileLogger implements Logger{
-    @Override
-    void writeLog(){
-        System.out.println(&quot;文件日志记录&quot;);
-    }
-}
-class DatabaseLogger implements Logger{
-    @Override
-    void writeLog(){
-        System.out.println(&quot;数据库日志记录&quot;);
-    }
-}
-// 抽象工厂类
-interfact Factory{
-    Logger createLogger();
-}
-// 具体工厂类
-class FileLoggerFactory implement Factory {
-    @Override
-    public Logger createLogger(){
-        // 初始化环境等
-        return  new FileLogger();
-    }
-}
-class DatabaseLoggerFactory implement Factory {
-    @Override
-    public Logger createLogger(){
-        // 初始化环境等
-        return  new DatabaseLogger();
-    }
-}
-// 测试
-public static void main(String[] args){
-    Factory factory = new FileLoggerFactory();
-    Logger logger = factory.createLogger();
-    logger.writeLog();
+<h2 id="4-基于-XML-映射语句的示例"><a href="#4-基于-XML-映射语句的示例" class="headerlink" title="4. 基于 XML 映射语句的示例"></a>4. 基于 XML 映射语句的示例</h2><pre><code class="xml">&lt;?xml version=&quot;1.0&quot; encoding=&quot;UTF-8&quot; ?&gt;
+&lt;!DOCTYPE mapper
+  PUBLIC &quot;-//mybatis.org//DTD Mapper 3.0//EN&quot;
+  &quot;http://mybatis.org/dtd/mybatis-3-mapper.dtd&quot;&gt;
+&lt;mapper namespace=&quot;org.mybatis.example.BlogMapper&quot;&gt;
+    &lt;select id=&quot;selectBlog&quot; resultType=&quot;Blog&quot;&gt;
+        select * from Blog where id = #{id}
+    &lt;/select&gt;
+&lt;/mapper&gt;</code></pre>
+<h2 id="5-基于注解的示例"><a href="#5-基于注解的示例" class="headerlink" title="5. 基于注解的示例"></a>5. 基于注解的示例</h2><pre><code class="java">public interface BlogMapper {
+    @Select(&quot;SELECT * FROM blog WHERE id = #{id}&quot;)
+    Blog selectBlog(int id);
 }</code></pre>
-<h2 id="四、扩展"><a href="#四、扩展" class="headerlink" title="四、扩展"></a>四、扩展</h2><p>使用 反射与配置文件 扩展系统。</p>
-<p>为了让系统拥有更好的灵活性和可扩展性，在客户端代码汇总不使用new关键字来创建工厂对象，而是将具体工厂类的类名存储在配置文件中，通过读取配置文件获取类名字符串，再使用 Java反射机制，根据类名字符串来生成对象。</p>
-<h2 id="五、隐藏工厂方法"><a href="#五、隐藏工厂方法" class="headerlink" title="五、隐藏工厂方法"></a>五、隐藏工厂方法</h2><p>为了进一步简化客户端的使用，还可以对客户端隐藏工厂方法，在抽象工厂中直接调用产品类的业务方法。</p>
-<pre><code class="java">abstract class Factory{
-    public void writeLog(){
-        Logger logger = this.createLogger();
-        logger.writeLog();
-    }
-    abstract Logger createLogger();
-}</code></pre>
-<p>这样，客户端直接调用抽象工厂的方法即可调用具体的产品业务方法。</p>
-<h2 id="六、工厂方法模式总结"><a href="#六、工厂方法模式总结" class="headerlink" title="六、工厂方法模式总结"></a>六、工厂方法模式总结</h2><h3 id="优点"><a href="#优点" class="headerlink" title="优点"></a>优点</h3><ol>
-<li>由工厂方法来创建客户所需的产品，以及隐藏了具体产品类的实例化过程，客户只需关心所需产品对应的工厂，无需关系创建细节，甚至无需知道产品类的类名。</li>
-<li>基于工厂角色和产品角色的多态性设计是工厂方法的关键。能让工厂可以自主确定创建何种产品对象，而创建对象的细节封装在具体工厂的内部。</li>
-<li>符合“开闭原则”，向系统中新增产品时，无需修改抽象工厂和抽象产品提供的接口，无需修改客户端，只需要添加一个具体工厂和具体产品即可。</li>
-</ol>
-<h3 id="缺点"><a href="#缺点" class="headerlink" title="缺点"></a>缺点</h3><ol>
-<li>在添加新产品时，需要编写新的具体产品类，还需要提供对应的具体工厂类。系统中类的个数增加，提升了系统复杂度，更多的类需要编译和运行，会给系统带来一些额外开销。</li>
-<li>由于考虑系统的可扩展性，需要引入抽象层，增加了系统抽象性和理解难度。且实现时可能用到DOM、反射等技术，增加系统实现难度</li>
-</ol>
-<h3 id="适用场景"><a href="#适用场景" class="headerlink" title="适用场景"></a>适用场景</h3><ol>
-<li>客户端不知道具体所需的对象，只知道工厂即可。</li>
-<li>抽象工厂类通过其子类来指定创建哪个对象。<ol>
-<li>抽象工厂类只需要提供一个创建工厂的接口，由其子类-具体工厂类来决定要创建的对象</li>
-<li>利用面向对象的多态性和里氏替换原则，在程序运行时，由子类替换父类，从而使系统更容易扩展</li>
-</ol>
-</li>
-</ol>
-<h2 id="七、练习"><a href="#七、练习" class="headerlink" title="七、练习"></a>七、练习</h2><blockquote>
-<p>使用工厂方法模式设计一个程序来读取各种不同类型的图片格式，针对每一种图片格式都设计一个图片读取器，如GIF图片读取器用于读取GIF格式的图片、JPG图片读取器用于读取JPG格式的图片。需充分考虑系统的灵活性和可扩展性。</p>
+<h2 id="6-作用域（Scope）和生命周期"><a href="#6-作用域（Scope）和生命周期" class="headerlink" title="6. 作用域（Scope）和生命周期"></a>6. 作用域（Scope）和生命周期</h2><p><code>依赖注入框架</code>可以创建线程安全的、基于事务的 SqlSession 和映射器，并将它们直接注入到你的 bean 中，因此可以直接忽略它们的生命周期。</p>
+<h3 id="SqlSessionFactoryBuilder"><a href="#SqlSessionFactoryBuilder" class="headerlink" title="SqlSessionFactoryBuilder"></a>SqlSessionFactoryBuilder</h3><p>这个类可以被实例化、使用和丢弃，一旦创建了 SqlSessionFactory，就不再需要了。</p>
+<p>因此该实例的最佳作用域为<code>方法作用域</code>，可以重用 SqlSessionFactoryBuilder 来创建多个 SqlSessionFactory，但是使用后最好不要让其一直存在，以保证 XML 资源可以被释放。</p>
+<h3 id="SqlSessionFactory"><a href="#SqlSessionFactory" class="headerlink" title="SqlSessionFactory"></a>SqlSessionFactory</h3><p>一旦创建就应该在应用的运行期间一直存在，尽量不要重复创建该实例。</p>
+<p>因此该实例的最佳作用域为<code>应用作用域</code>。可以使用单例模式或静态单例模式来做到。</p>
+<h3 id="SqlSession"><a href="#SqlSession" class="headerlink" title="SqlSession"></a>SqlSession</h3><p>每个线程都应该由自己的 SqlSession 实例。SqlSession 的实例不是线程安全的，因此不能被共享。</p>
+<p>因此该实例的最佳作用于为<code>请求或方法作用域</code>。绝不能将 SqlSession 的实例引用放在静态域中，甚至一个类的实例变量也不行，也不能将引用放在任何类型的托管作用域中（如Servlet 的HttpSession）。</p>
+<p>如果您使用的是 Web 框架，那么应该考虑将 SqlSession 放在和 Http 请求对象相似的作用域中。即每次 Http 请求，都打开一个 SqlSession，返回响应后就关闭它。</p>
+<h3 id="映射器实例"><a href="#映射器实例" class="headerlink" title="映射器实例"></a>映射器实例</h3><p>映射器是映射Sql语句的接口，该接口的实例是从 SqlSession 中获得的。</p>
+<p>因此该实例的最佳作用于<code>与 SqlSession 的作用域保持一致</code></p>
+</div><hr></div><div class="recent-post-item article-container"><a class="article-title" href="/2019/09/04/分布式/SpringBoot/Sso单点登录/">单点登录</a><time class="post-meta__date"><i class="fa fa-calendar" aria-hidden="true"></i> 2019-09-04</time><span class="article-meta"><span class="article-meta__separator">|</span><i class="fa fa-inbox article-meta__icon" aria-hidden="true"></i><a class="article-meta__categories" href="/categories/分布式/">分布式</a></span><span class="article-meta tags"><span class="article-meta__separator">|</span><i class="fa fa-tag article-meta__icon" aria-hidden="true"></i><a class="article-meta__tags" href="/tags/hide/">hide</a></span><div class="content"><h1 id="单点登录"><a href="#单点登录" class="headerlink" title="单点登录"></a>单点登录</h1><h2 id="一、单点登录机制"><a href="#一、单点登录机制" class="headerlink" title="一、单点登录机制"></a>一、单点登录机制</h2><pre><code>web 应用采用的是 b/s 架构，以 http 作为通信协议。而 http 是无状态协议，浏览器每一次请求，服务器都会独立处理，不与之前或者之后的请求产生关联。</code></pre><p><img src="https://images2015.cnblogs.com/blog/797930/201611/797930-20161129155231912-1627010726.png" alt></p>
+<pre><code>在三次请求、响应对之间没有任何联系。这同时也意味着，任何用户都能通过浏览器访问服务器资源，如果想保护服务器的某些资源，必须限制浏览器请求；要限制浏览器请求，必须鉴别浏览器请求，响应合法请求；要鉴别浏览器请求，必须清楚浏览器请求状态。既然http协议无状态，就需要服务器和浏览器共同维护一个状态，这就是会话机制。</code></pre><h2 id="二、会话机制"><a href="#二、会话机制" class="headerlink" title="二、会话机制"></a>二、会话机制</h2><pre><code>浏览器第一次请求服务器，服务器创建一个会话，并将会话 id 作为响应的一部分发送给浏览器，浏览器存储会话 id ，并在后续的第二次和第三次请求中带上会话 id ，服务器取得请求中的会话 id 就知道是不是同一个用户了。</code></pre><blockquote>
+<p>服务器在内存中保存会话对象，浏览器怎么保存会话 id 呢？</p>
 </blockquote>
-</div><hr></div><div class="recent-post-item article-container"><a class="article-title" href="/2019/06/26/读书笔记/《JavaDesignPatterns》/3.简单工厂模式/">《Java Design Patterns》第一章 简单工厂模式</a><time class="post-meta__date"><i class="fa fa-calendar" aria-hidden="true"></i> 2019-06-26</time><span class="article-meta"><span class="article-meta__separator">|</span><i class="fa fa-inbox article-meta__icon" aria-hidden="true"></i><a class="article-meta__categories" href="/categories/读书笔记/">读书笔记</a><i class="fa fa-angle-right" aria-hidden="true"></i><i class="fa fa-inbox article-meta__icon" aria-hidden="true"></i><a class="article-meta__categories" href="/categories/读书笔记/设计模式/">设计模式</a></span><span class="article-meta tags"><span class="article-meta__separator">|</span><i class="fa fa-tag article-meta__icon" aria-hidden="true"></i><a class="article-meta__tags" href="/tags/hide/">hide</a><span class="article-meta__link">-</span><i class="fa fa-tag article-meta__icon" aria-hidden="true"></i><a class="article-meta__tags" href="/tags/设计模式/">设计模式</a></span><div class="content"><h1 id="第一章-简单工厂模式"><a href="#第一章-简单工厂模式" class="headerlink" title="第一章 简单工厂模式"></a>第一章 简单工厂模式</h1><h2 id="一、设计图表库"><a href="#一、设计图表库" class="headerlink" title="一、设计图表库"></a>一、设计图表库</h2><p>设计一个图表库，用于为系统提供各种不同外观的图表，如柱状图、饼状图、折线图等。</p>
-<h3 id="1-1-初步设计"><a href="#1-1-初步设计" class="headerlink" title="1.1 初步设计"></a>1.1 初步设计</h3><pre><code class="java">public class Chart {
+<pre><code>1.请求参数：将会话 id 作为每一次请求的参数，服务器接收请求自然能解析参数获得会话 id ，并借此判断是否来自同一会话，很明显不靠谱。
 
-    private String type; // 图表类型
+2.cookie：是浏览器用来存储少量数据的一种机制，数据以&quot; key/value&quot;形式存储，浏览器发送 http 请求时自动附带 cookie 信息。</code></pre><p><img src="https://images2015.cnblogs.com/blog/797930/201611/797930-20161129155234443-99011212.png" alt></p>
+<pre><code>tomcat会话机制中也实现了cookie，访问tomcat服务器时，浏览器中可以看到一个名为“JSESSIONID” 的cookie，这就是 tomcat 会话机制维护的会话 id 。</code></pre><h2 id="三、登录状态"><a href="#三、登录状态" class="headerlink" title="三、登录状态"></a>三、登录状态</h2><pre><code>我们假设浏览器第一次请求服务器需要输入用户名与密码来验证身份，服务器拿到用户名密码去数据库比对，正确的话说明当持有这个会话的用户是合法用户，应该将这个会话标记为“已授权”或者“一登录”之类的状态，既然是会话的状态，自然要保存在会话对象中，tomcat在会话对象那个中的登录状态如下：
 
-    public Chart(Object[][] data, String type) {
-        this.type = type;
-        if (type.equalsIgnoreCase(&quot;histogram&quot;)) {
-            // 初始化柱状图
-        }
-        if (type.equalsIgnoreCase(&quot;pie&quot;)) {
-            // 初始化饼状图
-        }
-        if (type.equalsIgnoreCase(&quot;line&quot;)) {
-            // 初始化折线图
-        }
-    }
+    HttpSession session = request.getSession();
+    session.setAttribution(&quot;isLogin&quot;,true);
+再次访问时，tomcat会在会话对象中查看登录状态。
+每次请求受保护资源时都会检查会话对象中的登录状态，只有 isLogin 时才能访问，登录机制因此实现。</code></pre><p><img src="https://images2015.cnblogs.com/blog/797930/201611/797930-20161129155235693-1708276896.png" alt></p>
+<h2 id="四、多系统的复杂性"><a href="#四、多系统的复杂性" class="headerlink" title="四、多系统的复杂性"></a>四、多系统的复杂性</h2><pre><code>web系统由原始的单系统发展成为如今由多系统组成的应用群，面对多个系统，用户不可能以一个个登录再一个个注销。
+而且由多系统组成的应用群，复杂性应该由系统内部承担，而不是用户。无论web系统内部多么复杂，对用户而言，都是一个统一的整体。
 
-    public void display() {
-        if (type.equalsIgnoreCase(&quot;histogram&quot;)) {
-            // 显示柱状图
-        }
-        if (type.equalsIgnoreCase(&quot;pie&quot;)) {
-            // 显示饼状图
-        }
-        if (type.equalsIgnoreCase(&quot;line&quot;)) {
-            // 显示折线图
-        }
-    }
-}</code></pre>
-<h3 id="1-2-存在的问题"><a href="#1-2-存在的问题" class="headerlink" title="1.2 存在的问题"></a>1.2 存在的问题</h3><p>该类在设计时存在如下几个问题：</p>
+虽然cookie是解决单系统登录的核心，但是cookie的限制在于cookie的域，浏览器发送 http 请求时会自动携带与该域匹配的 cookie ，而不是所有 cookie。
+
+在早些年，很多登录系统就采用同域名共享 cookie 的方式，将 web 应用群中所有子系统的域名统一在一个顶级域名下，然后将它们的 cookie 域设置为“baidu.com”。这样做虽然可行，但并不好。共享 cookie 的方式存在众多局限：首先，应用群域名得统一；其次，应用群各系统使用的技术(至少是 web 服务器)要相同，不然 cookie 的key值不相同（例如 tomcat 的是 JSESSIONID），无法维持会话，共享 cookie 的方式是无法实现跨语言技术平台登录的，比如 java、php、.net 系统之间；第三，cookie本身并不安全。
+
+因此，我们需要一种全新的登录方式来实现多系统应用群的登录，这就是单点登录。</code></pre><h2 id="五、单点登录"><a href="#五、单点登录" class="headerlink" title="五、单点登录"></a>五、单点登录</h2><pre><code>单点登录(Single Sign On)，指在多系统应用群中登录一个系统，便可在其他所有系统中得到授权而无需再次登录，包括单点登录与单点注销两部分。</code></pre><p><img src="http://images2015.cnblogs.com/blog/797930/201611/797930-20161129155238365-788619473.png" alt></p>
+<h3 id="1-登录"><a href="#1-登录" class="headerlink" title="1.登录"></a>1.登录</h3><pre><code>对比单系统登录，sso 需要一个独立的认证中心，只有认证中心能接受用户的用户名密码等安全信息，其他系统不提供登录入口，只接受认证中心的间接授权。
+
+间接授权通过令牌实现，sso 认证中心验证用户的用户名密码没问题，创建授权令牌吗，在跳转过程中，授权令牌作为参数发送给各个子系统，子系统拿到令牌，即通过了授权，可以借此创建局部会话，局部会话登录方式与单系统的登录方式相同。
+这个过程就是单点登录的原理。</code></pre><p><img src="https://images2015.cnblogs.com/blog/797930/201612/797930-20161203152650974-276822362.png" alt></p>
+<p>简要描述</p>
 <ol>
-<li>Chart 类中包含许多 if…else 代码块，代码冗长，难以阅读、维护和测试；大量的条件判断还将影响系统的性能</li>
-<li>Chart 类职责过重，负责初始化和显示所有图表对象。违反了“单一职责原则”，不利于类的重用和维护；而且将大量的对象初始化代码写在构造函数中，在初始化对象时需要条件判断，降低了对象创建的效率</li>
-<li>违反了“开闭原则”，当需要增加新类型的图表时，必须修改 Chart 对象的代码</li>
-<li>客户端只能通过 new 关键字来直接创建 Chart 对象，与客户端耦合度较高，对象的创建和使用无法分离</li>
-<li>客户端中缺少其它初始化设置，如果在客户端对图表的颜色、高度等进行设置，则会在每次创建对象时都会出现，导致代码的重复</li>
+<li>用户访问系统 1 的受保护资源，系统 1 发现用户未登录，跳转至 sso 认证中心，并将自己的地址作为参数</li>
+<li>sso 认证中心发现用户未登录，将用户引导至登录页面</li>
+<li>用户输入用户名密码提交登录申请</li>
+<li>sso 认证中心校验用户信息，创建用户与 sso 认证中心之间的会话，称为全局会话，同时创建授权令牌</li>
+<li>sso 认证中心带着令牌跳转会最初的请求地址（系统 1）</li>
+<li>系统 1 拿到令牌，去 sso 认证中心校验令牌是否有效</li>
+<li>sso 认证中心校验令牌，返回有效，注册系统 1</li>
+<li>系统 1 使用该令牌创建与用户的会话，称为局部会话，返回受保护资源</li>
+<li>用户访问系统 2 的受保护资源</li>
+<li>系统 2 发现用户未登录，跳转至 sso 认证中心，并将自己的地址作为参数</li>
+<li>sso 认证中心发现用户已登录，跳转回系统 2 的地址，并附上令牌</li>
+<li>系统 2 拿到令牌，去 sso 认证中心校验令牌是否有效</li>
+<li>sso 认证中心校验令牌，返回有效，注册系统 2</li>
+<li>系统 2 使用该令牌创建与用户的局部会话，返回受保护资源</li>
 </ol>
-<h3 id="1-3-解决思路"><a href="#1-3-解决思路" class="headerlink" title="1.3 解决思路"></a>1.3 解决思路</h3><p>引入工厂类，进行抽象与拆分</p>
-<h2 id="二、简单工厂模式"><a href="#二、简单工厂模式" class="headerlink" title="二、简单工厂模式"></a>二、简单工厂模式</h2><h3 id="2-1-设计流程"><a href="#2-1-设计流程" class="headerlink" title="2.1 设计流程"></a>2.1 设计流程</h3><ol>
-<li>将需要创建的各种不同对象的相关代码封装到不同的类中，这些类称为具体产品类</li>
-<li>将它们公共的代码进行抽象和提取后封装在一个抽象产品类中，每个具体产品类都是抽象产品类的子类</li>
-<li>提供一个工厂类用于创建各种产品，在工厂类中提供一个创建产品的工厂方法，该方法可以根据所传入的参数不同创建不同的具体对象</li>
-<li>客户端只需调用工厂类的方法并传入相应的参数即可得到一个产品对象</li>
+<h3 id="2-注销"><a href="#2-注销" class="headerlink" title="2.注销"></a>2.注销</h3><pre><code>单点登录的注销，在一个子系统中注销，所有子系统的会话都将被销毁：
+sso认证中心一直坚挺全局会话的状态，一旦全局会话销毁，监听器将通知所有注册系统执行注销操作　　</code></pre><p><img src="https://images2015.cnblogs.com/blog/797930/201611/797930-20161129155243068-1378377736.png" alt></p>
+<p>简要说明</p>
+<ol>
+<li>用户向系统 1 发起注销请求</li>
+<li>系统 1 根据用户与系统 1 建立的会话 id 拿到令牌，向 sso 认证中心发起注销请求</li>
+<li>sso 认证中心校验令牌有效，销毁全局会话，同时取出所有用此令牌注册的系统地址</li>
+<li>sso 认证中心向所有注册系统发起注销请求</li>
+<li>各注册系统接收 sso 认证中心的注销请求，销毁局部会话</li>
+<li>sso 认证中心引导用户至登录页面</li>
 </ol>
-<h3 id="2-2-简单工厂模式模式的定义"><a href="#2-2-简单工厂模式模式的定义" class="headerlink" title="2.2 简单工厂模式模式的定义"></a>2.2 简单工厂模式模式的定义</h3><p>定义一个工厂类，可以根据参数的不同返回不同类的实例，被创建的实例通常都具有共同的父类。因为在简单工厂模式中用于创建实例的方法是静态方法，<br>因此简单工厂模式又被称为静态工厂模式，属于类创建型模式。</p>
-<h3 id="2-3-简单工厂模式中的几个角色"><a href="#2-3-简单工厂模式中的几个角色" class="headerlink" title="2.3 简单工厂模式中的几个角色"></a>2.3 简单工厂模式中的几个角色</h3><ol>
-<li>Factory（工厂角色）<ol>
-<li>即工厂类，是简单工厂模式的核心，负责实现创建所有产品实例的内部逻辑；</li>
-<li>工厂类可以被外界直接调用，创建所需的产品对象；</li>
-<li>在工厂类中提供了静态的工厂方法，返回类型为抽象产品类；</li>
-</ol>
-</li>
-<li>Product（抽象产品角色）<ol>
-<li>是工厂类所创建的对象的父类，封装各产品对象的公共方法</li>
-<li>抽象产品类的引入，提供了系统的灵活性，使得在工厂类只需定义一个通用的工厂方法，因为所创建的具体产品对象都是其子类对象</li>
-</ol>
-</li>
-<li>ConcreteProduct（具体产品角色）<ol>
-<li>是简单工厂模式的创建目标，所有被创建的对象都充当这个角色的某个类的实例。</li>
-<li>每个具体产品角色都继承了抽象产品角色，需要实现在抽象产品中声明的抽象方法</li>
-</ol>
-</li>
-</ol>
-<h2 id="三、具体实现"><a href="#三、具体实现" class="headerlink" title="三、具体实现"></a>三、具体实现</h2><h3 id="3-1-产品抽象类"><a href="#3-1-产品抽象类" class="headerlink" title="3.1 产品抽象类"></a>3.1 产品抽象类</h3><pre><code class="java">/**
- * 使用简单工厂模式时，需要先对产品类进行重构
- * 根据实际情况设计一个产品层次结构，将所有产品类公共的代码移至抽象类，并声明一些抽象方法供具体产品类类实现
- */
-public interface Chart {
-    void display();
-}</code></pre>
-<h3 id="3-2-具体产品类"><a href="#3-2-具体产品类" class="headerlink" title="3.2 具体产品类"></a>3.2 具体产品类</h3><pre><code class="java">/**
- * 具体产品类实现了抽象产品类中声明的抽象业务方法，不同的具体产品类可以提供不同的实现
- */
-public class HistogramChart implements Chart {
-    public HistogramChart() {
-        System.out.println(&quot;生成柱状图&quot;);
-    }
+<h2 id="六、部署图"><a href="#六、部署图" class="headerlink" title="六、部署图"></a>六、部署图</h2><pre><code>单点登录涉及 sso 认证中心与众子系统，子系统与 sso 认证中心需要通信以交换令牌、校验令牌及发起注销请求，因而子系统必须集成 sso 的客户端，sso 认证中心则是 sso 服务端，整个单点定了公路过程实质是 sso 客户端与服务端通信的过程。</code></pre><p><img src="https://images2015.cnblogs.com/blog/797930/201611/797930-20161129155244646-2067469767.png" alt title="图片"></p>
+<pre><code>sso 认证中心与 sso 客户端通信方式有多种，例如 webservice、rpc、restful api等
 
-    @Override
-    public void display() {
-        System.out.println(&quot;显示柱状图&quot;);
-    }
-}
-
-public class LineChart implements Chart {
-    public LineChart() {
-        System.out.println(&quot;生成折线图&quot;);
-    }
-
-    @Override
-    public void display() {
-        System.out.println(&quot;显示折线图&quot;);
-    }
-}
-
-public class PieChart implements Chart {
-    public PieChart() {
-        System.out.println(&quot;生成饼状图&quot;);
-    }
-
-    @Override
-    public void display() {
-        System.out.println(&quot;显示饼状图&quot;);
-    }
-}</code></pre>
-<h3 id="3-3-工厂方法类"><a href="#3-3-工厂方法类" class="headerlink" title="3.3 工厂方法类"></a>3.3 工厂方法类</h3><pre><code class="java">/**
- * 简单工厂模式的核心就是工厂类
- * 通过工厂类的静态工厂方法来创建具体产品对象，而非直接通过new来创建产品对象
- */
-public class ChartFactory {
-    public static Chart getChart(String type) {
-        switch (type) {
-            case &quot;histogram&quot;:
-                return new HistogramChart();
-            case &quot;pic&quot;:
-                return new PieChart();
-            case &quot;line&quot;:
-                return new LineChart();
-            default:
-                return null;
-        }
-    }
-}</code></pre>
-<h3 id="3-4-客户端测试"><a href="#3-4-客户端测试" class="headerlink" title="3.4 客户端测试"></a>3.4 客户端测试</h3><pre><code class="java">/**
- * 客户端测试代码
- */
-public class DemoTest {
-    public static void main(String[] args) {
-        Chart pie = ChartFactory.getChart(&quot;pie&quot;);
-        pie.display();
-    }
-}</code></pre>
-<h2 id="四、总结"><a href="#四、总结" class="headerlink" title="四、总结"></a>四、总结</h2><p>简单工厂模式提供了专门的工厂类用于创建对象，将对象的创建和对象的使用分离。</p>
-<h3 id="4-1-优点"><a href="#4-1-优点" class="headerlink" title="4.1 优点"></a>4.1 优点</h3><ol>
-<li>工厂类包含必要的判断逻辑，可以决定何时创建哪一个实例。免除客户端直接创建产品对象的职责，而仅仅“消费”产品。实现了对象创建和使用的分离</li>
-<li>客户端无需知道所创建的具体产品类的类名，只需要知道具体参数即可。</li>
-<li>可以将具体参数引入配置文件，在不修改客户端代码的情况下增删具体产品类，在一定程序上提供了系统灵活度。</li>
-</ol>
-<h3 id="4-2-缺点"><a href="#4-2-缺点" class="headerlink" title="4.2 缺点"></a>4.2 缺点</h3><ol>
-<li>工厂类的职责过重，集中了所有产品的创建逻辑。一旦工厂类出现问题，整个系统都会受到影响</li>
-<li>使用简单工厂模式势必会增加系统中类的个数，增加了系统的复杂度和理解难度</li>
-<li>系统拓展难度，新增产品时必须修改工厂逻辑，在产品类型较多时，可能造成工厂逻辑过于复杂，不利于系统扩展和维护</li>
-<li>简单工厂模式由于使用了静态工厂方法，造成工厂角色无法形成基于继承的等级结构</li>
-</ol>
-<h3 id="4-3-适用场景"><a href="#4-3-适用场景" class="headerlink" title="4.3 适用场景"></a>4.3 适用场景</h3><ol>
-<li>工厂类负责创建的对象较少，因为需要创建的对象较少，不会造成工厂方法中的业务逻辑太过复杂</li>
-<li>客户端只知道传入工厂类的参数，对于如何创建对象并不关心</li>
-</ol>
-</div><hr></div><nav id="pagination"><div class="pagination"><a class="extend prev" rel="prev" href="/page/12/"><i class="fa fa-chevron-left"></i></a><a class="page-number" href="/">1</a><span class="space">&hellip;</span><a class="page-number" href="/page/12/">12</a><span class="page-number current">13</span><a class="page-number" href="/page/14/">14</a><span class="space">&hellip;</span><a class="page-number" href="/page/23/">23</a><a class="extend next" rel="next" href="/page/14/"><i class="fa fa-chevron-right"></i></a></div></nav></div></div><footer><div class="layout" id="footer"><div class="copyright">&copy;2013 - 2020 By koral</div><div class="framework-info"><span>驱动 - </span><a href="http://hexo.io"><span>Hexo</span></a><span class="footer-separator">|</span><span>主题 - </span><a href="https://github.com/Molunerfinn/hexo-theme-melody"><span>Melody</span></a></div><div class="busuanzi"><script async src="//busuanzi.ibruce.info/busuanzi/2.3/busuanzi.pure.mini.js"></script><span id="busuanzi_container_site_uv"><i class="fa fa-user"></i><span id="busuanzi_value_site_uv"></span><span></span></span><span class="footer-separator">|</span><span id="busuanzi_container_site_pv"><i class="fa fa-eye"></i><span id="busuanzi_value_site_pv"></span><span></span></span></div></div></footer><i class="fa fa-arrow-up" id="go-up" aria-hidden="true"></i><script src="https://cdn.jsdelivr.net/npm/animejs@latest/anime.min.js"></script><script src="https://cdn.jsdelivr.net/npm/jquery@latest/dist/jquery.min.js"></script><script src="https://cdn.jsdelivr.net/npm/@fancyapps/fancybox@latest/dist/jquery.fancybox.min.js"></script><script src="https://cdn.jsdelivr.net/npm/velocity-animate@latest/velocity.min.js"></script><script src="https://cdn.jsdelivr.net/npm/velocity-ui-pack@latest/velocity.ui.min.js"></script><script src="/js/utils.js?version=1.7.0"></script><script src="/js/fancybox.js?version=1.7.0"></script><script src="/js/sidebar.js?version=1.7.0"></script><script src="/js/copy.js?version=1.7.0"></script><script src="/js/fireworks.js?version=1.7.0"></script><script src="/js/transition.js?version=1.7.0"></script><script src="/js/scroll.js?version=1.7.0"></script><script src="/js/head.js?version=1.7.0"></script><script>if(/Android|webOS|iPhone|iPod|iPad|BlackBerry/i.test(navigator.userAgent)) {
+sso采用客户端/服务端架构，我们先看sso-client与sso-server要实现的功能（下面：sso认证中心=sso-server）</code></pre><p>sso-client</p>
+<p>拦截子系统未登录用户请求，跳转至 sso 认证中心<br>接收并存储 sso 认证中心发送的令牌<br>与 sso-server 通信，校验令牌的有效性<br>建立局部会话<br>拦截用户注销请求，向 sso 认证中心发送注销请求<br>接收 sso 认证中心发出的注销请求，销毁局部会话<br>　　 sso-server</p>
+<p>验证用户的登录信息<br>创建全局会话<br>创建授权令牌<br>与 sso-client 通信发送令牌<br>校验 sso-client 令牌有效性<br>系统注册<br>接收 sso-client 注销请求，注销所有会话<br>　　接下来，我们按照原理来一步步实现 sso 吧！</p>
+<p>1、sso-client 拦截未登录请求<br>　　 java 拦截请求的方式有 servlet、filter、listener 三种方式，我们采用 filter。在 sso-client 中新建 LoginFilter.java 类并实现 Filter 接口，在 doFilter()方法中加入对未登录用户的拦截</p>
+<p>public void doFilter(ServletRequest request, ServletResponse response, FilterChain chain) throws IOException, ServletException {<br>HttpServletRequest req = (HttpServletRequest) request;<br>HttpServletResponse res = (HttpServletResponse) response;<br>HttpSession session = req.getSession();</p>
+<p> if (session.getAttribute(“isLogin”)) {<br>chain.doFilter(request, response);<br>return;<br>}<br>//跳转至 sso 认证中心<br>res.sendRedirect(“sso-server-url-with-system-url”);<br>}<br>2、sso-server 拦截未登录请求<br>　　拦截从 sso-client 跳转至 sso 认证中心的未登录请求，跳转至登录页面，这个过程与 sso-client 完全一样</p>
+<p>3、sso-server 验证用户登录信息<br>　　用户在登录页面输入用户名密码，请求登录，sso 认证中心校验用户信息，校验成功，将会话状态标记为“已登录”</p>
+<p>@RequestMapping(“/login”)<br>public String login(String username, String password, HttpServletRequest req) {<br>this.checkLoginInfo(username, password);<br>req.getSession().setAttribute(“isLogin”, true);<br>return “success”;<br>}<br>4、sso-server 创建授权令牌<br>　　授权令牌是一串随机字符，以什么样的方式生成都没有关系，只要不重复、不易伪造即可，下面是一个例子</p>
+<p>String token = UUID.randomUUID().toString();<br>5、sso-client 取得令牌并校验<br>　　 sso 认证中心登录后，跳转回子系统并附上令牌，子系统（sso-client）取得令牌，然后去 sso 认证中心校验，在 LoginFilter.java 的 doFilter()中添加几行</p>
+<p>// 请求附带 token 参数<br>String token = req.getParameter(“token”);<br>if (token != null) {<br>// 去 sso 认证中心校验 token<br>boolean verifyResult = this.verify(“sso-server-verify-url”, token);<br>if (!verifyResult) {<br>res.sendRedirect(“sso-server-url”);<br>return;<br>}<br>chain.doFilter(request, response);<br>}<br>　　 verify()方法使用 httpClient 实现，这里仅简略介绍，httpClient 详细使用方法请参考官方文档</p>
+<p>HttpPost httpPost = new HttpPost(“sso-server-verify-url-with-token”);<br>HttpResponse httpResponse = httpClient.execute(httpPost);<br>6、sso-server 接收并处理校验令牌请求<br>　　用户在 sso 认证中心登录成功后，sso-server 创建授权令牌并存储该令牌，所以，sso-server 对令牌的校验就是去查找这个令牌是否存在以及是否过期，令牌校验成功后 sso-server 将发送校验请求的系统注册到 sso 认证中心（就是存储起来的意思）</p>
+<p>令牌与注册系统地址通常存储在 key-value 数据库（如 redis）中，redis 可以为 key 设置有效时间也就是令牌的有效期。redis 运行在内存中，速度非常快，正好 sso-server 不需要持久化任何数据。</p>
+<p>令牌与注册系统地址可以用下图描述的结构存储在 redis 中，可能你会问，为什么要存储这些系统的地址？如果不存储，注销的时候就麻烦了，用户向 sso 认证中心提交注销请求，sso 认证中心注销全局会话，但不知道哪些系统用此全局会话建立了自己的局部会话，也不知道要向哪些子系统发送注销请求注销局部会话</p>
+<p><img src="https://images2015.cnblogs.com/blog/797930/201611/797930-20161129155245506-1069288802.png" alt></p>
+<p>7、sso-client 校验令牌成功创建局部会话<br>　　令牌校验成功后，sso-client 将当前局部会话标记为“已登录”，修改 LoginFilter.java，添加几行</p>
+<p>if (verifyResult) {<br>session.setAttribute(“isLogin”, true);<br>}<br>　　 sso-client 还需将当前会话 id 与令牌绑定，表示这个会话的登录状态与令牌相关，此关系可以用 java 的 hashmap 保存，保存的数据用来处理 sso 认证中心发来的注销请求</p>
+<p>8、注销过程<br>　　用户向子系统发送带有“logout”参数的请求（注销请求），sso-client 拦截器拦截该请求，向 sso 认证中心发起注销请求</p>
+<p>String logout = req.getParameter(“logout”);<br>if (logout != null) {<br>this.ssoServer.logout(token);<br>}<br>　　 sso 认证中心也用同样的方式识别出 sso-client 的请求是注销请求（带有“logout”参数），sso 认证中心注销全局会话</p>
+<p>@RequestMapping(“/logout”)<br>public String logout(HttpServletRequest req) {<br>HttpSession session = req.getSession();<br>if (session != null) {<br>session.invalidate();//触发 LogoutListener<br>}<br>return “redirect:/“;<br>}<br>　　 sso 认证中心有一个全局会话的监听器，一旦全局会话注销，将通知所有注册系统注销</p>
+<p>1<br>2<br>3<br>4<br>5<br>6<br>7<br>8<br>public class LogoutListener implements HttpSessionListener {<br>@Override<br>public void sessionCreated(HttpSessionEvent event) {}<br>@Override<br>public void sessionDestroyed(HttpSessionEvent event) {<br>//通过 httpClient 向所有注册系统发送注销请求<br>}<br>}</p>
+</div><hr></div><nav id="pagination"><div class="pagination"><a class="extend prev" rel="prev" href="/page/12/"><i class="fa fa-chevron-left"></i></a><a class="page-number" href="/">1</a><span class="space">&hellip;</span><a class="page-number" href="/page/12/">12</a><span class="page-number current">13</span><a class="page-number" href="/page/14/">14</a><span class="space">&hellip;</span><a class="page-number" href="/page/27/">27</a><a class="extend next" rel="next" href="/page/14/"><i class="fa fa-chevron-right"></i></a></div></nav></div></div><footer><div class="layout" id="footer"><div class="copyright">&copy;2013 - 2020 By koral</div><div class="framework-info"><span>驱动 - </span><a href="http://hexo.io"><span>Hexo</span></a><span class="footer-separator">|</span><span>主题 - </span><a href="https://github.com/Molunerfinn/hexo-theme-melody"><span>Melody</span></a></div><div class="busuanzi"><script async src="//busuanzi.ibruce.info/busuanzi/2.3/busuanzi.pure.mini.js"></script><span id="busuanzi_container_site_uv"><i class="fa fa-user"></i><span id="busuanzi_value_site_uv"></span><span></span></span><span class="footer-separator">|</span><span id="busuanzi_container_site_pv"><i class="fa fa-eye"></i><span id="busuanzi_value_site_pv"></span><span></span></span></div></div></footer><i class="fa fa-arrow-up" id="go-up" aria-hidden="true"></i><script src="https://cdn.jsdelivr.net/npm/animejs@latest/anime.min.js"></script><script src="https://cdn.jsdelivr.net/npm/jquery@latest/dist/jquery.min.js"></script><script src="https://cdn.jsdelivr.net/npm/@fancyapps/fancybox@latest/dist/jquery.fancybox.min.js"></script><script src="https://cdn.jsdelivr.net/npm/velocity-animate@latest/velocity.min.js"></script><script src="https://cdn.jsdelivr.net/npm/velocity-ui-pack@latest/velocity.ui.min.js"></script><script src="/js/utils.js?version=1.7.0"></script><script src="/js/fancybox.js?version=1.7.0"></script><script src="/js/sidebar.js?version=1.7.0"></script><script src="/js/copy.js?version=1.7.0"></script><script src="/js/fireworks.js?version=1.7.0"></script><script src="/js/transition.js?version=1.7.0"></script><script src="/js/scroll.js?version=1.7.0"></script><script src="/js/head.js?version=1.7.0"></script><script>if(/Android|webOS|iPhone|iPod|iPad|BlackBerry/i.test(navigator.userAgent)) {
   $('#nav').addClass('is-mobile')
   $('footer').addClass('is-mobile')
   $('#top-container').addClass('is-mobile')
