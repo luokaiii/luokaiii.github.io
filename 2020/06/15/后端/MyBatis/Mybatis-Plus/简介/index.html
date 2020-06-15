@@ -1,0 +1,539 @@
+<!DOCTYPE html><html lang="zh-Hans"><head><meta name="generator" content="Hexo 3.9.0"><meta charset="UTF-8"><meta http-equiv="X-UA-Compatible" content="IE=edge"><meta name="viewport" content="width=device-width, initial-scale=1, maximum-scale=1"><meta name="description" content="MyBatis-Plus官方文档笔记"><meta name="keywords" content="MyBatis,MyBatis-Plus"><meta name="author" content="koral"><meta name="copyright" content="koral"><title>MyBatis-Plus官方文档笔记 | 凯</title><link rel="shortcut icon" href="/melody-favicon.ico"><link rel="stylesheet" href="/css/index.css?version=1.7.0"><link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/font-awesome@latest/css/font-awesome.min.css?version=1.7.0"><meta name="format-detection" content="telephone=no"><meta http-equiv="x-dns-prefetch-control" content="on"><link rel="dns-prefetch" href="https://cdn.jsdelivr.net"><meta http-equiv="Cache-Control" content="no-transform"><meta http-equiv="Cache-Control" content="no-siteapp"><script>var GLOBAL_CONFIG = { 
+  root: '/',
+  algolia: undefined,
+  localSearch: undefined,
+  copy: {
+    success: '复制成功',
+    error: '复制错误',
+    noSupport: '浏览器不支持'
+  }
+} </script></head><body><i class="fa fa-arrow-right" id="toggle-sidebar" aria-hidden="true"></i><div id="sidebar" data-display="true"><div class="toggle-sidebar-info text-center"><span data-toggle="切换文章详情">切换站点概览</span><hr></div><div class="sidebar-toc"><div class="sidebar-toc__title">目录</div><div class="sidebar-toc__progress"><span class="progress-notice">你已经读了</span><span class="progress-num">0</span><span class="progress-percentage">%</span><div class="sidebar-toc__progress-bar"></div></div><div class="sidebar-toc__content"><ol class="toc"><li class="toc-item toc-level-2"><a class="toc-link" href="#一、特性"><span class="toc-number">1.</span> <span class="toc-text">一、特性</span></a></li><li class="toc-item toc-level-2"><a class="toc-link" href="#二、快速开始"><span class="toc-number">2.</span> <span class="toc-text">二、快速开始</span></a><ol class="toc-child"><li class="toc-item toc-level-3"><a class="toc-link" href="#初始化工程"><span class="toc-number">2.1.</span> <span class="toc-text">初始化工程</span></a><ol class="toc-child"><li class="toc-item toc-level-4"><a class="toc-link" href="#添加依赖"><span class="toc-number">2.1.1.</span> <span class="toc-text">添加依赖</span></a></li><li class="toc-item toc-level-4"><a class="toc-link" href="#添加配置"><span class="toc-number">2.1.2.</span> <span class="toc-text">添加配置</span></a></li><li class="toc-item toc-level-4"><a class="toc-link" href="#开启-Mapper-扫描"><span class="toc-number">2.1.3.</span> <span class="toc-text">开启 Mapper 扫描</span></a></li></ol></li><li class="toc-item toc-level-3"><a class="toc-link" href="#编码"><span class="toc-number">2.2.</span> <span class="toc-text">编码</span></a></li><li class="toc-item toc-level-3"><a class="toc-link" href="#测试"><span class="toc-number">2.3.</span> <span class="toc-text">测试</span></a></li></ol></li><li class="toc-item toc-level-2"><a class="toc-link" href="#三、注解"><span class="toc-number">3.</span> <span class="toc-text">三、注解</span></a><ol class="toc-child"><li class="toc-item toc-level-3"><a class="toc-link" href="#TableName"><span class="toc-number">3.1.</span> <span class="toc-text">@TableName</span></a></li><li class="toc-item toc-level-3"><a class="toc-link" href="#TableId"><span class="toc-number">3.2.</span> <span class="toc-text">@TableId</span></a></li><li class="toc-item toc-level-3"><a class="toc-link" href="#TableField"><span class="toc-number">3.3.</span> <span class="toc-text">@TableField</span></a></li><li class="toc-item toc-level-3"><a class="toc-link" href="#Version"><span class="toc-number">3.4.</span> <span class="toc-text">@Version</span></a></li><li class="toc-item toc-level-3"><a class="toc-link" href="#EnumValue"><span class="toc-number">3.5.</span> <span class="toc-text">@EnumValue</span></a></li><li class="toc-item toc-level-3"><a class="toc-link" href="#TableLogic"><span class="toc-number">3.6.</span> <span class="toc-text">@TableLogic</span></a></li><li class="toc-item toc-level-3"><a class="toc-link" href="#SqlParser"><span class="toc-number">3.7.</span> <span class="toc-text">@SqlParser</span></a></li><li class="toc-item toc-level-3"><a class="toc-link" href="#KeySequence"><span class="toc-number">3.8.</span> <span class="toc-text">@KeySequence</span></a></li></ol></li><li class="toc-item toc-level-2"><a class="toc-link" href="#四、代码生成器"><span class="toc-number">4.</span> <span class="toc-text">四、代码生成器</span></a></li><li class="toc-item toc-level-2"><a class="toc-link" href="#五、条件构造器"><span class="toc-number">5.</span> <span class="toc-text">五、条件构造器</span></a><ol class="toc-child"><li class="toc-item toc-level-3"><a class="toc-link" href="#QueryWrapper"><span class="toc-number">5.1.</span> <span class="toc-text">QueryWrapper</span></a></li><li class="toc-item toc-level-3"><a class="toc-link" href="#UpdateWrapper"><span class="toc-number">5.2.</span> <span class="toc-text">UpdateWrapper</span></a></li><li class="toc-item toc-level-3"><a class="toc-link" href="#LambdaWrapper"><span class="toc-number">5.3.</span> <span class="toc-text">LambdaWrapper</span></a></li></ol></li><li class="toc-item toc-level-2"><a class="toc-link" href="#六、分页插件"><span class="toc-number">6.</span> <span class="toc-text">六、分页插件</span></a><ol class="toc-child"><li class="toc-item toc-level-3"><a class="toc-link" href="#6-1-配置分页功能"><span class="toc-number">6.1.</span> <span class="toc-text">6.1 配置分页功能</span></a></li><li class="toc-item toc-level-3"><a class="toc-link" href="#6-2-使用"><span class="toc-number">6.2.</span> <span class="toc-text">6.2 使用</span></a></li></ol></li><li class="toc-item toc-level-2"><a class="toc-link" href="#七、Sequence-主键"><span class="toc-number">7.</span> <span class="toc-text">七、Sequence 主键</span></a><ol class="toc-child"><li class="toc-item toc-level-3"><a class="toc-link" href="#7-1-配置"><span class="toc-number">7.1.</span> <span class="toc-text">7.1 配置</span></a></li></ol></li><li class="toc-item toc-level-2"><a class="toc-link" href="#八、自定义-ID-生成器"><span class="toc-number">8.</span> <span class="toc-text">八、自定义 ID 生成器</span></a><ol class="toc-child"><li class="toc-item toc-level-3"><a class="toc-link" href="#8-1-配置"><span class="toc-number">8.1.</span> <span class="toc-text">8.1 配置</span></a></li></ol></li><li class="toc-item toc-level-2"><a class="toc-link" href="#九、插件扩展"><span class="toc-number">9.</span> <span class="toc-text">九、插件扩展</span></a><ol class="toc-child"><li class="toc-item toc-level-3"><a class="toc-link" href="#9-1-逻辑删除"><span class="toc-number">9.1.</span> <span class="toc-text">9.1 逻辑删除</span></a></li><li class="toc-item toc-level-3"><a class="toc-link" href="#9-2-通用枚举"><span class="toc-number">9.2.</span> <span class="toc-text">9.2 通用枚举</span></a></li><li class="toc-item toc-level-3"><a class="toc-link" href="#9-3-字段类型处理器"><span class="toc-number">9.3.</span> <span class="toc-text">9.3 字段类型处理器</span></a></li><li class="toc-item toc-level-3"><a class="toc-link" href="#9-4-自动填充功能"><span class="toc-number">9.4.</span> <span class="toc-text">9.4 自动填充功能</span></a></li><li class="toc-item toc-level-3"><a class="toc-link" href="#9-5-执行-SQL-分析打印"><span class="toc-number">9.5.</span> <span class="toc-text">9.5 执行 SQL 分析打印</span></a></li><li class="toc-item toc-level-3"><a class="toc-link" href="#9-6-乐观锁插件"><span class="toc-number">9.6.</span> <span class="toc-text">9.6 乐观锁插件</span></a></li><li class="toc-item toc-level-3"><a class="toc-link" href="#9-7-数据安全保护"><span class="toc-number">9.7.</span> <span class="toc-text">9.7 数据安全保护</span></a></li><li class="toc-item toc-level-3"><a class="toc-link" href="#9-8-多数据源"><span class="toc-number">9.8.</span> <span class="toc-text">9.8 多数据源</span></a><ol class="toc-child"><li class="toc-item toc-level-4"><a class="toc-link" href="#特性"><span class="toc-number">9.8.1.</span> <span class="toc-text">特性</span></a></li><li class="toc-item toc-level-4"><a class="toc-link" href="#使用方法"><span class="toc-number">9.8.2.</span> <span class="toc-text">使用方法</span></a></li></ol></li><li class="toc-item toc-level-3"><a class="toc-link" href="#9-9-多租户SQL解析器"><span class="toc-number">9.9.</span> <span class="toc-text">9.9 多租户SQL解析器</span></a></li></ol></li></ol></div></div><div class="author-info hide"><div class="author-info__avatar text-center"><img src="/img/avatar.png"></div><div class="author-info__name text-center">koral</div><div class="author-info__description text-center">罗凯的博客主页</div><hr><div class="author-info-articles"><a class="author-info-articles__archives article-meta" href="/archives"><span class="pull-left">文章</span><span class="pull-right">270</span></a><a class="author-info-articles__tags article-meta" href="/tags"><span class="pull-left">标签</span><span class="pull-right">38</span></a><a class="author-info-articles__categories article-meta" href="/categories"><span class="pull-left">分类</span><span class="pull-right">48</span></a></div></div></div><div id="content-outer"><div class="no-bg" id="top-container"><div id="page-header"><span class="pull-left"> <a id="site-name" href="/index.html">凯</a></span><i class="fa fa-bars toggle-menu pull-right" aria-hidden="true"></i><span class="pull-right menus">   <a class="site-page" href="/">首页</a><a class="site-page" href="/archives">归档</a><a class="site-page" href="/tags">标签</a><a class="site-page" href="/categories">分类</a><a class="site-page" href="/about">关于我</a></span><span class="pull-right"></span></div><div id="post-info"><div id="post-title">MyBatis-Plus官方文档笔记</div><div id="post-meta"><time class="post-meta__date"><i class="fa fa-calendar" aria-hidden="true"></i> 2020-06-15</time><span class="post-meta__separator">|</span><i class="fa fa-inbox post-meta__icon" aria-hidden="true"></i><a class="post-meta__categories" href="/categories/后端/">后端</a><i class="fa fa-angle-right" aria-hidden="true"></i><i class="fa fa-inbox post-meta__icon" aria-hidden="true"></i><a class="post-meta__categories" href="/categories/后端/Mybatis-Plus/">Mybatis-Plus</a></div></div></div><div class="layout" id="content-inner"><article id="post"><div class="article-container" id="post-content"><h2 id="一、特性"><a href="#一、特性" class="headerlink" title="一、特性"></a>一、特性</h2><ul>
+<li><strong>无侵入</strong>：不影响现有工程</li>
+<li><strong>损耗小</strong>：启动即会注入基本 CURD，性能基本无损耗</li>
+<li><strong>强大的 CRUD 操作</strong>：内置通用 Mapper、通用 Service，仅通过少量配置即可实现大部分单表 CRUD 操作，更有强大的条件构造器，满足各类使用需求</li>
+<li><strong>支持 Lambda 形式调用</strong></li>
+<li><strong>支持主键自动生成</strong>：自由配置 4 种主键策略（内含分布式唯一 ID 生成器-Sequence）</li>
+<li><strong>支持 ActiveRecord 模式</strong>：实体类只需继承 Modal 类即可进行强大的 CRUD 操作</li>
+<li><strong>内置代码生成器</strong>：采用代码或 Maven 插件可快速生成 Mapper、Modal、Service、Controller 层代码，支持模板引擎</li>
+<li><strong>内置分页插件</strong>：基于 MyBatis 屋里分页</li>
+<li><strong>分页插件支持多种数据库</strong>：支持 MySQL、MariaDB、Oracle、DB2、H2、HSQL、SQLite、Postgre、SQLServer 等多种数据库</li>
+<li><strong>内置性能分析插件</strong>：可输出 SQL 语句及其执行时间，快速揪出“慢查询”</li>
+<li><strong>内置全局拦截插件</strong>：提供全表 Delete、Update 操作智能分析阻断，也可自定义拦截规则</li>
+</ul>
+<a id="more"></a>
+
+<h2 id="二、快速开始"><a href="#二、快速开始" class="headerlink" title="二、快速开始"></a>二、快速开始</h2><p>现有一张表 <code>User</code>，其结构如下：</p>
+<table>
+<thead>
+<tr>
+<th>id</th>
+<th>name</th>
+<th>age</th>
+<th>email</th>
+</tr>
+</thead>
+<tbody><tr>
+<td>1</td>
+<td>Jone</td>
+<td>18</td>
+<td><a href="mailto:test1@baomidou.com" target="_blank" rel="noopener">test1@baomidou.com</a></td>
+</tr>
+<tr>
+<td>2</td>
+<td>Jack</td>
+<td>20</td>
+<td><a href="mailto:test2@baomidou.com" target="_blank" rel="noopener">test2@baomidou.com</a></td>
+</tr>
+<tr>
+<td>3</td>
+<td>Tom</td>
+<td>28</td>
+<td><a href="mailto:test3@baomidou.com" target="_blank" rel="noopener">test3@baomidou.com</a></td>
+</tr>
+<tr>
+<td>4</td>
+<td>Sandy</td>
+<td>21</td>
+<td><a href="mailto:test4@baomidou.com" target="_blank" rel="noopener">test4@baomidou.com</a></td>
+</tr>
+<tr>
+<td>5</td>
+<td>Billie</td>
+<td>24</td>
+<td><a href="mailto:test5@baomidou.com" target="_blank" rel="noopener">test5@baomidou.com</a></td>
+</tr>
+</tbody></table>
+<p>其对应的数据库 Schema 如下：</p>
+<pre><code class="sql">DROP TABLE IF EXISTS user;
+
+CREATE TABLE user
+(
+    id BIGINT(20) NOT NULL COMMENT &#39;主键ID&#39;,
+    name VARCHAR(30) NULL DEFAULT NULL COMMENT &#39;姓名&#39;,
+    age INT(11) NULL DEFAULT NULL COMMENT &#39;年龄&#39;,
+    email VARCHAR(50) NULL DEFAULT NULL COMMENT &#39;邮箱&#39;,
+    PRIMARY KEY (id)
+);</code></pre>
+<p>其对应的数据库 Data 脚本如下：</p>
+<pre><code class="sql">DELETE FROM user;
+
+INSERT INTO user (id, name, age, email) VALUES
+(1, &#39;Jone&#39;, 18, &#39;test1@baomidou.com&#39;),
+(2, &#39;Jack&#39;, 20, &#39;test2@baomidou.com&#39;),
+(3, &#39;Tom&#39;, 28, &#39;test3@baomidou.com&#39;),
+(4, &#39;Sandy&#39;, 21, &#39;test4@baomidou.com&#39;),
+(5, &#39;Billie&#39;, 24, &#39;test5@baomidou.com&#39;);</code></pre>
+<h3 id="初始化工程"><a href="#初始化工程" class="headerlink" title="初始化工程"></a>初始化工程</h3><h4 id="添加依赖"><a href="#添加依赖" class="headerlink" title="添加依赖"></a>添加依赖</h4><pre><code class="xml">&lt;project&gt;
+    &lt;parent&gt;
+        &lt;groupId&gt;org.springframework.boot&lt;/groupId&gt;
+        &lt;artifactId&gt;spring-boot-starter-parent&lt;/artifactId&gt;
+        &lt;version&gt;2.3.0.RELEASE&lt;/version&gt;
+        &lt;relativePath/&gt;
+    &lt;/parent&gt;
+
+    &lt;dependencies&gt;
+        &lt;dependency&gt;
+            &lt;groupId&gt;org.springframework.boot&lt;/groupId&gt;
+            &lt;artifactId&gt;spring-boot-starter&lt;/artifactId&gt;
+        &lt;/dependency&gt;
+        &lt;dependency&gt;
+            &lt;groupId&gt;org.springframework.boot&lt;/groupId&gt;
+            &lt;artifactId&gt;spring-boot-starter-test&lt;/artifactId&gt;
+            &lt;scope&gt;test&lt;/scope&gt;
+        &lt;/dependency&gt;
+        &lt;dependency&gt;
+            &lt;groupId&gt;org.projectlombok&lt;/groupId&gt;
+            &lt;artifactId&gt;lombok&lt;/artifactId&gt;
+            &lt;optional&gt;true&lt;/optional&gt;
+        &lt;/dependency&gt;
+        &lt;dependency&gt;
+            &lt;groupId&gt;com.baomidou&lt;/groupId&gt;
+            &lt;artifactId&gt;mybatis-plus-boot-starter&lt;/artifactId&gt;
+            &lt;version&gt;3.3.2&lt;/version&gt;
+        &lt;/dependency&gt;
+        &lt;dependency&gt;
+            &lt;groupId&gt;com.h2database&lt;/groupId&gt;
+            &lt;artifactId&gt;h2&lt;/artifactId&gt;
+            &lt;scope&gt;runtime&lt;/scope&gt;
+        &lt;/dependency&gt;
+    &lt;/dependencies&gt;
+&lt;/project&gt;</code></pre>
+<h4 id="添加配置"><a href="#添加配置" class="headerlink" title="添加配置"></a>添加配置</h4><pre><code class="yml">spring:
+  datasource:
+    username: root
+    password: password
+    driver-class-name: com.mysql.cj.jdbc.Driver
+    schema: classpath:db/schema.sql
+    data: classpath:db/data.sql
+    url: jdbc:mysql://localhost:3306/mp?useUnicode=true&amp;characterEncoding=UTF-8&amp;useSSL=false&amp;serverTimezone=GMT%2B8
+    initialization-mode: always</code></pre>
+<h4 id="开启-Mapper-扫描"><a href="#开启-Mapper-扫描" class="headerlink" title="开启 Mapper 扫描"></a>开启 Mapper 扫描</h4><pre><code class="java">@SpringBootApplication
+@MapperScan(&quot;cn.luokaiii.mall.admin.mapper&quot;)
+public class AdminApplication {
+    public static void main(String[] args) {
+        SpringApplication.run(AdminApplication.class, args);
+    }
+}</code></pre>
+<h3 id="编码"><a href="#编码" class="headerlink" title="编码"></a>编码</h3><pre><code class="java">// User.java
+@Data
+public class User {
+    private Long id;
+    private String name;
+    private Integer age;
+    private String email;
+}</code></pre>
+<p><code>UserMapper.java</code> 中需要加上注解 <code>@Repository</code>，不然 IDEA 会提示无法注入，但实际可运行。</p>
+<pre><code class="java">// UserMapper.java
+@Repository
+public interface UserMapper extends BaseMapper&lt;User&gt; {
+}</code></pre>
+<h3 id="测试"><a href="#测试" class="headerlink" title="测试"></a>测试</h3><pre><code class="java">@RunWith(SpringRunner.class)
+@SpringBootTest
+public class SampleTest {
+
+    @Autowired
+    private UserMapper userMapper;
+
+    @Test
+    public void test() {
+        List&lt;User&gt; userList = userMapper.selectList(null);
+        userList.forEach(System.out::println);
+    }
+}</code></pre>
+<h2 id="三、注解"><a href="#三、注解" class="headerlink" title="三、注解"></a>三、注解</h2><h3 id="TableName"><a href="#TableName" class="headerlink" title="@TableName"></a>@TableName</h3><p>表名注解</p>
+<h3 id="TableId"><a href="#TableId" class="headerlink" title="@TableId"></a>@TableId</h3><p>主键注解</p>
+<h3 id="TableField"><a href="#TableField" class="headerlink" title="@TableField"></a>@TableField</h3><p>字段注解（非主键）</p>
+<h3 id="Version"><a href="#Version" class="headerlink" title="@Version"></a>@Version</h3><p>乐观锁注解</p>
+<h3 id="EnumValue"><a href="#EnumValue" class="headerlink" title="@EnumValue"></a>@EnumValue</h3><p>通枚举类注解（注解在枚举字段上）</p>
+<h3 id="TableLogic"><a href="#TableLogic" class="headerlink" title="@TableLogic"></a>@TableLogic</h3><p>表字段逻辑处理注解（逻辑删除）</p>
+<h3 id="SqlParser"><a href="#SqlParser" class="headerlink" title="@SqlParser"></a>@SqlParser</h3><h3 id="KeySequence"><a href="#KeySequence" class="headerlink" title="@KeySequence"></a>@KeySequence</h3><p>序列主键策略（oracle）</p>
+<h2 id="四、代码生成器"><a href="#四、代码生成器" class="headerlink" title="四、代码生成器"></a>四、代码生成器</h2><p><code>mybatis-plus-generator</code> 详见 <a href="https://mp.baomidou.com/guide/generator.html" target="_blank" rel="noopener">MyBatis-Plus 代码生成器</a>。</p>
+<h2 id="五、条件构造器"><a href="#五、条件构造器" class="headerlink" title="五、条件构造器"></a>五、条件构造器</h2><p>使用 Wrapper 自定义 SQL，使用方法如下：</p>
+<pre><code class="java">// Service.java
+mapper.getAll(Wrappers.&lt;User&gt;lambdaQuery().eq(User::getName, &quot;Jack&quot;));
+
+// 注解方式
+@Select(&quot;select * from user ${ew.customSqlSegment}&quot;)
+List&lt;User&gt; getAll(@Param(Constants.WRAPPER) Wrapper wrapper);
+
+// XML方式
+&lt;select id=&quot;getAll&quot; resultType=&quot;User&quot;&gt;
+    SELECT * FROM user ${ew.customSqlSegment}
+&lt;/select&gt;</code></pre>
+<p>Wrapper 的条件包含：<code>allEq</code>、<code>eq</code>、<code>ne</code>、<code>gt</code>、<code>ge</code>、<code>lt</code>、<code>le</code>、<code>between</code>、<code>notBetween</code>、<code>like</code>、<code>notLike</code>、<code>likeLeft</code>、<code>likeRight</code>、<code>isNull</code>、<code>isNotNull</code>、<code>in</code>、<code>notIn</code>、<code>inSql</code>、<code>notInSql</code>、<code>groupBy</code>、<code>orderByAsc</code>、<code>orderByDesc</code>、<code>orderBy</code>、<code>having</code>、<code>or</code>、<code>and</code>、<code>nested</code>、<code>apply</code>、<code>last</code>、<code>exists</code>、<code>notExists</code></p>
+<h3 id="QueryWrapper"><a href="#QueryWrapper" class="headerlink" title="QueryWrapper"></a>QueryWrapper</h3><p>继承自 AbstractWrapper，可以通过 new QueryWrapper().lambda() 方法获取 LambdaQueryWrapper。</p>
+<p><strong>select</strong></p>
+<pre><code class="java">// 例：select(&quot;id&quot;, &quot;name&quot;, &quot;age&quot;)
+select(String... sqlSelect)
+// 例：select(i -&gt; i.getProperty().startsWith(&quot;test&quot;))
+select(Predicate&lt;TableFieldInfo&gt; predicate)
+
+select(Class&lt;T&gt; entityClass, Predicate&lt;TableFieldInfo&gt; predicate)</code></pre>
+<h3 id="UpdateWrapper"><a href="#UpdateWrapper" class="headerlink" title="UpdateWrapper"></a>UpdateWrapper</h3><p>继承自 AbstractWrapper，可以通过 new UpdateWrapper().lambda() 方法获取 LambdaUpdateWrapper。</p>
+<p><strong>set</strong></p>
+<pre><code class="java">// 例：set(&quot;name&quot;, &quot;zhangsan&quot;)
+// 设置空值：set(&quot;name&quot;, &quot;&quot;)
+// 设置为null：set(&quot;name&quot;, null)
+set(String column, Object val)
+set(boolean condition, String column, Object val)</code></pre>
+<p><strong>setSql</strong></p>
+<pre><code class="java">// 例：setSql(&quot;name = &#39;zhangsan&#39;&quot;)
+setSql(String sql)</code></pre>
+<h3 id="LambdaWrapper"><a href="#LambdaWrapper" class="headerlink" title="LambdaWrapper"></a>LambdaWrapper</h3><p>使用 LambdaWrapper，在 QueryWrapper 中是获取 LambdaQueryWrapper；在 UpdateWrapper 中是获取 LambdaUpdateWrapper。</p>
+<h2 id="六、分页插件"><a href="#六、分页插件" class="headerlink" title="六、分页插件"></a>六、分页插件</h2><h3 id="6-1-配置分页功能"><a href="#6-1-配置分页功能" class="headerlink" title="6.1 配置分页功能"></a>6.1 配置分页功能</h3><pre><code class="java">@Configuration
+@EnableTransactionManagement
+public class MybatisPlusConfig {
+    @Bean
+    public PaginationInterceptor paginationInterceptor() {
+        PaginationInterceptor paginationInterceptor = new PaginationInterceptor();
+        // 设置请求的页面大于最大页后操作，true调回到首页，false继续请求；默认false
+        paginationInterceptor.setOverflow(false);
+        // 设置单页限制数量，默认500，-1 不受限制
+        paginationInterceptor.setLimit(500);
+        // 开启 count 的 join 优化，只针对部分 left join
+        paginationInterceptor.setCountSqlParser(new JsqlParserCountOptimize(true));
+        return paginationInterceptor;
+    }
+}</code></pre>
+<h3 id="6-2-使用"><a href="#6-2-使用" class="headerlink" title="6.2 使用"></a>6.2 使用</h3><pre><code class="java">// UserMapper.java
+@Repository
+public interface UserMapper extends BaseMapper&lt;User&gt; {
+
+    @Select(&quot;select * from user ${ew.customSqlSegment}&quot;)
+    List&lt;User&gt; getAll(Page&lt;User&gt; page, @Param(Constants.WRAPPER) Wrapper&lt;User&gt; wrapper);
+}</code></pre>
+<pre><code class="java">// SampleTest.java
+@RunWith(SpringRunner.class)
+@SpringBootTest
+public class SampleTest {
+    @Autowired
+    private UserMapper userMapper;
+
+    @Test
+    public void test() {
+        List&lt;User&gt; list = userMapper.getAll(new Page&lt;&gt;(0, 2), Wrappers.&lt;User&gt;lambdaQuery());
+        list.forEach(System.out::println);
+    }
+}</code></pre>
+<h2 id="七、Sequence-主键"><a href="#七、Sequence-主键" class="headerlink" title="七、Sequence 主键"></a>七、Sequence 主键</h2><p>Sequence 主键，与 @TableId 的 <code>Input 主键生成策略</code> 配合使用。</p>
+<p>内置支持：DB2KeyGenerator、H2KeyGenerator、KingbaseKeyGenerator、OracleKeyGenerator、PostgreKeyGenerator。还可以通过实现 IKeyGenerator 接口来扩展。</p>
+<h3 id="7-1-配置"><a href="#7-1-配置" class="headerlink" title="7.1 配置"></a>7.1 配置</h3><p><strong>方式一</strong>：使用配置类</p>
+<pre><code class="java">@Bean
+public IKeyGenerator keyGenerator() {
+    return new H2KeyGenerator();
+}</code></pre>
+<p><strong>方式二</strong>：通过 MybatisPlusPropertiesCustomizer 自定义</p>
+<pre><code class="java">@Bean
+public MybatisPlusPropertiesCustomizer plusPropertiesCustomizer() {
+    return plusProperties -&gt; plusProperties
+                .getGlobalConfig()
+                .getDbConfig()
+                .setKeyGenerator(new H2KeyGenerator());
+}</code></pre>
+<h2 id="八、自定义-ID-生成器"><a href="#八、自定义-ID-生成器" class="headerlink" title="八、自定义 ID 生成器"></a>八、自定义 ID 生成器</h2><p>从 3.3.0 开始，默认使用雪花算法+UUID（不含中划线）</p>
+<h3 id="8-1-配置"><a href="#8-1-配置" class="headerlink" title="8.1 配置"></a>8.1 配置</h3><pre><code class="java">@Bean
+public IdentifierGenerator idGenerator() {
+    return new CustomIdGenerator();
+}</code></pre>
+<h2 id="九、插件扩展"><a href="#九、插件扩展" class="headerlink" title="九、插件扩展"></a>九、插件扩展</h2><h3 id="9-1-逻辑删除"><a href="#9-1-逻辑删除" class="headerlink" title="9.1 逻辑删除"></a>9.1 逻辑删除</h3><p>逻辑删除，使用 MyBatis-Plus 自带的方法都会附带逻辑删除功能。想查找到，可以手写 XML。</p>
+<pre><code class="yml">// application.yml
+mybatis-plus:
+  global-config:
+    db-config:
+      logic-delete-field: deleted  #全局逻辑删除字段值 3.3.0开始支持，详情看下面。
+      logic-delete-value: 1 # 逻辑已删除值(默认为 1)
+      logic-not-delete-value: 0 # 逻辑未删除值(默认为 0)</code></pre>
+<pre><code class="java">// 注解表示为逻辑删除字段，支持 Integer、Boolean、LocalDateTime(null/now())
+@TableLogic
+private Boolean deleted;</code></pre>
+<blockquote>
+<p>注：逻辑删除与删除等价，不应该再被查询出来。如果需要在查询时使用，可以用状态表示。</p>
+</blockquote>
+<h3 id="9-2-通用枚举"><a href="#9-2-通用枚举" class="headerlink" title="9.2 通用枚举"></a>9.2 通用枚举</h3><p><strong>声明枚举属性</strong>：</p>
+<pre><code class="java">// 使用 @EnumValue 注解枚举属性
+public enum GradeEnum {
+
+    PRIMARY(1, &quot;小学&quot;),  SECONDORY(2, &quot;中学&quot;),  HIGH(3, &quot;高中&quot;);
+
+    GradeEnum(int code, String descp) {
+        this.code = code;
+        this.descp = descp;
+    }
+
+    @EnumValue//标记数据库存的值是code
+    private final int code;
+    private final String descp;
+}</code></pre>
+<pre><code class="java">// 实现 IEnum 接口
+public enum AgeEnum implements IEnum&lt;Integer&gt; {
+    ONE(1, &quot;一岁&quot;),
+    TWO(2, &quot;二岁&quot;),
+    THREE(3, &quot;三岁&quot;);
+
+    private int value;
+    private String desc;
+
+    @Override
+    public Integer getValue() {
+        return this.value;
+    }
+}</code></pre>
+<p><strong>使用枚举类型</strong>：</p>
+<pre><code class="java">public class User {
+    /**
+     * 名字
+     * 数据库字段: name varchar(20)
+     */
+    private String name;
+
+    /**
+     * 年龄，IEnum接口的枚举处理
+     * 数据库字段：age INT(3)
+     */
+    private AgeEnum age;
+
+
+    /**
+     * 年级，原生枚举（带{@link com.baomidou.mybatisplus.annotation.EnumValue}):
+     * 数据库字段：grade INT(2)
+     */
+    private GradeEnum grade;
+}</code></pre>
+<p><strong>配置扫描通用枚举</strong>：</p>
+<pre><code class="yml">// application.yml
+mybatis-plus:
+    # 支持统配符 * 或者 ; 分割
+    typeEnumsPackage: com.baomidou.springboot.entity.enums</code></pre>
+<h3 id="9-3-字段类型处理器"><a href="#9-3-字段类型处理器" class="headerlink" title="9.3 字段类型处理器"></a>9.3 字段类型处理器</h3><p>字段类型处理器，用于 JavaType 与 JdbcType 之间的转换，用于 PreparedStatement 设置参数值和从 ResultSet 或 CallableStatement 中取出一个值，并通过 TableField 注解快速注入。</p>
+<pre><code class="java">@Data
+@Accessors(chain = true)
+// 注意，必须开启映射注解
+@TableName(autoResultMap = true)
+public class User {
+    private Long id;
+
+    ...
+
+    /**
+     * 类型处理器，二选一
+     */
+    @TableField(typeHandler = JacksonTypeHandler.class)
+    // @TableField(typeHandler = FastjsonTypeHandler.class)
+    private OtherInfo otherInfo;
+}</code></pre>
+<h3 id="9-4-自动填充功能"><a href="#9-4-自动填充功能" class="headerlink" title="9.4 自动填充功能"></a>9.4 自动填充功能</h3><p>字段必须声明 <code>TableField</code> 注解，由属性 <code>fill</code> 选择对应策略。</p>
+<pre><code class="java">public enum FieldFill {
+    /**
+     * 默认不处理
+     */
+    DEFAULT,
+    /**
+     * 插入填充字段
+     */
+    INSERT,
+    /**
+     * 更新填充字段
+     */
+    UPDATE,
+    /**
+     * 插入和更新填充字段
+     */
+    INSERT_UPDATE
+}</code></pre>
+<h3 id="9-5-执行-SQL-分析打印"><a href="#9-5-执行-SQL-分析打印" class="headerlink" title="9.5 执行 SQL 分析打印"></a>9.5 执行 SQL 分析打印</h3><blockquote>
+<p>该插件有性能损耗，不建议生产环境使用。</p>
+</blockquote>
+<pre><code class="xml">&lt;!-- pom.xml 引入依赖 --&gt;
+&lt;dependency&gt;
+    &lt;groupId&gt;p6spy&lt;/groupId&gt;
+    &lt;artifactId&gt;p6spy&lt;/artifactId&gt;
+    &lt;version&gt;版本号&lt;/version&gt;
+&lt;/dependency&gt;</code></pre>
+<p>修改 <code>application.yml</code> 文件，修改 jdbc url 和驱动程序类名：</p>
+<pre><code class="yml">spring:
+  datasource:
+#    driver-class-name: com.mysql.cj.jdbc.Driver
+    driver-class-name: com.p6spy.engine.spy.P6SpyDriver
+    # url: jdbc:mysql://localhost:3306/mp
+    url: jdbc:p6spy:mysql://localhost:3306/mp
+    ...</code></pre>
+<p>该文件可以从官网下载，并稍作修改：</p>
+<pre><code class="properties">&lt;!-- spy.properties --&gt;
+#3.2.1以上使用
+modulelist=com.baomidou.mybatisplus.extension.p6spy.MybatisPlusLogFactory,com.p6spy.engine.outage.P6OutageFactory
+#3.2.1以下使用或者不配置
+#modulelist=com.p6spy.engine.logging.P6LogFactory,com.p6spy.engine.outage.P6OutageFactory
+# 自定义日志打印
+logMessageFormat=com.baomidou.mybatisplus.extension.p6spy.P6SpyLogger
+#日志输出到控制台
+appender=com.baomidou.mybatisplus.extension.p6spy.StdoutLogger
+# 使用日志系统记录 sql
+#appender=com.p6spy.engine.spy.appender.Slf4JLogger
+# 设置 p6spy driver 代理
+deregisterdrivers=true
+# 取消JDBC URL前缀
+useprefix=true
+# 配置记录 Log 例外,可去掉的结果集有error,info,batch,debug,statement,commit,rollback,result,resultset.
+excludecategories=info,debug,result,commit,resultset
+# 日期格式
+dateformat=yyyy-MM-dd HH:mm:ss
+# 实际驱动可多个
+#driverlist=org.h2.Driver
+# 是否开启慢SQL记录
+outagedetection=true
+# 慢SQL记录标准 2 秒
+outagedetectioninterval=2</code></pre>
+<h3 id="9-6-乐观锁插件"><a href="#9-6-乐观锁插件" class="headerlink" title="9.6 乐观锁插件"></a>9.6 乐观锁插件</h3><p><strong>1.插件配置</strong>：</p>
+<pre><code class="java">// MybatisPlusConfig.java
+@Bean
+public OptimisticLockerInterceptor optimisticLockerInterceptor() {
+    return new OptimisticLockerInterceptor();
+}</code></pre>
+<p><strong>2.注解实体字段</strong>：</p>
+<pre><code class="java">// User.java
+public class User {
+    ...
+
+    @Version
+    private Integer version;
+}</code></pre>
+<p><strong>3.测试</strong>：需要带版本号更新，否则不会触发乐观锁</p>
+<pre><code class="java">// SampleTest.java
+@Test
+public void test5() {
+    System.out.println(&quot;第一次查询：&quot; + userMapper.selectById(1L));
+    User user = new User();
+    user.setId(1L);
+    user.setName(&quot;张三&quot;);
+    user.setVersion(0);
+    int i = userMapper.updateById(user);
+    System.out.println(&quot;更新后：&quot; + userMapper.selectById(1L));
+}</code></pre>
+<h3 id="9-7-数据安全保护"><a href="#9-7-数据安全保护" class="headerlink" title="9.7 数据安全保护"></a>9.7 数据安全保护</h3><p><strong>1.生成随机 AES 密钥</strong>，妥善保管密钥，密钥用来解密 YML 中的加密配置：</p>
+<pre><code class="java">@Test
+public void test() {
+    String randomKey = AES.generateRandomKey();
+    String url = AES.encrypt(&quot;jdbc:p6spy:mysql://localhost:3306/mp&quot;, randomKey);
+    String username = AES.encrypt(&quot;root&quot;, randomKey);
+    String pwd = AES.encrypt(&quot;password&quot;, randomKey);
+    System.out.println(&quot;随机秘钥为：&quot; + randomKey);
+    System.out.println(&quot;数据库连接地址为：&quot; + url);
+    System.out.println(&quot;数据库账号为：&quot; + username);
+    System.out.println(&quot;数据库密码为：&quot; + pwd);
+}</code></pre>
+<p><strong>2.替换 YML 配置</strong>，以 mpw 开头，紧接加密内容，YML 中的其它配置也可以使用：</p>
+<pre><code class="yml">// application.yml
+spring:
+  datasource:
+    url: mpw:gon0cDU60gipEpMICPWgUJtGmWxnY1riLGNa7MgmN0GG6rl+8yZYh/LyrdSKyOkBDYgOXWuT6m39aghmRweM0wgzhlbYR08m5iJn/fa+GBv3JKxEy8uLHD4dGoQ3mB7TB1Plr/APTsZD6GIR/RakDme/EaMS5AEnMpFz3EYIV3o=
+    username: mpw:9L9cgOvm5jezPKYgI3DqtA==
+    password: mpw:fParb8j1C9LPKrGSB6gL3w==</code></pre>
+<p><strong>3.项目增加启动参数</strong>：</p>
+<pre><code class="shell">// Jar 启动参数（ idea 设置 Program arguments , 服务器可以设置为启动环境变量 ）
+--mpw.key=d1104d7c3b616f0b</code></pre>
+<h3 id="9-8-多数据源"><a href="#9-8-多数据源" class="headerlink" title="9.8 多数据源"></a>9.8 多数据源</h3><p><code>dynamic-datasource-spring-boot-starter</code> 是一个基于 springboot 的快速集成多数据源的启动器。</p>
+<h4 id="特性"><a href="#特性" class="headerlink" title="特性"></a>特性</h4><ol>
+<li>数据源分组，适用于多种场景：纯粹多库；读写分离；一主多从；混合模式。</li>
+<li>内置敏感参数加密和启动初始化<code>表结构schema</code>、<code>数据库database</code>。</li>
+<li>提供对 Druid、Mybatis-Plus、P6sy、Jndi 的快速集成。</li>
+<li>简化 Druid 和 HikariCp 配置，提供全局参数配置。</li>
+<li>提供自定义数据源来源接口（默认使用 yml 或 properties 配置）。</li>
+<li>提供项目启动后增减数据源方案。</li>
+<li>提供 Mybatis 环境下的 <code>纯读写分离</code> 方案。</li>
+<li>使用 spel 动态参数解析数据源，如从 session，header 或参数中获取数据源。（多租户架构神器）</li>
+<li>提供多层数据源嵌套切换。（ServiceA &gt;&gt;&gt; ServiceB &gt;&gt;&gt; ServiceC，每个 Service 都是不同的数据源）</li>
+<li>提供 不使用注解 而 使用 正则 或 spel 来切换数据源方案（实验性功能）。</li>
+<li>基于 seata 的分布式事务支持。</li>
+</ol>
+<h4 id="使用方法"><a href="#使用方法" class="headerlink" title="使用方法"></a>使用方法</h4><p><strong>1.引入依赖</strong>：</p>
+<pre><code class="xml">&lt;dependency&gt;
+  &lt;groupId&gt;com.baomidou&lt;/groupId&gt;
+  &lt;artifactId&gt;dynamic-datasource-spring-boot-starter&lt;/artifactId&gt;
+  &lt;version&gt;${version}&lt;/version&gt;
+&lt;/dependency&gt;</code></pre>
+<p><strong>2.配置数据源</strong>：</p>
+<pre><code class="yml">spring:
+  datasource:
+    dynamic:
+      primary: master #设置默认的数据源或者数据源组,默认值即为master
+      strict: false #设置严格模式,默认false不启动. 启动后在未匹配到指定数据源时候回抛出异常,不启动会使用默认数据源.
+      datasource:
+        master:
+          url: jdbc:mysql://xx.xx.xx.xx:3306/dynamic
+          username: root
+          password: 123456
+          driver-class-name: com.mysql.jdbc.Driver
+        slave_1:
+          url: jdbc:mysql://xx.xx.xx.xx:3307/dynamic
+          username: root
+          password: 123456
+          driver-class-name: com.mysql.jdbc.Driver
+        slave_2:
+          url: ENC(xxxxx) # 内置加密,使用请查看详细文档
+          username: ENC(xxxxx)
+          password: ENC(xxxxx)
+          driver-class-name: com.mysql.jdbc.Driver
+          schema: db/schema.sql # 配置则生效,自动初始化表结构
+          data: db/data.sql # 配置则生效,自动初始化数据
+          continue-on-error: true # 默认true,初始化失败是否继续
+          separator: &quot;;&quot; # sql默认分号分隔符</code></pre>
+<pre><code class="yml"># 多主多从                      纯粹多库（记得设置primary）                   混合配置
+spring:                               spring:                               spring:
+  datasource:                           datasource:                           datasource:
+    dynamic:                              dynamic:                              dynamic:
+      datasource:                           datasource:                           datasource:
+        master_1:                             mysql:                                master:
+        master_2:                             oracle:                               slave_1:
+        slave_1:                              sqlserver:                            slave_2:
+        slave_2:                              postgresql:                           oracle_1:
+        slave_3:                              h2:                                   oracle_2:</code></pre>
+<p><strong>3.使用@DS切换数据源</strong>：</p>
+<blockquote>
+<p>注：1.没有@Ds注解，使用默认数据源（master）；2.方法注解优于类注解</p>
+</blockquote>
+<pre><code class="java">@Service
+@DS(&quot;slave&quot;)
+public class UserServiceImpl implements UserService {
+
+  @Autowired
+  private JdbcTemplate jdbcTemplate;
+
+  public List&lt;Map&lt;String, Object&gt;&gt; selectAll() {
+    return  jdbcTemplate.queryForList(&quot;select * from user&quot;);
+  }
+
+  @Override
+  @DS(&quot;slave_1&quot;)
+  public List&lt;Map&lt;String, Object&gt;&gt; selectByCondition() {
+    return  jdbcTemplate.queryForList(&quot;select * from user where age &gt;10&quot;);
+  }
+}</code></pre>
+<h3 id="9-9-多租户SQL解析器"><a href="#9-9-多租户SQL解析器" class="headerlink" title="9.9 多租户SQL解析器"></a>9.9 多租户SQL解析器</h3><p>多租户技术或称多重租赁技术，是一种软件架构技术，是实现如何在多用户环境下（多用户一般是面向企业用户）共用相同的系统或程序组件，并且可确保各用户间数据的隔离性。</p>
+<ul>
+<li><a href="https://cloud.tencent.com/developer/article/1494339" target="_blank" rel="noopener">多租户架构实战</a></li>
+</ul>
+</div></article><div class="post-copyright"><div class="post-copyright__author"><span class="post-copyright-meta">文章作者: </span><span class="post-copyright-info"><a href="mailto:undefined">koral</a></span></div><div class="post-copyright__type"><span class="post-copyright-meta">文章链接: </span><span class="post-copyright-info"><a href="http://luokaiii.github.io/2020/06/15/后端/MyBatis/Mybatis-Plus/简介/">http://luokaiii.github.io/2020/06/15/后端/MyBatis/Mybatis-Plus/简介/</a></span></div><div class="post-copyright__notice"><span class="post-copyright-meta">版权声明: </span><span class="post-copyright-info">本博客所有文章除特别声明外，均采用 <a href="https://creativecommons.org/licenses/by-nc-sa/4.0/">CC BY-NC-SA 4.0</a> 许可协议。转载请注明来自 <a href="http://luokaiii.github.io">凯</a>！</span></div></div><div class="post-meta__tag-list"><a class="post-meta__tags" href="/tags/MyBatis/">MyBatis</a><a class="post-meta__tags" href="/tags/MyBatis-Plus/">MyBatis-Plus</a></div><nav id="pagination"><div class="prev-post pull-left"><a href="/2020/12/30/blog/2020/"><i class="fa fa-chevron-left">  </i><span>2020年目标</span></a></div><div class="next-post pull-right"><a href="/2020/06/14/前端/ImmerJS/Immer/"><span>immer.js官方文档笔记</span><i class="fa fa-chevron-right"></i></a></div></nav></div></div><footer><div class="layout" id="footer"><div class="copyright">&copy;2013 - 2020 By koral</div><div class="framework-info"><span>驱动 - </span><a href="http://hexo.io"><span>Hexo</span></a><span class="footer-separator">|</span><span>主题 - </span><a href="https://github.com/Molunerfinn/hexo-theme-melody"><span>Melody</span></a></div><div class="busuanzi"><script async src="//busuanzi.ibruce.info/busuanzi/2.3/busuanzi.pure.mini.js"></script><span id="busuanzi_container_page_pv"><i class="fa fa-file"></i><span id="busuanzi_value_page_pv"></span><span></span></span></div></div></footer><i class="fa fa-arrow-up" id="go-up" aria-hidden="true"></i><script src="https://cdn.jsdelivr.net/npm/animejs@latest/anime.min.js"></script><script src="https://cdn.jsdelivr.net/npm/jquery@latest/dist/jquery.min.js"></script><script src="https://cdn.jsdelivr.net/npm/@fancyapps/fancybox@latest/dist/jquery.fancybox.min.js"></script><script src="https://cdn.jsdelivr.net/npm/velocity-animate@latest/velocity.min.js"></script><script src="https://cdn.jsdelivr.net/npm/velocity-ui-pack@latest/velocity.ui.min.js"></script><script src="/js/utils.js?version=1.7.0"></script><script src="/js/fancybox.js?version=1.7.0"></script><script src="/js/sidebar.js?version=1.7.0"></script><script src="/js/copy.js?version=1.7.0"></script><script src="/js/fireworks.js?version=1.7.0"></script><script src="/js/transition.js?version=1.7.0"></script><script src="/js/scroll.js?version=1.7.0"></script><script src="/js/head.js?version=1.7.0"></script><script>if(/Android|webOS|iPhone|iPod|iPad|BlackBerry/i.test(navigator.userAgent)) {
+  $('#nav').addClass('is-mobile')
+  $('footer').addClass('is-mobile')
+  $('#top-container').addClass('is-mobile')
+}</script></body></html>
