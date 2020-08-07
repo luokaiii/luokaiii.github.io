@@ -7,214 +7,456 @@
     error: '复制错误',
     noSupport: '浏览器不支持'
   }
-} </script></head><body><i class="fa fa-arrow-right" id="toggle-sidebar" aria-hidden="true"></i><div id="sidebar" data-display="false"><div class="author-info"><div class="author-info__avatar text-center"><img src="/img/avatar.png"></div><div class="author-info__name text-center">koral</div><div class="author-info__description text-center">罗凯的博客主页</div><hr><div class="author-info-articles"><a class="author-info-articles__archives article-meta" href="/archives"><span class="pull-left">文章</span><span class="pull-right">270</span></a><a class="author-info-articles__tags article-meta" href="/tags"><span class="pull-left">标签</span><span class="pull-right">38</span></a><a class="author-info-articles__categories article-meta" href="/categories"><span class="pull-left">分类</span><span class="pull-right">48</span></a></div></div></div><nav class="no-bg" id="nav"><div id="page-header"><span class="pull-left"> <a id="site-name" href="/index.html">凯</a></span><i class="fa fa-bars toggle-menu pull-right" aria-hidden="true"></i><span class="pull-right menus">   <a class="site-page" href="/">首页</a><a class="site-page" href="/archives">归档</a><a class="site-page" href="/tags">标签</a><a class="site-page" href="/categories">分类</a><a class="site-page" href="/about">关于我</a></span><span class="pull-right"></span></div><div id="site-info"><div id="site-title">凯</div><div id="site-sub-title">现在的我可以做点什么，让未来的我可以受益匪浅？</div></div></nav><div id="content-outer"><div class="layout" id="content-inner"><div class="recent-post-item article-container"><a class="article-title" href="/2018/09/01/后端/POI/POI生成Excel-图表生成/">POI+XChart图形报告</a><time class="post-meta__date"><i class="fa fa-calendar" aria-hidden="true"></i> 2018-09-01</time><span class="article-meta"><span class="article-meta__separator">|</span><i class="fa fa-inbox article-meta__icon" aria-hidden="true"></i><a class="article-meta__categories" href="/categories/后端/">后端</a><i class="fa fa-angle-right" aria-hidden="true"></i><i class="fa fa-inbox article-meta__icon" aria-hidden="true"></i><a class="article-meta__categories" href="/categories/后端/POI/">POI</a></span><span class="article-meta tags"><span class="article-meta__separator">|</span><i class="fa fa-tag article-meta__icon" aria-hidden="true"></i><a class="article-meta__tags" href="/tags/hide/">hide</a><span class="article-meta__link">-</span><i class="fa fa-tag article-meta__icon" aria-hidden="true"></i><a class="article-meta__tags" href="/tags/POI/">POI</a></span><div class="content"><h1 id="POI-XChart-图形报告"><a href="#POI-XChart-图形报告" class="headerlink" title="POI+XChart 图形报告"></a>POI+XChart 图形报告</h1><h2 id="一、基础示例，写入-Excel"><a href="#一、基础示例，写入-Excel" class="headerlink" title="一、基础示例，写入 Excel"></a>一、基础示例，写入 Excel</h2><p>生成一个图形，并将其写入 Excel 中。</p>
-<pre><code class="java">@Test
-public void generate() throws IOException {
-    String filePath = &quot;C:\\Users\\user\\Desktop\\first.xlsx&quot;;
-    double[] xData = new double[]{0.0, 1.0, 2.0};
-    double[] yData = new double[]{2.0, 1.0, 0.0};
-
-    // Create Chart
-    XYChart chart = QuickChart.getChart(&quot;Sample Chart&quot;, &quot;X&quot;, &quot;Y&quot;, &quot;y(x)&quot;, xData, yData);
-    // 将图表转换为byte数组
-    byte[] bytes = BitmapEncoder.getBitmapBytes(chart, BitmapEncoder.BitmapFormat.PNG);
-
-    try (XSSFWorkbook workbook = new XSSFWorkbook();
-         ByteArrayInputStream inputStream = new ByteArrayInputStream(bytes);
-         FileOutputStream outputStream = new FileOutputStream(filePath)) {
-        // 创建Excel
-        XSSFSheet sheet = workbook.createSheet(&quot;图表&quot;);
-
-        // 写入Excel的指定位置
-        XSSFDrawing shapes = sheet.createDrawingPatriarch();
-        XSSFClientAnchor anchor = new XSSFClientAnchor(0, 0, 0, 0, 0, 0, 6, 10);
-        shapes.createPicture(anchor, sheet.getWorkbook().addPicture(inputStream, HSSFWorkbook.PICTURE_TYPE_PNG));
-
-        // 将Excel写到文件中
-        workbook.write(outputStream);
-    }
-}</code></pre>
-<p><img src="https://images.gitee.com/uploads/images/2019/0121/180421_34b56169_1872936.png" alt="生成的基础图片"></p>
-<blockquote>
-<p>上面我们演示了如何<code>将 XChart生成的图片导入 Excel</code>，下面的部分，都会将生成的图形导出为图片，如果需要导入 Excel 的话，只需要将 chart 套入第一章即可。</p>
+} </script></head><body><i class="fa fa-arrow-right" id="toggle-sidebar" aria-hidden="true"></i><div id="sidebar" data-display="false"><div class="author-info"><div class="author-info__avatar text-center"><img src="/img/avatar.png"></div><div class="author-info__name text-center">koral</div><div class="author-info__description text-center">罗凯的博客主页</div><hr><div class="author-info-articles"><a class="author-info-articles__archives article-meta" href="/archives"><span class="pull-left">文章</span><span class="pull-right">291</span></a><a class="author-info-articles__tags article-meta" href="/tags"><span class="pull-left">标签</span><span class="pull-right">38</span></a><a class="author-info-articles__categories article-meta" href="/categories"><span class="pull-left">分类</span><span class="pull-right">48</span></a></div></div></div><nav class="no-bg" id="nav"><div id="page-header"><span class="pull-left"> <a id="site-name" href="/index.html">凯</a></span><i class="fa fa-bars toggle-menu pull-right" aria-hidden="true"></i><span class="pull-right menus">   <a class="site-page" href="/">首页</a><a class="site-page" href="/archives">归档</a><a class="site-page" href="/tags">标签</a><a class="site-page" href="/categories">分类</a><a class="site-page" href="/about">关于我</a></span><span class="pull-right"></span></div><div id="site-info"><div id="site-title">凯</div><div id="site-sub-title">现在的我可以做点什么，让未来的我可以受益匪浅？</div></div></nav><div id="content-outer"><div class="layout" id="content-inner"><div class="recent-post-item article-container"><a class="article-title" href="/2018/09/28/Git/2.分支管理策略/">Git分支管理策略</a><time class="post-meta__date"><i class="fa fa-calendar" aria-hidden="true"></i> 2018-09-28</time><span class="article-meta"><span class="article-meta__separator">|</span><i class="fa fa-inbox article-meta__icon" aria-hidden="true"></i><a class="article-meta__categories" href="/categories/Git/">Git</a></span><span class="article-meta tags"><span class="article-meta__separator">|</span><i class="fa fa-tag article-meta__icon" aria-hidden="true"></i><a class="article-meta__tags" href="/tags/Git/">Git</a><span class="article-meta__link">-</span><i class="fa fa-tag article-meta__icon" aria-hidden="true"></i><a class="article-meta__tags" href="/tags/hide/">hide</a></span><div class="content"><h1 id="一、使用分支管理的原因"><a href="#一、使用分支管理的原因" class="headerlink" title="一、使用分支管理的原因"></a>一、使用分支管理的原因</h1><h2 id="为了使版本库的演进保持简洁，各分支井井有条"><a href="#为了使版本库的演进保持简洁，各分支井井有条" class="headerlink" title="为了使版本库的演进保持简洁，各分支井井有条"></a>为了使版本库的演进保持简洁，各分支井井有条</h2><h1 id="二、主分支-Master"><a href="#二、主分支-Master" class="headerlink" title="二、主分支 Master"></a>二、主分支 Master</h1><p>提供给用户使用的正式版本，都在该分支上发布，也是 Git 的默认分支</p>
+<h1 id="三、开发分支-Develop"><a href="#三、开发分支-Develop" class="headerlink" title="三、开发分支 Develop"></a>三、开发分支 Develop</h1><p>日常开发使用，在开发完成之后，用于合并到 Master 分支上的。</p>
+<h1 id="四、临时性分支"><a href="#四、临时性分支" class="headerlink" title="四、临时性分支"></a>四、临时性分支</h1><h2 id="1-feature-分支"><a href="#1-feature-分支" class="headerlink" title="1. feature 分支"></a>1. feature 分支</h2><pre><code>功能分支，开发一个新的功能，需要放在feature分支之上，完成功能开发之后，要将该分支合并到 Develop 分支上</code></pre><h2 id="2-release-分支"><a href="#2-release-分支" class="headerlink" title="2. release 分支"></a>2. release 分支</h2><pre><code>预发布分支，是从 Develop 分支上分离出来的，指发布正式版本之前，可能需要预发布分支进行测试</code></pre><h2 id="3-fixbug-分支"><a href="#3-fixbug-分支" class="headerlink" title="3. fixbug 分支"></a>3. fixbug 分支</h2><pre><code>修补BUG分支，是由 Master 分支分离出来的，当Bug修复完毕之后，再合并进 Develop 和 Master 分支</code></pre><h2 id="4-hotfix-分支"><a href="#4-hotfix-分支" class="headerlink" title="4. hotfix 分支"></a>4. hotfix 分支</h2><pre><code>热修分支，用户产品发布后修复 BUG</code></pre><h2 id="5-custom-分支"><a href="#5-custom-分支" class="headerlink" title="5. custom 分支"></a>5. custom 分支</h2><pre><code>自定义分支，根据自定义的需要创建的分支类型</code></pre><h1 id="五、提交命名规范"><a href="#五、提交命名规范" class="headerlink" title="五、提交命名规范"></a>五、提交命名规范</h1><h2 id="常见的操作类型有："><a href="#常见的操作类型有：" class="headerlink" title="常见的操作类型有："></a>常见的操作类型有：</h2><pre><code>1. [IMP]提升改善正在开发或者已经实现的功能
+2. [FIX]修正BUG
+3. [REF]重构一个功能，对功能进行重写
+4. [ADD]添加实现新功能
+5. [REM]删除不需要的文件</code></pre><p><a href="mailto:413026b2687.cdb@sina.cn" target="_blank" rel="noopener">413026b2687.cdb@sina.cn</a> 2st21udn</p>
+</div><hr></div><div class="recent-post-item article-container"><a class="article-title" href="/2018/09/28/Git/3.Git命令/">Git常见命令</a><time class="post-meta__date"><i class="fa fa-calendar" aria-hidden="true"></i> 2018-09-28</time><span class="article-meta"><span class="article-meta__separator">|</span><i class="fa fa-inbox article-meta__icon" aria-hidden="true"></i><a class="article-meta__categories" href="/categories/Git/">Git</a></span><span class="article-meta tags"><span class="article-meta__separator">|</span><i class="fa fa-tag article-meta__icon" aria-hidden="true"></i><a class="article-meta__tags" href="/tags/Git/">Git</a><span class="article-meta__link">-</span><i class="fa fa-tag article-meta__icon" aria-hidden="true"></i><a class="article-meta__tags" href="/tags/hide/">hide</a></span><div class="content"><h2 id="1-初始化仓库"><a href="#1-初始化仓库" class="headerlink" title="1. 初始化仓库"></a>1. 初始化仓库</h2><pre><code>git init</code></pre><h2 id="2-添加文件至仓库"><a href="#2-添加文件至仓库" class="headerlink" title="2. 添加文件至仓库"></a>2. 添加文件至仓库</h2><pre><code>git add .   // 点表示所有，也可以将点换成指定的文件名</code></pre><h2 id="3-本地仓库关联远程仓库"><a href="#3-本地仓库关联远程仓库" class="headerlink" title="3. 本地仓库关联远程仓库"></a>3. 本地仓库关联远程仓库</h2><pre><code>git remote add origin gitee.com/luo-qiang/koral.git</code></pre><h2 id="4-推送到远程"><a href="#4-推送到远程" class="headerlink" title="4. 推送到远程"></a>4. 推送到远程</h2><pre><code>git push -u origin master</code></pre><h2 id="5-切换分支"><a href="#5-切换分支" class="headerlink" title="5. 切换分支"></a>5. 切换分支</h2><pre><code>git checkout origin/develop</code></pre><h1 id="Git-常用命令速查表"><a href="#Git-常用命令速查表" class="headerlink" title="Git 常用命令速查表"></a>Git 常用命令速查表</h1><blockquote>
+<p>分支</p>
 </blockquote>
-<h2 id="二、将生成的图形导出成为图片"><a href="#二、将生成的图形导出成为图片" class="headerlink" title="二、将生成的图形导出成为图片"></a>二、将生成的图形导出成为图片</h2><p>获取随机数的方法也是通用的，这里先给出，具体的数据应该根据业务而定：</p>
-<pre><code class="java">/**
-     * 获取随机数
-     * @param numPoints 随机的数量
-     * @return 随机数组
-     */
-    private double[] getRandomWalk(int numPoints) {
-
-        double[] y = new double[numPoints];
-        y[0] = 0;
-        for (int i = 1; i &lt; y.length; i++) {
-            y[i] = y[i - 1] + Math.random() - .5;
+<pre><code>  master                    # 默认开发分支
+  origin                    # 默认远程版本库
+  Head                      # 默认开发分支
+  Head^                     # Head 的父提交</code></pre><blockquote>
+<p>创建版本库</p>
+</blockquote>
+<pre><code>  git clone &lt;URL&gt;           # 克隆远程版本库
+  git init                  # 初始化本地版本库</code></pre><blockquote>
+<p>修改和提交</p>
+</blockquote>
+<pre><code>  git status                # 查看状态
+  git diff                  # 查看变更内容
+  git add .                 # 跟踪所有改动过的文件
+  git add &lt;file&gt;            # 跟踪指定的文件
+  git mv &lt;old&gt; &lt;new&gt;        # 文件改名
+  git rm &lt;file&gt;             # 删除文件
+  git rm --cached &lt;file&gt;    # 停止跟踪文件但不删除
+  git commit -m &quot;commit message&quot;    #提交所有更新过的文件到本地仓库
+  git commit --amend        # 修改最后一次提交</code></pre><blockquote>
+<p>查看提交历史</p>
+</blockquote>
+<pre><code>  git log                   # 查看提交历史
+  git log -p &lt;file&gt;         # 查看指定文件的提交历史
+  git blame &lt;file&gt;          # 以列表方式查看指定文件的提交历史</code></pre><blockquote>
+<p>撤销</p>
+</blockquote>
+<pre><code>  git reset --hard HEAD     # 撤销工作目录中所有未提交文件的修改内容
+  git checkout HEAD &lt;file&gt;  # 撤销指定的未提交文件的修改内容
+  git revert &lt;commit&gt;       # 撤销指定的提交</code></pre><blockquote>
+<p>分支与标签</p>
+</blockquote>
+<pre><code>  git branch                # 显示所有本地分支
+  git checkout &lt;branch/tag&gt; # 切换到指定分支或标签
+  git branch &lt;new-branch&gt;   # 创建新分支
+  git branch -d &lt;branch&gt;    # 删除本地分支
+  git tag                   # 列出所有本地标签
+  git tag &lt;tagname&gt;         # 基于最新提交创建标签
+  git tag -d &lt;tagname&gt;      # 删除标签</code></pre><blockquote>
+<p>合并与衍合(即变基合并)</p>
+</blockquote>
+<pre><code>  git merge &lt;branch&gt;        # 合并指定分支到当前分支
+  git rebase &lt;branch&gt;       # 衍合指定分支到当前分支</code></pre><blockquote>
+<p>远程操作</p>
+</blockquote>
+<pre><code>  git remote -v             # 查看远程版本库信息
+  git remote show &lt;remote&gt;  # 查看指定远程版本库信息
+  git remote add &lt;remote&gt; &lt;url&gt; # 添加远程版本库
+  git fetch &lt;remote&gt;        # 从远程库获取代码
+  git pull &lt;remote&gt; &lt;branch&gt; # 下载代码及快速合并
+  git push &lt;remote&gt; &lt;branch&gt; # 下载代码及快速合并
+  git push &lt;remote&gt; :&lt;branch/tag-name&gt; # 删除远程分支或便签
+  git push --tags           # 上传所有标签</code></pre><blockquote>
+<p>暂存切换分支</p>
+</blockquote>
+<table>
+<thead>
+<tr>
+<th>–</th>
+<th>–</th>
+</tr>
+</thead>
+<tbody><tr>
+<td></td>
+<td></td>
+</tr>
+</tbody></table>
+<p>git stash save -a “message” 会将 ignore 的文件也进行暂存，当进行 pop 该 stash 时，会出现</p>
+<pre><code class="shell">Could not restore untracked files from stash</code></pre>
+<p>git stash save -u “message” 不会将 ignore 的文件进行暂存</p>
+</div><hr></div><div class="recent-post-item article-container"><a class="article-title" href="/2018/09/08/运维/Linux/1.Ubuntu安全基线检查/">Ubuntu安全基线检查</a><time class="post-meta__date"><i class="fa fa-calendar" aria-hidden="true"></i> 2018-09-08</time><span class="article-meta"><span class="article-meta__separator">|</span><i class="fa fa-inbox article-meta__icon" aria-hidden="true"></i><a class="article-meta__categories" href="/categories/Linux/">Linux</a></span><span class="article-meta tags"><span class="article-meta__separator">|</span><i class="fa fa-tag article-meta__icon" aria-hidden="true"></i><a class="article-meta__tags" href="/tags/hide/">hide</a><span class="article-meta__link">-</span><i class="fa fa-tag article-meta__icon" aria-hidden="true"></i><a class="article-meta__tags" href="/tags/Linux/">Linux</a></span><div class="content"><h1 id="Ubuntu-安全基线检查"><a href="#Ubuntu-安全基线检查" class="headerlink" title="Ubuntu 安全基线检查"></a>Ubuntu 安全基线检查</h1><p>来自于阿里云云安全中心于 2019/07/22 发送的一条安全漏洞检查，其中关于账户、文件等方面的安全检查及修改建议。</p>
+<h2 id="一、设置密码失效时间"><a href="#一、设置密码失效时间" class="headerlink" title="一、设置密码失效时间"></a>一、设置密码失效时间</h2><h3 id="描述"><a href="#描述" class="headerlink" title="描述"></a>描述</h3><p>设置密码失效时间，强制定期修改密码，减少密码被泄露和猜测风险，使用非密码登录(如密钥对)方式可以忽略。</p>
+<h3 id="加固建议"><a href="#加固建议" class="headerlink" title="加固建议"></a>加固建议</h3><p>在 /etc/login.defs 中将 PASS_MAX_DAYS 参数设置为 60-180 之间，如：</p>
+<pre><code class="shell">PASS_MAX_DAYS 90</code></pre>
+<p>需同时执行命令设置 root 密码失效时间：</p>
+<pre><code class="shell">chage --maxdays 90 root</code></pre>
+<h2 id="二、设置密码修改最小间隔时间"><a href="#二、设置密码修改最小间隔时间" class="headerlink" title="二、设置密码修改最小间隔时间"></a>二、设置密码修改最小间隔时间</h2><h3 id="描述-1"><a href="#描述-1" class="headerlink" title="描述"></a>描述</h3><p>设置密码修改最小间隔时间，限制密码更改过于频繁</p>
+<h3 id="加固建议-1"><a href="#加固建议-1" class="headerlink" title="加固建议"></a>加固建议</h3><p>在 /etc/login.defs 中将 PASS_MIN_DAYS 参数设置为 7-14 之间，建议为 7：</p>
+<pre><code class="shell">PASS_MIN_DAYS 7</code></pre>
+<p>需同时执行命令为 root 用户设置：</p>
+<pre><code class="shell">chage --mindays 7 root</code></pre>
+<h2 id="三、密码复杂度检查"><a href="#三、密码复杂度检查" class="headerlink" title="三、密码复杂度检查"></a>三、密码复杂度检查</h2><h3 id="描述-2"><a href="#描述-2" class="headerlink" title="描述"></a>描述</h3><p>检查密码长度和密码是否使用多种字符类型</p>
+<h3 id="加固建议-2"><a href="#加固建议-2" class="headerlink" title="加固建议"></a>加固建议</h3><ol>
+<li><p>安装 PAM 的 cracklib 模块，执行命令：</p>
+<ol>
+<li><blockquote>
+<p>apt-get update &amp;&amp; apt-get install libpam-cracklib</p>
+</blockquote>
+</li>
+</ol>
+</li>
+<li><p>编辑 <code>/etc/pam.d/common-password</code>，在 password requisite pam_cracklib.so 开头的这一行配置 minclass(至少包含小写字母、大写字母、数字、特殊字符等 4 类字符中的 3 类或 4 类) 设置为 3 或 4，即在行末尾加上参数 minclass=3；在 password[success=1 default=ignore] pam_unix.so 开头的这一行增加配置 minlen（密码最小长度）设置为 9-32 位，建议为 9,即在行末尾加上参数 minlen=9</p>
+</li>
+</ol>
+<h2 id="四、检查密码重用是否受限制"><a href="#四、检查密码重用是否受限制" class="headerlink" title="四、检查密码重用是否受限制"></a>四、检查密码重用是否受限制</h2><h3 id="描述-3"><a href="#描述-3" class="headerlink" title="描述"></a>描述</h3><p>强制用户不重用最新使用的密码，降低密码猜测攻击风险</p>
+<h3 id="加固建议-3"><a href="#加固建议-3" class="headerlink" title="加固建议"></a>加固建议</h3><p>编辑 <code>/etc/pam.d/common-password</code>，在 <code>password [success=1 default=ignore] pam_unix.so</code> 开头的这一行增加配置 remember 设置为 5-24 之间，如在行末尾加上 remember=5</p>
+<h2 id="五、设置用户权限配置文件的权限"><a href="#五、设置用户权限配置文件的权限" class="headerlink" title="五、设置用户权限配置文件的权限"></a>五、设置用户权限配置文件的权限</h2><h3 id="描述-4"><a href="#描述-4" class="headerlink" title="描述"></a>描述</h3><p>设置用户权限配置文件的权限</p>
+<h3 id="加固建议-4"><a href="#加固建议-4" class="headerlink" title="加固建议"></a>加固建议</h3><p>执行如下 5 条命令</p>
+<pre><code class="shell">chown root:root /etc/passwd /etc/shadow /etc/group /etc/gshadow
+chmod 0644 /etc/group
+chmod 0644 /etc/passwd
+chmod 0400 /etc/shadow
+chmod 0400 /etc/gshadow</code></pre>
+<h2 id="六、设置-SSH-空闲超时退出时间"><a href="#六、设置-SSH-空闲超时退出时间" class="headerlink" title="六、设置 SSH 空闲超时退出时间"></a>六、设置 SSH 空闲超时退出时间</h2><h3 id="描述-5"><a href="#描述-5" class="headerlink" title="描述"></a>描述</h3><p>设置 SSH 空闲超时退出时间，可降低未授权用户访问其他用户 ssh 会话的风险</p>
+<h3 id="加固建议-5"><a href="#加固建议-5" class="headerlink" title="加固建议"></a>加固建议</h3><p>编辑 <code>/etc/ssh/sshd_config</code>，将 ClientAliveInterval 设置为 300 到 900，即 5-15 分钟，将 ClientAliveCountMax 设置为 0-3 之间。</p>
+<pre><code class="shell">ClientAliveInterval 600
+ClientAliveCountMax 2</code></pre>
+<h3 id="七、检查系统空密码账户"><a href="#七、检查系统空密码账户" class="headerlink" title="七、检查系统空密码账户"></a>七、检查系统空密码账户</h3><h3 id="描述-6"><a href="#描述-6" class="headerlink" title="描述"></a>描述</h3><p>检查系统空密码账户</p>
+<h3 id="加固建议-6"><a href="#加固建议-6" class="headerlink" title="加固建议"></a>加固建议</h3><p>为用户设置一个非空密码，或者执行 <code>passwd -l &lt;username&gt;</code> 锁定用户</p>
+<h2 id="八、禁止-SSH-空密码用户登录"><a href="#八、禁止-SSH-空密码用户登录" class="headerlink" title="八、禁止 SSH 空密码用户登录"></a>八、禁止 SSH 空密码用户登录</h2><h3 id="描述-7"><a href="#描述-7" class="headerlink" title="描述"></a>描述</h3><p>禁止 SSH 空密码用户登录</p>
+<h3 id="加固建议-7"><a href="#加固建议-7" class="headerlink" title="加固建议"></a>加固建议</h3><p>编辑文件 <code>/etc/ssh/sshd_config</code>，将 PermitEmptyPasswords 配置为 no：</p>
+<pre><code class="shell">PermitEmptyPasswords no</code></pre>
+<h2 id="九、确保密码到期警告天数为-7-或更多"><a href="#九、确保密码到期警告天数为-7-或更多" class="headerlink" title="九、确保密码到期警告天数为 7 或更多"></a>九、确保密码到期警告天数为 7 或更多</h2><h3 id="描述-8"><a href="#描述-8" class="headerlink" title="描述"></a>描述</h3><p>确保密码到期警告天数为 7 或更多</p>
+<h3 id="加固建议-8"><a href="#加固建议-8" class="headerlink" title="加固建议"></a>加固建议</h3><p>在 /etc/login.defs 中将 PASS_WARN_AGE 参数设置为 7-14 之间，建议为 7：</p>
+<pre><code class="shell">PASS_WARN_AGE 7</code></pre>
+<p>同时执行命令使 root 用户设置生效：</p>
+<pre><code class="shell">chage --warndays 7 root</code></pre>
+<h2 id="十、确保-SSH-MaxAuthTries-设置为-3-到-6-之间"><a href="#十、确保-SSH-MaxAuthTries-设置为-3-到-6-之间" class="headerlink" title="十、确保 SSH MaxAuthTries 设置为 3 到 6 之间"></a>十、确保 SSH MaxAuthTries 设置为 3 到 6 之间</h2><h3 id="描述-9"><a href="#描述-9" class="headerlink" title="描述"></a>描述</h3><p>设置较低的 Max AuthTrimes 参数将降低 SSH 服务器被暴力攻击成功的风险。</p>
+<h3 id="加固建议-9"><a href="#加固建议-9" class="headerlink" title="加固建议"></a>加固建议</h3><p>在/etc/ssh/sshd_config 中取消 MaxAuthTries 注释符号#，设置最大密码尝试失败次数 3-6，建议为 4：</p>
+<pre><code class="shell">MaxAuthTries 4</code></pre>
+<h2 id="十一、SSHD-强制使用-V2-安全协议"><a href="#十一、SSHD-强制使用-V2-安全协议" class="headerlink" title="十一、SSHD 强制使用 V2 安全协议"></a>十一、SSHD 强制使用 V2 安全协议</h2><h3 id="描述-10"><a href="#描述-10" class="headerlink" title="描述"></a>描述</h3><p>SSHD 强制使用 V2 安全协议</p>
+<p>类型：SSH 服务配置</p>
+<h3 id="加固建议-10"><a href="#加固建议-10" class="headerlink" title="加固建议"></a>加固建议</h3><p>编辑 /etc/ssh/sshd_config 文件以按如下方式设置参数：</p>
+<pre><code class="shell">Protocol 2</code></pre>
+<h2 id="十二、确保-SSH-LogLevel-设置为-INFO"><a href="#十二、确保-SSH-LogLevel-设置为-INFO" class="headerlink" title="十二、确保 SSH LogLevel 设置为 INFO"></a>十二、确保 SSH LogLevel 设置为 INFO</h2><h3 id="描述-11"><a href="#描述-11" class="headerlink" title="描述"></a>描述</h3><p>确保 SSH LogLevel 设置为 INFO,记录登录和注销活动</p>
+<p>类型：服务配置</p>
+<h3 id="加固建议-11"><a href="#加固建议-11" class="headerlink" title="加固建议"></a>加固建议</h3><p>编辑 /etc/ssh/sshd_config 文件以按如下方式设置参数(取消注释):</p>
+<pre><code class="shell">LogLevel INFO</code></pre>
+<h2 id="十三、访问控制配置文件的权限设置"><a href="#十三、访问控制配置文件的权限设置" class="headerlink" title="十三、访问控制配置文件的权限设置"></a>十三、访问控制配置文件的权限设置</h2><h3 id="描述-12"><a href="#描述-12" class="headerlink" title="描述"></a>描述</h3><p>访问控制配置文件的权限设置</p>
+<p>类型：文件权限</p>
+<h3 id="加固建议-12"><a href="#加固建议-12" class="headerlink" title="加固建议"></a>加固建议</h3><p>运行以下 4 条命令：</p>
+<pre><code class="shell">chown root:root /etc/hosts.allow
+chown root:root /etc/hosts.deny
+chmod 644 /etc/hosts.deny
+chmod 644 /etc/hosts.allow</code></pre>
+<h2 id="十四、开启地址空间布局随机化"><a href="#十四、开启地址空间布局随机化" class="headerlink" title="十四、开启地址空间布局随机化"></a>十四、开启地址空间布局随机化</h2><h3 id="描述-13"><a href="#描述-13" class="headerlink" title="描述"></a>描述</h3><p>它将进程的内存空间地址随机化来增大入侵者预测目的地址难度，从而降低进程被成功入侵的风险</p>
+<p>类型：入侵防范</p>
+<h3 id="加固建议-13"><a href="#加固建议-13" class="headerlink" title="加固建议"></a>加固建议</h3><p>在/etc/sysctl.conf 或/etc/sysctl.d/*文件中设置以下参数： <code>kernel.randomize_va_space = 2</code> 执行命令： <code>sysctl -w kernel.randomize_va_space=2</code></p>
+<h2 id="十五、确保-root-是唯一的-UID-为-0-的帐户"><a href="#十五、确保-root-是唯一的-UID-为-0-的帐户" class="headerlink" title="十五、确保 root 是唯一的 UID 为 0 的帐户"></a>十五、确保 root 是唯一的 UID 为 0 的帐户</h2><h3 id="描述-14"><a href="#描述-14" class="headerlink" title="描述"></a>描述</h3><p>除 root 以外其他 UID 为 0 的用户都应该删除，或者为其分配新的 UID</p>
+<p>类型：身份鉴别</p>
+<h3 id="加固建议-14"><a href="#加固建议-14" class="headerlink" title="加固建议"></a>加固建议</h3><p>除 root 以外其他 UID 为 0 的用户(查看命令<code>cat /etc/passwd | awk -F: &#39;($3 == 0) { print $1 }&#39;|grep -v &#39;^root$&#39;</code>)都应该删除，或者为其分配新的 UID</p>
+<h2 id="十六、确保-rsyslog-服务已启用"><a href="#十六、确保-rsyslog-服务已启用" class="headerlink" title="十六、确保 rsyslog 服务已启用"></a>十六、确保 rsyslog 服务已启用</h2><h3 id="描述-15"><a href="#描述-15" class="headerlink" title="描述"></a>描述</h3><p>确保 rsyslog 服务已启用，记录日志用于审计</p>
+<p>类型：安全审计</p>
+<h3 id="加固建议-15"><a href="#加固建议-15" class="headerlink" title="加固建议"></a>加固建议</h3><p>运行以下命令启用 rsyslog 服务：</p>
+<pre><code class="shell">service rsyslog start</code></pre>
+</div><hr></div><div class="recent-post-item article-container"><a class="article-title" href="/2018/09/08/运维/Linux/Ubuntu搭建SS服务器/">Ubuntu搭建SS服务器</a><time class="post-meta__date"><i class="fa fa-calendar" aria-hidden="true"></i> 2018-09-08</time><span class="article-meta"><span class="article-meta__separator">|</span><i class="fa fa-inbox article-meta__icon" aria-hidden="true"></i><a class="article-meta__categories" href="/categories/Linux/">Linux</a></span><span class="article-meta tags"><span class="article-meta__separator">|</span><i class="fa fa-tag article-meta__icon" aria-hidden="true"></i><a class="article-meta__tags" href="/tags/hide/">hide</a><span class="article-meta__link">-</span><i class="fa fa-tag article-meta__icon" aria-hidden="true"></i><a class="article-meta__tags" href="/tags/Linux/">Linux</a></span><div class="content"><h2 id="一、准备工作"><a href="#一、准备工作" class="headerlink" title="一、准备工作"></a>一、准备工作</h2><pre><code>1.更新软件源：
+    sudo apt-get update
+2. 安装 PIP 环境
+    sudo apt-get install python-pip
+3. 使用 pip 命令安装 shadowsocks
+    sudo pip install shadowsocks
+4. 如果出现异常，可以尝试升级pip
+    pip install -U pip</code></pre><h2 id="二、运行"><a href="#二、运行" class="headerlink" title="二、运行"></a>二、运行</h2><pre><code>(1). 命令启动
+    sudo ssserver -p 8388 -k mypassword -m -rc4md5 -d start
+(2). 配置文件
+    vim /etc/shadowsocks.json
+    添加如下内容：
+        {
+        &quot;server&quot;:&quot;my_server_ip&quot;,
+        &quot;server_port&quot;:8388,
+        &quot;local_address&quot;:&quot;127.0.0.1&quot;,
+        &quot;local_port&quot;:1080,
+        &quot;password&quot;:&quot;mypassword&quot;,
+        &quot;timeout&quot;:300,
+        &quot;method&quot;:&quot;rc4-md5&quot;
         }
-        return y;
-    }</code></pre>
-<h3 id="折线图"><a href="#折线图" class="headerlink" title="折线图"></a>折线图</h3><pre><code class="java">@Test
-public void generate() throws IOException {
-    String filePath = &quot;C:\\Users\\user\\Desktop\\first.png&quot;;
+        //多个用户的配置
+        {
+        &quot;server&quot;:&quot;my_server_ip&quot;,
+        &quot;port_password&quot;:{
+        &quot;9001&quot;:&quot;pwd001&quot;,
+        &quot;9002&quot;:&quot;pwd002&quot;,
+        &quot;9003&quot;:&quot;pwd003&quot;
+        },
+        &quot;local_address&quot;:&quot;127.0.0.1&quot;,
+        &quot;local_port&quot;:1080,
+        &quot;timeout&quot;:300,
+        &quot;method&quot;:&quot;rc4-md5&quot;
+        }
+    3. 赋予 shadowsocks.json 文件权限：
+        sudo apt-get install python - m2crypto
+    4. 使用配置文件在后台运行
+        sudo ssserver -c /etc/shadowsocks.json -d start
+    5. 配置开机启动
+        编辑 /etc/rc.local 文件
+            sudo vim /etc/rc.local
+        在 exit 0 上加入：
+            /usr/local/bin/ssserver - c /etc/shadowsocks.json
+            或
+            /usr/local/bin/ssserver -p 8388 -k password -m rc4md5 -d start</code></pre></div><hr></div><div class="recent-post-item article-container"><a class="article-title" href="/2018/09/08/运维/Linux/linux/">《Linux》</a><span class="article-meta"><i class="fa fa-thumb-tack article-meta__icon sticky"></i><span class="sticky">置顶</span><span class="article-meta__separator" style="margin-right: 0.3rem">|</span></span><time class="post-meta__date"><i class="fa fa-calendar" aria-hidden="true"></i> 2018-09-08</time><span class="article-meta"><span class="article-meta__separator">|</span><i class="fa fa-inbox article-meta__icon" aria-hidden="true"></i><a class="article-meta__categories" href="/categories/Linux/">Linux</a></span><span class="article-meta tags"><span class="article-meta__separator">|</span><i class="fa fa-tag article-meta__icon" aria-hidden="true"></i><a class="article-meta__tags" href="/tags/Linux/">Linux</a></span><div class="content"><ul>
+<li><a href="/2018/09/08/运维/Linux/开发环境的初始化/index.html">Linux - 初始化开发环境</a></li>
+<li><a href="/2018/09/08/运维/Linux/1.Ubuntu安全基线检查/index.html">Linux - Aliyun 安全基线检查日志</a></li>
+<li><a href="/2018/09/08/运维/Linux/Linux下后台运行Jar/index.html">Linux - nohup 后台运行 jar</a></li>
+<li><a href="/2018/09/08/运维/Linux/Ubuntu搭建SS服务器/index.html">Linux - 搭建 SS 服务器</a></li>
+</ul>
+</div><hr></div><div class="recent-post-item article-container"><a class="article-title" href="/2018/09/08/运维/Linux/开发环境的初始化/">Linux开发环境初始化</a><time class="post-meta__date"><i class="fa fa-calendar" aria-hidden="true"></i> 2018-09-08</time><span class="article-meta"><span class="article-meta__separator">|</span><i class="fa fa-inbox article-meta__icon" aria-hidden="true"></i><a class="article-meta__categories" href="/categories/Linux/">Linux</a></span><span class="article-meta tags"><span class="article-meta__separator">|</span><i class="fa fa-tag article-meta__icon" aria-hidden="true"></i><a class="article-meta__tags" href="/tags/hide/">hide</a><span class="article-meta__link">-</span><i class="fa fa-tag article-meta__icon" aria-hidden="true"></i><a class="article-meta__tags" href="/tags/Linux/">Linux</a></span><div class="content"><h1 id="在-Linux-环境下初始化-Java-开发环境-Ubuntu16-0"><a href="#在-Linux-环境下初始化-Java-开发环境-Ubuntu16-0" class="headerlink" title="在 Linux 环境下初始化 Java 开发环境(Ubuntu16.0)"></a>在 Linux 环境下初始化 Java 开发环境(Ubuntu16.0)</h1><h2 id="一、安装-JDK"><a href="#一、安装-JDK" class="headerlink" title="一、安装 JDK"></a>一、安装 JDK</h2><pre><code class="java">安装 OpenJdk ：
+sudo apt-get update     //更新软件包列表
+sudo apt-get install openjdk-8-jdk      //安装openjdk-8-jdk
+java -version       //查看 java 版本</code></pre>
+<p>安装完后的 jdk 和 jre 放在”/usr/lib/jvm/java-8…”</p>
+<h2 id="二、安装-Tomcat"><a href="#二、安装-Tomcat" class="headerlink" title="二、安装 Tomcat"></a>二、安装 Tomcat</h2><ol>
+<li><p>到官网下载最新的 tomcat：使用 wget 命令下载</p>
+<pre><code class="js">http://mirror.bit.edu.cn/apache/tomcat/tomcat-8/v8.5.31/bin/apache-tomcat-8.5.31.tar.gz</code></pre>
+</li>
+<li><p>解压 tomcat：</p>
+<ol>
+<li>tar -zxvf apache-tomcat-8…</li>
+<li>注意：下载的压缩文件格式，对应着不同的解压缩命令</li>
+</ol>
+</li>
+<li><p>配置 tomcat：</p>
+<ol>
+<li><p>将解压后的文件夹修改文件夹 apache-tomcat… 为 tomcat:</p>
+<pre><code class="js">mv apache-tomcat... tomcat  //mv命令可以进行移动也可以进行文件名的修改</code></pre>
+</li>
+<li><p>将 tomcat 目录 复制到指定目录：</p>
+<pre><code class="js">sudo cp -r tomcat /opt</code></pre>
+</li>
+<li><p>进入 tomcat 目录：</p>
+<pre><code class="js">cd / opt / tomcat;</code></pre>
+</li>
+<li><p>打开启动的脚本文件</p>
+<pre><code class="js">sudo vi ./bin/startup.sh</code></pre>
+</li>
+<li><p>添加 jdk 和 jre 变量</p>
+<pre><code class="js">JAVA_HOME=/usr/lib/jvm/java-8-openjdk-amd64
+JRE_HOME=/usr/lib/jvm/java-8-openjdk-amd64/jre
+CLASS_PATH=.:$JAVA_HOME/lib/dt.jar:$JAVA_HOME/lib/tools.jar:$JRE_HOME/lib
+PATH=$JAVA_HOME/bin:$JRE_HOME/bin:$PATH
+TOMCAT_HOME=/opt/apache-tomcat-8.5.32</code></pre>
+<p>注意：这里的目录以真实存在的为主</p>
+</li>
+</ol>
+</li>
+<li><p>启动，测试:</p>
+<ol>
+<li>开启 tomcat : <code>sudo ./bin/startup.sh</code></li>
+<li>进入浏览器，查看 tomcat 是否配置和安装成功</li>
+<li>关闭 tomcat : <code>sudo ./bin/shutdown.sh</code></li>
+</ol>
+</li>
+</ol>
+<h2 id="三、安装-Git"><a href="#三、安装-Git" class="headerlink" title="三、安装 Git"></a>三、安装 Git</h2><pre><code>sudo apt-get install git-core
+除安装之外，其他命令同 Windows 下。</code></pre><h2 id="四、安装-MySQL-服务"><a href="#四、安装-MySQL-服务" class="headerlink" title="四、安装 MySQL 服务"></a>四、安装 MySQL 服务</h2><ol>
+<li><p>安装 mysql</p>
+<pre><code class="shell">sudo apt-get install mysql-server
+sudo apt install mysql-client
+sudo apt install libmysqlclient-dev</code></pre>
+</li>
+<li><p>测试是否安装成功</p>
+<pre><code class="shell">sudo netstat -tap | grep mysql</code></pre>
+<p>安装成功之后，显示下图：</p>
+<p><img src="http://static.zybuluo.com/xiangwanpeng/p81fqgz0k1782qpwbrtnhmce/image_1b6gfob7m1u4f2i0av11afd92m9.png" alt="安装成功后显示的图片"></p>
+</li>
+<li><p>测试 进入 mysql 服务</p>
+<pre><code class="shell">mysql -uroot -p</code></pre>
+</li>
+<li><p>设置 mysql 允许远程访问</p>
+<pre><code class="shell">sudo vi /etc/mysql/mysql.conf.d/mysqld.cnf</code></pre>
+<p><img src="http://static.zybuluo.com/xiangwanpeng/sl82tvc6dyqod7j2cnw4qi5b/image_1b6ggmf7h1d6b17o11iha1j1nhtem.png" alt="shell图"></p>
+<pre><code>将其中的 bind-address = 127.0.0.1 注释掉
+:wq 保存退出</code></pre></li>
+<li><p>进入 mysql 服务，执行授权命令：</p>
+<pre><code class="shell">grant all on *.* to root@&#39;%&#39; identified by &#39;密码&#39; with grant option;
+flush privileges;</code></pre>
+</li>
+<li><p>退出并重启 mysql 服务</p>
+<pre><code class="shell">service mysql restart</code></pre>
+</li>
+<li><p>远程连接测试</p>
+</li>
+</ol>
+<h2 id="四-2、卸载-MySQL-服务"><a href="#四-2、卸载-MySQL-服务" class="headerlink" title="四-2、卸载 MySQL 服务"></a>四-2、卸载 MySQL 服务</h2><ol>
+<li>查看 mysql 安装了哪些依赖<pre><code class="js">dpkg --list | grep mysql</code></pre>
+</li>
+<li>卸载 mysql-common 包<pre><code class="js">sudo apt-get remove mysql-common</code></pre>
+</li>
+<li>具体看版本<pre><code class="js">sudo apt-get autoremove --purge mysql-server-5.0</code></pre>
+</li>
+<li>再次查看 ，同 1</li>
+<li>清除残留数据：<pre><code class="js">dpkg -l |grep ^rc|awk &#39;{print $2}&#39; |sudo xargs dpkg -P</code></pre>
+</li>
+</ol>
+<h2 id="五、安装-MongoDB"><a href="#五、安装-MongoDB" class="headerlink" title="五、安装 MongoDB"></a>五、安装 MongoDB</h2><h3 id="1-安装-MongoDB"><a href="#1-安装-MongoDB" class="headerlink" title="1. 安装 MongoDB"></a>1. 安装 MongoDB</h3><ol>
+<li><p>导入软件源的公钥</p>
+<pre><code class="js">sudo apt-key adv --keyserver hkp://keyserver.ubuntu.com:80 --recv EA312927</code></pre>
+</li>
+<li><p>为 mongodb 创建软件源 list 文件</p>
+<pre><code class="js">echo &quot;deb http://repo.mongodb.org/apt/ubuntu xenial/mongodb-org/3.2 multiverse&quot; | sudo tee /etc/apt/sources.list.d/mongodb-org-3.2.list</code></pre>
+</li>
+<li><p>更新本地包数据库</p>
+<pre><code class="js">sudo apt-get update</code></pre>
+</li>
+<li><p>安装 MongoDB 包</p>
+<pre><code class="js">sudo apt-get install -y mongodb-org</code></pre>
+</li>
+<li><p>配置启动文件</p>
+<ol>
+<li>打开或者创建 <code>/lib/systemd/system/mongod.service</code></li>
+<li>加入以下配置：</li>
+</ol>
+<pre><code class="js">[Unit]
+Description=High-performance, schema-free document-oriented database
+After=network.target
+Documentation=https://docs.mongodb.org/manual
 
-    XYChart chart = new XYChartBuilder().xAxisTitle(&quot;X&quot;).yAxisTitle(&quot;Y&quot;).width(600).height(400).build();
-    chart.getStyler().setYAxisMin(-10.0);
-    chart.getStyler().setYAxisMax(10.0);
-    XYSeries series = chart.addSeries(&quot;新绿&quot;, null, getRandomWalk(200));
-    series.setMarker(SeriesMarkers.NONE);
+[Service]
+User=mongodb
+Group=mongodb
+ExecStart=/usr/bin/mongod --quiet --config /etc/mongod.conf
 
-    BitmapEncoder.saveBitmap(chart, filePath, BitmapEncoder.BitmapFormat.PNG);
-}</code></pre>
-<p>效果如下：</p>
-<p><img src="https://images.gitee.com/uploads/images/2019/0121/181356_e145341d_1872936.png" alt="输入图片说明" title="屏幕截图.png"></p>
-<h2 id="面积图"><a href="#面积图" class="headerlink" title="面积图"></a>面积图</h2><pre><code class="java">@Test
-public void generate() throws IOException {
-    String filePath = &quot;C:\\Users\\user\\Desktop\\first.png&quot;;
+[Install]
+WantedBy=multi-user.target</code></pre>
+</li>
+<li><p>启动停止</p>
+<pre><code class="js">sudo service mongod start
+sudo service mongod stop
+sudo service mongod restart</code></pre>
+</li>
+<li><p>卸载 mongodb</p>
+<pre><code class="js">sudo service mongod stop        // 停止mongodb
+sudo apt-get purge mongodb-org* // 卸载软件
+sudo rm -r /var/log/mongodb     // 删除日志文件和数据库
+sudo rm -r /var/lib/mongodb</code></pre>
+</li>
+</ol>
+<h3 id="3-配置-MongoDB"><a href="#3-配置-MongoDB" class="headerlink" title="3. 配置 MongoDB"></a>3. 配置 MongoDB</h3><ol>
+<li><p>进入 MongoDB</p>
+<pre><code class="js">mongo;</code></pre>
+</li>
+<li><p>切换到 admin 数据库</p>
+<pre><code class="js">use admin</code></pre>
+</li>
+<li><p>创建一个管理员用户</p>
+<pre><code class="js">db.createUser({
+  user: &quot;admin&quot;,
+  pwd: &quot;123456&quot;,
+  roles: [{ role: &quot;userAdminAnyDatabase&quot;, db: &quot;admin&quot; }]
+});</code></pre>
+</li>
+<li><p>打开登录认证</p>
+<pre><code class="js">security: authorization: enabled;</code></pre>
+<p>启用登录后，需要使用 db.auth(‘admin’,’123456’)认证后，才能操作</p>
+</li>
+<li><p>启用远程连接</p>
+<p>打开 <code>/etc/mongd.conf</code> 找到 <code>bindIp</code>，注释掉；<br>或者将<code>bindIp</code> 换成 <code>0.0.0.0</code></p>
+<p>———————2018 年 9 月 10 日更新——- 1.导入软件源的公钥<br>sudo apt-key adv –keyserver hkp://keyserver.ubuntu.com:80 –recv EA312927 2.为 mongodb 创建软件源 list 文件<br>echo “deb <a href="http://repo.mongodb.org/apt/ubuntu" target="_blank" rel="noopener">http://repo.mongodb.org/apt/ubuntu</a> xenial/mongodb-org/3.2 multiverse” | sudo tee /etc/apt/sources.list.d/mongodb-org-3.2.list 3.更新软件源，安装 mongodb<br>sudo apt-get update<br>sudo apt-get install -y mongodb-org 4.配置启动文件<br>打开或者创建 /lib/systemd/system/mongod.service<br>加入以下配置：<br>[Unit]<br>Description=High-performance, schema-free document-oriented database<br>After=network.target<br>Documentation=<a href="https://docs.mongodb.org/manual" target="_blank" rel="noopener">https://docs.mongodb.org/manual</a></p>
+<pre><code>[Service]
+User=mongodb
+Group=mongodb
+ExecStart=/usr/bin/mongod --quiet --config /etc/mongod.conf
 
-    // Create Chart
-    XYChart chart = new XYChartBuilder().width(800).height(600).title(getClass().getSimpleName()).xAxisTitle(&quot;X&quot;).yAxisTitle(&quot;Y&quot;).build();
+[Install]
+WantedBy=multi-user.target</code></pre><p>5.启动停止<br>sudo service mongod start<br>sudo service mongod stop<br>sudo service mongod restart 6.卸载 mongodb<br>sudo service mongod stop // 停止 mongodb<br>sudo apt-get purge mongodb-org* // 卸载软件<br>sudo rm -r /var/log/mongodb // 删除日志文件和数据库<br>sudo rm -r /var/lib/mongodb</p>
+</li>
+</ol>
+<blockquote>
+<p><a href="https://www.chengxulvtu.com/2017/07/16/install-mongodb-on-ubuntu-16-04.html" target="_blank" rel="noopener">https://www.chengxulvtu.com/2017/07/16/install-mongodb-on-ubuntu-16-04.html</a></p>
+</blockquote>
+</div><hr></div><div class="recent-post-item article-container"><a class="article-title" href="/2018/09/08/运维/Linux/Linux下后台运行Jar/">Linux后台部署Jar</a><time class="post-meta__date"><i class="fa fa-calendar" aria-hidden="true"></i> 2018-09-08</time><span class="article-meta"><span class="article-meta__separator">|</span><i class="fa fa-inbox article-meta__icon" aria-hidden="true"></i><a class="article-meta__categories" href="/categories/Linux/">Linux</a></span><span class="article-meta tags"><span class="article-meta__separator">|</span><i class="fa fa-tag article-meta__icon" aria-hidden="true"></i><a class="article-meta__tags" href="/tags/hide/">hide</a><span class="article-meta__link">-</span><i class="fa fa-tag article-meta__icon" aria-hidden="true"></i><a class="article-meta__tags" href="/tags/Linux/">Linux</a></span><div class="content"><h1 id="部署"><a href="#部署" class="headerlink" title="部署"></a>部署</h1><ol>
+<li><p>安装 git</p>
+</li>
+<li><p>拉取代码</p>
+<ol>
+<li><p>如果不是通过 ssh 的方式拉取的话，每次都需要输入密码</p>
+</li>
+<li><p>解决方法：进入项目目录，输入：</p>
+</li>
+<li><pre><code class="shell">git config --global credential.helper store</code></pre>
+</li>
+<li><p>再重新 pull 一次，输入密码之后，以后就不用输入密码了</p>
+</li>
+</ol>
+</li>
+<li><p>创建可执行文件，用于拉取代码、构建项目</p>
+<ol>
+<li>需要给可执行文件授权：chmod 777 build.sh</li>
+<li>注意权限的大小</li>
+</ol>
+</li>
+<li><p>创建可执行文件，用于执行 jar 包</p>
+<ol>
+<li><p>执行文件可以直接通过 java -jar 来执行</p>
+</li>
+<li><p>但是我们需要后台执行 ，用到 nohup</p>
+</li>
+<li><pre><code class="shell">nohup /usr/local/node/bin/node /www/im/chat.js &gt;&gt; /usr/local/node/output.log 2&gt;&amp;1 &amp;</code></pre>
+</li>
+<li><p>第二种，是将 jar 包注册为服务，通过 service stop 等方法启动停止</p>
+</li>
+</ol>
+</li>
+<li><p>部署前端项目</p>
+<ol>
+<li><p>安装 nodejs</p>
+</li>
+<li><p>安装 yarn，注意，17.0 以上的 ubuntu 需要先卸载 cmdtest</p>
+<ol>
+<li><pre><code class="java">sudo apt remove cmdtest</code></pre>
+</li>
+<li><pre><code class="java">curl -sS https://dl.yarnpkg.com/debian/pubkey.gpg | sudo apt-key add -
+echo &quot;deb https://dl.yarnpkg.com/debian/ stable main&quot; | sudo tee /etc/apt/sources.list.d/yarn.list
+sudo apt-get update &amp;&amp; sudo apt-get install yarn</code></pre>
+</li>
+</ol>
+</li>
+</ol>
+</li>
+</ol>
+<p>重启：</p>
+<pre><code class="java">#!/bin/bash
+ps -ef | grep &quot;/opt/hifox/PGC/teacherApp/teacherapp-0.0.1-SNAPSHOT.jar&quot; | grep -v grep | awk &#39;{print $2}&#39; | xargs kill -15
 
-    // Customize Chart
-    chart.getStyler().setLegendPosition(Styler.LegendPosition.InsideNE);
-    chart.getStyler().setAxisTitlesVisible(false);
-    chart.getStyler().setDefaultSeriesRenderStyle(XYSeries.XYSeriesRenderStyle.Area);
+pid=`ps -ef | grep &quot;/opt/hifox/PGC/teacherApp/teacherapp-0.0.1-SNAPSHOT.jar&quot; | grep -v grep | awk &#39;{print $2}&#39;`
+while( ! test -z $pid)
+do
+ sleep 1
+ pid=`ps -ef | grep &quot;/opt/hifox/PGC/teacherApp/teacherapp-0.0.1-SNAPSHOT.jar&quot; | grep -v grep | awk &#39;{print $2}&#39;`
+echo -n &quot;*&quot;
 
-    // Series
-    chart.addSeries(&quot;a&quot;, new double[] { 0, 3, 5, 7, 9 }, new double[] { -3, 5, 9, 6, 5 });
-    chart.addSeries(&quot;b&quot;, new double[] { 0, 2, 4, 6, 9 }, new double[] { -1, 6, 4, 0, 4 });
-    chart.addSeries(&quot;c&quot;, new double[] { 0, 1, 3, 8, 9 }, new double[] { -2, -1, 1, 0, 1 });
+done
 
-    BitmapEncoder.saveBitmap(chart, filePath, BitmapEncoder.BitmapFormat.PNG);
-}</code></pre>
-<p><img src="https://images.gitee.com/uploads/images/2019/0121/182136_bba89ebf_1872936.png" alt="面积图" title="屏幕截图.png"></p>
-<h2 id="饼状图"><a href="#饼状图" class="headerlink" title="饼状图"></a>饼状图</h2><pre><code class="java">@Test
-public void generate() throws IOException {
-    String filePath = &quot;C:\\Users\\user\\Desktop\\first.png&quot;;
-
-    PieChart chart = new PieChartBuilder().width(800).height(600).title(getClass().getSimpleName()).build();
-
-    // Customize Chart
-    Color[] sliceColors = new Color[] { new Color(224, 68, 14), new Color(230, 105, 62), new Color(236, 143, 110), new Color(243, 180, 159), new Color(246, 199, 182) };
-    chart.getStyler().setSeriesColors(sliceColors);
-
-    // Series
-    chart.addSeries(&quot;Gold&quot;, 24);
-    chart.addSeries(&quot;Silver&quot;, 21);
-    chart.addSeries(&quot;Platinum&quot;, 39);
-    chart.addSeries(&quot;Copper&quot;, 17);
-    chart.addSeries(&quot;Zinc&quot;, 40);
-
-    BitmapEncoder.saveBitmap(chart, filePath, BitmapEncoder.BitmapFormat.PNG);
-}</code></pre>
-<p><img src="https://koral-home.oss-cn-beijing.aliyuncs.com/bignzhuang.png" alt="饼状图"></p>
-<h2 id="散点图"><a href="#散点图" class="headerlink" title="散点图"></a>散点图</h2><pre><code class="java">@Test
-public void generate() throws IOException {
-    String filePath = &quot;C:\\Users\\user\\Desktop\\first.png&quot;;
-
-    // Create Chart
-    XYChart chart = new XYChartBuilder().width(800).height(600).build();
-
-    // Customize Chart
-    chart.getStyler().setDefaultSeriesRenderStyle(XYSeries.XYSeriesRenderStyle.Scatter);
-    chart.getStyler().setChartTitleVisible(false);
-    chart.getStyler().setLegendPosition(Styler.LegendPosition.InsideSW);
-    chart.getStyler().setMarkerSize(16);
-
-    // Series
-    List&lt;Double&gt; xData = new LinkedList&lt;Double&gt;();
-    List&lt;Double&gt; yData = new LinkedList&lt;Double&gt;();
-    Random random = new Random();
-    int size = 1000;
-    for (int i = 0; i &lt; size; i++) {
-        xData.add(random.nextGaussian() / 1000);
-        yData.add(-1000000 + random.nextGaussian());
-    }
-    chart.addSeries(&quot;Gaussian Blob&quot;, xData, yData);
-
-
-    BitmapEncoder.saveBitmap(chart, filePath, BitmapEncoder.BitmapFormat.PNG);
-}</code></pre>
-<p><img src="https://koral-home.oss-cn-beijing.aliyuncs.com/sandian.png" alt="散点图"></p>
-<h2 id="柱状图"><a href="#柱状图" class="headerlink" title="柱状图"></a>柱状图</h2><pre><code class="java">@Test
-public void generate() throws IOException {
-    String filePath = &quot;C:\\Users\\user\\Desktop\\first.png&quot;;
-
-    // Create Chart
-    CategoryChart chart = new CategoryChartBuilder().width(800).height(600).title(&quot;Score Histogram&quot;).xAxisTitle(&quot;Score&quot;).yAxisTitle(&quot;Number&quot;).build();
-
-    // Customize Chart
-    chart.getStyler().setLegendPosition(Styler.LegendPosition.InsideNW);
-    chart.getStyler().setHasAnnotations(true);
-
-    // Series
-    chart.addSeries(&quot;test 1&quot;, Arrays.asList(0, 1, 2, 3, 4), Arrays.asList(4, 5, 9, 6, 5));
-
-    BitmapEncoder.saveBitmap(chart, filePath, BitmapEncoder.BitmapFormat.PNG);
-}</code></pre>
-<p><img src="https://koral-home.oss-cn-beijing.aliyuncs.com/zhuzhuang.png" alt="柱状图"></p>
-<h2 id="堆叠图"><a href="#堆叠图" class="headerlink" title="堆叠图"></a>堆叠图</h2><pre><code class="java">@Test
-public void generate() throws IOException {
-    String filePath = &quot;C:\\Users\\user\\Desktop\\first.png&quot;;
-
-    // Create Chart
-    CategoryChart chart = new CategoryChartBuilder().width(800).height(600).title(&quot;Score Histogram&quot;).xAxisTitle(&quot;Mean&quot;).yAxisTitle(&quot;Count&quot;).build();
-
-    // Customize Chart
-    chart.getStyler().setLegendPosition(Styler.LegendPosition.InsideNW);
-    chart.getStyler().setAvailableSpaceFill(.96);
-    chart.getStyler().setOverlapped(true);
-
-    // Series
-    Histogram histogram1 = new Histogram(getGaussianData(10000), 20, -20, 20);
-    Histogram histogram2 = new Histogram(getGaussianData(5000), 20, -20, 20);
-    chart.addSeries(&quot;histogram 1&quot;, histogram1.getxAxisData(), histogram1.getyAxisData());
-    chart.addSeries(&quot;histogram 2&quot;, histogram2.getxAxisData(), histogram2.getyAxisData());
-
-    BitmapEncoder.saveBitmap(chart, filePath, BitmapEncoder.BitmapFormat.PNG);
-}
-
-private List&lt;Double&gt; getGaussianData(int count) {
-    List&lt;Double&gt; data = new ArrayList&lt;Double&gt;(count);
-    Random r = new Random();
-    for (int i = 0; i &lt; count; i++) {
-        data.add(r.nextGaussian() * 10);
-    }
-    return data;
-}</code></pre>
-<p><img src="https://koral-home.oss-cn-beijing.aliyuncs.com/duidie.png" alt="堆叠图"></p>
-<h2 id="百分比堆叠柱状图"><a href="#百分比堆叠柱状图" class="headerlink" title="百分比堆叠柱状图"></a>百分比堆叠柱状图</h2><p>这个其实是堆叠图的变种。</p>
-<pre><code class="java">@Test
-public void generate() throws IOException {
-    String filePath = &quot;C:\\Users\\user\\Desktop\\first.png&quot;;
-
-    CategoryChart chart = new CategoryChartBuilder().width(800).height(600).build();
-    chart.getStyler().setChartBackgroundColor(Color.WHITE);
-    chart.getStyler().setLegendBorderColor(Color.WHITE);
-    chart.getStyler().setLegendPosition(Styler.LegendPosition.InsideNW);
-    chart.getStyler().setAvailableSpaceFill(0.7);
-    chart.getStyler().setStacked(true);
-
-    List&lt;String&gt; xData = Arrays.asList(&quot;学院A&quot;, &quot;学院B&quot;, &quot;学院C&quot;,&quot;学院D&quot;,&quot;学院E&quot;);
-
-    chart.addSeries(&quot;得分A&quot;, xData, getGaussianData(5));
-    chart.addSeries(&quot;得分B&quot;, xData, getGaussianData(5));
-    chart.addSeries(&quot;得分C&quot;, xData, getGaussianData(5));
-    chart.addSeries(&quot;得分D&quot;, xData, getGaussianData(5));
-
-    BitmapEncoder.saveBitmap(chart, filePath, BitmapEncoder.BitmapFormat.PNG);
-}
-
-private List&lt;Double&gt; getGaussianData(int count) {
-    List&lt;Double&gt; data = new ArrayList&lt;Double&gt;(count);
-    for (int i = 0; i &lt; count; i++) {
-        data.add(RandomUtils.nextDouble(0,1) * 10);
-    }
-    return data;
-}</code></pre>
-<p><img src="https://koral-home.oss-cn-beijing.aliyuncs.com/baifenbi.png" alt="百分比堆叠柱状图"></p>
-<p>参考：</p>
-<p>(1) <a href="https://knowm.org/open-source/xchart/xchart-example-code/index.html" target="_blank" rel="noopener">XChart Demo</a></p>
-<p>(2) 自己</p>
+nohup java -jar teacherapp-0.0.1-SNAPSHOT.jar &gt;/dev/null 2&gt;&amp;1 &amp;</code></pre>
+<p>以外部配置文件启动 jar<br>加载 properties 优先级：</p>
+<pre><code>        1. jar包同级目录下，config目录下的application.properties
+              jar包同级目录下的application.properties
+                   3. 最后才是jar内的application.properties
+                   依旧是 java -jar app.jar，默认按照上面的加载优先级加载。
+                   也可以手动指定 java -jar app.jar -Dspring.config.location=application.properties</code></pre><p>注意：cas 和 common 需要是同一个数据库</p>
+<p>通过 maven 的默认仓库位置在 /root/.m2 ，这个文件夹可能被隐藏了</p>
+<p>查找方式为：find / .m2 ，表示查找”/“目录下的 .m2 文件或文件夹</p>
+<p>注意：当在 shell 终端中使用 ctrl+s 表示暂停当前命令行窗口，取消暂停为：ctrl+q</p>
+</div><hr></div><div class="recent-post-item article-container"><a class="article-title" href="/2018/09/01/分布式/SpringCloud/全链路监控/">待学习</a><time class="post-meta__date"><i class="fa fa-calendar" aria-hidden="true"></i> 2018-09-01</time><span class="article-meta"><span class="article-meta__separator">|</span><i class="fa fa-inbox article-meta__icon" aria-hidden="true"></i><a class="article-meta__categories" href="/categories/Java/">Java</a></span><span class="article-meta tags"><span class="article-meta__separator">|</span><i class="fa fa-tag article-meta__icon" aria-hidden="true"></i><a class="article-meta__tags" href="/tags/hide/">hide</a></span><div class="content"><h1 id="待学习博客"><a href="#待学习博客" class="headerlink" title="待学习博客"></a>待学习博客</h1><p><a href="https://juejin.im/post/5a7a9e0af265da4e914b46f1" target="_blank" rel="noopener">全链路监控</a></p>
+</div><hr></div><div class="recent-post-item article-container"><a class="article-title" href="/2018/09/01/分布式/SpringCloud/微服务重构/">SpringCloud-微服务重构</a><time class="post-meta__date"><i class="fa fa-calendar" aria-hidden="true"></i> 2018-09-01</time><span class="article-meta"><span class="article-meta__separator">|</span><i class="fa fa-inbox article-meta__icon" aria-hidden="true"></i><a class="article-meta__categories" href="/categories/Java/">Java</a></span><span class="article-meta tags"><span class="article-meta__separator">|</span><i class="fa fa-tag article-meta__icon" aria-hidden="true"></i><a class="article-meta__tags" href="/tags/hide/">hide</a><span class="article-meta__link">-</span><i class="fa fa-tag article-meta__icon" aria-hidden="true"></i><a class="article-meta__tags" href="/tags/Spring-Cloud/">Spring Cloud</a></span><div class="content"><h1 id="微服务重构"><a href="#微服务重构" class="headerlink" title="微服务重构"></a>微服务重构</h1><p>在重构应用中，可以通过以下几个方法梳理：</p>
+<ol>
+<li>每个 Rest 服务都是一个潜在的微服务</li>
+<li>每个 SOAP web 服务或 EJB 都是一个潜在的微服务</li>
+<li>使用领域驱动设计(domain-driven design)发现企业资产，这些资产可能是微服务。</li>
+</ol>
+<p>在<strong>重构数据</strong>方面，需要考虑以下几个方面：(1)<strong>寻找与其他数据关联不大的数据孤岛</strong>，检查系统的实体-关系图；如果有与其他数据断开的数据，就是一个潜在的数据重构点；(2)<strong>数据表非规范化</strong>，对高规范化数据库中非规范化一些数据表以将数据重组为更大的逻辑块，其目的是增加数据冗余度使其更容易被打破；(3)<strong>反向批数据更新</strong>，对数据重构时需要考虑数据重构失败时可批量地将新数据反向导回旧的数据模式；(4)<strong>使用主数据管理</strong>，对被广泛使用的数据实体组成一个单一的一致性视图，并开发相应的微服务与主数据一起工作；(5)在 SQL 数据库中<strong>寻找存储在 BLOB(二进制大对象)字段</strong>类型中的代码，转而将这些对象存储在 NoSQL 数据库中，例如以键值(Key-value)存储方式存储；(6)寻找活跃的记录模式，与其他无关的 Flat 对象，使用文档模式数据库进行存储，例如 Cloudant 或 Mongo 等。</p>
+<p>微服务重构后还需要<strong>重新打包应用</strong>，包括：(1)<strong>分割应用的 EAR 文件</strong>并打包成独立的 WAR 文件；(2)应用“<strong>一个容器一个服务</strong>”，分别部署每个 WAR 文件至其自有的 WebSphereLiberty 实例运行时或 Docker 容器中；(3)<strong>分别构建、部署和管理</strong>,为每个 WAR 文件使用独立的 DevOps 管线,每个 WAR 文件独立伸缩和管理。</p>
 </div><hr></div><div class="recent-post-item article-container"><a class="article-title" href="/2018/09/01/后端/POI/POI生成Excel-表格抽象工具类/">POI生成Excel工具类</a><time class="post-meta__date"><i class="fa fa-calendar" aria-hidden="true"></i> 2018-09-01</time><span class="article-meta"><span class="article-meta__separator">|</span><i class="fa fa-inbox article-meta__icon" aria-hidden="true"></i><a class="article-meta__categories" href="/categories/后端/">后端</a><i class="fa fa-angle-right" aria-hidden="true"></i><i class="fa fa-inbox article-meta__icon" aria-hidden="true"></i><a class="article-meta__categories" href="/categories/后端/POI/">POI</a></span><span class="article-meta tags"><span class="article-meta__separator">|</span><i class="fa fa-tag article-meta__icon" aria-hidden="true"></i><a class="article-meta__tags" href="/tags/hide/">hide</a><span class="article-meta__link">-</span><i class="fa fa-tag article-meta__icon" aria-hidden="true"></i><a class="article-meta__tags" href="/tags/POI/">POI</a></span><div class="content"><p>该工具类中，包含：创建表格（带默认样式）、自定义样式（通过重写 setDefaultStyle 和 setFirstCellStyle）、合并单元格、宽度自适应等。</p>
 <pre><code class="java">/**
  * Excel操作工具类
@@ -430,1332 +672,7 @@ public class CellRange {
         return new CellRange(firstRow, lastRow, firstCol, lastCol);
     }
 }</code></pre>
-</div><hr></div><div class="recent-post-item article-container"><a class="article-title" href="/2018/09/01/后端/POI/POI生成原生Excel-雷达图/">使用POI结合Excel的行列生成雷达图</a><time class="post-meta__date"><i class="fa fa-calendar" aria-hidden="true"></i> 2018-09-01</time><span class="article-meta"><span class="article-meta__separator">|</span><i class="fa fa-inbox article-meta__icon" aria-hidden="true"></i><a class="article-meta__categories" href="/categories/后端/">后端</a><i class="fa fa-angle-right" aria-hidden="true"></i><i class="fa fa-inbox article-meta__icon" aria-hidden="true"></i><a class="article-meta__categories" href="/categories/后端/POI/">POI</a></span><span class="article-meta tags"><span class="article-meta__separator">|</span><i class="fa fa-tag article-meta__icon" aria-hidden="true"></i><a class="article-meta__tags" href="/tags/hide/">hide</a><span class="article-meta__link">-</span><i class="fa fa-tag article-meta__icon" aria-hidden="true"></i><a class="article-meta__tags" href="/tags/POI/">POI</a></span><div class="content"><h2 id="一、先放最后输出的结果图："><a href="#一、先放最后输出的结果图：" class="headerlink" title="一、先放最后输出的结果图："></a>一、先放最后输出的结果图：</h2><p><img src="https://koral-home.oss-cn-beijing.aliyuncs.com/blog/RadarChart.png" alt="雷达图"></p>
-<h2 id="二、代码"><a href="#二、代码" class="headerlink" title="二、代码"></a>二、代码</h2><pre><code class="java">    @Test
-    public void createRadar() throws IOException {
-        final String sheetName = &quot;RadarChart&quot;;
-        try (XSSFWorkbook workbook = new XSSFWorkbook()) {
-            XSSFSheet sheet = workbook.createSheet(sheetName);
-
-            for (int i = 0; i &lt; 16; i++) {
-                XSSFRow row = sheet.createRow(i);
-                XSSFCell cell = row.createCell(0);
-                cell.setCellValue(i + &quot;行&quot;);
-                XSSFCell cell1 = row.createCell(1);
-                cell1.setCellValue(RandomUtils.nextInt(0, 20));
-            }
-
-            XSSFDrawing drawing = sheet.createDrawingPatriarch();
-            XSSFClientAnchor anchor = drawing.createAnchor(0, 0, 0, 0, 2, 0, 7, 16);
-            XSSFChart chart = drawing.createChart(anchor);
-
-            CTChart ctChart = chart.getCTChart();
-            ctChart.addNewAutoTitleDeleted().setVal(false);
-//            ctChart.addNewPlotVisOnly().setVal(true);
-//            ctChart.addNewDispBlanksAs().setVal(STDispBlanksAs.GAP);
-//            ctChart.addNewShowDLblsOverMax().setVal(false);
-
-            CTPlotArea ctPlotArea = ctChart.addNewPlotArea();
-            ctPlotArea.addNewLayout();
-//            CTShapeProperties ctShapeProperties = ctPlotArea.addNewSpPr();
-//            ctShapeProperties.addNewNoFill();
-//            ctShapeProperties.addNewLn().addNewNoFill();
-//            ctShapeProperties.addNewEffectLst();
-
-            CTRadarChart ctRadarChart = ctPlotArea.addNewRadarChart();
-            // 这两个值应该对应着catAx和valAx
-            ctRadarChart.addNewAxId().setVal(123456);
-            ctRadarChart.addNewAxId().setVal(123457);
-            // 分类标签等是否显示
-            CTDLbls ctdLbls = ctRadarChart.addNewDLbls();
-            ctdLbls.addNewShowLegendKey().setVal(false);
-            ctdLbls.addNewShowVal().setVal(false);
-            ctdLbls.addNewShowCatName().setVal(false);
-            ctdLbls.addNewShowSerName().setVal(false);
-            ctdLbls.addNewShowPercent().setVal(false);
-            ctdLbls.addNewShowBubbleSize().setVal(false);
-            // 不允许自定义颜色、以及标记的形状
-            ctRadarChart.addNewRadarStyle().setVal(STRadarStyle.MARKER);
-            ctRadarChart.addNewVaryColors().setVal(false);
-
-            CTRadarSer ctRadarSer = ctRadarChart.addNewSer();
-            ctRadarSer.addNewIdx().setVal(0);
-            ctRadarSer.addNewOrder().setVal(0);
-            CTLineProperties ctLineProperties = ctRadarSer.addNewSpPr().addNewLn();
-            ctLineProperties.addNewRound();
-            ctLineProperties.addNewSolidFill().addNewSchemeClr().setVal(STSchemeColorVal.ACCENT_1);
-            // 渲染数据
-            ctRadarSer.addNewCat().addNewStrRef().setF(sheetName + &quot;!$A$1:$A$6&quot;);
-            ctRadarSer.addNewVal().addNewNumRef().setF(sheetName + &quot;!$B$2:$B$6&quot;);
-
-            CTCatAx ctCatAx = ctPlotArea.addNewCatAx();
-            ctCatAx.addNewAxId().setVal(123456);
-            ctCatAx.addNewScaling().addNewOrientation().setVal(MIN_MAX);
-            ctCatAx.addNewDelete().setVal(false);
-            ctCatAx.addNewAxPos().setVal(STAxPos.B);
-            ctCatAx.addNewCrossAx().setVal(123457);
-            ctCatAx.addNewMajorTickMark().setVal(STTickMark.NONE);
-            ctCatAx.addNewMinorTickMark().setVal(STTickMark.NONE);
-            ctCatAx.addNewTickLblPos().setVal(NEXT_TO);
-//            ctCatAx.addNewCrosses().setVal(STCrosses.AUTO_ZERO);
-//            ctCatAx.addNewAuto().setVal(true);
-//            ctCatAx.addNewLblAlgn().setVal(STLblAlgn.CTR);
-//            ctCatAx.addNewLblOffset().setVal(100);
-//            ctCatAx.addNewNoMultiLvlLbl().setVal(false);
-            // spPr
-//            CTShapeProperties ctShapeProperties = ctCatAx.addNewSpPr();
-//            ctShapeProperties.addNewNoFill();
-//            ctShapeProperties.addNewEffectLst();
-//            CTLineProperties ctLineProperties1 = ctShapeProperties.addNewLn();
-//            ctLineProperties1.setW(9525);
-//            ctLineProperties1.setCap(STLineCap.FLAT);
-//            ctLineProperties1.setCmpd(STCompoundLine.SNG);
-//            ctLineProperties1.setAlgn(STPenAlignment.CTR);
-//            CTSchemeColor ctSchemeColor = ctLineProperties1.addNewSolidFill().addNewSchemeClr();
-//            ctSchemeColor.setVal(STSchemeColorVal.TX_1);
-//            ctSchemeColor.addNewLumMod().setVal(15000);
-//            ctSchemeColor.addNewLumOff().setVal(85000);
-            // txPr
-//            CTTextBody ctTextBody = ctCatAx.addNewTxPr();
-//            CTTextCharacterProperties ctTextCharacterProperties = ctTextBody.addNewP().addNewPPr().addNewDefRPr();
-//            ctTextCharacterProperties.setU(STTextUnderlineType.NONE);
-//            ctTextCharacterProperties.setStrike(STTextStrikeType.NO_STRIKE);
-//            ctTextCharacterProperties.setSz(900);
-//            ctTextCharacterProperties.setB(false);
-//            ctTextCharacterProperties.setI(false);
-//            ctTextCharacterProperties.setBaseline(0);
-//            ctTextCharacterProperties.setKern(1200);
-//            CTSchemeColor ctSchemeColor = ctTextCharacterProperties.addNewSolidFill().addNewSchemeClr();
-//            ctSchemeColor.setVal(STSchemeColorVal.TX_1);
-//            ctSchemeColor.addNewLumMod().setVal(65000);
-//            ctSchemeColor.addNewLumOff().setVal(35000);
-
-
-            CTValAx ctValAx = ctPlotArea.addNewValAx();
-            ctValAx.addNewAxId().setVal(123457);
-            ctValAx.addNewScaling().addNewOrientation().setVal(MIN_MAX);
-            ctValAx.addNewDelete().setVal(false);
-            ctValAx.addNewAxPos().setVal(STAxPos.L);
-            ctValAx.addNewCrossAx().setVal(123456);
-            ctValAx.addNewMajorTickMark().setVal(STTickMark.NONE);
-            ctValAx.addNewMinorTickMark().setVal(STTickMark.NONE);
-            ctValAx.addNewTickLblPos().setVal(NEXT_TO);
-//            ctValAx.addNewCrosses().setVal(STCrosses.AUTO_ZERO);
-//            ctValAx.addNewCrossBetween().setVal(STCrossBetween.BETWEEN);
-            // 设置网格线
-            CTShapeProperties ctShapeProperties = ctValAx.addNewMajorGridlines().addNewSpPr();
-            CTLineProperties ctLineProperties1 = ctShapeProperties.addNewLn();
-            ctLineProperties1.setW(9525);
-            ctLineProperties1.setCap(STLineCap.FLAT);
-            ctLineProperties1.setCmpd(STCompoundLine.SNG);
-            ctLineProperties1.setAlgn(STPenAlignment.CTR);
-            // 值的纵坐标线，不显示
-            ctValAx.addNewSpPr().addNewLn().addNewNoFill();
-            // 值的纵坐标值，不显示
-            ctValAx.addNewTxPr().addNewP().addNewPPr().addNewDefRPr().addNewNoFill();
-
-            System.out.println(ctChart);
-
-            FileOutputStream outputStream =
-                    new FileOutputStream(&quot;C:\\Users\\user\\Desktop\\out.xlsx&quot;);
-            workbook.write(outputStream);
-            outputStream.flush();
-            outputStream.close();
-        }
-    }</code></pre>
-<h2 id="三、XML-结构"><a href="#三、XML-结构" class="headerlink" title="三、XML 结构"></a>三、XML 结构</h2><p>以上生成的图表，归根结底是属于 XML 的一种，通过 <code>RadarChart</code> 的继承关系可以看到，它其实是 <code>XmlObject</code>的一种实现。</p>
-<pre><code class="xml">&lt;xml-fragment xmlns:char=&quot;http://schemas.openxmlformats.org/drawingml/2006/chart&quot; xmlns:main=&quot;http://schemas.openxmlformats.org/drawingml/2006/main&quot;&gt;
-  &lt;char:autoTitleDeleted val=&quot;false&quot;/&gt;
-  &lt;char:plotArea&gt;
-    &lt;char:layout/&gt;
-  &lt;/char:plotArea&gt;
-  &lt;char:plotArea&gt;
-    &lt;char:layout/&gt;
-    &lt;char:radarChart&gt;
-      &lt;char:radarStyle val=&quot;marker&quot;/&gt;
-      &lt;char:varyColors val=&quot;false&quot;/&gt;
-      &lt;char:ser&gt;
-        &lt;char:idx val=&quot;0&quot;/&gt;
-        &lt;char:order val=&quot;0&quot;/&gt;
-        &lt;char:spPr&gt;
-          &lt;main:ln&gt;
-            &lt;main:solidFill&gt;
-              &lt;main:schemeClr val=&quot;accent1&quot;/&gt;
-            &lt;/main:solidFill&gt;
-            &lt;main:round/&gt;
-          &lt;/main:ln&gt;
-        &lt;/char:spPr&gt;
-        &lt;char:cat&gt;
-          &lt;char:strRef&gt;
-            &lt;char:f&gt;RadarChart!$A$1:$A$6&lt;/char:f&gt;
-          &lt;/char:strRef&gt;
-        &lt;/char:cat&gt;
-        &lt;char:val&gt;
-          &lt;char:numRef&gt;
-            &lt;char:f&gt;RadarChart!$B$2:$B$6&lt;/char:f&gt;
-          &lt;/char:numRef&gt;
-        &lt;/char:val&gt;
-      &lt;/char:ser&gt;
-      &lt;char:dLbls&gt;
-        &lt;char:showLegendKey val=&quot;false&quot;/&gt;
-        &lt;char:showVal val=&quot;false&quot;/&gt;
-        &lt;char:showCatName val=&quot;false&quot;/&gt;
-        &lt;char:showSerName val=&quot;false&quot;/&gt;
-        &lt;char:showPercent val=&quot;false&quot;/&gt;
-        &lt;char:showBubbleSize val=&quot;false&quot;/&gt;
-      &lt;/char:dLbls&gt;
-      &lt;char:axId val=&quot;123456&quot;/&gt;
-      &lt;char:axId val=&quot;123457&quot;/&gt;
-    &lt;/char:radarChart&gt;
-    &lt;char:catAx&gt;
-      &lt;char:axId val=&quot;123456&quot;/&gt;
-      &lt;char:scaling&gt;
-        &lt;char:orientation val=&quot;minMax&quot;/&gt;
-      &lt;/char:scaling&gt;
-      &lt;char:delete val=&quot;false&quot;/&gt;
-      &lt;char:axPos val=&quot;b&quot;/&gt;
-      &lt;char:majorTickMark val=&quot;none&quot;/&gt;
-      &lt;char:minorTickMark val=&quot;none&quot;/&gt;
-      &lt;char:tickLblPos val=&quot;nextTo&quot;/&gt;
-      &lt;char:crossAx val=&quot;123457&quot;/&gt;
-    &lt;/char:catAx&gt;
-    &lt;char:valAx&gt;
-      &lt;char:axId val=&quot;123457&quot;/&gt;
-      &lt;char:scaling&gt;
-        &lt;char:orientation val=&quot;minMax&quot;/&gt;
-      &lt;/char:scaling&gt;
-      &lt;char:delete val=&quot;false&quot;/&gt;
-      &lt;char:axPos val=&quot;l&quot;/&gt;
-      &lt;char:majorGridlines&gt;
-        &lt;char:spPr&gt;
-          &lt;main:ln w=&quot;9525&quot; cap=&quot;flat&quot; cmpd=&quot;sng&quot; algn=&quot;ctr&quot;/&gt;
-        &lt;/char:spPr&gt;
-      &lt;/char:majorGridlines&gt;
-      &lt;char:majorTickMark val=&quot;none&quot;/&gt;
-      &lt;char:minorTickMark val=&quot;none&quot;/&gt;
-      &lt;char:tickLblPos val=&quot;nextTo&quot;/&gt;
-      &lt;char:spPr&gt;
-        &lt;main:ln&gt;
-          &lt;main:noFill/&gt;
-        &lt;/main:ln&gt;
-      &lt;/char:spPr&gt;
-      &lt;char:txPr&gt;
-        &lt;main:p&gt;
-          &lt;main:pPr&gt;
-            &lt;main:defRPr&gt;
-              &lt;main:noFill/&gt;
-            &lt;/main:defRPr&gt;
-          &lt;/main:pPr&gt;
-        &lt;/main:p&gt;
-      &lt;/char:txPr&gt;
-      &lt;char:crossAx val=&quot;123456&quot;/&gt;
-    &lt;/char:valAx&gt;
-  &lt;/char:plotArea&gt;
-  &lt;char:plotVisOnly val=&quot;true&quot;/&gt;
-&lt;/xml-fragment&gt;</code></pre>
-<h2 id="四、工具类，我放在-POI-生成原生图表-工具类-中"><a href="#四、工具类，我放在-POI-生成原生图表-工具类-中" class="headerlink" title="四、工具类，我放在 POI 生成原生图表-工具类 中"></a>四、工具类，我放在 <a href="www.baidu.com">POI 生成原生图表-工具类</a> 中</h2></div><hr></div><div class="recent-post-item article-container"><a class="article-title" href="/2018/09/01/后端/POI/POI生成原生Excel-工具类/">POI生成原生Excel-工具类</a><time class="post-meta__date"><i class="fa fa-calendar" aria-hidden="true"></i> 2018-09-01</time><span class="article-meta"><span class="article-meta__separator">|</span><i class="fa fa-inbox article-meta__icon" aria-hidden="true"></i><a class="article-meta__categories" href="/categories/后端/">后端</a><i class="fa fa-angle-right" aria-hidden="true"></i><i class="fa fa-inbox article-meta__icon" aria-hidden="true"></i><a class="article-meta__categories" href="/categories/后端/POI/">POI</a></span><span class="article-meta tags"><span class="article-meta__separator">|</span><i class="fa fa-tag article-meta__icon" aria-hidden="true"></i><a class="article-meta__tags" href="/tags/hide/">hide</a><span class="article-meta__link">-</span><i class="fa fa-tag article-meta__icon" aria-hidden="true"></i><a class="article-meta__tags" href="/tags/POI/">POI</a></span><div class="content"><pre><code class="java">package com.pgc.diagnose.utils;
-
-import org.apache.poi.xssf.usermodel.XSSFChart;
-import org.apache.poi.xssf.usermodel.XSSFClientAnchor;
-import org.apache.poi.xssf.usermodel.XSSFDrawing;
-import org.apache.poi.xssf.usermodel.XSSFSheet;
-import org.openxmlformats.schemas.drawingml.x2006.chart.*;
-import org.openxmlformats.schemas.drawingml.x2006.main.*;
-
-import java.util.Iterator;
-import java.util.List;
-
-import static org.openxmlformats.schemas.drawingml.x2006.chart.STOrientation.MIN_MAX;
-import static org.openxmlformats.schemas.drawingml.x2006.chart.STTickLblPos.NEXT_TO;
-
-public class DrawUtils {
-
-    public static void drawRadarChart(XSSFSheet sheet, Position start, Position end,
-                                      List&lt;String&gt; dataRef) {
-        XSSFDrawing drawing = sheet.createDrawingPatriarch();
-        XSSFClientAnchor anchor = drawing.createAnchor(0, 0, 100, 50, start.getX(), start.getY(), end.getX(), end.getY());
-        XSSFChart chart = drawing.createChart(anchor);
-
-        CTChart ctChart = chart.getCTChart();
-        CTPlotArea ctPlotArea = ctChart.addNewPlotArea();
-
-        CTRadarChart ctRadarChart = ctPlotArea.addNewRadarChart();
-        // 不允许自定义颜色、以及标记的形状
-//        ctRadarChart.addNewRadarStyle().setVal(STRadarStyle.MARKER);
-        ctRadarChart.addNewVaryColors().setVal(false);
-
-        setAxIds(ctRadarChart);
-        setCatAx(ctPlotArea);
-        setRadarValAx(ctPlotArea);
-        setDataLabel(ctRadarChart);
-        paddingData(ctRadarChart, dataRef);
-    }
-
-    /**
-     * 散点图
-     */
-    public static void drawScatterChart(XSSFSheet sheet, Position start, Position end,
-                                        List&lt;String&gt; dataRef) {
-        XSSFDrawing drawing = sheet.createDrawingPatriarch();
-        XSSFClientAnchor anchor = drawing.createAnchor(0, 0, 100, 50, start.getX(), start.getY(), end.getX(), end.getY());
-
-        XSSFChart chart = drawing.createChart(anchor);
-        chart.setTitleText(sheet.getSheetName());
-
-        CTChart ctChart = chart.getCTChart();
-        CTPlotArea ctPlotArea = ctChart.getPlotArea();
-
-        CTScatterChart scatterChart = ctPlotArea.addNewScatterChart();
-        scatterChart.addNewVaryColors().setVal(true);
-
-        setAxIds(scatterChart);
-        setCatAx(ctPlotArea);
-        setScatterValAx(ctPlotArea);
-        setDataLabel(scatterChart);
-        paddingData(scatterChart, dataRef);
-        // 去掉连接线
-        ctPlotArea.getScatterChartArray(0).getSerArray(0).addNewSpPr().addNewLn().addNewNoFill();
-    }
-
-    /**
-     * 折线图
-     */
-    public static void drawCTLineChart(XSSFSheet sheet, Position start, Position end, List&lt;String&gt; xString, List&lt;String&gt; serTxName,
-                                       List&lt;String&gt; dataRef) {
-        // todo 折线图换成堆叠图
-        XSSFDrawing drawing = sheet.createDrawingPatriarch();
-        XSSFClientAnchor anchor = drawing.createAnchor(0, 0, 0, 0, start.getX(), start.getY(), end.getX(), end.getY());
-
-        XSSFChart chart = drawing.createChart(anchor);
-
-        CTChart ctChart = chart.getCTChart();
-        CTPlotArea ctPlotArea = ctChart.getPlotArea();
-        CTLineChart ctLineChart = ctPlotArea.addNewLineChart();
-
-        ctLineChart.addNewVaryColors().setVal(true);
-
-        // telling the Chart that it has axis and giving them Ids
-        setAxIds(ctLineChart);
-        // set cat axis
-        setCatAx(ctPlotArea);
-        // set val axis
-        setValAx(ctPlotArea);
-        // legend
-        setLegend(ctChart);
-        // set data lable
-        setDataLabel(ctLineChart);
-        // set chart title
-        setChartTitle(chart, sheet.getSheetName());
-
-        paddingData(ctLineChart, xString, serTxName, dataRef);
-    }
-
-    /*
-     * @param position 图表坐标 起始行，起始列，终点行
-     *
-     * @param xString 横坐标
-     *
-     * @param serTxName 图形示例
-     *
-     * @param dataRef 柱状图数据范围 sheetName!$A$1:$A$12
-     */
-    public static void drawBarChart(XSSFSheet sheet, Position start, Position end, List&lt;String&gt; xString, List&lt;String&gt; serTxName,
-                                    List&lt;String&gt; dataRef) {
-
-        XSSFDrawing drawing = sheet.createDrawingPatriarch();
-        XSSFClientAnchor anchor = drawing.createAnchor(0, 0, 0, 0, start.getX(), start.getY(), end.getX(), end.getY());
-
-        XSSFChart chart = drawing.createChart(anchor);
-
-        CTChart ctChart = chart.getCTChart();
-        CTPlotArea ctPlotArea = ctChart.getPlotArea();
-        CTBarChart ctBarChart = ctPlotArea.addNewBarChart();
-
-        ctBarChart.addNewVaryColors().setVal(false);
-        ctBarChart.addNewBarDir().setVal(STBarDir.COL);
-
-        // telling the Chart that it has axis and giving them Ids
-        setAxIds(ctBarChart);
-        // set cat axis
-        setCatAx(ctPlotArea);
-        // set val axis
-        setValAx(ctPlotArea);
-        // add legend and set legend position
-        setLegend(ctChart);
-        // set data lable
-        setDataLabel(ctBarChart);
-        // set chart title
-        setChartTitle(chart, sheet.getSheetName());
-        // padding data to chart
-        paddingData(ctBarChart, xString, serTxName, dataRef);
-    }
-
-    private static void paddingData(CTBarChart ctBarChart, List&lt;String&gt; xString, List&lt;String&gt; serTxName,
-                                    List&lt;String&gt; dataRef) {
-        Iterator&lt;String&gt; iterator = serTxName.iterator();
-        for (int r = 0, len = dataRef.size(); r &lt; len &amp;&amp; iterator.hasNext(); r++) {
-            CTBarSer ctBarSer = ctBarChart.addNewSer();
-
-            ctBarSer.addNewIdx().setVal(r);
-            // set legend value
-            setLegend(iterator.next(), ctBarSer.addNewTx());
-            // cat ax value
-            setChartCatAxLabel(ctBarSer.addNewCat(), xString);
-            // value range
-            ctBarSer.addNewVal().addNewNumRef().setF(dataRef.get(r));
-            // add border to chart
-            ctBarSer.addNewSpPr().addNewLn().addNewSolidFill().addNewSrgbClr().setVal(new byte[]{0, 0, 0});
-        }
-    }
-
-    private static void setLegend(String str, CTSerTx ctSerTx) {
-        if (str.contains(&quot;$&quot;))
-            // set legend by str ref
-            ctSerTx.addNewStrRef().setF(str);
-        else
-            // set legend by str
-            ctSerTx.setV(str);
-    }
-
-    private static void paddingData(CTLineChart ctLineChart, List&lt;String&gt; xString, List&lt;String&gt; serTxName,
-                                    List&lt;String&gt; dataRef) {
-        Iterator&lt;String&gt; iterator = serTxName.iterator();
-        for (int r = 0, len = dataRef.size(); r &lt; len &amp;&amp; iterator.hasNext(); r++) {
-            CTLineSer ctLineSer = ctLineChart.addNewSer();
-            ctLineSer.addNewIdx().setVal(r);
-            setLegend(iterator.next(), ctLineSer.addNewTx());
-            setChartCatAxLabel(ctLineSer.addNewCat(), xString);
-            ctLineSer.addNewVal().addNewNumRef().setF(dataRef.get(r));
-            ctLineSer.addNewSpPr().addNewLn().addNewSolidFill().addNewSrgbClr().setVal(new byte[]{0, 0, 0});
-        }
-    }
-
-    private static void paddingData(CTScatterChart scatterChart, List&lt;String&gt; dataRef) {
-        // 设置散点图内的信息
-        CTScatterSer ctScatterSer = scatterChart.addNewSer();
-        ctScatterSer.addNewIdx().setVal(0);
-        ctScatterSer.addNewOrder().setVal(0);
-        // 设置标记的样式
-        CTMarker ctMarker = ctScatterSer.addNewMarker();
-        ctMarker.addNewSymbol().setVal(STMarkerStyle.Enum.forInt(3));
-        ctMarker.addNewSize().setVal((short) 8);
-        CTShapeProperties ctShapeProperties1 = ctMarker.addNewSpPr();
-        ctShapeProperties1.addNewSolidFill().addNewSchemeClr().setVal(STSchemeColorVal.Enum.forInt(5));
-        CTLineProperties ctLineProperties1 = ctShapeProperties1.addNewLn();
-        ctLineProperties1.setW(9525);
-        ctLineProperties1.addNewSolidFill().addNewSchemeClr().setVal(STSchemeColorVal.Enum.forInt(5));
-
-        CTNumDataSource ctNumDataSource = ctScatterSer.addNewYVal();
-        CTNumRef ctNumRef = ctNumDataSource.addNewNumRef();
-        ctNumRef.setF(dataRef.get(0));
-    }
-
-    private static void paddingData(CTRadarChart ctRadarChart, List&lt;String&gt; dataRef) {
-        CTRadarSer ctRadarSer = ctRadarChart.addNewSer();
-        ctRadarSer.addNewIdx().setVal(0);
-        ctRadarSer.addNewOrder().setVal(0);
-        CTLineProperties ctLineProperties = ctRadarSer.addNewSpPr().addNewLn();
-        ctLineProperties.addNewRound();
-        ctLineProperties.addNewSolidFill().addNewSchemeClr().setVal(STSchemeColorVal.ACCENT_1);
-        // 渲染数据
-        ctRadarSer.addNewCat().addNewStrRef().setF(dataRef.get(0));
-        ctRadarSer.addNewVal().addNewNumRef().setF(dataRef.get(1));
-    }
-
-    private static void setChartCatAxLabel(CTAxDataSource cttAxDataSource, List&lt;String&gt; xString) {
-        if (xString.size() == 1) {
-            cttAxDataSource.addNewStrRef().setF(xString.get(0));
-        } else {
-            CTStrData ctStrData = cttAxDataSource.addNewStrLit();
-            for (int m = 0, xlen = xString.size(); m &lt; xlen; m++) {
-                CTStrVal ctStrVal = ctStrData.addNewPt();
-                ctStrVal.setIdx((long) m);
-                ctStrVal.setV(xString.get(m));
-            }
-        }
-    }
-
-    private static void setDataLabel(CTBarChart ctBarChart) {
-        setDLShowOpts(ctBarChart.addNewDLbls());
-    }
-
-    private static void setDataLabel(CTLineChart ctLineChart) {
-        CTDLbls dlbls = ctLineChart.addNewDLbls();
-        setDLShowOpts(dlbls);
-        setDLPosition(dlbls, null);
-    }
-
-    /**
-     * 设置散点图各图例的显示
-     */
-    private static void setDataLabel(CTScatterChart scatterChart) {
-        CTDLbls ctdLbls = scatterChart.addNewDLbls();
-        ctdLbls.addNewShowVal().setVal(true);
-        ctdLbls.addNewShowLegendKey().setVal(false);
-        ctdLbls.addNewShowSerName().setVal(false);
-        ctdLbls.addNewShowCatName().setVal(false);
-        ctdLbls.addNewShowPercent().setVal(false);
-        ctdLbls.addNewShowBubbleSize().setVal(false);
-    }
-
-    private static void setDataLabel(CTRadarChart ctRadarChart) {
-        // 分类标签等是否显示
-        CTDLbls ctdLbls = ctRadarChart.addNewDLbls();
-        ctdLbls.addNewShowLegendKey().setVal(false);
-        ctdLbls.addNewShowVal().setVal(false);
-        ctdLbls.addNewShowCatName().setVal(false);
-        ctdLbls.addNewShowSerName().setVal(false);
-        ctdLbls.addNewShowPercent().setVal(false);
-        ctdLbls.addNewShowBubbleSize().setVal(false);
-    }
-
-    private static void setDLPosition(CTDLbls dlbls, STDLblPos.Enum e) {
-        if (e == null)
-            dlbls.addNewDLblPos().setVal(STDLblPos.T);
-        else
-            dlbls.addNewDLblPos().setVal(e);
-    }
-
-    private static void setDLShowOpts(CTDLbls dlbls) {
-        // 添加图形示例的字符串
-        dlbls.addNewShowSerName().setVal(false);
-        // 添加x轴的坐标字符
-        dlbls.addNewShowCatName().setVal(false);
-        // 添加图形示例的图
-        dlbls.addNewShowLegendKey().setVal(false);
-        // 添加x对应y的---
-        // dlbls.addNewShowVal().setVal(false);
-    }
-
-    private static void setAxIds(CTRadarChart ctRadarChart) {
-        ctRadarChart.addNewAxId().setVal(123456);
-        ctRadarChart.addNewAxId().setVal(123457);
-    }
-
-    private static void setAxIds(CTBarChart ctBarChart) {
-        ctBarChart.addNewAxId().setVal(123456);
-        ctBarChart.addNewAxId().setVal(123457);
-    }
-
-    private static void setAxIds(CTLineChart ctLineChart) {
-        ctLineChart.addNewAxId().setVal(123456);
-        ctLineChart.addNewAxId().setVal(123457);
-    }
-
-    private static void setAxIds(CTScatterChart scatterChart) {
-        scatterChart.addNewAxId().setVal(123456);
-        scatterChart.addNewAxId().setVal(123457);
-    }
-
-    private static void setLegend(CTChart ctChart) {
-        CTLegend ctLegend = ctChart.addNewLegend();
-        ctLegend.addNewLegendPos().setVal(STLegendPos.B);
-        ctLegend.addNewOverlay().setVal(false);
-    }
-
-    private static void setCatAx(CTPlotArea ctPlotArea) {
-        CTCatAx ctCatAx = ctPlotArea.addNewCatAx();
-        ctCatAx.addNewAxId().setVal(123456); // id of the cat axis
-        CTScaling ctScaling = ctCatAx.addNewScaling();
-        ctScaling.addNewOrientation().setVal(STOrientation.MIN_MAX);
-        ctCatAx.addNewDelete().setVal(false);
-        ctCatAx.addNewAxPos().setVal(STAxPos.B);
-        ctCatAx.addNewCrossAx().setVal(123457); // id of the val axis
-        ctCatAx.addNewTickLblPos().setVal(STTickLblPos.NEXT_TO);
-    }
-
-    private static void setScatterValAx(CTPlotArea ctPlotArea) {
-        // 设置Y坐标
-        CTValAx ctValAx = ctPlotArea.addNewValAx();
-        ctValAx.addNewAxId().setVal(123457);
-        CTScaling ctScaling1 = ctValAx.addNewScaling();
-        ctScaling1.addNewOrientation().setVal(MIN_MAX);
-        ctValAx.addNewDelete().setVal(false);
-        ctValAx.addNewAxPos().setVal(STAxPos.B);
-        ctValAx.addNewCrossAx().setVal(123456);
-        // Y轴的对比线
-        CTShapeProperties ctShapeProperties = ctValAx.addNewMajorGridlines().addNewSpPr();
-        CTLineProperties ctLineProperties = ctShapeProperties.addNewLn();
-        ctLineProperties.setW(9525);
-        ctLineProperties.setCap(STLineCap.Enum.forInt(3));
-        ctLineProperties.setCmpd(STCompoundLine.Enum.forInt(1));
-        ctLineProperties.setAlgn(STPenAlignment.Enum.forInt(1));
-        // 不显示Y轴上的坐标刻度线
-        ctValAx.addNewMajorTickMark().setVal(STTickMark.NONE);
-        ctValAx.addNewMinorTickMark().setVal(STTickMark.NONE);
-        ctValAx.addNewTickLblPos().setVal(NEXT_TO);
-    }
-
-    private static void setRadarValAx(CTPlotArea ctPlotArea) {
-        CTValAx ctValAx = ctPlotArea.addNewValAx();
-        ctValAx.addNewAxId().setVal(123457);
-        ctValAx.addNewScaling().addNewOrientation().setVal(MIN_MAX);
-        ctValAx.addNewDelete().setVal(false);
-        ctValAx.addNewAxPos().setVal(STAxPos.L);
-        ctValAx.addNewCrossAx().setVal(123456);
-        ctValAx.addNewMajorTickMark().setVal(STTickMark.NONE);
-        ctValAx.addNewMinorTickMark().setVal(STTickMark.NONE);
-        ctValAx.addNewTickLblPos().setVal(NEXT_TO);
-        // 设置网格线
-        CTShapeProperties ctShapeProperties = ctValAx.addNewMajorGridlines().addNewSpPr();
-        CTLineProperties ctLineProperties1 = ctShapeProperties.addNewLn();
-        ctLineProperties1.setW(9525);
-        ctLineProperties1.setCap(STLineCap.FLAT);
-        ctLineProperties1.setCmpd(STCompoundLine.SNG);
-        ctLineProperties1.setAlgn(STPenAlignment.CTR);
-        // 值的纵坐标线，不显示
-        ctValAx.addNewSpPr().addNewLn().addNewNoFill();
-        // 值的纵坐标值，不显示
-        ctValAx.addNewTxPr().addNewP().addNewPPr().addNewDefRPr().addNewNoFill();
-    }
-
-    // 不要y轴的标签，或者y轴尽可能的窄
-    private static void setValAx(CTPlotArea ctPlotArea) {
-        CTValAx ctValAx = ctPlotArea.addNewValAx();
-        ctValAx.addNewAxId().setVal(123457); // id of the val axis
-        CTScaling ctScaling = ctValAx.addNewScaling();
-        ctScaling.addNewOrientation().setVal(STOrientation.MIN_MAX);
-        // 不现实y轴
-//        ctValAx.addNewDelete().setVal(true);
-        ctValAx.addNewAxPos().setVal(STAxPos.L);
-        ctValAx.addNewCrossAx().setVal(123456); // id of the cat axis
-        ctValAx.addNewTickLblPos().setVal(STTickLblPos.NEXT_TO);
-    }
-
-    // 图标标题
-    private static void setChartTitle(XSSFChart xchart, String titleStr) {
-        CTChart ctChart = xchart.getCTChart();
-
-        CTTitle title = CTTitle.Factory.newInstance();
-        CTTx cttx = title.addNewTx();
-        CTStrData sd = CTStrData.Factory.newInstance();
-        CTStrVal str = sd.addNewPt();
-        str.setIdx(123459);
-        str.setV(titleStr);
-        cttx.addNewStrRef().setStrCache(sd);
-
-        ctChart.setTitle(title);
-    }
-}
-</code></pre>
-</div><hr></div><div class="recent-post-item article-container"><a class="article-title" href="/2018/09/01/读书笔记/《SpringData》/MongoDB/Spring-Data-MongoDB/">《Spring Data MongoDB》文档笔记</a><span class="article-meta"><i class="fa fa-thumb-tack article-meta__icon sticky"></i><span class="sticky">置顶</span><span class="article-meta__separator" style="margin-right: 0.3rem">|</span></span><time class="post-meta__date"><i class="fa fa-calendar" aria-hidden="true"></i> 2018-09-01</time><span class="article-meta"><span class="article-meta__separator">|</span><i class="fa fa-inbox article-meta__icon" aria-hidden="true"></i><a class="article-meta__categories" href="/categories/读书笔记/">读书笔记</a><i class="fa fa-angle-right" aria-hidden="true"></i><i class="fa fa-inbox article-meta__icon" aria-hidden="true"></i><a class="article-meta__categories" href="/categories/读书笔记/Spring-Data-MongoDB/">Spring Data MongoDB</a></span><span class="article-meta tags"><span class="article-meta__separator">|</span><i class="fa fa-tag article-meta__icon" aria-hidden="true"></i><a class="article-meta__tags" href="/tags/Spring-Data-MongoDB/">Spring Data MongoDB</a></span><div class="content"><ul>
-<li><a href="/2018/09/01/读书笔记/《SpringData》/MongoDB/Spring-Data-MongoDB（1）/index.html">SpringDataMongoDB（一）</a></li>
-<li><a href="/2018/09/01/读书笔记/《SpringData》/MongoDB/Spring-Data-MongoDB（2）/index.html">SpringDataMongoDB（二）</a></li>
-<li><a href="/2018/0/01/读书笔记/《SpringData》/MongoDB/Spring-Data-MongoDB（3）/index.html">SpringDataMongoDB（三）</a></li>
-</ul>
-</div><hr></div><div class="recent-post-item article-container"><a class="article-title" href="/2018/09/01/读书笔记/《SpringData》/MongoDB/Spring-Data-MongoDB（1）/">SpringDataMongoDB(一)</a><time class="post-meta__date"><i class="fa fa-calendar" aria-hidden="true"></i> 2018-09-01</time><span class="article-meta"><span class="article-meta__separator">|</span><i class="fa fa-inbox article-meta__icon" aria-hidden="true"></i><a class="article-meta__categories" href="/categories/读书笔记/">读书笔记</a><i class="fa fa-angle-right" aria-hidden="true"></i><i class="fa fa-inbox article-meta__icon" aria-hidden="true"></i><a class="article-meta__categories" href="/categories/读书笔记/Spring-Data-MongoDB/">Spring Data MongoDB</a></span><span class="article-meta tags"><span class="article-meta__separator">|</span><i class="fa fa-tag article-meta__icon" aria-hidden="true"></i><a class="article-meta__tags" href="/tags/hide/">hide</a><span class="article-meta__link">-</span><i class="fa fa-tag article-meta__icon" aria-hidden="true"></i><a class="article-meta__tags" href="/tags/Spring-Data-MongoDB/">Spring Data MongoDB</a></span><div class="content"><h1 id="前言"><a href="#前言" class="headerlink" title="前言"></a>前言</h1><h2 id="Spring-Data"><a href="#Spring-Data" class="headerlink" title="Spring Data"></a>Spring Data</h2><p>Spring MongoDB 与Spring Framewrok 提供的 JDBC 十分相似，在熟悉本篇文章之前，需要先熟悉 MongoDB 和Spring 的概念</p>
-<p>Spring Data 使用了 Spring 框架的核心功能，包括：</p>
-<ul>
-<li>IOC容器 (IOC container)</li>
-<li>类型转换系统 (type conversion system)</li>
-<li>EL表达式 (expression language)</li>
-<li>JMX集成</li>
-<li>Dao异常层次结构</li>
-</ul>
-<h2 id="MongoDB"><a href="#MongoDB" class="headerlink" title="MongoDB"></a>MongoDB</h2><p>MongoDB作为一种 NOSQL 工具，非 RDMBS 设计范式，官方文档：<a href="https://docs.mongodb.com/manual/reference/operator/query/in/index.html" target="_blank" rel="noopener">https://docs.mongodb.com/manual/reference/operator/query/in/index.html</a></p>
-<p>RDMBS设计范式：<a href="http://blog.51cto.com/echoroot/1953996" target="_blank" rel="noopener">http://blog.51cto.com/echoroot/1953996</a></p>
-<h2 id="Spring-Data-MongoDB-2-0"><a href="#Spring-Data-MongoDB-2-0" class="headerlink" title="Spring Data MongoDB 2.0"></a>Spring Data MongoDB 2.0</h2><ul>
-<li>升级至 java8</li>
-<li>使用 Document API，而非 DBObject</li>
-<li>支持聚合结果流 Stream</li>
-<li>Kotlin 扩展</li>
-<li>支持隔离 Update 操作</li>
-<li>使用 Spring 的 @NonNullApi 和 @Nullable 保证 Null 安全</li>
-</ul>
-<h2 id="Spring-Data-MongoDB-支持的注解"><a href="#Spring-Data-MongoDB-支持的注解" class="headerlink" title="Spring Data MongoDB 支持的注解"></a>Spring Data MongoDB 支持的注解</h2><pre><code class="java">@Document   : 文档标识，将 java 类与 Collection 文档对应
-@Id         : 文档的唯一标识，在 mongodb 中为 ObjectID，生成规则：时间戳+机器标识+进程ID+自增计数器(确保同一时间内ID不会冲突)
-@Field      : 属性注解
-@Indexed    : 索引
-@CompoundIndex  : 混合索引
-@GeoSpatialIndexed  : 声明该字段为地理信息的索引
-@Transient  : 映射忽略的字段 (即不会保存到 mongodb)
-@Query      ：查询</code></pre>
-<h2 id="依赖"><a href="#依赖" class="headerlink" title="依赖"></a>依赖</h2><p>在使用 SpringDataMongoDB 之前，需要先声明对 SpringData 模块的依赖关系。</p>
-<p>既然 SpringData 存储库抽象中的中央接口是 Repository 。 该接口的子类 CrudRepository 实现了实体类的 CRUD 功能，如果需要的话，也可以通过继承该接口来拓展 ：</p>
-<pre><code class="java">public interface CrudRepository&lt;T, ID extends Serializable&gt;
-  extends Repository&lt;T, ID&gt; {
-
-  &lt;S extends T&gt; S save(S entity);      
-
-  Optional&lt;T&gt; findById(ID primaryKey); 
-
-  Iterable&lt;T&gt; findAll();               
-
-  long count();                        
-
-  void delete(T entity);               
-
-  boolean existsById(ID primaryKey);   
-
-  // … more functionality omitted.
-}</code></pre>
-<blockquote>
-<p>除了 CrudRepository 之外，还有 JpaRepository 和 MongoRepository。在 CrudRepository 中，有许多抽象方法添加了额外的方法来简化对实体的分页访问。</p>
-</blockquote>
-<pre><code class="java">/**
-* PagingAndSortingRepository 方法提供了分页和排序的功能
-*/
-public interface PagingAndSortingRepository&lt;T, ID extends Serializable&gt;
-  extends CrudRepository&lt;T, ID&gt; {
-
-  Iterable&lt;T&gt; findAll(Sort sort);
-
-  Page&lt;T&gt; findAll(Pageable pageable);
-}</code></pre>
-<blockquote>
-<p>还有包含：删除查询、计数、查询等相关接口</p>
-</blockquote>
-<h2 id="定义自己的-Repository"><a href="#定义自己的-Repository" class="headerlink" title="定义自己的 Repository"></a>定义自己的 Repository</h2><p>声明扩展 Repository 或者其子接口之一的接口，并嵌入需要处理的对象和 ID 类型：</p>
-<pre><code class="java">interface UserRepository extends MongoRepository&lt;User,String&gt;{  // UserRepository 默认继承了父类的 CRUD 方法
-    List&lt;User&gt; findByName(String name); // 扩展的查询方法
-}</code></pre>
-<h2 id="repository-方法的-Null-处理"><a href="#repository-方法的-Null-处理" class="headerlink" title="repository 方法的 Null 处理"></a>repository 方法的 Null 处理</h2><p>从 Spring Data 2.0 开始，返回单个聚合实例的 Repository 的 CRUD 方法 可以使用 Java8 中的Optional 来只是可能缺少的值，支持返回一下的包装类型：</p>
-<ul>
-<li>com.google.common.base.Optional</li>
-<li>scala.Option</li>
-<li>io.vavr.control.Option</li>
-<li>javaslang.control.Option (不推荐)</li>
-</ul>
-<p>或者，不使用包装类型，直接返回查询结果为 Null。 使用 Optional 的好处在于保证了方法返回的对象永远不会为 Null，而是相应的 空表示。</p>
-<h2 id="多-Spring-Data-模块的-Repository"><a href="#多-Spring-Data-模块的-Repository" class="headerlink" title="多 Spring Data 模块的 Repository"></a>多 Spring Data 模块的 Repository</h2><pre><code class="java">interface MyRepository extends JpaRepository&lt;User, Long&gt; { }
-
-@NoRepositoryBean
-interface MyBaseRepository&lt;T, ID extends Serializable&gt; extends JpaRepository&lt;T, ID&gt; {
-  …
-}
-
-interface UserRepository extends MyBaseRepository&lt;User, Long&gt; { // MyRepository 与 MyBaseRepository 都继承了 JpaRepository ，所以它们是有效的子类
-  …
-}</code></pre>
-<pre><code class="java">interface AmbiguousRepository extends Repository&lt;User, Long&gt; {
- …
-}
-
-@NoRepositoryBean
-interface MyBaseRepository&lt;T, ID extends Serializable&gt; extends CrudRepository&lt;T, ID&gt; {
-  …
-}
-
-interface AmbiguousUserRepository extends MyBaseRepository&lt;User, Long&gt; {
-    // 而且多个 SpringData 模块导致无法区分这些 Repository 应该绑定到哪个特定的 仓库
-  …
-}</code></pre>
-<h2 id="定义查询方法"><a href="#定义查询方法" class="headerlink" title="定义查询方法"></a>定义查询方法</h2><blockquote>
-<p>仓库代理有两种方式导出指定的查询。</p>
-<ul>
-<li>从名字直接导出查询 ： 类似 findByName(String name);</li>
-<li>手工定义的查询 : 类似 @query(“{ name : ?0}”)</li>
-</ul>
-</blockquote>
-<blockquote>
-<p>查询定义策略：<br>    通过 xml 文件中的 query-lookup-strategy 参数或者 Enable 注解中的 queryLookupStrategy 参数。</p>
-<ul>
-<li>CREATE 尝试从方法名中构造指定仓库的查询方法</li>
-<li>USE_DECLARED_QUERY 尝试找到声明的查询，若无则抛出异常</li>
-<li>CREATE_IF_NOT_FOUND 先查找声明的查询，如不能找到，将生成一个基于命名的查询（默认查询策略，一般不用变）</li>
-</ul>
-</blockquote>
-<p>文章总结于：<a href="https://docs.spring.io/spring-data/mongodb/docs/current/reference/html/#dependencies.spring-framework" target="_blank" rel="noopener">https://docs.spring.io/spring-data/mongodb/docs/current/reference/html/#dependencies.spring-framework</a></p>
-</div><hr></div><div class="recent-post-item article-container"><a class="article-title" href="/2018/09/01/读书笔记/《SpringData》/MongoDB/Spring-Data-MongoDB（3）/">SpringDataMongoDB(三)</a><time class="post-meta__date"><i class="fa fa-calendar" aria-hidden="true"></i> 2018-09-01</time><span class="article-meta"><span class="article-meta__separator">|</span><i class="fa fa-inbox article-meta__icon" aria-hidden="true"></i><a class="article-meta__categories" href="/categories/读书笔记/">读书笔记</a><i class="fa fa-angle-right" aria-hidden="true"></i><i class="fa fa-inbox article-meta__icon" aria-hidden="true"></i><a class="article-meta__categories" href="/categories/读书笔记/Spring-Data-MongoDB/">Spring Data MongoDB</a></span><span class="article-meta tags"><span class="article-meta__separator">|</span><i class="fa fa-tag article-meta__icon" aria-hidden="true"></i><a class="article-meta__tags" href="/tags/hide/">hide</a><span class="article-meta__link">-</span><i class="fa fa-tag article-meta__icon" aria-hidden="true"></i><a class="article-meta__tags" href="/tags/Spring-Data-MongoDB/">Spring Data MongoDB</a></span><div class="content"><h1 id="Spring-Data-MongoDB-（三）-自定义converter"><a href="#Spring-Data-MongoDB-（三）-自定义converter" class="headerlink" title="Spring Data MongoDB （三） 自定义converter"></a>Spring Data MongoDB （三） 自定义converter</h1><pre><code class="java">package com.pgc.diagnose.config;
-
-import com.mongodb.MongoClient;
-import org.springframework.beans.factory.annotation.Autowired;
-import org.springframework.beans.factory.annotation.Value;
-import org.springframework.boot.autoconfigure.EnableAutoConfiguration;
-import org.springframework.boot.autoconfigure.mongo.embedded.EmbeddedMongoAutoConfiguration;
-import org.springframework.context.annotation.Configuration;
-import org.springframework.context.annotation.Profile;
-import org.springframework.core.convert.converter.Converter;
-import org.springframework.data.convert.ReadingConverter;
-import org.springframework.data.mongodb.config.AbstractMongoConfiguration;
-import org.springframework.data.mongodb.core.convert.CustomConversions;
-
-import java.util.ArrayList;
-import java.util.List;
-
-@Configuration
-//@EnableAutoConfiguration(exclude = {EmbeddedMongoAutoConfiguration.class})
-//@Profile(&quot;!testing&quot;)
-public class MongoConfig extends AbstractMongoConfiguration {
-
-    @Value(&quot;${spring.data.mongodb.uri}&quot;)
-    private String host;
-
-    @Override
-    public MongoClient mongoClient() {
-        return new MongoClient(&quot;127.0.0.1&quot;, 27017);
-    }
-
-    @Override
-    protected String getDatabaseName() {
-        return &quot;ch_node&quot;;
-    }
-
-    @Override
-    public CustomConversions customConversions() {
-        List&lt;Converter&lt;?, ?&gt;&gt; converters = new ArrayList&lt;&gt;();
-        converters.add(new StringToPointConverter2());
-        return new CustomConversions(converters);
-    }
-}
-</code></pre>
-<pre><code class="java">package com.pgc.diagnose.config;
-
-import com.pgc.common.exception.BadRequestException;
-import com.pgc.diagnose.model.Point;
-import org.springframework.core.convert.ConverterNotFoundException;
-import org.springframework.core.convert.TypeDescriptor;
-import org.springframework.core.convert.converter.ConditionalGenericConverter;
-import org.springframework.stereotype.Component;
-
-import java.util.Collections;
-import java.util.Set;
-
-@Component
-public class StringToPointConverter implements ConditionalGenericConverter {
-
-    @Override
-    public boolean matches(TypeDescriptor sourceType, TypeDescriptor targetType) {
-        return sourceType.getType().equals(String.class) &amp;&amp; targetType.getType().equals(Point.class);
-    }
-
-    @Override
-    public Set&lt;ConvertiblePair&gt; getConvertibleTypes() {
-        return Collections.singleton(new ConvertiblePair(String.class, Point.class));
-    }
-
-    @Override
-    public Object convert(Object source, TypeDescriptor sourceType, TypeDescriptor targetType) {
-        String from = (String) source;
-
-        if (from != null){
-            String[] strings = from.split(&quot;#&quot;);
-
-            if (strings.length == 0 || strings.length &gt; 2)
-                throw new BadRequestException(&quot;String 转 Point 失败！&quot;);
-
-            if (strings.length == 1)
-                return Point.build(Point.Track.valueOf(strings[0]));
-
-            return Point.build(Point.Track.valueOf(strings[0]), Point.Industry.valueOf(strings[1]));
-        }
-
-        throw new ConverterNotFoundException(sourceType, targetType);
-    }
-}
-</code></pre>
-<pre><code class="java">package com.pgc.diagnose.config;
-
-import com.pgc.common.exception.BadRequestException;
-import com.pgc.diagnose.model.Point;
-import org.springframework.core.convert.converter.Converter;
-import org.springframework.stereotype.Component;
-
-@Component
-public class StringToPointConverter2 implements Converter&lt;String, Point&gt; {
-    @Override
-    public Point convert(String from) {
-
-        if (from != null){
-            String[] strings = from.split(&quot;#&quot;);
-
-            if (strings.length == 0 || strings.length &gt; 2)
-                throw new BadRequestException(&quot;String 转 Point 失败！&quot;);
-
-            if (strings.length == 1)
-                return Point.build(Point.Track.valueOf(strings[0]));
-
-            return Point.build(Point.Track.valueOf(strings[0]), Point.Industry.valueOf(strings[1]));
-        }
-
-        return null;
-    }
-}
-</code></pre>
-<pre><code class="java">package com.pgc.diagnose.config;
-
-import com.pgc.common.config.WebConfig;
-import org.springframework.context.annotation.Configuration;
-
-@Configuration
-public class DiagnoseAppWebConfig extends WebConfig {
-
-}
-</code></pre>
-</div><hr></div><div class="recent-post-item article-container"><a class="article-title" href="/2018/09/01/读书笔记/《SpringData》/MongoDB/Spring-Data-MongoDB（2）/">SpringDataMongoDB(二)</a><time class="post-meta__date"><i class="fa fa-calendar" aria-hidden="true"></i> 2018-09-01</time><span class="article-meta"><span class="article-meta__separator">|</span><i class="fa fa-inbox article-meta__icon" aria-hidden="true"></i><a class="article-meta__categories" href="/categories/读书笔记/">读书笔记</a><i class="fa fa-angle-right" aria-hidden="true"></i><i class="fa fa-inbox article-meta__icon" aria-hidden="true"></i><a class="article-meta__categories" href="/categories/读书笔记/Spring-Data-MongoDB/">Spring Data MongoDB</a></span><span class="article-meta tags"><span class="article-meta__separator">|</span><i class="fa fa-tag article-meta__icon" aria-hidden="true"></i><a class="article-meta__tags" href="/tags/hide/">hide</a><span class="article-meta__link">-</span><i class="fa fa-tag article-meta__icon" aria-hidden="true"></i><a class="article-meta__tags" href="/tags/Spring-Data-MongoDB/">Spring Data MongoDB</a></span><div class="content"><h1 id="Spring-Data-MongoDB-（二）-查询"><a href="#Spring-Data-MongoDB-（二）-查询" class="headerlink" title="Spring Data MongoDB （二） 查询"></a>Spring Data MongoDB （二） 查询</h1><h2 id="创建查询（去重、区间、忽略大小写等）"><a href="#创建查询（去重、区间、忽略大小写等）" class="headerlink" title="创建查询（去重、区间、忽略大小写等）"></a>创建查询（去重、区间、忽略大小写等）</h2><p>查询的构建机制，将截断前缀 find…By、 read…By、 query…By、 count…By、 get…By 等，从剩余部分开始解析，省略号中可以使用如：Distinct、Between、LessThan、GreaterThan、Like等表达式</p>
-<pre><code class="java">interface PersonRepository extends Repository&lt;User, Long&gt; {
-
-  List&lt;Person&gt; findByEmailAddressAndLastname(EmailAddress emailAddress, String lastname);
-
-  // 使用 Distinct 去重
-  List&lt;Person&gt; findDistinctPeopleByLastnameOrFirstname(String lastname, String firstname);
-  List&lt;Person&gt; findPeopleDistinctByLastnameOrFirstname(String lastname, String firstname);
-
-  // 使用 IgnoreCase 忽略大小写查询
-  List&lt;Person&gt; findByLastnameIgnoreCase(String lastname);
-  // 使用 AllIgnoreCase 全部忽略大小写
-  List&lt;Person&gt; findByLastnameAndFirstnameAllIgnoreCase(String lastname, String firstname);
-
-  // 使用 OrderBy (Field) ASC/DESC 进行排序
-  List&lt;Person&gt; findByLastnameOrderByFirstnameAsc(String lastname);
-  List&lt;Person&gt; findByLastnameOrderByFirstnameDesc(String lastname);
-}</code></pre>
-<h2 id="属性表达式（子属性查询）"><a href="#属性表达式（子属性查询）" class="headerlink" title="属性表达式（子属性查询）"></a>属性表达式（子属性查询）</h2><p>即一个被管理实体的属性，在查询时，会去查找该属性类的嵌套属性类。如：Person 有一个 Health 属性类，二Health 也有一个 HeartIm 属性类，则通过方法名查询为：</p>
-<pre><code class="java">List&lt;Person&gt; findByHealthHeartIm(HeartIm heartIm);    // 相当于 {health.heart:?0}</code></pre>
-<p>其查询顺序为，先匹配 healthheartIm 属性是否存在，若否，匹配 healthHeart.Im ，最后才是 health.Heart.Im。再没有则接着向下拆分。为了解决模糊不清的含义，我们可以在方法名中使用 “_” 手动创建分割点。</p>
-<pre><code class="java">List&lt;Person&gt; findByHealth_HeartIm(HeartIm heartIm);</code></pre>
-<h2 id="特殊参数（分页、排序）"><a href="#特殊参数（分页、排序）" class="headerlink" title="特殊参数（分页、排序）"></a>特殊参数（分页、排序）</h2><p>除了在查询中定义处理方法参数之外，还有一些特殊的类型，如：Pageable 和 Sort，用于分页和排序:</p>
-<pre><code class="java">// Page 接口中返回了元素的总数、可分页数等，其实是通过底层触发 count 方法进行了总数查询
-Page&lt;User&gt; findByLastname(String lastname, Pageable pageable);
-
-// Slice 仅仅知道是否有下一个可用的 Slice，在遍历大结果集时非常有效
-Slice&lt;User&gt; findByLastname(String lastname, Pageable pageable);
-
-List&lt;User&gt; findByLastname(String lastname, Sort sort);
-
-List&lt;User&gt; findByLastname(String lastname, Pageable pageable);</code></pre>
-<h2 id="限制查询结果（Top、First等）"><a href="#限制查询结果（Top、First等）" class="headerlink" title="限制查询结果（Top、First等）"></a>限制查询结果（Top、First等）</h2><p>查询方法的结果可以通过关键字：first、top 来限制，紧跟随的数值会限定长度，默认为1</p>
-<pre><code class="java">User findFirstByOrderByLastnameAsc();
-
-User findTopByOrderByAgeDesc();
-
-Page&lt;User&gt; queryFirst10ByLastname(String lastname, Pageable pageable);
-
-Slice&lt;User&gt; findTop3ByLastname(String lastname, Pageable pageable);
-
-List&lt;User&gt; findFirst10ByLastname(String lastname, Sort sort);
-
-List&lt;User&gt; findTop10ByLastname(String lastname, Pageable pageable);</code></pre>
-<h2 id="查询结果流（Stream）"><a href="#查询结果流（Stream）" class="headerlink" title="查询结果流（Stream）"></a>查询结果流（Stream）</h2><p>查询的结果可以使用 java8 的 Stream<t> 来处理，这样可以使用 stream 的良好性能。</t></p>
-<pre><code class="java">@Query(&quot;select u from User u&quot;)
-Stream&lt;User&gt; findAllByCustomQueryAndStream();
-
-Stream&lt;User&gt; readAllByFirstnameNotNull();
-
-@Query(&quot;select u from User u&quot;)
-Stream&lt;User&gt; streamAllPaged(Pageable pageable);</code></pre>
-<p>因为 Stream 使用了底层的资源，所以在使用之后必须关闭：</p>
-<pre><code class="java">try (Stream&lt;User&gt; stream = repository.findAllByCustomQueryAndStream()) {  
-    stream.forEach(…);
-}</code></pre>
-<p>而且，并不是所有的 Spring Data 模块都支持 Stream</p>
-<h2 id="异步查询结果"><a href="#异步查询结果" class="headerlink" title="异步查询结果"></a>异步查询结果</h2><p>Repository 的查询方法可以异步执行，这意味着该方法在调用时会立即返回，但是 <code>实际的查询要提交给 Spring 的任务TaskExecutor</code></p>
-<pre><code class="java">/** Future 的常用方法： 
-isCancelled():boolean    
-isDone():boolean    
-get():V     
-get(long timeout,@NotNull TimeUnit unit):V
-*/
-@Async
-Future&lt;User&gt; findByFirstname(String firstname);     // java.util.concurrent.Future          
-
-@Async
-CompletableFuture&lt;User&gt; findOneByFirstname(String firstname);  // Java 8 的 java.util.concurrent.CompletableFuture
-
-@Async
-ListenableFuture&lt;User&gt; findOneByLastname(String lastname);  // org.springframework.util.concurrent.ListenableFuture</code></pre>
-<h2 id="生成-Repository-实例"><a href="#生成-Repository-实例" class="headerlink" title="生成 Repository 实例"></a>生成 Repository 实例</h2><p>使用 xml 配置的方式 指定repositories 扫描的包路径：</p>
-<pre><code class="java">&lt;repositories base-package=&quot;com.acme.repositories&quot; /&gt;</code></pre>
-<p>使用注解的方式：</p>
-<pre><code class="java">@Configuration
-@EnableJpaRepositories(&quot;com.acme.repositories&quot;)
-class ApplicationConfiguration {
-    @Bean
-    EntityManagerFactory entityManagerFactory() { // … }
-}</code></pre>
-<blockquote>
-<p>以上是 Spring Data 的公共基础部分，再往下就是 MongoDBFactory 等的底层实现了。才疏学浅，看不下去啊。就到这里吧，第八章。</p>
-</blockquote>
-<p>文章总结于：<a href="https://docs.spring.io/spring-data/mongodb/docs/current/reference/html/#dependencies.spring-framework" target="_blank" rel="noopener">https://docs.spring.io/spring-data/mongodb/docs/current/reference/html/#dependencies.spring-framework</a></p>
-</div><hr></div><div class="recent-post-item article-container"><a class="article-title" href="/2018/09/01/后端/POI/poi/">《POI》各种工具类</a><span class="article-meta"><i class="fa fa-thumb-tack article-meta__icon sticky"></i><span class="sticky">置顶</span><span class="article-meta__separator" style="margin-right: 0.3rem">|</span></span><time class="post-meta__date"><i class="fa fa-calendar" aria-hidden="true"></i> 2018-09-01</time><span class="article-meta"><span class="article-meta__separator">|</span><i class="fa fa-inbox article-meta__icon" aria-hidden="true"></i><a class="article-meta__categories" href="/categories/后端/">后端</a><i class="fa fa-angle-right" aria-hidden="true"></i><i class="fa fa-inbox article-meta__icon" aria-hidden="true"></i><a class="article-meta__categories" href="/categories/后端/POI/">POI</a></span><span class="article-meta tags"><span class="article-meta__separator">|</span><i class="fa fa-tag article-meta__icon" aria-hidden="true"></i><a class="article-meta__tags" href="/tags/POI/">POI</a></span><div class="content"><ul>
-<li><a href="/2018/09/01/后端/POI/POI生成原生Excel-工具类/index.html">Excel 中的工具类</a></li>
-<li><a href="/2018/09/01/后端/POI/POI生成Excel-基础生成/index.html">Excel 中的基础生成</a></li>
-<li><a href="/2018/09/01/后端/POI/POI生成Excel-表格抽象工具类/index.html">Excel 中的表格抽象工具类</a></li>
-<li><a href="/2018/09/01/后端/POI/POI生成原生Excel-百分比堆叠柱状图/index.html">Excel 中的百分比堆叠柱状图</a></li>
-<li><a href="/2018/09/01/后端/POI/POI生成原生Excel-簇状柱状图/index.html">Excel 中的簇状柱状图</a></li>
-<li><a href="/2018/09/01/后端/POI/POI生成原生Excel-雷达图/index.html">Excel 中的雷达图</a></li>
-<li><a href="/2018/09/01/后端/POI/POI生成原生Excel-散点图/index.html">Excel 中的散点图</a></li>
-<li><a href="/2018/09/01/后端/POI/POI生成Excel-图表生成/index.html">Excel 中的图标生成</a></li>
-<li><a href="/2018/09/01/后端/POI/poi操作word生成textbox/index.html">Word 生成 textbox</a></li>
-</ul>
-</div><hr></div><div class="recent-post-item article-container"><a class="article-title" href="/2017/05/26/后端/java/Java成神之路/">Java成神之路</a><time class="post-meta__date"><i class="fa fa-calendar" aria-hidden="true"></i> 2017-05-26</time><span class="article-meta tags"><span class="article-meta__separator">|</span><i class="fa fa-tag article-meta__icon" aria-hidden="true"></i><a class="article-meta__tags" href="/tags/hide/">hide</a></span><div class="content"><h1 id="Java-成神-学习-之路"><a href="#Java-成神-学习-之路" class="headerlink" title="Java 成神(学习)之路"></a>Java 成神(学习)之路</h1><h2 id="一、基础篇"><a href="#一、基础篇" class="headerlink" title="一、基础篇"></a>一、基础篇</h2><h3 id="JVM"><a href="#JVM" class="headerlink" title="JVM"></a>JVM</h3><ol>
-<li>JVM 内存结构</li>
-<li>堆、栈、方法区、直接内存、堆和栈区别</li>
-<li>Java 内存模型</li>
-<li>内存可见性、重排序、顺序一致性、volatile、锁、final</li>
-</ol>
-<h3 id="垃圾回收"><a href="#垃圾回收" class="headerlink" title="垃圾回收"></a>垃圾回收</h3><ol>
-<li>内存分配策略、垃圾收集器（G1）、GC 算法、GC 参数、对象存活的判定</li>
-<li>JVM 参数及调优</li>
-</ol>
-<h3 id="Java-对象模型"><a href="#Java-对象模型" class="headerlink" title="Java 对象模型"></a>Java 对象模型</h3><ol>
-<li>oop-klass、对象头</li>
-<li>HotSpot</li>
-<li>即时编译器、编译优化</li>
-</ol>
-<h3 id="类加载机制"><a href="#类加载机制" class="headerlink" title="类加载机制"></a>类加载机制</h3><ol>
-<li>classLoader、类加载过程、双亲委派（破坏双亲委派）、模块化（jboss modules、osgi、jigsaw）</li>
-</ol>
-<h3 id="虚拟机性能监控与故障处理工具"><a href="#虚拟机性能监控与故障处理工具" class="headerlink" title="虚拟机性能监控与故障处理工具"></a>虚拟机性能监控与故障处理工具</h3><ol>
-<li>jps, jstack, jmap、jstat, jconsole, jinfo, jhat, javap, btrace、TProfiler</li>
-</ol>
-<h3 id="编译与反编译"><a href="#编译与反编译" class="headerlink" title="编译与反编译"></a>编译与反编译</h3><ol>
-<li>javac 、javap 、jad 、CRF</li>
-<li>Java 基础知识</li>
-</ol>
-<h3 id="阅读源代码"><a href="#阅读源代码" class="headerlink" title="阅读源代码"></a>阅读源代码</h3><ol>
-<li>String、Integer、Long、Enum、BigDecimal、ThreadLocal、ClassLoader &amp; URLClassLoader、ArrayList &amp; LinkedList、 HashMap &amp; LinkedHashMap &amp; TreeMap &amp; CouncurrentHashMap、HashSet &amp; LinkedHashSet &amp; TreeSet</li>
-</ol>
-<h3 id="Java-中各种变量类型"><a href="#Java-中各种变量类型" class="headerlink" title="Java 中各种变量类型"></a>Java 中各种变量类型</h3><ol>
-<li>熟悉 Java String 的使用，熟悉 String 的各种函数</li>
-<li>JDK 6 和 JDK 7 中 substring 的原理及区别、</li>
-<li>replaceFirst、replaceAll、replace 区别、</li>
-<li>String 对“+”的重载、</li>
-<li>String.valueOf 和 Integer.toString 的区别、</li>
-<li>字符串的不可变性</li>
-<li>自动拆装箱</li>
-<li>Integer 的缓存机制</li>
-</ol>
-<h3 id="熟悉-Java-中各种关键字"><a href="#熟悉-Java-中各种关键字" class="headerlink" title="熟悉 Java 中各种关键字"></a>熟悉 Java 中各种关键字</h3><ol>
-<li>transient、instanceof、volatile、synchronized、final、static、const 原理及用法。</li>
-</ol>
-<h3 id="集合类"><a href="#集合类" class="headerlink" title="集合类"></a>集合类</h3><ol>
-<li>常用集合类的使用、ArrayList 和 LinkedList 和 Vector 的区别 、SynchronizedList 和 Vector 的区别、</li>
-<li>HashMap、HashTable、ConcurrentHashMap 区别、Java 8 中 stream 相关用法、apache 集合处理工具类的使用、不同版本的 JDK 中 HashMap 的实现的区别以及原因</li>
-</ol>
-<h3 id="枚举"><a href="#枚举" class="headerlink" title="枚举"></a>枚举</h3><ol>
-<li>枚举的用法、枚举与单例、Enum 类</li>
-</ol>
-<h3 id="Java-IO-amp-Java-NIO，并学会使用"><a href="#Java-IO-amp-Java-NIO，并学会使用" class="headerlink" title="Java IO&amp;Java NIO，并学会使用"></a>Java IO&amp;Java NIO，并学会使用</h3><ol>
-<li>bio、nio 和 aio 的区别、三种 IO 的用法与原理、netty</li>
-</ol>
-<h3 id="Java-反射与-javassist"><a href="#Java-反射与-javassist" class="headerlink" title="Java 反射与 javassist"></a>Java 反射与 javassist</h3><ol>
-<li>反射与工厂模式、 java.lang.reflect.*</li>
-</ol>
-<h3 id="Java-序列化"><a href="#Java-序列化" class="headerlink" title="Java 序列化"></a>Java 序列化</h3><ol>
-<li>什么是序列化与反序列化、为什么序列化、序列化底层原理、序列化与单例模式、protobuf、为什么说序列化并不安全</li>
-</ol>
-<h3 id="注解"><a href="#注解" class="headerlink" title="注解"></a>注解</h3><ol>
-<li>元注解、自定义注解、Java 中常用注解使用、注解与反射的结合</li>
-</ol>
-<h3 id="JMS"><a href="#JMS" class="headerlink" title="JMS"></a>JMS</h3><ol>
-<li>什么是 Java 消息服务、JMS 消息传送模型</li>
-<li>JMX</li>
-<li>java.lang.management.<em>、 javax.management.</em></li>
-</ol>
-<h3 id="泛型"><a href="#泛型" class="headerlink" title="泛型"></a>泛型</h3><ol>
-<li>泛型与继承、类型擦除、泛型中 K T V E ？ object 等的含义、泛型各种用法</li>
-</ol>
-<h3 id="单元测试"><a href="#单元测试" class="headerlink" title="单元测试"></a>单元测试</h3><ol>
-<li>junit、mock、mockito、内存数据库（h2）</li>
-</ol>
-<h3 id="正则表达式"><a href="#正则表达式" class="headerlink" title="正则表达式"></a>正则表达式</h3><ol>
-<li>java.lang.util.regex.*</li>
-</ol>
-<h3 id="常用的-Java-工具库"><a href="#常用的-Java-工具库" class="headerlink" title="常用的 Java 工具库"></a>常用的 Java 工具库</h3><ol>
-<li>commons.lang, commons.*… guava-libraries netty</li>
-<li>什么是 API&amp;SPI</li>
-</ol>
-<h3 id="异常"><a href="#异常" class="headerlink" title="异常"></a>异常</h3><ol>
-<li>异常类型、正确处理异常、自定义异常</li>
-</ol>
-<h3 id="时间处理"><a href="#时间处理" class="headerlink" title="时间处理"></a>时间处理</h3><ol>
-<li>时区、时令、Java 中时间 API</li>
-</ol>
-<h3 id="编码方式"><a href="#编码方式" class="headerlink" title="编码方式"></a>编码方式</h3><ol>
-<li>解决乱码问题、常用编码方式</li>
-</ol>
-<h3 id="语法糖"><a href="#语法糖" class="headerlink" title="语法糖"></a>语法糖</h3><ol>
-<li>Java 中语法糖原理、解语法糖</li>
-</ol>
-<h3 id="Java-并发编程"><a href="#Java-并发编程" class="headerlink" title="Java 并发编程"></a>Java 并发编程</h3><ol>
-<li>什么是线程，与进程的区别</li>
-<li>阅读源代码，并学会使用</li>
-<li>Thread、Runnable、Callable、ReentrantLock、ReentrantReadWriteLock、Atomic*、Semaphore、CountDownLatch、、ConcurrentHashMap、Executors</li>
-</ol>
-<h3 id="线程池"><a href="#线程池" class="headerlink" title="线程池"></a>线程池</h3><ol>
-<li>自己设计线程池、submit() 和 execute()</li>
-</ol>
-<h3 id="线程安全"><a href="#线程安全" class="headerlink" title="线程安全"></a>线程安全</h3><ol>
-<li>死锁、死锁如何排查、Java 线程调度、线程安全和内存模型的关系</li>
-<li>锁</li>
-<li>CAS、乐观锁与悲观锁、数据库相关锁机制、分布式锁、偏向锁、轻量级锁、重量级锁、monitor、锁优化、锁消除、锁粗化、自旋锁、可重入锁、阻塞锁、死锁</li>
-<li>死锁</li>
-<li>volatile</li>
-<li>happens-before、编译器指令重排和 CPU 指令重</li>
-<li>synchronized</li>
-<li>synchronized 是如何实现的？synchronized 和 lock 之间关系、不使用 synchronized 如何实现一个线程安全的单例</li>
-<li>sleep 和 wait</li>
-<li>wait 和 notify</li>
-<li>notify 和 notifyAll</li>
-<li>ThreadLocal</li>
-<li>写一个死锁的程序</li>
-<li>写代码来解决生产者消费者问题</li>
-<li>守护线程</li>
-<li>守护线程和非守护线程的区别以及用法</li>
-</ol>
-<h2 id="二、-进阶篇"><a href="#二、-进阶篇" class="headerlink" title="二、 进阶篇"></a>二、 进阶篇</h2><h3 id="Java-底层知识"><a href="#Java-底层知识" class="headerlink" title="Java 底层知识"></a>Java 底层知识</h3><ol>
-<li>字节码、class 文件格式</li>
-<li>CPU 缓存，L1，L2，L3 和伪共享</li>
-<li>尾递归</li>
-<li>位运算</li>
-<li>用位运算实现加、减、乘、除、取余</li>
-<li>设计模式</li>
-<li>了解 23 种设计模式</li>
-<li>会使用常用设计模式</li>
-<li>单例、策略、工厂、适配器、责任链。</li>
-<li>实现 AOP</li>
-<li>实现 IOC</li>
-<li>不用 synchronized 和 lock，实现线程安全的单例模式</li>
-<li>nio 和 reactor 设计模式</li>
-</ol>
-<h3 id="网络编程知识"><a href="#网络编程知识" class="headerlink" title="网络编程知识"></a>网络编程知识</h3><ol>
-<li><p>tcp、udp、http、https 等常用协议</p>
-</li>
-<li><p>三次握手与四次关闭、流量控制和拥塞控制、OSI 七层模型、tcp 粘包与拆包</p>
-</li>
-<li><p>http/1.0 http/1.1 http/2 之前的区别</p>
-</li>
-<li><p>Java RMI，Socket，HttpClient</p>
-</li>
-<li><p>cookie 与 session</p>
-</li>
-<li><p>cookie 被禁用，如何实现 session</p>
-</li>
-<li><p>用 Java 写一个简单的静态文件的 HTTP 服务器</p>
-</li>
-<li><p>实现客户端缓存功能，支持返回 304 实现可并发下载一个文件 使用线程池处理客户端请求 使用 nio 处理客户端请求 支持简单的 rewrite 规则 上述功能在实现的时候需要满足“开闭原则”</p>
-</li>
-<li><p>了解 nginx 和 apache 服务器的特性并搭建一个对应的服务器</p>
-</li>
-<li><p>用 Java 实现 FTP、SMTP 协议</p>
-</li>
-<li><p>进程间通讯的方式</p>
-</li>
-<li><p>什么是 CDN？如果实现？</p>
-</li>
-<li><p>什么是 DNS？</p>
-</li>
-<li><p>反向代理</p>
-</li>
-<li><p>框架知识</p>
-</li>
-<li><p>Servlet 线程安全问题</p>
-</li>
-<li><p>Servlet 中的 filter 和 listener</p>
-</li>
-<li><p>Hibernate 的缓存机制</p>
-</li>
-<li><p>Hiberate 的懒加载</p>
-</li>
-<li><p>Spring Bean 的初始化</p>
-</li>
-<li><p>Spring 的 AOP 原理</p>
-</li>
-<li><p>自己实现 Spring 的 IOC</p>
-</li>
-<li><p>Spring MVC</p>
-</li>
-<li><p>Spring Boot2.0</p>
-</li>
-<li><p>Spring Boot 的 starter 原理，自己实现一个 starter</p>
-</li>
-<li><p>Spring Security</p>
-</li>
-<li><p>应用服务器知识</p>
-</li>
-<li><p>JBoss</p>
-</li>
-<li><p>tomcat</p>
-</li>
-<li><p>jetty</p>
-</li>
-<li><p>Weblogic</p>
-</li>
-<li><p>工具</p>
-</li>
-<li><p>git &amp; svn</p>
-</li>
-<li><p>maven &amp; gradle</p>
-</li>
-</ol>
-<h2 id="三、-高级篇"><a href="#三、-高级篇" class="headerlink" title="三、 高级篇"></a>三、 高级篇</h2><h3 id="新技术"><a href="#新技术" class="headerlink" title="新技术"></a>新技术</h3><ol>
-<li>Java 8</li>
-<li>lambda 表达式、Stream API、</li>
-<li>Java 9</li>
-<li>Jigsaw、Jshell、Reactive Streams</li>
-<li>Java 10</li>
-<li>局部变量类型推断、G1 的并行 Full GC、ThreadLocal 握手机制</li>
-<li>Spring 5</li>
-</ol>
-<h3 id="响应式编程"><a href="#响应式编程" class="headerlink" title="响应式编程"></a>响应式编程</h3><ol>
-<li>Spring Boot 2.0</li>
-<li>性能优化</li>
-<li>使用单例、使用 Future 模式、使用线程池、选择就绪、减少上下文切换、减少锁粒度、数据压缩、结果缓存</li>
-</ol>
-<p>线上问题分析</p>
-<ol>
-<li>dump 获取</li>
-<li>线程 Dump、内存 Dump、gc 情况</li>
-<li>dump 分析</li>
-<li>分析死锁、分析内存泄露</li>
-<li>自己编写各种 outofmemory，stackoverflow 程序</li>
-<li>HeapOutOfMemory、 Young OutOfMemory、MethodArea OutOfMemory、ConstantPool OutOfMemory、DirectMemory OutOfMemory、Stack OutOfMemory Stack OverFlow</li>
-<li>常见问题解决思路</li>
-<li>内存溢出、线程死锁、类加载冲突</li>
-<li>使用工具尝试解决以下问题，并写下总结</li>
-<li>当一个 Java 程序响应很慢时如何查找问题、</li>
-<li>当一个 Java 程序频繁 FullGC 时如何解决问题、</li>
-<li>如何查看垃圾回收日志、</li>
-<li>当一个 Java 应用发生 OutOfMemory 时该如何解决、</li>
-<li>如何判断是否出现死锁、</li>
-<li>如何判断是否存在内存泄露</li>
-<li>编译原理知识</li>
-<li>编译与反编译</li>
-<li>Java 代码的编译与反编译</li>
-<li>Java 的反编译工具</li>
-<li>词法分析，语法分析（LL 算法，递归下降算法，LR 算法），语义分析，运行时环境，中间代码，代码生成，代码优化</li>
-<li>操作系统知识</li>
-<li>Linux 的常用命令</li>
-<li>进程同步</li>
-<li>缓冲区溢出</li>
-<li>分段和分页</li>
-<li>虚拟内存与主存</li>
-<li>数据库知识</li>
-<li>MySql 执行引擎</li>
-<li>MySQL 执行计划</li>
-<li>如何查看执行计划，如何根据执行计划进行 SQL 优化</li>
-</ol>
-<h3 id="SQL-优化"><a href="#SQL-优化" class="headerlink" title="SQL 优化"></a>SQL 优化</h3><ol>
-<li>事务</li>
-<li>事务的隔离级别、事务能不能实现锁的功能</li>
-<li>数据库锁</li>
-<li>行锁、表锁、使用数据库锁实现乐观锁、</li>
-<li>数据库主备搭建</li>
-<li>binlog</li>
-<li>内存数据库</li>
-<li>h2</li>
-<li>常用的 nosql 数据库</li>
-<li>redis、memcached</li>
-<li>分别使用数据库锁、NoSql 实现分布式锁</li>
-<li>性能调优</li>
-<li>数据结构与算法知识</li>
-<li>简单的数据结构</li>
-<li>栈、队列、链表、数组、哈希表、</li>
-</ol>
-<h3 id="树"><a href="#树" class="headerlink" title="树"></a>树</h3><ol>
-<li>二叉树、字典树、平衡树、排序树、B 树、B+树、R 树、多路树、红黑树</li>
-<li>排序算法</li>
-<li>各种排序算法和时间复杂度</li>
-<li>深度优先和广度优先搜索</li>
-<li>全排列、贪心算法、KMP 算法、hash 算法、海量数据处理</li>
-</ol>
-<h3 id="大数据知识"><a href="#大数据知识" class="headerlink" title="大数据知识"></a>大数据知识</h3><ol>
-<li>Zookeeper</li>
-<li>基本概念、常见用法</li>
-<li>Solr，Lucene，ElasticSearch</li>
-<li>在 linux 上部署 solr，solrcloud，，新增、删除、查询索引</li>
-<li>Storm，流式计算，了解 Spark，S4</li>
-<li>在 linux 上部署 storm，用 zookeeper 做协调，运行 storm hello world，local 和 remote 模式运行调试 storm topology。</li>
-<li>Hadoop，离线计算</li>
-<li>HDFS、MapReduce</li>
-<li>分布式日志收集 flume，kafka，logstash</li>
-<li>数据挖掘，mahout</li>
-</ol>
-<h3 id="网络安全知识"><a href="#网络安全知识" class="headerlink" title="网络安全知识"></a>网络安全知识</h3><ol>
-<li>什么是 XSS</li>
-<li>XSS 的防御</li>
-<li>什么是 CSRF</li>
-<li>什么是注入攻击</li>
-<li>SQL 注入、XML 注入、CRLF 注入</li>
-<li>什么是文件上传漏洞</li>
-<li>加密与解密</li>
-<li>MD5，SHA1、DES、AES、RSA、DSA</li>
-<li>什么是 DOS 攻击和 DDOS 攻击</li>
-<li>memcached 为什么可以导致 DDos 攻击、什么是反射型 DDoS</li>
-<li>SSL、TLS，HTTPS</li>
-<li>如何通过 Hash 碰撞进行 DOS 攻击</li>
-<li>用 openssl 签一个证书部署到 apache 或 nginx</li>
-</ol>
-<h2 id="四、架构篇"><a href="#四、架构篇" class="headerlink" title="四、架构篇"></a>四、架构篇</h2><h3 id="分布式"><a href="#分布式" class="headerlink" title="分布式"></a>分布式</h3><ol>
-<li>数据一致性、服务治理、服务降级</li>
-<li>分布式事务</li>
-<li>2PC、3PC、CAP、BASE、</li>
-<li>可靠消息最终一致性、最大努力通知、TCC</li>
-<li>Dubbo</li>
-<li>服务注册、服务发现，服务治理</li>
-<li>分布式数据库</li>
-<li>怎样打造一个分布式数据库、什么时候需要分布式数据库、mycat、otter、HBase</li>
-<li>分布式文件系统</li>
-<li>mfs、fastdfs</li>
-<li>分布式缓存</li>
-<li>缓存一致性、缓存命中率、缓存冗余</li>
-<li>微服务</li>
-<li>SOA、康威定律</li>
-<li>ServiceMesh</li>
-<li>Docker &amp; Kubernets</li>
-<li>Spring Boot</li>
-<li>Spring Cloud</li>
-</ol>
-<h3 id="高并发"><a href="#高并发" class="headerlink" title="高并发"></a>高并发</h3><ol>
-<li>分库分表</li>
-<li>CDN 技术</li>
-<li>消息队列</li>
-<li>ActiveMQ</li>
-</ol>
-<h3 id="监控"><a href="#监控" class="headerlink" title="监控"></a>监控</h3><ol>
-<li>监控什么</li>
-<li>CPU、内存、磁盘 I/O、网络 I/O 等</li>
-<li>监控手段</li>
-<li>进程监控、语义监控、机器资源监控、数据波动</li>
-<li>监控数据采集</li>
-<li>日志、埋点</li>
-<li>Dapper</li>
-<li>负载均衡</li>
-<li>tomcat 负载均衡、Nginx 负载均衡</li>
-</ol>
-<h3 id="DNS"><a href="#DNS" class="headerlink" title="DNS"></a>DNS</h3><ol>
-<li>DNS 原理、DNS 的设计</li>
-<li>CDN</li>
-<li>数据一致性</li>
-</ol>
-<h2 id="五、-扩展篇"><a href="#五、-扩展篇" class="headerlink" title="五、 扩展篇"></a>五、 扩展篇</h2><h3 id="云计算"><a href="#云计算" class="headerlink" title="云计算"></a>云计算</h3><ol>
-<li>IaaS、SaaS、PaaS、虚拟化技术、openstack、Serverlsess</li>
-<li>搜索引擎</li>
-<li>Solr、Lucene、Nutch、Elasticsearch</li>
-<li>权限管理</li>
-<li>Shiro</li>
-<li>区块链</li>
-<li>哈希算法、Merkle 树、公钥密码算法、共识算法、Raft 协议、Paxos 算法与 Raft 算法、拜占庭问题与算法、消息认证码与数字签名</li>
-<li>比特币</li>
-<li>挖矿、共识机制、闪电网络、侧链、热点问题、分叉</li>
-<li>以太坊</li>
-<li>超级账本</li>
-<li>人工智能</li>
-<li>数学基础、机器学习、人工神经网络、深度学习、应用场景。</li>
-</ol>
-<h3 id="常用框架"><a href="#常用框架" class="headerlink" title="常用框架"></a>常用框架</h3><ol>
-<li>TensorFlow、DeepLearning4J</li>
-</ol>
-<h3 id="其他语言"><a href="#其他语言" class="headerlink" title="其他语言"></a>其他语言</h3><ol>
-<li>Groovy、Python、Go、NodeJs、Swift、Rust</li>
-</ol>
-<h2 id="六、-推荐书籍"><a href="#六、-推荐书籍" class="headerlink" title="六、 推荐书籍"></a>六、 推荐书籍</h2><ol>
-<li>《深入理解 Java 虚拟机》</li>
-<li>《Effective Java》</li>
-<li>《深入分析 Java Web 技术内幕》</li>
-<li>《大型网站技术架构》</li>
-<li>《代码整洁之道》</li>
-<li>《Head First 设计模式》</li>
-<li>《maven 实战》</li>
-<li>《区块链原理、设计与应用》</li>
-<li>《Java 并发编程实战》</li>
-<li>《鸟哥的 Linux 私房菜》</li>
-<li>《从 Paxos 到 Zookeeper》</li>
-<li>《架构即未来》</li>
-</ol>
-<p><a href="https://juejin.im/post/5ab46c9ef265da239b415ce1" target="_blank" rel="noopener">‘转载自掘金，Hollis_公众号 Hollis’</a></p>
-</div><hr></div><nav id="pagination"><div class="pagination"><a class="extend prev" rel="prev" href="/page/26/"><i class="fa fa-chevron-left"></i></a><a class="page-number" href="/">1</a><span class="space">&hellip;</span><a class="page-number" href="/page/26/">26</a><span class="page-number current">27</span></div></nav></div></div><footer><div class="layout" id="footer"><div class="copyright">&copy;2013 - 2020 By koral</div><div class="framework-info"><span>驱动 - </span><a href="http://hexo.io"><span>Hexo</span></a><span class="footer-separator">|</span><span>主题 - </span><a href="https://github.com/Molunerfinn/hexo-theme-melody"><span>Melody</span></a></div><div class="busuanzi"><script async src="//busuanzi.ibruce.info/busuanzi/2.3/busuanzi.pure.mini.js"></script><span id="busuanzi_container_site_uv"><i class="fa fa-user"></i><span id="busuanzi_value_site_uv"></span><span></span></span><span class="footer-separator">|</span><span id="busuanzi_container_site_pv"><i class="fa fa-eye"></i><span id="busuanzi_value_site_pv"></span><span></span></span></div></div></footer><i class="fa fa-arrow-up" id="go-up" aria-hidden="true"></i><script src="https://cdn.jsdelivr.net/npm/animejs@latest/anime.min.js"></script><script src="https://cdn.jsdelivr.net/npm/jquery@latest/dist/jquery.min.js"></script><script src="https://cdn.jsdelivr.net/npm/@fancyapps/fancybox@latest/dist/jquery.fancybox.min.js"></script><script src="https://cdn.jsdelivr.net/npm/velocity-animate@latest/velocity.min.js"></script><script src="https://cdn.jsdelivr.net/npm/velocity-ui-pack@latest/velocity.ui.min.js"></script><script src="/js/utils.js?version=1.7.0"></script><script src="/js/fancybox.js?version=1.7.0"></script><script src="/js/sidebar.js?version=1.7.0"></script><script src="/js/copy.js?version=1.7.0"></script><script src="/js/fireworks.js?version=1.7.0"></script><script src="/js/transition.js?version=1.7.0"></script><script src="/js/scroll.js?version=1.7.0"></script><script src="/js/head.js?version=1.7.0"></script><script>if(/Android|webOS|iPhone|iPod|iPad|BlackBerry/i.test(navigator.userAgent)) {
+</div><hr></div><nav id="pagination"><div class="pagination"><a class="extend prev" rel="prev" href="/page/26/"><i class="fa fa-chevron-left"></i></a><a class="page-number" href="/">1</a><span class="space">&hellip;</span><a class="page-number" href="/page/26/">26</a><span class="page-number current">27</span><a class="page-number" href="/page/28/">28</a><span class="space">&hellip;</span><a class="page-number" href="/page/30/">30</a><a class="extend next" rel="next" href="/page/28/"><i class="fa fa-chevron-right"></i></a></div></nav></div></div><footer><div class="layout" id="footer"><div class="copyright">&copy;2013 - 2020 By koral</div><div class="framework-info"><span>驱动 - </span><a href="http://hexo.io"><span>Hexo</span></a><span class="footer-separator">|</span><span>主题 - </span><a href="https://github.com/Molunerfinn/hexo-theme-melody"><span>Melody</span></a></div><div class="busuanzi"><script async src="//busuanzi.ibruce.info/busuanzi/2.3/busuanzi.pure.mini.js"></script><span id="busuanzi_container_site_uv"><i class="fa fa-user"></i><span id="busuanzi_value_site_uv"></span><span></span></span><span class="footer-separator">|</span><span id="busuanzi_container_site_pv"><i class="fa fa-eye"></i><span id="busuanzi_value_site_pv"></span><span></span></span></div></div></footer><i class="fa fa-arrow-up" id="go-up" aria-hidden="true"></i><script src="https://cdn.jsdelivr.net/npm/animejs@latest/anime.min.js"></script><script src="https://cdn.jsdelivr.net/npm/jquery@latest/dist/jquery.min.js"></script><script src="https://cdn.jsdelivr.net/npm/@fancyapps/fancybox@latest/dist/jquery.fancybox.min.js"></script><script src="https://cdn.jsdelivr.net/npm/velocity-animate@latest/velocity.min.js"></script><script src="https://cdn.jsdelivr.net/npm/velocity-ui-pack@latest/velocity.ui.min.js"></script><script src="/js/utils.js?version=1.7.0"></script><script src="/js/fancybox.js?version=1.7.0"></script><script src="/js/sidebar.js?version=1.7.0"></script><script src="/js/copy.js?version=1.7.0"></script><script src="/js/fireworks.js?version=1.7.0"></script><script src="/js/transition.js?version=1.7.0"></script><script src="/js/scroll.js?version=1.7.0"></script><script src="/js/head.js?version=1.7.0"></script><script>if(/Android|webOS|iPhone|iPod|iPad|BlackBerry/i.test(navigator.userAgent)) {
   $('#nav').addClass('is-mobile')
   $('footer').addClass('is-mobile')
   $('#top-container').addClass('is-mobile')

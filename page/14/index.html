@@ -7,1184 +7,922 @@
     error: '复制错误',
     noSupport: '浏览器不支持'
   }
-} </script></head><body><i class="fa fa-arrow-right" id="toggle-sidebar" aria-hidden="true"></i><div id="sidebar" data-display="false"><div class="author-info"><div class="author-info__avatar text-center"><img src="/img/avatar.png"></div><div class="author-info__name text-center">koral</div><div class="author-info__description text-center">罗凯的博客主页</div><hr><div class="author-info-articles"><a class="author-info-articles__archives article-meta" href="/archives"><span class="pull-left">文章</span><span class="pull-right">270</span></a><a class="author-info-articles__tags article-meta" href="/tags"><span class="pull-left">标签</span><span class="pull-right">38</span></a><a class="author-info-articles__categories article-meta" href="/categories"><span class="pull-left">分类</span><span class="pull-right">48</span></a></div></div></div><nav class="no-bg" id="nav"><div id="page-header"><span class="pull-left"> <a id="site-name" href="/index.html">凯</a></span><i class="fa fa-bars toggle-menu pull-right" aria-hidden="true"></i><span class="pull-right menus">   <a class="site-page" href="/">首页</a><a class="site-page" href="/archives">归档</a><a class="site-page" href="/tags">标签</a><a class="site-page" href="/categories">分类</a><a class="site-page" href="/about">关于我</a></span><span class="pull-right"></span></div><div id="site-info"><div id="site-title">凯</div><div id="site-sub-title">现在的我可以做点什么，让未来的我可以受益匪浅？</div></div></nav><div id="content-outer"><div class="layout" id="content-inner"><div class="recent-post-item article-container"><a class="article-title" href="/2019/09/05/读书笔记/《SpringSecurity》/23.自定义权限验证/">《Spring Security》自定义权限验证@PreAuthorize</a><time class="post-meta__date"><i class="fa fa-calendar" aria-hidden="true"></i> 2019-09-05</time><span class="article-meta"><span class="article-meta__separator">|</span><i class="fa fa-inbox article-meta__icon" aria-hidden="true"></i><a class="article-meta__categories" href="/categories/读书笔记/">读书笔记</a><i class="fa fa-angle-right" aria-hidden="true"></i><i class="fa fa-inbox article-meta__icon" aria-hidden="true"></i><a class="article-meta__categories" href="/categories/读书笔记/Spring-Security/">Spring Security</a></span><span class="article-meta tags"><span class="article-meta__separator">|</span><i class="fa fa-tag article-meta__icon" aria-hidden="true"></i><a class="article-meta__tags" href="/tags/hide/">hide</a><span class="article-meta__link">-</span><i class="fa fa-tag article-meta__icon" aria-hidden="true"></i><a class="article-meta__tags" href="/tags/Spring-Security/">Spring Security</a></span><div class="content"><h1 id="自定义安全表达式"><a href="#自定义安全表达式" class="headerlink" title="自定义安全表达式"></a>自定义安全表达式</h1><pre><code class="java">/**
- * Base root object for use in Spring Security expression evaluations.
- *
- * @author Luke Taylor
- * @since 3.0
- */
-public abstract class SecurityExpressionRoot implements SecurityExpressionOperations</code></pre>
-<p>SecurityExpressionRoot 是所有安全表达式的基类，我们需要做的就是：</p>
-<ol>
-<li>继承 SecurityExpressionRoot，自定义 MethodSecurity 表达式</li>
-<li>继承 DefaultMethodSecurityExpressionHandler，自定义方法级别的安全校验处理器</li>
-<li>继承 GlobalMethodSecurityConfiguration，添加自定义的表达式处理器</li>
-</ol>
-<h2 id="一、MethodSecurityConfig"><a href="#一、MethodSecurityConfig" class="headerlink" title="一、MethodSecurityConfig"></a>一、MethodSecurityConfig</h2><p>开启方法级别的安全校验，注入登录用户时加载 UserDetails 的DB服务对象，通过 createExpressionHandler 注入自定义的表达式处理器。</p>
-<pre><code class="java">/**
- * 配置 MethodSecurity 表达式
- */
-@Configuration
-@EnableGlobalMethodSecurity(prePostEnabled = true)
-public class MethodSecurityConfig extends GlobalMethodSecurityConfiguration {
-
-    private final LoginDetailService loginDetailService;
-
-    public MethodSecurityConfig(LoginDetailService loginDetailService) {
-        this.loginDetailService = loginDetailService;
-    }
-
-    @Override
-    protected MethodSecurityExpressionHandler createExpressionHandler() {
-        return new ResourceMethodSecurityExpressionHandler(loginDetailService);
-    }
-}</code></pre>
-<h2 id="二、ResourceMethodSecurityExpressionHandler"><a href="#二、ResourceMethodSecurityExpressionHandler" class="headerlink" title="二、ResourceMethodSecurityExpressionHandler"></a>二、ResourceMethodSecurityExpressionHandler</h2><p>接收 UserDetailsService，并创建一个处理表达式的操作类</p>
-<pre><code class="java">/**
- * 自定义方法级别的安全校验处理器
- */
-public class ResourceMethodSecurityExpressionHandler extends DefaultMethodSecurityExpressionHandler {
-
-    private final LoginDetailService loginDetailService;
-
-    private AuthenticationTrustResolver trustResolver = new AuthenticationTrustResolverImpl();
-
-    public ResourceMethodSecurityExpressionHandler(LoginDetailService loginDetailService) {
-        this.loginDetailService = loginDetailService;
-    }
-
-    @Override
-    protected MethodSecurityExpressionOperations createSecurityExpressionRoot(Authentication authentication, MethodInvocation invocation) {
-        final ResourceMethodSecurityExpressionRoot root = new ResourceMethodSecurityExpressionRoot(authentication, loginDetailService);
-        root.setPermissionEvaluator(getPermissionEvaluator());
-        root.setTrustResolver(this.trustResolver);
-        root.setRoleHierarchy(getRoleHierarchy());
-        return root;
-    }
-}</code></pre>
-<h2 id="三、ResourceMethodSecurityExpressionRoot"><a href="#三、ResourceMethodSecurityExpressionRoot" class="headerlink" title="三、ResourceMethodSecurityExpressionRoot"></a>三、ResourceMethodSecurityExpressionRoot</h2><p>仿照 hasAuthority，编写一个自己的实现</p>
-<pre><code class="java">/**
- * 自定义 MethodSecurity 表达式
- */
-@Slf4j
-public class ResourceMethodSecurityExpressionRoot extends SecurityExpressionRoot implements MethodSecurityExpressionOperations {
-
-    private LoginDetailService loginDetailService;
-
-    private Object filterObject;
-    private Object returnObject;
-    private Object target;
-
-    public ResourceMethodSecurityExpressionRoot(Authentication authentication, LoginDetailService loginDetailService) {
-        super(authentication);
-        this.loginDetailService = loginDetailService;
-    }
-
-    /**
-     * 自定义接口，是否允许对该id的访问
-     */
-    public boolean canReadCourse(String courseId) {
-        log.debug(&quot;method params courseId&quot;, courseId);
-        log.debug(&quot;current principal {}&quot;, getPrincipal());
-        return true;
-    }
-
-    public final boolean hasGlobalAuthority(String authority) {
-        return hasAnyGlobalAuthority(authority);
-    }
-
-    public final boolean hasAnyGlobalAuthority(String... authorities) {
-        return hasAnyGlobalAuthorityName(null, authorities);
-    }
-
-    private boolean hasAnyGlobalAuthorityName(String prefix, String... roles) {
-        final String username = ((UserDetails) getPrincipal()).getUsername();
-        final UserDetails details = loginDetailService.loadUserByUsername(username);
-
-        if (details.getAuthorities() != null) {
-            final Set&lt;String&gt; roleSet = details.getAuthorities().stream()
-                    .map(GrantedAuthority::getAuthority).collect(Collectors.toSet());
-
-            for (String role : roles) {
-                String defaultedRole = getRoleWithDefaultPrefix(prefix, role);
-                if (roleSet.contains(defaultedRole)) {
-                    return true;
-                }
-            }
-        }
-
-        return false;
-    }
-
-    private static String getRoleWithDefaultPrefix(String defaultRolePrefix, String role) {
-        if (role == null) {
-            return role;
-        }
-        if (defaultRolePrefix == null || defaultRolePrefix.length() == 0) {
-            return role;
-        }
-        if (role.startsWith(defaultRolePrefix)) {
-            return role;
-        }
-        return defaultRolePrefix + role;
-    }
-
-    @Override
-    public void setFilterObject(Object filterObject) {
-        this.filterObject = filterObject;
-    }
-
-    @Override
-    public Object getFilterObject() {
-        return filterObject;
-    }
-
-    @Override
-    public void setReturnObject(Object returnObject) {
-        this.returnObject = returnObject;
-    }
-
-    @Override
-    public Object getReturnObject() {
-        return returnObject;
-    }
-
-    @Override
-    public Object getThis() {
-        return target;
-    }
-
-    public void setTarget(Object target) {
-        this.target = target;
-    }
-
-    @Override
-    public void setRoleHierarchy(RoleHierarchy roleHierarchy) {
-        super.setRoleHierarchy(roleHierarchy);
-    }
-}</code></pre>
-</div><hr></div><div class="recent-post-item article-container"><a class="article-title" href="/2019/09/05/读书笔记/《Mybatis》/2_XML配置/">《MyBatis》读书笔记 - MyBatis 中的 XML 详细配置</a><time class="post-meta__date"><i class="fa fa-calendar" aria-hidden="true"></i> 2019-09-05</time><span class="article-meta"><span class="article-meta__separator">|</span><i class="fa fa-inbox article-meta__icon" aria-hidden="true"></i><a class="article-meta__categories" href="/categories/读书笔记/">读书笔记</a><i class="fa fa-angle-right" aria-hidden="true"></i><i class="fa fa-inbox article-meta__icon" aria-hidden="true"></i><a class="article-meta__categories" href="/categories/读书笔记/MyBatis/">MyBatis</a></span><span class="article-meta tags"><span class="article-meta__separator">|</span><i class="fa fa-tag article-meta__icon" aria-hidden="true"></i><a class="article-meta__tags" href="/tags/hide/">hide</a><span class="article-meta__link">-</span><i class="fa fa-tag article-meta__icon" aria-hidden="true"></i><a class="article-meta__tags" href="/tags/MyBatis/">MyBatis</a></span><div class="content"><h1 id="二、MyBatis-中的-XML-详细配置"><a href="#二、MyBatis-中的-XML-详细配置" class="headerlink" title="二、MyBatis 中的 XML 详细配置"></a>二、MyBatis 中的 XML 详细配置</h1><p>MyBatis 的配置文件包含了深深影响 MyBatis 行为的设置和属性信息。配置文档的顶层结构如下：</p>
-<ul>
-<li>configuration(配置)<ul>
-<li>properties(属性)</li>
-<li>settings(设置)</li>
-<li>typealiases(类型别名)</li>
-<li>typeHandlers(类型处理器)</li>
-<li>objectFactory(对象工厂)</li>
-<li>plugins(插件)</li>
-<li>environments(环境配置)<ul>
-<li>environment(环境变量)<ul>
-<li>transactionManager(事务管理器)</li>
-<li>dataSource(数据源)</li>
-</ul>
-</li>
-</ul>
-</li>
-<li>databaseIdProvider(数据库厂商标识)</li>
-<li>mappers(映射器)</li>
-</ul>
-</li>
-</ul>
-<h2 id="一、属性（Properties）"><a href="#一、属性（Properties）" class="headerlink" title="一、属性（Properties）"></a>一、属性（Properties）</h2><p>这些属性都是可外部配置且可动态替换的，如：</p>
-<pre><code class="xml">&lt;properties resource=&quot;org/mybatis/example/config.properties&quot;&gt;
-    &lt;property name=&quot;username&quot; value=&quot;dev_user&quot;/&gt;
-    &lt;property name=&quot;password&quot; value=&quot;12345678&quot;/&gt;
-&lt;/properties&gt;</code></pre>
-<p>可替换的动态配置属性值：</p>
-<pre><code class="xml">&lt;dataSource type=&quot;POOLED&quot;&gt;
-    &lt;property name=&quot;driver&quot; value=&quot;${driver}&quot;/&gt;
-    &lt;property name=&quot;url&quot; value=&quot;${url}&quot;/&gt;
-    &lt;property name=&quot;username&quot; value=&quot;${username}&quot;/&gt;
-    &lt;property name=&quot;password&quot; value=&quot;${password}&quot;/&gt;
-&lt;/dataSource&gt;</code></pre>
-<p>如果属性不值在一个地方进行了配置，那么 MyBatis 的加载顺序如下：</p>
-<ul>
-<li>首先读取在 properties 元素体内属性值</li>
-<li>根据 properties 元素中的 resource 属性读取类路径下的文件或 url 读取属性文件，并覆盖已读取的同名属性</li>
-<li>最后读取作为方法参数传递的属性，并覆盖已读取的同名属性</li>
-</ul>
-<p>因此，方法参数传递的属性优先级最高，其次是 resource/url 指定的配置文件，最后是 properties 中指定的属性。</p>
-<p>在 MyBatis 3.4.2 开始，可以为占位符制定一个默认值，如：</p>
-<pre><code class="xml">&lt;dataSource type=&quot;POOLED&quot;&gt;
-    &lt;!-- 如果属性 username 没有配置，那么默认值为 ut_user --&gt;
-     &lt;property name=&quot;username&quot; value=&quot;${username:ut_user}&quot;/&gt;
-&lt;/dataSource&gt;</code></pre>
-<p>这个特性默认是关闭的，应该添加一个指定的属性来开启这个特性，如：</p>
-<pre><code class="xml">&lt;properties resoure=&quot;org/mybatis/example/config.properties&quot;&gt;
-    &lt;!-- 启用默认值特性 --&gt;
-    &lt;property name=&quot;org.apache.ibatis.parsing.PropertyParser.enable-default-value&quot; value=&quot;true&quot; /&gt;
-&lt;/properties&gt;</code></pre>
-<h2 id="二、设置（settings）"><a href="#二、设置（settings）" class="headerlink" title="二、设置（settings）"></a>二、设置（settings）</h2><p>MyBatis 中极为重要的调整设置，它们会改变 MyBatis 的运行时行为，下标描述了设置中各项的意图、默认值等。</p>
-<table>
-<thead>
-<tr>
-<th>设置名</th>
-<th>描述</th>
-</tr>
-</thead>
-<tbody><tr>
-<td>cacheEnabled</td>
-<td>全局地开关映射器中已经配置的缓存</td>
-</tr>
-<tr>
-<td>lazyLoadingEnabled</td>
-<td>延迟加载的全局开关，所有关联对象都会延迟加载，可以通过 fetchType 来覆盖该项</td>
-</tr>
-<tr>
-<td>aggressiveLazyLoading</td>
-<td>开启时，任何方法的调用都会加载该对象的所有属性。否则，每个对象会按需加载</td>
-</tr>
-<tr>
-<td>multipleResultSetsEnabled</td>
-<td>是否允许单一语句返回多结果集（需要驱动支持）</td>
-</tr>
-<tr>
-<td>useColumnLabel</td>
-<td>使用列标签代替列名</td>
-</tr>
-<tr>
-<td>useGeneratedKeys</td>
-<td>允许 JDBC 支持自动生成主键</td>
-</tr>
-<tr>
-<td>autoMappingBehavior</td>
-<td>指定MyBatis应如何自动映射列到字段或属性。NONE：取消自动映射；PARTIAL：自动映射没有定义嵌套结果集的；FULL：自动映射任意复杂的结果集</td>
-</tr>
-<tr>
-<td>autoMappingUnknownColumnBehavior</td>
-<td>指定发现自动映射目标未知列（或未知属性）的行为。NONE：不做任何反应；WARNING：输出提醒日志；FAILING：映射失败（抛出SqlSessionException）</td>
-</tr>
-<tr>
-<td>defaultExecutorType</td>
-<td>配置默认的执行器。SIMPLE：普通执行器；REUSE 执行器会重用预处理语句；BATCH：执行器将重用语句并执行批量更新</td>
-</tr>
-<tr>
-<td>defaultStatementTimeout</td>
-<td>设置超时时间，决定驱动等待数据库响应的描述</td>
-</tr>
-<tr>
-<td>defaultFetchSize</td>
-<td>为驱动的结果集获取数量（fetchSize）设置一个提示值</td>
-</tr>
-<tr>
-<td>defaultResultSetType</td>
-<td>指定每个语句的省略滚动策略</td>
-</tr>
-<tr>
-<td>safeRowBoundsEnabled</td>
-<td>允许在嵌套语句中使用分页（RowBounds）。false为允许</td>
-</tr>
-<tr>
-<td>safeResultHandlerEnabled</td>
-<td>允许在嵌套局域中使用分页(RowHandler)。false为允许</td>
-</tr>
-<tr>
-<td>mapUnderscoreToCamelCase</td>
-<td>是否开启自动驼峰命名规则映射，即从列名 A_COLUMN 到 Java 属性名 aColumn 的类似映射</td>
-</tr>
-<tr>
-<td>localCacheScope</td>
-<td>MyBatis 利用本地缓存机制防止循环引用和加速重复嵌套查询。SESSION：默认，会缓存一个会话中执行的所有查询；STATEMENT：仅用在局域执行上，对相同的 SqlSession 的不同调用不会共享数据</td>
-</tr>
-<tr>
-<td>jdbcTypeForNull</td>
-<td>当没有参数提供特定的 JDBC 类型时，为空值指定 JDBC 类型</td>
-</tr>
-<tr>
-<td>lazyLoadTriggerMethods</td>
-<td>指定哪个对象的方法触发一次延迟加载</td>
-</tr>
-<tr>
-<td>defaultScriptingLanguage</td>
-<td>指定动态 SQL 生成的默认语言</td>
-</tr>
-<tr>
-<td>defaultEnumTypeHandler</td>
-<td>指定 Enum 使用的默认 TypeHandler(3.4.5)</td>
-</tr>
-<tr>
-<td>callSettersOnNulls</td>
-<td>指定当结果集中值为 null 时，是否调用映射对象的 setter 方法。</td>
-</tr>
-<tr>
-<td>returnInstanceForEmptyRow</td>
-<td>当返回的列都是空时，MyBatis默认返回 null。开启后，会返回一个空实例</td>
-</tr>
-<tr>
-<td>logPrefix</td>
-<td>指定 MyBatis 增加到日志名称的前缀</td>
-</tr>
-<tr>
-<td>logImpl</td>
-<td>指定 MyBatis 所用日志的具体实现，未指定时将自动查找</td>
-</tr>
-<tr>
-<td>proxyFactory</td>
-<td>指定 MyBatis 创建具有延迟加载能力的对象所用到的代理工具</td>
-</tr>
-<tr>
-<td>vfsImpl</td>
-<td>指定 VFS 的实现</td>
-</tr>
-<tr>
-<td>useActualParamName</td>
-<td>允许使用方法签名中的名称作为语句参数名称。需要java 8编译，并加上 -parameters 选项</td>
-</tr>
-<tr>
-<td>configurationFactory</td>
-<td>指定一个提供 Configuration 实例的类。这个被返回的 Configuration 实例用来加载被反序列化对象的延迟加载属性值。这个类必须包含一个签名为 static Configuration getConfiguration() 的方法(3.2.3)</td>
-</tr>
-</tbody></table>
-<p>一个完整的 settings 元素示例如下：</p>
-<pre><code class="xml">&lt;settings&gt;
-    &lt;setting name=&quot;cacheEnabled&quot; value=&quot;true&quot;/&gt;
-    &lt;setting name=&quot;lazyLoadingEnabled&quot; value=&quot;true&quot;/&gt;
-    &lt;setting name=&quot;multipleResultSetEnabled&quot; value=&quot;true&quot;/&gt;
-    &lt;setting name=&quot;useColumnLabel&quot; value=&quot;true&quot;/&gt;
-    &lt;setting name=&quot;useGeneratedKeys&quot; value=&quot;false&quot;/&gt;
-    &lt;setting name=&quot;autoMappingBehavior&quot; value=&quot;PARTIAL&quot;/&gt;
-    &lt;setting name=&quot;autoMappingUnknownColumnBehavior&quot; value=&quot;WARNING&quot;/&gt;
-    &lt;setting name=&quot;defaultExecutorType&quot; value=&quot;EXAMPLE&quot;/&gt;
-    &lt;setting name=&quot;defaultStatementTimeout&quot; value=&quot;25&quot;/&gt;
-    &lt;setting name=&quot;defaultFetchSize&quot; value=&quot;100&quot;/&gt;
-    &lt;setting name=&quot;safeRowBoundsEnabled&quot; value=&quot;false&quot;/&gt;
-    &lt;setting name=&quot;mapUnderscoreToCamelCase&quot; value=&quot;false&quot;/&gt;
-    &lt;setting name=&quot;localCacheScope&quot; value=&quot;SESSION&quot;/&gt;
-    &lt;setting name=&quot;jdbcTypeForNull&quot; value=&quot;OTHER&quot;/&gt;
-    &lt;setting name=&quot;lazyLoadTriggerMethods&quot; value=&quot;equals,clone,hashCode,toString&quot;/&gt;
-&lt;/settings&gt;</code></pre>
-<h2 id="三、类型别名（typeAliases）"><a href="#三、类型别名（typeAliases）" class="headerlink" title="三、类型别名（typeAliases）"></a>三、类型别名（typeAliases）</h2><p>类型别名用来减少类完全限定名的冗余，如：</p>
-<pre><code class="xml">&lt;typeAliases&gt;
-    &lt;typeAlias alias=&quot;Author&quot; type=&quot;cn.luokaiii.adminservice.model.Author&quot;/&gt;
-    &lt;typeAlias alias=&quot;Teacher&quot; type=&quot;cn.luokaiii.adminservice.model.Teacher&quot;/&gt;
-&lt;/typeAliases&gt;</code></pre>
-<p>也可以指定一个报名，MyBatis 会在包名下搜索 Java Bean，在没有注解的情况下，会使用Bean 的首字母小写的非限定类名来作为它的别名，如：</p>
-<pre><code class="xml">&lt;typeAliases&gt;
-    &lt;package name=&quot;domain.blog&quot; /&gt;
-&lt;/typeAliases&gt;</code></pre>
-<p>或者使用注解的方式，如：</p>
-<pre><code class="java">@Alias(&quot;author&quot;)
-public class Author {
+} </script></head><body><i class="fa fa-arrow-right" id="toggle-sidebar" aria-hidden="true"></i><div id="sidebar" data-display="false"><div class="author-info"><div class="author-info__avatar text-center"><img src="/img/avatar.png"></div><div class="author-info__name text-center">koral</div><div class="author-info__description text-center">罗凯的博客主页</div><hr><div class="author-info-articles"><a class="author-info-articles__archives article-meta" href="/archives"><span class="pull-left">文章</span><span class="pull-right">291</span></a><a class="author-info-articles__tags article-meta" href="/tags"><span class="pull-left">标签</span><span class="pull-right">38</span></a><a class="author-info-articles__categories article-meta" href="/categories"><span class="pull-left">分类</span><span class="pull-right">48</span></a></div></div></div><nav class="no-bg" id="nav"><div id="page-header"><span class="pull-left"> <a id="site-name" href="/index.html">凯</a></span><i class="fa fa-bars toggle-menu pull-right" aria-hidden="true"></i><span class="pull-right menus">   <a class="site-page" href="/">首页</a><a class="site-page" href="/archives">归档</a><a class="site-page" href="/tags">标签</a><a class="site-page" href="/categories">分类</a><a class="site-page" href="/about">关于我</a></span><span class="pull-right"></span></div><div id="site-info"><div id="site-title">凯</div><div id="site-sub-title">现在的我可以做点什么，让未来的我可以受益匪浅？</div></div></nav><div id="content-outer"><div class="layout" id="content-inner"><div class="recent-post-item article-container"><a class="article-title" href="/2019/09/26/读书笔记/《SpringSession》/1_RedisSession/">《Spring Session》一、Spring Session Redis</a><time class="post-meta__date"><i class="fa fa-calendar" aria-hidden="true"></i> 2019-09-26</time><span class="article-meta"><span class="article-meta__separator">|</span><i class="fa fa-inbox article-meta__icon" aria-hidden="true"></i><a class="article-meta__categories" href="/categories/读书笔记/">读书笔记</a><i class="fa fa-angle-right" aria-hidden="true"></i><i class="fa fa-inbox article-meta__icon" aria-hidden="true"></i><a class="article-meta__categories" href="/categories/读书笔记/Spring-Session/">Spring Session</a></span><span class="article-meta tags"><span class="article-meta__separator">|</span><i class="fa fa-tag article-meta__icon" aria-hidden="true"></i><a class="article-meta__tags" href="/tags/hide/">hide</a><span class="article-meta__link">-</span><i class="fa fa-tag article-meta__icon" aria-hidden="true"></i><a class="article-meta__tags" href="/tags/Spring-Session/">Spring Session</a></span><div class="content"><h1 id="Spring-Session-Redis"><a href="#Spring-Session-Redis" class="headerlink" title="Spring Session Redis"></a>Spring Session Redis</h1><p>在 SpringBoot web 应用程序中，使用 Spring Session 来支持 HttpSession。</p>
+<h3 id="1-添加依赖"><a href="#1-添加依赖" class="headerlink" title="1. 添加依赖"></a>1. 添加依赖</h3><pre><code class="xml">&lt;dependencies&gt;
     ......
-}</code></pre>
-<p>Java 类型内建的相应类型别名（不区分大小写）：</p>
-<table>
-<thead>
-<tr>
-<th>别名</th>
-<th>映射的类型</th>
-</tr>
-</thead>
-<tbody><tr>
-<td>_byte</td>
-<td>byte</td>
-</tr>
-<tr>
-<td>_long</td>
-<td>long</td>
-</tr>
-<tr>
-<td>_short</td>
-<td>short</td>
-</tr>
-<tr>
-<td>_int</td>
-<td>int</td>
-</tr>
-<tr>
-<td>_integer</td>
-<td>int</td>
-</tr>
-<tr>
-<td>_double</td>
-<td>double</td>
-</tr>
-<tr>
-<td>_float</td>
-<td>float</td>
-</tr>
-<tr>
-<td>_boolean</td>
-<td>boolean</td>
-</tr>
-<tr>
-<td>string</td>
-<td>String</td>
-</tr>
-<tr>
-<td>byte</td>
-<td>Byte</td>
-</tr>
-<tr>
-<td>long</td>
-<td>Long</td>
-</tr>
-<tr>
-<td>short</td>
-<td>Short</td>
-</tr>
-<tr>
-<td>int</td>
-<td>Integer</td>
-</tr>
-<tr>
-<td>integer</td>
-<td>Integer</td>
-</tr>
-<tr>
-<td>double</td>
-<td>Double</td>
-</tr>
-<tr>
-<td>float</td>
-<td>Float</td>
-</tr>
-<tr>
-<td>boolean</td>
-<td>Boolean</td>
-</tr>
-<tr>
-<td>date</td>
-<td>Date</td>
-</tr>
-<tr>
-<td>decimal</td>
-<td>BigDecimal</td>
-</tr>
-<tr>
-<td>bigdecimal</td>
-<td>BigDecimal</td>
-</tr>
-<tr>
-<td>object</td>
-<td>Object</td>
-</tr>
-<tr>
-<td>map</td>
-<td>Map</td>
-</tr>
-<tr>
-<td>hashMap</td>
-<td>HashMap</td>
-</tr>
-<tr>
-<td>list</td>
-<td>List</td>
-</tr>
-<tr>
-<td>arraylist</td>
-<td>ArrayList</td>
-</tr>
-<tr>
-<td>collection</td>
-<td>Collection</td>
-</tr>
-<tr>
-<td>iterator</td>
-<td>Iterator</td>
-</tr>
-</tbody></table>
-<h2 id="四、类型处理器（typeHandlers）"><a href="#四、类型处理器（typeHandlers）" class="headerlink" title="四、类型处理器（typeHandlers）"></a>四、类型处理器（typeHandlers）</h2><p>无论是 MyBatis 在预处理语句（PreparedStatement）中设置一个参数时，还是从结果集中取出一个值时，都会用类型处理器将获取的值以合适的方式转换为 Java 类型。</p>
-<table>
-<thead>
-<tr>
-<th>类型处理器</th>
-<th>Java 类型</th>
-<th>JDBC 类型</th>
-</tr>
-</thead>
-<tbody><tr>
-<td>BooleanTypeHandler</td>
-<td>Java.lang.Boolean,boolean</td>
-<td>BOOLEAN</td>
-</tr>
-<tr>
-<td>ByteTypeHandler</td>
-<td>java.lang.Byte,byte</td>
-<td>NUMERIC,BYTE</td>
-</tr>
-<tr>
-<td>ShortTypeHandler</td>
-<td>java.lang.Short,short</td>
-<td>NUMERIC,SMALLINT</td>
-</tr>
-<tr>
-<td>IntegerTypeHandler</td>
-<td>java.lang.Integer,int</td>
-<td>NUMERIC,INTEGER</td>
-</tr>
-<tr>
-<td>FloatTypeHandler</td>
-<td>java.lang.Float,float</td>
-<td>NUMERIC,FLOAT</td>
-</tr>
-<tr>
-<td>DoubleTypeHandler</td>
-<td>java.lang.Double,double</td>
-<td>NUMERIC,DOUBLE</td>
-</tr>
-<tr>
-<td>BigDecimalTypeHandler</td>
-<td>java.math.BigDecimal</td>
-<td>NUMERIC,DECIMAL</td>
-</tr>
-<tr>
-<td>StringTypeHandler</td>
-<td>java.lang.String</td>
-<td>CHAR,VARCHAR</td>
-</tr>
-<tr>
-<td>ClobReaderTypeHandler</td>
-<td>java.io.Reader</td>
-<td>-</td>
-</tr>
-<tr>
-<td>ClobTypeHandler</td>
-<td>java.lang.String</td>
-<td>CLOB,LONGVARCHAR</td>
-</tr>
-<tr>
-<td>NStringTypeHandler</td>
-<td>java.lang.String</td>
-<td>NVARCHAR,NCHAR</td>
-</tr>
-<tr>
-<td>NClobTypeHandler</td>
-<td>java.lang.String</td>
-<td>NCLOB</td>
-</tr>
-<tr>
-<td>BlobInputStreamTypeHandler</td>
-<td>java.io.InputStream</td>
-<td>-</td>
-</tr>
-<tr>
-<td>ByteArrayTypeHandler</td>
-<td>byte[]</td>
-<td></td>
-</tr>
-<tr>
-<td>DateTypeHandler</td>
-<td>byte[]</td>
-<td>L</td>
-</tr>
-<tr>
-<td>DateOnlyTypeHandler</td>
-<td>java.util.Date</td>
-<td>TIMESTAMP</td>
-</tr>
-<tr>
-<td>TimeOnlyTypeHandler</td>
-<td>java.util.Date</td>
-<td>DATE</td>
-</tr>
-<tr>
-<td>SqlTimestampTypeHandler</td>
-<td>java.sql.Timestamp</td>
-<td>TIMESTAMP</td>
-</tr>
-<tr>
-<td>SqlDateTypeHandler</td>
-<td>java.sql.Date</td>
-<td>DATE</td>
-</tr>
-<tr>
-<td>SqlTimeTypeHandler</td>
-<td>java.sql.Time</td>
-<td>TIME</td>
-</tr>
-<tr>
-<td>ObjectTypeHandler</td>
-<td>Any</td>
-<td>OTHER</td>
-</tr>
-<tr>
-<td>EnumTypeHandler</td>
-<td>Enum</td>
-<td>VARCHAR</td>
-</tr>
-<tr>
-<td>EnumOrdinalTypeHandler</td>
-<td>Enum</td>
-<td>NUMERIC,DOUBLE</td>
-</tr>
-<tr>
-<td>SqlxmlTypeHandler</td>
-<td>java.lang.String</td>
-<td>SQLXML</td>
-</tr>
-<tr>
-<td>InstantTypeHandler</td>
-<td>java.time.Instant</td>
-<td>TIMESTAMP</td>
-</tr>
-<tr>
-<td>LocalDateTimeTypeHandler</td>
-<td>java.time.LocalDateTime</td>
-<td>TIMESTAMP</td>
-</tr>
-<tr>
-<td>LocalDateTypeHandler</td>
-<td>java.time.LocalDate</td>
-<td>DATE</td>
-</tr>
-<tr>
-<td>OffsetTimeTypeHandler</td>
-<td>java.time.OffsetDateTime</td>
-<td>TIMESTAMP</td>
-</tr>
-<tr>
-<td>ZonedDateTimeTypeHandler</td>
-<td>java.time.ZonedDateTime</td>
-<td>TIMESTAMP</td>
-</tr>
-<tr>
-<td>YearTypeHandler</td>
-<td>java.time.Year</td>
-<td>INTEGER</td>
-</tr>
-<tr>
-<td>MonthTypeHandler</td>
-<td>java.time.Month</td>
-<td>INTEGER</td>
-</tr>
-<tr>
-<td>YearMonthTypeHandler</td>
-<td>java.time.YearMonth</td>
-<td>VARCHAR,LONGVARCHAR</td>
-</tr>
-<tr>
-<td>JapaneseDateTypeHandler</td>
-<td>java.time.chrono.JapaneseDate</td>
-<td>DATE</td>
-</tr>
-</tbody></table>
-<p>可以通过重写类型处理器或创建自己的类型处理器来处理不支持的或非标准的类型。具体做法为：实现 org.apache.ibatis.type.TypeHandler 或集成 org.apache.ibatis.type.BaseTypeHandler，然后将它映射到一个 JDBC 类型：</p>
-<pre><code class="java">@MappedJdbcTypes(JdbcType.VARCHAR)
-public class ExampleTypeHandler extends BaseTypeHandler&lt;String&gt; {
-  @Override
-  public void setNonNullParameter(PreparedStatement ps, int i, String parameter, JdbcType jdbcType) throws SQLException {
-    ps.setString(i, parameter);
-  }
+    &lt;dependency&gt;
+        &lt;groupId&gt;org.springframework.session&lt;/groupId&gt;
+        &lt;artifactId&gt;spring-session-data-redis&lt;/artifactId&gt;
+    &lt;/dependency&gt;
+&lt;/dependencies&gt;</code></pre>
+<p>Spring Boot 为 Spring Session 提供了依赖管理，所以不需要声明依赖的版本。</p>
+<h3 id="2-修改配置"><a href="#2-修改配置" class="headerlink" title="2. 修改配置"></a>2. 修改配置</h3><pre><code class="properties"># Session 的存储方式
+spring.session.store-type=redis
 
-  @Override
-  public String getNullableResult(ResultSet rs, String columnName) throws SQLException {
-    return rs.getString(columnName);
-  }
+# Session 会话超时时间 / 秒
+server.servlet.session.timeout=600
+# Session 的刷新策略
+spring.session.redis.flush-mode=on-save
+# 用于存储会话的键名
+spring.session.redis.namespace=spring:session
 
-  @Override
-  public String getNullableResult(ResultSet rs, int columnIndex) throws SQLException {
-    return rs.getString(columnIndex);
-  }
-
-  @Override
-  public String getNullableResult(CallableStatement cs, int columnIndex) throws SQLException {
-    return cs.getString(columnIndex);
-  }
-}</code></pre>
-<pre><code class="xml">&lt;typeHandlers&gt;
-    &lt;typeHandler handler=&quot;org.mybatis.example.ExampleTypeHandler&quot;/&gt;
-&lt;/typeHandlers&gt;</code></pre>
-<h2 id="五、对象工厂（objectFactory）"><a href="#五、对象工厂（objectFactory）" class="headerlink" title="五、对象工厂（objectFactory）"></a>五、对象工厂（objectFactory）</h2><p>MyBatis 每次创建结果对象的新实例时，都会使用一个对象工厂（ObjectFactory）实例来完成。要么通过默认构造方法，要么在参数映射存在的时候通过参数构造方法来实例化。</p>
-<p>如何想覆盖对象工厂的默认行为，可以通过创建自己的对象工厂来实现，如：</p>
-<pre><code class="java">public class ExampleObjectFactory extends DefaultObjectFactory {
-    // 包含两个创建方法
-    // 处理默认构造方法
-    public Object create(Class type){
-        return super.create(type);
-    }
-
-    // 处理带参数的构造方法
-    public Object create(Class type,List&lt;Class&gt; constructorArgTypes,List&lt;Object&gt; constructorArgs){
-        return super.create(type,constructorArgTypes,constructorArgs);
-    }
-
-    // 可以被用来配置 ObjectFactory，在初始化ObjectFactory后，objectFactory元素体中定义的属性会被传递给 setProperties 方法
-    public void setProperties(Properties properties){
-        super.setProperties(properties);
-    }
-
-    public &lt;T&gt; boolean isCollection(Class&lt;T&gt; type){
-        return Collection.class.isAssignableFrom(type);
-    }
-}</code></pre>
-<pre><code class="xml">&lt;objectFactory type=&quot;org.mybatis.example.ExampleObjectFactory&quot;&gt;
-    &lt;property name=&quot;someProperty&quot; value=&quot;100&quot;/&gt;
-&lt;/objectFactory&gt;</code></pre>
-<h2 id="六、插件（Plugins）"><a href="#六、插件（Plugins）" class="headerlink" title="六、插件（Plugins）"></a>六、插件（Plugins）</h2><p>MyBatis 允许你在已映射语句执行过程中的某一点进行拦截调用。默认情况下，MyBatis 允许使用插件来拦截的方法调用包含：</p>
-<ul>
-<li>Executor（update、query、flushStatements、commit、rollback、getTransaction、close、isClosed）</li>
-<li>ParameterHandler（getParameterObject、setParameters）</li>
-<li>ResultSetHandler（handleResultSets、handleOutputParameters）</li>
-<li>StatementHandler（prepare、parameterize、batch、update、query）</li>
-</ul>
-<p>这些都是很底层的类和方法，如果在试图修改或重写已有方法的行为时，很可能会破坏 MyBatis的核心模块，因此在使用插件的时候要当心。</p>
-<h2 id="七、环境配置（environments）"><a href="#七、环境配置（environments）" class="headerlink" title="七、环境配置（environments）"></a>七、环境配置（environments）</h2><p>MyBatis 可以配置成适应多种环境，这种机制有助于将 SQL 映射应用于多种数据库之中。</p>
-<p>如开发、测试、生产环境需要不同的配置；或者现在相同 Schema 的多个库中使用相同的 SQL 映射。</p>
+# 连接 Redis
+spring.redis.host=localhost
+spring.redis.port=6379
+spring.redis.password=password</code></pre>
 <blockquote>
-<p>尽管可以配置多个环境，但是每个 SqlSessionFactory 实例只能选择一种环境</p>
+<p><code>spring.session.store-type=redis</code> 相当于手动添加注解 <code>@EnableRedisHttpSession</code>。此操作将会创建一个名为 <code>SpringSessionRepositoryFilter</code> 的过滤器，拦截并替换 SpringSession 支持的 HttpSession 实现。</p>
 </blockquote>
-<p>环境元素定义了如何配置环境：</p>
-<pre><code class="xml">&lt;enviroments default=&quot;development&quot;&gt;
-    &lt;enviroment id=&quot;development&quot;&gt;
-        &lt;transactionManager type=&quot;JDBC&quot;&gt;
-            &lt;property name=&quot;...&quot; value=&quot;...&quot;/&gt;
-        &lt;/transactionManager&gt;
-        &lt;dataSource type=&quot;POOLED&quot;&gt;
-            &lt;property name=&quot;driver&quot; value=&quot;...&quot;/&gt;
-            ...
-        &lt;/dataSource&gt;
-    &lt;/enviroment&gt;
-&lt;/enviroments&gt;</code></pre>
-<p>这里的关键：</p>
-<ul>
-<li>默认使用的环境ID（default=”development”）</li>
-<li>每个元素都有一个环境ID</li>
-<li>事务管理器的配置</li>
-<li>数据源的配置</li>
-</ul>
-<h3 id="1-事务管理器（transactionManager）"><a href="#1-事务管理器（transactionManager）" class="headerlink" title="1. 事务管理器（transactionManager）"></a>1. 事务管理器（transactionManager）</h3><p>MyBatis 有两种类型的事务管理器：</p>
+<p>至此，启动项目并访问项目地址后，用户的 Session 信息存储在 Redis 而不是 Tomcat 的 HttpSession 实现中。</p>
+<h3 id="3-如何工作的"><a href="#3-如何工作的" class="headerlink" title="3. 如何工作的"></a>3. 如何工作的</h3><p>Spring Session 用 Redis 支持的实现来替换 HttpSession。当 Spring Security 的 SecurityContextPersistenceFilter 将 SecurityContext 保存到 HttpSession 时，它将被持久化到 Redis 中。</p>
+<p>当一个新的 HttpSession 被创建时，Spring Session 会在你的浏览器中创建一个名为 Session 的 cookie，该 cookie 包含会话的 ID，可以查看 cookies。</p>
+<p>参考资料：</p>
 <ol>
-<li>JDBC - 直接使用 JDBC 的提交和回滚设置，依赖于从数据源得到的连接来管理事务作用域</li>
-<li>MANAGED - 让容器来管理事务的整个生命周期。默认会关闭连接，然而一些容器不希望这样，因此需要将 closeConnection 设置为 false 来阻止它默认的关闭行为</li>
+<li><a href="https://docs.spring.io/spring-session/docs/current/reference/html5/guides/boot-redis.html" target="_blank" rel="noopener">Spring Session Redis - DOCS</a></li>
 </ol>
+</div><hr></div><div class="recent-post-item article-container"><a class="article-title" href="/2019/09/24/读书笔记/《Docker全栈项目部署》/1.Docker/">Docker部署全栈：一、安装Docker环境</a><time class="post-meta__date"><i class="fa fa-calendar" aria-hidden="true"></i> 2019-09-24</time><span class="article-meta"><span class="article-meta__separator">|</span><i class="fa fa-inbox article-meta__icon" aria-hidden="true"></i><a class="article-meta__categories" href="/categories/运维/">运维</a><i class="fa fa-angle-right" aria-hidden="true"></i><i class="fa fa-inbox article-meta__icon" aria-hidden="true"></i><a class="article-meta__categories" href="/categories/运维/Docker全栈部署/">Docker全栈部署</a></span><span class="article-meta tags"><span class="article-meta__separator">|</span><i class="fa fa-tag article-meta__icon" aria-hidden="true"></i><a class="article-meta__tags" href="/tags/hide/">hide</a><span class="article-meta__link">-</span><i class="fa fa-tag article-meta__icon" aria-hidden="true"></i><a class="article-meta__tags" href="/tags/Docker全栈部署/">Docker全栈部署</a></span><div class="content"><h1 id="Docker部署全栈项目：一、安装Docker-环境"><a href="#Docker部署全栈项目：一、安装Docker-环境" class="headerlink" title="Docker部署全栈项目：一、安装Docker 环境"></a>Docker部署全栈项目：一、安装Docker 环境</h1><h2 id="一、Win-10-环境下安装"><a href="#一、Win-10-环境下安装" class="headerlink" title="一、Win 10 环境下安装"></a>一、Win 10 环境下安装</h2><h3 id="1-安装前提"><a href="#1-安装前提" class="headerlink" title="1. 安装前提"></a>1. 安装前提</h3><ol>
+<li>需要 Windows 10 64位的系统</li>
+<li>在 Windows 功能 中开启 Hyper-V 功能</li>
+<li>下载 <a href="https://www.docker.com/products/docker-desktop" target="_blank" rel="noopener">Docker Desktop for windows</a>，双击运行安装即可</li>
+</ol>
+<p><img src="https://i.loli.net/2019/09/23/7LRW5fCIO316Z2v.png" alt="图：开启Hyper-V功能"></p>
+<h3 id="2-国内镜像加速"><a href="#2-国内镜像加速" class="headerlink" title="2. 国内镜像加速"></a>2. 国内镜像加速</h3><p>右键任务栏中的鲸鱼图标，进入 Settings &gt; Daemon，写入如下配置：</p>
+<p><img src="https://i.loli.net/2019/09/23/iX3yz6mGHOgK9Vn.png" alt="图：配置镜像加速源"></p>
 <blockquote>
-<p>如果使用 Spring+MyBatis，则没必要配置事务管理器，因为 Spring 模块会使用自带的管理器来覆盖前面的配置。</p>
+<p>建议同时配置多个镜像，避免单个镜像服务宕机。</p>
 </blockquote>
-<h3 id="2-数据源（DataSource）"><a href="#2-数据源（DataSource）" class="headerlink" title="2. 数据源（DataSource）"></a>2. 数据源（DataSource）</h3><p>dataSource 元素使用标准的 JDBC 数据源接口来配置 JDBC 连接对象的资源。</p>
-<p>MyBatis 提供了三种内建的数据源类型。</p>
-<h4 id="UNPOOLED"><a href="#UNPOOLED" class="headerlink" title="UNPOOLED"></a>UNPOOLED</h4><p>每次被请求时打开和关闭连接</p>
-<h4 id="POOLED"><a href="#POOLED" class="headerlink" title="POOLED"></a>POOLED</h4><p>使用连接池的方式，避免创建新实例时所需的初始化和认证时间</p>
-<h4 id="JNDI"><a href="#JNDI" class="headerlink" title="JNDI"></a>JNDI</h4><p>为了能在如 EJB 或应用服务器这类容器汇总使用，容器可以集成或在外部配置数据源</p>
-<h4 id="第三方数据源"><a href="#第三方数据源" class="headerlink" title="第三方数据源"></a>第三方数据源</h4><p>可以通过实现接口 <code>org.apache.ibatis.datasource.DataSourceFactory</code> 来使用第三方数据源。</p>
-<h2 id="八、数据库厂商标识（databaseIdProvider）"><a href="#八、数据库厂商标识（databaseIdProvider）" class="headerlink" title="八、数据库厂商标识（databaseIdProvider）"></a>八、数据库厂商标识（databaseIdProvider）</h2><h2 id="九、映射器（mappers）"><a href="#九、映射器（mappers）" class="headerlink" title="九、映射器（mappers）"></a>九、映射器（mappers）</h2><p>mappers 定义 SQL 映射语句，告诉 MyBatis 去哪里找这些语句。如：</p>
-<pre><code class="xml">&lt;!-- 使用相对于类路径的资源引用 --&gt;
-&lt;mappers&gt;
-    &lt;mapper resource=&quot;org/mybatis/builder/AuthorMapper.xml&quot;/&gt;
-&lt;/mappers&gt;</code></pre>
-<pre><code class="xml">&lt;!-- 使用完全限定资源定位符 URL --&gt;
-&lt;mappers&gt;
-    &lt;mapper url=&quot;file:///var/mappers/AuthorMapper.xml&quot;/&gt;
-&lt;/mappers&gt;</code></pre>
-<pre><code class="xml">&lt;!-- 使用映射器接口实现类的完全限定类名 --&gt;
-&lt;mappers&gt;
-    &lt;mapper class=&quot;org.mybatis.builder.AuthorMapper&quot;/&gt;
-&lt;/mappers&gt;</code></pre>
-<pre><code class="xml">&lt;!-- 将包内的映射器接口实现全部注册为映射器 --&gt;
-&lt;mappers&gt;
-    &lt;package name=&quot;org.mybatis.builder&quot;/&gt;
-&lt;/mappers&gt;</code></pre>
-</div><hr></div><div class="recent-post-item article-container"><a class="article-title" href="/2019/09/05/读书笔记/《Mybatis》/1_入门/">《MyBatis》读书笔记 - 入门</a><time class="post-meta__date"><i class="fa fa-calendar" aria-hidden="true"></i> 2019-09-05</time><span class="article-meta"><span class="article-meta__separator">|</span><i class="fa fa-inbox article-meta__icon" aria-hidden="true"></i><a class="article-meta__categories" href="/categories/读书笔记/">读书笔记</a><i class="fa fa-angle-right" aria-hidden="true"></i><i class="fa fa-inbox article-meta__icon" aria-hidden="true"></i><a class="article-meta__categories" href="/categories/读书笔记/MyBatis/">MyBatis</a></span><span class="article-meta tags"><span class="article-meta__separator">|</span><i class="fa fa-tag article-meta__icon" aria-hidden="true"></i><a class="article-meta__tags" href="/tags/hide/">hide</a><span class="article-meta__link">-</span><i class="fa fa-tag article-meta__icon" aria-hidden="true"></i><a class="article-meta__tags" href="/tags/MyBatis/">MyBatis</a></span><div class="content"><h1 id="一、入门"><a href="#一、入门" class="headerlink" title="一、入门"></a>一、入门</h1><h2 id="1-安装"><a href="#1-安装" class="headerlink" title="1. 安装"></a>1. 安装</h2><p>构建项目，需要引入如下的 dependency 到 pom.xml 中：</p>
-<pre><code class="xml">&lt;dependency&gt;
-  &lt;groupId&gt;or.mybatis&lt;/groupId&gt;
-  &lt;artifactId&gt;mybatis&lt;/artifactId&gt;
-  &lt;version&gt;x.x.x&lt;/version&gt;
-&lt;/dependency&gt;</code></pre>
-<h2 id="2-从XML配置SQLSessionFactory"><a href="#2-从XML配置SQLSessionFactory" class="headerlink" title="2. 从XML配置SQLSessionFactory"></a>2. 从XML配置SQLSessionFactory</h2><p>每个基于 MyBatis 的应用都是以一个 SqlSessionFactory 的实例为核心的。</p>
-<p>以下 XML 配置文件中包含了对 MyBatis 系统的核心设置，如获取数据源(DataSource)和决定事务作用于和控制方式的事务管理器(TransactionManager)：</p>
-<pre><code class="xml">&lt;?xml version=&quot;1.0&quot; encoding=&quot;UTF-8&quot; ?&gt;
-&lt;!DOCTYPE configuration PUBLIC &quot;-//mybatis.org//DTD Config 3.0//EN&quot; &quot;http://mybatis.org/dtd/mybatis-3-config.dtd&quot;&gt;
-&lt;configuration&gt;
-    &lt;environments id=&quot;development&quot;&gt;
-        &lt;transactionManager type=&quot;JDBC&quot; /&gt;
-        &lt;dataSource type=&quot;POOLED&quot;&gt;
-            &lt;property name=&quot;driver&quot; value=&quot;${driver}&quot;/&gt;
-            &lt;property name=&quot;url&quot; value=&quot;${url}&quot;/&gt;
-            &lt;property name=&quot;username&quot; value=&quot;${username}&quot;/&gt;
-            &lt;property name=&quot;password&quot; value=&quot;${password}&quot;/&gt;
-        &lt;/dataSource&gt;
-    &lt;/environments&gt;
-    &lt;mappers&gt;
-        &lt;mapper resource=&quot;org/mybatis/example/BlogMapper.xml&quot;/&gt;
-    &lt;/mappers&gt;
-&lt;/configuration&gt;</code></pre>
-<p>使用类路径下的资源文件进行配置，构建 SqlSessionFactory 实例：</p>
-<pre><code class="java">String resource = &quot;org/mybatis/example/mybatis-config.xml&quot;;
-InputStream inputStream = Resources.getResourceAsStream(resource);
-SqlSessionFactory sqlSessionFactory = new SqlSessionFactoryBuilder().build(inputStream);</code></pre>
-<h2 id="3-从SqlSessionFactory-获取-SqlSession"><a href="#3-从SqlSessionFactory-获取-SqlSession" class="headerlink" title="3. 从SqlSessionFactory 获取 SqlSession"></a>3. 从SqlSessionFactory 获取 SqlSession</h2><p>SqlSession 中完全包含了面向数据库执行 SQL 命令所需的所有方法，例如：</p>
-<pre><code class="java">try(SqlSession session = sqlSessionFactory.openSession()){
-    Blog blog = (Blog)session.selectOne(&quot;org.mybatis.example.BlogMapper.selectBlog&quot;,101);
+<h3 id="3-共享磁盘"><a href="#3-共享磁盘" class="headerlink" title="3. 共享磁盘"></a>3. 共享磁盘</h3><p>配置了磁盘共享后，Docker 才能够直接访问共享文件夹中的文件。</p>
+<p><img src="https://i.loli.net/2019/09/23/xyfsne7NE6pj2VZ.png" alt="图：配置共享磁盘"></p>
+<h3 id="4-测试"><a href="#4-测试" class="headerlink" title="4. 测试"></a>4. 测试</h3><p>打开 <code>Git Bash</code> 或 <code>CMD</code> 命令行，查看 docker 版本：</p>
+<pre><code class="sh">$ docker --version
+Docker version 19.03.1</code></pre>
+<p>至此，Docker 安装成功。</p>
+<p>拉取并运行一个 <code>hello-world</code> 镜像：</p>
+<pre><code class="sh">$ docker run hello-world</code></pre>
+<p>Docker 会依次进行：查找本地镜像 &gt; 拉取远程镜像 &gt; 运行container容器</p>
+<blockquote>
+<p>如果运行镜像时失败，请先将 Docker 切换至 <code>Linux container 模式</code></p>
+</blockquote>
+<p><img src="https://i.loli.net/2019/09/23/TAfNrB3sb2O641W.png" alt="图：切换Docker模式"></p>
+<h3 id="5-可能存在的问题"><a href="#5-可能存在的问题" class="headerlink" title="5. 可能存在的问题"></a>5. 可能存在的问题</h3><p>如果您的 <code>Docker for Windows</code> 是从 <code>Docker Toolbox</code> 升级来的，那么可能会提示 <code>未找到CA</code> 。</p>
+<h4 id="问题："><a href="#问题：" class="headerlink" title="问题："></a>问题：</h4><pre><code class="sh">$ docker
+could not read CA certificate &quot;C:\\Users\\user\\.docker\\machine\\machines\\default\\ca.pem&quot;: open C:\Users\user\.docker\machine\machines\default\ca.pem: The system cannot find the path specified.</code></pre>
+<h4 id="原因："><a href="#原因：" class="headerlink" title="原因："></a>原因：</h4><p>在卸载之前的 <code>Docker Toolbox</code> 时，并不会删除用户的 env 变量。</p>
+<h4 id="解决方法："><a href="#解决方法：" class="headerlink" title="解决方法："></a>解决方法：</h4><ol>
+<li>卸载 Docker Toolbox</li>
+<li>卸载 VirtualBox</li>
+<li>删除 Toolbox env 变量<ol>
+<li>进入系统变量</li>
+<li>从 /yoghurt 中删除所有 “DOCKER_*” 条目(如)</li>
+</ol>
+</li>
+</ol>
+<h2 id="二、Ubuntu-16-4-环境"><a href="#二、Ubuntu-16-4-环境" class="headerlink" title="二、Ubuntu 16.4 环境"></a>二、Ubuntu 16.4 环境</h2><h3 id="1-安装"><a href="#1-安装" class="headerlink" title="1. 安装"></a>1. 安装</h3><p>安装Docker 分为两种方式：</p>
+<h4 id="使用-APT-安装"><a href="#使用-APT-安装" class="headerlink" title="使用 APT 安装"></a>使用 APT 安装</h4><pre><code class="sh"># 更新apt源
+$ sudo apt-get update
+
+# 添加HTTPS传输软件包和CA证书
+$ sudo apt-get install \
+    apt-transport-https \
+    ca-certificates \
+    curl \
+    software-properties-common
+
+# 使用国内源，添加 GPG 密钥(官方源：https://download.docker.com/linux/ubuntu/gpg)
+$ curl -fsSL https://mirrors.ustc.edu.cn/docker-ce/linux/ubuntu/gpg | sudo apt-key add -
+
+# 更新 apt 缓存
+$ sudo apt-get update
+
+# 安装Docker CE
+$ sudo apt-get install docker-ce</code></pre>
+<h4 id="使用-脚本-自动安装"><a href="#使用-脚本-自动安装" class="headerlink" title="使用 脚本 自动安装"></a>使用 脚本 自动安装</h4><p>Docker 官方为了简化安装流程，提供了一个便捷的安装脚本：</p>
+<pre><code class="sh">$ curl -fsSL get.docker.com -o get-docker.sh
+$ sudo sh get-docker.sh -mirror Aliyun</code></pre>
+<h4 id="启动-Docker-CE"><a href="#启动-Docker-CE" class="headerlink" title="启动 Docker CE"></a>启动 Docker CE</h4><pre><code class="sh">$ sudo systemctl enable docker
+$ sudo systemctl start docker</code></pre>
+<h3 id="2-国内镜像加速-1"><a href="#2-国内镜像加速-1" class="headerlink" title="2. 国内镜像加速"></a>2. 国内镜像加速</h3><p>在 <code>/etc/docker/daemon.json</code> 中(如果不存在，则新建)写入：</p>
+<pre><code class="json">{
+    &quot;registry-mirrors&quot;: [
+        &quot;http://hub-mirror.c.163.com&quot;,
+        &quot;https://reg-mirror.qiniu.com&quot;
+    ]
 }</code></pre>
-<p>或者使用一种更简单的方式：</p>
-<pre><code class="java">try(SqlSession session = sqlSessionFactory.openSession()){
-    BlogMapper mapper = session.getMapper(BlogMapper.class);
-    Blog blog = mapper.selectBlog(101);
-}</code></pre>
-<h3 id="提示：命名空间（Namespaces）"><a href="#提示：命名空间（Namespaces）" class="headerlink" title="提示：命名空间（Namespaces）"></a>提示：命名空间（Namespaces）</h3><p>命名空间的作用有两个，一个是利用更长的完全限定名来将不同的语句隔离开来，同时也实现了接口绑定。</p>
-<p>命名解析：为了减少输入量，MyBatis 对所有的命名配置元素（包括语句，结果映射，缓存等）使用了如下的命名解析规则。</p>
+<p>之后重启服务：</p>
+<pre><code class="sh">$ sudo systemctl daemon-reload
+$ sudo systemctl restart docker</code></pre>
+<h3 id="3-卸载"><a href="#3-卸载" class="headerlink" title="3. 卸载"></a>3. 卸载</h3><pre><code class="sh">$ sudo apt-get remove docker \
+    docker-engine \
+    docker.io</code></pre>
+<h3 id="4-测试-1"><a href="#4-测试-1" class="headerlink" title="4. 测试"></a>4. 测试</h3><p>同 Windows 版测试一样，运行一个 <code>hello-world image</code></p>
+<pre><code class="sh">$ docker run hello-world</code></pre>
+<h2 id="三、常用命令"><a href="#三、常用命令" class="headerlink" title="三、常用命令"></a>三、常用命令</h2><pre><code class="sh"># Windows 下进入容器的命令
+$ winpty docker exec -it luokaiii-mongo bash
+
+# Linux 下进入容器的命令
+$ docker exec -it luokaiii-mongo bash</code></pre>
+<p>参考资料：</p>
 <ol>
-<li>完全限定名，将被直接用于查找和使用</li>
-<li>短名称，如果全局唯一也可作为单独的应用。如果不唯一，那么使用时就会出现错误，此时就需要使用完全限定名</li>
+<li><a href="https://docs.docker.com/docker-for-windows/index.html" target="_blank" rel="noopener">Docker Docs：https://docs.docker.com/docker-for-windows/</a></li>
+<li>《Docker 技术入门与实践》杨保华版</li>
+<li><a href="https://yeasy.gitbooks.io/docker_practice/index.html" target="_blank" rel="noopener">《Docker 从入门到实践》https://yeasy.gitbooks.io/docker_practice/</a></li>
 </ol>
-<h2 id="4-基于-XML-映射语句的示例"><a href="#4-基于-XML-映射语句的示例" class="headerlink" title="4. 基于 XML 映射语句的示例"></a>4. 基于 XML 映射语句的示例</h2><pre><code class="xml">&lt;?xml version=&quot;1.0&quot; encoding=&quot;UTF-8&quot; ?&gt;
-&lt;!DOCTYPE mapper
-  PUBLIC &quot;-//mybatis.org//DTD Mapper 3.0//EN&quot;
-  &quot;http://mybatis.org/dtd/mybatis-3-mapper.dtd&quot;&gt;
-&lt;mapper namespace=&quot;org.mybatis.example.BlogMapper&quot;&gt;
-    &lt;select id=&quot;selectBlog&quot; resultType=&quot;Blog&quot;&gt;
-        select * from Blog where id = #{id}
-    &lt;/select&gt;
-&lt;/mapper&gt;</code></pre>
-<h2 id="5-基于注解的示例"><a href="#5-基于注解的示例" class="headerlink" title="5. 基于注解的示例"></a>5. 基于注解的示例</h2><pre><code class="java">public interface BlogMapper {
-    @Select(&quot;SELECT * FROM blog WHERE id = #{id}&quot;)
-    Blog selectBlog(int id);
-}</code></pre>
-<h2 id="6-作用域（Scope）和生命周期"><a href="#6-作用域（Scope）和生命周期" class="headerlink" title="6. 作用域（Scope）和生命周期"></a>6. 作用域（Scope）和生命周期</h2><p><code>依赖注入框架</code>可以创建线程安全的、基于事务的 SqlSession 和映射器，并将它们直接注入到你的 bean 中，因此可以直接忽略它们的生命周期。</p>
-<h3 id="SqlSessionFactoryBuilder"><a href="#SqlSessionFactoryBuilder" class="headerlink" title="SqlSessionFactoryBuilder"></a>SqlSessionFactoryBuilder</h3><p>这个类可以被实例化、使用和丢弃，一旦创建了 SqlSessionFactory，就不再需要了。</p>
-<p>因此该实例的最佳作用域为<code>方法作用域</code>，可以重用 SqlSessionFactoryBuilder 来创建多个 SqlSessionFactory，但是使用后最好不要让其一直存在，以保证 XML 资源可以被释放。</p>
-<h3 id="SqlSessionFactory"><a href="#SqlSessionFactory" class="headerlink" title="SqlSessionFactory"></a>SqlSessionFactory</h3><p>一旦创建就应该在应用的运行期间一直存在，尽量不要重复创建该实例。</p>
-<p>因此该实例的最佳作用域为<code>应用作用域</code>。可以使用单例模式或静态单例模式来做到。</p>
-<h3 id="SqlSession"><a href="#SqlSession" class="headerlink" title="SqlSession"></a>SqlSession</h3><p>每个线程都应该由自己的 SqlSession 实例。SqlSession 的实例不是线程安全的，因此不能被共享。</p>
-<p>因此该实例的最佳作用于为<code>请求或方法作用域</code>。绝不能将 SqlSession 的实例引用放在静态域中，甚至一个类的实例变量也不行，也不能将引用放在任何类型的托管作用域中（如Servlet 的HttpSession）。</p>
-<p>如果您使用的是 Web 框架，那么应该考虑将 SqlSession 放在和 Http 请求对象相似的作用域中。即每次 Http 请求，都打开一个 SqlSession，返回响应后就关闭它。</p>
-<h3 id="映射器实例"><a href="#映射器实例" class="headerlink" title="映射器实例"></a>映射器实例</h3><p>映射器是映射Sql语句的接口，该接口的实例是从 SqlSession 中获得的。</p>
-<p>因此该实例的最佳作用于<code>与 SqlSession 的作用域保持一致</code></p>
-</div><hr></div><div class="recent-post-item article-container"><a class="article-title" href="/2019/09/04/分布式/SpringBoot/SpringBoot常用Listener/">SpringBoot中的几种常见监听器</a><time class="post-meta__date"><i class="fa fa-calendar" aria-hidden="true"></i> 2019-09-04</time><span class="article-meta"><span class="article-meta__separator">|</span><i class="fa fa-inbox article-meta__icon" aria-hidden="true"></i><a class="article-meta__categories" href="/categories/分布式/">分布式</a></span><span class="article-meta tags"><span class="article-meta__separator">|</span><i class="fa fa-tag article-meta__icon" aria-hidden="true"></i><a class="article-meta__tags" href="/tags/hide/">hide</a></span><div class="content"><h1 id="SpringBoot-的几种常见监听器"><a href="#SpringBoot-的几种常见监听器" class="headerlink" title="SpringBoot 的几种常见监听器"></a>SpringBoot 的几种常见监听器</h1><p>例如：在 Web 项目启动时，需要执行一段代码，该写在哪里呢？<br>解决方法：注册监听器监听 ServletContext 创建的钩子函数，并重写自己的实现</p>
-<h2 id="1-创建-Listener"><a href="#1-创建-Listener" class="headerlink" title="1. 创建 Listener"></a>1. 创建 Listener</h2><pre><code class="java">@WebListener
-public class InitDemo implements ServletContextListener {
+<h2 id="项目地址"><a href="#项目地址" class="headerlink" title="项目地址"></a>项目地址</h2><ul>
+<li><p><a href="https://github.com/luokaiii/luokaiii.docker-images" target="_blank" rel="noopener">Github</a></p>
+</li>
+<li><p><a href="https://gitee.com/luokaiii/luokaiii.docker-images" target="_blank" rel="noopener">Gitee</a></p>
+</li>
+</ul>
+</div><hr></div><div class="recent-post-item article-container"><a class="article-title" href="/2019/09/23/读书笔记/《Docker全栈项目部署》/2.MongoDB/">Docker部署全栈：二、安装MongoDB</a><time class="post-meta__date"><i class="fa fa-calendar" aria-hidden="true"></i> 2019-09-23</time><span class="article-meta"><span class="article-meta__separator">|</span><i class="fa fa-inbox article-meta__icon" aria-hidden="true"></i><a class="article-meta__categories" href="/categories/运维/">运维</a><i class="fa fa-angle-right" aria-hidden="true"></i><i class="fa fa-inbox article-meta__icon" aria-hidden="true"></i><a class="article-meta__categories" href="/categories/运维/Docker全栈部署/">Docker全栈部署</a></span><span class="article-meta tags"><span class="article-meta__separator">|</span><i class="fa fa-tag article-meta__icon" aria-hidden="true"></i><a class="article-meta__tags" href="/tags/hide/">hide</a><span class="article-meta__link">-</span><i class="fa fa-tag article-meta__icon" aria-hidden="true"></i><a class="article-meta__tags" href="/tags/Docker全栈部署/">Docker全栈部署</a></span><div class="content"><h1 id="Docker部署全栈项目：二、MongoDB-镜像"><a href="#Docker部署全栈项目：二、MongoDB-镜像" class="headerlink" title="Docker部署全栈项目：二、MongoDB 镜像"></a>Docker部署全栈项目：二、MongoDB 镜像</h1><h2 id="一、编写启动脚本"><a href="#一、编写启动脚本" class="headerlink" title="一、编写启动脚本"></a>一、编写启动脚本</h2><pre><code class="sh">#!/bin/bash
 
-    @Override
-    public void contextInitialized(ServletContextEvent sce) {
-        System.out.println(&quot;Web Initialized!&quot;);
-    }
+cur_dir=`pwd`
 
-    @Override
-    public void contextDestroyed(ServletContextEvent sce) {
-        System.out.println(&quot;Web Destroyed!&quot;);
-    }
-}</code></pre>
+# 停止并删除原有容器
+docker stop luokaiii-mongo
+docker rm luokaiii-mongo
+
+# docker run 运行镜像
+docker run --name luokaiii-mongo \ # --name 指定运行后的容器名称
+        -v /${cur_dir}/data:/data/db \ # -v 挂载本地目录到容器中(也就是将容器中的数据保存到宿主机)
+        -p 27016:27017 \ # 将容器的27017端口映射到宿主机的27016端口
+        -e MONGO_INITDB_ROOT_USERNAME=mongoadmin \ # 指定mongo初始账户名称(可以在运行第一次之后，将账号密码这两条删除，以免密码泄露)
+        -e MONGO_INITDB_ROOT_PASSWORD=password \ # 指定mongo初始账户密码
+        -d mongo:4.0.12 # -d 后台运行；mongo:xx 运行的mongo版本(如果不加版本则默认为lastest)</code></pre>
+<h2 id="二、运行脚本"><a href="#二、运行脚本" class="headerlink" title="二、运行脚本"></a>二、运行脚本</h2><p>在运行脚本前，需要先将存放数据的目录创建出来：</p>
+<pre><code class="sh">$ cd /home/luokaiii/images/mongo   # 脚本和DB文件的存放位置
+
+$ mkdir data   # 创建存储目录
+
+$ ./start.sh   # 运行刚刚写的脚本
+994e9e05bb42d1d.....  # 控制台打印这种的，即表示启动成功</code></pre>
 <blockquote>
-<p>使用 @WebListener 注册声明类为监听器</p>
+<p>上述写法，不限于 Windows 还是 Linux。</p>
+<p>但是如果 Windows 无法执行 sh 文件，请将 CMD 命令行换成 Git Bash 命令行。</p>
 </blockquote>
-<h2 id="2-添加-servlet-扫描"><a href="#2-添加-servlet-扫描" class="headerlink" title="2. 添加 servlet 扫描"></a>2. 添加 servlet 扫描</h2><pre><code class="java">@SpringBootApplication
-@ServletComponentScan(basePackages = &quot;com.test.*&quot;)
+<h2 id="三、测试"><a href="#三、测试" class="headerlink" title="三、测试"></a>三、测试</h2><h3 id="1-浏览器访问27016端口"><a href="#1-浏览器访问27016端口" class="headerlink" title="1. 浏览器访问27016端口"></a>1. 浏览器访问27016端口</h3><p><img src="https://i.loli.net/2019/09/23/CImfovdxUe8MTlF.png" alt="浏览器访问27016端口"></p>
+<h3 id="2-使用-Client-工具连接"><a href="#2-使用-Client-工具连接" class="headerlink" title="2. 使用 Client 工具连接"></a>2. 使用 Client 工具连接</h3><p><img src="https://i.loli.net/2019/09/23/C7erc6XbknyL4PO.png" alt="NoSQL工具连接"></p>
+<h2 id="四、日志解释"><a href="#四、日志解释" class="headerlink" title="四、日志解释"></a>四、日志解释</h2><pre><code class="tex"># MongoDB 启动进程，端口、数据目录、版本
+2019-09-23T07:19:56.012+0000 I CONTROL  [initandlisten] MongoDB starting : pid=25 port=27017 dbpath=/data/db 64-bit host=abeb2ca8fece
+2019-09-23T07:19:56.012+0000 I CONTROL  [initandlisten] db version v4.0.12
+
+# 插入用户成功
+Successfully added user: {
+        &quot;user&quot; : &quot;mongoadmin&quot;,
+        &quot;roles&quot; : [
+                {
+                        &quot;role&quot; : &quot;root&quot;,
+                        &quot;db&quot; : &quot;admin&quot;
+                }
+        ]
+}
+
+# MongoDB 显式地留给用户的身份验证
+/usr/local/bin/docker-entrypoint.sh: ignoring /docker-entrypoint-initdb.d/*
+
+# MongoDB 启动成功
+MongoDB init process complete; ready for start up.</code></pre>
+<blockquote>
+<p>关于Linux版本如何运行，将放在Docker-Compose集中部署时一起写。</p>
+</blockquote>
+<p>参考资料：</p>
+<ol>
+<li><a href="https://hub.docker.com/_/mongo" target="_blank" rel="noopener">Docker Hub</a></li>
+</ol>
+<h2 id="项目地址"><a href="#项目地址" class="headerlink" title="项目地址"></a>项目地址</h2><ul>
+<li><p><a href="https://github.com/luokaiii/luokaiii.docker-images" target="_blank" rel="noopener">Github</a></p>
+</li>
+<li><p><a href="https://gitee.com/luokaiii/luokaiii.docker-images" target="_blank" rel="noopener">Gitee</a></p>
+</li>
+</ul>
+</div><hr></div><div class="recent-post-item article-container"><a class="article-title" href="/2019/09/23/读书笔记/《Docker全栈项目部署》/0.全栈部署流程/">《Docker部署全栈》实战</a><span class="article-meta"><i class="fa fa-thumb-tack article-meta__icon sticky"></i><span class="sticky">置顶</span><span class="article-meta__separator" style="margin-right: 0.3rem">|</span></span><time class="post-meta__date"><i class="fa fa-calendar" aria-hidden="true"></i> 2019-09-23</time><span class="article-meta"><span class="article-meta__separator">|</span><i class="fa fa-inbox article-meta__icon" aria-hidden="true"></i><a class="article-meta__categories" href="/categories/运维/">运维</a><i class="fa fa-angle-right" aria-hidden="true"></i><i class="fa fa-inbox article-meta__icon" aria-hidden="true"></i><a class="article-meta__categories" href="/categories/运维/Docker全栈部署/">Docker全栈部署</a></span><span class="article-meta tags"><span class="article-meta__separator">|</span><i class="fa fa-tag article-meta__icon" aria-hidden="true"></i><a class="article-meta__tags" href="/tags/Docker全栈部署/">Docker全栈部署</a></span><div class="content"><ul>
+<li><a href="/2019/09/24/读书笔记/《Docker全栈项目部署》/1.Docker/index.html">第一章 安装 Docker 环境</a></li>
+<li><a href="/2019/09/23/读书笔记/《Docker全栈项目部署》/2.MongoDB/index.html">第二章 构建 MongoDB 容器</a></li>
+<li><a href="/2019/09/22/读书笔记/《Docker全栈项目部署》/3.Redis/index.html">第三章 构建 Redis 容器</a></li>
+<li><a href="/2019/09/21/读书笔记/《Docker全栈项目部署》/4.MariaDB/index.html">第四章 构建 MariaDB 容器</a></li>
+<li><a href="/2019/09/20/读书笔记/《Docker全栈项目部署》/5.SpringBoot/index.html">第五章 部署 SpringBoot Jar 镜像</a></li>
+<li><a href="/2019/09/19/读书笔记/《Docker全栈项目部署》/6.Nginx/index.html">第六章 构建 React 并部署至 Nginx 中</a></li>
+<li><a href="/2019/09/18/读书笔记/《Docker全栈项目部署》/7.Docker-Compose/index.html">第七章 Docker-Compose 编排所有服务</a></li>
+<li><a href="/2019/09/17/读书笔记/《Docker全栈项目部署》/8.DC命令/index.html">第八章 Docker-Compose 命令</a></li>
+<li><a href="/2019/09/16/读书笔记/《Docker全栈项目部署》/9.Docker版本升级/index.html">第九章 Docker 版本升级</a></li>
+</ul></div><a class="more" href="/2019/09/23/读书笔记/《Docker全栈项目部署》/0.全栈部署流程/#more">阅读更多</a><hr></div><div class="recent-post-item article-container"><a class="article-title" href="/2019/09/22/读书笔记/《Docker全栈项目部署》/3.Redis/">Docker部署全栈：三、安装Redis</a><time class="post-meta__date"><i class="fa fa-calendar" aria-hidden="true"></i> 2019-09-22</time><span class="article-meta"><span class="article-meta__separator">|</span><i class="fa fa-inbox article-meta__icon" aria-hidden="true"></i><a class="article-meta__categories" href="/categories/运维/">运维</a><i class="fa fa-angle-right" aria-hidden="true"></i><i class="fa fa-inbox article-meta__icon" aria-hidden="true"></i><a class="article-meta__categories" href="/categories/运维/Docker全栈部署/">Docker全栈部署</a></span><span class="article-meta tags"><span class="article-meta__separator">|</span><i class="fa fa-tag article-meta__icon" aria-hidden="true"></i><a class="article-meta__tags" href="/tags/hide/">hide</a><span class="article-meta__link">-</span><i class="fa fa-tag article-meta__icon" aria-hidden="true"></i><a class="article-meta__tags" href="/tags/Docker全栈部署/">Docker全栈部署</a></span><div class="content"><h1 id="Docker部署全栈项目：三、Redis-镜像"><a href="#Docker部署全栈项目：三、Redis-镜像" class="headerlink" title="Docker部署全栈项目：三、Redis 镜像"></a>Docker部署全栈项目：三、Redis 镜像</h1><h2 id="一、编写启动脚本"><a href="#一、编写启动脚本" class="headerlink" title="一、编写启动脚本"></a>一、编写启动脚本</h2><pre><code class="sh">#!/bin/bash
+
+curr=`PWD`
+
+# 运行前先停止原有容器
+docker stop luokaiii-redis
+docker rm luokaiii-redis
+
+# docker run 运行容器
+docker run --name luokaiii-redis \ # 指定运行后的容器名称
+        -p 7481:6379 \    # 将容器的6379端口映射到宿主机的7481端口
+        -v /${curr}/data/:/data \ # 挂载redis持久化的目录到宿主机
+        -d redis:4.0.14 \
+        --requirepass &quot;password&quot; # 指定redis的连接密码</code></pre>
+<blockquote>
+<p>如果需要使用 conf 自定义配置，请参考 <a href="http://download.redis.io/redis-stable/redis.conf" target="_blank" rel="noopener">官网提供的 redis.conf</a> 。</p>
+<p>Redis 的执行速度特别快，能到做到 15W/s 的查询，因此推荐使用较为复杂的密码。</p>
+</blockquote>
+<h2 id="二、启动脚本"><a href="#二、启动脚本" class="headerlink" title="二、启动脚本"></a>二、启动脚本</h2><pre><code class="sh">$ cd /home/luokaiii/images/redis   # 脚本和DB文件的存放位置
+
+$ mkdir data   # 创建存储目录
+
+$ ./start.sh   # 运行刚刚写的脚本
+994e9e05bb42d1d.....  # 控制台打印这种的，即表示启动成功</code></pre>
+<h2 id="三、日志解释"><a href="#三、日志解释" class="headerlink" title="三、日志解释"></a>三、日志解释</h2><pre><code class="tex"># Redis 启动、配置加载
+1:C 23 Sep 08:55:24.988 # oO0OoO0OoO0Oo Redis is starting oO0OoO0OoO0Oo
+1:C 23 Sep 08:55:24.988 # Redis version=4.0.14, bits=64, commit=00000000, modified=0, pid=1, just started
+1:C 23 Sep 08:55:24.989 # Configuration loaded
+1:M 23 Sep 08:55:24.992 * Running mode=standalone, port=6379.
+
+# Redis 启动成功
+1:M 23 Sep 08:55:24.993 * Ready to accept connections</code></pre>
+<h2 id="四、测试"><a href="#四、测试" class="headerlink" title="四、测试"></a>四、测试</h2><p><img src="https://i.loli.net/2019/09/23/YH3OnIpa7G2vieK.png" alt="图：连接测试"></p>
+<h2 id="五、遇到的问题"><a href="#五、遇到的问题" class="headerlink" title="五、遇到的问题"></a>五、遇到的问题</h2><h3 id="1-在-windows-下使用-redis-conf，失败"><a href="#1-在-windows-下使用-redis-conf，失败" class="headerlink" title="1. 在 windows 下使用 redis.conf，失败"></a>1. 在 windows 下使用 redis.conf，失败</h3><p>使用 redis.conf 的 Redis 启动脚本，配置来源于 <a href="http://download.redis.io/redis-stable/redis.conf" target="_blank" rel="noopener">官网提供的 redis.conf</a>，且未做任何修改。</p>
+<pre><code class="sh">docker run --name luokaiii-redis \ # 指定运行后的容器名称
+        -p 7481:6379 \    # 将容器的6379端口映射到宿主机的7481端口
+        -v /${PWD}/data/:/data \ # 挂载redis持久化的目录到宿主机
+        -v /${PWD}/redis.conf:/usr/local/etc/redis/redis.conf \ # 挂载redis.conf
+        -d redis:4.0.14 \ # 后台运行容器
+        redis-server /usr/local/etc/redis/redis.conf</code></pre>
+<p>执行脚本参考自 <a href="https://hub.docker.com/_/redis?tab=description" target="_blank" rel="noopener">Docker Hub</a>。</p>
+<p><img src="https://i.loli.net/2019/09/23/DvtaXPkubZUJL6A.png" alt="图：DockerHub提供的redis启动脚本"></p>
+<h4 id="错误提示"><a href="#错误提示" class="headerlink" title="错误提示"></a>错误提示</h4><pre><code class="sh">1:C 23 Sep 08:43:00.482 # Fatal error, can&#39;t open config file &#39;C:/Program Files/Git/usr/local/etc/redis/redis.conf&#39;</code></pre>
+<h4 id="原因"><a href="#原因" class="headerlink" title="原因"></a>原因</h4><p>未知。不明白为什么 Docker Container 会提示出 ‘C:/…’ 路径。</p>
+<h4 id="解决方案"><a href="#解决方案" class="headerlink" title="解决方案"></a>解决方案</h4><p>Windows 环境不使用 redis.conf. </p>
+<blockquote>
+<p>Ubuntu 下使用相同配置并无问题。以下是部署流程：</p>
+</blockquote>
+<p><img src="https://i.loli.net/2019/09/23/mXkanxRFu8HIYfi.png" alt="Linux下配置"></p>
+<p>连接验证：</p>
+<p><img src="https://i.loli.net/2019/09/23/i7rZhyLgPHwbnDI.png" alt="连接Linux下的Redis"></p>
+<h2 id="项目地址"><a href="#项目地址" class="headerlink" title="项目地址"></a>项目地址</h2><ul>
+<li><p><a href="https://github.com/luokaiii/luokaiii.docker-images" target="_blank" rel="noopener">Github</a></p>
+</li>
+<li><p><a href="https://gitee.com/luokaiii/luokaiii.docker-images" target="_blank" rel="noopener">Gitee</a></p>
+</li>
+</ul>
+</div><hr></div><div class="recent-post-item article-container"><a class="article-title" href="/2019/09/21/读书笔记/《Docker全栈项目部署》/4.MariaDB/">Docker部署全栈：四、安装MySQL</a><time class="post-meta__date"><i class="fa fa-calendar" aria-hidden="true"></i> 2019-09-21</time><span class="article-meta"><span class="article-meta__separator">|</span><i class="fa fa-inbox article-meta__icon" aria-hidden="true"></i><a class="article-meta__categories" href="/categories/运维/">运维</a><i class="fa fa-angle-right" aria-hidden="true"></i><i class="fa fa-inbox article-meta__icon" aria-hidden="true"></i><a class="article-meta__categories" href="/categories/运维/Docker全栈部署/">Docker全栈部署</a></span><span class="article-meta tags"><span class="article-meta__separator">|</span><i class="fa fa-tag article-meta__icon" aria-hidden="true"></i><a class="article-meta__tags" href="/tags/hide/">hide</a><span class="article-meta__link">-</span><i class="fa fa-tag article-meta__icon" aria-hidden="true"></i><a class="article-meta__tags" href="/tags/Docker全栈部署/">Docker全栈部署</a></span><div class="content"><h1 id="Docker部署全栈项目：四、MySQL-镜像"><a href="#Docker部署全栈项目：四、MySQL-镜像" class="headerlink" title="Docker部署全栈项目：四、MySQL 镜像"></a>Docker部署全栈项目：四、MySQL 镜像</h1><p>这里使用的是 MariaDB 镜像，与 MySQL 一样。</p>
+<h2 id="一、编写启动脚本"><a href="#一、编写启动脚本" class="headerlink" title="一、编写启动脚本"></a>一、编写启动脚本</h2><h2 id="1-start-sh"><a href="#1-start-sh" class="headerlink" title="1. start.sh"></a>1. start.sh</h2><pre><code class="sh">#!/bin/bash
+
+# 启动前先尝试停止该服务
+docker stop luokaiii-mysql
+docker rm luokaiii-mysql
+
+# 运行服务
+docker run --name luokaiii-mysql \ # 指定容器服务名称
+        -p 3307:3306 \ # 将容器的3306端口映射到宿主机的3307端口
+        -v /${PWD}/conf/local.cnf:/etc/mysql/conf.d/local.cnf \ # 使用自定义的配置文件(Windows环境下必不可少！)
+        -v /${PWD}/data:/var/lib/mysql \ # 挂载数据目录
+        -e MYSQL_ROOT_PASSWORD=password \ # MySQL初始密码
+        -d mariadb:10.4.8 \ # 后台运行指定版本
+        --character-set-server=utf8mb4 \ # 指定字符集
+        --collation-server=utf8mb4_unicode_ci</code></pre>
+<h3 id="2-conf-local-cnf"><a href="#2-conf-local-cnf" class="headerlink" title="2. conf/local.cnf"></a>2. conf/local.cnf</h3><p>指定 InnoDB 的刷新方法，否则会出现数据目录无法挂载的异常。当出现该异常后，请先清空 <code>./data</code> 目录。</p>
+<pre><code class="cnf">[mysqld]
+innodb_flush_method=O_DSYNC</code></pre>
+<p><img src="https://i.loli.net/2019/09/23/6EcOuQZePBIXRvq.png" alt="数据无法挂载，data目录未清空"></p>
+<h2 id="二、执行启动脚本"><a href="#二、执行启动脚本" class="headerlink" title="二、执行启动脚本"></a>二、执行启动脚本</h2><pre><code class="sh">$ cd /home/luokaiii/images/mysql   # 脚本和DB文件的存放位置
+
+$ mkdir data   # 创建存储目录
+$ vim conf/local.cnf  # 编写配置文件，填入innodb_flush_method=O_DSYNC
+
+$ ./start.sh   # 运行刚刚写的脚本
+994e9e05bb42d1d.....  # 控制台打印这种的，即表示启动成功</code></pre>
+<h2 id="三、测试连接"><a href="#三、测试连接" class="headerlink" title="三、测试连接"></a>三、测试连接</h2><p><img src="https://i.loli.net/2019/09/23/EUrI5Cu6HRN2gSK.png" alt="连接MySQL"></p>
+<h2 id="四、遇到的问题"><a href="#四、遇到的问题" class="headerlink" title="四、遇到的问题"></a>四、遇到的问题</h2><h3 id="1-问题：在-Windows-环境下，无法挂载-数据目录-至容器中。"><a href="#1-问题：在-Windows-环境下，无法挂载-数据目录-至容器中。" class="headerlink" title="1. 问题：在 Windows 环境下，无法挂载 数据目录 至容器中。"></a>1. 问题：在 Windows 环境下，无法挂载 数据目录 至容器中。</h3><p><img src="https://i.loli.net/2019/09/24/dWpOrvMy5eXznNg.png" alt="图：启动失败，无法挂载数据目录"></p>
+<h3 id="原因："><a href="#原因：" class="headerlink" title="原因："></a>原因：</h3><p>未指定 <code>innodb_flush_method=O_DSYNC</code>。</p>
+<blockquote>
+<p>Linux 环境下不需要</p>
+</blockquote>
+<h3 id="解决方法："><a href="#解决方法：" class="headerlink" title="解决方法："></a>解决方法：</h3><ol>
+<li>编写 <code>/conf/local.cnf</code> 并挂载到 <code>mariadb 容器</code> 中</li>
+<li>删除之前 ./data 下的所有数据</li>
+<li>并重新执行启动脚本</li>
+</ol>
+<p>参考资料：</p>
+<ol>
+<li><a href="https://hub.docker.com/_/mariadb" target="_blank" rel="noopener">Docker Hub</a></li>
+<li><a href="https://github.com/docker-library/mariadb/issues/38" target="_blank" rel="noopener">Github Issue</a></li>
+</ol>
+<h2 id="项目地址"><a href="#项目地址" class="headerlink" title="项目地址"></a>项目地址</h2><ul>
+<li><p><a href="https://github.com/luokaiii/luokaiii.docker-images" target="_blank" rel="noopener">Github</a></p>
+</li>
+<li><p><a href="https://gitee.com/luokaiii/luokaiii.docker-images" target="_blank" rel="noopener">Gitee</a></p>
+</li>
+</ul>
+</div><hr></div><div class="recent-post-item article-container"><a class="article-title" href="/2019/09/20/读书笔记/《Docker全栈项目部署》/5.SpringBoot/">Docker部署全栈：五、Docker-Compose部署SpringBoot</a><time class="post-meta__date"><i class="fa fa-calendar" aria-hidden="true"></i> 2019-09-20</time><span class="article-meta"><span class="article-meta__separator">|</span><i class="fa fa-inbox article-meta__icon" aria-hidden="true"></i><a class="article-meta__categories" href="/categories/运维/">运维</a><i class="fa fa-angle-right" aria-hidden="true"></i><i class="fa fa-inbox article-meta__icon" aria-hidden="true"></i><a class="article-meta__categories" href="/categories/运维/Docker全栈部署/">Docker全栈部署</a></span><span class="article-meta tags"><span class="article-meta__separator">|</span><i class="fa fa-tag article-meta__icon" aria-hidden="true"></i><a class="article-meta__tags" href="/tags/hide/">hide</a><span class="article-meta__link">-</span><i class="fa fa-tag article-meta__icon" aria-hidden="true"></i><a class="article-meta__tags" href="/tags/Docker全栈部署/">Docker全栈部署</a></span><div class="content"><h1 id="Docker部署全栈项目：五、SpringBoot-Jar"><a href="#Docker部署全栈项目：五、SpringBoot-Jar" class="headerlink" title="Docker部署全栈项目：五、SpringBoot Jar"></a>Docker部署全栈项目：五、SpringBoot Jar</h1><h2 id="一、创建-SpringBoot-项目"><a href="#一、创建-SpringBoot-项目" class="headerlink" title="一、创建 SpringBoot 项目"></a>一、创建 SpringBoot 项目</h2><h3 id="1-创建接口"><a href="#1-创建接口" class="headerlink" title="1. 创建接口"></a>1. 创建接口</h3><pre><code class="java">@EntityScan(&quot;cn.luokaiii.api.entity&quot;)
+@RestController
+@SpringBootApplication
+public class ApiApplication {
+
+    private final UserMongoService mongoService;
+
+    private final UserMySQLService mySQLService;
+
+    private final StringRedisTemplate stringRedisTemplate;
+
+    @Autowired
+    public ApiApplication(UserMongoService mongoService,
+                          UserMySQLService mySQLService,
+                          StringRedisTemplate stringRedisTemplate) {
+        this.mongoService = mongoService;
+        this.mySQLService = mySQLService;
+        this.stringRedisTemplate = stringRedisTemplate;
+    }
+
+    public static void main(String[] args) {
+        SpringApplication.run(ApiApplication.class, args);
+    }
+
+    @PostMapping
+    public ResponseEntity createByMySql(@RequestBody Person person) {
+        final Person save = mySQLService.save(person);
+        final User user = mongoService.save(new User(person.getId().toString(), person.getName(), 22));
+        stringRedisTemplate.opsForValue().set(person.getName(), person.getSex().toString());
+        return ResponseEntity.ok(new UPDTO(save, user, null));
+    }
+
+    @GetMapping
+    public ResponseEntity getByMySql(@RequestParam String username) {
+        final Person person = mySQLService.findFirstByName(username);
+        final User user = mongoService.findFirstByName(username);
+        final String redis = stringRedisTemplate.opsForValue().get(username);
+        return ResponseEntity.ok(new UPDTO(person, user, redis));
+    }
+}</code></pre>
+<h3 id="2-配置参数"><a href="#2-配置参数" class="headerlink" title="2. 配置参数"></a>2. 配置参数</h3><p>连上我们之前配置的MongoDB、MySQL、Redis容器。</p>
+<blockquote>
+<p>这里使用配置的 docker-compose 中的服务名称。这样服务会自动连接，而 <code>localhost</code> 或者 <code>127.0.0.1</code> 则表示 <code>luokaiii-api</code> 当前容器内部的端口号，肯定会连接失败的。</p>
+</blockquote>
+<pre><code class="properties"># MongoDB 连接
+spring.data.mongodb.uri=mongodb://mongoadmin:password@mongo:27017/demo?authSource=admin
+
+# MySQL 连接
+spring.datasource.username=root
+spring.datasource.password=password
+spring.datasource.driver-class-name=com.mysql.cj.jdbc.Driver
+spring.datasource.url=jdbc:mysql://mariadb:3306/db_user?useUnicode=true&amp;characterEncoding=GBK&amp;useSSL=false
+
+# Redis 连接
+spring.redis.host=redis
+spring.redis.port=6379
+spring.redis.password=password</code></pre>
+<h3 id="3-测试"><a href="#3-测试" class="headerlink" title="3. 测试"></a>3. 测试</h3><p>执行如下 Post 命令：</p>
+<pre><code class="sh"># Post 请求
+$ curl -i -X POST  -H &quot;Content-Type:application/json&quot; -d &#39;{ &quot;id&quot;:2, &quot;name&quot;:&quot;zhangsan&quot;, &quot;sex&quot;:1 }&#39; &#39;http://localhost:8080/&#39;
+
+# 返回结果
+{&quot;mysql&quot;:{&quot;id&quot;:2,&quot;name&quot;:&quot;zhangsan&quot;,&quot;sex&quot;:1},&quot;mongo&quot;:{&quot;id&quot;:&quot;2&quot;,&quot;name&quot;:&quot;zhangsan&quot;,&quot;age&quot;:22},&quot;redis&quot;:null}</code></pre>
+<p>执行如下 Get 命令：</p>
+<pre><code class="sh"># Get 请求
+$ curl -i -X GET &#39;http://localhost:8080?username=zhangsan&#39;
+
+# 返回结果
+{&quot;mysql&quot;:{&quot;id&quot;:2,&quot;name&quot;:&quot;zhangsan&quot;,&quot;sex&quot;:1},&quot;mongo&quot;:{&quot;id&quot;:&quot;2&quot;,&quot;name&quot;:&quot;zhangsan&quot;,&quot;age&quot;:22},&quot;redis&quot;:&quot;1&quot;}</code></pre>
+<h2 id="二、构建-Docker-镜像"><a href="#二、构建-Docker-镜像" class="headerlink" title="二、构建 Docker 镜像"></a>二、构建 Docker 镜像</h2><h3 id="1-pom-xml-中增加-docker-插件"><a href="#1-pom-xml-中增加-docker-插件" class="headerlink" title="1. pom.xml 中增加 docker 插件"></a>1. pom.xml 中增加 docker 插件</h3><p>完整的 <code>pom.xml</code> 如下：</p>
+<pre><code class="xml">&lt;?xml version=&quot;1.0&quot; encoding=&quot;UTF-8&quot;?&gt;
+&lt;project xmlns=&quot;http://maven.apache.org/POM/4.0.0&quot; xmlns:xsi=&quot;http://www.w3.org/2001/XMLSchema-instance&quot;
+         xsi:schemaLocation=&quot;http://maven.apache.org/POM/4.0.0 https://maven.apache.org/xsd/maven-4.0.0.xsd&quot;&gt;
+    &lt;modelVersion&gt;4.0.0&lt;/modelVersion&gt;
+    &lt;parent&gt;
+        &lt;groupId&gt;org.springframework.boot&lt;/groupId&gt;
+        &lt;artifactId&gt;spring-boot-starter-parent&lt;/artifactId&gt;
+        &lt;version&gt;2.1.8.RELEASE&lt;/version&gt;
+        &lt;relativePath/&gt; &lt;!-- lookup parent from repository --&gt;
+    &lt;/parent&gt;
+    &lt;!-- 当前项目的版本、名称等信息 --&gt;
+    &lt;groupId&gt;cn.luokaiii&lt;/groupId&gt;
+    &lt;artifactId&gt;api&lt;/artifactId&gt;
+    &lt;version&gt;0.0.1-SNAPSHOT&lt;/version&gt;
+    &lt;name&gt;api&lt;/name&gt;
+    &lt;description&gt;java api&lt;/description&gt;
+
+    &lt;!-- JDK版本 --&gt;
+    &lt;properties&gt;
+        &lt;java.version&gt;1.8&lt;/java.version&gt;
+    &lt;/properties&gt;
+
+    &lt;dependencies&gt;
+        &lt;!-- Spring Data JPA --&gt;
+        &lt;dependency&gt;
+            &lt;groupId&gt;org.springframework.boot&lt;/groupId&gt;
+            &lt;artifactId&gt;spring-boot-starter-data-jpa&lt;/artifactId&gt;
+        &lt;/dependency&gt;
+        &lt;!-- Spring Data MongoDB --&gt;
+        &lt;dependency&gt;
+            &lt;groupId&gt;org.springframework.boot&lt;/groupId&gt;
+            &lt;artifactId&gt;spring-boot-starter-data-mongodb&lt;/artifactId&gt;
+        &lt;/dependency&gt;
+        &lt;!-- Spring Data Redis --&gt;
+        &lt;dependency&gt;
+            &lt;groupId&gt;org.springframework.boot&lt;/groupId&gt;
+            &lt;artifactId&gt;spring-boot-starter-data-redis&lt;/artifactId&gt;
+        &lt;/dependency&gt;
+        &lt;!-- Web 服务器 --&gt;
+        &lt;dependency&gt;
+            &lt;groupId&gt;org.springframework.boot&lt;/groupId&gt;
+            &lt;artifactId&gt;spring-boot-starter-web&lt;/artifactId&gt;
+        &lt;/dependency&gt;
+        &lt;!-- MySQL驱动连接 --&gt;
+        &lt;dependency&gt;
+            &lt;groupId&gt;mysql&lt;/groupId&gt;
+            &lt;artifactId&gt;mysql-connector-java&lt;/artifactId&gt;
+        &lt;/dependency&gt;
+        &lt;!-- 测试 --&gt;
+        &lt;dependency&gt;
+            &lt;groupId&gt;org.springframework.boot&lt;/groupId&gt;
+            &lt;artifactId&gt;spring-boot-starter-test&lt;/artifactId&gt;
+            &lt;scope&gt;test&lt;/scope&gt;
+        &lt;/dependency&gt;
+    &lt;/dependencies&gt;
+
+    &lt;build&gt;
+        &lt;plugins&gt;
+            &lt;!-- Maven 插件 --&gt;
+            &lt;plugin&gt;
+                &lt;groupId&gt;org.springframework.boot&lt;/groupId&gt;
+                &lt;artifactId&gt;spring-boot-maven-plugin&lt;/artifactId&gt;
+            &lt;/plugin&gt;
+            &lt;!-- Docker Maven 插件 --&gt;
+            &lt;plugin&gt;
+                &lt;groupId&gt;com.spotify&lt;/groupId&gt;
+                &lt;artifactId&gt;docker-maven-plugin&lt;/artifactId&gt;
+                &lt;version&gt;1.2.0&lt;/version&gt;
+                &lt;configuration&gt;
+                    &lt;!-- 构建出的镜像名 --&gt;
+                    &lt;imageName&gt;luokaiii-api&lt;/imageName&gt;
+                    &lt;!-- 基础依赖的镜像 --&gt;
+                    &lt;baseImage&gt;openjdk:8-slim&lt;/baseImage&gt;
+
+                    &lt;entryPoint&gt;[&quot;java&quot;, &quot;-jar&quot;, &quot;/${project.build.finalName}.jar&quot;]&lt;/entryPoint&gt;
+                    &lt;resources&gt;
+                        &lt;resource&gt;
+                            &lt;targetPath&gt;/&lt;/targetPath&gt;
+                            &lt;directory&gt;${project.build.directory}&lt;/directory&gt;
+                            &lt;include&gt;${project.build.finalName}.jar&lt;/include&gt;
+                        &lt;/resource&gt;
+                    &lt;/resources&gt;
+                &lt;/configuration&gt;
+            &lt;/plugin&gt;
+        &lt;/plugins&gt;
+    &lt;/build&gt;
+
+&lt;/project&gt;</code></pre>
+<h3 id="2-构建镜像"><a href="#2-构建镜像" class="headerlink" title="2. 构建镜像"></a>2. 构建镜像</h3><pre><code class="sh"># mvn clean package 重新打包， -Dmaven.test.skip 跳过测试，docker:build 构建镜像
+$ mvn clean package -Dmaven.test.skip=true docker:build</code></pre>
+<blockquote>
+<p>正常的生产环境，应该有严格的单元测试。</p>
+</blockquote>
+<p>查看 Docker Images (<code>$ docker images</code>)，应该有如下几个镜像了：</p>
+<p><img src="https://i.loli.net/2019/09/24/XfK9C25qhBNSERr.png" alt="图：Docker Images"></p>
+<p>带上之前的镜像，一共有如下几个：<code>luokaiii-api</code> ，<code>mongo:4.0.12</code> ，<code>mariadb:10.4.8</code> ，<code>openjdk:8-slim</code>， <code>redis:4.0.14</code></p>
+<h3 id="3-测试-1"><a href="#3-测试-1" class="headerlink" title="3. 测试"></a>3. 测试</h3><h4 id="a-启动-luokaiii-api-镜像"><a href="#a-启动-luokaiii-api-镜像" class="headerlink" title="a) 启动 luokaiii-api 镜像"></a>a) 启动 <code>luokaiii-api</code> 镜像</h4><p>这里我们直接使用了 Docker-Compose 来启动该镜像，因为 <code>luokaiii-api</code> 依赖了如 <code>mongodb</code>，<code>mariadb</code>，<code>redis</code> 等其他镜像容器。</p>
+<h4 id="a-1-在父级目录下创建-docker-compose-yml-文件"><a href="#a-1-在父级目录下创建-docker-compose-yml-文件" class="headerlink" title="a.1 在父级目录下创建 docker-compose.yml 文件"></a>a.1 在父级目录下创建 docker-compose.yml 文件</h4><blockquote>
+<p> 不再开放mongo、mysql、redis的外部连接，统一改为容器内部通信，只对外提供一个 8080 端口用于访问。</p>
+</blockquote>
+<p><code>docker-compose.yml</code> 文件如下：</p>
+<pre><code class="yml"># Docker-Compose 的版本
+version: &#39;3&#39;
+
+# 服务声明
+services:
+  # MongoDB 服务
+  mongo:
+    container_name: &#39;luokaiii-mongo&#39;
+    image: &#39;mongo:4.0.12&#39;
+    volumes:
+      - mongodata:/data/db
+    environment:
+      MONGO_INITDB_ROOT_USERNAME: mongoadmin
+      MONGO_INITDB_ROOT_PASSWORD: password
+    restart: always
+    expose:    # 暴露端口，但不映射到宿主机
+      - &#39;27017&#39;
+  # MariaDB 服务
+  mariadb:
+    container_name: &#39;luokaiii-mysql&#39;
+    image: &#39;mariadb:10.4.8&#39;
+    volumes:
+      - &#39;./mysql/data/:/var/lib/mysql&#39;
+      - &#39;./mysql/conf/local.cnf:/etc/mysql/conf.d/local.cnf&#39;
+    environment:
+      MYSQL_ROOT_PASSWORD: password
+      MYSQL_DATABASE: db_user
+    command: [&#39;mysqld&#39;, &#39;--character-set-server=utf8mb4&#39;, &#39;--collation-server=utf8mb4_unicode_ci&#39;]
+    restart: always
+    expose:
+      - &#39;3306&#39;
+  # Redis 服务
+  redis:
+    container_name: &#39;luokaiii-redis&#39;
+    image: &#39;redis:4.0.14&#39;
+    volumes:
+      - &#39;./redis/data:/data&#39;
+    command: redis-server --requirepass password
+    restart: always
+    expose:
+      - &#39;6379&#39;
+  # Java API 服务
+  api:
+    container_name: &#39;luokaiii-api&#39;
+    depends_on: # 依赖其他容器(如DB连接等)
+      - mongo
+      - redis
+      - mariadb
+    image: &#39;luokaiii-api:latest&#39;
+    ports:    # 对外暴露 8080 端口
+      - &#39;8080:8080&#39;
+    restart: always
+
+# 容器能够使用的数据卷
+volumes:
+  mongodata:</code></pre>
+<h4 id="a-2-修改之前的-application-properties"><a href="#a-2-修改之前的-application-properties" class="headerlink" title="a.2 修改之前的 application.properties"></a>a.2 修改之前的 application.properties</h4><p>将 <code>localhost</code> 全部改为对应 <code>Compose</code> 的服务名称，这样 容器在运行时会动态加载对应的服务及端口。</p>
+<pre><code class="properties"># MongoDB 连接
+spring.data.mongodb.uri=mongodb://mongoadmin:password@mongo:27017/demo?authSource=admin
+
+# MySQL 连接
+spring.datasource.username=root
+spring.datasource.password=password
+spring.datasource.driver-class-name=com.mysql.cj.jdbc.Driver
+spring.datasource.url=jdbc:mysql://mariadb:3306/db_user?useUnicode=true&amp;characterEncoding=GBK&amp;useSSL=false
+
+# Redis 连接
+spring.redis.host=redis
+spring.redis.port=6379
+spring.redis.password=password</code></pre>
+<h4 id="a-3-运行-docker-compose"><a href="#a-3-运行-docker-compose" class="headerlink" title="a.3 运行 docker-compose"></a>a.3 运行 docker-compose</h4><pre><code class="sh"># 后台运行所有容器
+$ docker-compose -d up
+
+# 停止所有容器
+# docker-compose down
+
+# 停止单个容器
+# docker-compose stop luokaiii-api
+
+# 运行单个容器(停止状态)
+# docker-compose start luokaiii-api
+
+# 运行单个容器(被删除后)
+# docker-compose run --name luokaiii-api luokaiii-api</code></pre>
+<h4 id="a-4-依次查看容器的日志"><a href="#a-4-依次查看容器的日志" class="headerlink" title="a.4 依次查看容器的日志"></a>a.4 依次查看容器的日志</h4><p>控制台打印的日志太过混乱，这里我们一个一个的查看：</p>
+<pre><code class="sh"># 查看 MongoDB 运行情况
+$ docker logs luokaiii-mongo</code></pre>
+<p><img src="https://i.loli.net/2019/09/24/VDTEhsdHlyFC1Zi.png" alt="MongoDB运行情况"></p>
+<pre><code class="sh"># 查看 MariaDB 运行情况
+$ docker logs luokaiii-mysql</code></pre>
+<p><img src="https://i.loli.net/2019/09/24/POFBid9THoQbWNg.png" alt="MariaDB运行情况"></p>
+<pre><code class="sh"># 查看 Redis 运行情况
+$ docker logs luokaiii-redis</code></pre>
+<p><img src="C:%5CUsers%5Cuser%5CAppData%5CRoaming%5CTypora%5Ctypora-user-images%5C1569306056942.png" alt="Redis 运行情况"></p>
+<pre><code class="sh"># 查看 JAVA Server 运行情况
+$ docker logs luokaiii-api</code></pre>
+<p><img src="https://i.loli.net/2019/09/24/tUzEfZaIGOLouvP.png" alt="Java运行状况"></p>
+<h3 id="b-生成数据表"><a href="#b-生成数据表" class="headerlink" title="b. 生成数据表"></a>b. 生成数据表</h3><p>进入 <code>luokaiii-mysql</code> 容器，进入 MySQL，生成 person 表。 发送请求即可。</p>
+<h2 id="遇到的问题"><a href="#遇到的问题" class="headerlink" title="遇到的问题"></a>遇到的问题</h2><h3 id="1-MongoDB无法挂载data目录"><a href="#1-MongoDB无法挂载data目录" class="headerlink" title="1. MongoDB无法挂载data目录"></a>1. MongoDB无法挂载data目录</h3><p>按照正常来说，<code>mongo</code> 服务的编排应该如下所示：</p>
+<pre><code class="yml">services:
+  mongo:
+    container_name: &#39;luokaiii-mongo&#39;
+    image: &#39;mongo:4.0.12&#39;
+    volumes:
+      - ./mongo/db:/data/db
+    environment:
+      MONGO_INITDB_ROOT_USERNAME: mongoadmin
+      MONGO_INITDB_ROOT_PASSWORD: password
+    restart: always
+    expose:
+      - &#39;27017&#39;
+......</code></pre>
+<h4 id="问题："><a href="#问题：" class="headerlink" title="问题："></a>问题：</h4><p>这样的挂载，却会抛出文件无法打开、无法读取、无法写入的问题。详见 <a href="https://github.com/docker-library/mongo/issues/74" target="_blank" rel="noopener">Github Issue</a>。</p>
+<h4 id="原因："><a href="#原因：" class="headerlink" title="原因："></a>原因：</h4><p>Docker 中的 Mongo 容器无法使用部分文件。</p>
+<h4 id="解决方案："><a href="#解决方案：" class="headerlink" title="解决方案："></a>解决方案：</h4><p>手动创建一个共享卷，即如下改动：</p>
+<pre><code class="yml">services:
+  mongo:
+    container_name: &#39;luokaiii-mongo&#39;
+    image: &#39;mongo:4.0.12&#39;
+    volumes:
+      - mongodata:/data/db   # 这里改为下面声明的卷
+    environment:
+      MONGO_INITDB_ROOT_USERNAME: mongoadmin
+      MONGO_INITDB_ROOT_PASSWORD: password
+    restart: always
+    expose:
+      - &#39;27017&#39;
+......
+volumes:
+  mongodata:</code></pre>
+<blockquote>
+<p><code>$ docker volume list</code> 能够查看所有共享的卷</p>
+<p><code>$ docker volume inspect &lt;name&gt;</code> 能够查看具体的卷信息(如实际地址等)</p>
+</blockquote>
+<h3 id="2-MySQL-初始密码未生效"><a href="#2-MySQL-初始密码未生效" class="headerlink" title="2. MySQL 初始密码未生效"></a>2. MySQL 初始密码未生效</h3><h4 id="问题：-1"><a href="#问题：-1" class="headerlink" title="问题："></a>问题：</h4><p>在使用 <code>docker-compose up</code> 启动完所有程序后，<code>luokaiii-api</code> 项目抛出 “无法连接 MySQL 数据库的异常”。</p>
+<p>而我们在 <code>docker-compose.yml</code> 中已经指定了具体的初始密码:</p>
+<pre><code class="yml">MYSQL_ROOT_PASSWORD: password</code></pre>
+<h4 id="原因：-1"><a href="#原因：-1" class="headerlink" title="原因："></a>原因：</h4><p>经排查发现，是 <code>luokaiii-mysql</code> 容器的密码未初始化。</p>
+<h4 id="解决方案：-1"><a href="#解决方案：-1" class="headerlink" title="解决方案："></a>解决方案：</h4><p>依次运行以下代码：</p>
+<pre><code class="sh"># 进入 MySQL 容器(Windows需要加上 `winpty`)
+$ docker exec -it luokaiii-mysql bash
+
+# 匹配环境变量
+root@xx/# env | grep -i password
+MYSQL_ROOT_PASSWORD=password
+
+# 尝试无密码登录 - 失败
+root@xx/# mysql -Uroot
+ERROR 1045 (28000): Access denied for user &#39;root&#39;@&#39;localhost&#39; (using password: NO)
+
+# 尝试使用密码登录，成功？？？？为什么？？？
+root@xx/# mysql -Uroot -ppassword</code></pre>
+<p>详见 <a href="https://github.com/docker-library/mysql/issues/557" target="_blank" rel="noopener">Github Issue</a>。</p>
+<blockquote>
+<p>首次操作即可，往后未出现该bug。</p>
+</blockquote>
+<p>参考资料：</p>
+<ol>
+<li><a href="https://github.com/spotify/docker-maven-plugin" target="_blank" rel="noopener">Docker-maven-plugin</a></li>
+<li><a href="https://hub.docker.com/_/openjdk" target="_blank" rel="noopener">Docker Hub OpenJDK</a></li>
+<li><a href="https://stackoverflow.com/questions/45729326/how-to-change-the-default-character-set-of-mysql-using-docker-compose" target="_blank" rel="noopener">https://stackoverflow.com/questions/45729326/how-to-change-the-default-character-set-of-mysql-using-docker-compose</a></li>
+<li><a href="https://www.hi-linux.com/posts/12554.html" target="_blank" rel="noopener">运维之美</a></li>
+<li><a href="https://github.com/docker-library/mysql/issues/557" target="_blank" rel="noopener">https://github.com/docker-library/mysql/issues/557</a></li>
+</ol>
+<h2 id="项目地址"><a href="#项目地址" class="headerlink" title="项目地址"></a>项目地址</h2><ul>
+<li><p><a href="https://github.com/luokaiii/luokaiii.docker-images" target="_blank" rel="noopener">Github</a></p>
+</li>
+<li><p><a href="https://gitee.com/luokaiii/luokaiii.docker-images" target="_blank" rel="noopener">Gitee</a></p>
+</li>
+</ul>
+</div><hr></div><div class="recent-post-item article-container"><a class="article-title" href="/2019/09/19/读书笔记/《Docker全栈项目部署》/6.Nginx/">Docker部署全栈：六、部署Nginx和React</a><time class="post-meta__date"><i class="fa fa-calendar" aria-hidden="true"></i> 2019-09-19</time><span class="article-meta"><span class="article-meta__separator">|</span><i class="fa fa-inbox article-meta__icon" aria-hidden="true"></i><a class="article-meta__categories" href="/categories/运维/">运维</a><i class="fa fa-angle-right" aria-hidden="true"></i><i class="fa fa-inbox article-meta__icon" aria-hidden="true"></i><a class="article-meta__categories" href="/categories/运维/Docker全栈部署/">Docker全栈部署</a></span><span class="article-meta tags"><span class="article-meta__separator">|</span><i class="fa fa-tag article-meta__icon" aria-hidden="true"></i><a class="article-meta__tags" href="/tags/hide/">hide</a><span class="article-meta__link">-</span><i class="fa fa-tag article-meta__icon" aria-hidden="true"></i><a class="article-meta__tags" href="/tags/Docker全栈部署/">Docker全栈部署</a></span><div class="content"><h1 id="Docker部署全栈项目：六、部署Nginx和React"><a href="#Docker部署全栈项目：六、部署Nginx和React" class="headerlink" title="Docker部署全栈项目：六、部署Nginx和React"></a>Docker部署全栈项目：六、部署Nginx和React</h1><p>前端项目不论是 vue 还是 react，编译之后都是 html + css +js 的模板。</p>
+<p>因此这里使用 <code>React Demo</code> 来演示如何部署前端项目至，Nginx的代理中。</p>
+<h2 id="一、创建React项目"><a href="#一、创建React项目" class="headerlink" title="一、创建React项目"></a>一、创建React项目</h2><p>如果你使用的是其它前端语言，或者直接是纯JS写法，都是大同小异。</p>
+<pre><code class="sh"># 创建React项目
+$ create-react-app web
+
+# 进入前端项目
+$ cd web
+
+# 构建项目(或者使用 npm run build)
+$ yarn build 
+
+# 构建完成后，会出现 build/ 目录，存放所有的静态资源文件</code></pre>
+<p>将构建后的数据，放到 nginx/html 目录下。</p>
+<blockquote>
+<p>如果是远程服务器，可以使用 scp、pscp 等命令发送文件。</p>
+</blockquote>
+<h2 id="二、启动Nginx"><a href="#二、启动Nginx" class="headerlink" title="二、启动Nginx"></a>二、启动Nginx</h2><h3 id="1-编写-start-sh"><a href="#1-编写-start-sh" class="headerlink" title="1. 编写 start.sh"></a>1. 编写 start.sh</h3><pre><code class="sh">#!/bin/bash
+
+# 启动前停止容器
+docker stop luokaiii-nginx
+docker rm luokaiii-nginx
+
+# 运行容器
+docker run --name luokaiii-nginx \ # 指定容器名
+        -p 80:80 \    # 暴露80端口至宿主机
+        -v /${PWD}/conf:/etc/nginx/conf.d \    # 挂载额外的配置文件
+        -v /${PWD}/html:/usr/www/luokaiii/cn/html \    # 挂载静态资源
+        -d nginx:alpine     # 后台运行nginx</code></pre>
+<h3 id="2-编写-conf-nginx-conf"><a href="#2-编写-conf-nginx-conf" class="headerlink" title="2. 编写 conf/nginx.conf"></a>2. 编写 conf/nginx.conf</h3><pre><code class="sh">server {
+        listen 80;
+
+        root /usr/www/luokaiii/cn/html;
+
+        location / {
+                try_files $uri $uri/ /index.html;
+        }
+}</code></pre>
+<h3 id="3-运行脚本"><a href="#3-运行脚本" class="headerlink" title="3. 运行脚本"></a>3. 运行脚本</h3><pre><code class="sh"># 运行脚本
+$ ./start.sh</code></pre>
+<h3 id="4-访问端口"><a href="#4-访问端口" class="headerlink" title="4. 访问端口"></a>4. 访问端口</h3><p><img src="https://i.loli.net/2019/09/24/ur4k3zwVv1AYeZX.png" alt="访问80端口"></p>
+<h2 id="三、使用Nginx代理接口服务"><a href="#三、使用Nginx代理接口服务" class="headerlink" title="三、使用Nginx代理接口服务"></a>三、使用Nginx代理接口服务</h2><p>既然我们的接口使用的是容器服务，那么我可以把 <code>luokaiii-api</code> 的外部端口关闭，改为 nginx 的请求转发。</p>
+<p>修改 nginx.conf：</p>
+<pre><code class="sh">upstream apisupport {
+        server api:8080;
+}
+server {
+        listen 80;
+
+        root /usr/www/luokaiii/cn/html;
+
+        location / {
+                try_files $uri $uri/ /index.html;
+        }
+
+        # 将 /api/ 请求转发至 `luokaiii-api` 服务
+        location /api/ {
+                proxy_pass http://apisupport/;
+        }
+}
+</code></pre>
+<p>请求测试：</p>
+<p><img src="https://i.loli.net/2019/09/24/zx2qnsV7OCurgSH.png" alt="请求结果"></p>
+<p>参考资料：</p>
+<ol>
+<li><a href="https://hub.docker.com/_/nginx" target="_blank" rel="noopener">Docker Hub</a></li>
+</ol>
+<h2 id="项目地址"><a href="#项目地址" class="headerlink" title="项目地址"></a>项目地址</h2><ul>
+<li><p><a href="https://github.com/luokaiii/luokaiii.docker-images" target="_blank" rel="noopener">Github</a></p>
+</li>
+<li><p><a href="https://gitee.com/luokaiii/luokaiii.docker-images" target="_blank" rel="noopener">Gitee</a></p>
+</li>
+</ul>
+</div><hr></div><div class="recent-post-item article-container"><a class="article-title" href="/2019/09/18/读书笔记/《Docker全栈项目部署》/7.Docker-Compose/">Docker部署全栈：六、部署Nginx和React</a><time class="post-meta__date"><i class="fa fa-calendar" aria-hidden="true"></i> 2019-09-18</time><span class="article-meta"><span class="article-meta__separator">|</span><i class="fa fa-inbox article-meta__icon" aria-hidden="true"></i><a class="article-meta__categories" href="/categories/运维/">运维</a><i class="fa fa-angle-right" aria-hidden="true"></i><i class="fa fa-inbox article-meta__icon" aria-hidden="true"></i><a class="article-meta__categories" href="/categories/运维/Docker全栈部署/">Docker全栈部署</a></span><span class="article-meta tags"><span class="article-meta__separator">|</span><i class="fa fa-tag article-meta__icon" aria-hidden="true"></i><a class="article-meta__tags" href="/tags/hide/">hide</a><span class="article-meta__link">-</span><i class="fa fa-tag article-meta__icon" aria-hidden="true"></i><a class="article-meta__tags" href="/tags/Docker全栈部署/">Docker全栈部署</a></span><div class="content"><h1 id="Docker部署全栈项目：七、Docker-Compose"><a href="#Docker部署全栈项目：七、Docker-Compose" class="headerlink" title="Docker部署全栈项目：七、Docker-Compose"></a>Docker部署全栈项目：七、Docker-Compose</h1><p>完整的 <code>docker-compose.yml</code> 如下：</p>
+<pre><code class="yml">version: &#39;3&#39;
+
+services:
+  mongo:
+    container_name: &#39;luokaiii-mongo&#39;
+    image: &#39;mongo:4.0.12&#39;
+    volumes:
+      - mongodata:/data/db
+    environment:
+      MONGO_INITDB_ROOT_USERNAME: mongoadmin
+      MONGO_INITDB_ROOT_PASSWORD: password
+    restart: always
+    expose:
+      - &#39;27017&#39;
+  mariadb:
+    container_name: &#39;luokaiii-mysql&#39;
+    image: &#39;mariadb:10.4.8&#39;
+    volumes:
+      - &#39;./mysql/data/:/var/lib/mysql&#39;
+      - &#39;./mysql/conf/local.cnf:/etc/mysql/conf.d/local.cnf&#39;
+    environment:
+      MYSQL_ROOT_PASSWORD: password
+      MYSQL_DATABASE: db_user
+    command: [&#39;mysqld&#39;, &#39;--character-set-server=utf8mb4&#39;, &#39;--collation-server=utf8mb4_unicode_ci&#39;]
+    restart: always
+    expose:
+      - &#39;3306&#39;
+  redis:
+    container_name: &#39;luokaiii-redis&#39;
+    image: &#39;redis:4.0.14&#39;
+    volumes:
+      - &#39;./redis/data:/data&#39;
+    command: redis-server --requirepass password
+    restart: always
+    expose:
+      - &#39;6379&#39;
+  api:
+    container_name: &#39;luokaiii-api&#39;
+    depends_on:
+      - mongo
+      - redis
+      - mariadb
+    image: &#39;luokaiii-api:latest&#39;
+    ports:
+      - &#39;8080:8080&#39;
+    restart: always
+  nginx:
+    container_name: &#39;luokaiii-nginx&#39;
+    depends_on:
+      - api
+    image: &#39;nginx:alpine&#39;
+    volumes:
+      - &#39;./nginx/conf:/etc/nginx/conf.d&#39;
+      - &#39;./nginx/html:/usr/www/luokaiii/cn/html&#39;
+    ports:
+      - &#39;80:80&#39;
+    restart: always
+volumes:
+  mongodata:</code></pre>
+<p>部署后的效果如下：</p>
+<p><img src="https://i.loli.net/2019/09/24/sGQzv4oBC9cyTN2.png" alt="Docker单机服务"></p>
+<p>至此，整个项目在Docker上的部署已经完成。</p>
+<blockquote>
+<p>如果有需要，您也可以将 MongoDB、Redis、MySQL等服务暴露给宿主机，以供外部连接。</p>
+</blockquote>
+<h2 id="项目地址"><a href="#项目地址" class="headerlink" title="项目地址"></a>项目地址</h2><ul>
+<li><p><a href="https://github.com/luokaiii/luokaiii.docker-images" target="_blank" rel="noopener">Github</a></p>
+</li>
+<li><p><a href="https://gitee.com/luokaiii/luokaiii.docker-images" target="_blank" rel="noopener">Gitee</a></p>
+</li>
+</ul>
+</div><hr></div><div class="recent-post-item article-container"><a class="article-title" href="/2019/09/17/读书笔记/《Docker全栈项目部署》/8.DC命令/">Docker部署全栈：七、DockerCompose命令</a><time class="post-meta__date"><i class="fa fa-calendar" aria-hidden="true"></i> 2019-09-17</time><span class="article-meta"><span class="article-meta__separator">|</span><i class="fa fa-inbox article-meta__icon" aria-hidden="true"></i><a class="article-meta__categories" href="/categories/运维/">运维</a><i class="fa fa-angle-right" aria-hidden="true"></i><i class="fa fa-inbox article-meta__icon" aria-hidden="true"></i><a class="article-meta__categories" href="/categories/运维/Docker全栈部署/">Docker全栈部署</a></span><span class="article-meta tags"><span class="article-meta__separator">|</span><i class="fa fa-tag article-meta__icon" aria-hidden="true"></i><a class="article-meta__tags" href="/tags/hide/">hide</a><span class="article-meta__link">-</span><i class="fa fa-tag article-meta__icon" aria-hidden="true"></i><a class="article-meta__tags" href="/tags/Docker全栈部署/">Docker全栈部署</a></span><div class="content"><h1 id="Docker-Compose"><a href="#Docker-Compose" class="headerlink" title="Docker-Compose"></a>Docker-Compose</h1><h2 id="一、Compose-简介"><a href="#一、Compose-简介" class="headerlink" title="一、Compose 简介"></a>一、Compose 简介</h2><p>通过创建 <code>Dockerfile</code> 模板文件，可以使用户很方便的定义一个单独的应用容器。然而，在日常工作中，经常会碰到需要多个容器相互配合来完成任务的情况。</p>
+<p>例如，一个常见的 Web 项目，除了 Web 服务容器本身，往往还需要加上后端的数据库服务容器，甚至还包括负载均衡容器等。</p>
+<p><code>Compose</code> 中有两个重要的概念：</p>
+<ul>
+<li>服务 <code>service</code> ：一个应用的容器，实际上包含若干运行相关镜像的容器</li>
+<li>项目 <code>project</code> ：由一组关联的应用容器组成的一个完整业务单元，在 <code>docker-compose</code> 中定义。</li>
+</ul>
+<h2 id="二、安装与卸载"><a href="#二、安装与卸载" class="headerlink" title="二、安装与卸载"></a>二、安装与卸载</h2><h3 id="使用二进制包安装"><a href="#使用二进制包安装" class="headerlink" title="使用二进制包安装"></a>使用二进制包安装</h3><ol>
+<li><p>从 <a href="https://github.com/docker/compose/releases" target="_blank" rel="noopener">官方 GitHub Release</a> 处下载编译好的二进制文件</p>
+<pre><code>1. </code></pre><pre><code>   curl -L https://github.com/docker/compose/releases/download/1.25.0-rc2/docker-compose-`uname -s`-`uname -m` -o /usr/local/bin/docker-compose
+
+   chmod +x /usr/local/bin/docker-compose</code></pre></li>
+<li><p>查看 Compose 是否安装成功</p>
+<ol>
+<li><code>docker-compose --version</code></li>
+</ol>
+</li>
+</ol>
+<h2 id="三、使用"><a href="#三、使用" class="headerlink" title="三、使用"></a>三、使用</h2><h3 id="1-Web应用"><a href="#1-Web应用" class="headerlink" title="1. Web应用"></a>1. Web应用</h3><p>SpringBoot  应用如下：</p>
+<pre><code class="java">@SpringBootApplication
+@RestController
 public class App {
-    public static void main(String[] args){
-        SpringApplication.run(App.class,args);
+    public static void main(String[] args) {
+        SpringApplication.run(App.class, args);
+    }
+
+    @GetMapping(&quot;/&quot;)
+    public String hello() {
+        return &quot;Hello World!&quot;;
     }
 }</code></pre>
-<h2 id="3-测试"><a href="#3-测试" class="headerlink" title="3. 测试"></a>3. 测试</h2><p>启动项目，可在堆栈信息中找到对应的输出</p>
-<h2 id="4-常见监听器接口"><a href="#4-常见监听器接口" class="headerlink" title="4. 常见监听器接口"></a>4. 常见监听器接口</h2><ol>
-<li>ServletContextListener - 监听 ServletContext 对象的创建及销毁<ol>
-<li>contextInitialized(ServletContextEventsce) - web 应用程序初始化进程正在启动的通知</li>
-<li>contextDestroyed(ServletContextEvent sce) - 通知 servlet 上下文即将关闭。所有 servlet 和过滤器之前已经被销毁()</li>
-</ol>
-</li>
-<li>HttpSessionListener - 监听 session 对象的创建及销毁<ol>
-<li>sessionCreated(HttpSessionEvent se) - 创建会话的通知</li>
-<li>sessionDestroyed(HttpSessionEvent se) - 会话即将失效的通知</li>
-</ol>
-</li>
-<li>ServletRequestListener - 监听 request 对象的创建及销毁<ol>
-<li>requestDestroyed(ServletRequestEvent src) - 请求将超出 web 应用程序的范围</li>
-<li>requestInitialized(ServletRequestEvent src) - 请求将进入 web 应用程序的范围</li>
-</ol>
-</li>
-<li>ServletContextAttributeListener - 监听 servletContext 对象中属性的变化<ol>
-<li>attributeAdded(ServletContextAttributeEvent scae) - 通知 servlet 上下文中添加了一个新属性。在添加属性后调用</li>
-<li>attributeRemoved(ServletContextAttributeEvent scae) - 从 servlet 上下文中删除现有属性的通知。删除属性后调用</li>
-<li>attributeReplaced(ServletContextAttributeEvent scae) - 通知 servlet 上下文上的属性已被替换。替换属性后调用。</li>
-</ol>
-</li>
-<li>HttpSessionAttributeListener - 监听 session 对象中属性的改变<ol>
-<li>同 ServletContextAttributeListener</li>
-</ol>
-</li>
-<li>ServletRequestAttributeListener - 监听 request 对象中属性的改变<ol>
-<li>同 ServletContextAttributeListener</li>
-</ol>
-</li>
-</ol>
-</div><hr></div><div class="recent-post-item article-container"><a class="article-title" href="/2019/09/04/分布式/SpringCloud/分布式并发问题/">分布式环境中的并发问题</a><time class="post-meta__date"><i class="fa fa-calendar" aria-hidden="true"></i> 2019-09-04</time><span class="article-meta"><span class="article-meta__separator">|</span><i class="fa fa-inbox article-meta__icon" aria-hidden="true"></i><a class="article-meta__categories" href="/categories/分布式/">分布式</a></span><span class="article-meta tags"><span class="article-meta__separator">|</span><i class="fa fa-tag article-meta__icon" aria-hidden="true"></i><a class="article-meta__tags" href="/tags/hide/">hide</a></span><div class="content"><p>分布式环境中，处理并发问题没发通过操作系统和 JVM 提供的工具来解决，因为 LOCK 命令、总线锁、缓存所、monitor 对象、锁、等并发工具都无法影响到其他服务器的线程。</p>
-<p>那么在分布式环境中，可以使用一下策略和方式处理：</p>
-<ol>
-<li>避免并发<ol>
-<li>通过某些策略和业务来避免并发，如合理分配时间调度，避开共享资源的存取冲突等。</li>
-<li>可以通过 hash 算法的方式，使一个对象的数据计算和访问都交给同一个线程来完成</li>
-</ol>
-</li>
-<li>时间戳<ol>
-<li>每次系统 A 发送给系统 B 的时候都带上一个时间戳，B 在拿到通知后，比较时间戳</li>
-<li>这样只需要调用方保证时间戳的时序有效性即可</li>
-</ol>
-</li>
-<li>串行化<ol>
-<li>串行化可能产生并发的问题，通过牺牲性能和扩展性，来满足对数据一致性的要求。</li>
-<li>比如分布式消息系统，没法保证消息的有序性，但是可以通过将分布式消息系统改为单一消息系统，就可以保证消息的有序性了。</li>
-<li>如果接收方无法保证处理的有序性，那么可以使用一个队列将调用信息缓存起来，再串行地处理这些调用</li>
-</ol>
-</li>
-<li>数据库<ol>
-<li>在分布式环境中，数据库是个服务器的共享点，可以通过数据库的高可靠一致性机制来满足需求。</li>
-<li>比如通过唯一性约束，来解决并发过程中重复数据的生产或重复任务的执行</li>
-<li>某些更新操作也尽量使用 SQL 来完成，在程序中计算后再更新，可能会出现脏复写的问题，但是通过一条 SQL 来完成计算和更新，就能通过数据库的锁机制来保证更新的一致性</li>
-</ol>
-</li>
-<li>行锁<ol>
-<li>有些事务较为复杂时，无法通过一条 SQL 解决问题，并且可能存在并发问题，此时可以考虑使用行锁来解决问题</li>
-<li>如 select … for update ，在查询后将该行数据锁定，直到 commit。但是这么做会导致其他涉及该行的所有操作都会被挂起</li>
-<li>通过在表中增加一个标志锁的字段，每次操作之前通过 update，来模拟竞争锁的操作，操作完成后再 update 复位该标志，表示锁归还。（这种操作很类似 Redis 分布式锁、MongoDB 分布式锁，说白了就是自己定义一个模拟竞争锁的场景）</li>
-</ol>
-</li>
-<li>统一触发途径<ol>
-<li>如果一个数据会被多个业务同时涉及到，就会有并发问题产生的隐患。因此可以通过前期架构和业务涉及，尽量统一触发途径，减少并发的可能，也有利于对并发问题的分析和判断。</li>
-</ol>
-</li>
-</ol>
-<p><a href="https://blog.csdn.net/cutesource/article/details/5791350" target="_blank" rel="noopener">文章总结自 : https://blog.csdn.net/cutesource/article/details/5791350</a></p>
-</div><hr></div><div class="recent-post-item article-container"><a class="article-title" href="/2019/09/04/分布式/SpringBoot/Sso单点登录/">单点登录</a><time class="post-meta__date"><i class="fa fa-calendar" aria-hidden="true"></i> 2019-09-04</time><span class="article-meta"><span class="article-meta__separator">|</span><i class="fa fa-inbox article-meta__icon" aria-hidden="true"></i><a class="article-meta__categories" href="/categories/分布式/">分布式</a></span><span class="article-meta tags"><span class="article-meta__separator">|</span><i class="fa fa-tag article-meta__icon" aria-hidden="true"></i><a class="article-meta__tags" href="/tags/hide/">hide</a></span><div class="content"><h1 id="单点登录"><a href="#单点登录" class="headerlink" title="单点登录"></a>单点登录</h1><h2 id="一、单点登录机制"><a href="#一、单点登录机制" class="headerlink" title="一、单点登录机制"></a>一、单点登录机制</h2><pre><code>web 应用采用的是 b/s 架构，以 http 作为通信协议。而 http 是无状态协议，浏览器每一次请求，服务器都会独立处理，不与之前或者之后的请求产生关联。</code></pre><p><img src="https://images2015.cnblogs.com/blog/797930/201611/797930-20161129155231912-1627010726.png" alt></p>
-<pre><code>在三次请求、响应对之间没有任何联系。这同时也意味着，任何用户都能通过浏览器访问服务器资源，如果想保护服务器的某些资源，必须限制浏览器请求；要限制浏览器请求，必须鉴别浏览器请求，响应合法请求；要鉴别浏览器请求，必须清楚浏览器请求状态。既然http协议无状态，就需要服务器和浏览器共同维护一个状态，这就是会话机制。</code></pre><h2 id="二、会话机制"><a href="#二、会话机制" class="headerlink" title="二、会话机制"></a>二、会话机制</h2><pre><code>浏览器第一次请求服务器，服务器创建一个会话，并将会话 id 作为响应的一部分发送给浏览器，浏览器存储会话 id ，并在后续的第二次和第三次请求中带上会话 id ，服务器取得请求中的会话 id 就知道是不是同一个用户了。</code></pre><blockquote>
-<p>服务器在内存中保存会话对象，浏览器怎么保存会话 id 呢？</p>
+<h3 id="2-Dockerfile"><a href="#2-Dockerfile" class="headerlink" title="2. Dockerfile"></a>2. Dockerfile</h3><p>在项目根目录下，创建 <code>Dockerfile</code> 文件：</p>
+<pre><code class="dockerfile">FROM openjdk:8-slim
+EXPOSE 8080
+ENV TZ Asia/Shanghai
+COPY build/libs/app-1.0.0.jar /opt/app.jar
+ENTRYPOINT [&quot;/opt/app.jar&quot;]</code></pre>
+<h3 id="3-docker-compose-yml"><a href="#3-docker-compose-yml" class="headerlink" title="3. docker-compose.yml"></a>3. docker-compose.yml</h3><p>编写 <code>docker-compose.yml</code> ，这是 Compose 使用的主模板文件：</p>
+<pre><code class="yml">version: &#39;3&#39;
+services:
+    web:
+        build: .
+        ports:
+         - &quot;8080:8080&quot;
+    redis:
+        image: &quot;redis:alpine&quot;</code></pre>
+<h3 id="4-运行-Compose-项目"><a href="#4-运行-Compose-项目" class="headerlink" title="4. 运行 Compose 项目"></a>4. 运行 Compose 项目</h3><p><code>docker-compose up</code></p>
+<h2 id="四、Compose-命令"><a href="#四、Compose-命令" class="headerlink" title="四、Compose 命令"></a>四、Compose 命令</h2><h3 id="1-命令对象与格式"><a href="#1-命令对象与格式" class="headerlink" title="1. 命令对象与格式"></a>1. 命令对象与格式</h3><p><code>docker-compose</code> 命令的基本使用格式是：</p>
+<pre><code class="sh">docker-compose [-f=&lt;arg&gt;...] [options] [COMMAND] [ARGS...]</code></pre>
+<ul>
+<li><code>-f, --file FILE</code> 指定使用的 Compose 模板文件，默认为 docker-compose.yml</li>
+<li><code>-p, --project-name</code> NAME 指定项目名称，默认为所在目录</li>
+<li><code>--x-networking</code> 使用 Docker 的可拔插网络后端特性</li>
+<li><code>--x-network-driver DRIVER</code> 指定网络后端的驱动，默认为bridge</li>
+<li><code>--verbose</code> 输出更多调试信息</li>
+<li><code>-v, --version</code> 打印版本并退出</li>
+</ul>
+<h3 id="2-命令说明"><a href="#2-命令说明" class="headerlink" title="2. 命令说明"></a>2. 命令说明</h3><h4 id="1-build"><a href="#1-build" class="headerlink" title="1. build"></a>1. build</h4><blockquote>
+<p>构建（重新构建）项目中的服务容器</p>
 </blockquote>
-<pre><code>1.请求参数：将会话 id 作为每一次请求的参数，服务器接收请求自然能解析参数获得会话 id ，并借此判断是否来自同一会话，很明显不靠谱。
-
-2.cookie：是浏览器用来存储少量数据的一种机制，数据以&quot; key/value&quot;形式存储，浏览器发送 http 请求时自动附带 cookie 信息。</code></pre><p><img src="https://images2015.cnblogs.com/blog/797930/201611/797930-20161129155234443-99011212.png" alt></p>
-<pre><code>tomcat会话机制中也实现了cookie，访问tomcat服务器时，浏览器中可以看到一个名为“JSESSIONID” 的cookie，这就是 tomcat 会话机制维护的会话 id 。</code></pre><h2 id="三、登录状态"><a href="#三、登录状态" class="headerlink" title="三、登录状态"></a>三、登录状态</h2><pre><code>我们假设浏览器第一次请求服务器需要输入用户名与密码来验证身份，服务器拿到用户名密码去数据库比对，正确的话说明当持有这个会话的用户是合法用户，应该将这个会话标记为“已授权”或者“一登录”之类的状态，既然是会话的状态，自然要保存在会话对象中，tomcat在会话对象那个中的登录状态如下：
-
-    HttpSession session = request.getSession();
-    session.setAttribution(&quot;isLogin&quot;,true);
-再次访问时，tomcat会在会话对象中查看登录状态。
-每次请求受保护资源时都会检查会话对象中的登录状态，只有 isLogin 时才能访问，登录机制因此实现。</code></pre><p><img src="https://images2015.cnblogs.com/blog/797930/201611/797930-20161129155235693-1708276896.png" alt></p>
-<h2 id="四、多系统的复杂性"><a href="#四、多系统的复杂性" class="headerlink" title="四、多系统的复杂性"></a>四、多系统的复杂性</h2><pre><code>web系统由原始的单系统发展成为如今由多系统组成的应用群，面对多个系统，用户不可能以一个个登录再一个个注销。
-而且由多系统组成的应用群，复杂性应该由系统内部承担，而不是用户。无论web系统内部多么复杂，对用户而言，都是一个统一的整体。
-
-虽然cookie是解决单系统登录的核心，但是cookie的限制在于cookie的域，浏览器发送 http 请求时会自动携带与该域匹配的 cookie ，而不是所有 cookie。
-
-在早些年，很多登录系统就采用同域名共享 cookie 的方式，将 web 应用群中所有子系统的域名统一在一个顶级域名下，然后将它们的 cookie 域设置为“baidu.com”。这样做虽然可行，但并不好。共享 cookie 的方式存在众多局限：首先，应用群域名得统一；其次，应用群各系统使用的技术(至少是 web 服务器)要相同，不然 cookie 的key值不相同（例如 tomcat 的是 JSESSIONID），无法维持会话，共享 cookie 的方式是无法实现跨语言技术平台登录的，比如 java、php、.net 系统之间；第三，cookie本身并不安全。
-
-因此，我们需要一种全新的登录方式来实现多系统应用群的登录，这就是单点登录。</code></pre><h2 id="五、单点登录"><a href="#五、单点登录" class="headerlink" title="五、单点登录"></a>五、单点登录</h2><pre><code>单点登录(Single Sign On)，指在多系统应用群中登录一个系统，便可在其他所有系统中得到授权而无需再次登录，包括单点登录与单点注销两部分。</code></pre><p><img src="http://images2015.cnblogs.com/blog/797930/201611/797930-20161129155238365-788619473.png" alt></p>
-<h3 id="1-登录"><a href="#1-登录" class="headerlink" title="1.登录"></a>1.登录</h3><pre><code>对比单系统登录，sso 需要一个独立的认证中心，只有认证中心能接受用户的用户名密码等安全信息，其他系统不提供登录入口，只接受认证中心的间接授权。
-
-间接授权通过令牌实现，sso 认证中心验证用户的用户名密码没问题，创建授权令牌吗，在跳转过程中，授权令牌作为参数发送给各个子系统，子系统拿到令牌，即通过了授权，可以借此创建局部会话，局部会话登录方式与单系统的登录方式相同。
-这个过程就是单点登录的原理。</code></pre><p><img src="https://images2015.cnblogs.com/blog/797930/201612/797930-20161203152650974-276822362.png" alt></p>
-<p>简要描述</p>
-<ol>
-<li>用户访问系统 1 的受保护资源，系统 1 发现用户未登录，跳转至 sso 认证中心，并将自己的地址作为参数</li>
-<li>sso 认证中心发现用户未登录，将用户引导至登录页面</li>
-<li>用户输入用户名密码提交登录申请</li>
-<li>sso 认证中心校验用户信息，创建用户与 sso 认证中心之间的会话，称为全局会话，同时创建授权令牌</li>
-<li>sso 认证中心带着令牌跳转会最初的请求地址（系统 1）</li>
-<li>系统 1 拿到令牌，去 sso 认证中心校验令牌是否有效</li>
-<li>sso 认证中心校验令牌，返回有效，注册系统 1</li>
-<li>系统 1 使用该令牌创建与用户的会话，称为局部会话，返回受保护资源</li>
-<li>用户访问系统 2 的受保护资源</li>
-<li>系统 2 发现用户未登录，跳转至 sso 认证中心，并将自己的地址作为参数</li>
-<li>sso 认证中心发现用户已登录，跳转回系统 2 的地址，并附上令牌</li>
-<li>系统 2 拿到令牌，去 sso 认证中心校验令牌是否有效</li>
-<li>sso 认证中心校验令牌，返回有效，注册系统 2</li>
-<li>系统 2 使用该令牌创建与用户的局部会话，返回受保护资源</li>
-</ol>
-<h3 id="2-注销"><a href="#2-注销" class="headerlink" title="2.注销"></a>2.注销</h3><pre><code>单点登录的注销，在一个子系统中注销，所有子系统的会话都将被销毁：
-sso认证中心一直坚挺全局会话的状态，一旦全局会话销毁，监听器将通知所有注册系统执行注销操作　　</code></pre><p><img src="https://images2015.cnblogs.com/blog/797930/201611/797930-20161129155243068-1378377736.png" alt></p>
-<p>简要说明</p>
-<ol>
-<li>用户向系统 1 发起注销请求</li>
-<li>系统 1 根据用户与系统 1 建立的会话 id 拿到令牌，向 sso 认证中心发起注销请求</li>
-<li>sso 认证中心校验令牌有效，销毁全局会话，同时取出所有用此令牌注册的系统地址</li>
-<li>sso 认证中心向所有注册系统发起注销请求</li>
-<li>各注册系统接收 sso 认证中心的注销请求，销毁局部会话</li>
-<li>sso 认证中心引导用户至登录页面</li>
-</ol>
-<h2 id="六、部署图"><a href="#六、部署图" class="headerlink" title="六、部署图"></a>六、部署图</h2><pre><code>单点登录涉及 sso 认证中心与众子系统，子系统与 sso 认证中心需要通信以交换令牌、校验令牌及发起注销请求，因而子系统必须集成 sso 的客户端，sso 认证中心则是 sso 服务端，整个单点定了公路过程实质是 sso 客户端与服务端通信的过程。</code></pre><p><img src="https://images2015.cnblogs.com/blog/797930/201611/797930-20161129155244646-2067469767.png" alt title="图片"></p>
-<pre><code>sso 认证中心与 sso 客户端通信方式有多种，例如 webservice、rpc、restful api等
-
-sso采用客户端/服务端架构，我们先看sso-client与sso-server要实现的功能（下面：sso认证中心=sso-server）</code></pre><p>sso-client</p>
-<p>拦截子系统未登录用户请求，跳转至 sso 认证中心<br>接收并存储 sso 认证中心发送的令牌<br>与 sso-server 通信，校验令牌的有效性<br>建立局部会话<br>拦截用户注销请求，向 sso 认证中心发送注销请求<br>接收 sso 认证中心发出的注销请求，销毁局部会话<br>　　 sso-server</p>
-<p>验证用户的登录信息<br>创建全局会话<br>创建授权令牌<br>与 sso-client 通信发送令牌<br>校验 sso-client 令牌有效性<br>系统注册<br>接收 sso-client 注销请求，注销所有会话<br>　　接下来，我们按照原理来一步步实现 sso 吧！</p>
-<p>1、sso-client 拦截未登录请求<br>　　 java 拦截请求的方式有 servlet、filter、listener 三种方式，我们采用 filter。在 sso-client 中新建 LoginFilter.java 类并实现 Filter 接口，在 doFilter()方法中加入对未登录用户的拦截</p>
-<p>public void doFilter(ServletRequest request, ServletResponse response, FilterChain chain) throws IOException, ServletException {<br>HttpServletRequest req = (HttpServletRequest) request;<br>HttpServletResponse res = (HttpServletResponse) response;<br>HttpSession session = req.getSession();</p>
-<p> if (session.getAttribute(“isLogin”)) {<br>chain.doFilter(request, response);<br>return;<br>}<br>//跳转至 sso 认证中心<br>res.sendRedirect(“sso-server-url-with-system-url”);<br>}<br>2、sso-server 拦截未登录请求<br>　　拦截从 sso-client 跳转至 sso 认证中心的未登录请求，跳转至登录页面，这个过程与 sso-client 完全一样</p>
-<p>3、sso-server 验证用户登录信息<br>　　用户在登录页面输入用户名密码，请求登录，sso 认证中心校验用户信息，校验成功，将会话状态标记为“已登录”</p>
-<p>@RequestMapping(“/login”)<br>public String login(String username, String password, HttpServletRequest req) {<br>this.checkLoginInfo(username, password);<br>req.getSession().setAttribute(“isLogin”, true);<br>return “success”;<br>}<br>4、sso-server 创建授权令牌<br>　　授权令牌是一串随机字符，以什么样的方式生成都没有关系，只要不重复、不易伪造即可，下面是一个例子</p>
-<p>String token = UUID.randomUUID().toString();<br>5、sso-client 取得令牌并校验<br>　　 sso 认证中心登录后，跳转回子系统并附上令牌，子系统（sso-client）取得令牌，然后去 sso 认证中心校验，在 LoginFilter.java 的 doFilter()中添加几行</p>
-<p>// 请求附带 token 参数<br>String token = req.getParameter(“token”);<br>if (token != null) {<br>// 去 sso 认证中心校验 token<br>boolean verifyResult = this.verify(“sso-server-verify-url”, token);<br>if (!verifyResult) {<br>res.sendRedirect(“sso-server-url”);<br>return;<br>}<br>chain.doFilter(request, response);<br>}<br>　　 verify()方法使用 httpClient 实现，这里仅简略介绍，httpClient 详细使用方法请参考官方文档</p>
-<p>HttpPost httpPost = new HttpPost(“sso-server-verify-url-with-token”);<br>HttpResponse httpResponse = httpClient.execute(httpPost);<br>6、sso-server 接收并处理校验令牌请求<br>　　用户在 sso 认证中心登录成功后，sso-server 创建授权令牌并存储该令牌，所以，sso-server 对令牌的校验就是去查找这个令牌是否存在以及是否过期，令牌校验成功后 sso-server 将发送校验请求的系统注册到 sso 认证中心（就是存储起来的意思）</p>
-<p>令牌与注册系统地址通常存储在 key-value 数据库（如 redis）中，redis 可以为 key 设置有效时间也就是令牌的有效期。redis 运行在内存中，速度非常快，正好 sso-server 不需要持久化任何数据。</p>
-<p>令牌与注册系统地址可以用下图描述的结构存储在 redis 中，可能你会问，为什么要存储这些系统的地址？如果不存储，注销的时候就麻烦了，用户向 sso 认证中心提交注销请求，sso 认证中心注销全局会话，但不知道哪些系统用此全局会话建立了自己的局部会话，也不知道要向哪些子系统发送注销请求注销局部会话</p>
-<p><img src="https://images2015.cnblogs.com/blog/797930/201611/797930-20161129155245506-1069288802.png" alt></p>
-<p>7、sso-client 校验令牌成功创建局部会话<br>　　令牌校验成功后，sso-client 将当前局部会话标记为“已登录”，修改 LoginFilter.java，添加几行</p>
-<p>if (verifyResult) {<br>session.setAttribute(“isLogin”, true);<br>}<br>　　 sso-client 还需将当前会话 id 与令牌绑定，表示这个会话的登录状态与令牌相关，此关系可以用 java 的 hashmap 保存，保存的数据用来处理 sso 认证中心发来的注销请求</p>
-<p>8、注销过程<br>　　用户向子系统发送带有“logout”参数的请求（注销请求），sso-client 拦截器拦截该请求，向 sso 认证中心发起注销请求</p>
-<p>String logout = req.getParameter(“logout”);<br>if (logout != null) {<br>this.ssoServer.logout(token);<br>}<br>　　 sso 认证中心也用同样的方式识别出 sso-client 的请求是注销请求（带有“logout”参数），sso 认证中心注销全局会话</p>
-<p>@RequestMapping(“/logout”)<br>public String logout(HttpServletRequest req) {<br>HttpSession session = req.getSession();<br>if (session != null) {<br>session.invalidate();//触发 LogoutListener<br>}<br>return “redirect:/“;<br>}<br>　　 sso 认证中心有一个全局会话的监听器，一旦全局会话注销，将通知所有注册系统注销</p>
-<p>1<br>2<br>3<br>4<br>5<br>6<br>7<br>8<br>public class LogoutListener implements HttpSessionListener {<br>@Override<br>public void sessionCreated(HttpSessionEvent event) {}<br>@Override<br>public void sessionDestroyed(HttpSessionEvent event) {<br>//通过 httpClient 向所有注册系统发送注销请求<br>}<br>}</p>
-</div><hr></div><div class="recent-post-item article-container"><a class="article-title" href="/2019/09/04/Interview/20190903上海基诺联生物/">20190903上海基诺联生物科技有限公司</a><time class="post-meta__date"><i class="fa fa-calendar" aria-hidden="true"></i> 2019-09-04</time><span class="article-meta"><span class="article-meta__separator">|</span><i class="fa fa-inbox article-meta__icon" aria-hidden="true"></i><a class="article-meta__categories" href="/categories/面试题/">面试题</a></span><span class="article-meta tags"><span class="article-meta__separator">|</span><i class="fa fa-tag article-meta__icon" aria-hidden="true"></i><a class="article-meta__tags" href="/tags/hide/">hide</a></span><div class="content"><ol>
-<li>公司最新的业务，为什么有两个云平台<ol>
-<li>一个教学平台，一个比赛平台，然后说一些业务</li>
-</ol>
-</li>
-<li>搭建过权限架构，使用的是什么框架？是如何实现 Spring Security 的？Spring Security 是如何实现权限验证的？<ol>
-<li>Spring Security，引入依赖，配置一个 Configure，开启 Security Method 验证，自定义实现 UserDetailsService，扩展 UserDetails，加载 Authority，默认存入 Session 中，可以将 Session 扩展到 Redis、MongoDB 等地方保存，即可加载出用户信息到 SecurityContext 中。</li>
-<li>通过@PreAuthorize 可以验证之前加载的 Authority 权限数组。</li>
-</ol>
-</li>
-<li>如果用户保存在 Session 中，那么权限变更后如何重新加载权限？<ol>
-<li>现在的解决方案：SpringSecurity 是通过 @PreAuthorize 的 SecurityExpressionOperations 实现类，如 hasAuthority()、hasAnyAuthority(…) 来验证的，那么我们只要实现一个 hasCustomAuthority() 改为从 Redis、MongoDB 等地直接获取用户存储的权限即可。通过使用自定义的接口，扩展 Security 的验证</li>
-<li>不用担心性能问题，因为我们的 Session 存储在 Redis、MongoDB 中，那么程序每次获取 Session 时，都会从 Redis、MongoDB 中取。那么自定义接口所修改的，只是从 spring_sessions 表改为了自己的用户权限表。</li>
-</ol>
-</li>
-<li>JDK 版本是多少？1.8 有哪些新特性？说说你对流式编程的理解？如何从 List<user>中取出所有的 username？<ol>
-<li>jdk8 主要增加了对集合类的流式操作，也就是所说的 lambda 表达式，使我们对集合的遍历等操作更加便利。</li>
-<li>userList.stream().map(val -&gt; val.getUsername()).collect(toList())</li>
-</ol>
-</user></li>
-<li>用过索引没？谈谈索引的作用？谈谈复合索引<ol>
-<li>索引的主要作用是优化查询，在数据库的某一个字段上创建了索引后，对该表的某一个字段查询时，将不再遍历整张表，而是遍历索引树。但是索引不应该创建的过多，如果索引树过于庞大的话，对性能也有很大的影响</li>
-<li>复合索引，就是以一个数组的方式保存多个字段，然后在查询时，依次按照索引的位置从左到右查询</li>
-<li>以下来自于“高性能 MySQL”中对索引设计的规范：<ol>
-<li>禁止给每个列都建立索引，单表索引建议不超过 5 个</li>
-<li>索引定义在 SELECT、UPDATE、DELETE 语句的 WHERE 从句中的列</li>
-<li>索引定义在 OrderBy、GroupBy、Distinct 中的字段</li>
-<li>多表 Join 的字段</li>
-<li>复合索引，区分度高的放左侧、字段长度小的放左侧、使用最频繁的放左侧</li>
-<li>避免冗余索引和重复索引，MySQL 在执行优化时需要选择具体的索引，降低了索引使用效率</li>
-<li>避免使用外键约束，建议在业务端保证数据的参照完整性，因为外键会影响父表和子表的写操作而降低性能</li>
-<li>不建议使用外键约束，但一定要在表与表的关联键上建立索引</li>
-</ol>
-</li>
-</ol>
-</li>
-<li>说一说数据库事务是什么？回滚是在什么情况下发生的(提示)？<ol>
-<li>我只说了数据隔离，然后被提示之后才想到一致性</li>
-<li>数据隔离，比如数据插入时阻塞其他插入操作，数据查询时阻塞其他插入操作等，这些由数据库的事务隔离级别来决定（还好没问我数据库的隔离级别，越简单的越不容易记），避免脏读</li>
-<li>回滚是为了保存数据的一致性，在同一个事务中执行的 SQL 会保持一致性，只能全部执行成功。如果某一个 SQL 出现了异常，会导致整个事务回滚到执行之前的状态。</li>
-</ol>
-</li>
-<li>什么是分布式锁？怎么实现分布式锁？<ol>
-<li>分布式锁就是为了解决集群环境时，JVM 和锁无法工作的问题。因为多台服务器的线程彼此之间没办法互相加锁，因此需要一些第三方中间件来帮助我们来模拟加锁行为。</li>
-<li>比如 Redis、Zookeeper、MongoDB 等中间件，我们定义一个标识位，在我们进行一些对数据有要求的插入等操作时，为了避免其他线程同时执行，我们需要在执行之前尝试获取这个标志位，如果获取成功了，那么执行，获取失败则等待、轮询、或者抛出异常。</li>
-</ol>
-</li>
-<li>Redis 是如何实现分布式锁的？<ol>
-<li>Redis 有一个 setNX 的语句，是一个 CAS 操作，会先比较某一个值是否存在，如果不存在才设置，存在则不设置。</li>
-<li>setNX 比直接查询再赋值，要原子化，将查询并修改合为一个操作。查询再赋值的操作再怎么快也是有时间间隔的。</li>
-</ol>
-</li>
-<li>Redis 有哪些数据结构？(对 Redis 不太熟悉，带过了)<ol>
-<li>string、hash、list、set、sorted set（后续查的）</li>
-</ol>
-</li>
-<li>公司是如何使用 Docker 的？Docker 是如何创建镜像的？<ol>
-<li>（白话）公司将 Nginx、后台的 Java Jar、前端编译后的包，都挂载到 docker 上，并使用容器的方式启动和运行。使用 Docker 能够保证每次容器运行时的环境都是隔离的。使用方法：在项目根目录下写一个 Dockerfile，然后在文件中指定所需的 jdk 版本、redis 等其他中间件服务。（后面这段没回答上来）然后通过 docker build 的方法生成镜像，然后将镜像通过 docker push 的方式推送到远程云上。push 之后我就不知道了。这些是从公司的 jenkins 上学到的。</li>
-</ol>
-</li>
-<li>你有什么要了解的吗？<ol>
-<li>打脸行为：</li>
-<li>问：技术栈听贴合的，那么公司用的什么 ORM 框架呢？答：Mybatis，你用的是 JPA？</li>
-<li>就这吧，嘟嘟嘟……</li>
-</ol>
-</li>
-</ol>
-</div><hr></div><div class="recent-post-item article-container"><a class="article-title" href="/2019/08/05/读书笔记/《Jenkins》实战笔记/jenkins-react/">Jenkins 从零到有部署一个前端项目</a><time class="post-meta__date"><i class="fa fa-calendar" aria-hidden="true"></i> 2019-08-05</time><span class="article-meta"><span class="article-meta__separator">|</span><i class="fa fa-inbox article-meta__icon" aria-hidden="true"></i><a class="article-meta__categories" href="/categories/读书笔记/">读书笔记</a><i class="fa fa-angle-right" aria-hidden="true"></i><i class="fa fa-inbox article-meta__icon" aria-hidden="true"></i><a class="article-meta__categories" href="/categories/读书笔记/Jenkins部署/">Jenkins部署</a></span><span class="article-meta tags"><span class="article-meta__separator">|</span><i class="fa fa-tag article-meta__icon" aria-hidden="true"></i><a class="article-meta__tags" href="/tags/hide/">hide</a><span class="article-meta__link">-</span><i class="fa fa-tag article-meta__icon" aria-hidden="true"></i><a class="article-meta__tags" href="/tags/Jenkins部署/">Jenkins部署</a></span><div class="content"><h1 id="Jenkins-从零到有部署一个React项目"><a href="#Jenkins-从零到有部署一个React项目" class="headerlink" title="Jenkins 从零到有部署一个React项目"></a>Jenkins 从零到有部署一个React项目</h1><h2 id="一、下载并启动Jenkins"><a href="#一、下载并启动Jenkins" class="headerlink" title="一、下载并启动Jenkins"></a>一、下载并启动Jenkins</h2><p>从 <a href="https://jenkins.io/download/" target="_blank" rel="noopener">Jenkins 官网</a>下载所需的版本，这里使用 Docker 容器部署 Jenkins war(你也可以直接使用 <code>java -jar jenkins.war -httpPort=8080</code> 来启动，这样的话直接进入 [填写密码(锚点)](#1.  填写密码) 即可。)。</p>
-<blockquote>
-<p>注意：我们并没有使用 hub.docker.com 中提供的 jenkins/jenkins 这个镜像。因为我试了一下没装成功，哈哈。</p>
+<h4 id="2-config"><a href="#2-config" class="headerlink" title="2. config"></a>2. config</h4><blockquote>
+<p>验证 Compose 文件格式是否正确</p>
 </blockquote>
-<p>在 war 包的同级目录下，编写 Dockerfile，如下：</p>
-<pre><code class="dockerfile">FROM openjdk:8
-VOLUME /tmp
-COPY jenkins.war app.war
-ENTRYPOINT [&quot;java&quot;,&quot;-jar&quot;,&quot;app.war&quot;,&quot;--httpPort=8080&quot;]</code></pre>
-<p>构建 jenkins 镜像</p>
-<pre><code class="sh">#使用Dockerfile构建jenkins镜像
-docker build -t luokaiii.jenkins .</code></pre>
-<p>编写 jenkins 启动脚本， start.sh：</p>
-<pre><code class="sh">docker run \
-  --name luokaiii.jenkins \
-  -p 8080:8080 \
-  -p 50000:50000 \
-  -v jenkins_home:/var/jenkins_home \
-  -d luokaiii.jenkins</code></pre>
-<blockquote>
-<p>注意：1. 需要给 start.sh 文件授权，否则无法执行；2. 通过 -v 命令将jenkins文件挂载到本地；</p>
+<h4 id="3-down"><a href="#3-down" class="headerlink" title="3. down"></a>3. down</h4><blockquote>
+<p>停止 up 命令所启动的容器，并移除网络</p>
 </blockquote>
-<h2 id="二、环境初始化"><a href="#二、环境初始化" class="headerlink" title="二、环境初始化"></a>二、环境初始化</h2><h3 id="1-填写密码"><a href="#1-填写密码" class="headerlink" title="1.  填写密码"></a>1.  填写密码</h3><p>运行上面写的 start.sh 启动脚本，并打开 localhost:8080，稍等片刻就会提示我们输入初始密码。</p>
-<p>进入 jenkins 容器，<code>docker exec -it luokaiii.jenkins bash</code> （如果提示有误，则可以使用 container 的 id 来进入），找到位于 <code>/root/.jenkins/secrets/initialAdminPassword</code> 的密码并填写进入。</p>
-<h3 id="2-安装插件"><a href="#2-安装插件" class="headerlink" title="2. 安装插件"></a>2. 安装插件</h3><p>密码输入成功后，会提示我们选择需要安装的插件，这里我选择的是社区推荐插件。对于新入门的用户来说，推荐的往往够用了。</p>
-<p><img src="https://i.loli.net/2019/08/05/URXsYagSkyl96pP.png" alt="安装插件中..."></p>
-<p>在插件安装完成之后，我们需要加入以下额外的插件：</p>
-<ol>
-<li>Publish Over SSH     // 向服务器发送文件</li>
-<li>SSH         // 需要 SSH 来连接服务器</li>
-<li>Config File Provider</li>
-<li>NodeJS     // 因为我们的测试项目是使用 react 写的一个模拟项目，因此需要NodeJS 与 npm 进行编译</li>
-</ol>
-<blockquote>
-<p>添加插件的目录为：Manage Jenkins &gt; Manage Plugins &gt; 可选插件</p>
+<h4 id="4-exec"><a href="#4-exec" class="headerlink" title="4. exec"></a>4. exec</h4><blockquote>
+<p>进入指定的容器</p>
 </blockquote>
-<h3 id="3-新建一个管理员账户"><a href="#3-新建一个管理员账户" class="headerlink" title="3. 新建一个管理员账户"></a>3. 新建一个管理员账户</h3><p><img src="https://i.loli.net/2019/08/05/CYpL2sb3PlefOAi.png" alt="创建账户"></p>
-<p>ok，安装成功，进入我们的正题。</p>
-<p><img src="https://i.loli.net/2019/08/05/foPH29MNlGvrXsk.png" alt="欢迎来到 Jenkins"></p>
-<h2 id="三、使用-SSH-登录服务器"><a href="#三、使用-SSH-登录服务器" class="headerlink" title="三、使用 SSH 登录服务器"></a>三、使用 SSH 登录服务器</h2><p>配置 SSH Key 有两种方式，一种是在本地生成，然后将公钥发送至服务器；另一种是在服务器生成，将私钥拷贝至本地。(好像没啥区别啊)</p>
-<h3 id="1-在本地电脑生成-SSH"><a href="#1-在本地电脑生成-SSH" class="headerlink" title="1.  在本地电脑生成 SSH"></a>1.  在本地电脑生成 SSH</h3><ol>
-<li>打开命令行，生成ssh-key：<code>ssh-keygen -t rsa</code></li>
-<li>将ssh-key 发送至服务器：<code>ssh-copy-id -i ~/.ssh/id_rsa.pub root@xxx.xxx.xxx.xxx</code></li>
-<li>输入服务器密码，即可上传成功</li>
-<li>验证登录：<code>ssh root@xxx.xxx.xxx.xxx -i id_rsa</code> </li>
-<li>输入私钥的 password 即可</li>
-</ol>
-<h3 id="2-服务器端生成-SSH"><a href="#2-服务器端生成-SSH" class="headerlink" title="2.  服务器端生成 SSH"></a>2.  服务器端生成 SSH</h3><ol>
-<li>使用密码登录远程服务器</li>
-<li>执行命令 ssh-keygen ，输入文件地址、密码等信息，如名为 ssh_rsa</li>
-<li>将 生成的私钥拷贝出来，放到需要连接的电脑上(可以新建文件，把 ssh_rsa 的内容拷贝进去)</li>
-<li>重设本地文件的权限 chmod 0600 ssh_rsa</li>
-<li>开启 SSH Key 登录<ol>
-<li>在远程服务器中找到 /etc/ssh/sshd_config</li>
-<li>将以下两个参数设置为 on(默认为on)<ol>
-<li>RSAAuthentication on</li>
-<li>PubkeyAuthentication on</li>
-</ol>
-</li>
-</ol>
-</li>
-<li>关闭 密码 登录(可选，前提是你要确保之前的私钥备份好了，不然可就无法登陆了)<ol>
-<li>将 PasswordAuthentication 改为 no</li>
-</ol>
-</li>
-<li>测试使用 SSH Key 登录服务器<ol>
-<li>ssh <a href="mailto:root@xxx.xxx.xxx.xxx" target="_blank" rel="noopener">root@xxx.xxx.xxx.xxx</a> -p port -i ~/.ssh/id_rsa</li>
-<li>xxx.xxx.xxx.xxx 为服务器 ip 地址</li>
-<li>port 为服务器登录端口</li>
-<li>~/.ssh/id_rsa 为本地私钥地址</li>
-</ol>
-</li>
-</ol>
-<h2 id="四、配置SSH"><a href="#四、配置SSH" class="headerlink" title="四、配置SSH"></a>四、配置SSH</h2><p>进入 Manage Jenkins &gt;  Configure System，并作出以下两个修改：</p>
-<h3 id="1-SSH-remote-hosts"><a href="#1-SSH-remote-hosts" class="headerlink" title="1. SSH remote hosts"></a>1. SSH remote hosts</h3><p>配置远程服务器</p>
-<p><img src="https://i.loli.net/2019/08/05/ulX69MTxD1HFwYQ.png" alt="UTOOLS1564997986052.png"></p>
-<h3 id="2-Publish-over-SSH"><a href="#2-Publish-over-SSH" class="headerlink" title="2.Publish over SSH"></a>2.Publish over SSH</h3><p>配置推送文件时的服务器配置，使用 ssh key</p>
-<p><img src="C:%5CUsers%5Cuser%5CAppData%5CRoaming%5CTypora%5Ctypora-user-images%5C1564997904177.png" alt="1564997904177"></p>
-<h2 id="四、配置完整的任务"><a href="#四、配置完整的任务" class="headerlink" title="四、配置完整的任务"></a>四、配置完整的任务</h2><p>新建一个 <code>Freestyle project</code></p>
-<p><img src="http://img.pic35.com/uploads/allimg/170701/1-1FF11312380-L.jpg" alt="手动狗头"></p>
-<p>设置源码仓库地址，并添加用户名密码、或 SSHKey 的凭证</p>
-<p><img src="C:%5CUsers%5Cuser%5CAppData%5CRoaming%5CTypora%5Ctypora-user-images%5C1564996570789.png" alt="源码管理"></p>
-<p>构建前的环境配置，指定服务器地址、<a href>#NodeJS版本</a></p>
-<p><img src="https://i.loli.net/2019/08/05/MbAGENWmIod94rP.png" alt="构建环境"></p>
-<p>执行构建，并打印 Node 与 NPM 的版本，来确定是否安装成功；指定 npm 仓库为taobao镜像，并进行编译(react 编译后的文件放在 /build 下，其他语言参照各自特性而定)</p>
-<p><img src="https://i.loli.net/2019/08/05/XPuSnVHjb21pqG7.png" alt="构建"></p>
-<p>构建完成后，就是把生成的 build 目录发送至服务器指定目录了。如果您使用了 nginx 作了静态代理，则只需将 build 后的文件发送至该目录即可。</p>
-<p><img src="C:%5CUsers%5Cuser%5CAppData%5CRoaming%5CTypora%5Ctypora-user-images%5C1564996807629.png" alt="构建后操作"></p>
-<h2 id="五、测试是否正确安装及配置"><a href="#五、测试是否正确安装及配置" class="headerlink" title="五、测试是否正确安装及配置"></a>五、测试是否正确安装及配置</h2><h3 id="1-随便修改点文件，提交至github上"><a href="#1-随便修改点文件，提交至github上" class="headerlink" title="1. 随便修改点文件，提交至github上"></a>1. 随便修改点文件，提交至github上</h3><h3 id="2-点击立即构建"><a href="#2-点击立即构建" class="headerlink" title="2. 点击立即构建"></a>2. 点击立即构建</h3><p><img src="https://i.loli.net/2019/08/05/QlRNP3zxiLmOeJ6.png" alt="立即构建"></p>
-<h3 id="3-打开控制台输出，查看日志"><a href="#3-打开控制台输出，查看日志" class="headerlink" title="3. 打开控制台输出，查看日志"></a>3. 打开控制台输出，查看日志</h3><p>不出意外的话，控制台中会依次打印出一下日志(日志太长，这里就不贴了，仔细看一下应该都很好理解，也不是什么比较难的单词)</p>
-<ol>
-<li>git fetch –tags ….   // 从远程拉取代码</li>
-<li>node -v ； npm -v     // 打印的node版本</li>
-<li>npm  install –registry…    // 修改npm 镜像源</li>
-<li>npm run build        // 开始构建</li>
-<li>[SSH] executing post build script    // 连接并上传build目录</li>
-</ol>
-<h3 id="4-重新访问项目地址"><a href="#4-重新访问项目地址" class="headerlink" title="4. 重新访问项目地址"></a>4. 重新访问项目地址</h3></div><hr></div><div class="recent-post-item article-container"><a class="article-title" href="/2019/08/05/读书笔记/《Jenkins》实战笔记/jenkins-springboot/">Jenkins 从零到有部署一个Java项目</a><time class="post-meta__date"><i class="fa fa-calendar" aria-hidden="true"></i> 2019-08-05</time><span class="article-meta"><span class="article-meta__separator">|</span><i class="fa fa-inbox article-meta__icon" aria-hidden="true"></i><a class="article-meta__categories" href="/categories/读书笔记/">读书笔记</a><i class="fa fa-angle-right" aria-hidden="true"></i><i class="fa fa-inbox article-meta__icon" aria-hidden="true"></i><a class="article-meta__categories" href="/categories/读书笔记/Jenkins部署/">Jenkins部署</a></span><span class="article-meta tags"><span class="article-meta__separator">|</span><i class="fa fa-tag article-meta__icon" aria-hidden="true"></i><a class="article-meta__tags" href="/tags/hide/">hide</a><span class="article-meta__link">-</span><i class="fa fa-tag article-meta__icon" aria-hidden="true"></i><a class="article-meta__tags" href="/tags/Jenkins部署/">Jenkins部署</a></span><div class="content"><h1 id="Docker-Nginx-Jenkins-部署-SpringBoot-Jar"><a href="#Docker-Nginx-Jenkins-部署-SpringBoot-Jar" class="headerlink" title="Docker + Nginx + Jenkins 部署 SpringBoot Jar"></a>Docker + Nginx + Jenkins 部署 SpringBoot Jar</h1><p>本文能解决的问题：</p>
-<ol>
-<li>如何使用Docker 部署Jenkins</li>
-<li>Jenkins 会重写url(使用三级域名)</li>
-<li>nginx 配置 jenkins、前端、后端</li>
-<li>部署 Maven 子项目(单 maven 项目更简单，我相信你们能举一反三)</li>
-</ol>
-<h2 id="一、docker-compose"><a href="#一、docker-compose" class="headerlink" title="一、docker-compose"></a>一、docker-compose</h2><p>编写 docker-compose，连接 nginx 与 jenkins。</p>
-<blockquote>
-<p>如果不是使用 Docker 做容器管理，此步可忽略。直接启动 Nginx 与 Jenkins 即可。</p>
+<h4 id="5-help"><a href="#5-help" class="headerlink" title="5. help"></a>5. help</h4><blockquote>
+<p>获得一个命令的帮助</p>
 </blockquote>
-<pre><code class="sh">version: &#39;3&#39;
+<h4 id="6-images"><a href="#6-images" class="headerlink" title="6. images"></a>6. images</h4><blockquote>
+<p>列出 Compose 文件中包含的镜像</p>
+</blockquote>
+<h4 id="7-kill"><a href="#7-kill" class="headerlink" title="7. kill"></a>7. kill</h4><blockquote>
+<p>通过发送 SIGKILL<a href="https://blog.csdn.net/DLUTBruceZhang/article/details/8821690" target="_blank" rel="noopener">(Linux 信号列表)</a> 信号来强制停止服务容器。</p>
+</blockquote>
+<h4 id="8-logs"><a href="#8-logs" class="headerlink" title="8. logs"></a>8. logs</h4><blockquote>
+<p>查看服务容器的输出</p>
+</blockquote>
+<h4 id="9-pause"><a href="#9-pause" class="headerlink" title="9. pause"></a>9. pause</h4><blockquote>
+<p>暂停一个服务容器</p>
+</blockquote>
+<h4 id="10-port"><a href="#10-port" class="headerlink" title="10. port"></a>10. port</h4><blockquote>
+<p>打印某个容器端口所映射的公共端口</p>
+</blockquote>
+<h4 id="11-ps"><a href="#11-ps" class="headerlink" title="11. ps"></a>11. ps</h4><blockquote>
+<p>列出项目中目前的所有容器</p>
+</blockquote>
+<h4 id="12-pull"><a href="#12-pull" class="headerlink" title="12. pull"></a>12. pull</h4><blockquote>
+<p>拉取服务依赖的镜像</p>
+</blockquote>
+<h4 id="13-push"><a href="#13-push" class="headerlink" title="13. push"></a>13. push</h4><blockquote>
+<p>推送服务依赖的镜像到 Docker 镜像仓库</p>
+</blockquote>
+<h4 id="14-restart"><a href="#14-restart" class="headerlink" title="14. restart"></a>14. restart</h4><blockquote>
+<p>重启项目中的服务</p>
+</blockquote>
+<h4 id="15-rm"><a href="#15-rm" class="headerlink" title="15. rm"></a>15. rm</h4><blockquote>
+<p>删除所有(停止状态的)服务容器</p>
+</blockquote>
+<h4 id="16-run"><a href="#16-run" class="headerlink" title="16. run"></a>16. run</h4><blockquote>
+<p>在指定服务上执行一个命令</p>
+</blockquote>
+<h4 id="17-scale"><a href="#17-scale" class="headerlink" title="17. scale"></a>17. scale</h4><blockquote>
+<p>设置指定服务运行的容器个数</p>
+</blockquote>
+<h4 id="18-start"><a href="#18-start" class="headerlink" title="18. start"></a>18. start</h4><blockquote>
+<p>启动已经存在的服务容器</p>
+</blockquote>
+<h4 id="19-stop"><a href="#19-stop" class="headerlink" title="19. stop"></a>19. stop</h4><blockquote>
+<p>停止运行中的容器，但不删除它</p>
+</blockquote>
+<h4 id="20-top"><a href="#20-top" class="headerlink" title="20. top"></a>20. top</h4><blockquote>
+<p>查看各个服务容器内运行的进程</p>
+</blockquote>
+<h4 id="21-unpause"><a href="#21-unpause" class="headerlink" title="21. unpause"></a>21. unpause</h4><blockquote>
+<p>恢复暂停状态的服务</p>
+</blockquote>
+<h4 id="22-up"><a href="#22-up" class="headerlink" title="22. up"></a>22. up</h4><blockquote>
+<p>自动完成：构建镜像 &gt; (重新)创建服务 &gt; 启动服务 &gt; 关联服务容器</p>
+</blockquote>
+<h4 id="23-version"><a href="#23-version" class="headerlink" title="23. version"></a>23. version</h4><blockquote>
+<p>打印版本信息</p>
+</blockquote>
+<h2 id="五、Compose-模板文件"><a href="#五、Compose-模板文件" class="headerlink" title="五、Compose 模板文件"></a>五、Compose 模板文件</h2><h2 id="六、实战-Java-Web"><a href="#六、实战-Java-Web" class="headerlink" title="六、实战 Java Web"></a>六、实战 Java Web</h2><pre><code class="yml">version: &#39;3&#39;
 
 services:
   jenkins:
@@ -1210,131 +948,7 @@ services:
       - 443:443
     restart: always
 </code></pre>
-<h2 id="二、nginx-conf"><a href="#二、nginx-conf" class="headerlink" title="二、nginx.conf"></a>二、nginx.conf</h2><pre><code class="sh">upstream apisupport {
-    # 自己部署的后端服务，因为是在容器访问外部服务，所以需要使用内网IP
-    # 第二种方法是在 docker-compose 中将 jar 作为一个 service 连接
-    server xxx.xx.xx.xxx:9000;
-}
-# 这里用到了 docker-compose 中的容器，如果没用docker，直接写localhost就可以了。
-upstream dk-jenkins {
-    server jenkins:8080;
-}
-server {
-    listen 80 default_server;
-    listen [::]:80 default_server;
-    server_name www.luokaiii.cn;
-    return    301 https://$server_name$request_uri; 
-}
-server {
-    listen 80;
-    # 我用了一个 三级域名来处理Jenkins的请求，因为 jenkins 会从根目录查找静态资源和发送请求，总是会重写url。
-    server_name jenkins.luokaiii.cn;
-    location / {
-        proxy_pass http://dk-jenkins/;
-    }
-}
-# 如果没有 https 证书，直接将 ssl 以下的部分写在 80 里就行了
-server { 
-    listen 443 ssl; 
-    server_name www.luokaiii.cn luokaiii.cn; 
-
-    # ssl config
-    ssl on;   #设置为on启用SSL功能。
-    ssl_certificate cert/2292046_www.luokaiii.cn.pem;
-    ssl_certificate_key cert/2292046_www.luokaiii.cn.key;
-    ssl_session_timeout 5m;
-    ssl_ciphers ECDHE-RSA-AES128-GCM-SHA256:ECDHE:ECDH:AES:HIGH:!NULL:!aNULL:!MD5:!ADH:!RC4;
-    ssl_protocols TLSv1 TLSv1.1 TLSv1.2;
-    ssl_prefer_server_ciphers on; 
-
-    # 压缩请求，这样服务返回会快一些，毕竟国内带宽很贵的
-    gzip on;
-    gzip_min_length 1k;
-    gzip_comp_level 9;
-    gzip_types text/plain application/javascript application/x-javascript text/css application/xml text/javascript application/x-httpd-php image/jpeg image/gif image/png;
-    gzip_vary on;
-    gzip_disable &quot;MSIE [1-6]\.&quot;;
-
-    # 静态资源代理，在Jenkins部署前端项目的文章中，就是把前端静态文件部署在该目录下，直接由nginx代理即可。
-    root /usr/www/luokaiii/cn/html;
-
-    location / {
-        try_files $uri $uri/ /index.html;
-    }
-
-    # 请求转发，将 /api/ 请求转发到 jar 服务上
-    location /api/ {
-        proxy_pass http://apisupport/;
-        proxy_redirect  http://api/support/ https://www.luokaiii.cn/api/;
-        proxy_set_header X-Forwarded-For $proxy_add_x_forwarded_for;
-        proxy_set_header Host  $host;
-        proxy_set_header X-Real_IP  $remote_addr;
-        proxy_set_header REMOTE-HOST $remote_addr;
-        proxy_set_header X-Nginx-Proxy true;
-        proxy_connect_timeout 300;
-        proxy_send_timeout 300;
-        proxy_read_timeout 600;
-        proxy_buffer_size 256k;
-        proxy_buffers 4 256k;
-        proxy_busy_buffers_size 256k;
-        proxy_temp_file_write_size 256k;
-        proxy_next_upstream error timeout invalid_header http_500 http_502 http_503 http_504 http_404;
-        proxy_max_temp_file_size 128m;
-        proxy_http_version 1.1;
-        #proxy_cache mycache;
-        #proxy_cache_valid 200 302 1h;
-        #proxy_cache_valid 301 1h;
-        #proxy_cache_valid any 1m;
-    }
-}</code></pre>
-<blockquote>
-<p>这里使用了一个三级域名来代理 Jenkins，因为 Jenkins 总是会从根目录查找静态资源，以及发送请求。如果是 <a href="http://www.luokaiii.cn/jenkins/" target="_blank" rel="noopener">www.luokaiii.cn/jenkins/</a> 的话总是会被重写为 <a href="http://www.luokaiii.cn，所以直接用三级域名，让它从根目录找好了。" target="_blank" rel="noopener">www.luokaiii.cn，所以直接用三级域名，让它从根目录找好了。</a></p>
-<p>如果有知道如何代理的大佬也可以告诉我，虚心请教，谢谢。</p>
-</blockquote>
-<h2 id="三、SpringBoot-项目"><a href="#三、SpringBoot-项目" class="headerlink" title="三、SpringBoot 项目"></a>三、SpringBoot 项目</h2><p>这里项目以我自己写的 Demo <a href="https://github.com/luokaiii/luokaiii.api" target="_blank" rel="noopener"><a href="https://github.com/luokaiii/luokaiii.api" target="_blank" rel="noopener">https://github.com/luokaiii/luokaiii.api</a></a> 为例，一个 Maven 多级项目，我们只部署其中的 admin-server 模块。</p>
-<p>具体的项目是怎么写的就不说了，大致是：打开idea  &gt; 新建 Spring Initializr &gt; 选择maven &gt; 在 Application 中写一个 GetMapping &gt; OK</p>
-<h2 id="四、进入正题"><a href="#四、进入正题" class="headerlink" title="四、进入正题"></a>四、进入正题</h2><p>打开Jenkins，并新建一个 Freestyle（即自由风格的软件项目）。</p>
-<p>除了上一节 <a href="https://www.jianshu.com/p/e34674f34242" target="_blank" rel="noopener">Jenkins部署前端React项目</a> 中所需的依赖之外，这里还需要 <code>Maven Integration</code> 依赖。</p>
-<h3 id="1-项目描述（随便写）"><a href="#1-项目描述（随便写）" class="headerlink" title="1. 项目描述（随便写）"></a>1. 项目描述（随便写）</h3><p><img src="https://i.loli.net/2019/08/06/3AErybK1UaCoXgv.png" alt="UTOOLS1565082361195.png"></p>
-<h3 id="2-源码管理"><a href="#2-源码管理" class="headerlink" title="2. 源码管理"></a>2. 源码管理</h3><p>刚创建的用户，Credentials 可能为空，创建一个 username+password(一般是你的git账号密码)就行，(如果觉得不安全，可以使用SSH的方式，自己百度)。</p>
-<p><img src="C:%5CUsers%5Cuser%5CAppData%5CRoaming%5CTypora%5Ctypora-user-images%5C1565082401841.png" alt="1565082401841"></p>
-<blockquote>
-<p>这里分支使用的是 <code>develop</code>，原因：在 Git Flow 中，develop 为开发分支(这里用来做测试服务器的分支)，master 为主分支(即正式服务器的分支)。</p>
-<p>因人而异，你想用 master 也行，反正不是我的项目，哈哈。</p>
-</blockquote>
-<h3 id="3-构建（jenkins与测试服务器在同一台服务器上）"><a href="#3-构建（jenkins与测试服务器在同一台服务器上）" class="headerlink" title="3. 构建（jenkins与测试服务器在同一台服务器上）"></a>3. 构建（jenkins与测试服务器在同一台服务器上）</h3><p>如果你的 jenkins 部署在测试服务器上，那么直接将打包后的 jar 文件移动至指定目录即可。</p>
-<ol>
-<li>调用顶层 Maven 目标，使用maven 打包项目<ol>
-<li>因为打包的是子项目，所以使用 -pl 参数指定需要打包的子项目，通过 -am 参数开启依赖项目的构建</li>
-<li>-Dmaven.test.skip=true 跳过测试(一般对单元测试有严格要求的都不应该跳过此步骤)</li>
-</ol>
-</li>
-<li>Send files or execute commands over SSH<ol>
-<li>通过 SSH发送文件或执行命令 </li>
-<li>因为jenkins与测试在一起，所以我们只需要执行mv命令即可</li>
-<li>下面的jenkins与服务器分开(比如正式服部署，总不能还浪费带宽吧)，就需要发送将jar发送到服务器然后运行</li>
-</ol>
-</li>
-</ol>
-<p><img src="https://i.loli.net/2019/08/06/nSx9yFpINqrEAlo.png" alt="UTOOLS1565082655139.png"></p>
-<blockquote>
-</blockquote>
-<h3 id="4-构建（jenkins与测试服务器分离）"><a href="#4-构建（jenkins与测试服务器分离）" class="headerlink" title="4. 构建（jenkins与测试服务器分离）"></a>4. 构建（jenkins与测试服务器分离）</h3><p>跟步骤3没什么太大的区别，只是将 jar 发送到服务器。</p>
-<p><img src="https://i.loli.net/2019/08/06/he49txiGX5PQgzT.png" alt="UTOOLS1565083626352.png"></p>
-<blockquote>
-<p>最后一句 <code>pm2 restart api-support</code> 类似于 <code>nohup java -jar xxx.jar</code> 我是使用 pm2 管理的jar包，有兴趣的可以自己查一下(或者推荐一下其他的进程管理工具也行)。</p>
-</blockquote>
-<h2 id="5-测试"><a href="#5-测试" class="headerlink" title="5. 测试"></a>5. 测试</h2><p>随便提交一次代码，点击立即构建。经过漫长的等待(maven首次更新、向服务器发送jar包)，打印出以下日志。</p>
-<p><img src="https://i.loli.net/2019/08/06/GaonXC9TAKLF1wr.png" alt="构建成功"></p>
-<p>完成，收工！</p>
-<blockquote>
-<p>最后提一下我为什么会写两种构建方式，因为我先用步骤 四4 中的构建时，1M (上行才100多k，T_T)小水管发一个 jar 包快二十分钟了。所以想到同服务器还是直接拷贝的比较好。</p>
-</blockquote>
-</div><hr></div><div class="recent-post-item article-container"><a class="article-title" href="/2019/08/05/读书笔记/《Jenkins》实战笔记/jenkins/">《Jenkins》实战</a><span class="article-meta"><i class="fa fa-thumb-tack article-meta__icon sticky"></i><span class="sticky">置顶</span><span class="article-meta__separator" style="margin-right: 0.3rem">|</span></span><time class="post-meta__date"><i class="fa fa-calendar" aria-hidden="true"></i> 2019-08-05</time><span class="article-meta"><span class="article-meta__separator">|</span><i class="fa fa-inbox article-meta__icon" aria-hidden="true"></i><a class="article-meta__categories" href="/categories/读书笔记/">读书笔记</a><i class="fa fa-angle-right" aria-hidden="true"></i><i class="fa fa-inbox article-meta__icon" aria-hidden="true"></i><a class="article-meta__categories" href="/categories/读书笔记/Jenkins部署/">Jenkins部署</a></span><span class="article-meta tags"><span class="article-meta__separator">|</span><i class="fa fa-tag article-meta__icon" aria-hidden="true"></i><a class="article-meta__tags" href="/tags/Jenkins部署/">Jenkins部署</a></span><div class="content"><ul>
-<li><a href="/2019/08/05/读书笔记/《Jenkins》实战笔记/jenkins-react/index.html">Jenkins 部署 reactjs</a></li>
-<li><a href="/2019/08/05/读书笔记/《Jenkins》实战笔记/jenkins-springboot/index.html">Jenkins 部署 Java</a></li>
-</ul>
-</div><hr></div><nav id="pagination"><div class="pagination"><a class="extend prev" rel="prev" href="/page/13/"><i class="fa fa-chevron-left"></i></a><a class="page-number" href="/">1</a><span class="space">&hellip;</span><a class="page-number" href="/page/13/">13</a><span class="page-number current">14</span><a class="page-number" href="/page/15/">15</a><span class="space">&hellip;</span><a class="page-number" href="/page/27/">27</a><a class="extend next" rel="next" href="/page/15/"><i class="fa fa-chevron-right"></i></a></div></nav></div></div><footer><div class="layout" id="footer"><div class="copyright">&copy;2013 - 2020 By koral</div><div class="framework-info"><span>驱动 - </span><a href="http://hexo.io"><span>Hexo</span></a><span class="footer-separator">|</span><span>主题 - </span><a href="https://github.com/Molunerfinn/hexo-theme-melody"><span>Melody</span></a></div><div class="busuanzi"><script async src="//busuanzi.ibruce.info/busuanzi/2.3/busuanzi.pure.mini.js"></script><span id="busuanzi_container_site_uv"><i class="fa fa-user"></i><span id="busuanzi_value_site_uv"></span><span></span></span><span class="footer-separator">|</span><span id="busuanzi_container_site_pv"><i class="fa fa-eye"></i><span id="busuanzi_value_site_pv"></span><span></span></span></div></div></footer><i class="fa fa-arrow-up" id="go-up" aria-hidden="true"></i><script src="https://cdn.jsdelivr.net/npm/animejs@latest/anime.min.js"></script><script src="https://cdn.jsdelivr.net/npm/jquery@latest/dist/jquery.min.js"></script><script src="https://cdn.jsdelivr.net/npm/@fancyapps/fancybox@latest/dist/jquery.fancybox.min.js"></script><script src="https://cdn.jsdelivr.net/npm/velocity-animate@latest/velocity.min.js"></script><script src="https://cdn.jsdelivr.net/npm/velocity-ui-pack@latest/velocity.ui.min.js"></script><script src="/js/utils.js?version=1.7.0"></script><script src="/js/fancybox.js?version=1.7.0"></script><script src="/js/sidebar.js?version=1.7.0"></script><script src="/js/copy.js?version=1.7.0"></script><script src="/js/fireworks.js?version=1.7.0"></script><script src="/js/transition.js?version=1.7.0"></script><script src="/js/scroll.js?version=1.7.0"></script><script src="/js/head.js?version=1.7.0"></script><script>if(/Android|webOS|iPhone|iPod|iPad|BlackBerry/i.test(navigator.userAgent)) {
+</div><hr></div><nav id="pagination"><div class="pagination"><a class="extend prev" rel="prev" href="/page/13/"><i class="fa fa-chevron-left"></i></a><a class="page-number" href="/">1</a><span class="space">&hellip;</span><a class="page-number" href="/page/13/">13</a><span class="page-number current">14</span><a class="page-number" href="/page/15/">15</a><span class="space">&hellip;</span><a class="page-number" href="/page/30/">30</a><a class="extend next" rel="next" href="/page/15/"><i class="fa fa-chevron-right"></i></a></div></nav></div></div><footer><div class="layout" id="footer"><div class="copyright">&copy;2013 - 2020 By koral</div><div class="framework-info"><span>驱动 - </span><a href="http://hexo.io"><span>Hexo</span></a><span class="footer-separator">|</span><span>主题 - </span><a href="https://github.com/Molunerfinn/hexo-theme-melody"><span>Melody</span></a></div><div class="busuanzi"><script async src="//busuanzi.ibruce.info/busuanzi/2.3/busuanzi.pure.mini.js"></script><span id="busuanzi_container_site_uv"><i class="fa fa-user"></i><span id="busuanzi_value_site_uv"></span><span></span></span><span class="footer-separator">|</span><span id="busuanzi_container_site_pv"><i class="fa fa-eye"></i><span id="busuanzi_value_site_pv"></span><span></span></span></div></div></footer><i class="fa fa-arrow-up" id="go-up" aria-hidden="true"></i><script src="https://cdn.jsdelivr.net/npm/animejs@latest/anime.min.js"></script><script src="https://cdn.jsdelivr.net/npm/jquery@latest/dist/jquery.min.js"></script><script src="https://cdn.jsdelivr.net/npm/@fancyapps/fancybox@latest/dist/jquery.fancybox.min.js"></script><script src="https://cdn.jsdelivr.net/npm/velocity-animate@latest/velocity.min.js"></script><script src="https://cdn.jsdelivr.net/npm/velocity-ui-pack@latest/velocity.ui.min.js"></script><script src="/js/utils.js?version=1.7.0"></script><script src="/js/fancybox.js?version=1.7.0"></script><script src="/js/sidebar.js?version=1.7.0"></script><script src="/js/copy.js?version=1.7.0"></script><script src="/js/fireworks.js?version=1.7.0"></script><script src="/js/transition.js?version=1.7.0"></script><script src="/js/scroll.js?version=1.7.0"></script><script src="/js/head.js?version=1.7.0"></script><script>if(/Android|webOS|iPhone|iPod|iPad|BlackBerry/i.test(navigator.userAgent)) {
   $('#nav').addClass('is-mobile')
   $('footer').addClass('is-mobile')
   $('#top-container').addClass('is-mobile')

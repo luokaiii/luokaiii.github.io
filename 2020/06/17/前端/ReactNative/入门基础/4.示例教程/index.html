@@ -1,0 +1,119 @@
+<!DOCTYPE html><html lang="zh-Hans"><head><meta name="generator" content="Hexo 3.9.0"><meta charset="UTF-8"><meta http-equiv="X-UA-Compatible" content="IE=edge"><meta name="viewport" content="width=device-width, initial-scale=1, maximum-scale=1"><meta name="description" content="罗凯的博客主页"><meta name="keywords" content><meta name="author" content="koral"><meta name="copyright" content="koral"><title>现在的我可以做点什么，让未来的我可以受益匪浅？ | 凯</title><link rel="shortcut icon" href="/melody-favicon.ico"><link rel="stylesheet" href="/css/index.css?version=1.7.0"><link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/font-awesome@latest/css/font-awesome.min.css?version=1.7.0"><meta name="format-detection" content="telephone=no"><meta http-equiv="x-dns-prefetch-control" content="on"><link rel="dns-prefetch" href="https://cdn.jsdelivr.net"><meta http-equiv="Cache-Control" content="no-transform"><meta http-equiv="Cache-Control" content="no-siteapp"><script>var GLOBAL_CONFIG = { 
+  root: '/',
+  algolia: undefined,
+  localSearch: undefined,
+  copy: {
+    success: '复制成功',
+    error: '复制错误',
+    noSupport: '浏览器不支持'
+  }
+} </script></head><body><i class="fa fa-arrow-right" id="toggle-sidebar" aria-hidden="true"></i><div id="sidebar" data-display="true"><div class="toggle-sidebar-info text-center"><span data-toggle="切换文章详情">切换站点概览</span><hr></div><div class="sidebar-toc"><div class="sidebar-toc__title">目录</div><div class="sidebar-toc__progress"><span class="progress-notice">你已经读了</span><span class="progress-num">0</span><span class="progress-percentage">%</span><div class="sidebar-toc__progress-bar"></div></div><div class="sidebar-toc__content"><ol class="toc"><li class="toc-item toc-level-1"><a class="toc-link" href="#示例教程：电影列表"><span class="toc-number">1.</span> <span class="toc-text">示例教程：电影列表</span></a></li></ol></div></div><div class="author-info hide"><div class="author-info__avatar text-center"><img src="/img/avatar.png"></div><div class="author-info__name text-center">koral</div><div class="author-info__description text-center">罗凯的博客主页</div><hr><div class="author-info-articles"><a class="author-info-articles__archives article-meta" href="/archives"><span class="pull-left">文章</span><span class="pull-right">291</span></a><a class="author-info-articles__tags article-meta" href="/tags"><span class="pull-left">标签</span><span class="pull-right">38</span></a><a class="author-info-articles__categories article-meta" href="/categories"><span class="pull-left">分类</span><span class="pull-right">48</span></a></div></div></div><div id="content-outer"><div class="no-bg" id="top-container"><div id="page-header"><span class="pull-left"> <a id="site-name" href="/index.html">凯</a></span><i class="fa fa-bars toggle-menu pull-right" aria-hidden="true"></i><span class="pull-right menus">   <a class="site-page" href="/">首页</a><a class="site-page" href="/archives">归档</a><a class="site-page" href="/tags">标签</a><a class="site-page" href="/categories">分类</a><a class="site-page" href="/about">关于我</a></span><span class="pull-right"></span></div><div id="post-info"><div id="post-title">无题</div><div id="post-meta"><time class="post-meta__date"><i class="fa fa-calendar" aria-hidden="true"></i> 2020-06-17</time></div></div></div><div class="layout" id="content-inner"><article id="post"><div class="article-container" id="post-content"><h1 id="示例教程：电影列表"><a href="#示例教程：电影列表" class="headerlink" title="示例教程：电影列表"></a>示例教程：电影列表</h1><p>该示例中包含了：React的Props、State、远程数据获取、数据渲染、长列表。</p>
+<pre><code class="jsx">import React, { Component } from &quot;react&quot;;
+
+import { Image, FlatList, StyleSheet, Text, View } from &quot;react-native&quot;;
+
+const REQUEST_URL =
+  &quot;https://raw.githubusercontent.com/facebook/react-native/0.51-stable/docs/MoviesExample.json&quot;;
+
+export default class SampleAppMovies extends Component {
+  constructor(props) {
+    super(props);
+    this.state = {
+      data: [],
+      loaded: false
+    };
+    // 在ES6中，如果在自定义的函数里使用了this关键字，则需要对其进行“绑定”操作，否则this的指向会变为空
+    // 像下面这行代码一样，在constructor中使用bind是其中一种做法（还有一些其他做法，如使用箭头函数等）
+    this.fetchData = this.fetchData.bind(this);
+  }
+
+  componentDidMount() {
+    this.fetchData();
+  }
+
+  fetchData() {
+    fetch(REQUEST_URL)
+      .then(response =&gt; response.json())
+      .then(responseData =&gt; {
+        // 注意，这里使用了this关键字，为了保证this在调用时仍然指向当前组件，我们需要对其进行“绑定”操作
+        this.setState({
+          data: this.state.data.concat(responseData.movies),
+          loaded: true
+        });
+      });
+  }
+
+  render() {
+    if (!this.state.loaded) {
+      return this.renderLoadingView();
+    }
+
+    return (
+      &lt;FlatList
+        data={this.state.data}
+        renderItem={this.renderMovie}
+        style={styles.list}
+        keyExtractor={item =&gt; item.id}
+      /&gt;
+    );
+  }
+
+  renderLoadingView() {
+    return (
+      &lt;View style={styles.container}&gt;
+        &lt;Text&gt;Loading movies...&lt;/Text&gt;
+      &lt;/View&gt;
+    );
+  }
+
+  renderMovie({ item }) {
+    // { item }是一种“解构”写法，请阅读ES2015语法的相关文档
+    // item也是FlatList中固定的参数名，请阅读FlatList的相关文档
+    return (
+      &lt;View style={styles.container}&gt;
+        &lt;Image
+          source={{ uri: item.posters.thumbnail }}
+          style={styles.thumbnail}
+        /&gt;
+        &lt;View style={styles.rightContainer}&gt;
+          &lt;Text style={styles.title}&gt;{item.title}&lt;/Text&gt;
+          &lt;Text style={styles.year}&gt;{item.year}&lt;/Text&gt;
+        &lt;/View&gt;
+      &lt;/View&gt;
+    );
+  }
+}
+
+const styles = StyleSheet.create({
+  container: {
+    flex: 1,
+    flexDirection: &quot;row&quot;,
+    justifyContent: &quot;center&quot;,
+    alignItems: &quot;center&quot;,
+    backgroundColor: &quot;#F5FCFF&quot;
+  },
+  rightContainer: {
+    flex: 1
+  },
+  title: {
+    fontSize: 20,
+    marginBottom: 8,
+    textAlign: &quot;center&quot;
+  },
+  year: {
+    textAlign: &quot;center&quot;
+  },
+  thumbnail: {
+    width: 53,
+    height: 81
+  },
+  list: {
+    paddingTop: 20,
+    backgroundColor: &quot;#F5FCFF&quot;
+  }
+});</code></pre>
+</div></article><div class="post-copyright"><div class="post-copyright__author"><span class="post-copyright-meta">文章作者: </span><span class="post-copyright-info"><a href="mailto:undefined">koral</a></span></div><div class="post-copyright__type"><span class="post-copyright-meta">文章链接: </span><span class="post-copyright-info"><a href="http://luokaiii.github.io/2020/06/17/前端/ReactNative/入门基础/4.示例教程/">http://luokaiii.github.io/2020/06/17/前端/ReactNative/入门基础/4.示例教程/</a></span></div><div class="post-copyright__notice"><span class="post-copyright-meta">版权声明: </span><span class="post-copyright-info">本博客所有文章除特别声明外，均采用 <a href="https://creativecommons.org/licenses/by-nc-sa/4.0/">CC BY-NC-SA 4.0</a> 许可协议。转载请注明来自 <a href="http://luokaiii.github.io">凯</a>！</span></div></div><div class="post-meta__tag-list"></div><nav id="pagination"><div class="prev-post pull-left"><a href="/2020/06/17/前端/ReactNative/入门基础/5.设计/"><i class="fa fa-chevron-left">  </i><span></span></a></div><div class="next-post pull-right"><a href="/2020/06/17/前端/ReactNative/入门基础/3.网络/"><span></span><i class="fa fa-chevron-right"></i></a></div></nav></div></div><footer><div class="layout" id="footer"><div class="copyright">&copy;2013 - 2020 By koral</div><div class="framework-info"><span>驱动 - </span><a href="http://hexo.io"><span>Hexo</span></a><span class="footer-separator">|</span><span>主题 - </span><a href="https://github.com/Molunerfinn/hexo-theme-melody"><span>Melody</span></a></div><div class="busuanzi"><script async src="//busuanzi.ibruce.info/busuanzi/2.3/busuanzi.pure.mini.js"></script><span id="busuanzi_container_page_pv"><i class="fa fa-file"></i><span id="busuanzi_value_page_pv"></span><span></span></span></div></div></footer><i class="fa fa-arrow-up" id="go-up" aria-hidden="true"></i><script src="https://cdn.jsdelivr.net/npm/animejs@latest/anime.min.js"></script><script src="https://cdn.jsdelivr.net/npm/jquery@latest/dist/jquery.min.js"></script><script src="https://cdn.jsdelivr.net/npm/@fancyapps/fancybox@latest/dist/jquery.fancybox.min.js"></script><script src="https://cdn.jsdelivr.net/npm/velocity-animate@latest/velocity.min.js"></script><script src="https://cdn.jsdelivr.net/npm/velocity-ui-pack@latest/velocity.ui.min.js"></script><script src="/js/utils.js?version=1.7.0"></script><script src="/js/fancybox.js?version=1.7.0"></script><script src="/js/sidebar.js?version=1.7.0"></script><script src="/js/copy.js?version=1.7.0"></script><script src="/js/fireworks.js?version=1.7.0"></script><script src="/js/transition.js?version=1.7.0"></script><script src="/js/scroll.js?version=1.7.0"></script><script src="/js/head.js?version=1.7.0"></script><script>if(/Android|webOS|iPhone|iPod|iPad|BlackBerry/i.test(navigator.userAgent)) {
+  $('#nav').addClass('is-mobile')
+  $('footer').addClass('is-mobile')
+  $('#top-container').addClass('is-mobile')
+}</script></body></html>
