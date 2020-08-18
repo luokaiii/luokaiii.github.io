@@ -1,0 +1,88 @@
+<!DOCTYPE html><html lang="zh-Hans"><head><meta name="generator" content="Hexo 3.9.0"><meta charset="UTF-8"><meta http-equiv="X-UA-Compatible" content="IE=edge"><meta name="viewport" content="width=device-width, initial-scale=1, maximum-scale=1"><meta name="description" content="Spring Data ElasticSearch 官方文档"><meta name="keywords" content="hide,ElasticSearch"><meta name="author" content="koral"><meta name="copyright" content="koral"><title>Spring Data ElasticSearch 官方文档 | 凯</title><link rel="shortcut icon" href="/melody-favicon.ico"><link rel="stylesheet" href="/css/index.css?version=1.7.0"><link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/font-awesome@latest/css/font-awesome.min.css?version=1.7.0"><meta name="format-detection" content="telephone=no"><meta http-equiv="x-dns-prefetch-control" content="on"><link rel="dns-prefetch" href="https://cdn.jsdelivr.net"><meta http-equiv="Cache-Control" content="no-transform"><meta http-equiv="Cache-Control" content="no-siteapp"><script>var GLOBAL_CONFIG = { 
+  root: '/',
+  algolia: undefined,
+  localSearch: undefined,
+  copy: {
+    success: '复制成功',
+    error: '复制错误',
+    noSupport: '浏览器不支持'
+  }
+} </script></head><body><i class="fa fa-arrow-right" id="toggle-sidebar" aria-hidden="true"></i><div id="sidebar" data-display="true"><div class="toggle-sidebar-info text-center"><span data-toggle="切换文章详情">切换站点概览</span><hr></div><div class="sidebar-toc"><div class="sidebar-toc__title">目录</div><div class="sidebar-toc__progress"><span class="progress-notice">你已经读了</span><span class="progress-num">0</span><span class="progress-percentage">%</span><div class="sidebar-toc__progress-bar"></div></div><div class="sidebar-toc__content"><ol class="toc"><li class="toc-item toc-level-1"><a class="toc-link" href="#ElasticSearch-Object-Mapping"><span class="toc-number">1.</span> <span class="toc-text">ElasticSearch Object Mapping</span></a><ol class="toc-child"><li class="toc-item toc-level-2"><a class="toc-link" href="#一、模型对象映射"><span class="toc-number">1.1.</span> <span class="toc-text">一、模型对象映射</span></a><ol class="toc-child"><li class="toc-item toc-level-3"><a class="toc-link" href="#1-1-映射注解"><span class="toc-number">1.1.1.</span> <span class="toc-text">1.1 映射注解</span></a></li></ol></li><li class="toc-item toc-level-2"><a class="toc-link" href="#二、映射规则"><span class="toc-number">1.2.</span> <span class="toc-text">二、映射规则</span></a></li><li class="toc-item toc-level-2"><a class="toc-link" href="#三、自定义类型转换"><span class="toc-number">1.3.</span> <span class="toc-text">三、自定义类型转换</span></a></li></ol></li></ol></div></div><div class="author-info hide"><div class="author-info__avatar text-center"><img src="/img/avatar.png"></div><div class="author-info__name text-center">koral</div><div class="author-info__description text-center">罗凯的博客主页</div><hr><div class="author-info-articles"><a class="author-info-articles__archives article-meta" href="/archives"><span class="pull-left">文章</span><span class="pull-right">302</span></a><a class="author-info-articles__tags article-meta" href="/tags"><span class="pull-left">标签</span><span class="pull-right">39</span></a><a class="author-info-articles__categories article-meta" href="/categories"><span class="pull-left">分类</span><span class="pull-right">51</span></a></div></div></div><div id="content-outer"><div class="no-bg" id="top-container"><div id="page-header"><span class="pull-left"> <a id="site-name" href="/index.html">凯</a></span><i class="fa fa-bars toggle-menu pull-right" aria-hidden="true"></i><span class="pull-right menus">   <a class="site-page" href="/">首页</a><a class="site-page" href="/archives">归档</a><a class="site-page" href="/tags">标签</a><a class="site-page" href="/categories">分类</a><a class="site-page" href="/about">关于我</a></span><span class="pull-right"></span></div><div id="post-info"><div id="post-title">Spring Data ElasticSearch 官方文档</div><div id="post-meta"><time class="post-meta__date"><i class="fa fa-calendar" aria-hidden="true"></i> 2020-08-18</time><span class="post-meta__separator">|</span><i class="fa fa-inbox post-meta__icon" aria-hidden="true"></i><a class="post-meta__categories" href="/categories/后端/">后端</a><i class="fa fa-angle-right" aria-hidden="true"></i><i class="fa fa-inbox post-meta__icon" aria-hidden="true"></i><a class="post-meta__categories" href="/categories/后端/SpringData/">SpringData</a><i class="fa fa-angle-right" aria-hidden="true"></i><i class="fa fa-inbox post-meta__icon" aria-hidden="true"></i><a class="post-meta__categories" href="/categories/后端/SpringData/ElasticSearch/">ElasticSearch</a></div></div></div><div class="layout" id="content-inner"><article id="post"><div class="article-container" id="post-content"><h1 id="ElasticSearch-Object-Mapping"><a href="#ElasticSearch-Object-Mapping" class="headerlink" title="ElasticSearch Object Mapping"></a>ElasticSearch Object Mapping</h1><p>从 ES 4.0 开始，移除了 Jackson 的 <code>ObjectMapper</code>，改用 <code>MappingElasticsearchConverter</code>。</p>
+<a id="more"></a>
+
+<h2 id="一、模型对象映射"><a href="#一、模型对象映射" class="headerlink" title="一、模型对象映射"></a>一、模型对象映射</h2><h3 id="1-1-映射注解"><a href="#1-1-映射注解" class="headerlink" title="1.1 映射注解"></a>1.1 映射注解</h3><p><code>MappingElasticsearchConverter</code> 使用注释来标注实体与属性。</p>
+<ul>
+<li><code>@Document</code> - 类标注，指示该类是映射到数据库的对象<ul>
+<li><code>indexName</code>：存储的索引名称</li>
+<li><del><code>type</code>：映射类型(从4.0开始)</del></li>
+<li><code>shards</code>：索引的分片数</li>
+<li><code>replicas</code>：索引的副本数</li>
+<li><code>refreshIntervall</code>：索引的刷新间隔，默认1s</li>
+<li><code>indexStoreType</code>：索引的存储类型，默认 fs</li>
+<li><code>createIndex</code>：是否创建索引，默认为 true</li>
+<li><code>versionType</code>：版本管理，默认为 EXTERNAL</li>
+</ul>
+</li>
+<li><code>@Id</code> - 字段标记，用于标识唯一字段</li>
+<li><code>@Transient</code> - 默认情况下，存储或检索文档时，所有字段都映射到文档，此注释不包括该字段</li>
+<li><code>@PersistenceConstructor</code> - 指定从数据库实例化对象时要使用的给定构造函数</li>
+<li><code>@Field</code> - 定义属性映射<ul>
+<li><code>name</code>：字段名称，如果不写，则为 java 的属性名。</li>
+<li><code>type</code>：字段的类型，可选值：Text, Keyword, Long, Integer, Short, Byte, Double, Float, Half_Float, Scaled_Float, Date, Date_Nanos, Boolean, Binary, Integer_Range, Float_Range, Long_Range, Double_Range, Ip_Range, Object, Nested, Ip, TokenCount, Percolator, Flattened, Search_As_You_Type等，<a href="https://www.elastic.co/guide/en/elasticsearch/reference/current/mapping-types.html" target="_blank" rel="noopener">详见</a>。</li>
+<li><code>format</code>：和日期的 pattern 类似</li>
+<li><code>store</code>：是否将原始字段值保存在ES中，默认为false</li>
+<li><code>analyzer</code>，<code>searchAnalyzer</code>，<code>normalizer</code> 用于指定自定义分析</li>
+</ul>
+</li>
+<li><code>@GeoPoint</code> - 将字段标记为 geo_point 类型</li>
+</ul>
+<h2 id="二、映射规则"><a href="#二、映射规则" class="headerlink" title="二、映射规则"></a>二、映射规则</h2><p><strong>类型提示</strong>：字段为 <code>_class</code>，允许通用类型映射，可使用 <code>@TypeAlias</code> 来指定别名。</p>
+<p><strong>地理空间类型</strong>：如 <code>Point</code>、<code>GeoPoint</code> 类型，会转换为 经纬度对。</p>
+<p><strong>集合</strong>：转换为数组。</p>
+<p><strong>Map</strong>：键必须为字符串。</p>
+<h2 id="三、自定义类型转换"><a href="#三、自定义类型转换" class="headerlink" title="三、自定义类型转换"></a>三、自定义类型转换</h2><p>在 <code>AbstractElasticsearchConfiguration</code> 中，可以通过 <code>ElasticsearchCustomConversions</code> 来注册类型转换规则。</p>
+<pre><code class="java">@Configuration
+public class Config extends AbstractElasticsearchConfiguration {
+
+  @Override
+  public RestHighLevelClient elasticsearchClient() {
+    return RestClients.create(ClientConfiguration.create(&quot;localhost:9200&quot;)).rest();
+  }
+
+  @Bean
+  @Override
+  public ElasticsearchCustomConversions elasticsearchCustomConversions() {
+    return new ElasticsearchCustomConversions(
+      Arrays.asList(new AddressToMap(), new MapToAddress()));       
+  }
+
+  @WritingConverter                                                 
+  static class AddressToMap implements Converter&lt;Address, Map&lt;String, Object&gt;&gt; {
+
+    @Override
+    public Map&lt;String, Object&gt; convert(Address source) {
+
+      LinkedHashMap&lt;String, Object&gt; target = new LinkedHashMap&lt;&gt;();
+      target.put(&quot;ciudad&quot;, source.getCity());
+      // ...
+
+      return target;
+    }
+  }
+
+  @ReadingConverter                                                 
+  static class MapToAddress implements Converter&lt;Map&lt;String, Object&gt;, Address&gt; {
+
+    @Override
+    public Address convert(Map&lt;String, Object&gt; source) {
+
+      // ...
+      return address;
+    }
+  }
+}</code></pre>
+</div></article><div class="post-copyright"><div class="post-copyright__author"><span class="post-copyright-meta">文章作者: </span><span class="post-copyright-info"><a href="mailto:undefined">koral</a></span></div><div class="post-copyright__type"><span class="post-copyright-meta">文章链接: </span><span class="post-copyright-info"><a href="http://luokaiii.github.io/2020/08/18/后端/SpringDataElasticsearch/3.ES对象映射/">http://luokaiii.github.io/2020/08/18/后端/SpringDataElasticsearch/3.ES对象映射/</a></span></div><div class="post-copyright__notice"><span class="post-copyright-meta">版权声明: </span><span class="post-copyright-info">本博客所有文章除特别声明外，均采用 <a href="https://creativecommons.org/licenses/by-nc-sa/4.0/">CC BY-NC-SA 4.0</a> 许可协议。转载请注明来自 <a href="http://luokaiii.github.io">凯</a>！</span></div></div><div class="post-meta__tag-list"><a class="post-meta__tags" href="/tags/hide/">hide</a><a class="post-meta__tags" href="/tags/ElasticSearch/">ElasticSearch</a></div><nav id="pagination"><div class="prev-post pull-left"><a href="/2020/08/18/后端/SpringDataElasticsearch/4.ES操作/"><i class="fa fa-chevron-left">  </i><span>Spring Data ElasticSearch 官方文档</span></a></div><div class="next-post pull-right"><a href="/2020/08/18/后端/SpringDataElasticsearch/2.ElasticsearchClient/"><span>Spring Data ElasticSearch 官方文档</span><i class="fa fa-chevron-right"></i></a></div></nav></div></div><footer><div class="layout" id="footer"><div class="copyright">&copy;2013 - 2020 By koral</div><div class="framework-info"><span>驱动 - </span><a href="http://hexo.io"><span>Hexo</span></a><span class="footer-separator">|</span><span>主题 - </span><a href="https://github.com/Molunerfinn/hexo-theme-melody"><span>Melody</span></a></div><div class="busuanzi"><script async src="//busuanzi.ibruce.info/busuanzi/2.3/busuanzi.pure.mini.js"></script><span id="busuanzi_container_page_pv"><i class="fa fa-file"></i><span id="busuanzi_value_page_pv"></span><span></span></span></div></div></footer><i class="fa fa-arrow-up" id="go-up" aria-hidden="true"></i><script src="https://cdn.jsdelivr.net/npm/animejs@latest/anime.min.js"></script><script src="https://cdn.jsdelivr.net/npm/jquery@latest/dist/jquery.min.js"></script><script src="https://cdn.jsdelivr.net/npm/@fancyapps/fancybox@latest/dist/jquery.fancybox.min.js"></script><script src="https://cdn.jsdelivr.net/npm/velocity-animate@latest/velocity.min.js"></script><script src="https://cdn.jsdelivr.net/npm/velocity-ui-pack@latest/velocity.ui.min.js"></script><script src="/js/utils.js?version=1.7.0"></script><script src="/js/fancybox.js?version=1.7.0"></script><script src="/js/sidebar.js?version=1.7.0"></script><script src="/js/copy.js?version=1.7.0"></script><script src="/js/fireworks.js?version=1.7.0"></script><script src="/js/transition.js?version=1.7.0"></script><script src="/js/scroll.js?version=1.7.0"></script><script src="/js/head.js?version=1.7.0"></script><script>if(/Android|webOS|iPhone|iPod|iPad|BlackBerry/i.test(navigator.userAgent)) {
+  $('#nav').addClass('is-mobile')
+  $('footer').addClass('is-mobile')
+  $('#top-container').addClass('is-mobile')
+}</script></body></html>

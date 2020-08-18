@@ -1,0 +1,183 @@
+<!DOCTYPE html><html lang="zh-Hans"><head><meta name="generator" content="Hexo 3.9.0"><meta charset="UTF-8"><meta http-equiv="X-UA-Compatible" content="IE=edge"><meta name="viewport" content="width=device-width, initial-scale=1, maximum-scale=1"><meta name="description" content="Spring Data ElasticSearch 官方文档"><meta name="keywords" content="hide,ElasticSearch"><meta name="author" content="koral"><meta name="copyright" content="koral"><title>Spring Data ElasticSearch 官方文档 | 凯</title><link rel="shortcut icon" href="/melody-favicon.ico"><link rel="stylesheet" href="/css/index.css?version=1.7.0"><link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/font-awesome@latest/css/font-awesome.min.css?version=1.7.0"><meta name="format-detection" content="telephone=no"><meta http-equiv="x-dns-prefetch-control" content="on"><link rel="dns-prefetch" href="https://cdn.jsdelivr.net"><meta http-equiv="Cache-Control" content="no-transform"><meta http-equiv="Cache-Control" content="no-siteapp"><script>var GLOBAL_CONFIG = { 
+  root: '/',
+  algolia: undefined,
+  localSearch: undefined,
+  copy: {
+    success: '复制成功',
+    error: '复制错误',
+    noSupport: '浏览器不支持'
+  }
+} </script></head><body><i class="fa fa-arrow-right" id="toggle-sidebar" aria-hidden="true"></i><div id="sidebar" data-display="true"><div class="toggle-sidebar-info text-center"><span data-toggle="切换文章详情">切换站点概览</span><hr></div><div class="sidebar-toc"><div class="sidebar-toc__title">目录</div><div class="sidebar-toc__progress"><span class="progress-notice">你已经读了</span><span class="progress-num">0</span><span class="progress-percentage">%</span><div class="sidebar-toc__progress-bar"></div></div><div class="sidebar-toc__content"><ol class="toc"><li class="toc-item toc-level-1"><a class="toc-link" href="#Elasticsearch-存储库"><span class="toc-number">1.</span> <span class="toc-text">Elasticsearch 存储库</span></a><ol class="toc-child"><li class="toc-item toc-level-2"><a class="toc-link" href="#一、查询方法"><span class="toc-number">1.1.</span> <span class="toc-text">一、查询方法</span></a><ol class="toc-child"><li class="toc-item toc-level-3"><a class="toc-link" href="#1-1-方法查询"><span class="toc-number">1.1.1.</span> <span class="toc-text">1.1 方法查询</span></a></li><li class="toc-item toc-level-3"><a class="toc-link" href="#1-2-返回类型"><span class="toc-number">1.1.2.</span> <span class="toc-text">1.2 返回类型</span></a></li><li class="toc-item toc-level-3"><a class="toc-link" href="#1-3-Query"><span class="toc-number">1.1.3.</span> <span class="toc-text">1.3 @Query</span></a></li><li class="toc-item toc-level-3"><a class="toc-link" href="#1-4-Highlight"><span class="toc-number">1.1.4.</span> <span class="toc-text">1.4 @Highlight</span></a></li></ol></li></ol></li></ol></div></div><div class="author-info hide"><div class="author-info__avatar text-center"><img src="/img/avatar.png"></div><div class="author-info__name text-center">koral</div><div class="author-info__description text-center">罗凯的博客主页</div><hr><div class="author-info-articles"><a class="author-info-articles__archives article-meta" href="/archives"><span class="pull-left">文章</span><span class="pull-right">302</span></a><a class="author-info-articles__tags article-meta" href="/tags"><span class="pull-left">标签</span><span class="pull-right">39</span></a><a class="author-info-articles__categories article-meta" href="/categories"><span class="pull-left">分类</span><span class="pull-right">51</span></a></div></div></div><div id="content-outer"><div class="no-bg" id="top-container"><div id="page-header"><span class="pull-left"> <a id="site-name" href="/index.html">凯</a></span><i class="fa fa-bars toggle-menu pull-right" aria-hidden="true"></i><span class="pull-right menus">   <a class="site-page" href="/">首页</a><a class="site-page" href="/archives">归档</a><a class="site-page" href="/tags">标签</a><a class="site-page" href="/categories">分类</a><a class="site-page" href="/about">关于我</a></span><span class="pull-right"></span></div><div id="post-info"><div id="post-title">Spring Data ElasticSearch 官方文档</div><div id="post-meta"><time class="post-meta__date"><i class="fa fa-calendar" aria-hidden="true"></i> 2020-08-18</time><span class="post-meta__separator">|</span><i class="fa fa-inbox post-meta__icon" aria-hidden="true"></i><a class="post-meta__categories" href="/categories/后端/">后端</a><i class="fa fa-angle-right" aria-hidden="true"></i><i class="fa fa-inbox post-meta__icon" aria-hidden="true"></i><a class="post-meta__categories" href="/categories/后端/SpringData/">SpringData</a><i class="fa fa-angle-right" aria-hidden="true"></i><i class="fa fa-inbox post-meta__icon" aria-hidden="true"></i><a class="post-meta__categories" href="/categories/后端/SpringData/ElasticSearch/">ElasticSearch</a></div></div></div><div class="layout" id="content-inner"><article id="post"><div class="article-container" id="post-content"><h1 id="Elasticsearch-存储库"><a href="#Elasticsearch-存储库" class="headerlink" title="Elasticsearch 存储库"></a>Elasticsearch 存储库</h1><p>介绍 Repository 的常用方法</p>
+<a id="more"></a>
+
+<p><strong>Book 实体</strong>：</p>
+<pre><code class="java">@Document(indexName=&quot;books&quot;)
+class Book {
+    @Id
+    private String id;
+
+    @Field(type = FieldType.Text)
+    private String name;
+
+    @Field(type = FieldType.Text)
+    private String summary;
+
+    @Field(type = FieldType.Integer)
+    private Integer price;
+}</code></pre>
+<h2 id="一、查询方法"><a href="#一、查询方法" class="headerlink" title="一、查询方法"></a>一、查询方法</h2><p>Elasticsearch 支持所有的基础查询功能，如字符串查询，条件查询，方法名派生。</p>
+<blockquote>
+<p>也可以使用 @Query 注释。</p>
+</blockquote>
+<h3 id="1-1-方法查询"><a href="#1-1-方法查询" class="headerlink" title="1.1 方法查询"></a>1.1 方法查询</h3><p>方法查询中的关键字：</p>
+<table>
+<thead>
+<tr>
+<th>关键词</th>
+<th>示例</th>
+<th>ES查询</th>
+</tr>
+</thead>
+<tbody><tr>
+<td><code>And</code></td>
+<td><code>findByNameAndPrice</code></td>
+<td><code>{ &quot;query&quot; : { &quot;bool&quot; : { &quot;must&quot; : [ { &quot;query_string&quot; : { &quot;query&quot; : &quot;?&quot;, &quot;fields&quot; : [ &quot;name&quot; ] } }, { &quot;query_string&quot; : { &quot;query&quot; : &quot;?&quot;, &quot;fields&quot; : [ &quot;price&quot; ] } } ] } }}</code></td>
+</tr>
+<tr>
+<td><code>Or</code></td>
+<td><code>findByNameOrPrice</code></td>
+<td><code>{ &quot;query&quot; : { &quot;bool&quot; : { &quot;should&quot; : [ { &quot;query_string&quot; : { &quot;query&quot; : &quot;?&quot;, &quot;fields&quot; : [ &quot;name&quot; ] } }, { &quot;query_string&quot; : { &quot;query&quot; : &quot;?&quot;, &quot;fields&quot; : [ &quot;price&quot; ] } } ] } }}</code></td>
+</tr>
+<tr>
+<td><code>Is</code></td>
+<td><code>findByName</code></td>
+<td><code>{ &quot;query&quot; : { &quot;bool&quot; : { &quot;must&quot; : [ { &quot;query_string&quot; : { &quot;query&quot; : &quot;?&quot;, &quot;fields&quot; : [ &quot;name&quot; ] } } ] } }}</code></td>
+</tr>
+<tr>
+<td><code>Not</code></td>
+<td><code>findByNameNot</code></td>
+<td><code>{ &quot;query&quot; : { &quot;bool&quot; : { &quot;must_not&quot; : [ { &quot;query_string&quot; : { &quot;query&quot; : &quot;?&quot;, &quot;fields&quot; : [ &quot;name&quot; ] } } ] } }}</code></td>
+</tr>
+<tr>
+<td><code>Between</code></td>
+<td><code>findByPriceBetween</code></td>
+<td><code>{ &quot;query&quot; : { &quot;bool&quot; : { &quot;must&quot; : [ {&quot;range&quot; : {&quot;price&quot; : {&quot;from&quot; : ?, &quot;to&quot; : ?, &quot;include_lower&quot; : true, &quot;include_upper&quot; : true } } } ] } }}</code></td>
+</tr>
+<tr>
+<td><code>LessThan</code></td>
+<td><code>findByPriceLessThan</code></td>
+<td><code>{ &quot;query&quot; : { &quot;bool&quot; : { &quot;must&quot; : [ {&quot;range&quot; : {&quot;price&quot; : {&quot;from&quot; : null, &quot;to&quot; : ?, &quot;include_lower&quot; : true, &quot;include_upper&quot; : false } } } ] } }}</code></td>
+</tr>
+<tr>
+<td><code>LessThanEqual</code></td>
+<td><code>findByPriceLessThanEqual</code></td>
+<td><code>{ &quot;query&quot; : { &quot;bool&quot; : { &quot;must&quot; : [ {&quot;range&quot; : {&quot;price&quot; : {&quot;from&quot; : null, &quot;to&quot; : ?, &quot;include_lower&quot; : true, &quot;include_upper&quot; : true } } } ] } }}</code></td>
+</tr>
+<tr>
+<td><code>GreaterThan</code></td>
+<td><code>findByPriceGreaterThan</code></td>
+<td><code>{ &quot;query&quot; : { &quot;bool&quot; : { &quot;must&quot; : [ {&quot;range&quot; : {&quot;price&quot; : {&quot;from&quot; : ?, &quot;to&quot; : null, &quot;include_lower&quot; : false, &quot;include_upper&quot; : true } } } ] } }}</code></td>
+</tr>
+<tr>
+<td><code>GreaterThanEqual</code></td>
+<td><code>findByPriceGreaterThan</code></td>
+<td><code>{ &quot;query&quot; : { &quot;bool&quot; : { &quot;must&quot; : [ {&quot;range&quot; : {&quot;price&quot; : {&quot;from&quot; : ?, &quot;to&quot; : null, &quot;include_lower&quot; : true, &quot;include_upper&quot; : true } } } ] } }}</code></td>
+</tr>
+<tr>
+<td><code>Before</code></td>
+<td><code>findByPriceBefore</code></td>
+<td><code>{ &quot;query&quot; : { &quot;bool&quot; : { &quot;must&quot; : [ {&quot;range&quot; : {&quot;price&quot; : {&quot;from&quot; : null, &quot;to&quot; : ?, &quot;include_lower&quot; : true, &quot;include_upper&quot; : true } } } ] } }}</code></td>
+</tr>
+<tr>
+<td><code>After</code></td>
+<td><code>findByPriceAfter</code></td>
+<td><code>{ &quot;query&quot; : { &quot;bool&quot; : { &quot;must&quot; : [ {&quot;range&quot; : {&quot;price&quot; : {&quot;from&quot; : ?, &quot;to&quot; : null, &quot;include_lower&quot; : true, &quot;include_upper&quot; : true } } } ] } }}</code></td>
+</tr>
+<tr>
+<td><code>Like</code></td>
+<td><code>findByNameLike</code></td>
+<td><code>{ &quot;query&quot; : { &quot;bool&quot; : { &quot;must&quot; : [ { &quot;query_string&quot; : { &quot;query&quot; : &quot;?*&quot;, &quot;fields&quot; : [ &quot;name&quot; ] }, &quot;analyze_wildcard&quot;: true } ] } }}</code></td>
+</tr>
+<tr>
+<td><code>StartingWith</code></td>
+<td><code>findByNameStartingWith</code></td>
+<td><code>{ &quot;query&quot; : { &quot;bool&quot; : { &quot;must&quot; : [ { &quot;query_string&quot; : { &quot;query&quot; : &quot;?*&quot;, &quot;fields&quot; : [ &quot;name&quot; ] }, &quot;analyze_wildcard&quot;: true } ] } }}</code></td>
+</tr>
+<tr>
+<td><code>EndingWith</code></td>
+<td><code>findByNameEndingWith</code></td>
+<td><code>{ &quot;query&quot; : { &quot;bool&quot; : { &quot;must&quot; : [ { &quot;query_string&quot; : { &quot;query&quot; : &quot;*?&quot;, &quot;fields&quot; : [ &quot;name&quot; ] }, &quot;analyze_wildcard&quot;: true } ] } }}</code></td>
+</tr>
+<tr>
+<td><code>Contains/Containing</code></td>
+<td><code>findByNameContaining</code></td>
+<td><code>{ &quot;query&quot; : { &quot;bool&quot; : { &quot;must&quot; : [ { &quot;query_string&quot; : { &quot;query&quot; : &quot;*?*&quot;, &quot;fields&quot; : [ &quot;name&quot; ] }, &quot;analyze_wildcard&quot;: true } ] } }}</code></td>
+</tr>
+<tr>
+<td><code>In</code></td>
+<td><code>findByNameIn(Collectionnames)</code></td>
+<td><code>{ &quot;query&quot; : { &quot;bool&quot; : { &quot;must&quot; : [ {&quot;bool&quot; : {&quot;must&quot; : [ {&quot;terms&quot; : {&quot;name&quot; : [&quot;?&quot;,&quot;?&quot;]}} ] } } ] } }}</code></td>
+</tr>
+<tr>
+<td><code>NotIn</code></td>
+<td><code>findByNameNotIn(Collectionnames)</code></td>
+<td><code>{ &quot;query&quot; : { &quot;bool&quot; : { &quot;must&quot; : [ {&quot;bool&quot; : {&quot;must_not&quot; : [ {&quot;terms&quot; : {&quot;name&quot; : [&quot;?&quot;,&quot;?&quot;]}} ] } } ] } }}</code></td>
+</tr>
+<tr>
+<td><code>Near</code></td>
+<td><code>findByStoreNear</code></td>
+<td><code>Not Supported Yet !</code></td>
+</tr>
+<tr>
+<td><code>True</code></td>
+<td><code>findByAvailableTrue</code></td>
+<td><code>{ &quot;query&quot; : { &quot;bool&quot; : { &quot;must&quot; : [ { &quot;query_string&quot; : { &quot;query&quot; : &quot;true&quot;, &quot;fields&quot; : [ &quot;available&quot; ] } } ] } }}</code></td>
+</tr>
+<tr>
+<td><code>False</code></td>
+<td><code>findByAvailableFalse</code></td>
+<td><code>{ &quot;query&quot; : { &quot;bool&quot; : { &quot;must&quot; : [ { &quot;query_string&quot; : { &quot;query&quot; : &quot;false&quot;, &quot;fields&quot; : [ &quot;available&quot; ] } } ] } }}</code></td>
+</tr>
+<tr>
+<td><code>OrderBy</code></td>
+<td><code>findByAvailableTrueOrderByNameDesc</code></td>
+<td><code>{ &quot;query&quot; : { &quot;bool&quot; : { &quot;must&quot; : [ { &quot;query_string&quot; : { &quot;query&quot; : &quot;true&quot;, &quot;fields&quot; : [ &quot;available&quot; ] } } ] } }, &quot;sort&quot;:[{&quot;name&quot;:{&quot;order&quot;:&quot;desc&quot;}}] }</code></td>
+</tr>
+</tbody></table>
+<h3 id="1-2-返回类型"><a href="#1-2-返回类型" class="headerlink" title="1.2 返回类型"></a>1.2 返回类型</h3><ul>
+<li>List<t></t></li>
+<li>Stream<t></t></li>
+<li>SearchHits<t></t></li>
+<li>List&lt;SearchHit<t>&gt;</t></li>
+<li>Stream&lt;SearchHit<t>&gt;</t></li>
+<li>SearchPage<t></t></li>
+</ul>
+<h3 id="1-3-Query"><a href="#1-3-Query" class="headerlink" title="1.3 @Query"></a>1.3 @Query</h3><pre><code class="java">interface BookRepository extends ElasticsearchRepository&lt;Book, String&gt; {
+
+    @Query(&quot;{ &#39;match&#39;: { &#39;name&#39;: { &#39;query&#39;: &#39;?0&#39; } } }&quot;)
+    Page&lt;Book&gt; findByName(String name, Pageable pageable);
+} </code></pre>
+<p>生成的查询主体为：</p>
+<pre><code class="json">{
+    &quot;query&quot;: {
+        &quot;match&quot;: {
+            &quot;name&quot;: {
+
+            }
+        }
+    }
+}</code></pre>
+<h3 id="1-4-Highlight"><a href="#1-4-Highlight" class="headerlink" title="1.4 @Highlight"></a>1.4 @Highlight</h3><p> <code>@Highlight</code> 为方法注释，返回的实体应该突出显示哪些字段。如：</p>
+<pre><code class="java">interface BookRepository extends Repository&lt;Book, String&gt; {
+
+    @Highlight(fields = {
+        @HighlightField(name = &quot;name&quot;),
+        @HighlightField(name = &quot;summary&quot;)
+    })
+    List&lt;SearchHit&lt;Book&gt;&gt; findByNameOrSummary(String text, String summary);
+}</code></pre>
+</div></article><div class="post-copyright"><div class="post-copyright__author"><span class="post-copyright-meta">文章作者: </span><span class="post-copyright-info"><a href="mailto:undefined">koral</a></span></div><div class="post-copyright__type"><span class="post-copyright-meta">文章链接: </span><span class="post-copyright-info"><a href="http://luokaiii.github.io/2020/08/18/后端/SpringDataElasticsearch/5.ESRepositories/">http://luokaiii.github.io/2020/08/18/后端/SpringDataElasticsearch/5.ESRepositories/</a></span></div><div class="post-copyright__notice"><span class="post-copyright-meta">版权声明: </span><span class="post-copyright-info">本博客所有文章除特别声明外，均采用 <a href="https://creativecommons.org/licenses/by-nc-sa/4.0/">CC BY-NC-SA 4.0</a> 许可协议。转载请注明来自 <a href="http://luokaiii.github.io">凯</a>！</span></div></div><div class="post-meta__tag-list"><a class="post-meta__tags" href="/tags/hide/">hide</a><a class="post-meta__tags" href="/tags/ElasticSearch/">ElasticSearch</a></div><nav id="pagination"><div class="prev-post pull-left"><a href="/2020/08/18/后端/SpringDataElasticsearch/6.审计功能/"><i class="fa fa-chevron-left">  </i><span>Spring Data ElasticSearch 官方文档</span></a></div><div class="next-post pull-right"><a href="/2020/08/18/后端/SpringDataElasticsearch/4.ES操作/"><span>Spring Data ElasticSearch 官方文档</span><i class="fa fa-chevron-right"></i></a></div></nav></div></div><footer><div class="layout" id="footer"><div class="copyright">&copy;2013 - 2020 By koral</div><div class="framework-info"><span>驱动 - </span><a href="http://hexo.io"><span>Hexo</span></a><span class="footer-separator">|</span><span>主题 - </span><a href="https://github.com/Molunerfinn/hexo-theme-melody"><span>Melody</span></a></div><div class="busuanzi"><script async src="//busuanzi.ibruce.info/busuanzi/2.3/busuanzi.pure.mini.js"></script><span id="busuanzi_container_page_pv"><i class="fa fa-file"></i><span id="busuanzi_value_page_pv"></span><span></span></span></div></div></footer><i class="fa fa-arrow-up" id="go-up" aria-hidden="true"></i><script src="https://cdn.jsdelivr.net/npm/animejs@latest/anime.min.js"></script><script src="https://cdn.jsdelivr.net/npm/jquery@latest/dist/jquery.min.js"></script><script src="https://cdn.jsdelivr.net/npm/@fancyapps/fancybox@latest/dist/jquery.fancybox.min.js"></script><script src="https://cdn.jsdelivr.net/npm/velocity-animate@latest/velocity.min.js"></script><script src="https://cdn.jsdelivr.net/npm/velocity-ui-pack@latest/velocity.ui.min.js"></script><script src="/js/utils.js?version=1.7.0"></script><script src="/js/fancybox.js?version=1.7.0"></script><script src="/js/sidebar.js?version=1.7.0"></script><script src="/js/copy.js?version=1.7.0"></script><script src="/js/fireworks.js?version=1.7.0"></script><script src="/js/transition.js?version=1.7.0"></script><script src="/js/scroll.js?version=1.7.0"></script><script src="/js/head.js?version=1.7.0"></script><script>if(/Android|webOS|iPhone|iPod|iPad|BlackBerry/i.test(navigator.userAgent)) {
+  $('#nav').addClass('is-mobile')
+  $('footer').addClass('is-mobile')
+  $('#top-container').addClass('is-mobile')
+}</script></body></html>

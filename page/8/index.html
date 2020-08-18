@@ -7,653 +7,307 @@
     error: '复制错误',
     noSupport: '浏览器不支持'
   }
-} </script></head><body><i class="fa fa-arrow-right" id="toggle-sidebar" aria-hidden="true"></i><div id="sidebar" data-display="false"><div class="author-info"><div class="author-info__avatar text-center"><img src="/img/avatar.png"></div><div class="author-info__name text-center">koral</div><div class="author-info__description text-center">罗凯的博客主页</div><hr><div class="author-info-articles"><a class="author-info-articles__archives article-meta" href="/archives"><span class="pull-left">文章</span><span class="pull-right">291</span></a><a class="author-info-articles__tags article-meta" href="/tags"><span class="pull-left">标签</span><span class="pull-right">38</span></a><a class="author-info-articles__categories article-meta" href="/categories"><span class="pull-left">分类</span><span class="pull-right">48</span></a></div></div></div><nav class="no-bg" id="nav"><div id="page-header"><span class="pull-left"> <a id="site-name" href="/index.html">凯</a></span><i class="fa fa-bars toggle-menu pull-right" aria-hidden="true"></i><span class="pull-right menus">   <a class="site-page" href="/">首页</a><a class="site-page" href="/archives">归档</a><a class="site-page" href="/tags">标签</a><a class="site-page" href="/categories">分类</a><a class="site-page" href="/about">关于我</a></span><span class="pull-right"></span></div><div id="site-info"><div id="site-title">凯</div><div id="site-sub-title">现在的我可以做点什么，让未来的我可以受益匪浅？</div></div></nav><div id="content-outer"><div class="layout" id="content-inner"><div class="recent-post-item article-container"><a class="article-title" href="/2020/04/07/读书笔记/《Umijs》官方文档/2.约定式路由/">《Umijs》二、约定式路由</a><time class="post-meta__date"><i class="fa fa-calendar" aria-hidden="true"></i> 2020-04-07</time><span class="article-meta"><span class="article-meta__separator">|</span><i class="fa fa-inbox article-meta__icon" aria-hidden="true"></i><a class="article-meta__categories" href="/categories/读书笔记/">读书笔记</a><i class="fa fa-angle-right" aria-hidden="true"></i><i class="fa fa-inbox article-meta__icon" aria-hidden="true"></i><a class="article-meta__categories" href="/categories/读书笔记/Umijs/">Umijs</a></span><span class="article-meta tags"><span class="article-meta__separator">|</span><i class="fa fa-tag article-meta__icon" aria-hidden="true"></i><a class="article-meta__tags" href="/tags/hide/">hide</a><span class="article-meta__link">-</span><i class="fa fa-tag article-meta__icon" aria-hidden="true"></i><a class="article-meta__tags" href="/tags/Umijs/">Umijs</a></span><div class="content"><h2 id="一、约定式路由"><a href="#一、约定式路由" class="headerlink" title="一、约定式路由"></a>一、约定式路由</h2><p>约定式路由也叫文件路由，即不需要配置，文件系统即路由。通过目录和文件及其命名分析出路由配置。</p>
-<h3 id="1-文件路由"><a href="#1-文件路由" class="headerlink" title="1. 文件路由"></a>1. 文件路由</h3><p><strong>如果没有 routes 配置，Umi 会进入约定式路由模式。</strong>，然后分析 <code>src/page</code> 目录拿到路由配置。</p>
-<blockquote>
-<p>注意：以下规则文件，不会被注册为路由</p>
-<ol>
-<li>以 <code>.</code> 或 <code>_</code> 开头的文件</li>
-<li>以 <code>d.ts</code> 结尾的类型定义文件</li>
-<li>以 <code>test.ts</code>、<code>spec.ts</code>、<code>e2e.ts</code> 结尾的测试文件(适用于 <code>.js</code>、<code>.jsx</code>、<code>.tsx</code>)</li>
-<li><code>components</code> 目录和 <code>component</code> 目录</li>
-<li><code>utils</code> 和 <code>util</code> 目录</li>
-<li>非 <code>.js</code>、<code>.jsx</code>、<code>.ts</code>、<code>.tsx</code> 文件</li>
-<li>文件内容不包含 JSX 元素</li>
-</ol>
-</blockquote>
-<h3 id="2-动态文件路由"><a href="#2-动态文件路由" class="headerlink" title="2. 动态文件路由"></a>2. 动态文件路由</h3><p>约定 <code>[]</code> 包裹的文件或文件夹为动态路由。</p>
-<h3 id="3-全局-layout"><a href="#3-全局-layout" class="headerlink" title="3. 全局 layout"></a>3. 全局 layout</h3><p>约定 <code>src/layouts/index.tsx</code> 为全局路由。返回一个 React 组件，并通过 <code>props.children</code> 渲染子组件。</p>
-<h3 id="4-不同的全局-layout"><a href="#4-不同的全局-layout" class="headerlink" title="4. 不同的全局 layout"></a>4. 不同的全局 layout</h3><p>如果需要针对不同路由输出不同的全局 layout，您可以在 <code>src/layout/index.tsx</code> 中对 <code>location.path</code> 做区分，来渲染不同的 layout。</p>
-<h3 id="5-404-路由"><a href="#5-404-路由" class="headerlink" title="5. 404 路由"></a>5. 404 路由</h3><p>约定 <code>src/pages/404.tsx</code> 为 404 页面，需返回 React 组件。</p>
-<h3 id="6-扩展路由属性"><a href="#6-扩展路由属性" class="headerlink" title="6. 扩展路由属性"></a>6. 扩展路由属性</h3><p>支持在代码层通过导出静态属性的方式扩展路由。</p>
-<pre><code class="tsx">function HomePage() {
-  return &lt;h1&gt;Hello World!&lt;/h1&gt;;
-}
-
-HomePage.title = &#39;首ye&#39;;
-
-export default HomePage;</code></pre>
-<p>其中 <code>title</code> 会附加到路由配置中。</p>
-</div><hr></div><div class="recent-post-item article-container"><a class="article-title" href="/2020/04/07/读书笔记/《Umijs》官方文档/3.页面跳转与HTML模板/">《Umijs》三、页面跳转与HTML模板</a><time class="post-meta__date"><i class="fa fa-calendar" aria-hidden="true"></i> 2020-04-07</time><span class="article-meta"><span class="article-meta__separator">|</span><i class="fa fa-inbox article-meta__icon" aria-hidden="true"></i><a class="article-meta__categories" href="/categories/读书笔记/">读书笔记</a><i class="fa fa-angle-right" aria-hidden="true"></i><i class="fa fa-inbox article-meta__icon" aria-hidden="true"></i><a class="article-meta__categories" href="/categories/读书笔记/Umijs/">Umijs</a></span><span class="article-meta tags"><span class="article-meta__separator">|</span><i class="fa fa-tag article-meta__icon" aria-hidden="true"></i><a class="article-meta__tags" href="/tags/hide/">hide</a><span class="article-meta__link">-</span><i class="fa fa-tag article-meta__icon" aria-hidden="true"></i><a class="article-meta__tags" href="/tags/Umijs/">Umijs</a></span><div class="content"><p>在 umi 中，页面之间的跳转由两种方式：声明式与命令式。</p></div><a class="more" href="/2020/04/07/读书笔记/《Umijs》官方文档/3.页面跳转与HTML模板/#more">阅读更多</a><hr></div><div class="recent-post-item article-container"><a class="article-title" href="/2020/04/07/读书笔记/《Umijs》官方文档/4.Mock数据/">《Umijs》四、Mock数据</a><time class="post-meta__date"><i class="fa fa-calendar" aria-hidden="true"></i> 2020-04-07</time><span class="article-meta"><span class="article-meta__separator">|</span><i class="fa fa-inbox article-meta__icon" aria-hidden="true"></i><a class="article-meta__categories" href="/categories/读书笔记/">读书笔记</a><i class="fa fa-angle-right" aria-hidden="true"></i><i class="fa fa-inbox article-meta__icon" aria-hidden="true"></i><a class="article-meta__categories" href="/categories/读书笔记/Umijs/">Umijs</a></span><span class="article-meta tags"><span class="article-meta__separator">|</span><i class="fa fa-tag article-meta__icon" aria-hidden="true"></i><a class="article-meta__tags" href="/tags/hide/">hide</a><span class="article-meta__link">-</span><i class="fa fa-tag article-meta__icon" aria-hidden="true"></i><a class="article-meta__tags" href="/tags/Umijs/">Umijs</a></span><div class="content"><p>Mock 数据是前端开发过程中必不可少的一环，是分离前后端开发的关键链路。通过与服务端约定好的接口，模拟请求数据甚至逻辑，能够让前端开发独立自主，不会被服务端的开发所阻塞。</p></div><a class="more" href="/2020/04/07/读书笔记/《Umijs》官方文档/4.Mock数据/#more">阅读更多</a><hr></div><div class="recent-post-item article-container"><a class="article-title" href="/2020/04/07/读书笔记/《Umijs》官方文档/5.环境变量/">《Umijs》五、环境变量</a><time class="post-meta__date"><i class="fa fa-calendar" aria-hidden="true"></i> 2020-04-07</time><span class="article-meta"><span class="article-meta__separator">|</span><i class="fa fa-inbox article-meta__icon" aria-hidden="true"></i><a class="article-meta__categories" href="/categories/读书笔记/">读书笔记</a><i class="fa fa-angle-right" aria-hidden="true"></i><i class="fa fa-inbox article-meta__icon" aria-hidden="true"></i><a class="article-meta__categories" href="/categories/读书笔记/Umijs/">Umijs</a></span><span class="article-meta tags"><span class="article-meta__separator">|</span><i class="fa fa-tag article-meta__icon" aria-hidden="true"></i><a class="article-meta__tags" href="/tags/hide/">hide</a><span class="article-meta__link">-</span><i class="fa fa-tag article-meta__icon" aria-hidden="true"></i><a class="article-meta__tags" href="/tags/Umijs/">Umijs</a></span><div class="content"><p>Umi 约定根目录下的 <code>.env</code> 为环境变量配置文件。</p></div><a class="more" href="/2020/04/07/读书笔记/《Umijs》官方文档/5.环境变量/#more">阅读更多</a><hr></div><div class="recent-post-item article-container"><a class="article-title" href="/2020/04/07/读书笔记/《Umijs》官方文档/6.样式与图片/">《Umijs》六、样式与图片</a><time class="post-meta__date"><i class="fa fa-calendar" aria-hidden="true"></i> 2020-04-07</time><span class="article-meta"><span class="article-meta__separator">|</span><i class="fa fa-inbox article-meta__icon" aria-hidden="true"></i><a class="article-meta__categories" href="/categories/读书笔记/">读书笔记</a><i class="fa fa-angle-right" aria-hidden="true"></i><i class="fa fa-inbox article-meta__icon" aria-hidden="true"></i><a class="article-meta__categories" href="/categories/读书笔记/Umijs/">Umijs</a></span><span class="article-meta tags"><span class="article-meta__separator">|</span><i class="fa fa-tag article-meta__icon" aria-hidden="true"></i><a class="article-meta__tags" href="/tags/hide/">hide</a><span class="article-meta__link">-</span><i class="fa fa-tag article-meta__icon" aria-hidden="true"></i><a class="article-meta__tags" href="/tags/Umijs/">Umijs</a></span><div class="content"><p>Umi 支持 css 与 less，并支持在 js 与 css 中使用相对地址引入文件。</p></div><a class="more" href="/2020/04/07/读书笔记/《Umijs》官方文档/6.样式与图片/#more">阅读更多</a><hr></div><div class="recent-post-item article-container"><a class="article-title" href="/2020/04/02/后端/java/1.JVM原理/">JVM原理</a><time class="post-meta__date"><i class="fa fa-calendar" aria-hidden="true"></i> 2020-04-02</time><span class="article-meta"><span class="article-meta__separator">|</span><i class="fa fa-inbox article-meta__icon" aria-hidden="true"></i><a class="article-meta__categories" href="/categories/后端/">后端</a><i class="fa fa-angle-right" aria-hidden="true"></i><i class="fa fa-inbox article-meta__icon" aria-hidden="true"></i><a class="article-meta__categories" href="/categories/后端/java/">java</a><i class="fa fa-angle-right" aria-hidden="true"></i><i class="fa fa-inbox article-meta__icon" aria-hidden="true"></i><a class="article-meta__categories" href="/categories/后端/java/JVM/">JVM</a></span><span class="article-meta tags"><span class="article-meta__separator">|</span><i class="fa fa-tag article-meta__icon" aria-hidden="true"></i><a class="article-meta__tags" href="/tags/hide/">hide</a><span class="article-meta__link">-</span><i class="fa fa-tag article-meta__icon" aria-hidden="true"></i><a class="article-meta__tags" href="/tags/JVM/">JVM</a></span><div class="content"><h2 id="一、什么是-JVM"><a href="#一、什么是-JVM" class="headerlink" title="一、什么是 JVM"></a>一、什么是 JVM</h2><p>JVM 全称为 Java Virtual Machine 即 Java 虚拟机，是在真实计算机上模拟计算机功能的实现。</p>
-<p>Java 虚拟机包含了一套字节码指令集、一组寄存器、一个栈、一个垃圾回收堆和一个存储方法域。</p>
-<h2 id="二、JRE、JDK、JVM"><a href="#二、JRE、JDK、JVM" class="headerlink" title="二、JRE、JDK、JVM"></a>二、JRE、JDK、JVM</h2><p>JRE：java 运行环境，有 JRE 即可运行 java 程序。</p>
-<p>JDK：Java Development Kit，编译、调试 Java 程序的开发工具包。</p>
-<p>JVM：Java VirtualMachine，java 虚拟机，是 JRE 的一部分。JVM 拥有自己完善的硬件架构，如处理器、堆、栈、寄存器等，还有相应的指令系统。</p>
-<h2 id="三、JVM-原理"><a href="#三、JVM-原理" class="headerlink" title="三、JVM 原理"></a>三、JVM 原理</h2><p>JVM 将 .java 的源代码文件编译成字节码程序，再通过 JVM 将每一条指令翻译成不同的平台机器码，以实现特定平台运行。</p>
-<h2 id="四、JVM-的体系结构"><a href="#四、JVM-的体系结构" class="headerlink" title="四、JVM 的体系结构"></a>四、JVM 的体系结构</h2><p><img src="https://user-gold-cdn.xitu.io/2018/7/13/164942ae59b31e46?imageView2/0/w/1280/h/960/format/webp/ignore-error/1" alt></p>
-<ol>
-<li>类加载器 ClassLoader，用来装载 .class 文件</li>
-<li>执行引擎（执行字节码或本地方法）</li>
-<li>运行时数据区（方法区、堆、Java 栈、pc 寄存器、本地方法栈）</li>
-</ol>
-<h2 id="五、JVM-运行时数据区"><a href="#五、JVM-运行时数据区" class="headerlink" title="五、JVM 运行时数据区"></a>五、JVM 运行时数据区</h2><p><img src="https://luokaiii.oss-cn-shanghai.aliyuncs.com/blog/java-core/%E6%97%A0.png" alt="运行时数据区"></p>
-<h2 id="六、判定“对象已死”的算法"><a href="#六、判定“对象已死”的算法" class="headerlink" title="六、判定“对象已死”的算法"></a>六、判定“对象已死”的算法</h2><p>上图中，程序计数器、Java 虚拟机栈、本地方法栈都是线程独享的，其占用的内存也是随线程结束而回收的。而 Java 堆和方法区不同，是线程共享的，几乎存放着所有对象的实例。</p>
-<p>GC 需要判断哪些对象能够回收：</p>
-<ol>
-<li>引用计数算法：为对象添加一个引用计数器，每当对象被引用一次，计数器加 1；当引用失效，计数器建议。当计数器为 0 时表示对象可回收。<ul>
-<li>缺点：难以解决两个对象之间相互引用的问题</li>
-</ul>
-</li>
-<li>可达性分析算法：通过一系列称之为“GC Roots”的对象作为七点，从这些节点向下搜索，搜索的路径称为引用链，当一个对象到 GC Roots 没有任何引用链相连（即对象到 GC Roots 不可达），则证明此对象已死、可回收。<ul>
-<li>Java 中可作为 GC Roots 的对象包括：虚拟机栈中引用的对象、本地方法栈中的 Native 方法引用的对象、方法区静态属性引用的对象、方法区常量引用的对象</li>
-</ul>
-</li>
-</ol>
-<h2 id="七、JVM-垃圾回收"><a href="#七、JVM-垃圾回收" class="headerlink" title="七、JVM 垃圾回收"></a>七、JVM 垃圾回收</h2><p>GC（Garbage Collection）：将内存中不再使用的对象进行回收。由于 GC 回收时需要消耗资源和时间，因此在对对象的生命周期特性进行分析后，按新生代、旧生代的方式对对象进行收集，以尽可能的缩短 GC 对应用资源的消耗。</p>
-<ul>
-<li>对新生代对象的收集称为 minor GC</li>
-<li>对旧生代对象的收集称为 Full GC</li>
-<li>程序中调用的 System.gc() 执行的是 Full GC</li>
-</ul>
-<p>对于不同的对象引用类型，GC 采用了不同的方法进行回收：</p>
-<ul>
-<li>强引用：默认情况下，对象采用的是强引用（即该对象实例没有其他对象引用，才会被回收）</li>
-<li>软引用：是 Java 提供的一种比较适合缓存场景的应用（只有在内存不够时才回收）</li>
-<li>弱引用：在 GC 时一定会被 GC 回收</li>
-<li>虚引用：只是用来得知对象是否被 GC</li>
-</ul>
-<h2 id="八、垃圾收集算法"><a href="#八、垃圾收集算法" class="headerlink" title="八、垃圾收集算法"></a>八、垃圾收集算法</h2><p><img src="https://luokaiii.oss-cn-shanghai.aliyuncs.com/blog/java-core/%E5%9E%83%E5%9C%BE%E6%94%B6%E9%9B%86%E7%AE%97%E6%B3%95123.png" alt="前三种垃圾收集算法"></p>
-<h3 id="1、标记-清除算法"><a href="#1、标记-清除算法" class="headerlink" title="1、标记-清除算法"></a>1、标记-清除算法</h3><p>分为两个阶段：先标记需要回收的对象，在标记完成后统一回收所有被标记的对象。</p>
-<p>缺点：</p>
-<ol>
-<li>效率问题：标记和清除过程的效率都不高</li>
-<li>空间问题：标记清除后会产生大量不连续的内存碎片，空间碎片太多会导致分配大对象时无法找到足够的连续内存，而不得不提前触发另一次垃圾回收动作</li>
-</ol>
-<h3 id="2、复制算法"><a href="#2、复制算法" class="headerlink" title="2、复制算法"></a>2、复制算法</h3><p>为了解决效率问题，出现了“复制”算法。将可用内存按容量划分为大小相等的两块区域，每次只使用其中的一块。当一块内存用完后，将还存活的对象复制到另一块上面，再把刚刚的内存空间一次清理掉。</p>
-<p>缺点：</p>
-<ol>
-<li>可用内存为原先的一半</li>
-<li>当对象存活率较高时，会进行频繁的复制操作，效率降低</li>
-</ol>
-<h3 id="3、标记-整理算法"><a href="#3、标记-整理算法" class="headerlink" title="3、标记-整理算法"></a>3、标记-整理算法</h3><p>标记过程与“标记-清除算法”相同，但是后续不是直接清理对象。而是让所有存活对象向一侧移动，然后直接清理掉端边界以外的内存。</p>
-<h3 id="4、分代收集算法（使用最广泛）"><a href="#4、分代收集算法（使用最广泛）" class="headerlink" title="4、分代收集算法（使用最广泛）"></a>4、分代收集算法（使用最广泛）</h3><p><img src="https://luokaiii.oss-cn-shanghai.aliyuncs.com/blog/java-core/%E5%88%86%E4%BB%A3%E6%94%B6%E9%9B%86%E7%AE%97%E6%B3%95.png" alt="分代收集算法"></p>
-<p>根据对象存活周期，将堆分为新生代和老年代，方法区称为永久代。</p>
-<p>新生代中的对象，在每次 GC 时都会有大量对象被回收，少量存活，使用复制算法。</p>
-<p>老年代中的对象，因为对象存活率高，没有额外空间进行分配担保，使用标记-清除或标记-整理算法。</p>
-<h3 id="5、对象存活周期-GC-回收流程"><a href="#5、对象存活周期-GC-回收流程" class="headerlink" title="5、对象存活周期/GC 回收流程"></a>5、对象存活周期/GC 回收流程</h3><p><img src="https://luokaiii.oss-cn-shanghai.aliyuncs.com/blog/java-core/GC%E5%9B%9E%E6%94%B6%E6%B5%81%E7%A8%8B.png" alt="触发GC回收的流程"></p>
-<h2 id="九、垃圾收集器"><a href="#九、垃圾收集器" class="headerlink" title="九、垃圾收集器"></a>九、垃圾收集器</h2><h3 id="1、Serial-收集器"><a href="#1、Serial-收集器" class="headerlink" title="1、Serial 收集器"></a>1、Serial 收集器</h3><p>单线程，在收集时会暂停其它工作线程，直至收集结束。（最基本、历史最久、简单、高效）</p>
-<p>仍然是虚拟机在 client 模式下的默认新生代收集器：简单而高效。</p>
-<h3 id="2、ParNew-收集器"><a href="#2、ParNew-收集器" class="headerlink" title="2、ParNew 收集器"></a>2、ParNew 收集器</h3><p>Serial 的多线程版本，如收集算法、stop the world、对象分配规则、回收策略等，与 Serial 收集器一样。</p>
-<p>是许多运行在 Server 模式下的 JVM 首选的 新生代收集器。</p>
-<h3 id="3、Parallel-Scavenge-收集器"><a href="#3、Parallel-Scavenge-收集器" class="headerlink" title="3、Parallel Scavenge 收集器"></a>3、Parallel Scavenge 收集器</h3><p>新生代、并行的多线程收集器。</p>
-<h3 id="4、Serial-Old-收集器"><a href="#4、Serial-Old-收集器" class="headerlink" title="4、Serial Old 收集器"></a>4、Serial Old 收集器</h3><p>Serial 收集器的老年代版本，单线程，“标记整理”算法，主要给 client 模式使用</p>
-<h3 id="5、Parallel-Old-收集器"><a href="#5、Parallel-Old-收集器" class="headerlink" title="5、Parallel Old 收集器"></a>5、Parallel Old 收集器</h3><p>Parallel Scavenge 的老年代版本，多线程，“标记整理”算法</p>
-<h3 id="6、CMS-收集器"><a href="#6、CMS-收集器" class="headerlink" title="6、CMS 收集器"></a>6、CMS 收集器</h3><p>Concurrent Mark Sweep，以获取最短回收停顿时间为目标的收集器，停顿时间短，用户体验号。</p>
-<h3 id="7、G1-收集器"><a href="#7、G1-收集器" class="headerlink" title="7、G1 收集器"></a>7、G1 收集器</h3><p>并行与并发，多 CPU、多核、且能与用户线程并发执行；</p>
-<p>分代收集；</p>
-<p>空间整合：整体上采用标记整理算法，局部上采用复制算法；</p>
-<p>可预测的停顿：即收集时间不得超过指定 M 毫秒</p>
-<h2 id="十、Java-平台的逻辑结构"><a href="#十、Java-平台的逻辑结构" class="headerlink" title="十、Java 平台的逻辑结构"></a>十、Java 平台的逻辑结构</h2><p><img src="https://luokaiii.oss-cn-shanghai.aliyuncs.com/blog/java-core/java%20platform.png" alt="java platform"></p>
-<blockquote>
-<p>文章转载至：<a href="https://juejin.im/post/5b48bf155188251acf6077ad。仅作为自己的笔记使用。" target="_blank" rel="noopener">https://juejin.im/post/5b48bf155188251acf6077ad。仅作为自己的笔记使用。</a></p>
-</blockquote>
-</div><hr></div><div class="recent-post-item article-container"><a class="article-title" href="/2020/04/02/前端/UmiJS/UmiJS-配置/">《UmiJS》官网笔记</a><time class="post-meta__date"><i class="fa fa-calendar" aria-hidden="true"></i> 2020-04-02</time><span class="article-meta"><span class="article-meta__separator">|</span><i class="fa fa-inbox article-meta__icon" aria-hidden="true"></i><a class="article-meta__categories" href="/categories/前端/">前端</a><i class="fa fa-angle-right" aria-hidden="true"></i><i class="fa fa-inbox article-meta__icon" aria-hidden="true"></i><a class="article-meta__categories" href="/categories/前端/UmiJS/">UmiJS</a></span><span class="article-meta tags"><span class="article-meta__separator">|</span><i class="fa fa-tag article-meta__icon" aria-hidden="true"></i><a class="article-meta__tags" href="/tags/hide/">hide</a><span class="article-meta__link">-</span><i class="fa fa-tag article-meta__icon" aria-hidden="true"></i><a class="article-meta__tags" href="/tags/UmiJS/">UmiJS</a></span><div class="content"><h1 id="UmiJS-配置"><a href="#UmiJS-配置" class="headerlink" title="UmiJS 配置"></a>UmiJS 配置</h1><pre><code class="ts">export default {
-  /**
-   * alias: 配置别名，对应用路径进行隐射。
-   * Umi 内置了以下别名：
-   * - @，项目的 src 目录
-   * - @@，临时目录，通常是 src/.umi 目录
-   * - umi，当前所运行的 umi 仓库目录
-   * - react-router 和 react-router-dom，底层路由库，锁定版本
-   * - react 和 react-dom，默认使用 16.x 版本，但会优先使用项目中依赖的版本
-   */
-  alias: {
-    // 在使用时， `import(&#39;foo&#39;)`，实际上就是 `import(&#39;/tmp/a/b/foo&#39;)`
-    &#39;foo&#39;: &#39;/tmp/a/b/foo&#39;
-  },
-  analyze: {
-    /**
-     * analyze: 包模块结构分析工具，可看到各项目各模块大小，按需优化。通过 `ANALYZE=1 umi build/dev` 开启，默认server端口号`8888`
-     */
-    analyzerMode: &#39;server&#39;,
-    analyzerPort: 8888,
-    openAnalyzer: true,
-    generateStatsFile: false,
-    statsFilename: &#39;stats.json&#39;,
-    logLevel: &#39;info&#39;,
-    defaultSizes: &#39;parsed&#39; // stat // gzip
-  },
-  /**
-   * autoprefixer：设置 autoprefixer 的配置项
-   * 注：`overrideBrowsersList` 被内部接管，不要设置，可通过 target 配置来选择要兼容的浏览器
-   */
-  autoprefixer: {
-    flexbox: &#39;no-2009&#39;
-  },
-  /**
-   * base：设置路由前缀，通常用于部署到非根目录
-   * Type：string，Default：/
-   */
-  base: &#39;/&#39;,
-  /**
-   * chainWebpack：通过 webpack-chain 的API修改 webpack 配置
-   * - memo，当前 webpack-chain 对象
-   * - env，当前环境，development、production或test等
-   * - webpack，webpack实例，用于获取内部插件
-   * - createCSSRule，用于扩展其他CSS实现，如sass，stylus
-   */
-  chainWebpack(memo, {env,webpack,createCSSRule}) {
-    // 设置 alias
-    memo.resolve.alias.set(&#39;foo&#39;, &#39;/tmp/a/b/foo&#39;);
-
-    // 删除 umi 内置插件
-    memo.plugins.delete(&#39;progress&#39;);
-    memo.plugins.delete(&#39;friendly-error&#39;);
-    memo.plugins.delete(&#39;copy&#39;);
-  },
-  /**
-   * chunks：默认是 `[&#39;umi&#39;]`
-   */
-  chunks: [&#39;umi&#39;],
-  /**
-   * 配置css-loader
-   */
-  cssLoader: {},
-  /**
-   * cssModulesTypescriptLoader：对按照css modules 方式引入的css或less文件，自动生成ts类型定义文件
-   * Default：undefined
-   */
-  cssModulesTypescriptLoader: {
-    mode: &#39;emit&#39;
-  },
-  /**
-   * 设置 cssnano 配置项，基于default 的配置集合
-   */
-  cssnano: {
-    normalizeUrl: false
-  },
-  /**
-   * copy：设置要复制到输出目录的文件或文件夹
-   */
-  copy: [],
-  /**
-   * define：用于提供给代码中可用的变量
-   */
-  define: {
-    // log(FOO) 会被编译成 log(&#39;bar&#39;)
-    FOO: &#39;bar&#39;
-  },
-  /**
-   * devServer：配置 开发服务器
-   */
-  devServer: {
-    port: 8888,
-    host: 0.0.0.0,
-    https: true,
-    http2: true
-  },
-  /**
-   * devtool：用户配置 sourcemap 类型
-   * Default：cheap-module-source-map(dev)/false(build)
-   * 常见可选值：
-   * - eval，最快的类型，但不支持低版本浏览器
-   * - source-map，最慢最全的类型
-   */
-  devtool: &#39;eval&#39;,
-
-  /**
-   * dynamicImport：是否启用按需加载
-   * Default：false，只会生成一个js和css
-   */
-  dynamicImport: {
-    // 子配置项，指定loading组件文件
-    loading: &#39;@/Loading&#39;
-  },
-  /**
-   * exportStatic，配置 html 输出形式
-   * 默认只输出 index.html
-   * 开启后，会针对每个路由输出html文件
-   * - htmlSuffix，启用 .html 后缀
-   * - dynamicRoot，部署到任意路径
-   */
-  exportStatic: {
-    htmlSuffix: true
-  },
-  /**
-   * externals：设置哪些模块可以不被打包，通过 &lt;script&gt; 或其他方式引入，通常需要和 scripts 或 headScripts 配置同时使用
-   * 即 `import react from &#39;react&#39;` 会被替换成 `const react = window.React`
-   */
-  externals: {
-    react: &#39;window.React&#39;
-  },
-  scripts: [
-    &#39;https://unpkg.com/browse/react@16.12.0/umd/react.production.min.js&#39;
-  ],
-  /**
-   * extraBabelPlugins：配置额外的 babel 插件
-   */
-  extraBabelPlugins: [
-    &#39;babel-plugin-react-require&#39;
-  ],
-  /**
-   * extraBabelPresets：配置额外的 babel 插件集
-   */
-  extraBabelPresets: [],
-  /**
-   * extraPostCSSPlugins：配置额外的 postcss 插件
-   */
-  extraPostCSSPlugins: [],
-  /**
-   * favicon：配置 favicon 地址
-   * 本地图片，请放到 public 目录
-   */
-  favicon: &#39;/assets/favicon.ico&#39;,
-  /**
-   * forkTSCheker：开启Typescript编译时类型检查
-   * 默认关闭
-   */
-  forkTSCheker: {},
-  /**
-   * hash：是否让生成的文件包含hash后缀
-   * 通常用于增量发布和避免浏览器加载缓存
-   * 注：html文件始终没有hash
-   */
-  hash: false,
-  /**
-   * headScripts：配置head里的额外脚本
-   */
-  headScripts: [],
-  /**
-   * history：配置history
-   * - type，可选browser、hash、memory
-   */
-  history: {},
-  /**
-   * ignoreMomentLocale：忽略 moment 的 locale 文件，用于减少尺寸
-   */
-  ignoreMomentLocale: false,
-  /**
-   * inlineLimit：配置图片文件是否走 base64 编译的阈值。大于配置项(默认10k)的图片，会被单独生成为文件
-   */
-  inlineLimit: 10000,
-  /**
-   * lessLoader：配置less-loader
-   */
-  lessLoader: {},
-  /**
-   * links：配置额外的link标签
-   */
-  links: [],
-  /**
-   * manifest：是否需要生成额外的manifest文件，默认生成asset-manifest.json
-   * - fileName，文件名 &#39;asset-manifest.json&#39;,
-   * - publicPath，默认为webpack的output.publicPath
-   * - basePath，给所有文件路径加前缀
-   */
-  manifest: {},
-  /**
-   * metas：配置额外的 mata标签
-   */
-  metas: [],
-  /**
-   * mock：配置mock属性
-   * - exclude，忽略不需要走mock的文件
-   */
-  mock: {
-    exclude: []
-  },
-  /**
-   * mountElementId：指定react渲染到html的id
-   */
-  mountElementId: &#39;root&#39;,
-  /**
-   * mpa：切换渲染模式为 mpa
-   * 特性：
-   * - 为每个页面输出html
-   * - 输出不包含 react-router、react-router-dom、history 等库
-   * - 渲染和url解绑，html放哪都能使用
-   * 注意：
-   * - 只支持一级路由配置
-   * - 不支持layout或嵌套路由配置
-   */
-  npa:{},
-  /**
-   * nodeModulesTransform：设置node_modules 目录下依赖文件的编译方式
-   * - type，可选all或none
-   *  - all：全部编译，通过exclude忽略
-   *  - none：全不编译，通过exclude包含
-   * - exclude，忽略的依赖库、包名，不支持绝对路径
-   */
-  nodeModulesTransform: {
-    type: &#39;all&#39;
-  },
-  /**
-   * outputPath：指定输出路径
-   * 不能为约定目录
-   */
-  outputPath: &#39;dist&#39;,
-  /**
-   * plugins: 配置额外的umi插件
-   */
-  plugins: [
-    // npm依赖
-    &#39;umi-plugin-hello&#39;,
-    // 相对路径，从根目录开始找
-    &#39;./plugin&#39;,
-    // 绝对路径
-    `${__dirname}/plugin.js`
-  ],
-  /**
-   * polyfill：设置按需引入polyfill
-   * 默认全量引入
-   */
-  polyfill: {
-    imports: []
-  },
-  /**
-   * postcssLoader：配置 postcss-loader
-   */
-  postcssLoader: {},
-  /**
-   * proxy：配置代理能力
-   */
-  proxy: {
-    &#39;/api&#39;: {
-      &#39;target&#39;: &#39;http://jsonplaceholder.typicode.com/&#39;,
-      &#39;changeOrigin&#39;: true,
-      &#39;pathRewrite&#39;: {
-        &#39;^/api&#39;: &#39;&#39;
-      }
+} </script></head><body><i class="fa fa-arrow-right" id="toggle-sidebar" aria-hidden="true"></i><div id="sidebar" data-display="false"><div class="author-info"><div class="author-info__avatar text-center"><img src="/img/avatar.png"></div><div class="author-info__name text-center">koral</div><div class="author-info__description text-center">罗凯的博客主页</div><hr><div class="author-info-articles"><a class="author-info-articles__archives article-meta" href="/archives"><span class="pull-left">文章</span><span class="pull-right">302</span></a><a class="author-info-articles__tags article-meta" href="/tags"><span class="pull-left">标签</span><span class="pull-right">39</span></a><a class="author-info-articles__categories article-meta" href="/categories"><span class="pull-left">分类</span><span class="pull-right">51</span></a></div></div></div><nav class="no-bg" id="nav"><div id="page-header"><span class="pull-left"> <a id="site-name" href="/index.html">凯</a></span><i class="fa fa-bars toggle-menu pull-right" aria-hidden="true"></i><span class="pull-right menus">   <a class="site-page" href="/">首页</a><a class="site-page" href="/archives">归档</a><a class="site-page" href="/tags">标签</a><a class="site-page" href="/categories">分类</a><a class="site-page" href="/about">关于我</a></span><span class="pull-right"></span></div><div id="site-info"><div id="site-title">凯</div><div id="site-sub-title">现在的我可以做点什么，让未来的我可以受益匪浅？</div></div></nav><div id="content-outer"><div class="layout" id="content-inner"><div class="recent-post-item article-container"><a class="article-title" href="/2020/04/21/前端/UmiHooks/Dom/useFullscreen/">《Umi Hooks》官网笔记-useFullscreen</a><time class="post-meta__date"><i class="fa fa-calendar" aria-hidden="true"></i> 2020-04-21</time><span class="article-meta"><span class="article-meta__separator">|</span><i class="fa fa-inbox article-meta__icon" aria-hidden="true"></i><a class="article-meta__categories" href="/categories/前端/">前端</a><i class="fa fa-angle-right" aria-hidden="true"></i><i class="fa fa-inbox article-meta__icon" aria-hidden="true"></i><a class="article-meta__categories" href="/categories/前端/Umi-Hooks/">Umi/Hooks</a></span><span class="article-meta tags"><span class="article-meta__separator">|</span><i class="fa fa-tag article-meta__icon" aria-hidden="true"></i><a class="article-meta__tags" href="/tags/hide/">hide</a><span class="article-meta__link">-</span><i class="fa fa-tag article-meta__icon" aria-hidden="true"></i><a class="article-meta__tags" href="/tags/Umi-Hooks/">Umi/Hooks</a></span><div class="content"><h1 id="useFullscreen"><a href="#useFullscreen" class="headerlink" title="useFullscreen"></a>useFullscreen</h1><p>一个用于处理 dom 全屏的 Hook。</p>
+<pre><code class="js">const {
+    // 是否全屏
+    isFullscreen,
+    // 设置全屏
+    setFull,
+    // 退出全屏
+    exitFull,
+    // 切换全屏
+    toggleFull,
+    // 当未传入 dom 参数时，将 ref 绑定给需全屏的节点
+    ref?
+} = useFullScreen({
+    // 如果未传入则会监听返回结果中的 ref，否则会监听传入的节点
+    dom?,
+    // 监听退出全屏
+    onExitFull?,
+    // 监听全屏
+    onFull?
+})</code></pre>
+</div><hr></div><div class="recent-post-item article-container"><a class="article-title" href="/2020/04/21/前端/UmiHooks/State/useHistoryTravel/">《Umi Hooks》官网笔记-useHistoryTravel</a><time class="post-meta__date"><i class="fa fa-calendar" aria-hidden="true"></i> 2020-04-21</time><span class="article-meta"><span class="article-meta__separator">|</span><i class="fa fa-inbox article-meta__icon" aria-hidden="true"></i><a class="article-meta__categories" href="/categories/前端/">前端</a><i class="fa fa-angle-right" aria-hidden="true"></i><i class="fa fa-inbox article-meta__icon" aria-hidden="true"></i><a class="article-meta__categories" href="/categories/前端/Umi-Hooks/">Umi/Hooks</a></span><span class="article-meta tags"><span class="article-meta__separator">|</span><i class="fa fa-tag article-meta__icon" aria-hidden="true"></i><a class="article-meta__tags" href="/tags/hide/">hide</a><span class="article-meta__link">-</span><i class="fa fa-tag article-meta__icon" aria-hidden="true"></i><a class="article-meta__tags" href="/tags/Umi-Hooks/">Umi/Hooks</a></span><div class="content"><h1 id="useHistoryTravel"><a href="#useHistoryTravel" class="headerlink" title="useHistoryTravel"></a>useHistoryTravel</h1><p>优雅的管理状态变化历史，可以快速在状态变化历史中穿梭 - 前进和后退。</p>
+<h2 id="一、API"><a href="#一、API" class="headerlink" title="一、API"></a>一、API</h2><pre><code class="js">const {
+    // 当前值
+    value,
+    // 设值函数
+    setValue,
+    // 可回退历史长度
+    backLength,
+    // 可前进历史长度
+    forwardLength,
+    // 历史穿梭函数：(step: number) =&gt; void
+    go,
+    // 后退一步
+    back,
+    // 前进一步
+    foward
+} = useHistoryTravel&lt;T&gt;(
+    // 初始值
+    initialValue?: T
+);</code></pre>
+</div><hr></div><div class="recent-post-item article-container"><a class="article-title" href="/2020/04/21/前端/UmiHooks/Dom/useKeyPress/">《Umi Hooks》官网笔记-useKeyPress</a><time class="post-meta__date"><i class="fa fa-calendar" aria-hidden="true"></i> 2020-04-21</time><span class="article-meta"><span class="article-meta__separator">|</span><i class="fa fa-inbox article-meta__icon" aria-hidden="true"></i><a class="article-meta__categories" href="/categories/前端/">前端</a><i class="fa fa-angle-right" aria-hidden="true"></i><i class="fa fa-inbox article-meta__icon" aria-hidden="true"></i><a class="article-meta__categories" href="/categories/前端/Umi-Hooks/">Umi/Hooks</a></span><span class="article-meta tags"><span class="article-meta__separator">|</span><i class="fa fa-tag article-meta__icon" aria-hidden="true"></i><a class="article-meta__tags" href="/tags/hide/">hide</a><span class="article-meta__link">-</span><i class="fa fa-tag article-meta__icon" aria-hidden="true"></i><a class="article-meta__tags" href="/tags/Umi-Hooks/">Umi/Hooks</a></span><div class="content"><h1 id="useKeyPress"><a href="#useKeyPress" class="headerlink" title="useKeyPress"></a>useKeyPress</h1><p>一个优雅的管理 keyup 和 keydown 键盘事件的 Hook，支持键盘组合键，定义键盘事件的 key 和 keyCode 别名输入。</p>
+<pre><code class="js">// ref：    当未传入任何 target 时，将 ref 绑定给需监听的节点
+const ref = useKeyPress(
+    // 支持键盘事件中的 key 和 keyCode，支持回调方式返回 boolean 判断，支持别名使用
+    keyFilter: KeyFilter,
+    eventHandler: EventHandler = noop,
+    options?: {
+        // 触发事件
+        events,
+        target
     }
-  },
-  /**
-   * publicPath
-   */
-  publicPath: &#39;/&#39;,
-  /**
-   * routes：配置路由
-   * umi 的路由基于 react-router@5 实现
-   */
-  routes: [
-    {
-      path: &#39;/&#39;,
-      component: &#39;@/pages/layout/index&#39;,
-      routes: [
-        { path: &#39;/home&#39;, component: &#39;@/pages/home&#39; },
-        { path: &#39;/faq&#39;, component: &#39;@/pages/faq&#39; },
-        { path: &#39;/me&#39;, component: &#39;@/pages/me&#39; },
-      ],
+)</code></pre>
+<p><strong>备注：按键别名</strong></p>
+<pre><code class="tex">enter
+tab
+delete
+esc
+space
+up
+down
+left
+right
+ctrl
+alt
+shift
+meta</code></pre>
+</div><hr></div><div class="recent-post-item article-container"><a class="article-title" href="/2020/04/21/前端/UmiHooks/UI/useDrag&amp;useDrop/">《Umi Hooks》官网笔记-useDrop &amp; useDrag</a><time class="post-meta__date"><i class="fa fa-calendar" aria-hidden="true"></i> 2020-04-21</time><span class="article-meta"><span class="article-meta__separator">|</span><i class="fa fa-inbox article-meta__icon" aria-hidden="true"></i><a class="article-meta__categories" href="/categories/前端/">前端</a><i class="fa fa-angle-right" aria-hidden="true"></i><i class="fa fa-inbox article-meta__icon" aria-hidden="true"></i><a class="article-meta__categories" href="/categories/前端/Umi-Hooks/">Umi/Hooks</a></span><span class="article-meta tags"><span class="article-meta__separator">|</span><i class="fa fa-tag article-meta__icon" aria-hidden="true"></i><a class="article-meta__tags" href="/tags/hide/">hide</a><span class="article-meta__link">-</span><i class="fa fa-tag article-meta__icon" aria-hidden="true"></i><a class="article-meta__tags" href="/tags/Umi-Hooks/">Umi/Hooks</a></span><div class="content"><h1 id="useDrop-amp-useDrag"><a href="#useDrop-amp-useDrag" class="headerlink" title="useDrop &amp; useDrag"></a>useDrop &amp; useDrag</h1><p>一对能帮助处理拖拽中 进行数据转移 的 hooks。</p>
+<blockquote>
+<p>useDrop 可能单独使用来接收文件、文字和网址的拖拽。</p>
+<p>useDrag 允许一个 dom 节点被拖拽，需要配合 useDrop 使用。</p>
+<p>向节点内触发粘贴时也会被视为拖拽的内容。</p>
+</blockquote>
+<h2 id="一、API"><a href="#一、API" class="headerlink" title="一、API"></a>一、API</h2><pre><code class="js">// getDragProps：一个接收拖拽的值，并返回需要透传给被拖拽节点 props 的方法
+const getDragProps = useDrag();
+
+&lt;div {...getDragProps(id)}&gt;draggable&lt;/div&gt;
+
+/**
+ * props: 需要透传给接受拖拽区域 dom 节点的 props
+ * isHovering：是否拖拽中，且光标处于释放区域内
+ */
+const [ props, { isHovering } ] = useDrop({
+    // 拖拽文字的回调
+    onText: (text: string, e: Event) =&gt; void,
+    // 拖拽文件的回调
+    onFiles: (files: File[], e: Event) =&gt; void,
+    // 拖拽链接的回调
+    onUri: (uri: string, e: Event) =&gt; void,
+    // 拖拽自定义 dom 节点的回调
+    onDom: (content: any, e: Event) =&gt; void
+})</code></pre>
+<h2 id="二、示例"><a href="#二、示例" class="headerlink" title="二、示例"></a>二、示例</h2><p>拖拽区域可以接受文件、链接、文字和下方的box节点。</p>
+<pre><code class="tsx">import React, { useState } from &#39;react&#39;;
+import { message } from &#39;antd&#39;;
+import { useDrop, useDrag } from &#39;@umijs/hooks&#39;;
+
+export default () =&gt; {
+  const getDragProps = useDrag();
+  const [props, { isHovering }] = useDrop({
+    onText: (text) =&gt; {
+      message.success(`text:${text}`);
     },
-  ],
-  /**
-   * runtimePublicPath：配置启用运行时 publicPath
-   */
-  runtimePublicPath: false,
-  /**
-   * scripts：同headScripts，配置在body里的脚本
-   */
-  scripts:[],
-  /**
-   * singular：配置是否启用单数模式的目录
-   */
-  singular: false,
-  /**
-   * styleLoader：启用并设置 style-loader配置
-   * 让css内联打包在js中，不输出额外的css文件
-   */
-  styleLoader: {},
-  /**
-   * styles：配置额外的css
-   */
-  styles: [
-    `body: {color: red}`,
-    `https://a.com/b.css`
-  ],
-  /**
-   * targets：配置需要兼容的浏览器最低版本
-   * 自动引入polyfill和语法转换
-   */
-  targets: {
-    chrome: 49, 
-    firefox: 64, 
-    safari: 10, 
-    edge: 13, 
-    ios: 10
-  },
-  /**
-   * theme：配置主题，实际上是配less变量
-   */
-  theme: {
-    &#39;@primary-color&#39;:&#39;#1DA57A&#39;
-  },
-  /**
-   * title：配置标题
-   * 还可以针对路由配置标题
-   * 注意：
-   * - 默认不会在HTML里输出title标签，而是通过动态渲染得到
-   * - 配置 exportStatic 后会为每个HTML输出title标签
-   * - 如果需要自行渲染title，可配置title：false，禁用内置title渲染机制
-   */
-  title: &#39;hi&#39;,
-}</code></pre>
-</div><hr></div><div class="recent-post-item article-container"><a class="article-title" href="/2020/04/02/前端/UmiJS/UmiJS-API/">《UmiJS》官网笔记</a><span class="article-meta"><i class="fa fa-thumb-tack article-meta__icon sticky"></i><span class="sticky">置顶</span><span class="article-meta__separator" style="margin-right: 0.3rem">|</span></span><time class="post-meta__date"><i class="fa fa-calendar" aria-hidden="true"></i> 2020-04-02</time><span class="article-meta"><span class="article-meta__separator">|</span><i class="fa fa-inbox article-meta__icon" aria-hidden="true"></i><a class="article-meta__categories" href="/categories/前端/">前端</a><i class="fa fa-angle-right" aria-hidden="true"></i><i class="fa fa-inbox article-meta__icon" aria-hidden="true"></i><a class="article-meta__categories" href="/categories/前端/UmiJS/">UmiJS</a></span><span class="article-meta tags"><span class="article-meta__separator">|</span><i class="fa fa-tag article-meta__icon" aria-hidden="true"></i><a class="article-meta__tags" href="/tags/UmiJS/">UmiJS</a></span><div class="content"><h1 id="UmiJS-API"><a href="#UmiJS-API" class="headerlink" title="UmiJS API"></a>UmiJS API</h1><h2 id="一、基本API"><a href="#一、基本API" class="headerlink" title="一、基本API"></a>一、基本API</h2><h4 id="dynamic"><a href="#dynamic" class="headerlink" title="dynamic"></a>dynamic</h4><p>动态加载组件。</p>
-<pre><code class="tsx">import React from &#39;react&#39;;
-import { dynamic } from &#39;umi&#39;;
-
-const delay = (timeout: number) =&gt;
-  new Promise(resolve =&gt; setTimeout(resolve, timeout));
-
-export default dynamic({
-  loader: async function() {
-    await delay(1000);
-    return () =&gt; &lt;div&gt;1s之后显示&lt;/div&gt;;
-  },
-});</code></pre>
-<h4 id="history"><a href="#history" class="headerlink" title="history"></a>history</h4><p>可用于获取当前路由信息。</p>
-<pre><code class="tsx">import { history } from &#39;umi&#39;;
-
-// history 栈里的实体个数
-console.log(history.length);
-
-// 当前 history 跳转的 action，有 PUSH、REPLACE 和 POP 三种类型
-console.log(history.action);
-
-// location 对象，包含 pathname、search 和 hash
-console.log(history.location.pathname);
-console.log(history.location.search);
-console.log(history.location.hash);</code></pre>
-<p>也可用于路由跳转</p>
-<pre><code class="tsx">import { history } from &#39;umi&#39;;
-
-// 跳转到指定路由
-history.push(&#39;/list&#39;);
-
-// 带参数跳转到指定路由
-history.push(&#39;/list?a=b&#39;);
-history.push({
-  pathname: &#39;/list&#39;,
-  query: {
-    a: &#39;b&#39;,
-  },
-});
-
-// 跳转到上一个路由
-history.goBack();</code></pre>
-<p>也可用于路由监听</p>
-<pre><code class="tsx">import { history } from &#39;umi&#39;;
-
-const unlisten = history.listen((location, action) =&gt; {
-  console.log(location.pathname);
-});
-unlisten();</code></pre>
-<h2 id="二、路由"><a href="#二、路由" class="headerlink" title="二、路由"></a>二、路由</h2><h3 id="Link"><a href="#Link" class="headerlink" title="Link"></a>Link</h3><pre><code class="tsx">import React from &#39;react&#39;;
-import { Link } from &#39;umi&#39;;
-
-export default () =&gt; {
+    onFiles: (files) =&gt; {
+      message.success(`files: ${files.length}`);
+    },
+    onUri: (uri) =&gt; {
+      message.success(`uri: ${uri}`);
+    },
+    onDom: (content) =&gt; {
+      message.success(`content: ${content}`);
+    },
+  });
   return (
     &lt;div&gt;
-      {/* 跳转指定路由 */}
-      &lt;Link to=&quot;/about&quot;&gt;About&lt;/Link&gt;
-      {/* 跳转至附带参数的路由 */}
-      &lt;Link to=&quot;/about?id=123&quot;&gt;About 123&lt;/Link&gt;
-      {/* 跳转至指定路由，附带query、hash、state */}
-      &lt;Link
-        to={{
-          pathname: '/list',
-          search: '?sort=name',
-          hash: '#the-hash',
-          state: { fromDashboard: true },
-        }}
-      &gt;
-        List
-      &lt;/Link&gt;
-      {/* 跳转至指定路由，附带所有当前 location 上的参数 */}
-      &lt;Link
-        to={location =&gt; {
-          return { ...location, pathname: &#39;/profile&#39; };
-        }}
-      &gt;
-        Profile
-      &lt;/Link&gt;
-      {/* 跳转至指定路由，但会替换当前history stack中的记录 */}
-      &lt;Link to=&quot;/course&quot; replace&gt;
-        Course
-      &lt;/Link&gt;
-      {/* innerRef 允许你获取基础组件 */}
-      &lt;Link to=&quot;/course&quot; innerRef={node =&gt; {}}&gt;
-        Course
-      &lt;/Link&gt;
+      &lt;div style={{ border: '1px dashed #e8e8e8', padding: 16, textAlign: 'center' }} {...props}&gt;
+        {isHovering ? &#39;放这儿&#39; : &#39;拖到这儿&#39;}
+      &lt;/div&gt;
+      &lt;div style={{ display: 'flex', marginTop: 8 }}&gt;
+        {Array.from(Array(5)).map((e, i) =&gt; (
+          &lt;div
+            {...getDragProps(`box${i}`)}
+            style={{
+              border: '1px solid #e8e8e8',
+              padding: 16,
+              width: 80,
+              textAlign: 'center',
+              marginRight: 16,
+            }}
+          &gt;
+            box[i]
+          &lt;/div&gt;
+        ))}
+       &lt;a href=&quot;www.baidu.com&quot;&gt;baidu&lt;/a&gt;
+      &lt;/div&gt;
     &lt;/div&gt;
   );
 };</code></pre>
-<h4 id="NavLink"><a href="#NavLink" class="headerlink" title="NavLink"></a>NavLink</h4><p>特殊版本的 <code>&lt;Link /&gt;</code>。当指定路由命中时，可以附着特定样式。（可以用作顶部导航的选中定位；或者菜单栏的选中定位等）</p>
-<pre><code class="tsx">import { NavLink } from &#39;umi&#39;;
+</div><hr></div><div class="recent-post-item article-container"><a class="article-title" href="/2020/04/21/前端/UmiHooks/UI/useDynamicList/">《Umi Hooks》官网笔记-useDynamicList</a><time class="post-meta__date"><i class="fa fa-calendar" aria-hidden="true"></i> 2020-04-21</time><span class="article-meta"><span class="article-meta__separator">|</span><i class="fa fa-inbox article-meta__icon" aria-hidden="true"></i><a class="article-meta__categories" href="/categories/前端/">前端</a><i class="fa fa-angle-right" aria-hidden="true"></i><i class="fa fa-inbox article-meta__icon" aria-hidden="true"></i><a class="article-meta__categories" href="/categories/前端/Umi-Hooks/">Umi/Hooks</a></span><span class="article-meta tags"><span class="article-meta__separator">|</span><i class="fa fa-tag article-meta__icon" aria-hidden="true"></i><a class="article-meta__tags" href="/tags/hide/">hide</a><span class="article-meta__link">-</span><i class="fa fa-tag article-meta__icon" aria-hidden="true"></i><a class="article-meta__tags" href="/tags/Umi-Hooks/">Umi/Hooks</a></span><div class="content"><h1 id="useDynamicList"><a href="#useDynamicList" class="headerlink" title="useDynamicList"></a>useDynamicList</h1><p>一个帮助你管理列表状态，并能生成唯一 key 的 Hook。</p>
+<h2 id="一、API"><a href="#一、API" class="headerlink" title="一、API"></a>一、API</h2><pre><code class="js">const {
+    // 当前的列表：T[]
+    list,
+    // 重新设置 list 的值：(list: T[]) =&gt; void
+    resetList,
+    // 在指定位置插入元素：(index: number, obj: T) =&gt; void
+    insert,
+    // 在指定位置插入多个元素：(index: number, obj: T) =&gt; void
+    merge,
+    // 替换指定元素：(index: number, obj: T) =&gt; void
+    replace,
+    // 删除指定元素：(index: number) =&gt; void
+    remove,
+    // 移动元素：(oldIndex: number, newIndex: number) =&gt; void
+    move,
+    // 获得某个元素的 UUID：(index: number) =&gt; number
+    getKey,
+    // 获得某个 key 的 index：(key: number) =&gt; number
+    getIndex,
+    // 根据表单结果自动排序：(list: unKnown[]) =&gt; unKnown[]
+    sortForm,
+    // 在列表末尾添加元素：(obj: T) =&gt; void
+    push,
+    // 移除末尾元素：() =&gt; void
+    pop,
+    // 在列表起始位置添加元素：(obj: T) =&gt; void
+    unshift,
+    // 移除起始位置元素：() =&gt; void
+    shift
+} = useDynamicList(
+    // 列表的初始值：T[]
+    initialValue: T[]
+);</code></pre>
+</div><hr></div><div class="recent-post-item article-container"><a class="article-title" href="/2020/04/21/前端/UmiHooks/UI/useSelections/">《Umi Hooks》官网笔记-useSelections</a><time class="post-meta__date"><i class="fa fa-calendar" aria-hidden="true"></i> 2020-04-21</time><span class="article-meta"><span class="article-meta__separator">|</span><i class="fa fa-inbox article-meta__icon" aria-hidden="true"></i><a class="article-meta__categories" href="/categories/前端/">前端</a><i class="fa fa-angle-right" aria-hidden="true"></i><i class="fa fa-inbox article-meta__icon" aria-hidden="true"></i><a class="article-meta__categories" href="/categories/前端/Umi-Hooks/">Umi/Hooks</a></span><span class="article-meta tags"><span class="article-meta__separator">|</span><i class="fa fa-tag article-meta__icon" aria-hidden="true"></i><a class="article-meta__tags" href="/tags/hide/">hide</a><span class="article-meta__link">-</span><i class="fa fa-tag article-meta__icon" aria-hidden="true"></i><a class="article-meta__tags" href="/tags/Umi-Hooks/">Umi/Hooks</a></span><div class="content"><h1 id="useSelections"><a href="#useSelections" class="headerlink" title="useSelections"></a>useSelections</h1><p>常见联动的 checkbox 逻辑封装，支持多选、单选、全选逻辑，还提供了是否选择、是否全选、是否半选的状态。</p>
+<h2 id="一、API"><a href="#一、API" class="headerlink" title="一、API"></a>一、API</h2><pre><code class="js">const {
+    // 已经选择的元素，array
+    selected,
+    // 是否被选择，func
+    isSelected,
+    // 选择元素，func
+    select,
+    // 取消选择元素，func
+    unSelect,
+    // 反选元素，func
+    toggle,
+    // 选择全部元素，func
+    selectAll,
+    // 取消选择全部元素，func
+    unSelectAll,
+    // 反选全部元素，func
+    toggleAll,
+    // 是否全选，boolean
+    allSelected,
+    // 是否一个都没有选择，boolean
+    noneSelected,
+    // 是否半选
+    partiallySelected,
+    // 设置选择的元素
+    setSelected
+} = useSelections&lt;T&gt;(items: T[], defaultSelected?: T[]);</code></pre>
+<h2 id="二、示例"><a href="#二、示例" class="headerlink" title="二、示例"></a>二、示例</h2><p>常见的checkbox联动</p>
+<pre><code class="tsx">import React, { useMemo, useState } from &#39;react&#39;;
+import { Checkbox, Row, Col } from &#39;antd&#39;;
+import { useSelections } from &#39;@umijs/hooks&#39;;
 
 export default () =&gt; {
+  const [hideOdd, setHideOdd] = useState(false);
+
+  const list = useMemo(() =&gt; {
+    if (hideOdd) {
+      return [2, 4, 6, 8];
+    }
+    return [1, 2, 3, 4, 5, 6, 7, 8];
+  }, [hideOdd]);
+
+  const {
+    selected,
+    allSelected,
+    isSelected,
+    toggle,
+    toggleAll,
+    partiallySelected,
+  } = useSelections(list, [1]);
+
   return (
     &lt;div&gt;
-      {/* 和 Link 等价 */}
-      &lt;NavLink to=&quot;/about&quot;&gt;About&lt;/NavLink&gt;
-
-      {/* 当前路由为 /faq 时，附着 class selected */}
-      &lt;NavLink to=&quot;/faq&quot; activeClassName=&quot;selected&quot;&gt;
-        FAQs
-      &lt;/NavLink&gt;
-
-      {/* 当前路由为 /faq 时，附着 style */}
-      &lt;NavLink
-        to=&quot;/faq&quot;
-        activeStyle={{
-          fontWeight: "bold",
-          color: "red",
-        }}
-      &gt;
-        FAQs
-      &lt;/NavLink&gt;
-
-      {/* 当前路由完全匹配为 /profile 时，附着 class */}
-      &lt;NavLink exact to=&quot;/profile&quot; activeClassName=&quot;selected&quot;&gt;
-        Profile
-      &lt;/NavLink&gt;
-
-      {/* 当前路由为 /profile/ 时，附着 class */}
-      &lt;NavLink strict to=&quot;/profile/&quot; activeClassName=&quot;selected&quot;&gt;
-        Profile
-      &lt;/NavLink&gt;
-
-      {/* 当前路由为 /profile，并且 query 包含 name 时，附着 class */}
-      &lt;NavLink
-        to=&quot;/profile&quot;
-        exact
-        activeClassName=&quot;selected&quot;
-        isActive={(match, location) =&gt; {
-          if (!match) {
-            return false;
-          }
-          return location.search.includes(&quot;name&quot;);
-        }}
-      &gt;
-        Profile
-      &lt;/NavLink&gt;
+      &lt;div&gt;Selected: {selected.join(&#39;,&#39;)}&lt;/div&gt;
+      &lt;div style={{ borderBottom: '1px solid #e8e8e8', padding: '10px 0' }}&gt;
+        &lt;Checkbox checked={allSelected} onClick={toggleAll} indeterminate={partiallySelected}&gt;
+          全选
+        &lt;/Checkbox&gt;
+        &lt;Checkbox checked={hideOdd} onClick={() =&gt; setHideOdd((v) =&gt; !v)}&gt;
+          隐藏部分
+        &lt;/Checkbox&gt;
+      &lt;/div&gt;
+      &lt;Row style={{ padding: '10px 0' }}&gt;
+        {list.map((o) =&gt; (
+          &lt;Col span={12} key={o}&gt;
+            &lt;Checkbox checked={isSelected(o)} onClick={() =&gt; toggle(o)}&gt;
+              {o}
+            &lt;/Checkbox&gt;
+          &lt;/Col&gt;
+        ))}
+      &lt;/Row&gt;
     &lt;/div&gt;
   );
 };</code></pre>
-<h4 id="Prompt"><a href="#Prompt" class="headerlink" title="Prompt"></a>Prompt</h4><p>用户离开页面时的提示选择。</p>
-<pre><code class="tsx">import React from &#39;react&#39;;
-import { Prompt } from &#39;umi&#39;;
-
-export default function index() {
-  return (
-    &lt;div&gt;
-      &lt;h1&gt;FAQS&lt;/h1&gt;
-      {/* 离开页面时提示 */}
-      &lt;Prompt message=&quot;你确定要离开么？&quot; /&gt;
-      {/* 用户跳转指定页面是提示 */}
-      &lt;Prompt
-        message={location =&gt; {
-          return location.pathname === &#39;/me&#39;
-            ? &#39;您确定要跳转到个人中心吗&#39;
-            : true;
-        }}
-      /&gt;
-      {/* 根据一个状态来确定是否提示 */}
-      &lt;Prompt when={true} message=&quot;您确定要半途而废吗？&quot; /&gt;
-    &lt;/div&gt;
-  );
-}</code></pre>
-<h4 id="withRouter"><a href="#withRouter" class="headerlink" title="withRouter"></a>withRouter</h4><p>高阶组件，可以通过 <code>withRouter</code> 获取到 <code>history</code>、<code>location</code>、<code>match</code> 对象。</p>
-<pre><code class="tsx">import { withRouter } from &quot;umi&quot;;
-
-export default withRouter(({ history, location, match }) =&gt; {
-  return (
-    &lt;div&gt;
-      &lt;ul&gt;
-        &lt;li&gt;history: {history.action}&lt;/li&gt;
-        &lt;li&gt;location: {location.pathname}&lt;/li&gt;
-        &lt;li&gt;match: {`${match.isExact}`}&lt;/li&gt;
-      &lt;/ul&gt;
-    &lt;/div&gt;
-  );
-});</code></pre>
-<h4 id="useHistory"><a href="#useHistory" class="headerlink" title="useHistory"></a>useHistory</h4><p>hooks，用于获取 <code>history</code> 对象</p>
-<h4 id="useLocation"><a href="#useLocation" class="headerlink" title="useLocation"></a>useLocation</h4><p>hooks，用于获取 <code>location</code> 对象</p>
-<h4 id="useParams"><a href="#useParams" class="headerlink" title="useParams"></a>useParams</h4><p>hooks，用于获取 <code>params</code> 对象。<code>params</code> 对象为动态路由（如 <code>/user/:id</code>）里的参数键值对。</p>
-<h4 id="useRouteMatch"><a href="#useRouteMatch" class="headerlink" title="useRouteMatch"></a>useRouteMatch</h4><p>hooks，用于当前路由的信息匹配。</p>
-<pre><code class="tsx">import { 
-  useHistory,
-  useLocation,
-  useParams,
-  useRouteMatch
-} from &quot;umi&quot;;
-
-// 假设当前路由为：/user/10086?type=user&amp;deleted=false
-export default () =&gt; {
-  const history = useHistory()
-  const location = useLocation()
-  const params = useParams()
-  const match = useRouteMatch()
-  return (
-    &lt;div&gt;
-      &lt;ul&gt;
-        &lt;li&gt;history: {history.action}&lt;/li&gt;
-        &lt;li&gt;location: {location.pathname}&lt;/li&gt;
-        &lt;li&gt;params: {JSON.stringify(params)}&lt;/li&gt;
-        &lt;li&gt;match: {JSON.stringify(match.params)}&lt;/li&gt;
-      &lt;/ul&gt;
-    &lt;/div&gt;
-  );
-};</code></pre>
-</div><hr></div><div class="recent-post-item article-container"><a class="article-title" href="/2020/04/01/前端/MockJS/MockJS/">《MockJS》官网笔记</a><span class="article-meta"><i class="fa fa-thumb-tack article-meta__icon sticky"></i><span class="sticky">置顶</span><span class="article-meta__separator" style="margin-right: 0.3rem">|</span></span><time class="post-meta__date"><i class="fa fa-calendar" aria-hidden="true"></i> 2020-04-01</time><span class="article-meta"><span class="article-meta__separator">|</span><i class="fa fa-inbox article-meta__icon" aria-hidden="true"></i><a class="article-meta__categories" href="/categories/前端/">前端</a><i class="fa fa-angle-right" aria-hidden="true"></i><i class="fa fa-inbox article-meta__icon" aria-hidden="true"></i><a class="article-meta__categories" href="/categories/前端/MockJS/">MockJS</a></span><span class="article-meta tags"><span class="article-meta__separator">|</span><i class="fa fa-tag article-meta__icon" aria-hidden="true"></i><a class="article-meta__tags" href="/tags/MockJS/">MockJS</a></span><div class="content"><h1 id="MockJS-模拟数据"><a href="#MockJS-模拟数据" class="headerlink" title="MockJS 模拟数据"></a>MockJS 模拟数据</h1><p>MockJS 是一个前端用于模拟数据的类库。</p></div><a class="more" href="/2020/04/01/前端/MockJS/MockJS/#more">阅读更多</a><hr></div><div class="recent-post-item article-container"><a class="article-title" href="/2020/03/17/读书笔记/《Java核心知识点整理》/24.Hadoop/">《JAVA 核心知识点整理》Hadoop</a><time class="post-meta__date"><i class="fa fa-calendar" aria-hidden="true"></i> 2020-03-17</time><span class="article-meta"><span class="article-meta__separator">|</span><i class="fa fa-inbox article-meta__icon" aria-hidden="true"></i><a class="article-meta__categories" href="/categories/读书笔记/">读书笔记</a><i class="fa fa-angle-right" aria-hidden="true"></i><i class="fa fa-inbox article-meta__icon" aria-hidden="true"></i><a class="article-meta__categories" href="/categories/读书笔记/JAVA核心知识点整理/">JAVA核心知识点整理</a></span><span class="article-meta tags"><span class="article-meta__separator">|</span><i class="fa fa-tag article-meta__icon" aria-hidden="true"></i><a class="article-meta__tags" href="/tags/hide/">hide</a><span class="article-meta__link">-</span><i class="fa fa-tag article-meta__icon" aria-hidden="true"></i><a class="article-meta__tags" href="/tags/JAVA核心知识点整理/">JAVA核心知识点整理</a></span><div class="content"></div><hr></div><nav id="pagination"><div class="pagination"><a class="extend prev" rel="prev" href="/page/7/"><i class="fa fa-chevron-left"></i></a><a class="page-number" href="/">1</a><span class="space">&hellip;</span><a class="page-number" href="/page/7/">7</a><span class="page-number current">8</span><a class="page-number" href="/page/9/">9</a><span class="space">&hellip;</span><a class="page-number" href="/page/30/">30</a><a class="extend next" rel="next" href="/page/9/"><i class="fa fa-chevron-right"></i></a></div></nav></div></div><footer><div class="layout" id="footer"><div class="copyright">&copy;2013 - 2020 By koral</div><div class="framework-info"><span>驱动 - </span><a href="http://hexo.io"><span>Hexo</span></a><span class="footer-separator">|</span><span>主题 - </span><a href="https://github.com/Molunerfinn/hexo-theme-melody"><span>Melody</span></a></div><div class="busuanzi"><script async src="//busuanzi.ibruce.info/busuanzi/2.3/busuanzi.pure.mini.js"></script><span id="busuanzi_container_site_uv"><i class="fa fa-user"></i><span id="busuanzi_value_site_uv"></span><span></span></span><span class="footer-separator">|</span><span id="busuanzi_container_site_pv"><i class="fa fa-eye"></i><span id="busuanzi_value_site_pv"></span><span></span></span></div></div></footer><i class="fa fa-arrow-up" id="go-up" aria-hidden="true"></i><script src="https://cdn.jsdelivr.net/npm/animejs@latest/anime.min.js"></script><script src="https://cdn.jsdelivr.net/npm/jquery@latest/dist/jquery.min.js"></script><script src="https://cdn.jsdelivr.net/npm/@fancyapps/fancybox@latest/dist/jquery.fancybox.min.js"></script><script src="https://cdn.jsdelivr.net/npm/velocity-animate@latest/velocity.min.js"></script><script src="https://cdn.jsdelivr.net/npm/velocity-ui-pack@latest/velocity.ui.min.js"></script><script src="/js/utils.js?version=1.7.0"></script><script src="/js/fancybox.js?version=1.7.0"></script><script src="/js/sidebar.js?version=1.7.0"></script><script src="/js/copy.js?version=1.7.0"></script><script src="/js/fireworks.js?version=1.7.0"></script><script src="/js/transition.js?version=1.7.0"></script><script src="/js/scroll.js?version=1.7.0"></script><script src="/js/head.js?version=1.7.0"></script><script>if(/Android|webOS|iPhone|iPod|iPad|BlackBerry/i.test(navigator.userAgent)) {
+</div><hr></div><div class="recent-post-item article-container"><a class="article-title" href="/2020/04/21/前端/UmiHooks/UI/useVirtualList/">《Umi Hooks》官网笔记-useVirtualList</a><time class="post-meta__date"><i class="fa fa-calendar" aria-hidden="true"></i> 2020-04-21</time><span class="article-meta"><span class="article-meta__separator">|</span><i class="fa fa-inbox article-meta__icon" aria-hidden="true"></i><a class="article-meta__categories" href="/categories/前端/">前端</a><i class="fa fa-angle-right" aria-hidden="true"></i><i class="fa fa-inbox article-meta__icon" aria-hidden="true"></i><a class="article-meta__categories" href="/categories/前端/Umi-Hooks/">Umi/Hooks</a></span><span class="article-meta tags"><span class="article-meta__separator">|</span><i class="fa fa-tag article-meta__icon" aria-hidden="true"></i><a class="article-meta__tags" href="/tags/hide/">hide</a><span class="article-meta__link">-</span><i class="fa fa-tag article-meta__icon" aria-hidden="true"></i><a class="article-meta__tags" href="/tags/Umi-Hooks/">Umi/Hooks</a></span><div class="content"><h1 id="useVirtualList"><a href="#useVirtualList" class="headerlink" title="useVirtualList"></a>useVirtualList</h1><p>提供虚拟化列表能力的 Hook，用于解决展示海量数据渲染时首屏渲染缓慢和滚动卡顿问题。</p>
+<h2 id="一、API"><a href="#一、API" class="headerlink" title="一、API"></a>一、API</h2><pre><code class="js">const {
+    // 当前需要展示的列表内容
+    list,
+    // 滚动容器的 props
+    containerProps,
+    // children 外层包裹器 props
+    wrapperProps,
+    // 快速滚动到指定 index
+    scrollTo
+} = useVirtualList(
+    // 包含大量数据的列表
+    originalList: any[],
+    options: {
+        // 行高度，静态高度可以直接写入像素值，动态高度可传入函数
+        itemHeight,
+        // 视区上、下额外展示的 dom 节点数量
+        overscan
+    }
+)</code></pre>
+</div><hr></div><div class="recent-post-item article-container"><a class="article-title" href="/2020/04/21/前端/UmiHooks/SideEffect/useDebounceFn/">《Umi Hooks》官网笔记-useDebounceFn</a><time class="post-meta__date"><i class="fa fa-calendar" aria-hidden="true"></i> 2020-04-21</time><span class="article-meta"><span class="article-meta__separator">|</span><i class="fa fa-inbox article-meta__icon" aria-hidden="true"></i><a class="article-meta__categories" href="/categories/前端/">前端</a><i class="fa fa-angle-right" aria-hidden="true"></i><i class="fa fa-inbox article-meta__icon" aria-hidden="true"></i><a class="article-meta__categories" href="/categories/前端/Umi-Hooks/">Umi/Hooks</a></span><span class="article-meta tags"><span class="article-meta__separator">|</span><i class="fa fa-tag article-meta__icon" aria-hidden="true"></i><a class="article-meta__tags" href="/tags/hide/">hide</a><span class="article-meta__link">-</span><i class="fa fa-tag article-meta__icon" aria-hidden="true"></i><a class="article-meta__tags" href="/tags/Umi-Hooks/">Umi/Hooks</a></span><div class="content"><h1 id="useDebounceFn"><a href="#useDebounceFn" class="headerlink" title="useDebounceFn"></a>useDebounceFn</h1><p>用来处理防抖函数的 Hook。</p>
+<h2 id="一、API"><a href="#一、API" class="headerlink" title="一、API"></a>一、API</h2><pre><code class="js">const {
+    // 触发执行fn，函数参数将会传递给fn：(...args: any[]) =&gt; any
+    run,
+    // 取消当前防抖：() =&gt; void
+    cancel
+} = useDebounceFn(
+    // 需要防抖执行的函数
+    fn: (...args: any[]) =&gt; any,
+    // 依赖数组，如果数组变化，则会在等待时间后触发fn
+    deps: any[],
+    // 防抖等待时间(1000毫秒)
+    wait: number
+)</code></pre>
+</div><hr></div><div class="recent-post-item article-container"><a class="article-title" href="/2020/04/21/前端/UmiHooks/SideEffect/useThrottleFn/">《Umi Hooks》官网笔记-useThrottleFn</a><time class="post-meta__date"><i class="fa fa-calendar" aria-hidden="true"></i> 2020-04-21</time><span class="article-meta"><span class="article-meta__separator">|</span><i class="fa fa-inbox article-meta__icon" aria-hidden="true"></i><a class="article-meta__categories" href="/categories/前端/">前端</a><i class="fa fa-angle-right" aria-hidden="true"></i><i class="fa fa-inbox article-meta__icon" aria-hidden="true"></i><a class="article-meta__categories" href="/categories/前端/Umi-Hooks/">Umi/Hooks</a></span><span class="article-meta tags"><span class="article-meta__separator">|</span><i class="fa fa-tag article-meta__icon" aria-hidden="true"></i><a class="article-meta__tags" href="/tags/hide/">hide</a><span class="article-meta__link">-</span><i class="fa fa-tag article-meta__icon" aria-hidden="true"></i><a class="article-meta__tags" href="/tags/Umi-Hooks/">Umi/Hooks</a></span><div class="content"><h1 id="useThrottleFn"><a href="#useThrottleFn" class="headerlink" title="useThrottleFn"></a>useThrottleFn</h1><p>用来处理函数节流的 Hook。</p>
+<h2 id="一、API"><a href="#一、API" class="headerlink" title="一、API"></a>一、API</h2><pre><code class="js">const {
+    // 触发执行fn，函数参数将会传递给fn
+    run,
+    // 取消当前节流
+    cancel
+} = useThrottleFn(
+    // 需要节流的函数
+    fn: (...args: any[]) =&gt; any,
+    // 依赖数组，如果数组变化，则会在节流后，触发fn
+    deps: any[],
+    // 节流间隔时间(默认1000毫秒)
+    wait: number
+)</code></pre>
+</div><hr></div><div class="recent-post-item article-container"><a class="article-title" href="/2020/04/07/读书笔记/《Umijs》官方文档/0.目录/">《Umijs》官方文档</a><span class="article-meta"><i class="fa fa-thumb-tack article-meta__icon sticky"></i><span class="sticky">置顶</span><span class="article-meta__separator" style="margin-right: 0.3rem">|</span></span><time class="post-meta__date"><i class="fa fa-calendar" aria-hidden="true"></i> 2020-04-07</time><span class="article-meta"><span class="article-meta__separator">|</span><i class="fa fa-inbox article-meta__icon" aria-hidden="true"></i><a class="article-meta__categories" href="/categories/读书笔记/">读书笔记</a><i class="fa fa-angle-right" aria-hidden="true"></i><i class="fa fa-inbox article-meta__icon" aria-hidden="true"></i><a class="article-meta__categories" href="/categories/读书笔记/Umijs/">Umijs</a></span><span class="article-meta tags"><span class="article-meta__separator">|</span><i class="fa fa-tag article-meta__icon" aria-hidden="true"></i><a class="article-meta__tags" href="/tags/Umijs/">Umijs</a></span><div class="content"><ul>
+<li>第一部分 <a href="/2020/04/07/读书笔记/《Umijs》官方文档/1.目录结构与路由/index.html">目录结构与路由</a></li>
+<li>第二部分 <a href="/2020/04/07/读书笔记/《Umijs》官方文档/2.约定式路由/index.html">约定式路由</a></li>
+<li>第三部分 <a href="/2020/04/07/读书笔记/《Umijs》官方文档/3.页面跳转与HTML模板/index.html">页面跳转与 HTML 模板</a></li>
+<li>第四部分 <a href="/2020/04/07/读书笔记/《Umijs》官方文档/4.Mock数据/index.html">Mock 数据</a></li>
+<li>第五部分 <a href="/2020/04/07/读书笔记/《Umijs》官方文档/5.环境变量/index.html">环境变量</a></li>
+<li>第六部分 <a href="/2020/04/07/读书笔记/《Umijs》官方文档/6.样式与图片/index.html">样式与图片的引入</a></li>
+</ul></div><a class="more" href="/2020/04/07/读书笔记/《Umijs》官方文档/0.目录/#more">阅读更多</a><hr></div><nav id="pagination"><div class="pagination"><a class="extend prev" rel="prev" href="/page/7/"><i class="fa fa-chevron-left"></i></a><a class="page-number" href="/">1</a><span class="space">&hellip;</span><a class="page-number" href="/page/7/">7</a><span class="page-number current">8</span><a class="page-number" href="/page/9/">9</a><span class="space">&hellip;</span><a class="page-number" href="/page/31/">31</a><a class="extend next" rel="next" href="/page/9/"><i class="fa fa-chevron-right"></i></a></div></nav></div></div><footer><div class="layout" id="footer"><div class="copyright">&copy;2013 - 2020 By koral</div><div class="framework-info"><span>驱动 - </span><a href="http://hexo.io"><span>Hexo</span></a><span class="footer-separator">|</span><span>主题 - </span><a href="https://github.com/Molunerfinn/hexo-theme-melody"><span>Melody</span></a></div><div class="busuanzi"><script async src="//busuanzi.ibruce.info/busuanzi/2.3/busuanzi.pure.mini.js"></script><span id="busuanzi_container_site_uv"><i class="fa fa-user"></i><span id="busuanzi_value_site_uv"></span><span></span></span><span class="footer-separator">|</span><span id="busuanzi_container_site_pv"><i class="fa fa-eye"></i><span id="busuanzi_value_site_pv"></span><span></span></span></div></div></footer><i class="fa fa-arrow-up" id="go-up" aria-hidden="true"></i><script src="https://cdn.jsdelivr.net/npm/animejs@latest/anime.min.js"></script><script src="https://cdn.jsdelivr.net/npm/jquery@latest/dist/jquery.min.js"></script><script src="https://cdn.jsdelivr.net/npm/@fancyapps/fancybox@latest/dist/jquery.fancybox.min.js"></script><script src="https://cdn.jsdelivr.net/npm/velocity-animate@latest/velocity.min.js"></script><script src="https://cdn.jsdelivr.net/npm/velocity-ui-pack@latest/velocity.ui.min.js"></script><script src="/js/utils.js?version=1.7.0"></script><script src="/js/fancybox.js?version=1.7.0"></script><script src="/js/sidebar.js?version=1.7.0"></script><script src="/js/copy.js?version=1.7.0"></script><script src="/js/fireworks.js?version=1.7.0"></script><script src="/js/transition.js?version=1.7.0"></script><script src="/js/scroll.js?version=1.7.0"></script><script src="/js/head.js?version=1.7.0"></script><script>if(/Android|webOS|iPhone|iPod|iPad|BlackBerry/i.test(navigator.userAgent)) {
   $('#nav').addClass('is-mobile')
   $('footer').addClass('is-mobile')
   $('#top-container').addClass('is-mobile')

@@ -7,458 +7,54 @@
     error: '复制错误',
     noSupport: '浏览器不支持'
   }
-} </script></head><body><i class="fa fa-arrow-right" id="toggle-sidebar" aria-hidden="true"></i><div id="sidebar" data-display="false"><div class="author-info"><div class="author-info__avatar text-center"><img src="/img/avatar.png"></div><div class="author-info__name text-center">koral</div><div class="author-info__description text-center">罗凯的博客主页</div><hr><div class="author-info-articles"><a class="author-info-articles__archives article-meta" href="/archives"><span class="pull-left">文章</span><span class="pull-right">291</span></a><a class="author-info-articles__tags article-meta" href="/tags"><span class="pull-left">标签</span><span class="pull-right">38</span></a><a class="author-info-articles__categories article-meta" href="/categories"><span class="pull-left">分类</span><span class="pull-right">48</span></a></div></div></div><nav class="no-bg" id="nav"><div id="page-header"><span class="pull-left"> <a id="site-name" href="/index.html">凯</a></span><i class="fa fa-bars toggle-menu pull-right" aria-hidden="true"></i><span class="pull-right menus">   <a class="site-page" href="/">首页</a><a class="site-page" href="/archives">归档</a><a class="site-page" href="/tags">标签</a><a class="site-page" href="/categories">分类</a><a class="site-page" href="/about">关于我</a></span><span class="pull-right"></span></div><div id="site-info"><div id="site-title">凯</div><div id="site-sub-title">现在的我可以做点什么，让未来的我可以受益匪浅？</div></div></nav><div id="content-outer"><div class="layout" id="content-inner"><div class="recent-post-item article-container"><a class="article-title" href="/2018/09/30/分布式/SpringBoot/OSS-阿里云文件上传/">基于阿里云OSS的文件上传服务</a><time class="post-meta__date"><i class="fa fa-calendar" aria-hidden="true"></i> 2018-09-30</time><span class="article-meta"><span class="article-meta__separator">|</span><i class="fa fa-inbox article-meta__icon" aria-hidden="true"></i><a class="article-meta__categories" href="/categories/SpringBoot/">SpringBoot</a></span><span class="article-meta tags"><span class="article-meta__separator">|</span><i class="fa fa-tag article-meta__icon" aria-hidden="true"></i><a class="article-meta__tags" href="/tags/hide/">hide</a><span class="article-meta__link">-</span><i class="fa fa-tag article-meta__icon" aria-hidden="true"></i><a class="article-meta__tags" href="/tags/java/">java</a><span class="article-meta__link">-</span><i class="fa fa-tag article-meta__icon" aria-hidden="true"></i><a class="article-meta__tags" href="/tags/SpringBoot/">SpringBoot</a></span><div class="content"><h1 id="基于阿里云-OSS-的文件上传服务"><a href="#基于阿里云-OSS-的文件上传服务" class="headerlink" title="基于阿里云 OSS 的文件上传服务"></a>基于阿里云 OSS 的文件上传服务</h1><h2 id="1-阿里云-OSS-服务介绍"><a href="#1-阿里云-OSS-服务介绍" class="headerlink" title="1.阿里云 OSS 服务介绍"></a>1.阿里云 OSS 服务介绍</h2><pre><code>OSS(Object Storage Service) 即对象存储服务，在 OSS 中每个文件都有一个 Key，通过这个 Key 来指向不同的文件对象。
-
-如果你提交的key为&quot;/attachment/2016/123.txt&quot;，那么在web管理平台上你可以看到上述以&quot;/&quot;分开的文件夹形式，即 OSS 中的 Key 就是&quot;/attachement/2016/123.txt&quot;</code></pre><h2 id="2-Java-SDK"><a href="#2-Java-SDK" class="headerlink" title="2.Java SDK"></a>2.Java SDK</h2><blockquote>
-<p>aliyun-sdk-oss</p>
-</blockquote>
-<h2 id="3-如何使用-OSS"><a href="#3-如何使用-OSS" class="headerlink" title="3.如何使用 OSS"></a>3.如何使用 OSS</h2><pre><code>阿里云OSS方服务，通过自身提供的Client来实现上传和下载。所以在使用OSS服务上传文件时，需要创建三个类： Client类 、 Config类 和 上传类。</code></pre><h2 id="4-构建-OSS-Client-类"><a href="#4-构建-OSS-Client-类" class="headerlink" title="4.构建 OSS Client 类"></a>4.构建 OSS Client 类</h2><blockquote>
-<p>获得 OSS 连接的工具类</p>
-</blockquote>
-<pre><code>@Component
-public class DefaultOssClient{
-
-    @Value(&quot;${oss.endpoint})
-    String ENDPOINT;
-
-    @Value(&quot;${oss.access.key.id}&quot;)
-    String ACCESS_KEY_ID;
-
-    @Value(&quot;${oss.access.key.secret}&quot;)
-    String ACCESS_KEY_SECRET;
-
-    @Value(&quot;${oss.bucket.name}&quot;)
-    String BUCKET_NAME;
-
-    private static OSSClient client = new OSSClient(ENDPOINT,ACCESS_KEY_ID,ACCESS_KEY_SECRETT,DefaultConfig.getDefaultConfig());
-
-    static OSSClient getConnection(){
-        if(client == null){
-            client = new OSSClient(ENDPOINT,ACCESS_KEY_ID,ACCESS_KEY_SECRET,DefaultConfig.getDefaultConfig());
-        }
-        return client;
-    }
-
-    static void shutdownOSSClient(){
-        client.shutdown();
-        client = null;
-    }
-}</code></pre><blockquote>
-<p>创建一个保存 OSS 地址的文件类，这个文件用户返回给界面</p>
-</blockquote>
-<pre><code>public class OSSFile{
-    String fileId;
-    String ossUrl;
-    String fielname;
-    double sizeKb;
-
-    /* getter and setter*/
-}</code></pre><blockquote>
-<p>构建 OSS Config 类，用于指定文件上传的配置</p>
-</blockquote>
-<pre><code>static final ClientConfiguration conf = new ClientCOnfiguration();
-
-public class DefaultConfig{
-    private DefaultConfig(){
-        conf.setMaxConnections(100);
-        conf.setConnectionTimeout(5000);
-        conf.setMaxErrorRetry(3);
-        conf.setSocketTimeout(2000);
-    }
-
-    static ClientConfiguration getDefaultConfig(){
-        return conf;
-    }
-}</code></pre><blockquote>
-<p>构建 OSS 文件上传类</p>
-</blockquote>
-<pre><code>public class OSSUpload{
-
-    static String put1(File file){
-        String return_key = null;
-        try{
-            OSSClient client = DefaultOssClient.getConnection();
-            if(file !=null){
-                String fileName = file.getName();
-                String timeStamp = Date2Str.getCurrentTimeStamp();
-                String timeDate = Date2Str.getCurrentDate5();
-                String key = Constant.bashFilePath + timeDate + timeStamp +&quot;/&quot; +fileName;
-
-                client.putObject(new PutObjectRequest(Constant.bucketName,key,file));
-
-                return_key = key;
-            }
-            DefaultOssClient.shutdownOSSClient();
-        }catch(ClientException e){
-            return null;
-        }
-        return return_key;
-    }
-
-    static String put2(InputStream in,String filename){
-        String return_key = null;
-        try{
-            OSSClient client = DefaultOssClient.getConnection();
-            if(in != null){
-                String fileName = filename;
-                try{
-                    fileName = new String(filename.getBytes(&quot;ISO-8859-1&quot;),&quot;UTF-8&quot;);
-                }catch(UnsupportedEncodingException e){
-                    e.printStackTrace();
-                }
-                String timeStamp = System.getCurrentTimeStamp();
-                String timeDate = Date2Str.getCurrentDate5();
-                String key = Constant.bashFilePath + timeDate + timeStamp + &quot;/&quot; + fileName;
-
-                client.put(new PutObjectRequest(Constant.bucketName,key,in));
-
-                return_key = key;
-            }
-
-            DefaultOssClient.shutdownOSSClient();
-        }catch(ClientException e){
-            return null;
-        }
-
-        return return_key;
-    }
-}</code></pre><blockquote>
-<p>上传测试</p>
-</blockquote>
-<pre><code>public class FileUpload{
-    public static void main(String[] args){
-        try{
-            uploadOSS();
-        }catch(IOException e){
-            e.printStackTrace();
-        }
-    }
-
-    public static void uploadOSS() throws ClientProtocolExcetion{
-        HttpPost httpPost = new HttpPost(&quot;http://127.0.0.1:7001/test/autonavi/shanghai/api/attachment/oss/index.html);
-        httpPost.addHeader(&quot;key&quot;,&quot;123&quot;);
-        httpPost.addHeader(&quot;user&quot;,&quot;123&quot;);
-        httpPost.addHeader(&quot;method&quot;,&quot;123&quot;);
-        httpPost.addHeader(&quot;filename&quot;,new String(&quot;黄山［哈哈］.jpg&quot;.getBytes(&quot;UTF-8&quot;),&quot;ISO-8859-1&quot;));
-        httpPost.addHeader(&quot;type&quot;,&quot;01&quot;);
-
-        FileEntity reqEntity = new FileEntity(new File(&quot;/Users/123/Pictures/Huangshan.jpg&quot;));
-
-        httpPost.setEntity(reqEntity);
-
-        HttpClient client = new DefaultHttpClient();
-        HttpResponse response = client.execute(httpPost);
-
-        System.out.println(response);
-    }
-}</code></pre></div><hr></div><div class="recent-post-item article-container"><a class="article-title" href="/2018/09/30/分布式/SpringBoot/SpringBoot/">SpringBoot QA</a><time class="post-meta__date"><i class="fa fa-calendar" aria-hidden="true"></i> 2018-09-30</time><span class="article-meta"><span class="article-meta__separator">|</span><i class="fa fa-inbox article-meta__icon" aria-hidden="true"></i><a class="article-meta__categories" href="/categories/SpringBoot/">SpringBoot</a></span><span class="article-meta tags"><span class="article-meta__separator">|</span><i class="fa fa-tag article-meta__icon" aria-hidden="true"></i><a class="article-meta__tags" href="/tags/hide/">hide</a><span class="article-meta__link">-</span><i class="fa fa-tag article-meta__icon" aria-hidden="true"></i><a class="article-meta__tags" href="/tags/java/">java</a><span class="article-meta__link">-</span><i class="fa fa-tag article-meta__icon" aria-hidden="true"></i><a class="article-meta__tags" href="/tags/SpringBoot/">SpringBoot</a></span><div class="content"><h1 id="SpringBoot"><a href="#SpringBoot" class="headerlink" title="SpringBoot"></a>SpringBoot</h1><h2 id="1-RestController-和-Controller"><a href="#1-RestController-和-Controller" class="headerlink" title="1. @RestController 和 @Controller"></a>1. @RestController 和 @Controller</h2><pre><code class="java">@RestController : 将所有返回的结果以字符串形式返回
-@Controller ：返回结果由视图解析器返回视图</code></pre>
-<h2 id="2-SpringBootApplication"><a href="#2-SpringBootApplication" class="headerlink" title="2. @SpringBootApplication"></a>2. @SpringBootApplication</h2><blockquote>
-<p>是 SpringBoot 的核心注解，目的是开启自动配置。</p>
-</blockquote>
-<p>关闭自动配置：@SpringBootApplication(exclude={DataSourceAutoConfiguration.class})</p>
-<p>运行原理：相当于是以下注解的集合：</p>
-<pre><code class="java">@Target(Element.TYPE)
-@Retention(RetentionPolicy.RUNTIME)
-@Documentd
-@Inherited
-@Import({EnableAutoConfigurationImportSelector.class,AutoConfigurationPackages.Register.class})</code></pre>
-<h2 id="3-Thymeleaf-模板引擎-同-Freemarker"><a href="#3-Thymeleaf-模板引擎-同-Freemarker" class="headerlink" title="3. Thymeleaf 模板引擎(同 Freemarker)"></a>3. Thymeleaf 模板引擎(同 Freemarker)</h2><ol>
-<li>通过 <code>xmlns:th=http://www.thymeleaf.org</code> 命名空间，转换位动态视图；</li>
-<li>使用 <code>“@{}”</code> 方式引用 web 静态资源</li>
-<li>通过“${}”访问model中的属性，如：<span th:text="${singlePerson.name}"></span><br>注：需要处理的动态内容需要加上“th：”前缀</li>
-<li>迭代：使用“th：each”，如：th:each=”person:${person}” 其中 person 作为迭代元素使用</li>
-<li>数据判断： <code>th:if=&quot;${not #lists.isEmpty(people)}&quot;</code></li>
-<li>js 中访问 model</li>
+} </script></head><body><i class="fa fa-arrow-right" id="toggle-sidebar" aria-hidden="true"></i><div id="sidebar" data-display="false"><div class="author-info"><div class="author-info__avatar text-center"><img src="/img/avatar.png"></div><div class="author-info__name text-center">koral</div><div class="author-info__description text-center">罗凯的博客主页</div><hr><div class="author-info-articles"><a class="author-info-articles__archives article-meta" href="/archives"><span class="pull-left">文章</span><span class="pull-right">302</span></a><a class="author-info-articles__tags article-meta" href="/tags"><span class="pull-left">标签</span><span class="pull-right">39</span></a><a class="author-info-articles__categories article-meta" href="/categories"><span class="pull-left">分类</span><span class="pull-right">51</span></a></div></div></div><nav class="no-bg" id="nav"><div id="page-header"><span class="pull-left"> <a id="site-name" href="/index.html">凯</a></span><i class="fa fa-bars toggle-menu pull-right" aria-hidden="true"></i><span class="pull-right menus">   <a class="site-page" href="/">首页</a><a class="site-page" href="/archives">归档</a><a class="site-page" href="/tags">标签</a><a class="site-page" href="/categories">分类</a><a class="site-page" href="/about">关于我</a></span><span class="pull-right"></span></div><div id="site-info"><div id="site-title">凯</div><div id="site-sub-title">现在的我可以做点什么，让未来的我可以受益匪浅？</div></div></nav><div id="content-outer"><div class="layout" id="content-inner"><div class="recent-post-item article-container"><a class="article-title" href="/2018/11/05/后端/Quartz/SpringBoot整合Quartz(六)/">SpringBoot整合Quartz(六)-使用Elastic-Job</a><time class="post-meta__date"><i class="fa fa-calendar" aria-hidden="true"></i> 2018-11-05</time><span class="article-meta"><span class="article-meta__separator">|</span><i class="fa fa-inbox article-meta__icon" aria-hidden="true"></i><a class="article-meta__categories" href="/categories/后端/">后端</a><i class="fa fa-angle-right" aria-hidden="true"></i><i class="fa fa-inbox article-meta__icon" aria-hidden="true"></i><a class="article-meta__categories" href="/categories/后端/Quartz/">Quartz</a></span><span class="article-meta tags"><span class="article-meta__separator">|</span><i class="fa fa-tag article-meta__icon" aria-hidden="true"></i><a class="article-meta__tags" href="/tags/hide/">hide</a><span class="article-meta__link">-</span><i class="fa fa-tag article-meta__icon" aria-hidden="true"></i><a class="article-meta__tags" href="/tags/Quartz/">Quartz</a></span><div class="content"><p>Elastic-Job 的底层还是使用的 Quartz，只是节点通过 Zookeeper 来进行分配。</p>
+<p>Quartz 只能解决 HA(高可用)</p>
+<ol>
+<li>But 这里有一个问题，ElasticJob 的开发代码中使用了 lombok，但是并没有引入该框架，所以需要我们在项目中引入 lombok。</li>
+<li>因为项目使用 Zookeeper 作为注册中心，所以需要自行安装和配置 Zookeeper。</li>
 </ol>
-<pre><code class="javascript">&lt;script th:inline=&quot;javascript&quot;&gt;
-    var singlePerson=[[${singlePerson}]]
-&lt;script&gt;</code></pre>
-<blockquote>
-<p>使用 <code>th:inline=&quot;javascript&quot;</code> 使 js 能够访问 model<br>通过[[${}]]获取实际的值</p>
-</blockquote>
-<h2 id="4-注册-Servlet、Filter、Listener"><a href="#4-注册-Servlet、Filter、Listener" class="headerlink" title="4. 注册 Servlet、Filter、Listener"></a>4. 注册 Servlet、Filter、Listener</h2><p>Servlet:ServletRegistrationBean</p>
-<pre><code class="java">@Bean
-public ServletRegistrationBean serbletRegistrationBean(){
-    //直接注册servlet及其请求路径
-    return new ServletRegistrationBean(new XXServlet(),&quot;/xx/*&quot;);
-}</code></pre>
-<p>Filter:FilterRegisterationBean</p>
-<pre><code class="java">@Bean
-public FilterRegisterationBean filterRegisterationBean(){
-    //设置过滤器
-    FilterRegisterationBean filterRegisterationBean = new filterRegisterationBean.setFilter(new YYFilter());
-    //执行顺序
-    filterRegisterationBean.setOrder(2);
-    filterRegisterationBean.setName(&quot;MyFilter&quot;);//设置名称
-    filterRegisterationBean.setUrlPatterns(&quot;/*&quot;);//设置过滤路径
-    return filterRegisterationBean;
-}</code></pre>
-<p>Listener:ServletListenerRegisterationBean</p>
-<pre><code class="java">@Bean
-public ServletListenerRegisterationBean&lt;ZZListener&gt; servletListenerRegisterationBean(){
-    return new ServletListenerRegisterationBean&lt;ZZListener&gt;(new ZZListener);
-}</code></pre>
-<h2 id="5-修改-tomcat、jetty、undertow"><a href="#5-修改-tomcat、jetty、undertow" class="headerlink" title="5.修改 tomcat、jetty、undertow"></a>5.修改 tomcat、jetty、undertow</h2><p>直接在 pom 文件中，修改依赖</p>
-<pre><code class="java">&lt;dependency&gt;
-  &lt;groupId&gt;org.springframework.boot&lt;/groupId&gt;
-    &lt;artifactId&gt;spring-boot-starter-web&lt;/artifactId&gt;
-     &lt;exclusions&gt;
-        &lt;exclusion&gt;
-          &lt;groupId&gt;org.springframework.boot&lt;/groupId&gt;
-            &lt;artifactId&gt;spring-boot-starter-tomcat&lt;/artifactId&gt; //将web对应的服务器修改为其它
-        &lt;/exclusion&gt;
-      &lt;/exclusions&gt;
-  &lt;version&gt;1.5.9.RELEASE&lt;/version&gt;
-&lt;/dependency&gt;
-
-&lt;dependency&gt;
-  &lt;groupId&gt;org.springframework.boot&lt;/groupId&gt;
-  &lt;artifactId&gt;spring-boot-starter-tomcat&lt;/artifactId&gt;
-  &lt;version&gt;1.5.9.RELEASE&lt;/version&gt;
-&lt;/dependency&gt;</code></pre>
-<h2 id="6-WebSocket"><a href="#6-WebSocket" class="headerlink" title="6. WebSocket"></a>6. WebSocket</h2><h3 id="1-websocket-的配置"><a href="#1-websocket-的配置" class="headerlink" title="1. websocket 的配置"></a>1. websocket 的配置</h3><ol>
-<li>使用@Configuration 及@EnableWebSocketMessageBroker 来开启 WebSocket 支持</li>
-<li>继承 AbstratWebSocketMessageBrokerConfigurer 类<ol>
-<li>重写 <code>registerStomEndpoint(StomEndpointRegister)</code> 与 <code>configureMessageBroker(essageBrokerRegistry)</code> 方法</li>
-<li><code>Sregistry.addEndpoint(&quot;/endpointWisely&quot;).withSockJS()</code>; 即通过 endpointWisely 连接 SockJs</li>
-<li>Mregistry.enableSimpleBroker(“/topic”); 配置一个 topic 消息代理</li>
-</ol>
-</li>
-</ol>
-<h3 id="2-wscontroller"><a href="#2-wscontroller" class="headerlink" title="2. wscontroller"></a>2. wscontroller</h3><p>@MessageMapping(“/welcome”) 同 RequestMapping,映射地址</p>
-<p>@SendTo(“/topic/getResponse”) 当服务端有消息时，会对订阅了”/topic/getResponse”的客户端发送消息</p>
-<pre><code class="java">public WiselyResponse say(WiselyMessage message) throws Exception{
-    return new WiselyResponse(&quot;Welcome &quot; +message.getName()+&quot; ! &quot;);  返回发送的消息
-}</code></pre>
-<h3 id="3-ws-html"><a href="#3-ws-html" class="headerlink" title="3. ws.html"></a>3. ws.html</h3><pre><code class="javascript">//连接并订阅
-var socket = new SockJS(&quot;/endpointWisely&quot;); //连接名称为“。。。”的endpoint
-var stompClient = Stomp.over(socket); //使用stomp子协议
-stompClient.connect({}, function(name) {
-  stompClient.subscribe(&quot;topic/getResponse&quot;, function(response) {
-    //订阅
-    show(); //自定义的展示方法
-  });
-});
-stompClient.send(&quot;/welcome&quot;, {}, JSON.stringify({ name: name })); //发送消息</code></pre>
-<h2 id="7-Spring-Data-JPA"><a href="#7-Spring-Data-JPA" class="headerlink" title="7.Spring Data JPA"></a>7.Spring Data JPA</h2><h3 id="1-EnableJpaRepositories"><a href="#1-EnableJpaRepositories" class="headerlink" title="1. @EnableJpaRepositories"></a>1. @EnableJpaRepositories</h3><pre><code>使用@EnableJpaRepositories(&quot;com.wisely.repos&quot;)来开启Spring Data JPA支持 其中的value参数用来扫描数据访问层所在包下的数据访问的接口定义</code></pre><h3 id="2-定义查询方法"><a href="#2-定义查询方法" class="headerlink" title="2. 定义查询方法"></a>2. 定义查询方法</h3><blockquote>
-<p><code>常规查询</code> ：find、read、readBy、query、queryBy、get、getBy<br><code>查询关键字</code> ：And(和)、Or(或)、Is = Equals(等)、Between(位于之间)、LessThan(小于)、LessThanEqual(小于等于)<br>GreaterThan(大于)、GreaterThanEqual(大于等于)、After(日期大于)、Before(日期之前)<br>IsNull、IsNotNull = NotNull、Like、Not Like、Starting With(前面加%)<br>EndingWith(后面加%)、Containing(前后都加%)、OrderBy(排序)、Not、In<br>NotIn、True、False、IgnoreCase<br><code>限制查询结果</code> ：Top、First<br><code>@NamedQuery</code> : 一个名称映射一个查询语句</p>
-</blockquote>
-<pre><code>eg:    @NamedQuery(name = &quot;Person.findByName&quot;,query = &quot;select p from Person p where p.name=?1&quot;)
-    写在实体类名上</code></pre><p>@Query 查询<br>直接在@Query 的 value 中书写 sql 语句，参数可以使用索引(“?1”)或者命名(“:name”)<br>更新查询：使用@Modifying 和 @Query 来组合更新查询</p>
-<h3 id="3-排序与分页"><a href="#3-排序与分页" class="headerlink" title="3. 排序与分页"></a>3. 排序与分页</h3><pre><code>Sort排序对象：     List&lt;Person&gt; findByName(String name,Sort sort);
-Pageable对象：    List&lt;Person&gt; findByName(String name,Pageable pageable);
-使用：    List&lt;Person&gt; persons = personRepository.findByName(&quot;xx&quot;,new Sort(Direction.ASC,&quot;age&quot;));
-        List&lt;Person&gt; persons = personRepository.findByName(&quot;xx&quot;,new Pageable(0,10));</code></pre><h3 id="4-repository-默认的方法："><a href="#4-repository-默认的方法：" class="headerlink" title="4. repository 默认的方法："></a>4. repository 默认的方法：</h3><pre><code>save()    保存；
-findAll()    查询所有；
-findAll(new Sort(Sort.Direction.ASC,&quot;age&quot;))        排序查询所有；
-findAll(new PageRequest(0,10))        分页查询；
-findAll(new PageRequest(1,2,new Sort(Sort.Direction.DESC,&quot;age&quot;)))    分页排序</code></pre><h2 id="8-SpringBoot-的注解式事务-Transactional"><a href="#8-SpringBoot-的注解式事务-Transactional" class="headerlink" title="8.SpringBoot 的注解式事务 @Transactional"></a>8.SpringBoot 的注解式事务 @Transactional</h2><pre><code>属性：
-    1.propagation 定义事务的生命周期
-        REQUIRED             如果没有事务则新建
-        REQUIRED_NEW        始终开启新事务
-        SUPPORTS            有就用，没有就不用
-        NESTED                类似于REQUIRED_NEW，但是不支持jps与hibernate
-        NOT_SUPPORTS        不在事务中执行
-        NEVER                强制不在事务中执行，有事务则抛出异常
-        MANDATORY            强制在事务中执行，没有则抛出异常
-    2.isolation  事务的隔离机制，决定了事务的完整性
-        READ_UNCOMMITED      读不提交(脏读、幻读、不可重复读)
-        READ_COMMITED        读提交(不可重复读和幻读)，解决脏读
-        REPEATABLE_READ        A读取某条数据时，B不许修改(幻读)
-        SERIALIZABLE        序列化
-    3.timeout    事务过期时间
-    4.readOnly    指当前事务是否是只读事务
-    5.rollbackFor    指定哪个异常会回滚
-    6.noRollBackFor    指定哪个异常不会回滚</code></pre><p>1.@GetMapping 注解：相当于 @RequestMapping(Method=RequestMethod.GET)<br>该注解将 HTTP GET 映射到特定的方法上<br>2.@RequestParam 注解：将 Request 参数绑定到处理函数的参数中<br>如：public String getUserId(@RequestParam(“id”) int id); 这样就可以将 localhost:8080/?id=123 中的 id 参数赋给方法中的 id<br>3.@JsonIgnoreProperties(ignoreUnknown = true)<br>将这个注解卸载类上之后，就会忽略类中不存在的字段<br>使用@JsonIgnoreProperties({“internalId”,”secretKey”})指定的字段不会被序列化和反序列化 4.数据校验 1.在实体类的属性前添加如：@NotEmpty、@Min(value=18,message=”未成年禁止入内”)等 2.在 Controller 层的方法，要校验的参数上添加@Valid 注解<br>如果需要返回错误信息，则需要传入 BindingResult 对象，用于获取校验失败情况下的反馈信息<br>5.ModelMapper 对象<br>一个从对象到对象的框架，能将 javaBean 对象从一种表现形式转化为另一种表现形式，采用“约定”来配置<br>eg: Person person = modelMapper.map(personDTO,Person.class); //将 PersonDTO 的对象，转换成 Person 对象<br>Person personInDB = personService.getById(userId,PersonDTO.getId()) //在 service 层对 userid 和 person.id 做了处理，从数据库取出 person.id 对应的 Person，userid 则是权限判断<br>return modelMapper.map(personService.save(userId,person),PersonDTO.class); //再将保存返回的 person 转为 personDTO<br>6.@PathVariable 注解<br>可以绑定占位符传过来的值到方法的参数上<br>7.@RequestMapping 的变形<br>@GetMapping、@PostMapping、@PutMapping、@DeleteMapping<br>8.@RequestParam 和@PathVariable 的区别<br>1.@RequestParam 和@PathVariable 都是从 request 中接收请求的，都可以接收参数<br>2.@RequestParam 支持 defaultValue（默认值）、name、value、required 参数<br>3.@PathVariable 能够识别 URL 里面的一个模板 eg:@RequestMapping(“/hello/{id}”)<br>4.@PathParam 同@PathVariable，但是属于 JBoss 的<br>5.@QueryParam 同@RequestParam,属于 JAX-RS<br>6.@ResponseBody 服务器返回的时候以一种什么样的方式进行返回<br>7.@RequestBody<br>9.@Documentd 注解<br>映射实体类与 MongoDB 文件<br>10.http 状态码<br>1XX 临时响应，并需要请求者继续执行操作的状态代码<br>2XX 请求成功<br>3XX 重定向代码<br>4XX 表示请求出错<br>5XX 服务器内部错误 11.自定义注解<br>@Retention 注解<br>定义被它所注解的注解保留多久，一共有三种策略：<br>public enum RetentionPolicy{<br>SOURCE,CLASS,RUNTIME<br>}<br>1.SOURCE 被编译器忽略<br>2.CLASS 注解会被保留在 Class 文件中，但在运行时并不会被 vm 保留(默认)<br>3.RUNTIME 保留至运行时，可以通过反射去获取注解信息。<br>@Target 注解<br>说明该注解可以被声明在哪些元素之前<br>public enum ElementType{<br>TYPE,FIELD,METHOD,PARAMETER,CONSTRUCTOR,LOCAL_VARIABLE,<br>ANNOTATION_TYPE,PACKAGE,TYPE_PARAMETER,TYPE_USE<br>}<br>1.TYPE 类之前<br>2.FIELD 类的字段前<br>3.METHOD 类的方法前<br>4.PARAMETER 方法参数前<br>5.CONSTRUCTOR 构造方法前<br>6.LOCAL_VARIABLE 局部变量之前<br>7.ANNOTATION_TYPE 注解类型之前<br>8.PACKAGE 包名前<br>12.Spring 框架下的 AOP Annotation 1.切入点语法：<br>execution(public * _ (..))<br>execution(_ set* (..))<br>execution(* com.xyz.servie.AccountService._ (..))<br>execution(_ com.xyz.service.<em>.</em> (..))<br>within(com.xyz.service.<em>) //service 包中<br>within(com.xyz.service..</em>) //service 或其子包 2.声明通知<br>1.@Before 前置通知<br>2.@AfterReturning 后置通知<br>3.AfterThrowing 异常通知，在一个方法抛出异常后执行<br>4.@After 最终通知，必会执行的<br>5.@Around 环绕通知，在方法执行前及执行后，常用于线程安全的情况下，共享数据<br>13.Spring Security 1.安全处理方法：<br>1.access(String) Spring EL 表达式结果为 true 时可访问<br>2.anonymouns() 匿名可访问<br>3.denyAll() 用户不能访问<br>4.fullyAuthenticated() 用户完全认证可访问(非 remeber me)<br>5.hasAnyAuthority(String..) 如果用户有参数，则其中任一权限可访问<br>6.hasAnyRole(String..) 如果用户有参数，则其中任一角色可访问<br>7.hasAuthority(String) 如果用户有参数，则其权限可访问<br>8.hasRole(String) 若用户由参数中的角色可访问<br>9.permitAll() 用户可任意访问<br>10.rememberMe() 允许通过 remember-me 登陆的用户访问<br>11.authenticated() 用户登陆后可访问<br>14.JMS 1.安装 ActiveMQ 2.在 application.properties 中配置 ActiveMQ 的消息代理地址<br>spring.activemq.broker-url=tcp://localhost:61616 3.定义发送端<br>需要实现 MessageCreator 接口，并重写其 createMessage 方法<br>eg: class Msg implements MessageCreator{<br>@override<br>public Message createMessage() throws JMSException{<br>return session.createTextMessage(“发送了消息”);<br>}<br>} 4.定义发送及目的地 1.使用 CommandLineRunner 接口，用于程序启动后执行的代码，通过重写其 run 方法执行 2.注入 Springboot 提供的 JmsTemplate 的 Bean 3.通过 JmsTemplate 的 send 方法向 “my-destination” 目的地发送 Msg 的消息<br>eg: class Ch934Application implements CommandLineRunner{<br>@AutoWired<br>JmsTemplate jmsTemplate;<br>@Override<br>public void run(String… args) throws Exception{<br>jmsTemplate.send(“my-destination”,new Msg());<br>}<br>} 4.定义消息监听<br>使用@JmsListener 注解，来简化 JMS 开发。只需要在这个注解的属性 destination 指定要监听的目的地，即可接收该目的地发送的消息。<br>eg: class Receiver{<br>@JmsListener(destination = “my-destination”)<br>public void receiveMessage(String message){<br>sout(“收到：”+message+”，消息”)<br>}<br>}</p>
-<pre><code>    #SpringBoot的配置文件.properties</code></pre><h1 id="Logging"><a href="#Logging" class="headerlink" title="Logging"></a>Logging</h1><pre><code>logging.config=classpath:logback-spring.xml</code></pre><h1 id="Mysql-Configuration"><a href="#Mysql-Configuration" class="headerlink" title="Mysql Configuration"></a>Mysql Configuration</h1><pre><code>spring.datasource.url=jdbc:mysql://localhost:3306/pgc                          #数据库地址
-spring.datasource.username=root                                                #账号
-spring.datasource.password=password                                            #密码</code></pre><h1 id="Keep-the-connection-alive-if-idle-for-a-long-time-needed-in-production"><a href="#Keep-the-connection-alive-if-idle-for-a-long-time-needed-in-production" class="headerlink" title="Keep the connection alive if idle for a long time (needed in production)"></a>Keep the connection alive if idle for a long time (needed in production)</h1><pre><code>spring.datasource.testWhileIdle=true                                        #指定连接是否被空闲来连接回收器检验
-spring.datasource.validationQuery=SELECT 1                                    #验证从连接池取出的连接</code></pre><h1 id="Show-or-not-log-for-each-sql-query"><a href="#Show-or-not-log-for-each-sql-query" class="headerlink" title="Show or not log for each sql query"></a>Show or not log for each sql query</h1><pre><code>spring.jpa.show-sql=true                                                    #运行时输出sql语句</code></pre><h1 id="Hibernate-ddl-auto-save-save-drop-update"><a href="#Hibernate-ddl-auto-save-save-drop-update" class="headerlink" title="Hibernate ddl auto (save, save-drop, update)"></a>Hibernate ddl auto (save, save-drop, update)</h1><pre><code>spring.jpa.hibernate.ddl-auto=update                                        #hibernate数据定义的规则，更新</code></pre><h1 id="Set-to-true-if-we-need-to-populate-the-database-using-‘data-sql’"><a href="#Set-to-true-if-we-need-to-populate-the-database-using-‘data-sql’" class="headerlink" title="Set to true if we need to populate the database using ‘data.sql’."></a>Set to true if we need to populate the database using ‘data.sql’.</h1><pre><code>spring.datasource.initialize=false                                            #指定初始化数据源，是否用data.sql来初始化，默认: true</code></pre><h1 id="Naming-strategy"><a href="#Naming-strategy" class="headerlink" title="Naming strategy"></a>Naming strategy</h1><pre><code>spring.jpa.hibernate.naming-strategy=org.hibernate.cfg.ImprovedNamingStrategy    #指定命名策略</code></pre><h1 id="The-SQL-dialect-makes-Hibernate-generate-better-SQL-for-the-chosen-database"><a href="#The-SQL-dialect-makes-Hibernate-generate-better-SQL-for-the-chosen-database" class="headerlink" title="The SQL dialect makes Hibernate generate better SQL for the chosen database"></a>The SQL dialect makes Hibernate generate better SQL for the chosen database</h1><pre><code>spring.jpa.properties.hibernate.dialect=org.hibernate.dialect.MySQL5Dialect    #hibernate方言</code></pre><h1 id="Mongodb-Configuration"><a href="#Mongodb-Configuration" class="headerlink" title="Mongodb Configuration"></a>Mongodb Configuration</h1><pre><code>spring.data.mongodb.uri=mongodb://localhost:27000/pgc                        #mongodb的uri</code></pre><h1 id="OSS-Configuration"><a href="#OSS-Configuration" class="headerlink" title="OSS Configuration"></a>OSS Configuration</h1><pre><code>oss.endpoint=oss-cn-shanghai.aliyuncs.com                                    #oss阿里云的相关配置
-oss.access.key.id=LTAIxYKpaBqbAIK3
-oss.access.key.secret=WuTDXWS8PBqSdqMuMxrPfT5ryYmmd0
-oss.bucket.name=new-pgc
-spring.http.multipart.maxFileSize=100MB
-spring.http.multipart.maxRequestSize=100MB</code></pre><h1 id="SSO-Configuration"><a href="#SSO-Configuration" class="headerlink" title="SSO Configuration"></a>SSO Configuration</h1><pre><code>security.enabled=true</code></pre><p>#默认 callback<br>security.defaultCallback=/</p>
-<p>#sso 验证 token 地址<br>security.ssoServerValidate=<a href="http://106.15.179.107:7127/api/c/sso/validate-token" target="_blank" rel="noopener">http://106.15.179.107:7127/api/c/sso/validate-token</a> #如果本地应用没有登陆就去验证<br>security.ssoServerAuth=<a href="http://106.15.179.107:7127/api/c/sso/auth" target="_blank" rel="noopener">http://106.15.179.107:7127/api/c/sso/auth</a> #本地应用密码<br>security.ssoKey=574163310 #本地应用地址, should be defined by the same field under each app</p>
-<h1 id="security-appHost-http-localhost-8000"><a href="#security-appHost-http-localhost-8000" class="headerlink" title="security.appHost=http://localhost:8000"></a>security.appHost=<a href="http://localhost:8000" target="_blank" rel="noopener">http://localhost:8000</a></h1><p>#gizp<br>spring.resources.chain.gzipped=true<br>注：<br>1.Java Web 获取 IP，及 ip 所在地址<br>在请求头 getHeader()中，”x-forwarded-for”、”Proxy-Client-IP”、”WL-Proxy-Client-IP”<br>请求地址:getRemoteAddr(); 2.请求参数与路径变量 1.请求参数<br>采用 key = value 形式，并用 “&amp;” 分隔<br>eg:localhost:8080/user?name=spring&amp;pwd=123<br>在传统的 servlet 中，可以通过 HttpServletRequest 的 getParameter()方法取值<br>在 SpringMVC 中则提供了一个注解”@RequestParam”来注释方法参数 2.路径参数<br>类似请求参数，但是没有 key 部分，只是一个值<br>eg:localhost:8080/user/spring<br>为了使用路径变量，首先需要在@RequestMapping 注解的值属性中添加一个变量，该变量必须放在花括号之间<br>eg:@RequestMapping(value=”/user/{pwd}”)<br>使用时，在方法签名中加上@PathVariable 注解<br>eg:public String test(@PathVariable(name=”pwd”) string password)<br>3.lambda 表达式 1.用 lambda 实现 Runnable<br>new Thread( () -&gt; sout(“Lambda expression rocks！！”) ).start();<br>等价于：<br>new Thread(<br>new Runnable(){<br>@Override<br>public void run(){<br>sout(“Lambda expression rocks！！”) ;<br>}<br>}<br>).start(); 2.对列表进行迭代<br>list.forEach( n -&gt; sout(n) );<br>如果输出和参数相同，则可以省略参数<br>list.forEach( System.out::println() ); 3.函数式接口 Predicate<br>可以向 API 添加逻辑，用更少的代码支持更多的动态行为。<br>eg: public void filter(String name,Predicate condition){<br>if(condition.test(name)){<br>sout(name+” “);<br>}<br>}<br>那么在调用时，我们就可以通过 predicate 来进行判断<br>eg:<br>List languages = Arrays.asList(“Java”, “Scala”, “C++”, “Haskell”, “Lisp”);<br>filter(langugages,str -&gt; str.startWith(“J”));<br>4.Map 和 Reduce(是 Stream 的方法)<br>1.map 允许你将对象进行转换，将列表中的每个元素转换为修改之后的值。<br>eg: List costBeforeTax = Arrays.asList(100, 200, 300, 400, 500);<br>costBeforeTax.stream().map( (cost)-&gt;cost+.12<em>cost )<br>.forEach(System.out::println);<br>2.reduce 可以对所有值进行合并，比较类似 SQL 中的 sum()、avg()、count()等<br>eg:对修改后的数据进行计算，接收多个值，返回一个值<br>costBeforeTax.stream().map( (cost)-&gt;cost+.12</em>cost )<br>.reduce( (sum,cost)-&gt; sum+cost).get();<br>5.filter 过滤<br>使用 lambda 表达式和流 API 过滤大规模数据集合，流提供了一个 filter()方法，接受一个 Predicate 对象，即可以传入一个 lambda 表达式作为过滤逻辑<br>eg: List<string> filtered = strList.stream().filter( x-&gt; x.length()&gt;10).collect(Collectors.toList);<br>得到的结果为：过滤后的 strList，长度都是大于 10 的<br>6.distinct()去重<br>numbers.stream().distinct().collect(Collectors.toList); 7.集合的最大值、最小值、总和及平均值<br>IntStream、LongStream 和 DoubleStream 等流的类中，有个方法叫做 summaryStatistics()，可以返回 IntSummaryStatistics、LongSummaryStatistics 或者 DoubleSummaryStatistic<br>eg: IntSumnumberList stats = numberList.stream().mapToInt((x)-&gt;x).summaryStatistics()<br>stats 存在 getMax、getMin、getSum、getAverage、getCount 方法<br>8.Lambda 表达式与匿名类<br>this 关键字：<br>匿名类的 this 关键字指向匿名类<br>lambda 表达式的 this 关键字指向包围 lambda 表达式的类<br>编译方式：<br>java 编译器将 lambda 表达式编译成类的私有方法，使用 java7 的 invokedynamic 字节码指令来动态绑定这个方法。 9.限制：<br>1.lambda 表达式只能引用 final 或 final 局部变量，即在 lambda 内部不能修改定义在域外的变量。 10.避免 Null<br>当出现多层嵌套时，调用其中的方法可能会抛出 NullPointException 异常,所以我们可以通过 Optional 类型来预防 null 检查<br>eg:new Outer().getNested().getInner().getFoo()中可能会出现 Null 异常<br>修改过后：<br>Optional.of(new Outer())<br>.map(Outer::getNested)<br>.map(Nested::getInner)<br>.map(Inner::getFoo)<br>.ifPresent(System.out::println);<br>11.Optional 类<br>是一个可以为 null 的容器对象，如果值存在则 isPresent()方法返回 true，调用 get()方法会返回该对象。<br>Optional 是个容器，它可以保存类型 T 的值，或者仅仅保存 null。<br>Optional 类的引入很好的解决空指针异常。<br>4.Git 使用规范流程 1.新建分支<br>每次开发新功能，都应该新建一个单独的分支 #获取主分支最新代码<br>git checkout master<br>git pull #新建一个开发分支<br>git checkout -b myfeature 2.提交分支 commit<br>分支修改后，就可以提交 commit 了<br>git add -all #all 表示保存所有变化，也是默认的<br>git status #查看发生变动的文件<br>git commit –verbose #verbose 参数，会列出 diff 的结果 3.撰写提交信息<br>提交 commit 时，必须给出完整的提交信息<br>eg：第一行是不超过 50 字的提要<br>空一行 *罗列出改动原因、主要变动、需要注意的问题（可多行）<br>空一行<br>提供对应的网址 4.与主干同步<br>git fetch master 5.合并 commit<br>分支开发完成后，可能有一堆 commit，但是合并到主干时，最好只有一个 commit，清晰易管理<br>git rebase -i origin/master #i 参数表示互动，此时会打开一个互动界面<br>可用的命令：<br>1.pick #正常选中<br>2.reword #选中，并且修改提交信息<br>3.edit #钻中，rebase 时会暂停，允许你修改这个 commit<br>4.squash #选张，会将当前 commit 与上一个 commit 合并<br>5.fixup #与 squash 相同，但不会保存当前 commit 的提交信息<br>6.exec #执行其他 shell 命令<br>其中，squash 和 fixup 可以用来合并 commit<br>另外，PonyFoo 提出另一种合并 commit 的简洁方法，就是先撤销过去 5 个 commit，再建一个新的<br>git reset HEAD~5<br>git add<br>git commit -am “Here’s the bug fix that closes #28”<br>git push –force 6.推送到远程仓库<br>合并 commit 之后，就可以推送当前分支到远程仓库了<br>git push –force origin myfeature<br>“–force”表示强行推送，因为 rebase 以后，分支历史改变了，跟远程分支不一定兼容，可能需要强行推送 7.发出 Pull Request<br>提交到远程仓库以后，就可以发出 Pull Request 到 master 分支，然后请求别人进行代码 review，确认可以合并到 master<br>4.2 Git 分支管理策略<br>Vincent Driessen 提出了一个分支管理的策略，使得版本库的演进保持简洁，主干清晰。 1.主分支 Master<br>代码库有且仅有的一个主分支，提供给用户使用的正式版本，都在此分支上发布 2.开发分支 Develop<br>这个分支可以用来生成代码的最新隔夜版本(nightly)，如果想正式对外发布，就在 Master 分支上，对 Develop 分支进行合并(merge)<br>git merge –no-ff develop 3.临时性分支<br>1.feature 功能分支<br>2.release 预发布分支<br>3.fixbug 修补 bug 分支<br>这三种分支都属于临时性需要，使用完以后，应该删除，代码库的常设分支只有 Master 和 Develop</string></p>
-<ol start="5">
-<li>组合(Composition)与聚合(Aggregation)的区别<br>1.Composition 表示的是’Part-od’的关系<br>比如：引擎 Engine 是汽车 Car 的一部分，脱离了汽车的引擎毫无作用，没有实在的意义 2.而 Aggregation 表示的是’Has-a’的关系<br>比如：Person 有一个 Address，但是 Address 的存在不依赖于 Person，即地址本身就有其独立存在的意义，不受人的约束。 3.就强弱关系而言：<br>Composition 应该更强一些 6.交并补<br>1.List 集合的交并补<br>list1.addAll(list2); //并集<br>list1.retainAll(list2); //交集,返回 Boolean<br>list1.removeAll(list2); //差集<br>list2.removeAll(list1);<br>list1.addAll(list2); //无重复并集<br>7.SpringMVC 迁移至 SpringBoot</li>
-</ol>
-<p>8.lucene 和 solr<br>1.lucene<br>lucene 是一个开放源代码的 全文检索 引擎工具包,并不是一个完整的全文检索引擎，而是一个全文检索引擎的架构，提供了完整的查询引擎和索引引擎，部分文本引擎。目的在于为软件开发人员提供一个简单易用的工具包，以方便的在目标系统中实现全文检索的功能，或者以此为基础建立起完整的全文检索引擎。<br>2.solr<br>是一个高性能，给予 lucene 的全文搜索服务器。同时对其进行了拓展，提供了比 Lucene 更为丰富的查询语言，同时实现了可配置、可拓展并对查询性能进行了优化，并且提供了一个完整的功能管理界面，是一款非常优秀的全文搜索引擎。它对外提供类似于 WebService 的 API 接口。用户可以通过 http 请求，向搜索引擎服务器提交一定格式的 XML 文件，生成索引；也可以通过 Http Solr Get 操作提出查找请求，并得到 XML 格式的返回结果、</p>
-<pre><code>3.Solr和Lucene的区别
-    1.搜索服务器：
-        lucene本质上是搜索库，不是独立的应用程序
-    2.企业级
-        lucene专注于搜索底层的建设，而Solr专注于企业应用。
-    3.管理
-        lucene不负责支撑搜索服务所必须的管理
-    一句话总结：Solr是Lucene面向企业搜索应用的扩展</code></pre><p>9.Gradle 1.简介：<br>是一个基于 JVM 的构建工具</p>
-<p>10.Nginx 1.反向代理-解决前端跨域问题<br>跨域-浏览器为了安全问题而限制了跨域访问，如果 a，b 页面的协议、域名、端口、子域名不同，所进行的访问行动都是跨域的。<br>由配置来完成： 1.让 nginx 监听 localhost 的 80 端口，网站 A 与网站 B 的访问都是经过 localhost 的 80 端口进行访问。 2.配置一个特殊的’/api’目录的访问，并且对 url 执行了重写<br>rewrite ^/api/(.*)$/$1 break;<br>代表重写拦截进来的请求，并且只能对域名后边以’/api’开头的起作用，break 表示匹配一个之后停止匹配 11.详解 SpringData 1.概念<br>Spring Data 的目的是为了简化构建基于 Spring 框架应用的数据访问技术，包括非关系型数据库、Map-Reduce 框架、云数据服务等等；另外也包含对关系数据库的访问支持。<br>2.Spring Data 的子项目：<br>1.Commons 提供共享的基础框架，适合各个子项目使用，支持跨数据库持久化<br>2.Hadoop 基于 Spring 的 Hadoop 作业配置和一个 POJO 编程模型的 MapReduce 作业<br>MapReduce 是一种编程模型，用于大规模数据集(大于 1TB)的并行运算<br>3.Key-value 集成了 Redis 和 Riak，提供多个常用场景下的简单封装<br>4.Document 集成文档数据库，CouchDB 和 MongoDB 并提供基本的配置映射和资料库的支持<br>5.Graph 集成 Neo4j 提供强大的基于 POJO 的编程模型<br>6.Graph Roo AddOn - Rooney support for Neo4j<br>7.JDBC Extensions 支持 Oracle RAD、高级队列和高级数据类型<br>8.JPA 简化创建 JPA 数据访问层和跨存储的持久层功能<br>9.Mapping 基于 Grails 的提供对象映射框架，支持不同的数据库<br>10.Examples 示例程序、文档和图数据库<br>11.Guidance 高级文档<br>3.Repository 1.如果 dao 接口继承了 Repository，则该接口会被 IOC 容器识别为一个 Repository Bean 注入到 IOC 容器中，进而可以再该接口中定义满足一定规则的接口<br>或者通过一个朱姐@RepositoryDefination 注解来替代 Repository 接口 2.在 Repository 接口中声明方法 1.查询方法以 find|read|get 开头 2.设计条件查询，条件的属性需要定义关键字连接 3.条件的属性以字母大写 4.支持属性的级联查询，若当前类由符合条件的属性，则优先使用，则不使用级联属性 3.通过自定义的 JPQL 完成 update 和 delete 操作<br>注意：JPQL 不支持 Insert 操作<br>在@Query 注解中编写 JPQL 语句，单必须使用@Modify 进行修饰，以通知 SpringData，这是一个 Update 或者 delete<br>因为 update 和 delete 需要使用事务，而默认情况下 springdata 的每个方法上都有一个只读事务，不能完成修改操作<br>因此需要使用@Modify 修饰</p>
-<p>23 种设计模式: 1.装饰者模式<br>允许向一个现有的对象添加新的功能，同时又不改变其结构。装饰者可以在所委托被装饰者的行为之前或者之后加上自己的行为，以达到特定的目的。<br>参考：<a href="https://blog.csdn.net/wwh578867817/article/details/51480441" target="_blank" rel="noopener">https://blog.csdn.net/wwh578867817/article/details/51480441</a><br>eg：<br>假设我们去咖啡店点了一杯咖啡，可以加奶加糖，咖啡、奶、糖各有不同的价格。<br>此时咖啡就是我们的组件，奶和糖就是我们的装饰者<br>实现细节：<br>Component 抽象构件角色：真实对象和装饰对象有相同的接口。这样，客户端对象就能够以与真实对象相同的方式同装饰对象交互<br>ConcreteComponent 具体构件角色（真实对象）：io 流中的 FileInputStream、　　　　 FileOutputStream<br>Decorator 装饰对象：持有一个抽象构件的引用。装饰对象接受所有客户端的请求，并把这些请求转发给真实的对象。这样，就能在真实对象调用前后增加新的功能。<br>ConcreteDecorator 具体装饰角色：负责给构件对象增加新的责任。</p>
-<p>OAuth 2.0 关于授权的开放网络标准 1.几个专用名词<br>Third-party application: 第三方应用程序，又称“客户端”(client)<br>HTTP service: HTTP 服务提供商<br>Resource Owner： 资源所有者，即“用户”(user)<br>User Agent: 用户代理，即浏览器<br>Authorization server： 认证服务器，即服务提供商专门用来处理认证的服务器<br>Resource server: 资源服务器，即服务提供商存放用户生成的资源的服务器。与认证服务器可以是同一台，也可以不是<br>2.OAuth 的思路<br>OAuth 在客户端与服务提供商之间，设置了一个授权层，客户端不能直接登录“服务提供商”，只能登录授权层，以此将用户与客户端区分开来。“客户端”登录授权层所用的令牌（token），与用户的密码不同。用户可以在登录的时候，指定授权层令牌的权限范围和有效期。<br>“客户端”登录授权层以后，“服务提供商”根据令牌的权限范围和有效期，向“客户端”开放用户存储的资料<br>—- (A)Authorization Request—&gt; |Resource|<br>&lt;— (B)Authorization Grant —- | Owner |<br>+——+ —- (c)Authorization Grant —&gt; |Authorization|<br>|Client| &lt;— (D)Access Token —- | Server |<br>+——+<br>—- (E)Access Token —&gt; |Resource |<br>&lt;— (F)Protected Resrouce —- | Server |<br>解析：<br>（A）用户打开客户端以后，客户端要求用户给予授权<br>（B）用户同意给予客户端授权<br>（C）客户端使用上一步获得的授权，向认证服务器申请令牌<br>（D）认证服务器对客户端进行认证以后，确认无误，同意发放令牌<br>（E）客户端使用令牌，向资源服务器申请获取资源<br>（F）资源服务器确认令牌无误，同意向客户端开发资源 3.其中 B 步骤的客户端授权模式 1.授权码模式（authorization code）</p>
-<pre><code>    2.简化模式（implicit）
-
-    3.密码模式（resource owner password credentials）
-
-    4.客户端模式（client credentials）
-
-    具体参数查看：http://www.ruanyifeng.com/blog/2014/05/oauth_2_0.html
-4.更新令牌
-    如果用户访问的时候，客户端的“访问令牌”已经过期，则需要使用“更新令牌”申请一个新的访问令牌。
-    客户端发出更新令牌的HTTP请求，包含以下参数：
-        granttype：表示使用的授权模式，此处的值固定为&quot;refreshtoken&quot;，必选项。
-        refresh_token：表示早前收到的更新令牌，必选项。
-        scope：表示申请的授权范围，不可以超出上一次申请的范围，如果省略该参数，则表示与上一次一致。
-    eg：
-        POST /token HTTP/1.1
-         Host: server.example.com
-         Authorization: Basic czZCaGRSa3F0MzpnWDFmQmF0M2JW
-         Content-Type: application/x-www-form-urlencoded
-         grant_type=refresh_token&amp;refresh_token=tGzv3JOkF0XG5Qx2TlKWIA</code></pre><p>Swagger 1.概念：<br>Swagger 是一个规范和完整的框架，用于生成、描述、调用和可视化 RESTful 风格的 Web 服务。总体目标是使客户端和文件系统作为服务器以同样的速度来更新。文件的方法，参数和模型紧密集成到服务器端的代码，允许 API 来始终保持同步<br>2.SpringBoot 集成 Swagger 1.添加 maven 依赖，在 pom 文件中添加：<br>springfox-swagger2 2.添加 swagger 配置文件，如下：<br>@Configuration<br>@EnableSwagger2<br>public class SwaggerConfiguration {<br>@Bean<br>public Docket api() {<br>return new Docket(DocumentationType.SWAGGER_2)<br>.ignoredParameterTypes(HttpSession.class)<br>.apiInfo(apiInfo())<br>.select() //选择那些路径和 api 会生成 document<br>.apis(RequestHandlerSelectors.any()) //对所有 api 进行监控<br>.paths(PathSelectors.any()) //对所有路径进行监控<br>.build();<br>}</p>
-<pre><code>            private ApiInfo apiInfo() {
-                return new ApiInfoBuilder()
-                        .title(&quot;pgc接口调用说明&quot;)
-                        .description(&quot;该文档仅供内部人员使用.&quot;)
-                        .termsOfServiceUrl(&quot;http://xxxx&quot;)
-                        .version(&quot;1.0&quot;)
-                        .build();
-            }
-        }
-    3.此时访问项目下的api-docs，能返回json形式的界面
-3.添加SwaggerUI
-    springfox-swagger-ui
-    生成一个可读性良好的API页面。
-    此时可以访问项目下的swagger-ui.html
-4.Swagger对RESTful风格的api支持的比较好。</code></pre><p>SpringBoot 拦截器之 WebMvcConfigurerAdapter</p>
-<pre><code>1.几个比较常见的：
-    /* 这里配置视图解析器 */
-    void configureViewResolvers(ViewResolverRegistry registry);
-
-    /* 配置内容裁决的一些选项*/
-    void configureContentNegotiation(ContentNegotiationConfigurer configurer);
-
-    /* 视图跳转控制器 */
-    void addViewControllers(ViewControllerRegistry registry);
-
-    /* 静态资源处理 */
-    void addResourceHandlers(ResourceHandlerRegistry registry);
-
-    /* 默认静态资源处理器 */
-    void configureDefaultServletHandling(DefaultServletHandlerConfigurer configurer);
-具体方法查看：https://blog.csdn.net/wujiaqi0921/article/details/78324722</code></pre><p>SpringBoot 序列化器注解使用方法<br>1.@JsonIgnoreProperties<br>类注解，作用是 json 序列化时将 java bean 中的一些属性忽略掉，序列化和反序列化都受影响<br>2.@JsonIgnore<br>属性或方法注解（最好在属性上），作用同 JsonIgnoreProperties<br>3.@JsonFormat<br>属性或方法注解（最好在属性上），可以方便的把 Date 类型直接转化为我们想要的模式，例如@JsonFormat(pattern=”yyyy-MM-dd HH-mm-ss”)<br>4.@JsonSerialize<br>用于属性或 getter 方法上，用于在序列化时嵌入我们自定义的代码<br>5.@JsonDeserialize<br>用于属性或 getter 方法上，用于在反序列化时可以嵌入我们自定义的代码<br>SpringBoot 使用 JavaMailSender 发送邮件<br>—–.SpringBoot<br>添加依赖<br><dependency><br><groupid>org.springframework.boot</groupid><br><artifactid>spring-boot-starter-mail</artifactid><br></dependency> 2.配置属性<br>spring.mail.host=smtp.qq.com<br>spring.mail.username=用户名<br>spring.mail.password=密码<br>spring.mail.properties.mail.smtp.auth=true<br>spring.mail.properties.mail.smtp.starttls.enable=true<br>spring.mail.properties.mail.smtp.starttls.required=true 3.测试<br>@Autowired<br>private JavaMailSender mailSender;<br>SimpleMailMessage message = new SimpleMailMessage();<br>message.setFrom(“<a href="mailto:1153693791@qq.com" target="_blank" rel="noopener">1153693791@qq.com</a>“);<br>message.setTo(“<a href="mailto:1153693791@qq.com" target="_blank" rel="noopener">1153693791@qq.com</a>“);<br>message.setSubject(“主题：”+title);<br>message.setText(content);<br>mailSender.send(message);<br>Spring JPA 开启审计功能：<br>JPA Audit:<br>在 Spring jpa 中，支持在字段或者方法上进行注解@CreateDate,@CreatedBy,@LastModifiedDate,@LastModifiedBy<br>使用： 1.申明实体类，需要在类上添加注解@EntityListeners(AuditingEntityListener.class)，<br>@Entity<br>@Table(name = “store_source_bind”)<br>@EntityListeners(AuditingEntityListener.class)<br>public class StoreSourceBind { 2.在需要的字段上加上@CreateDate,@CreatedBy,@LastModifiedDate,@LastModifiedBy<br>@Column(name = “create_time”)<br>@CreatedDate<br>private Date createTime; 3.继承 AuditorAware<t>来指定返回的创建信息:<br>@Component(“auditorAware”)<br>public class SpringSecurityAuditorAware implements AuditorAware<string> {</string></t></p>
-<pre><code>            private HttpSession session;
-
-            @Override
-            public String getCurrentAuditor() {
-                return Utils.getUserIdFromSession(session);
-            }
-        }
-    4.在application启动类中加上注解EnableJpaAuditing或者EnableMongoAuditing（MongoDB的审计），
-
-    @EnableJpaAuditing
-    @EnableMongoAuditing(auditorAwareRef = &quot;auditorAware&quot;)//开启审计功能
-    public class WalletApplication {
-        public static void main(String[] args) {
-            new SpringApplicationBuilder(WalletApplication.class).web(true).run(args);
-        }
-    }</code></pre><p>SpringBoot 定时任务：</p>
-<pre><code>1.开启定时任务的配置
-  在启动文件上，添加注解 @EnableScheduling
-2.创建定时任务
-  在需要定时执行的文件上方添加注解：
-      @Scheduled(fixedRate = 5000)
-3. @Scheduled 详解：
-    1.fixedRate = 5000 ：上次开始执行时间点之后5秒执行
-    2.initialDelay = 1000 , fixedRate = 5000
-        第一次延迟 1 秒后执行，之后按照 5 秒的规则执行
-    3.cron = &quot;*/5 ***&quot;) :
-        通过 cron 表达式定义规则</code></pre></div><hr></div><div class="recent-post-item article-container"><a class="article-title" href="/2018/09/30/后端/java/Java中使用Properties/">读取 Properties 文件的几种方式</a><time class="post-meta__date"><i class="fa fa-calendar" aria-hidden="true"></i> 2018-09-30</time><span class="article-meta"><span class="article-meta__separator">|</span><i class="fa fa-inbox article-meta__icon" aria-hidden="true"></i><a class="article-meta__categories" href="/categories/后端/">后端</a><i class="fa fa-angle-right" aria-hidden="true"></i><i class="fa fa-inbox article-meta__icon" aria-hidden="true"></i><a class="article-meta__categories" href="/categories/后端/java/">java</a><i class="fa fa-angle-right" aria-hidden="true"></i><i class="fa fa-inbox article-meta__icon" aria-hidden="true"></i><a class="article-meta__categories" href="/categories/后端/java/其它/">其它</a></span><span class="article-meta tags"><span class="article-meta__separator">|</span><i class="fa fa-tag article-meta__icon" aria-hidden="true"></i><a class="article-meta__tags" href="/tags/hide/">hide</a><span class="article-meta__link">-</span><i class="fa fa-tag article-meta__icon" aria-hidden="true"></i><a class="article-meta__tags" href="/tags/spring/">spring</a></span><div class="content"><p>读取 Properties 文件的几种方式</p></div><a class="more" href="/2018/09/30/后端/java/Java中使用Properties/#more">阅读更多</a><hr></div><div class="recent-post-item article-container"><a class="article-title" href="/2018/09/29/后端/java/模拟Ping获取IP响应时间/">模拟Ping</a><time class="post-meta__date"><i class="fa fa-calendar" aria-hidden="true"></i> 2018-09-29</time><span class="article-meta"><span class="article-meta__separator">|</span><i class="fa fa-inbox article-meta__icon" aria-hidden="true"></i><a class="article-meta__categories" href="/categories/后端/">后端</a><i class="fa fa-angle-right" aria-hidden="true"></i><i class="fa fa-inbox article-meta__icon" aria-hidden="true"></i><a class="article-meta__categories" href="/categories/后端/java/">java</a><i class="fa fa-angle-right" aria-hidden="true"></i><i class="fa fa-inbox article-meta__icon" aria-hidden="true"></i><a class="article-meta__categories" href="/categories/后端/java/其它/">其它</a></span><span class="article-meta tags"><span class="article-meta__separator">|</span><i class="fa fa-tag article-meta__icon" aria-hidden="true"></i><a class="article-meta__tags" href="/tags/hide/">hide</a><span class="article-meta__link">-</span><i class="fa fa-tag article-meta__icon" aria-hidden="true"></i><a class="article-meta__tags" href="/tags/java/">java</a></span><div class="content"><pre><code class="java">import java.io.BufferedReader;
-import java.io.IOException;
-import java.io.InputStream;
-import java.io.InputStreamReader;
-import java.util.Collections;
-import java.util.List;
-import java.util.regex.Matcher;
-import java.util.regex.Pattern;
-import java.util.stream.Collectors;
-
-public class IpContimeUtil {
-
-    private static float ping(String ipAddress) {
-
-        boolean isWindows = System.getProperty(&quot;os.name&quot;).toLowerCase().contains(&quot;win&quot;);
-        String command = String.format(&quot;ping -%s 1 %s&quot;, isWindows ? &quot;n&quot; : &quot;c&quot;, ipAddress);
-        try {
-            Process process = Runtime.getRuntime().exec(command);
-            InputStream inputStream = process.getInputStream();
-            InputStreamReader inputStreamReader = new InputStreamReader(inputStream, &quot;GBK&quot;);
-            BufferedReader bufferedReader = new BufferedReader(inputStreamReader);
-            String line;
-            Pattern pattern = Pattern.compile(&quot;.*?([\\d.]+)\\s?ms.*&quot;);
-
-            while ((line = bufferedReader.readLine()) != null) {
-                System.out.println(line);
-                Matcher matcher = pattern.matcher(line);
-                if (matcher.matches()) {
-                    return Float.parseFloat(matcher.group(1));
-                }
-            }
-        } catch (IOException e) {
-            throw new RuntimeException(&quot;响应超时&quot;);
-        }
-        throw new RuntimeException(&quot;响应异常&quot;);
-    }
-
-    private static List&lt;Float&gt; print(List&lt;String&gt; newList) throws Exception {
-        return newList.stream().map(IpContimeUtil::ping).collect(Collectors.toList());
-    }
-
-    public static void main(String[] args) throws Exception {
-        System.out.println(&quot;响应时间：&quot; + IpContimeUtil.print(Collections.singletonList(&quot;101.132.162.159&quot;)));
-    }
-}
-</code></pre>
-</div><hr></div><div class="recent-post-item article-container"><a class="article-title" href="/2018/09/29/后端/java/oss上传/">OSS上传</a><time class="post-meta__date"><i class="fa fa-calendar" aria-hidden="true"></i> 2018-09-29</time><span class="article-meta"><span class="article-meta__separator">|</span><i class="fa fa-inbox article-meta__icon" aria-hidden="true"></i><a class="article-meta__categories" href="/categories/后端/">后端</a><i class="fa fa-angle-right" aria-hidden="true"></i><i class="fa fa-inbox article-meta__icon" aria-hidden="true"></i><a class="article-meta__categories" href="/categories/后端/java/">java</a></span><span class="article-meta tags"><span class="article-meta__separator">|</span><i class="fa fa-tag article-meta__icon" aria-hidden="true"></i><a class="article-meta__tags" href="/tags/hide/">hide</a><span class="article-meta__link">-</span><i class="fa fa-tag article-meta__icon" aria-hidden="true"></i><a class="article-meta__tags" href="/tags/OSS/">OSS</a></span><div class="content"><h1 id="通过-POI-将数据库中的数据上传至-OSS-对象存储"><a href="#通过-POI-将数据库中的数据上传至-OSS-对象存储" class="headerlink" title="通过 POI 将数据库中的数据上传至 OSS 对象存储"></a>通过 POI 将数据库中的数据上传至 OSS 对象存储</h1><center>
-`我爱你，第一句是假的，第二句也是假的。`
-</center>
-
-<p><img src="https://upload-images.jianshu.io/upload_images/13603359-996a2c470135ea09.png" alt="我爱你，第一句是假的，第二句也是假的。"></p></div><a class="more" href="/2018/09/29/后端/java/oss上传/#more">阅读更多</a><hr></div><div class="recent-post-item article-container"><a class="article-title" href="/2018/09/29/后端/java/正则表达式/">正则表达式</a><time class="post-meta__date"><i class="fa fa-calendar" aria-hidden="true"></i> 2018-09-29</time><span class="article-meta"><span class="article-meta__separator">|</span><i class="fa fa-inbox article-meta__icon" aria-hidden="true"></i><a class="article-meta__categories" href="/categories/后端/">后端</a><i class="fa fa-angle-right" aria-hidden="true"></i><i class="fa fa-inbox article-meta__icon" aria-hidden="true"></i><a class="article-meta__categories" href="/categories/后端/java/">java</a><i class="fa fa-angle-right" aria-hidden="true"></i><i class="fa fa-inbox article-meta__icon" aria-hidden="true"></i><a class="article-meta__categories" href="/categories/后端/java/正则表达式/">正则表达式</a></span><span class="article-meta tags"><span class="article-meta__separator">|</span><i class="fa fa-tag article-meta__icon" aria-hidden="true"></i><a class="article-meta__tags" href="/tags/java/">java</a></span><div class="content"><blockquote>
-<p>正则表达式是一组由字母和符号组成的特殊文本, 它可以用来从文本中找出满足你想要的格式的句子.</p>
-</blockquote></div><a class="more" href="/2018/09/29/后端/java/正则表达式/#more">阅读更多</a><hr></div><div class="recent-post-item article-container"><a class="article-title" href="/2018/09/29/后端/java/钩子函数/">钩子函数</a><time class="post-meta__date"><i class="fa fa-calendar" aria-hidden="true"></i> 2018-09-29</time><span class="article-meta"><span class="article-meta__separator">|</span><i class="fa fa-inbox article-meta__icon" aria-hidden="true"></i><a class="article-meta__categories" href="/categories/后端/">后端</a><i class="fa fa-angle-right" aria-hidden="true"></i><i class="fa fa-inbox article-meta__icon" aria-hidden="true"></i><a class="article-meta__categories" href="/categories/后端/java/">java</a><i class="fa fa-angle-right" aria-hidden="true"></i><i class="fa fa-inbox article-meta__icon" aria-hidden="true"></i><a class="article-meta__categories" href="/categories/后端/java/其它/">其它</a></span><span class="article-meta tags"><span class="article-meta__separator">|</span><i class="fa fa-tag article-meta__icon" aria-hidden="true"></i><a class="article-meta__tags" href="/tags/java/">java</a></span><div class="content"><blockquote>
-<p>钩子(hook)，是一种具有 <code>既定生命周期</code> 的框架工具，在生命周期的各个阶段预留给用户执行一些特定操作的口子，其实是一种 <code>面向切面</code> 编程。</p>
-</blockquote></div><a class="more" href="/2018/09/29/后端/java/钩子函数/#more">阅读更多</a><hr></div><div class="recent-post-item article-container"><a class="article-title" href="/2018/09/29/数据库/MySQL/MySQL常用命令/">《常用的MySQL命令》</a><time class="post-meta__date"><i class="fa fa-calendar" aria-hidden="true"></i> 2018-09-29</time><span class="article-meta"><span class="article-meta__separator">|</span><i class="fa fa-inbox article-meta__icon" aria-hidden="true"></i><a class="article-meta__categories" href="/categories/工具函数/">工具函数</a></span><span class="article-meta tags"><span class="article-meta__separator">|</span><i class="fa fa-tag article-meta__icon" aria-hidden="true"></i><a class="article-meta__tags" href="/tags/java/">java</a></span><div class="content"><p>包含 MySQL 服务操作、数据库操作、表操作、数据操作、字符集编码、数据类型 等信息。</p></div><a class="more" href="/2018/09/29/数据库/MySQL/MySQL常用命令/#more">阅读更多</a><hr></div><div class="recent-post-item article-container"><a class="article-title" href="/2018/09/28/Git/git/">《Git》常见的解决方案</a><time class="post-meta__date"><i class="fa fa-calendar" aria-hidden="true"></i> 2018-09-28</time><span class="article-meta"><span class="article-meta__separator">|</span><i class="fa fa-inbox article-meta__icon" aria-hidden="true"></i><a class="article-meta__categories" href="/categories/Git/">Git</a></span><span class="article-meta tags"><span class="article-meta__separator">|</span><i class="fa fa-tag article-meta__icon" aria-hidden="true"></i><a class="article-meta__tags" href="/tags/Git/">Git</a></span><div class="content"><ul>
-<li><a href="/2018/09/28/Git/1.多个Git源/index.html">Git - 配合多个数据源</a></li>
-<li><a href="/2018/09/28/Git/2.分支管理策略/index.html">Git - 分支管理策略</a></li>
-<li><a href="/2018/09/28/Git/3.Git命令/index.html">Git - 常用命令</a></li>
+</div><hr></div><div class="recent-post-item article-container"><a class="article-title" href="/2018/11/04/后端/Quartz/SpringBoot整合Quartz(四)/">SpringBoot整合Quartz(四)-使用IOC管理Job</a><time class="post-meta__date"><i class="fa fa-calendar" aria-hidden="true"></i> 2018-11-04</time><span class="article-meta"><span class="article-meta__separator">|</span><i class="fa fa-inbox article-meta__icon" aria-hidden="true"></i><a class="article-meta__categories" href="/categories/后端/">后端</a><i class="fa fa-angle-right" aria-hidden="true"></i><i class="fa fa-inbox article-meta__icon" aria-hidden="true"></i><a class="article-meta__categories" href="/categories/后端/Quartz/">Quartz</a></span><span class="article-meta tags"><span class="article-meta__separator">|</span><i class="fa fa-tag article-meta__icon" aria-hidden="true"></i><a class="article-meta__tags" href="/tags/hide/">hide</a><span class="article-meta__link">-</span><i class="fa fa-tag article-meta__icon" aria-hidden="true"></i><a class="article-meta__tags" href="/tags/Quartz/">Quartz</a></span><div class="content"><h1 id="SpringBoot-整合-Quartz-四-使用-IOC-管理-Job"><a href="#SpringBoot-整合-Quartz-四-使用-IOC-管理-Job" class="headerlink" title="SpringBoot 整合 Quartz(四)-使用 IOC 管理 Job"></a>SpringBoot 整合 Quartz(四)-使用 IOC 管理 Job</h1><p>计划：(从 Quartz 的属性、方法、配置文件、配置类、持久化、集群等几个方面，写一些心得)</p>
+<p><img src="https://upload-images.jianshu.io/upload_images/13603359-55f97ba1d65bc00f.png" alt="Quartz"></p></div><a class="more" href="/2018/11/04/后端/Quartz/SpringBoot整合Quartz(四)/#more">阅读更多</a><hr></div><div class="recent-post-item article-container"><a class="article-title" href="/2018/11/03/后端/Quartz/SpringBoot整合Quartz(三)/">SpringBoot整合Quartz(三)-整合MongoDB数据源</a><time class="post-meta__date"><i class="fa fa-calendar" aria-hidden="true"></i> 2018-11-03</time><span class="article-meta"><span class="article-meta__separator">|</span><i class="fa fa-inbox article-meta__icon" aria-hidden="true"></i><a class="article-meta__categories" href="/categories/后端/">后端</a><i class="fa fa-angle-right" aria-hidden="true"></i><i class="fa fa-inbox article-meta__icon" aria-hidden="true"></i><a class="article-meta__categories" href="/categories/后端/Quartz/">Quartz</a></span><span class="article-meta tags"><span class="article-meta__separator">|</span><i class="fa fa-tag article-meta__icon" aria-hidden="true"></i><a class="article-meta__tags" href="/tags/hide/">hide</a><span class="article-meta__link">-</span><i class="fa fa-tag article-meta__icon" aria-hidden="true"></i><a class="article-meta__tags" href="/tags/Quartz/">Quartz</a></span><div class="content"><h1 id="SpringBoot-整合-Quartz-三-整合-MongoDB-数据源"><a href="#SpringBoot-整合-Quartz-三-整合-MongoDB-数据源" class="headerlink" title="SpringBoot 整合 Quartz(三)-整合 MongoDB 数据源"></a>SpringBoot 整合 Quartz(三)-整合 MongoDB 数据源</h1><p>计划：(从 Quartz 的属性、方法、配置文件、配置类、持久化、集群等几个方面，写一些心得)</p>
+<p><img src="https://upload-images.jianshu.io/upload_images/13603359-55f97ba1d65bc00f.png" alt="Quartz"></p></div><a class="more" href="/2018/11/03/后端/Quartz/SpringBoot整合Quartz(三)/#more">阅读更多</a><hr></div><div class="recent-post-item article-container"><a class="article-title" href="/2018/11/02/后端/Quartz/SpringBoot整合Quartz(二)/">SpringBoot整合Quartz(二)-整合MySQL数据源</a><time class="post-meta__date"><i class="fa fa-calendar" aria-hidden="true"></i> 2018-11-02</time><span class="article-meta"><span class="article-meta__separator">|</span><i class="fa fa-inbox article-meta__icon" aria-hidden="true"></i><a class="article-meta__categories" href="/categories/后端/">后端</a><i class="fa fa-angle-right" aria-hidden="true"></i><i class="fa fa-inbox article-meta__icon" aria-hidden="true"></i><a class="article-meta__categories" href="/categories/后端/Quartz/">Quartz</a></span><span class="article-meta tags"><span class="article-meta__separator">|</span><i class="fa fa-tag article-meta__icon" aria-hidden="true"></i><a class="article-meta__tags" href="/tags/hide/">hide</a><span class="article-meta__link">-</span><i class="fa fa-tag article-meta__icon" aria-hidden="true"></i><a class="article-meta__tags" href="/tags/Quartz/">Quartz</a></span><div class="content"><h1 id="SpringBoot-整合-Quartz-二-持久化到-MySQL"><a href="#SpringBoot-整合-Quartz-二-持久化到-MySQL" class="headerlink" title="SpringBoot 整合 Quartz(二)-持久化到 MySQL"></a>SpringBoot 整合 Quartz(二)-持久化到 MySQL</h1><p>计划：(从 Quartz 的属性、方法、配置文件、配置类、持久化、集群等几个方面，写一些心得)</p>
+<p>在上一篇 <code>SpringBoot整合Quartz(一)-简单介绍Demo</code> 中，简单介绍了 Quartz 框架所需的依赖、常用属性、方法和配置。</p>
+<p>这里我们将生成的 Job、Trigger 持久化到 MySQL 数据库中。</p>
+<p><img src="https://upload-images.jianshu.io/upload_images/13603359-55f97ba1d65bc00f.png" alt="Quartz"></p></div><a class="more" href="/2018/11/02/后端/Quartz/SpringBoot整合Quartz(二)/#more">阅读更多</a><hr></div><div class="recent-post-item article-container"><a class="article-title" href="/2018/11/02/后端/Quartz/SpringBoot整合Quartz/">《Quartz》定时任务</a><span class="article-meta"><i class="fa fa-thumb-tack article-meta__icon sticky"></i><span class="sticky">置顶</span><span class="article-meta__separator" style="margin-right: 0.3rem">|</span></span><time class="post-meta__date"><i class="fa fa-calendar" aria-hidden="true"></i> 2018-11-02</time><span class="article-meta"><span class="article-meta__separator">|</span><i class="fa fa-inbox article-meta__icon" aria-hidden="true"></i><a class="article-meta__categories" href="/categories/后端/">后端</a><i class="fa fa-angle-right" aria-hidden="true"></i><i class="fa fa-inbox article-meta__icon" aria-hidden="true"></i><a class="article-meta__categories" href="/categories/后端/Quartz/">Quartz</a></span><span class="article-meta tags"><span class="article-meta__separator">|</span><i class="fa fa-tag article-meta__icon" aria-hidden="true"></i><a class="article-meta__tags" href="/tags/Quartz/">Quartz</a></span><div class="content"><ul>
+<li><a href="/2018/11/01/后端/Quartz/SpringBoot整合Quartz(一)/index.html">SpringBoot 整合 Quartz - 简单 Demo</a></li>
+<li><a href="/2018/11/01/后端/Quartz/SpringBoot整合Quartz(二)/index.html">SpringBoot 整合 Quartz - 持久化 MySQL</a></li>
+<li><a href="/2018/11/01/后端/Quartz/SpringBoot整合Quartz(三)/index.html">SpringBoot 整合 Quartz - 整合 MongoDB 数据源</a></li>
+<li><a href="/2018/11/01/后端/Quartz/SpringBoot整合Quartz(四)/index.html">SpringBoot 整合 Quartz - 使用 IOC 管理 Job</a></li>
+<li><a href="/2018/11/01/后端/Quartz/SpringBoot整合Quartz(五)/index.html">SpringBoot 整合 Quartz - 集群测试</a></li>
+<li><a href="/2018/11/01/后端/Quartz/SpringBoot整合Quartz(六)/index.html">SpringBoot 整合 Quartz - 使用 Elastic-Job</a></li>
 </ul>
-</div><hr></div><div class="recent-post-item article-container"><a class="article-title" href="/2018/09/28/Git/1.多个Git源/">Git多账户配置</a><time class="post-meta__date"><i class="fa fa-calendar" aria-hidden="true"></i> 2018-09-28</time><span class="article-meta"><span class="article-meta__separator">|</span><i class="fa fa-inbox article-meta__icon" aria-hidden="true"></i><a class="article-meta__categories" href="/categories/Git/">Git</a></span><span class="article-meta tags"><span class="article-meta__separator">|</span><i class="fa fa-tag article-meta__icon" aria-hidden="true"></i><a class="article-meta__tags" href="/tags/Git/">Git</a><span class="article-meta__link">-</span><i class="fa fa-tag article-meta__icon" aria-hidden="true"></i><a class="article-meta__tags" href="/tags/hide/">hide</a></span><div class="content"><h1 id="同时使用多个-Git-源（Github-Gitee-Gitlab-等）"><a href="#同时使用多个-Git-源（Github-Gitee-Gitlab-等）" class="headerlink" title="同时使用多个 Git 源（Github,Gitee,Gitlab 等）"></a>同时使用多个 Git 源（Github,Gitee,Gitlab 等）</h1><p>在很多情况下，我们在同一台 PC 上可能需要关联多个 <code>Git 源</code>。比如公司的项目放在 <code>gitee</code> 上，但是个人有很多学习的小项目都放在 <code>github</code> 上，此时就需要有能连接多个 <code>ssh</code> 的需求。</p>
-<h2 id="第一步：为每个-git-在线服务生成一对公私钥"><a href="#第一步：为每个-git-在线服务生成一对公私钥" class="headerlink" title="第一步：为每个 git 在线服务生成一对公私钥"></a>第一步：为每个 git 在线服务生成一对公私钥</h2><pre><code class="node">$ ssh-keygen -t rsa -C &quot;yourEmail@email.com&quot;
-
-Enter file in which to save the key (/c/Users/user/.ssh/id_rsa): /c/User/user/.ssh/id_rsa_github</code></pre>
-<p>我们以 id_rsa_github 为生成的公私钥文件命名，并指定文件的存储路径为 “/c/User/user/.ssh/“ 下</p>
-<p><img src="https://upload-images.jianshu.io/upload_images/13603359-accb6aef01836f8e.png?imageMogr2/auto-orient/strip%7CimageView2/2/w/1240" alt="生成的公私钥"></p>
-<p>如果你需要多个服务，则依次 <code>重复第一步</code> 即可。<br><code>注意每一对公私钥的命名不能重复。</code></p>
-<h2 id="第二步：在-c-User-user-ssh-下创建-config-文件，并填入刚刚的公私钥名"><a href="#第二步：在-c-User-user-ssh-下创建-config-文件，并填入刚刚的公私钥名" class="headerlink" title="第二步：在 /c/User/user/.ssh/ 下创建 config 文件，并填入刚刚的公私钥名"></a>第二步：在 /c/User/user/.ssh/ 下创建 config 文件，并填入刚刚的公私钥名</h2><pre><code class="groovy">Host gitee.com
-  Hostname gitee.com
-  PreferredAuthentications publickey
-  IdentityFile ~/.ssh/id_rsa_gitee
-  User koral
-
-Host github.com
-  Hostname github.com
-  PreferredAuthentications publickey
-  IdentityFile ~/.ssh/id_rsa_github
-  User koral</code></pre>
-<p>这一步表示，在 git 发起 ssh 链接时，对应着哪一个 ssh 私钥。这里我只以 码云( <code>gitee@OSC</code> )和 <code>github</code> 为例。</p>
-<p>不要问我 <code>~/.ssh/</code> 前面的 <code>~</code> 表示什么意思。我也不会告诉你，它表示当前 PC 用户的根目录的。至于你想设置为全局的，我也不知道。</p>
-<h2 id="第三步：将生成的公钥添加至各自的-SSH-中"><a href="#第三步：将生成的公钥添加至各自的-SSH-中" class="headerlink" title="第三步：将生成的公钥添加至各自的 SSH 中"></a>第三步：将生成的公钥添加至各自的 SSH 中</h2><p>这里以 Github 为例，其他几个网站类似：</p>
-<h3 id="在-SSH-keys-中”New-SSH-key”"><a href="#在-SSH-keys-中”New-SSH-key”" class="headerlink" title="在 SSH keys 中”New SSH key”"></a>在 SSH keys 中”New SSH key”</h3><p><img src="https://upload-images.jianshu.io/upload_images/13603359-c8f3bdda9deef6da.png?imageMogr2/auto-orient/strip%7CimageView2/2/w/1240" alt="找到github的ssh"></p>
-<h3 id="写入生成的-SSH"><a href="#写入生成的-SSH" class="headerlink" title="写入生成的 SSH"></a>写入生成的 SSH</h3><p>找到第一步中生成的 SSH 公钥(以”.pub”结尾的)，并填入，Title 随便写<br><img src="https://upload-images.jianshu.io/upload_images/13603359-1381194685beccaa.png?imageMogr2/auto-orient/strip%7CimageView2/2/w/1240" alt="image.png"></p>
-<h2 id="第四步：测试"><a href="#第四步：测试" class="headerlink" title="第四步：测试"></a>第四步：测试</h2><pre><code class="shell">ssh -T git@github.com
-ssh -T git@gitee.com</code></pre>
-<p>如果提示了什么不得了的东西，请先删除 “/c/User/user/.ssh/“ 目录下的 “known_hosts”，并重新执行测试。它会重新生成一个。<br>当出现 <code>Hi koral! You&#39;ve successfully authenticated, but GitHub does not provide shell access.</code> 时，恭喜你，连接成功。</p>
-</div><hr></div><nav id="pagination"><div class="pagination"><a class="extend prev" rel="prev" href="/page/25/"><i class="fa fa-chevron-left"></i></a><a class="page-number" href="/">1</a><span class="space">&hellip;</span><a class="page-number" href="/page/25/">25</a><span class="page-number current">26</span><a class="page-number" href="/page/27/">27</a><span class="space">&hellip;</span><a class="page-number" href="/page/30/">30</a><a class="extend next" rel="next" href="/page/27/"><i class="fa fa-chevron-right"></i></a></div></nav></div></div><footer><div class="layout" id="footer"><div class="copyright">&copy;2013 - 2020 By koral</div><div class="framework-info"><span>驱动 - </span><a href="http://hexo.io"><span>Hexo</span></a><span class="footer-separator">|</span><span>主题 - </span><a href="https://github.com/Molunerfinn/hexo-theme-melody"><span>Melody</span></a></div><div class="busuanzi"><script async src="//busuanzi.ibruce.info/busuanzi/2.3/busuanzi.pure.mini.js"></script><span id="busuanzi_container_site_uv"><i class="fa fa-user"></i><span id="busuanzi_value_site_uv"></span><span></span></span><span class="footer-separator">|</span><span id="busuanzi_container_site_pv"><i class="fa fa-eye"></i><span id="busuanzi_value_site_pv"></span><span></span></span></div></div></footer><i class="fa fa-arrow-up" id="go-up" aria-hidden="true"></i><script src="https://cdn.jsdelivr.net/npm/animejs@latest/anime.min.js"></script><script src="https://cdn.jsdelivr.net/npm/jquery@latest/dist/jquery.min.js"></script><script src="https://cdn.jsdelivr.net/npm/@fancyapps/fancybox@latest/dist/jquery.fancybox.min.js"></script><script src="https://cdn.jsdelivr.net/npm/velocity-animate@latest/velocity.min.js"></script><script src="https://cdn.jsdelivr.net/npm/velocity-ui-pack@latest/velocity.ui.min.js"></script><script src="/js/utils.js?version=1.7.0"></script><script src="/js/fancybox.js?version=1.7.0"></script><script src="/js/sidebar.js?version=1.7.0"></script><script src="/js/copy.js?version=1.7.0"></script><script src="/js/fireworks.js?version=1.7.0"></script><script src="/js/transition.js?version=1.7.0"></script><script src="/js/scroll.js?version=1.7.0"></script><script src="/js/head.js?version=1.7.0"></script><script>if(/Android|webOS|iPhone|iPod|iPad|BlackBerry/i.test(navigator.userAgent)) {
+</div><hr></div><div class="recent-post-item article-container"><a class="article-title" href="/2018/11/01/后端/Quartz/SpringBoot整合Quartz(一)/">SpringBoot整合Quartz(一)-简单介绍Demo</a><time class="post-meta__date"><i class="fa fa-calendar" aria-hidden="true"></i> 2018-11-01</time><span class="article-meta"><span class="article-meta__separator">|</span><i class="fa fa-inbox article-meta__icon" aria-hidden="true"></i><a class="article-meta__categories" href="/categories/后端/">后端</a><i class="fa fa-angle-right" aria-hidden="true"></i><i class="fa fa-inbox article-meta__icon" aria-hidden="true"></i><a class="article-meta__categories" href="/categories/后端/Quartz/">Quartz</a></span><span class="article-meta tags"><span class="article-meta__separator">|</span><i class="fa fa-tag article-meta__icon" aria-hidden="true"></i><a class="article-meta__tags" href="/tags/hide/">hide</a><span class="article-meta__link">-</span><i class="fa fa-tag article-meta__icon" aria-hidden="true"></i><a class="article-meta__tags" href="/tags/Quartz/">Quartz</a></span><div class="content"><h1 id="SpringBoot-整合-Quartz-一-简单介绍-Demo"><a href="#SpringBoot-整合-Quartz-一-简单介绍-Demo" class="headerlink" title="SpringBoot 整合 Quartz(一)-简单介绍 Demo"></a>SpringBoot 整合 Quartz(一)-简单介绍 Demo</h1><p>计划：(从 Quartz 的属性、方法、配置文件、配置类、持久化、集群等几个方面，写一些心得)</p>
+<p>Quartz 作为一款由 Java 编写的开源作业调度框架,<a href="http://www.quartz-scheduler.org/index.html" target="_blank" rel="noopener">官网传送门</a>。与我而言，作用是定时执行某一个任务。</p>
+<p><img src="https://upload-images.jianshu.io/upload_images/13603359-55f97ba1d65bc00f.png" alt="Quartz"></p></div><a class="more" href="/2018/11/01/后端/Quartz/SpringBoot整合Quartz(一)/#more">阅读更多</a><hr></div><div class="recent-post-item article-container"><a class="article-title" href="/2018/10/22/分布式/SpringBoot/SpringBoot参考指南/">SpringBoot 参考指南</a><time class="post-meta__date"><i class="fa fa-calendar" aria-hidden="true"></i> 2018-10-22</time><span class="article-meta"><span class="article-meta__separator">|</span><i class="fa fa-inbox article-meta__icon" aria-hidden="true"></i><a class="article-meta__categories" href="/categories/SpringBoot/">SpringBoot</a></span><span class="article-meta tags"><span class="article-meta__separator">|</span><i class="fa fa-tag article-meta__icon" aria-hidden="true"></i><a class="article-meta__tags" href="/tags/hide/">hide</a><span class="article-meta__link">-</span><i class="fa fa-tag article-meta__icon" aria-hidden="true"></i><a class="article-meta__tags" href="/tags/SpringBoot/">SpringBoot</a></span><div class="content"><p>从 SpringBoot 的安装、构建、配置、启动运行等方面简单的介绍 SpringBoot 的技术点。</p>
+<p>构建系统：Maven ｜ Gradle ｜ Ant ｜ Starters<br>最佳实践：代码结构｜@Configuration ｜@EnableAutoConfiguration ｜ Beans 和依赖注入<br>运行代码：IDE ｜ Packaged ｜ Maven ｜ Gradle<br>应用打包：产品级 jars<br>Spring Boot 命令行：使用 CLI</p>
+<p>核心特性：SpringApplication ｜外部化配置｜ Profiles ｜日志<br>Web 应用：MVC ｜内嵌容器<br>使用数据：SQL ｜ NO-SQL<br>消息：概述｜ JMS<br>测试：概述｜ Boot 应用｜工具<br>扩展：Auto-configuration ｜@Conditions</p>
+<p>管理端点：概述｜自定义<br>连接选项：HTTP ｜ JMX ｜ SSH<br>监控：指标｜审计｜追踪｜进程</p>
+<p>部署 Spring Boot 应用：云部署 | 操作系统服务<br>构建工具插件：Maven ｜ Gradle<br>附录：应用属性｜ Auto-configuration 类｜可执行 Jars</p>
+</div><hr></div><div class="recent-post-item article-container"><a class="article-title" href="/2018/10/11/分布式/SpringBoot/2.SpringBoot的三种启动方式/">使用Gradle构建SpringBoot项目</a><time class="post-meta__date"><i class="fa fa-calendar" aria-hidden="true"></i> 2018-10-11</time><span class="article-meta"><span class="article-meta__separator">|</span><i class="fa fa-inbox article-meta__icon" aria-hidden="true"></i><a class="article-meta__categories" href="/categories/SpringBoot/">SpringBoot</a></span><span class="article-meta tags"><span class="article-meta__separator">|</span><i class="fa fa-tag article-meta__icon" aria-hidden="true"></i><a class="article-meta__tags" href="/tags/hide/">hide</a><span class="article-meta__link">-</span><i class="fa fa-tag article-meta__icon" aria-hidden="true"></i><a class="article-meta__tags" href="/tags/java/">java</a><span class="article-meta__link">-</span><i class="fa fa-tag article-meta__icon" aria-hidden="true"></i><a class="article-meta__tags" href="/tags/SpringBoot/">SpringBoot</a><span class="article-meta__link">-</span><i class="fa fa-tag article-meta__icon" aria-hidden="true"></i><a class="article-meta__tags" href="/tags/gradle/">gradle</a></span><div class="content"><h1 id="SpringBoot-的三种启动方式"><a href="#SpringBoot-的三种启动方式" class="headerlink" title="SpringBoot 的三种启动方式"></a>SpringBoot 的三种启动方式</h1><h2 id="一、Main-方法"><a href="#一、Main-方法" class="headerlink" title="一、Main 方法"></a>一、Main 方法</h2><pre><code class="java">/**
+ * @SpringBootApplication SpringBoot的组合注解，标注为SpringBoot的应用
+ *  scanBasePackages  扫描的包
+ * @EnableAsync 开启异步方法
+ */
+@SpringBootApplication(scanBasePackages = &quot;com.pgc&quot;)
+@Import(CommonApplication.class)
+@EnableAsync
+public class Application {
+    /**
+     * 项目的入口
+     */
+    public static void main(String[] args) {
+        SpringApplication.run(Application.class, args);
+    }
+}</code></pre>
+<h2 id="二、Maven-方式"><a href="#二、Maven-方式" class="headerlink" title="二、Maven 方式"></a>二、Maven 方式</h2><h2 id="三、Gradle-方式"><a href="#三、Gradle-方式" class="headerlink" title="三、Gradle 方式"></a>三、Gradle 方式</h2><h2 id="四、运行-jar-文件"><a href="#四、运行-jar-文件" class="headerlink" title="四、运行 jar 文件"></a>四、运行 jar 文件</h2><p>通过 jar 文件启动的方式，需要先将项目编译为 jar 文件。</p>
+<pre><code class="java">mvn install</code></pre>
+<h2 id="五、war-文件方式"><a href="#五、war-文件方式" class="headerlink" title="五、war 文件方式"></a>五、war 文件方式</h2><p>如果项目的打包方式为“war”，则将打包之后的 war 文件，直接复制到对应的服务器下即可。由应用服务器来启动。</p>
+</div><hr></div><div class="recent-post-item article-container"><a class="article-title" href="/2018/10/11/分布式/SpringBoot/1.用Gradle构建SpringBoot项目/">使用Gradle构建SpringBoot项目</a><time class="post-meta__date"><i class="fa fa-calendar" aria-hidden="true"></i> 2018-10-11</time><span class="article-meta"><span class="article-meta__separator">|</span><i class="fa fa-inbox article-meta__icon" aria-hidden="true"></i><a class="article-meta__categories" href="/categories/SpringBoot/">SpringBoot</a></span><span class="article-meta tags"><span class="article-meta__separator">|</span><i class="fa fa-tag article-meta__icon" aria-hidden="true"></i><a class="article-meta__tags" href="/tags/hide/">hide</a><span class="article-meta__link">-</span><i class="fa fa-tag article-meta__icon" aria-hidden="true"></i><a class="article-meta__tags" href="/tags/java/">java</a><span class="article-meta__link">-</span><i class="fa fa-tag article-meta__icon" aria-hidden="true"></i><a class="article-meta__tags" href="/tags/SpringBoot/">SpringBoot</a><span class="article-meta__link">-</span><i class="fa fa-tag article-meta__icon" aria-hidden="true"></i><a class="article-meta__tags" href="/tags/gradle/">gradle</a></span><div class="content"><h1 id="使用-Gradle-构建-SpringBoot-项目"><a href="#使用-Gradle-构建-SpringBoot-项目" class="headerlink" title="使用 Gradle 构建 SpringBoot 项目"></a>使用 Gradle 构建 SpringBoot 项目</h1><p><img src="https://upload-images.jianshu.io/upload_images/13603359-a178a9b22adf602a.png?imageMogr2/auto-orient/strip%7CimageView2/2/w/1240" alt="image.png"></p>
+<p>本章中包含了 <code>Gradle工程的创建</code>、<code>依赖SpringBoot</code>、<code>生成IDE工程文件</code>、<code>调试模式</code>、<code>自动化测试</code> 五个部分。<a href="https://github.com/davenkin/gradle-spring-boot.git" target="_blank" rel="noopener">本文 Github 代码</a></p></div><a class="more" href="/2018/10/11/分布式/SpringBoot/1.用Gradle构建SpringBoot项目/#more">阅读更多</a><hr></div><div class="recent-post-item article-container"><a class="article-title" href="/2018/10/11/后端/java/GC算法/">《GC算法》</a><time class="post-meta__date"><i class="fa fa-calendar" aria-hidden="true"></i> 2018-10-11</time><span class="article-meta"><span class="article-meta__separator">|</span><i class="fa fa-inbox article-meta__icon" aria-hidden="true"></i><a class="article-meta__categories" href="/categories/后端/">后端</a><i class="fa fa-angle-right" aria-hidden="true"></i><i class="fa fa-inbox article-meta__icon" aria-hidden="true"></i><a class="article-meta__categories" href="/categories/后端/java/">java</a><i class="fa fa-angle-right" aria-hidden="true"></i><i class="fa fa-inbox article-meta__icon" aria-hidden="true"></i><a class="article-meta__categories" href="/categories/后端/java/GC/">GC</a></span><span class="article-meta tags"><span class="article-meta__separator">|</span><i class="fa fa-tag article-meta__icon" aria-hidden="true"></i><a class="article-meta__tags" href="/tags/GC/">GC</a></span><div class="content"><p>GC 算法、垃圾收集器</p>
+<p>在 Java 中有两个最基本的回收算法：复制算法和标记清理算法</p></div><a class="more" href="/2018/10/11/后端/java/GC算法/#more">阅读更多</a><hr></div><nav id="pagination"><div class="pagination"><a class="extend prev" rel="prev" href="/page/25/"><i class="fa fa-chevron-left"></i></a><a class="page-number" href="/">1</a><span class="space">&hellip;</span><a class="page-number" href="/page/25/">25</a><span class="page-number current">26</span><a class="page-number" href="/page/27/">27</a><span class="space">&hellip;</span><a class="page-number" href="/page/31/">31</a><a class="extend next" rel="next" href="/page/27/"><i class="fa fa-chevron-right"></i></a></div></nav></div></div><footer><div class="layout" id="footer"><div class="copyright">&copy;2013 - 2020 By koral</div><div class="framework-info"><span>驱动 - </span><a href="http://hexo.io"><span>Hexo</span></a><span class="footer-separator">|</span><span>主题 - </span><a href="https://github.com/Molunerfinn/hexo-theme-melody"><span>Melody</span></a></div><div class="busuanzi"><script async src="//busuanzi.ibruce.info/busuanzi/2.3/busuanzi.pure.mini.js"></script><span id="busuanzi_container_site_uv"><i class="fa fa-user"></i><span id="busuanzi_value_site_uv"></span><span></span></span><span class="footer-separator">|</span><span id="busuanzi_container_site_pv"><i class="fa fa-eye"></i><span id="busuanzi_value_site_pv"></span><span></span></span></div></div></footer><i class="fa fa-arrow-up" id="go-up" aria-hidden="true"></i><script src="https://cdn.jsdelivr.net/npm/animejs@latest/anime.min.js"></script><script src="https://cdn.jsdelivr.net/npm/jquery@latest/dist/jquery.min.js"></script><script src="https://cdn.jsdelivr.net/npm/@fancyapps/fancybox@latest/dist/jquery.fancybox.min.js"></script><script src="https://cdn.jsdelivr.net/npm/velocity-animate@latest/velocity.min.js"></script><script src="https://cdn.jsdelivr.net/npm/velocity-ui-pack@latest/velocity.ui.min.js"></script><script src="/js/utils.js?version=1.7.0"></script><script src="/js/fancybox.js?version=1.7.0"></script><script src="/js/sidebar.js?version=1.7.0"></script><script src="/js/copy.js?version=1.7.0"></script><script src="/js/fireworks.js?version=1.7.0"></script><script src="/js/transition.js?version=1.7.0"></script><script src="/js/scroll.js?version=1.7.0"></script><script src="/js/head.js?version=1.7.0"></script><script>if(/Android|webOS|iPhone|iPod|iPad|BlackBerry/i.test(navigator.userAgent)) {
   $('#nav').addClass('is-mobile')
   $('footer').addClass('is-mobile')
   $('#top-container').addClass('is-mobile')
