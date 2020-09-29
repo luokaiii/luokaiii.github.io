@@ -72,11 +72,41 @@ spring.data.mongodb.database=test
 spring.data.mongodb.url=mongodb://localhost:27017/test
 ```
 
-#### 4. 如何工作的
+### 4. 如何工作的
 
 同 `Spring Session Redis` 一样，将原本在 Tomcat 中的 `HttpSession` 持久化到 SpringSession 的实现中。
 
 在 `Spring Security` 中，`SecurityContextPersistenceFilter` 将 `SecurityContext` 保存到 HttpSession 时，他就会被持久化到 Mongo 中。
+
+### 5. 可能遇到的问题
+
+#### 1. 部分属性序列化失败
+
+```java
+@Configuration
+@EnableMongoHttpSession
+public class SessionConfig {
+    /**
+     * 使用 Jackson 进行序列化转换，只需要将转换失败的对象，创建一个对应的 mixin 对象即可
+     */
+    @Bean
+    public JacksonMongoSessionConverter jdkMongoSessionConverter() {
+        List<Module> modules = new ArrayList<>();
+
+        SimpleModule module = new SimpleModule();
+        module.setMixInAnnotation(GrantedAuthority.class, GrantedAuthorityMixin.class);
+
+        SimpleModule module1 = new SimpleModule();
+        module1.setMixInAnnotation(LoginUserDetails.class, GrantedAuthorityMixin.class);
+
+        modules.add(module);
+
+        return new SessionConverter(modules);
+    }
+
+    private static class GrantedAuthorityMixin {}    
+}
+```
 
 参考资料：
 
