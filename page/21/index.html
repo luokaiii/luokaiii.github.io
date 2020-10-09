@@ -7,1548 +7,1231 @@
     error: '复制错误',
     noSupport: '浏览器不支持'
   }
-} </script></head><body><i class="fa fa-arrow-right" id="toggle-sidebar" aria-hidden="true"></i><div id="sidebar" data-display="false"><div class="author-info"><div class="author-info__avatar text-center"><img src="/img/avatar.png"></div><div class="author-info__name text-center">koral</div><div class="author-info__description text-center">罗凯的博客主页</div><hr><div class="author-info-articles"><a class="author-info-articles__archives article-meta" href="/archives"><span class="pull-left">文章</span><span class="pull-right">302</span></a><a class="author-info-articles__tags article-meta" href="/tags"><span class="pull-left">标签</span><span class="pull-right">39</span></a><a class="author-info-articles__categories article-meta" href="/categories"><span class="pull-left">分类</span><span class="pull-right">51</span></a></div></div></div><nav class="no-bg" id="nav"><div id="page-header"><span class="pull-left"> <a id="site-name" href="/index.html">凯</a></span><i class="fa fa-bars toggle-menu pull-right" aria-hidden="true"></i><span class="pull-right menus">   <a class="site-page" href="/">首页</a><a class="site-page" href="/archives">归档</a><a class="site-page" href="/tags">标签</a><a class="site-page" href="/categories">分类</a><a class="site-page" href="/about">关于我</a></span><span class="pull-right"></span></div><div id="site-info"><div id="site-title">凯</div><div id="site-sub-title">现在的我可以做点什么，让未来的我可以受益匪浅？</div></div></nav><div id="content-outer"><div class="layout" id="content-inner"><div class="recent-post-item article-container"><a class="article-title" href="/2019/07/12/读书笔记/《JavaDesignPatterns》/14.享元模式/">《Java Design Patterns》第十二章 享元模式</a><time class="post-meta__date"><i class="fa fa-calendar" aria-hidden="true"></i> 2019-07-12</time><span class="article-meta"><span class="article-meta__separator">|</span><i class="fa fa-inbox article-meta__icon" aria-hidden="true"></i><a class="article-meta__categories" href="/categories/读书笔记/">读书笔记</a><i class="fa fa-angle-right" aria-hidden="true"></i><i class="fa fa-inbox article-meta__icon" aria-hidden="true"></i><a class="article-meta__categories" href="/categories/读书笔记/设计模式/">设计模式</a></span><span class="article-meta tags"><span class="article-meta__separator">|</span><i class="fa fa-tag article-meta__icon" aria-hidden="true"></i><a class="article-meta__tags" href="/tags/hide/">hide</a><span class="article-meta__link">-</span><i class="fa fa-tag article-meta__icon" aria-hidden="true"></i><a class="article-meta__tags" href="/tags/设计模式/">设计模式</a></span><div class="content"><h1 id="第十二章-享元模式"><a href="#第十二章-享元模式" class="headerlink" title="第十二章 享元模式"></a>第十二章 享元模式</h1><p>在Java开发或者面试过程中，经常会遇到一个面试题：</p>
-<pre><code class="java">String a = new String(&quot;abc&quot;); 
-String b = new String(&quot;abc&quot;);
-问：a == b ?</code></pre>
-<p>答案是肯定的，因为JVM在创建一个字符串后，会将其存储在 字符串池 中，下次new时会先去 字符串池 中查询是否已经存在。然后将引用地址返回。</p>
-<p>这就是一个典型的 <code>享元模式</code> 案例。</p>
-<h2 id="一、设计一个围棋软件"><a href="#一、设计一个围棋软件" class="headerlink" title="一、设计一个围棋软件"></a>一、设计一个围棋软件</h2><p>对于围棋软件而言，棋盘中包含大量的黑白色棋子，它们的形状、大小一致，但是出现的位置不同。如果将所有棋子都 new 一个对象存储在内存中，则该软件在运行时所需的内存空间会非常大。</p>
-<h3 id="解决方案"><a href="#解决方案" class="headerlink" title="解决方案"></a>解决方案</h3><p>享元模式通过共享技术实现相同或相似对象的重用，在逻辑上每一个出现的字符都有一个对象与之对应，然而在物理上它们却共享同一个享元对象。</p>
-<p>在享元模式中，存储这些共享实例对象的地方称为“享元池（Flyweight Pool）”</p>
-<h2 id="二、享元模式"><a href="#二、享元模式" class="headerlink" title="二、享元模式"></a>二、享元模式</h2><p>享元模式以共享方式，高效地支持大量细粒度对象的重用，享元对象能做到共享的关键是区分了 内部状态（Intrinsic State）和外部状态（Extrinsic State）。</p>
-<h3 id="内部状态"><a href="#内部状态" class="headerlink" title="内部状态"></a>内部状态</h3><p>内部状态是指存储在享元对象内部并且不会随环境变化而改变的状态，内部状态可以共享，但是不会被修改。</p>
-<h3 id="外部状态"><a href="#外部状态" class="headerlink" title="外部状态"></a>外部状态</h3><p>外部状态是随环境变化而变化的、不可以共享的状态。</p>
-<p>外部状态通常由客户端保存，并在享元对象被创建之后，需要使用的时候再传入享元对象内部。</p>
-<h3 id="享元模式的定义"><a href="#享元模式的定义" class="headerlink" title="享元模式的定义"></a>享元模式的定义</h3><p>享元模式（Flyweight Pattern）：运用共享技术有效地支持大量细粒度对象的复用。系统只使用少量的对象，而这些对象都很相似，状态变化很小，可以实现对象的多次复用。</p>
-<p>享元模式因其共享的是细粒度对象，因此又称为 <code>轻量级模式</code>，属于<code>对象结构型模式</code>。</p>
-<h3 id="享元模式中的几个角色"><a href="#享元模式中的几个角色" class="headerlink" title="享元模式中的几个角色"></a>享元模式中的几个角色</h3><ol>
-<li>Flyweight - 抽象享元类<ol>
-<li>接口或者抽象类，声明了具体享元类的公共方法</li>
-<li>这些方法可以向外界提供内部数据</li>
-<li>也可以有外界来设计外部数据</li>
-</ol>
-</li>
-<li>ConcreteFlyweight - 具体享元类<ol>
-<li>实现了抽象享元类，实例被称为享元对象</li>
-<li>具体享元类中为内部状态提供了存储空间</li>
-<li>通常使用单例模式来设计具体享元类</li>
-</ol>
-</li>
-<li>UnsharedConcreteFlyweight - 非共享具体享元类<ol>
-<li>不能被共享的子类可以设计为 非共享具体享元类</li>
-<li>在使用时可以直接通过实例化创建</li>
-</ol>
-</li>
-<li>FlyweightFactory - 享元工厂类<ol>
-<li>用于创建并管理享元对象，针对抽象享元类编程</li>
-<li>存储享元池，一般设计为“键值对”的集合</li>
-<li>可以结合工厂模式进行设计，返回唯一的实例</li>
-</ol>
-</li>
-</ol>
-<h2 id="三、享元模式的核心"><a href="#三、享元模式的核心" class="headerlink" title="三、享元模式的核心"></a>三、享元模式的核心</h2><h3 id="1-享元工厂类"><a href="#1-享元工厂类" class="headerlink" title="1. 享元工厂类"></a>1. 享元工厂类</h3><pre><code class="java">class FlyweightFactory {
-    // 定义享元池
-    private Map&lt;String,Flyweight&gt; flyweights = new HashMap();
-
-    public Flyweight getFlyweight(String key){
-        // 对象存在，则直接从享元池中取
-        if(flyweights.containsKey(key)){
-            return flyweights.get(key);
-        }
-        // 不存在，则创建一个享元对象，并放入享元池中返回
-        else {
-            Flyweight fy = new ConcreteFlyweight();
-            flyweights.put(key,fy);
-            return fy;
-        }
-    }
-}</code></pre>
-<h3 id="2-享元类"><a href="#2-享元类" class="headerlink" title="2. 享元类"></a>2. 享元类</h3><p>享元类将内部状态和外部状态分开处理，通常将内部状态作为享元类的成员变量，而外部状态通过注入的方式添加到享元模式中。</p>
-<pre><code class="java">class Flyweight {
-    // 内部状态，与享元对象的内部状态一致
-    private String intrinsicState;
-
-    public Flyweight(String intrinsicState){
-        this.intrinsicState = intrinsicState;
-    }
-
-    // 外部状态，在使用时由外部设置，不保存在享元对象中。
-    // 即使是同一个享元对象，每次使用时也可以传入不同的外部状态
-    public void operation(String extrinsicState){
-        .......
-    }
-}</code></pre>
-<h2 id="四、完整实现"><a href="#四、完整实现" class="headerlink" title="四、完整实现"></a>四、完整实现</h2><pre><code class="java">/**
- * 享元模式
- */
-// 围棋棋子类 - 抽象享元类
-abstract class IgoChessman {
-    // 抽象内部状态
-    public abstract String getColor();
-
-    // 在方法调用时，注入外部状态
-    public void display(Integer x, Integer y) {
-        System.out.println(&quot;棋子颜色:&quot; + getColor() + &quot;，当前棋子位置为：&quot; + x + &quot;,&quot; + y);
-    }
-}
-
-// 黑色棋子类 - 具体享元类
-class BlackIgoChessman extends IgoChessman {
-    @Override
-    public String getColor() {
-        return &quot;黑色&quot;;
-    }
-}
-
-// 白色棋子类 - 具体享元类
-class WhiteIgoChessman extends IgoChessman {
-    @Override
-    public String getColor() {
-        return &quot;白色&quot;;
-    }
-}
-
-// 围棋棋子工厂类 - 享元工厂类，使用单例模式进行设计
-class IgoChessmanFactory {
-    private static IgoChessmanFactory instance = new IgoChessmanFactory();
-    private static Hashtable&lt;String, IgoChessman&gt; ht; // 使用 Hashtable 来存储享元对象，充当享元池
-
-    private IgoChessmanFactory() {
-        ht = new Hashtable&lt;&gt;();
-        IgoChessman black = new BlackIgoChessman();
-        IgoChessman white = new WhiteIgoChessman();
-        ht.put(&quot;b&quot;, black);
-        ht.put(&quot;w&quot;, white);
-    }
-
-    // 返回享元工厂类的唯一实例
-    public static IgoChessmanFactory getInstance() {
-        return instance;
-    }
-
-    // 通过key来获取存储在 Hashtable 中的享元对象
-    public IgoChessman getIgoChessman(String color) {
-        return ht.get(color);
-    }
-}
-
-public class FlyweightPattern {
-    public static void main(String[] args) {
-        // 获取享元工厂对象
-        IgoChessmanFactory factory = IgoChessmanFactory.getInstance();
-
-        // 通过享元工厂获取棋子
-        IgoChessman black1 = factory.getIgoChessman(&quot;b&quot;);
-        IgoChessman black2 = factory.getIgoChessman(&quot;b&quot;);
-        IgoChessman black3 = factory.getIgoChessman(&quot;b&quot;);
-
-        IgoChessman white1 = factory.getIgoChessman(&quot;w&quot;);
-        IgoChessman white2 = factory.getIgoChessman(&quot;w&quot;);
-
-        black1.display(1,2);
-        black2.display(2,3);
-        black3.display(3,4);
-        white1.display(4,5);
-        white2.display(2,2);
-    }
-}</code></pre>
-<h2 id="五、单纯享元模式与复合享元模式"><a href="#五、单纯享元模式与复合享元模式" class="headerlink" title="五、单纯享元模式与复合享元模式"></a>五、单纯享元模式与复合享元模式</h2><h3 id="5-1-单纯享元模式"><a href="#5-1-单纯享元模式" class="headerlink" title="5.1 单纯享元模式"></a>5.1 单纯享元模式</h3><p>单纯享元模式中，所有具体享元类都是可以共享的，不存在非共享具体享元类。</p>
-<h3 id="5-2-复合享元模式"><a href="#5-2-复合享元模式" class="headerlink" title="5.2 复合享元模式"></a>5.2 复合享元模式</h3><p>将一些单纯享元对象使用组合模式进行组合，形成复合享元对象。复合享元对象本身不能共享，但是可以将组合后的享元对象分解为单纯享元对象，进行共享。</p>
-<h2 id="六、补充"><a href="#六、补充" class="headerlink" title="六、补充"></a>六、补充</h2><p>享元模式与其他模式的联用：</p>
-<ol>
-<li>享元工厂类通常提供一个 <code>静态的工厂方法</code> 用于返回享元对象，使用 <code>简单工厂模式</code> 来生成享元对象</li>
-<li>享元工厂通常是唯一的，可以使用 <code>单例模式</code> 进行设计</li>
-<li>可以使用 <code>组合模式</code> 形成复合享元模式，统一对多个享元对象设置外部状态</li>
-</ol>
-<h2 id="七、总结"><a href="#七、总结" class="headerlink" title="七、总结"></a>七、总结</h2><p>“节约内存，提高性能”</p>
-<h3 id="优点"><a href="#优点" class="headerlink" title="优点"></a>优点</h3><ol>
-<li>极大的减少内存中对象的数量，使得相同或相似对象在内存中只保存一份，从而节约系统资源，提高系统性能</li>
-<li>享元模式的外部状态相对独立，且不影响其内部状态，从而使得享元对象可以在不同环境中被共享</li>
-</ol>
-<h3 id="缺点"><a href="#缺点" class="headerlink" title="缺点"></a>缺点</h3><ol>
-<li>享元模式需要分离 内部状态和外部状态，使程序的逻辑更复杂</li>
-<li>为了使对象可以共享，享元模式需要将享元对象的部分状态外部化，而读取外部状态将使得运行时间变长</li>
-</ol>
-<h3 id="适用场景"><a href="#适用场景" class="headerlink" title="适用场景"></a>适用场景</h3><ol>
-<li>系统中有大量相同或相似的对象，造成大量的内存浪费</li>
-<li>对象的大部分状态都可以外部化，可以将这些外部状态传入对象中</li>
-<li>享元模式在运行时需要维护一个享元池，势必会使内存一直占用，因此享元池中的享元对象需要多次重复使用时才值得</li>
-</ol>
-<h2 id="八、练习"><a href="#八、练习" class="headerlink" title="八、练习"></a>八、练习</h2><blockquote>
-<p>Sunny软件公司欲开发一个多功能文档编辑器，在文本文档中可以插入图片、动画、视频等多媒体资料，为了节约系统资源，相同的图片、动画和视频在同一个文档中只需保存一份，但是可以多次重复出现，而且它们每次出现时位置和大小均可不同。试使用享元模式设计该文档编辑器。</p>
-<pre><code class="java">// 抽象享元类 - 声明公共方法，向外界提供内部数据，由外界提供外部数据
-abstract class Flyweight {
-    public abstract String type();
-
-    public void insert(String location, String size) {
-        System.out.println(&quot;插入类型：&quot; + type() + &quot;，位置：&quot; + location + &quot;，大小：&quot; + size);
-    }
-}
-
-// 具体享元类 - 实现抽象方法，内部数据的状态与对象状态一致，内部状态不能被修改
-class Picture extends Flyweight {
-    @Override
-    public String type() {
-        return &quot;图片类型&quot;;
-    }
-}
-
-class Cartoon extends Flyweight {
-    @Override
-    public String type() {
-        return &quot;动画类型&quot;;
-    }
-}
-
-class Video extends Flyweight {
-    @Override
-    public String type() {
-        return &quot;视频类型&quot;;
-    }
-}
-
-class FlyweightFactory {
-
-    // 使用单例模式，维持单一的工厂对象
-    private static FlyweightFactory factory = new FlyweightFactory();
-
-    private Map&lt;String, Flyweight&gt; map = new HashMap&lt;&gt;();
-
-    private FlyweightFactory() {
-        Flyweight picture = new Picture();
-        Flyweight cartoon = new Cartoon();
-        Flyweight video = new Video();
-        map.put(&quot;picture&quot;, picture);
-        map.put(&quot;cartoon&quot;, cartoon);
-        map.put(&quot;video&quot;, video);
-    }
-
-    // 静态工厂方法 - 返回工厂对象
-    public static FlyweightFactory getInstance(){
-        return factory;
-    }
-
-    public Flyweight getFlyweight(String key) {
-        if(map.containsKey(key)){
-            return map.get(key);
-        }
-        throw new RuntimeException(&quot;flyweight cann&#39;t support&quot;);
-    }
-}
-
-public class FlyweightPattern {
-    public static void main(String[] args) {
-        final FlyweightFactory factory = FlyweightFactory.getInstance();
-        Flyweight picture1 = factory.getFlyweight(&quot;picture&quot;);
-        Flyweight picture2 = factory.getFlyweight(&quot;picture&quot;);
-        Flyweight cartoon1 = factory.getFlyweight(&quot;cartoon&quot;);
-        Flyweight cartoon2 = factory.getFlyweight(&quot;cartoon&quot;);
-        Flyweight video = factory.getFlyweight(&quot;video&quot;);
-
-        picture1.insert(&quot;/Pic 下&quot;,&quot;273KB&quot;);
-        picture2.insert(&quot;/Pic 下&quot;,&quot;1.23MB&quot;);
-        cartoon1.insert(&quot;/cartoon 下&quot;,&quot;80MB&quot;);
-        cartoon2.insert(&quot;/cartoon 下&quot;,&quot;81MB&quot;);
-        video.insert(&quot;/video 下&quot;,&quot;1.3GB&quot;);
-    }
-}</code></pre>
-</blockquote>
-<p><img src="https://i.loli.net/2019/07/12/5d28459ba725023617.png" alt="运行结果"></p>
-</div><hr></div><div class="recent-post-item article-container"><a class="article-title" href="/2019/07/11/读书笔记/《JavaDesignPatterns》/13.外观模式/">《Java Design Patterns》第十一章 外观模式</a><time class="post-meta__date"><i class="fa fa-calendar" aria-hidden="true"></i> 2019-07-11</time><span class="article-meta"><span class="article-meta__separator">|</span><i class="fa fa-inbox article-meta__icon" aria-hidden="true"></i><a class="article-meta__categories" href="/categories/读书笔记/">读书笔记</a><i class="fa fa-angle-right" aria-hidden="true"></i><i class="fa fa-inbox article-meta__icon" aria-hidden="true"></i><a class="article-meta__categories" href="/categories/读书笔记/设计模式/">设计模式</a></span><span class="article-meta tags"><span class="article-meta__separator">|</span><i class="fa fa-tag article-meta__icon" aria-hidden="true"></i><a class="article-meta__tags" href="/tags/hide/">hide</a><span class="article-meta__link">-</span><i class="fa fa-tag article-meta__icon" aria-hidden="true"></i><a class="article-meta__tags" href="/tags/设计模式/">设计模式</a></span><div class="content"><h1 id="第十一章-外观模式"><a href="#第十一章-外观模式" class="headerlink" title="第十一章 外观模式"></a>第十一章 外观模式</h1><h2 id="一、外观模式"><a href="#一、外观模式" class="headerlink" title="一、外观模式"></a>一、外观模式</h2><p>在日常开发中，注册一个用户需要进行如下操作：验证手机验证码、生成用户类、存储至数据库、初始化用户积分等等操作。但是 客户端只需要调用一个 UserService.register() 即可，具体的其他对象的操作都交给 UserService 的实现来完成。</p>
-<p>还有如 MVC 模式中，Controller 层中通过调用 service 来解耦 Controller 层与 Dao 层，隔离各个层次，实现层次化结构。</p>
-<p>于 controller 而言，service 就是外观类，由service 来处理多个dao的交互。</p>
-<h3 id="1-1-定义"><a href="#1-1-定义" class="headerlink" title="1.1 定义"></a>1.1 定义</h3><p>外观模式，又称为门面模式，是一种使用频率非常高的结构型设计模式，通过引入一个外观对象来简化客户端与子系统之间的交互，为复杂的子系统调用提供一个统一的入口，降低子系统与客户端的耦合度，且客户端调用非常方便。</p>
-<p>外观模式是迪米特法则的一种具体实现，通过引入一个新的外观角色可以降低原油系统的复杂度，同时降低客户类与子系统的耦合。</p>
-<h3 id="1-2-外观模式"><a href="#1-2-外观模式" class="headerlink" title="1.2 外观模式"></a>1.2 外观模式</h3><p><img src="https://i.loli.net/2019/07/11/5d270855d1d7975835.png" alt="外观模式示意图"></p>
-<p>在日常生活中，自己泡茶和去茶馆喝茶的区别类似于上图显示的这样。自己泡需要与 热水、差距、茶叶 进行交互（系统耦合度十分的高），而去茶馆喝茶只需要与服务员（Facade）进行交互即可。</p>
-<h3 id="1-3-外观模式中的几个角色："><a href="#1-3-外观模式中的几个角色：" class="headerlink" title="1.3 外观模式中的几个角色："></a>1.3 外观模式中的几个角色：</h3><ol>
-<li>Facade - 外观角色<ol>
-<li>由客户端调用其中的方法，来访问相关子系统的功能</li>
-<li>由外观角色将客户端的请求委派到具体子系统中</li>
-</ol>
-</li>
-<li>SubSystem - 子系统角色<ol>
-<li>系统中可以存在一个或多个子系统角色</li>
-<li>每个可以被客户端调用，也可以被外观角色调用，用于处理请求</li>
-<li>子系统并不知道外观的存在，与它而言，外观角色仅仅是另一个客户端</li>
-</ol>
-</li>
-</ol>
-<h2 id="二、完整实现"><a href="#二、完整实现" class="headerlink" title="二、完整实现"></a>二、完整实现</h2><pre><code class="java">/**
- * 外观模式
- */
-class SubSystemA {
-    public void sayHello() {
-        System.out.println(&quot;大家好，我是系统A&quot;);
-    }
-}
-
-class SubSystemB {
-    public void byebye() {
-        System.out.println(&quot;再见，我是系统B&quot;);
-    }
-}
-
-class SubSystemC {
-    public void o() {
-        System.out.println(&quot;i don&#39;t wanna see you anymore.&quot;);
-    }
-}
-
-class Facade {
-    private SubSystemA a = new SubSystemA();
-    private SubSystemB b = new SubSystemB();
-    private SubSystemC c = new SubSystemC();
-
-    public void bb(){
-        a.sayHello();
-        c.o();
-        b.byebye();
-    }
-}
-
-public class FacadePattern {
-    public static void main(String[] args) {
-        // 通过外观类 Facade 减少了客户端与各个子系统的直接交互，降低耦合度
-        final Facade facade = new Facade();
-        facade.bb();
-    }
-}</code></pre>
-<h2 id="三、抽象外观类"><a href="#三、抽象外观类" class="headerlink" title="三、抽象外观类"></a>三、抽象外观类</h2><p>在标准外观模式中，如果需要增加、删除或更换与外观类交互的子系统类，必须修改外观类或客户端的代码。这将违背开闭原则。</p>
-<p>可以引入抽象外观类来对系统进行改进，客户端针对抽象外观类进行编程。</p>
-<h2 id="四、总结"><a href="#四、总结" class="headerlink" title="四、总结"></a>四、总结</h2><h3 id="优点"><a href="#优点" class="headerlink" title="优点"></a>优点</h3><ol>
-<li>对客户端屏蔽子系统组件，减少客户端所需处理的对象数目，使子系统的使用更加容易</li>
-<li>客户端与子系统间关联的对象会减少</li>
-<li>实现了子系统和客户端之间的松耦合，子系统的变化只需要调整外观类即可</li>
-<li>子系统的修改不会影响其他子系统，且子系统内部修改不会影响到外观类</li>
-</ol>
-<h3 id="缺点"><a href="#缺点" class="headerlink" title="缺点"></a>缺点</h3><ol>
-<li>由外观类来调用子系统类，减少了客户端直接调用时的灵活性和可变性</li>
-<li>如果设计不当，增加子系统时可能会修改外观类，违背了开闭原则</li>
-</ol>
-<h3 id="适用场景"><a href="#适用场景" class="headerlink" title="适用场景"></a>适用场景</h3><ol>
-<li>当需要为访问一系列复杂的子系统对象提供简单入口时，可以使用外观模式</li>
-<li>外观类可以将子系统与客户端解耦，从而提高子系统的独立性和可移植性</li>
-<li>在层次化结构中，可以使用外观模式定义系统中的每一层入口。层与层之间不直接产生联系，而通过外观类建立联系，降低层之间的耦合度</li>
-</ol>
-</div><hr></div><div class="recent-post-item article-container"><a class="article-title" href="/2019/07/11/读书笔记/《JavaDesignPatterns》/12.装饰模式/">《Java Design Patterns》第十章 装饰模式 - 扩展系统功能</a><time class="post-meta__date"><i class="fa fa-calendar" aria-hidden="true"></i> 2019-07-11</time><span class="article-meta"><span class="article-meta__separator">|</span><i class="fa fa-inbox article-meta__icon" aria-hidden="true"></i><a class="article-meta__categories" href="/categories/读书笔记/">读书笔记</a><i class="fa fa-angle-right" aria-hidden="true"></i><i class="fa fa-inbox article-meta__icon" aria-hidden="true"></i><a class="article-meta__categories" href="/categories/读书笔记/设计模式/">设计模式</a></span><span class="article-meta tags"><span class="article-meta__separator">|</span><i class="fa fa-tag article-meta__icon" aria-hidden="true"></i><a class="article-meta__tags" href="/tags/hide/">hide</a><span class="article-meta__link">-</span><i class="fa fa-tag article-meta__icon" aria-hidden="true"></i><a class="article-meta__tags" href="/tags/设计模式/">设计模式</a></span><div class="content"><h1 id="第十章-装饰模式-扩展系统功能"><a href="#第十章-装饰模式-扩展系统功能" class="headerlink" title="第十章 装饰模式 - 扩展系统功能"></a>第十章 装饰模式 - 扩展系统功能</h1><p>如果你买了一个毛坯房，那么剩下的就是装修。装修并没有改变原有房屋用于居住的本质，但是增加了实用性、美观性等特征。</p>
-<p>在软件设计中，装饰模式就是一种类似装修的技术，能对已有对象的功能进行扩展，以获得更符合用户需求的对象。</p>
-<h2 id="一、设计一款图形界面库"><a href="#一、设计一款图形界面库" class="headerlink" title="一、设计一款图形界面库"></a>一、设计一款图形界面库</h2><p>设计一款图形界面构件库，该库提供了大量基础构件，如窗体、文本框、列表框等。由于在使用时，需要定制一些特效，如带滚动条的窗体、带黑色边框的文本框、即带滚动条又带黑色边框的列表框等。即对原有的基础构件进行扩展，以增强其功能。</p>
-<h3 id="1-1-传统继承方式实现"><a href="#1-1-传统继承方式实现" class="headerlink" title="1.1 传统继承方式实现"></a>1.1 传统继承方式实现</h3><p><img src="https://i.loli.net/2019/07/11/5d269d7e4fdc421682.png" alt="传统继承的方式实现"></p>
-<h3 id="1-2-问题与缺陷"><a href="#1-2-问题与缺陷" class="headerlink" title="1.2 问题与缺陷"></a>1.2 问题与缺陷</h3><p>按照 1.1 中的实现方式，虽然可以满足系统的设计需求。但是，存在的问题也十分严重：</p>
-<ol>
-<li>系统扩展十分麻烦。当我们需要 “带滚动条和黑色边框的窗体类” 时，需要同时继承两种类型的窗体类。这在 <code>不支持多重继承</code> 的语言中是无法使用的</li>
-<li>代码重复。从设计图中可以看出，不只是 窗体类 需要滚动和边框，文本框类和列表框类同样需要。而设计滚动条与黑色边框的过程基本相同，代码重复。不利于对系统进行修改和维护。</li>
-<li>系统庞大，类的数目非常多。如果增加新的控件或者新的扩展功能，系统都需要增加大量的具体类，这将导致系统变得非常庞大。<ol>
-<li>如增加一个透明边框（基本控件）的功能，则需要对窗体、文本框、列表框各加一个实现类。</li>
-<li>如果需要组合各个功能的话，3种扩展方式则存在7种组合关系。</li>
-</ol>
-</li>
-</ol>
-<h3 id="1-3-解决方案"><a href="#1-3-解决方案" class="headerlink" title="1.3 解决方案"></a>1.3 解决方案</h3><p>直接继承的设计方法的问题在于 类的扩展十分不便，而且会导致类数目的急剧增加。</p>
-<p>其根本原因在于复用机制的不合理：上文采用了继承复用，如“带滚动的窗体”通过继承的方式来复用“窗体类”的“显示功能”，又增加了特定的方法。在复用父类的方法后再增加新的方法来扩展功能。</p>
-<p>根据“合成复用原则”，在实现功能复用时，要多用关联，少用继承。如将 “滚动功能” 抽离，封装在单独的类中，在这个类中定义一个 Component 类型的对象，通过调用 Comonent 的 “显示方法”，在通过调用“滚动功能”的方法来实现功能的扩展。</p>
-<p>根据“里氏替换原则”，只需要在程序运行时，向独立的类中注入具体的 Component 子类对象即可实现功能扩展。</p>
-<p>这个独立的类一般称为“装饰器 Decorator” 或装饰类。</p>
-<h2 id="二、装饰模式"><a href="#二、装饰模式" class="headerlink" title="二、装饰模式"></a>二、装饰模式</h2><p>装饰模式可以在不改变一个对象本身功能的基础上给对象增加额外的新行为。</p>
-<p>装饰模式是一种用于替代继承的技术，它通过一种无须定义子类的方式来给对象动态增加职责，使用对象之间的关联关系取代类之间的继承关系。通过装饰类调用待装饰的原有类的方法，还可以增加新的方法，以扩充原有类的功能。</p>
-<h3 id="2-1-定义"><a href="#2-1-定义" class="headerlink" title="2.1 定义"></a>2.1 定义</h3><p>装饰模式：动态地给一个对象增加一些额外的职责，就增加对象功能来说，装饰模式比生成子类实现更加灵活。装饰模式是一种对象结构型模式。</p>
-<p><img src="https://i.loli.net/2019/07/11/5d27016a49a1297684.png" alt="装饰模式"></p>
-<h3 id="2-2-装饰模式中的几个角色"><a href="#2-2-装饰模式中的几个角色" class="headerlink" title="2.2 装饰模式中的几个角色"></a>2.2 装饰模式中的几个角色</h3><ol>
-<li>Component - 抽象构件<ol>
-<li>具体构件和抽象装饰类的共同父类，声明了在具体构件中实现的业务方法</li>
-<li>引入抽象构件，可以使客户端以一致的方式处理未被装饰的对象，以及装饰之后的对象</li>
-<li>实现客户端的透明操作</li>
-</ol>
-</li>
-<li>ConcreteComponent - 具体构件<ol>
-<li>抽象构件的子类，用于定义具体的构件对象</li>
-<li>装饰器可以给它增加额外的职责（方法）</li>
-</ol>
-</li>
-<li>Decorator - 抽象装饰类<ol>
-<li>抽象构件的子类，用于给具体构件增加职责，但是具体职责在其子类中实现</li>
-<li>维护一个指向抽象构件对象的引用，通过该引用可以调用装饰之前构件对象的方法</li>
-<li>通过子类扩展该方法，以达到装饰的目的</li>
-</ol>
-</li>
-<li>ConcreteDecorator - 具体装饰类<ol>
-<li>抽象装饰类的子类，负责向构件添加新的职责</li>
-<li>每个具体装饰类都定义了一些新的行为，可以调用抽象装饰类中定义的方法，并增加新的方法用以扩充对象的行为</li>
-</ol>
-</li>
-</ol>
-<h3 id="2-3-装饰模式的核心-抽象装饰类-代码"><a href="#2-3-装饰模式的核心-抽象装饰类-代码" class="headerlink" title="2.3 装饰模式的核心 - 抽象装饰类 - 代码"></a>2.3 装饰模式的核心 - 抽象装饰类 - 代码</h3><pre><code class="java">class Decorator implements Component {
-    private Component component; // 维护一个对抽象构件对象的引用
-    public Decorator(Component component) { // 注入一个抽象构件类型的对象
-        this.component = component;
-    }
-
-    public void operation(){ // 调用原有业务方法
-        component.operation();
-    }
-}</code></pre>
-<p>抽象装饰类可以做到对装饰类进行再装饰，如对一张图表增加一个相框，还能继续在小相框外套大相框。因为它们都是 Component 的子类。</p>
-<p>抽象装饰类只是调用原有的 component 对象的 operation() 方法，它并没有真正的实施装饰，而是提供一个统一的接口，将具体装饰过程交给子类完成。</p>
-<pre><code class="java">class ConcreteDecorator extends Decorator {
-    public ConcreteDecorator(Component component){
-        super(component);
-    }
-
-    public void operation(){
-        super.operation();  // 调用原有业务方法
-        addedBehavior();   // 调用新增业务方法
-    }
-
-    // 新增的业务方法
-    public void addedBehavior(){
-        // ...
-    }
-}</code></pre>
+} </script></head><body><i class="fa fa-arrow-right" id="toggle-sidebar" aria-hidden="true"></i><div id="sidebar" data-display="false"><div class="author-info"><div class="author-info__avatar text-center"><img src="/img/avatar.png"></div><div class="author-info__name text-center">koral</div><div class="author-info__description text-center">罗凯的博客主页</div><hr><div class="author-info-articles"><a class="author-info-articles__archives article-meta" href="/archives"><span class="pull-left">文章</span><span class="pull-right">314</span></a><a class="author-info-articles__tags article-meta" href="/tags"><span class="pull-left">标签</span><span class="pull-right">40</span></a><a class="author-info-articles__categories article-meta" href="/categories"><span class="pull-left">分类</span><span class="pull-right">53</span></a></div></div></div><nav class="no-bg" id="nav"><div id="page-header"><span class="pull-left"> <a id="site-name" href="/index.html">凯</a></span><i class="fa fa-bars toggle-menu pull-right" aria-hidden="true"></i><span class="pull-right menus">   <a class="site-page" href="/">首页</a><a class="site-page" href="/archives">归档</a><a class="site-page" href="/tags">标签</a><a class="site-page" href="/categories">分类</a><a class="site-page" href="/about">关于我</a></span><span class="pull-right"></span></div><div id="site-info"><div id="site-title">凯</div><div id="site-sub-title">现在的我可以做点什么，让未来的我可以受益匪浅？</div></div></nav><div id="content-outer"><div class="layout" id="content-inner"><div class="recent-post-item article-container"><a class="article-title" href="/2019/07/19/读书笔记/《SpringSecurity》/8.单元测试/">《Spring Security》第八章 Spring Security 的测试支持</a><time class="post-meta__date"><i class="fa fa-calendar" aria-hidden="true"></i> 2019-07-19</time><span class="article-meta"><span class="article-meta__separator">|</span><i class="fa fa-inbox article-meta__icon" aria-hidden="true"></i><a class="article-meta__categories" href="/categories/读书笔记/">读书笔记</a><i class="fa fa-angle-right" aria-hidden="true"></i><i class="fa fa-inbox article-meta__icon" aria-hidden="true"></i><a class="article-meta__categories" href="/categories/读书笔记/Spring-Security/">Spring Security</a></span><span class="article-meta tags"><span class="article-meta__separator">|</span><i class="fa fa-tag article-meta__icon" aria-hidden="true"></i><a class="article-meta__tags" href="/tags/hide/">hide</a><span class="article-meta__link">-</span><i class="fa fa-tag article-meta__icon" aria-hidden="true"></i><a class="article-meta__tags" href="/tags/Spring-Security/">Spring Security</a></span><div class="content"><h1 id="第八章-Spring-Security-的测试支持"><a href="#第八章-Spring-Security-的测试支持" class="headerlink" title="第八章 Spring Security 的测试支持"></a>第八章 Spring Security 的测试支持</h1><p>本章节只介绍 Spring Security 提供的测试支持，包含哪些关键的注解、如何设置Security测试环境、以及注解的作用。</p>
+<p>在下一章节会介绍如何通过重写 @WithMockUser 来使用自定义的 UserDetails 对象。</p>
 <blockquote>
-<p>装饰模式中是否存在独立变化的两个维度？ 试比较装饰模式和桥接模式的相同之处和不同之处？</p>
+<p>官网上的是 Spring Security 与原始的 Spring Test 环境的集成，这里就不做赘述了，我们使用的是 SpringBoot Test 环境</p>
 </blockquote>
-<h2 id="三、完整实现"><a href="#三、完整实现" class="headerlink" title="三、完整实现"></a>三、完整实现</h2><pre><code class="java">/**
- * 装饰模式
- */
-// 抽象界面构件类 - 抽象构件类
-abstract class Component {
-    public abstract void display();
-}
-
-// 窗体类 - 具体构件类
-class Window extends Component {
-    @Override
-    public void display() {
-        System.out.println(&quot;显示窗体!&quot;);
-    }
-}
-
-// 文本框类 - 具体构件类
-class TextBox extends Component {
-    @Override
-    public void display() {
-        System.out.println(&quot;显示文本框!&quot;);
-    }
-}
-
-// 列表框类 - 具体构件类
-class ListBox extends Component {
-    @Override
-    public void display() {
-        System.out.println(&quot;显示列表框!&quot;);
-    }
-}
-
-// 构件装饰类 - 抽象装饰类
-class ComponentDecorator extends Component {
-    // 维持对抽象构件类型对象的引用
-    private Component component;
-
-    // 注入抽象构件类型的对象
-    public ComponentDecorator(Component component) {
-        this.component = component;
-    }
-
-    @Override
-    public void display() {
-        component.display();
-    }
-}
-
-// 滚动条装饰类 - 具体装饰类
-class ScrollBarDecorator extends ComponentDecorator {
-
-    public ScrollBarDecorator(Component component) {
-        super(component);
-    }
-
-    @Override
-    public void display() {
-        this.setScrollBar();
-        super.display();
-    }
-
-    public void setScrollBar() {
-        System.out.println(&quot;为构件增加滚动条!&quot;);
-    }
-}
-
-// 黑色边框装饰类 - 具体装饰类
-class BlackBorderDecorator extends ComponentDecorator {
-    public BlackBorderDecorator(Component component) {
-        super(component);
-    }
-
-    @Override
-    public void display() {
-        setBlackBorder();
-        super.display();
-    }
-
-    public void setBlackBorder() {
-        System.out.println(&quot;为构件增加黑色边框&quot;);
-    }
-}
-
-public class DecoratorPattern {
-
-    public static void main(String[] args) {
-        Component window = new Window();
-        Component scrollBarWindow = new ScrollBarDecorator(window);
-        scrollBarWindow.display();
-    }
-}</code></pre>
-<h2 id="四、透明装饰模式和半透明装饰模式"><a href="#四、透明装饰模式和半透明装饰模式" class="headerlink" title="四、透明装饰模式和半透明装饰模式"></a>四、透明装饰模式和半透明装饰模式</h2><p>如果我们需要在 “黑色边框装饰类” 中增加一个方法用于设置边框宽度。则修改后的类如下：</p>
-<pre><code class="java">// 黑色边框装饰类 - 具体装饰类
-class BlackBorderDecorator extends ComponentDecorator {
-    public BlackBorderDecorator(Component component) {
-        super(component);
-    }
-
-    @Override
-    public void display() {
-        setBlackBorder();
-        super.display();
-    }
-
-    public void setBlackBorder() {
-        System.out.println(&quot;为构件增加黑色边框&quot;);
-    }
-
-    public void setBorderWidth(Integer width){
-        // ...
-    }
-}</code></pre>
-<p>如果我们继续使用 <code>抽象构件类</code> ，则客户端无法调用新增的业务方法 <code>setBorderWidth(Integer width)</code>。因为在抽象构建类中，没有对该方法的声明。</p>
-<p>在实际使用中，必须使用具体装饰类对象来调用该方法，这种装饰模式就是 <code>半透明(Semi-transparent)装饰模式</code>，而标准的装饰模式是透明装饰模式。</p>
-<h3 id="透明装饰模式与半透明装饰模式的区别"><a href="#透明装饰模式与半透明装饰模式的区别" class="headerlink" title="透明装饰模式与半透明装饰模式的区别"></a>透明装饰模式与半透明装饰模式的区别</h3><p>透明装饰模式要求客户端完全针对抽象编程，所有的装饰类必须声明为抽象构件类型。</p>
-<ol>
-<li>优点：客户端无需关心具体构件类型，可以让客户端透明地使用装饰之前的对象和装饰之后的对象，无须关系它们的区别</li>
-<li>优点：能够对装饰过的对象进行多次装饰，得到更复杂、功能更强大的对象。</li>
-</ol>
-<p>而半透明装饰模式的设计难度较大，对于新增特有的方法，必须使用具体装饰类型来定义装饰后的对象。</p>
-<ol>
-<li>优点：半透明装饰模式可以给系统带来更多灵活性，设计相对简单，使用也比较方便</li>
-<li>缺点：不能对使用同一对象的多次装饰，且客户端需要区别对待装饰之前和装饰之后的对象</li>
-</ol>
-<h2 id="五、总结"><a href="#五、总结" class="headerlink" title="五、总结"></a>五、总结</h2><h3 id="优点"><a href="#优点" class="headerlink" title="优点"></a>优点</h3><ol>
-<li>对于扩展对象的功能，装饰模式比继承更加灵活，且类的个数不会急剧增加</li>
-<li>能够动态扩展对象功能，比如通过配置文件决定运行时的具体装饰类</li>
-<li>能够对一个对象进行多次装饰，通过使用不同的具体装饰类来获得不同行为的组合</li>
-<li>具体构件类和具体装饰类可以独立变化，符合“开闭原则”</li>
-</ol>
-<h3 id="缺点"><a href="#缺点" class="headerlink" title="缺点"></a>缺点</h3><ol>
-<li>装饰模式在使用时，会产生许多的对象。<ol>
-<li>例如通过对一个对象的多次包装，会产生多个具体包装类</li>
-<li>大量对象势必会占用更多的系统资源，一定程度上影响程序的性能</li>
-</ol>
-</li>
-<li>装饰模式虽然比继承更加灵活，但也意味着更加容易出错，排查问题更加困难。<ol>
-<li>对于多次装饰后的对象，调试问题可能需要逐级排查，较为繁琐</li>
-</ol>
-</li>
-</ol>
-<h3 id="适用场景"><a href="#适用场景" class="headerlink" title="适用场景"></a>适用场景</h3><ol>
-<li>在不影响其他对象的情况下，以动态、透明的方式给单个对象添加职责</li>
-<li>不能采用继承方式对系统扩展时。<ol>
-<li>系统中存在大量独立的扩展，增加扩展时会导致子类爆炸性增长</li>
-<li>类被定义为不能继承（如final修饰的类）</li>
-</ol>
-</li>
-</ol>
-<h2 id="六、练习"><a href="#六、练习" class="headerlink" title="六、练习"></a>六、练习</h2><blockquote>
-<p>Sunny软件公司欲开发了一个数据加密模块，可以对字符串进行加密。最简单的加密算法通过对字母进行移位来实现，同时还提供了稍复杂的逆向输出加密，还提供了更为高级的求模加密。用户先使用最简单的加密算法对字符串进行加密，如果觉得还不够可以对加密之后的结果使用其他加密算法进行二次加密，当然也可以进行第三次加密。试使用装饰模式设计该多重加密系统。</p>
-</blockquote>
-</div><hr></div><div class="recent-post-item article-container"><a class="article-title" href="/2019/07/09/读书笔记/《JavaDesignPatterns》/11.组合模式/">《Java Design Patterns》第九章 组合模式 - 树形结构的处理</a><time class="post-meta__date"><i class="fa fa-calendar" aria-hidden="true"></i> 2019-07-09</time><span class="article-meta"><span class="article-meta__separator">|</span><i class="fa fa-inbox article-meta__icon" aria-hidden="true"></i><a class="article-meta__categories" href="/categories/读书笔记/">读书笔记</a><i class="fa fa-angle-right" aria-hidden="true"></i><i class="fa fa-inbox article-meta__icon" aria-hidden="true"></i><a class="article-meta__categories" href="/categories/读书笔记/设计模式/">设计模式</a></span><span class="article-meta tags"><span class="article-meta__separator">|</span><i class="fa fa-tag article-meta__icon" aria-hidden="true"></i><a class="article-meta__tags" href="/tags/hide/">hide</a><span class="article-meta__link">-</span><i class="fa fa-tag article-meta__icon" aria-hidden="true"></i><a class="article-meta__tags" href="/tags/设计模式/">设计模式</a></span><div class="content"><h1 id="第九章-组合模式-树形结构的处理"><a href="#第九章-组合模式-树形结构的处理" class="headerlink" title="第九章 组合模式 - 树形结构的处理"></a>第九章 组合模式 - 树形结构的处理</h1><h2 id="一、杀毒软件的框架结构"><a href="#一、杀毒软件的框架结构" class="headerlink" title="一、杀毒软件的框架结构"></a>一、杀毒软件的框架结构</h2><h3 id="1-介绍"><a href="#1-介绍" class="headerlink" title="1. 介绍"></a>1. 介绍</h3><p>开发一个杀毒软件，既可以对某个文件夹（Folder）杀毒，也可以对指定文件（File）进行杀毒。</p>
-<h3 id="2-面向对象的解法"><a href="#2-面向对象的解法" class="headerlink" title="2. 面向对象的解法"></a>2. 面向对象的解法</h3><p>按照面向对象的设计思路，应该在 Folder 中包含图像、文本等文件类型的集合，以及文件夹的集合。</p>
-<pre><code class="java">class ImageFile {
-    // image property
-}
-
-class TextFile {
-    // text property
-}
-
-class Folder {
-    List&lt;ImageFile&gt; images = new ArrayList&lt;&gt;();
-    List&lt;TextFile&gt; texts = new ArrayList&lt;&gt;();
-    List&lt;Folder&gt; folders = new ArrayList&lt;&gt;();
-
-    void addFolder();
-    void addImage();
-    void addText();
-
-    // ... remove/find etc.
-}</code></pre>
-<h3 id="3-存在的问题"><a href="#3-存在的问题" class="headerlink" title="3. 存在的问题"></a>3. 存在的问题</h3><ol>
-<li>Folder 的设计和实现十分复杂，需要定义多个集合存储不同类型的成员，且需要针对不同成员提供各自的 增删改查方法，存在大量冗余代码，系统维护困难</li>
-<li>由于系统没有抽象层，客户端必须有区别地对待 文件夹和各类型的文件，无法对其进行统一处理</li>
-<li>系统灵活性和可扩展性差，增加新类型的叶子和容器都需要对原有代码进行修改</li>
-</ol>
-<h3 id="4-解决思路"><a href="#4-解决思路" class="headerlink" title="4. 解决思路"></a>4. 解决思路</h3><p>整个架构中包含两类不同的元素，文件夹和文件。文件夹中可以包含文件或文件夹、而文件不能再包含子文件或子文件夹。因此，我们可以将文件夹成为 容器（Container），不同类型的文件是其成员，也称为 叶子（Leaf）。</p>
-<h2 id="二、组合模式"><a href="#二、组合模式" class="headerlink" title="二、组合模式"></a>二、组合模式</h2><h3 id="1-定义"><a href="#1-定义" class="headerlink" title="1. 定义"></a>1. 定义</h3><p>对于树形结构，当容器对象（如文件夹）的某一个方法被调用时，将遍历整个属性结构，其中使用了递归调用的机制来对整个结构进行处理。由于容器对象和叶子对象在功能上的区别，在使用时必须有区别地对待。而大多数情况下我们希望一致地处理它们，因为对于这些对象的使用具有一致性。</p>
-<p>组合模式：组合多个对象形成树形结构，以表示具有“整体 - 部分” 关系的层次结构。组合模式对单个对象（叶子对象）和组合对象（容器对象）的使用具有一致性，组合模式又可以成为“整体 - 部分”模式，属于对象结构性模式。</p>
-<h3 id="2-组合模式中的几个角色"><a href="#2-组合模式中的几个角色" class="headerlink" title="2. 组合模式中的几个角色"></a>2. 组合模式中的几个角色</h3><ol>
-<li>Component - 抽象构件<ol>
-<li>接口或抽象类，为 Leaf 和 Composite 对象声明接口，在该角色中可以包含所有子类共有行为的声明和实现</li>
-</ol>
-</li>
-<li>Leaf - 叶子构件<ol>
-<li>叶子节点，没有子节点，实现了在抽象构件中定义的行为</li>
-<li>对于访问及管理子构件的方法，可以通过异常等方式进行处理</li>
-</ol>
-</li>
-<li>Composite - 容器构件<ol>
-<li>容器节点对象，包含子节点</li>
-<li>子节点可以是叶子节点，也可以是容器节点</li>
-<li>提供一个集合用于存储子节点，实现了抽象构件中定义的行为，包含那些访问及管理子节点的方法</li>
-<li>在业务方法中可以递归调用子节点的业务方法</li>
-</ol>
-</li>
-</ol>
-<h2 id="三、-完整解决方案"><a href="#三、-完整解决方案" class="headerlink" title="三、 完整解决方案"></a>三、 完整解决方案</h2><pre><code class="java">// 组合模式
-abstract class AbstractFile {
-    public abstract void add(AbstractFile file);
-
-    public abstract void remove(AbstractFile file);
-
-    public abstract AbstractFile getChild(int i);
-
-    public abstract void killVirus();
-}
-
-class ImageFile extends AbstractFile {
-    private String name;
-
-    public ImageFile(String name) {
-        this.name = name;
-    }
-
-    @Override
-    public void add(AbstractFile file) {
-        System.out.println(&quot;不支持该方法！&quot;);
-    }
-
-    @Override
-    public void remove(AbstractFile file) {
-        System.out.println(&quot;不支持该方法！&quot;);
-    }
-
-    @Override
-    public AbstractFile getChild(int i) {
-        System.out.println(&quot;不支持该方法！&quot;);
-        return null;
-    }
-
-    @Override
-    public void killVirus() {
-        System.out.println(&quot;对图像进行[&quot; + name + &quot;]杀毒&quot;);
-    }
-}
-
-class TextFile extends AbstractFile {
-    private String name;
-
-    public TextFile(String name) {
-        this.name = name;
-    }
-
-    @Override
-    public void add(AbstractFile file) {
-        System.out.println(&quot;不支持该方法！&quot;);
-    }
-
-    @Override
-    public void remove(AbstractFile file) {
-        System.out.println(&quot;不支持该方法！&quot;);
-    }
-
-    @Override
-    public AbstractFile getChild(int i) {
-        System.out.println(&quot;不支持该方法！&quot;);
-        return null;
-    }
-
-    @Override
-    public void killVirus() {
-        System.out.println(&quot;对文本进行[&quot; + name + &quot;]杀毒&quot;);
-    }
-}
-
-class Folder extends AbstractFile {
-    private List&lt;AbstractFile&gt; files = new ArrayList&lt;&gt;();
-    private String name;
-
-    public Folder(String name) {
-        this.name = name;
-    }
-
-    @Override
-    public void add(AbstractFile file) {
-        files.add(file);
-    }
-
-    @Override
-    public void remove(AbstractFile file) {
-        files.remove(file);
-    }
-
-    @Override
-    public AbstractFile getChild(int i) {
-        return files.get(i);
-    }
-
-    @Override
-    public void killVirus() {
-        System.out.println(&quot;对文件夹[&quot; + name + &quot;]进行杀毒&quot;);
-        for (AbstractFile file : files) {
-            file.killVirus();
-        }
-    }
-}
-
-public class CompositePattern {
-    public static void main(String[] args) {
-        AbstractFile folder1 = new Folder(&quot;图像文件夹&quot;);
-        AbstractFile folder2 = new Folder(&quot;文本文件夹&quot;);
-
-        AbstractFile file1 = new ImageFile(&quot;图片一&quot;);
-        AbstractFile file2 = new ImageFile(&quot;图片二&quot;);
-
-        AbstractFile file3 = new ImageFile(&quot;文本一&quot;);
-        AbstractFile file4 = new ImageFile(&quot;文本二&quot;);
-
-        folder1.add(file1);
-        folder1.add(file2);
-
-        folder2.add(file3);
-        folder2.add(file4);
-        folder2.add(folder1);
-
-        folder2.killVirus();
-    }
-}</code></pre>
-<h2 id="四、透明组合模式和安全组合模式"><a href="#四、透明组合模式和安全组合模式" class="headerlink" title="四、透明组合模式和安全组合模式"></a>四、透明组合模式和安全组合模式</h2><p>通过引入 组合模式，该杀毒软件具有良好的可扩展性，在新增文件类型时，只需要新增一个文件类继承 AbstractFile 即可。</p>
-<p>但是 Abstract 中声明了大量用于管理和访问成员构件的方法，如 add() remove() 等方法，提供对应的错误提示和异常处理。</p>
-<p>解决方案一：将叶子构件的add()、remove() 方法移至AbstractFile中，提供默认实现：</p>
-<pre><code class="java">abstract class AbstractFile {
-    public void add(AbstractFile file){
-        System.out.println(&quot;对不起，不支持该方法！&quot;)
-    }
-    public void remove(AbstractFile file){
-        System.out.println(&quot;对不起，不支持该方法！&quot;)
-    }
-    public AbstractFile getChild(int i){
-        System.out.println(&quot;对不起，不支持该方法！&quot;)
-    }
-
-    public abstract void killVirus();
-}</code></pre>
-<p>解决方案二：不提供 add()、remove() 等抽象方法，由具体需要的子构件自己提供。但是会导致客户端不得不使用容器类本身来声明容器构件对象，否则无法访问其中新增的方法。客户端代码无法通过容器构件的抽象构件来定义。</p>
-<h3 id="1-透明组合模式"><a href="#1-透明组合模式" class="headerlink" title="1. 透明组合模式"></a>1. 透明组合模式</h3><p>上面的解决方案一，就是透明组合模式的实现。由抽象构件提供子构件方法的默认实现。</p>
-<p>好处是确保所有构件类都有相同的接口，对客户端来说，叶子对象和容器对象的方法一致。</p>
-<p>缺点是，因为叶子对象和容器对象在本质上是有区别的，叶子对象不可能有下一层对象，因此不应该有 add()/remove() 等方法，在运行时可能会出现异常。</p>
-<h3 id="2-安全组合模式"><a href="#2-安全组合模式" class="headerlink" title="2. 安全组合模式"></a>2. 安全组合模式</h3><p>解决方案二，就是安全组合模式的实现。抽象构件中不声明管理成员对象的方法，而是在 Composite类中声明并实现这些方法。</p>
-<p>这种做法是安全的，因为叶子对象没有了管理成员对象的方法，客户端也就不能对叶子对象调用这些方法了。</p>
-<h2 id="五、总结"><a href="#五、总结" class="headerlink" title="五、总结"></a>五、总结</h2><p>组合模式使用面向对象的思想来实现树形结构的构建与处理，描述了如何将容器对象和叶子对象进行递归组合，实现简单，灵活型号。</p>
-<h3 id="优点"><a href="#优点" class="headerlink" title="优点"></a>优点</h3><ol>
-<li>组合模式可以清楚地定义分层次的复杂对象，表示对象的全部或部分层次，使客户端忽略了层次的差异，方便对整个层次结构进行控制</li>
-<li>客户端可以一致地使用一个组合结构或其中的单个对象，不必关系处理的是单个对象还是整个组合结构，简化客户端代码</li>
-<li>组合模式为树形结构的面向对象实现，提供了一种灵活的解决方案，通过叶子对象和容器对象的递归组合，可以形成复杂的树形结构，但对树形结构的控制却非常简单</li>
-</ol>
-<h3 id="缺点"><a href="#缺点" class="headerlink" title="缺点"></a>缺点</h3><ol>
-<li>增加新构件时很难对容器中的构件类型进行限制</li>
-</ol>
-<h2 id="适用场景"><a href="#适用场景" class="headerlink" title="适用场景"></a>适用场景</h2><ol>
-<li>在具有整合和部分的层次结构中，希望通过一种方式忽略整体与部分的差异，客户端可以一致地对待它们</li>
-<li>在一种使用面向对象语言开发的系统中需要处理一个树形结构</li>
-<li>在一个系统中能够分离出叶子对象和容器对象，而且它们的类型不固定，需要增加一些新的类型</li>
-</ol>
-<h2 id="六、练习"><a href="#六、练习" class="headerlink" title="六、练习"></a>六、练习</h2><blockquote>
-<p>Sunny软件公司欲开发一个界面控件库，界面控件分为两大类，一类是单元控件，例如按钮、文本框等，一类是容器控件，例如窗体、中间面板等，试用组合模式设计该界面控件库。</p>
-</blockquote>
-<pre><code class="java">/**
- * 组合模式：
- * Sunny软件公司欲开发一个界面控件库，
- * 界面控件分为两大类，一类是单元控件，例如按钮、文本框等，
- * 一类是容器控件，例如窗体、中间面板等，
- * 试用组合模式设计该界面控件库。
- */
-abstract class UI {
-    abstract void display();
-
-    void add(UI ui){
-        System.out.println(&quot;不支持该方法&quot;);
-    }
-}
-
-class ButtonUI extends UI {
-    @Override
-    void display() {
-        System.out.println(&quot;显示按钮&quot;);
-    }
-}
-
-class InputUI extends UI {
-    @Override
-    void display() {
-        System.out.println(&quot;显示输入框&quot;);
-    }
-}
-
-class Window extends UI{
-    List&lt;UI&gt; uis = new ArrayList&lt;&gt;();
-
-    @Override
-    void display() {
-        System.out.println(&quot;--开始显示窗口--&quot;);
-        for (UI ui : uis) {
-            ui.display();
-        }
-    }
-
-    @Override
-    void add(UI ui) {
-        uis.add(ui);
-    }
-}
-
-class Dashboard extends UI {
-    List&lt;UI&gt; uis = new ArrayList&lt;&gt;();
-
-    @Override
-    void display() {
-        System.out.println(&quot;--开始显示面板--&quot;);
-        for (UI ui : uis) {
-            ui.display();
-        }
-    }
-
-    @Override
-    void add(UI ui) {
-        uis.add(ui);
-    }
-}
-
-public class CompositePattern {
-    public static void main(String[] args) {
-        final UI ui1 = new ButtonUI();
-        final UI ui2 = new ButtonUI();
-        final UI ui3 = new InputUI();
-        final UI ui4 = new InputUI();
-
-        final UI window = new Window();
-        final UI dashboard = new Dashboard();
-
-        dashboard.add(ui1);
-        dashboard.add(ui4);
-        window.add(ui1);
-        window.add(ui3);
-        window.add(ui2);
-        window.add(dashboard);
-
-        window.display();
-    }
-}
-</code></pre>
-</div><hr></div><div class="recent-post-item article-container"><a class="article-title" href="/2019/07/08/读书笔记/《JavaDesignPatterns》/10.桥接模式/">《Java Design Patterns》第八章 桥接模式 - 处理多维度变化</a><time class="post-meta__date"><i class="fa fa-calendar" aria-hidden="true"></i> 2019-07-08</time><span class="article-meta"><span class="article-meta__separator">|</span><i class="fa fa-inbox article-meta__icon" aria-hidden="true"></i><a class="article-meta__categories" href="/categories/读书笔记/">读书笔记</a><i class="fa fa-angle-right" aria-hidden="true"></i><i class="fa fa-inbox article-meta__icon" aria-hidden="true"></i><a class="article-meta__categories" href="/categories/读书笔记/设计模式/">设计模式</a></span><span class="article-meta tags"><span class="article-meta__separator">|</span><i class="fa fa-tag article-meta__icon" aria-hidden="true"></i><a class="article-meta__tags" href="/tags/hide/">hide</a><span class="article-meta__link">-</span><i class="fa fa-tag article-meta__icon" aria-hidden="true"></i><a class="article-meta__tags" href="/tags/设计模式/">设计模式</a></span><div class="content"><h1 id="第八章-桥接模式-处理多维度变化"><a href="#第八章-桥接模式-处理多维度变化" class="headerlink" title="第八章 桥接模式 - 处理多维度变化"></a>第八章 桥接模式 - 处理多维度变化</h1><h2 id="一、基本概念"><a href="#一、基本概念" class="headerlink" title="一、基本概念"></a>一、基本概念</h2><h3 id="1-1-场景"><a href="#1-1-场景" class="headerlink" title="1.1 场景"></a>1.1 场景</h3><p>有两种文具，分别是毛笔和蜡笔。如果需要大中小三种型号的蜡笔，且每种型号需要有12种不同的颜色。</p>
-<p>则蜡笔需要各种型号的各种颜色 3*12 = 36支，而毛笔只需要大中小型号和12中颜色的颜料盒 3 + 12 = 15支。</p>
-<p>在蜡笔的模式中，无论是增加颜色，还是增加型号，都会影响另一个维度。耦合度非常的强。</p>
-<p>但在毛笔中，型号与颜色进行了解耦，只是在使用时组合使用，非常灵活，扩展也十分方便。</p>
-<h3 id="1-2-场景二-跨平台图像浏览系统"><a href="#1-2-场景二-跨平台图像浏览系统" class="headerlink" title="1.2 场景二 - 跨平台图像浏览系统"></a>1.2 场景二 - 跨平台图像浏览系统</h3><p>现有一个系统，需要该系统支持BMP、JPG、GIF等格式的图形文件，并且能在Windows、Linux、MacOS等多个系统上运行。首先将文件解析为像素矩阵，然后各系统使用各自的绘制函数，将矩阵显示在屏幕上。</p>
-<p>如果使用上面的“蜡笔模式” - 多层继承模式，可能会存在 Image -&gt; BMPImage、JPGImage、GIFIMAGE -&gt; BMPWindowsImage/BMPLinuxImage/BMPMacOSImage、JPGWindowsImage/JPGLinuxImage/JPGMacOSImage、GIFWindowsImage/GIFLinuxImage/GIFMacOSImage。</p>
-<h4 id="存在的问题："><a href="#存在的问题：" class="headerlink" title="存在的问题："></a>存在的问题：</h4><ol>
-<li>由于采用了多层继承，系统中的类个数非常多。具体类的个数 = 所支持的图像格式 * 所支持的操作系统</li>
-<li>系统扩展麻烦，如BMPWindowsImage，即包含图像文件格式，又包含操作系统信息。无论是增加图像格式还是操作系统，都需要增加大量具体类。</li>
-<li>违反了“单一职责原则”，因为具体类将图像文件解析和像素矩阵显示这两个完全不同的职责融合，任意职责发生改变，都需要修改所有。</li>
-</ol>
-<h4 id="解决方案："><a href="#解决方案：" class="headerlink" title="解决方案："></a>解决方案：</h4><p>引入桥接模式，将两个独立变化的维度设计为两个独立的继承等级结构，并且在抽象层建立一个抽象关联。</p>
-<h2 id="二、桥接模式"><a href="#二、桥接模式" class="headerlink" title="二、桥接模式"></a>二、桥接模式</h2><h3 id="2-1-定义"><a href="#2-1-定义" class="headerlink" title="2.1 定义"></a>2.1 定义</h3><p>桥接模式，又称为柄体模式或接口模式：将抽象部分与它的实现部分分离，使它们都可以独立地变化。是一种非常实用的结构性设计模式。</p>
-<p>如果软件系统中某个类存在两个独立变化的维度，通过该模式可以将这两个维度分离出来，使两者可以独立扩展，让系统更加符合“单一职责原则”。</p>
-<p>桥接模式用一种巧妙的方式处理多层继承存在的问题，用抽象关联取代传统的多层继承，将类之间的静态继承关系转换为动态的对象组合关系，使系统更加灵活，更易于扩展，同时有效控制了系统中类的个数。</p>
-<blockquote>
-<p>桥接模式是一个非常有用的模式，包含了很多面向对象设计原则的思想，如“单一职责原则”、“开闭原则”、“合成复用原则”、“里氏替换原则”、“依赖倒转原则”等。有助于我们深入理解设计原则，形成正确的设计思想和培养良好的设计风格。</p>
-</blockquote>
-<h3 id="2-2-桥接模式中的几个角色"><a href="#2-2-桥接模式中的几个角色" class="headerlink" title="2.2 桥接模式中的几个角色"></a>2.2 桥接模式中的几个角色</h3><ol>
-<li>Abstraction - 抽象类<ol>
-<li>用于定义抽象类的接口，他一般是抽象类而不是接口</li>
-<li>定义了一个 <code>Implementor实现类接口</code> 类型的对象，并可以维护该对象，它与实现类接口之间具有关联关系</li>
-<li>既可以包含抽象业务方法，也可以包含具体业务方法</li>
-</ol>
-</li>
-<li>RefinedAbstraction - 扩充抽象类<ol>
-<li>一般为具体类，实现了 <code>Abstraction抽象类</code> 中的抽象方法</li>
-<li>因为 <code>Abstraction抽象类</code> 中定义了实现类接口对象，所以<code>RefinedAbstraction扩充抽象类</code>中可以调用 <code>Implementor具体实现了类</code> 中定义的业务方法</li>
-</ol>
-</li>
-<li>Implementor - 实现类接口<ol>
-<li>定义实现类接口，提供基本操作</li>
-<li>具体实现交给其子类</li>
-<li>通过关联关系，在 <code>Abstraction抽象类</code> 中，可以直接调用 <code>Implementor及其子类</code> 的方法</li>
-<li>使用关联关系来代替继承关系</li>
-</ol>
-</li>
-<li>ConcreteImplementor - 具体实现类<ol>
-<li>实现 <code>Implementor接口</code>，不同的具体实现类提供不同的方法实现</li>
-<li>用于提供给 <code>Abstraction抽象类</code> 调用的具体实现</li>
-</ol>
-</li>
-</ol>
-<h3 id="2-3-具体实现"><a href="#2-3-具体实现" class="headerlink" title="2.3 具体实现"></a>2.3 具体实现</h3><pre><code class="java">// 桥接模式
-public class BridgePattern {
-
-    // 像素矩阵类：辅助类，各种格式的文件最终都被转化为像素矩阵，不同的操作系统提供不同的方式显示像素矩阵
-    static class Matrix {
-
-    }
-
-    // 抽象图像类：抽象类
-    static abstract class Image {
-        protected ImageImp imp;
-
-        public void setImp(ImageImp imp) {
-            this.imp = imp;
-        }
-
-        public abstract void parseFile(String fileName);
-    }
-
-    // JPG格式图像：扩充抽象类
-    static class JPGImage extends Image {
-        @Override
-        public void parseFile(String fileName) {
-            final Matrix matrix = new Matrix();
-            imp.doPaint(matrix);
-            System.out.println(fileName + &quot;,格式为JPG&quot;);
-        }
-    }
-
-    // PNG格式图像：扩充抽象类
-    static class PNGImage extends Image {
-        @Override
-        public void parseFile(String fileName) {
-            final Matrix matrix = new Matrix();
-            imp.doPaint(matrix);
-            System.out.println(fileName + &quot;,格式为PNG&quot;);
-        }
-    }
-
-    // 抽象操作系统实现类：实现类接口
-    static interface ImageImp {
-        public void doPaint(Matrix m); // 显示像素矩阵 m
-    }
-
-    // Windows 操作系统实现类：具体实现类
-    static class WindowsImp implements ImageImp {
-        @Override
-        public void doPaint(Matrix m) {
-            // 调用Windows系统的绘制函数，绘制像素矩阵
-            System.out.println(&quot;在Windows操作系统中显示图像&quot;);
-        }
-    }
-
-    // Linux 操作系统实现类：具体实现类
-    static class LinuxImp implements ImageImp {
-        @Override
-        public void doPaint(Matrix m) {
-            // 调用Linux系统的绘制函数，绘制像素矩阵
-            System.out.println(&quot;在Linux操作系统中显示图像&quot;);
-        }
-    }
-
-    public static void main(String[] args) {
-        Image img = new PNGImage();
-        ImageImp imp = new WindowsImp();
-        img.setImp(imp);
-        img.parseFile(&quot;死了都要爱.jpg&quot;);
-    }
-}</code></pre>
-<h2 id="三、总结"><a href="#三、总结" class="headerlink" title="三、总结"></a>三、总结</h2><p>在使用桥接模式时，我们应该先识别出一个类所具有的两个独立变化的维度，将它们设计为两个独立的继承等级结构，为两个维度都提供抽象层，并建立抽象耦合。通常情况下，我们将具有两个独立变化维度的类的一些普通业务方法，和与之关系最密切的维度设计为“抽象类”层次结构（抽象部分），而将另一个维度设计为“实现类”层次结构（实现部分）。</p>
-<p>如毛笔，由于型号是固有的维度，可以设计为抽象毛笔类，在该类中声明并部分实现毛笔的业务方法，将各种型号的毛笔作为子类。将颜色作为毛笔的另一个维度。</p>
-<p>增加新的毛笔类型，只需扩展左侧的“抽象部分”；增加新的颜色，只需扩展右侧的“实现部分”。</p>
-<h3 id="优点"><a href="#优点" class="headerlink" title="优点"></a>优点</h3><ol>
-<li>分离抽象解耦及其实现部分。解耦了抽象和实现之间的绑定关系，使抽象部分和实现部分都有自己的维度变化</li>
-<li>很多情况下，桥接模式可以取代多层继承方案。多层继承违背了“单一职责原则”，复用性较差，且类的个数较多</li>
-<li>桥接模式提供了系统的可扩展性，两个维度的扩展都不需要修改原有系统，符合“开闭原则”</li>
-</ol>
-<h3 id="缺点"><a href="#缺点" class="headerlink" title="缺点"></a>缺点</h3><ol>
-<li>桥接模式的使用，会增加系统的理解和设计难度，由于关联关系建立在抽象层，要求开发者一开始就针对抽象层进行设计和编程</li>
-<li>桥接模式要求正确识别出系统中两个独立变化的维度，因此其使用范围具有一定的局限性。</li>
-</ol>
-<h3 id="适用场景"><a href="#适用场景" class="headerlink" title="适用场景"></a>适用场景</h3><ol>
-<li>如果一个系统需要在抽象化和具体化之间增加更多的灵活性，避免在两个层次之间建立静态的继承关系，通过桥接模式可以使它们在抽象层建立一个关联关系</li>
-<li>“抽象部分”和“实现部分”可以以继承的方式独立扩展而不受影响，在程序运行时可以动态将一个抽象化子类的对象和一个实现化子类的对象进行组合，即系统需要对抽象化角色和实现化角色进行动态耦合</li>
-<li>一个类存在两个（或多个）独立变化的维度，且各维度都需要独立进行扩展</li>
-<li>对于不希望使用继承或多层继承的系统，导致系统类的个数急剧增加的系统，桥接模式非常适用</li>
-</ol>
-<h2 id="四、扩展"><a href="#四、扩展" class="headerlink" title="四、扩展"></a>四、扩展</h2><blockquote>
-<p>开发一个数据转换工具，可以将数据库中的数据转换成多种文件格式，例如txt、xml、pdf等格式，同时该工具需要支持多种不同的数据库。试使用桥接模式对其进行设计。</p>
-</blockquote>
-<pre><code class="java">// 桥接模式
-public class BridgePattern {
-
-    // 数据库抽象类
-    static abstract class Database {
-        protected FileFormat fileFormat;
-
-        public void setFileFormat(FileFormat fileFormat) {
-            this.fileFormat = fileFormat;
-        }
-
-        public abstract void transition();
-    }
-
-    // Oracle 数据库 - 抽象扩展类
-    static class OracleDatabase extends Database {
-        @Override
-        public void transition() {
-            System.out.println(&quot;Oracle数据库&quot;);
-            fileFormat.file();
-        }
-    }
-
-    // Microsoft 数据库 - 抽象扩展类
-    static class MCDatabase extends Database {
-        @Override
-        public void transition() {
-            System.out.println(&quot;Microsoft数据库&quot;);
-            fileFormat.file();
-        }
-    }
-
-    // 文件格式 - 实现类接口
-    interface FileFormat {
-        void file();
-    }
-
-    // txt 文件 - 具体实现类
-    static class TxtFileFormat implements FileFormat {
-        @Override
-        public void file() {
-            System.out.println(&quot;TXT 格式文本输出&quot;);
-        }
-    }
-
-    // pdf 文件 - 具体实现类
-    static class PDFFileFormat implements FileFormat {
-        @Override
-        public void file() {
-            System.out.println(&quot;PDF 格式文本输出&quot;);
-        }
-    }
-
-    public static void main(String[] args) {
-        Database db = new OracleDatabase();
-        FileFormat ff = new TxtFileFormat();
-        db.setFileFormat(ff);
-        db.transition();
-    }
-}</code></pre>
-</div><hr></div><div class="recent-post-item article-container"><a class="article-title" href="/2019/07/06/读书笔记/《JavaDesignPatterns》/9.适配器模式/">《Java Design Patterns》第七章 适配器模式 - 不兼容结构的协调</a><time class="post-meta__date"><i class="fa fa-calendar" aria-hidden="true"></i> 2019-07-06</time><span class="article-meta"><span class="article-meta__separator">|</span><i class="fa fa-inbox article-meta__icon" aria-hidden="true"></i><a class="article-meta__categories" href="/categories/读书笔记/">读书笔记</a><i class="fa fa-angle-right" aria-hidden="true"></i><i class="fa fa-inbox article-meta__icon" aria-hidden="true"></i><a class="article-meta__categories" href="/categories/读书笔记/设计模式/">设计模式</a></span><span class="article-meta tags"><span class="article-meta__separator">|</span><i class="fa fa-tag article-meta__icon" aria-hidden="true"></i><a class="article-meta__tags" href="/tags/hide/">hide</a><span class="article-meta__link">-</span><i class="fa fa-tag article-meta__icon" aria-hidden="true"></i><a class="article-meta__tags" href="/tags/设计模式/">设计模式</a></span><div class="content"><h1 id="第七章-适配器模式-不兼容结构的协调"><a href="#第七章-适配器模式-不兼容结构的协调" class="headerlink" title="第七章 适配器模式 - 不兼容结构的协调"></a>第七章 适配器模式 - 不兼容结构的协调</h1><h2 id="一、概念"><a href="#一、概念" class="headerlink" title="一、概念"></a>一、概念</h2><p>如笔记本的电源接口只支持20V电压，而家庭用电的电压为220V，肯定无法直接通过一根电线直接为笔记本提供电源。此时，就需要一个变压器电源，来将220V电压转换为20V电压。这个变压器就是适配器模式的一种。</p>
-<p>适配器模式：将一个类的接口与另一个类的接口匹配利用，而无须修改原来的适配者，解耦合抽象目标类接口。</p>
-<p>适配器模式可以是类结构型模式，也可以是对象结构型模式。</p>
-<h2 id="1-2-适配器模式中的几个角色"><a href="#1-2-适配器模式中的几个角色" class="headerlink" title="1.2 适配器模式中的几个角色"></a>1.2 适配器模式中的几个角色</h2><ol>
-<li>Target - 目标抽象类<ol>
-<li>目标抽象类定义客户所需接口</li>
-<li>抽象类、接口或具体类</li>
-<li>类似上面的笔记本</li>
-</ol>
-</li>
-<li>Adapter - 适配器类<ol>
-<li>适配器可以调用另一个接口，作为一个转换器，对 Adaptee 和 Target 进行适配</li>
-</ol>
-</li>
-<li>Adaptee - 适配者类<ol>
-<li>被适配的角色（如220V的家庭电源，我们需要将其转换为20V电压输出）</li>
-<li>它定义了一个已经存在的接口，这个接口需要适配</li>
-<li>适配者类一般是个具体类，包含了客户希望使用的业务方法</li>
-</ol>
-</li>
-</ol>
-<h3 id="1-3-对象适配器-实例"><a href="#1-3-对象适配器-实例" class="headerlink" title="1.3 对象适配器 - 实例"></a>1.3 对象适配器 - 实例</h3><pre><code class="java">// 抽象成绩操作类 - Target目标接口
-interface ScoreOperation {
-    public int[] sort(int array[]); // 成绩排序
-    public int search(int array[],int key); // 成绩查找
-}
-
-// 快速排序类 - Adaptee 适配者类
-class QuickSort{
-    public int[] quickSort(int array[]){
-        // 自己实现
-    }
-}
-
-// 二分查找类 - Adaptee 适配者类
-class BinarySearch{
-    public int binarySearch(int array[],intkey){
-        // 自己实现
-    }
-}
-
-// 操作适配器 - Adapter 适配器
-class OperationAdapter implements ScoreOperation{
-    private QuickSort sort = new QuickSort;
-    private BinarySearch search = new BinarySearch();
-
-    // 调用适配者类QuickSort的排序方法
-    public int[] sort(int array[]){
-        return sort.quickSort(array);
-    }
-
-    // 调用适配者类BinarySearch的查找方法
-    public int search(int array[],int key){
-        return search.binarySearch(array,key);
-    }
-}</code></pre>
-<h3 id="1-4-类适配器"><a href="#1-4-类适配器" class="headerlink" title="1.4 类适配器"></a>1.4 类适配器</h3><p>类适配器与对象适配器的区别在于：</p>
-<p>对象适配器与适配者之间的关系是<code>关联关系</code>，而类适配器中的关系则是<code>继承关系</code>。</p>
-<p>如下：</p>
-<pre><code class="java">class Adapter extends Adaptee implements Target{
-    public void request(){
-        specificRequest();
-    }
-}</code></pre>
-<blockquote>
-<p>由于Java、C#等语言不支持多重继承，因此类适配器在使用时受到诸多限制。如Target必须是接口，Adapter不能是Final类等等。</p>
-</blockquote>
-<h3 id="1-5-双向适配器"><a href="#1-5-双向适配器" class="headerlink" title="1.5 双向适配器"></a>1.5 双向适配器</h3><p>在对象适配器的使用过程中，如果在适配器中同时包含对目标类和适配者类的引用，适配者和目标类可以通过它调用彼此的方法，那么该适配器就是一个双向适配器。如下：</p>
-<pre><code class="java">class Adapter implements Adaptee,Target{
-    private Target target;
-    private Adaptee adaptee;
-
-    public Adapter(Target target){
-        this.target = target;
-    }
-
-    public Adapter(Adaptee adpatee){
-        this.adaptee = adaptee;
-    }
-
-    public void request(){
-        adaptee.specificRequest();
-    }
-
-    public void specificRequest(){
-        target.request();
-    }
-}</code></pre>
-<h3 id="1-6-缺省适配器"><a href="#1-6-缺省适配器" class="headerlink" title="1.6 缺省适配器"></a>1.6 缺省适配器</h3><p>缺省适配器模式(Default Adapter Pattern)：当不需要实现一个接口所提供的所有方法时，可先设计一个抽象类实现该接口，并为接口中每个方法提供一个默认实现（空方法），那么该抽象类的子类可以选择性地覆盖父类的某些方法来实现需求，它适用于不想使用一个接口中的所有方法的情况，又称为单接口适配器模式。</p>
-<h2 id="二、总结"><a href="#二、总结" class="headerlink" title="二、总结"></a>二、总结</h2><h3 id="优点"><a href="#优点" class="headerlink" title="优点"></a>优点</h3><ol>
-<li>目标类与适配者类解耦，通过引入一个适配器类来重用现有的适配者类</li>
-<li>增加类的透明性和复用性，具体业务过程封装在适配者类中，对客户端透明，提供了适配者的复用性，同一个适配者类可以在多个不同系统中复用</li>
-<li>灵活性和扩展性好，可以通过配置文件的方式更换适配器，符合“开闭原则”</li>
-</ol>
-<h3 id="缺点"><a href="#缺点" class="headerlink" title="缺点"></a>缺点</h3><ol>
-<li>Java、C#不支持多重继承，一次只能适配一个适配者类</li>
-<li>适配者类不能为最终类</li>
-<li>Java、C#中，类适配器模式的目标抽象类必须是接口</li>
-</ol>
-<h3 id="适用场景"><a href="#适用场景" class="headerlink" title="适用场景"></a>适用场景</h3><ol>
-<li>系统需要使用一些现有的类，但该类的接口不符合系统需要</li>
-<li>创建一个可重复使用的类，如上面的快速排序，可以做成一个适配者，为其它适配器类所调用</li>
-</ol>
-<h2 id="三、练习"><a href="#三、练习" class="headerlink" title="三、练习"></a>三、练习</h2><pre><code class="java">// SD卡接口及其具体实现
-public interface SDCard {
-    String readSD(); // 读SD卡
-    int writeSD(String message); // 写SD卡
-}
-class SDCardImpl implements SDCard {
-    public String readSD() {
-        return &quot;读取SD卡&quot;;
-    }
-    public int writeSD(String message) {
-        // 假装写入数据至SD卡中了
-        return 0;
-    }
-}
-
-// 电脑类，具有读取SD卡的功能
-class Computer {
-    String readSD(SDCard sdCard) {
-        return sdCard.readSD();
-    }
-}
-
-// ----- 新版的TF卡上市，系统需要在不修改原有SD卡接口的情况下，支持新版的TF卡  -----
-
-// TF卡接口及其实现
-interface TFCard {
-    String readTF(); // 读TF卡
-    int writeTF(String message); // 写TF卡
-}
-class TFCardImpl implements TFCard {
-    public String readTF() {
-        return &quot;读取TF卡&quot;;
-    }
-    public int writeTF(String message) {
-        return 0;
-    }
-}
-
-// TF卡的适配器，继承与目标接口，但是将SD卡接口适配为TF卡的接口
-class TFCardAdapter implements SDCard {
-    private TFCard tfCard;
-    public TFCardAdapter(TFCard tfCard) {
-        this.tfCard = tfCard;
-    }
-    @Override
-    public String readSD() {
-        return tfCard.readTF();
-    }
-    @Override
-    public int writeSD(String message) {
-        return tfCard.writeTF(message);
-    }
-}
-
-// 测试客户端
-class Client {
-    public static void main(String[] args) {
-        SDCard sdCard = new SDCardImpl();
-        SDCard tfCard = new TFCardAdapter(new TFCardImpl()); // 通过适配器，将TFCard适配为SDCard
-
-        Computer computer = new Computer();
-        String s = computer.readSD(sdCard);
-        String s1 = computer.readSD(tfCard);
-        System.out.println(s);
-        System.out.println(s1);
-    }
-}</code></pre>
-<blockquote>
-<blockquote>
-<p>适配器类的名称尽量做到见名知意，因为客户端表面上调用的是SDCard，但是内部却被适配成了TFCard，如果系统中存在大量这种代码，会使系统十分的混乱。</p>
-</blockquote>
-</blockquote>
-<p>如果适配器大量存在的话，可以考虑重构代码，而不是继续适配下去。</p>
-</div><hr></div><div class="recent-post-item article-container"><a class="article-title" href="/2019/07/05/读书笔记/《JavaDesignPatterns》/8.建造者模式/">《Java Design Patterns》第六章 建造者模式 - 复杂对象的组装与创建</a><time class="post-meta__date"><i class="fa fa-calendar" aria-hidden="true"></i> 2019-07-05</time><span class="article-meta"><span class="article-meta__separator">|</span><i class="fa fa-inbox article-meta__icon" aria-hidden="true"></i><a class="article-meta__categories" href="/categories/读书笔记/">读书笔记</a><i class="fa fa-angle-right" aria-hidden="true"></i><i class="fa fa-inbox article-meta__icon" aria-hidden="true"></i><a class="article-meta__categories" href="/categories/读书笔记/设计模式/">设计模式</a></span><span class="article-meta tags"><span class="article-meta__separator">|</span><i class="fa fa-tag article-meta__icon" aria-hidden="true"></i><a class="article-meta__tags" href="/tags/hide/">hide</a><span class="article-meta__link">-</span><i class="fa fa-tag article-meta__icon" aria-hidden="true"></i><a class="article-meta__tags" href="/tags/设计模式/">设计模式</a></span><div class="content"><h1 id="第六章-建造者模式-复杂对象的组装与创建"><a href="#第六章-建造者模式-复杂对象的组装与创建" class="headerlink" title="第六章 建造者模式 - 复杂对象的组装与创建"></a>第六章 建造者模式 - 复杂对象的组装与创建</h1><h2 id="一、设计一个游戏角色"><a href="#一、设计一个游戏角色" class="headerlink" title="一、设计一个游戏角色"></a>一、设计一个游戏角色</h2><p>作为 RPG 游戏的一个重要组成部分，游戏角色拥有其特定的性别、脸型、服装、发型等外部特性。</p>
-<p>无论何种造型的游戏角色，它们的创建步骤都大同小异，都需要逐步创建其组成部分，再将各组成部分装配成一个完整的游戏角色。</p>
-<p>而建造者模式就是为了解决，各个组件组合为复杂对象的问题。</p>
-<p><img src="https://i.loli.net/2019/07/09/5d23ff6fa777253811.png" alt="建造者模式"></p></div><a class="more" href="/2019/07/05/读书笔记/《JavaDesignPatterns》/8.建造者模式/#more">阅读更多</a><hr></div><div class="recent-post-item article-container"><a class="article-title" href="/2019/06/27/读书笔记/《JavaDesignPatterns》/6.单例模式/">《Java Design Patterns》第四章 单例模式 - 确保对象的唯一性</a><time class="post-meta__date"><i class="fa fa-calendar" aria-hidden="true"></i> 2019-06-27</time><span class="article-meta"><span class="article-meta__separator">|</span><i class="fa fa-inbox article-meta__icon" aria-hidden="true"></i><a class="article-meta__categories" href="/categories/读书笔记/">读书笔记</a><i class="fa fa-angle-right" aria-hidden="true"></i><i class="fa fa-inbox article-meta__icon" aria-hidden="true"></i><a class="article-meta__categories" href="/categories/读书笔记/设计模式/">设计模式</a></span><span class="article-meta tags"><span class="article-meta__separator">|</span><i class="fa fa-tag article-meta__icon" aria-hidden="true"></i><a class="article-meta__tags" href="/tags/hide/">hide</a><span class="article-meta__link">-</span><i class="fa fa-tag article-meta__icon" aria-hidden="true"></i><a class="article-meta__tags" href="/tags/设计模式/">设计模式</a></span><div class="content"><h1 id="第四章-单例模式-确保对象的唯一性"><a href="#第四章-单例模式-确保对象的唯一性" class="headerlink" title="第四章 单例模式 - 确保对象的唯一性"></a>第四章 单例模式 - 确保对象的唯一性</h1><p>单例模式用于确保对象的唯一性，为了确保系统中某一个类只有一个唯一实例，当这个唯一实例创建后，无法再创建一个同类型的其他对象。</p>
-<h2 id="一、概述"><a href="#一、概述" class="headerlink" title="一、概述"></a>一、概述</h2><p>单例模式：确保一个类只有一个实例，而且自行实例化并向整个系统提供这个实例，这个类称为单例类，它提供全局访问的方法。属于对象创建型模式。</p>
-<h3 id="1-2-单例模式中的角色"><a href="#1-2-单例模式中的角色" class="headerlink" title="1.2 单例模式中的角色"></a>1.2 单例模式中的角色</h3><ul>
-<li>Singleton - 单例角色<ul>
-<li>在单例类内容实现只生成一个实例，同时提供一个静态工厂方法用于获取该唯一实例</li>
-<li>为了防止外部实例化，将其构造函数设计为私有</li>
-<li>单例类内部顶一个Singleton类型的静态对象，作为外部共享的唯一实例</li>
-</ul>
-</li>
-</ul>
-<h2 id="二、懒汉模式与饿汉模式"><a href="#二、懒汉模式与饿汉模式" class="headerlink" title="二、懒汉模式与饿汉模式"></a>二、懒汉模式与饿汉模式</h2><h3 id="2-1-饿汉式单例类-线程安全"><a href="#2-1-饿汉式单例类-线程安全" class="headerlink" title="2.1 饿汉式单例类 - 线程安全"></a>2.1 饿汉式单例类 - 线程安全</h3><p><img src="https://i.loli.net/2019/07/04/5d1da0231e7a752730.png" alt="懒汉单例模式"></p>
-<pre><code class="java">class EagerSingleton{
-    private static final EagerSingleton instance = new EagerSingleton();
-    private EagerSingleton(){}
-    public static EagerSingleton getInstance(){
-        return instance;
-    }
-}</code></pre>
-<p>饿汉模式实现起来最为简单，在类加载时，静态变量 instance 就会被初始化，此时类的私有构造函数会被调用，单例类的唯一实例将被创建。</p>
-<h3 id="2-2-懒汉式单例类（一）-线程安全"><a href="#2-2-懒汉式单例类（一）-线程安全" class="headerlink" title="2.2 懒汉式单例类（一） - 线程安全"></a>2.2 懒汉式单例类（一） - 线程安全</h3><p><img src="https://i.loli.net/2019/07/04/5d1da0b319cb857695.png" alt="懒汉单例模式"></p>
-<p>懒汉模式能将类进行 延迟加载，即在需要使用时再加载实例，为了避免多线程调用 getInstance() 时实例化多个 LazySingleton，这里使用 synchronized 关键字进行加锁。</p>
-<pre><code class="java">class LazySingleton{
-    private static LazySingleton instance = null;
-    private LazySingleton(){}
-    synchronized public static LazySingleton getInstance(){
-        if(instance == null)
-            instance = new LazySingleton();
-        return instance;
-    }
-}</code></pre>
-<h3 id="2-3-懒汉式单例类（二）-线程不安全"><a href="#2-3-懒汉式单例类（二）-线程不安全" class="headerlink" title="2.3 懒汉式单例类（二） - 线程不安全"></a>2.3 懒汉式单例类（二） - 线程不安全</h3><p>虽然 synchronized 关键字进行了线程锁定，但是每次调用 getInstance() 方法时都会进行加锁操作，在多线程高并发场景下，会导致系统性能大大降低。</p>
-<p>事实上，只需要在 new L:azySingleton() 时进行加锁即可，即第一次实例化实例时加锁。</p>
-<pre><code class="java">public static LazySingleton getInstance(){
-    if(instance == null){
-        synchronized(LazySingleton.class){
-            instance = new LazySingleton();
-        }
-    }
-    return instance;
-}</code></pre>
-<h3 id="2-4-懒汉模式单例类（三-DoubleCheck）-线程不安全"><a href="#2-4-懒汉模式单例类（三-DoubleCheck）-线程不安全" class="headerlink" title="2.4 懒汉模式单例类（三 DoubleCheck） - 线程不安全"></a>2.4 懒汉模式单例类（三 DoubleCheck） - 线程不安全</h3><p>如果当两个线程同时进行了 if 条件之中，当线程A完成实例化之后，线程B继续执行，依旧会进行一次实例化。违背了单例模式的设计思想。</p>
-<p>双重检测机制：因此我们需要在 synchronized 中在进行一次判断</p>
-<pre><code class="java">public static LazySingleton getInstance(){
-    if(instance == null){
-        synchronized(LazySingleton.class){
-            if(instance == null){
-                instance = new LazySingleton();
-            }
-        }
-    }
-    return instance;
-}</code></pre>
-<h3 id="2-5-懒汉模式单例类（四-volatile-DoubleCheck）-线程安全"><a href="#2-5-懒汉模式单例类（四-volatile-DoubleCheck）-线程安全" class="headerlink" title="2.5 懒汉模式单例类（四 volatile+DoubleCheck） - 线程安全"></a>2.5 懒汉模式单例类（四 volatile+DoubleCheck） - 线程安全</h3><p>上述代码看起来可能没什么问题，但是</p>
-<p>instance = new LazySingleton() 在内存中的指令顺序应该为：</p>
-<ol>
-<li>instance 分配内存地址</li>
-<li>实例化 LazySingleton</li>
-<li>将实例化地址指向instance</li>
-</ol>
-<p>因为 JVM 的指令重排和优化，可能会导致以上执行顺序与所想像的不一致。最终导致单例出现问题，因此我们在静态实例 instance 前，加上 volatile 关键词，避免 instance 的实例化发生指令重排。</p>
-<blockquote>
-<p>因此<code>完整的懒汉模式</code>如下：</p>
-</blockquote>
-<pre><code class="java">class LazySingleton{
-    // 使用volatile 修改时静态实例，避免指令重排序
-    private volatile static LazySignleton instance = null;
-    // 构造方法私有化，防止外部实例
-    private LazySingleton(){}
-    // 静态工厂类，用于返回唯一实例，且使用延迟加载技术
-    public static LazySingleton getInstance(){
-        // 第一重检查，只有当instance 为空时才进行实例化
-        if(instance == null){
-            // 实例化时对当前类进行加锁，避免多线程同时实例化
-            synchronized(LazySingleton.class){
-                // 第二重检查，避免当前线程通过第一重检查后其他线程已实例化过
-                if(instance == null){
-                    instance = new LazySingleton();
-                }
-            }
-        }
-        return instance;
-    }
-}</code></pre>
-<blockquote>
-<p>缺点也很明显：1. volatile 关键词虽然能保证实例避免重排，但是只在1.5以上的版本才能生效 2. volatile关键词会屏蔽 JVM 的一些代码优化，可能导致系统运行效率降低</p>
-</blockquote>
-<h2 id="三、一种更好的单例实现方法"><a href="#三、一种更好的单例实现方法" class="headerlink" title="三、一种更好的单例实现方法"></a>三、一种更好的单例实现方法</h2><h2 id="3-1-懒汉模式与饿汉模式的缺点"><a href="#3-1-懒汉模式与饿汉模式的缺点" class="headerlink" title="3.1 懒汉模式与饿汉模式的缺点"></a>3.1 懒汉模式与饿汉模式的缺点</h2><p>饿汉模式：不能实现延迟加载，不管实例是否使用都将占据内存</p>
-<p>饿汉模式：繁琐的线程安全控制，且性能会受到一定影响</p>
-<h2 id="3-2-静态内部类单例-IoDH-线程安全"><a href="#3-2-静态内部类单例-IoDH-线程安全" class="headerlink" title="3.2 静态内部类单例 - IoDH - 线程安全"></a>3.2 静态内部类单例 - IoDH - 线程安全</h2><pre><code class="java">class Signleton{
-    private Singleton(){}
-    // 静态内部类只有在第一次调用时才会进行加载
-    private static class HolderClass{
-        // 因为instance 不是Singleton的成员变量，所以不会在Singleton加载时实例化
-        private final static Singleton instance = new Singleton();
-    }
-    // 通过JVM特性来保证线程安全性，确保成员变量只能初始化一次
-    public static Singleton getInstance(){
-        return HolderClass.instance;
-    }
-}</code></pre>
-<p>Initialization Demand Holder 技术，在单例类内部增加一个静态内部类，在该内部类中创建单例对象，再将单例对象通过 getInstance() 方法返回给外部使用。</p>
-<blockquote>
-<p>但是IoDH依赖于JVM的特性，并不适用于所有语言。但是IoDH既可以实现延迟加载，又可以保证线程安全，又不影响性能，不失为一种最好的Java语言单例模式。</p>
-</blockquote>
-<h2 id="四、总结"><a href="#四、总结" class="headerlink" title="四、总结"></a>四、总结</h2><h3 id="优点"><a href="#优点" class="headerlink" title="优点"></a>优点</h3><ol>
-<li>单例模式提供了对唯一实例的受控访问。因为单例类封装了它的唯一实例，严格控制客户如何访问</li>
-<li>节约系统资源。因为内存中只存在一个对象，无需频繁的创建、销毁对象</li>
-<li>允许可变数目的实例。可以通过变种，让getInstance返回至多几个实例</li>
-</ol>
-<h3 id="缺点"><a href="#缺点" class="headerlink" title="缺点"></a>缺点</h3><ol>
-<li>由于单例类没有抽象层，很难进行扩展</li>
-<li>单例类职责过重，违背了“单一职责原则”。因为单例类即是工厂角色，提供工厂方法，又是产品角色，包含一些业务方法。将产品的创建和产品的功能融合到了一起</li>
-<li>许多面向对象语言（如Java、C#）的自动垃圾回收技术，如果实例化的共享变量长时间不被使用。GC 会自动销毁并回收资源，导致单例对象状态的丢失。</li>
-</ol>
-<h3 id="适用场景"><a href="#适用场景" class="headerlink" title="适用场景"></a>适用场景</h3><ol>
-<li>系统只需要一个实例对象。如资源消耗过大的对象、资源管理器等只能实例一次的对象</li>
-<li>客户调用类的单个实例只允许使用一个公共访问点，不能通过其他途径访问该实例。</li>
-</ol>
-</div><hr></div><div class="recent-post-item article-container"><a class="article-title" href="/2019/06/27/读书笔记/《JavaDesignPatterns》/7.原型模式/">《Java Design Patterns》第五章 原型模式 - 对象的克隆</a><time class="post-meta__date"><i class="fa fa-calendar" aria-hidden="true"></i> 2019-06-27</time><span class="article-meta"><span class="article-meta__separator">|</span><i class="fa fa-inbox article-meta__icon" aria-hidden="true"></i><a class="article-meta__categories" href="/categories/读书笔记/">读书笔记</a><i class="fa fa-angle-right" aria-hidden="true"></i><i class="fa fa-inbox article-meta__icon" aria-hidden="true"></i><a class="article-meta__categories" href="/categories/读书笔记/设计模式/">设计模式</a></span><span class="article-meta tags"><span class="article-meta__separator">|</span><i class="fa fa-tag article-meta__icon" aria-hidden="true"></i><a class="article-meta__tags" href="/tags/hide/">hide</a><span class="article-meta__link">-</span><i class="fa fa-tag article-meta__icon" aria-hidden="true"></i><a class="article-meta__tags" href="/tags/设计模式/">设计模式</a></span><div class="content"><h1 id="第五章-原型模式-对象的克隆"><a href="#第五章-原型模式-对象的克隆" class="headerlink" title="第五章 原型模式 - 对象的克隆"></a>第五章 原型模式 - 对象的克隆</h1><p>原型模式：使用原型实例指定创建对象的种类，并且通过拷贝这些原型创建新的对象。属于一种对象创建型模式。</p>
-<h2 id="一、概述"><a href="#一、概述" class="headerlink" title="一、概述"></a>一、概述</h2><h3 id="1-1-原理"><a href="#1-1-原理" class="headerlink" title="1.1 原理"></a>1.1 原理</h3><p>原型模式的工作原理很简单：将一个原型对象传给那个要发动创建的对象，这个要发动创建的对象通过请求原型对象拷贝自己来实现创建过程。由于在软件系统中我们经常会遇到需要创建多个相同或者相似对象的情况，因此原型模式在真实开发中的使用频率还是非常高的。原型模式是一种“另类”的创建型模式，创建克隆对象的工厂就是原型类自身，工厂方法由克隆方法来实现。</p>
-<h3 id="1-2-原型模式中的几个角色"><a href="#1-2-原型模式中的几个角色" class="headerlink" title="1.2 原型模式中的几个角色"></a>1.2 原型模式中的几个角色</h3><ol>
-<li>Prototype - 抽象原型类<ol>
-<li>声明克隆方法的接口，是所有具体原型类的公共父类</li>
-</ol>
-</li>
-<li>ConcretePrototype - 具体原型类<ol>
-<li>实现抽象原型类中声明的克隆方法，在克隆方法中返回自己的一个克隆对象</li>
-</ol>
-</li>
-<li>Client - 客户类<ol>
-<li>让一个原型对象克隆自身从而创建一个新的对象，在客户类中只需要直接实例化或通过工厂方法等方式创建一个原型对象，再通过调用该对象的克隆方法即可得到多个相同的对象。</li>
-</ol>
-</li>
-</ol>
-<h3 id="1-3-案例"><a href="#1-3-案例" class="headerlink" title="1.3 案例"></a>1.3 案例</h3><pre><code class="java">@Getter
-@Setter
-class WeeklyLog implements Clonealbe{
-    private String name;
-    private String date;
-    private String content;
-
-    publci WeekLog clone(){
-        Object obj = null;
-        try{
-            obj = super.clone();
-            return (WeekLog)obj;
-        } catch (CloneNotSupportedException e){
-            System.out.println(&quot;不支持复制&quot;);
-            return null;
-        }
-    }
-}</code></pre>
-<h2 id="二、浅克隆与深克隆"><a href="#二、浅克隆与深克隆" class="headerlink" title="二、浅克隆与深克隆"></a>二、浅克隆与深克隆</h2><h3 id="2-1-浅克隆"><a href="#2-1-浅克隆" class="headerlink" title="2.1 浅克隆"></a>2.1 浅克隆</h3><p>在浅克隆中，如果原型对象的成员是值类型，将复制一份给克隆对象；如果原型对象的成员变量是引用类型，则将引用对象的地址复制一份给克隆对象。也就是说，原型对象的引用类型变量与克隆对象中的变量指向同一内存地址。</p>
-<p>即值类型成员变量会被复制，但是引用成员变量不会。</p>
-<h3 id="2-2-深克隆"><a href="#2-2-深克隆" class="headerlink" title="2.2 深克隆"></a>2.2 深克隆</h3><p>在深克隆中，无论原型对象的成员变量是值类型还是引用类型，都将复制一份给克隆对象。</p>
-<p>如果需要实现深克隆，可以通过序列化（Serialization）等方式实现：将对象写入到流，再从流中读出。</p>
-<blockquote>
-<p>Java语言提供的 Cloneable 接口和 Serializable 接口都是空接口，也称为标识接口。标识接口无任何方法定义，只提供告诉JRE这些接口的实现类是否支持克隆、序列化等功能。</p>
-</blockquote>
-<h2 id="三、总结"><a href="#三、总结" class="headerlink" title="三、总结"></a>三、总结</h2><h3 id="优点"><a href="#优点" class="headerlink" title="优点"></a>优点</h3><ol>
-<li>当创建新对象较为复杂时，可以使用原型模式简化对象的创建过程，复制一个已有实例以提高新实例的创建效率</li>
-<li>扩展性较好，由于在原型模式中提供了抽象原型类，在客户端可以针对抽象原型类进行编程，而将具体原型类写在配置文件中</li>
-<li>原型模式提供了简化的创建结构，工厂方法模式需要与产品等级结构对应的工厂等级结构，而原型模式则直接通过封装在原型类中的克隆方法实现</li>
-<li>深克隆方式可以保存对象的状态</li>
-</ol>
-<h3 id="缺点"><a href="#缺点" class="headerlink" title="缺点"></a>缺点</h3><ol>
-<li>需要每个类配置一个克隆方法，且位于类内部，当对类进行改造时需要修改源码，违反了“开闭原则”</li>
-<li>实现深克隆时较为复杂，对象的每一层子对象都需要进行深克隆</li>
-</ol>
-<h3 id="适用场景"><a href="#适用场景" class="headerlink" title="适用场景"></a>适用场景</h3><ol>
-<li>创建新对象成本较大（如初始化时间长、占用CPU资源多或网络资源占用多），新对象能够通过原型模式进行复制，复制相似对象再进行修改</li>
-<li>可以通过原型模式+备忘录模式，来实现保存对象的状态</li>
-<li>避免使用工厂模式来创建对象</li>
-</ol>
-</div><hr></div><div class="recent-post-item article-container"><a class="article-title" href="/2019/06/26/读书笔记/《JavaDesignPatterns》/3.简单工厂模式/">《Java Design Patterns》第一章 简单工厂模式</a><time class="post-meta__date"><i class="fa fa-calendar" aria-hidden="true"></i> 2019-06-26</time><span class="article-meta"><span class="article-meta__separator">|</span><i class="fa fa-inbox article-meta__icon" aria-hidden="true"></i><a class="article-meta__categories" href="/categories/读书笔记/">读书笔记</a><i class="fa fa-angle-right" aria-hidden="true"></i><i class="fa fa-inbox article-meta__icon" aria-hidden="true"></i><a class="article-meta__categories" href="/categories/读书笔记/设计模式/">设计模式</a></span><span class="article-meta tags"><span class="article-meta__separator">|</span><i class="fa fa-tag article-meta__icon" aria-hidden="true"></i><a class="article-meta__tags" href="/tags/hide/">hide</a><span class="article-meta__link">-</span><i class="fa fa-tag article-meta__icon" aria-hidden="true"></i><a class="article-meta__tags" href="/tags/设计模式/">设计模式</a></span><div class="content"><h1 id="第一章-简单工厂模式"><a href="#第一章-简单工厂模式" class="headerlink" title="第一章 简单工厂模式"></a>第一章 简单工厂模式</h1><h2 id="一、设计图表库"><a href="#一、设计图表库" class="headerlink" title="一、设计图表库"></a>一、设计图表库</h2><p>设计一个图表库，用于为系统提供各种不同外观的图表，如柱状图、饼状图、折线图等。</p>
-<h3 id="1-1-初步设计"><a href="#1-1-初步设计" class="headerlink" title="1.1 初步设计"></a>1.1 初步设计</h3><pre><code class="java">public class Chart {
-
-    private String type; // 图表类型
-
-    public Chart(Object[][] data, String type) {
-        this.type = type;
-        if (type.equalsIgnoreCase(&quot;histogram&quot;)) {
-            // 初始化柱状图
-        }
-        if (type.equalsIgnoreCase(&quot;pie&quot;)) {
-            // 初始化饼状图
-        }
-        if (type.equalsIgnoreCase(&quot;line&quot;)) {
-            // 初始化折线图
-        }
-    }
-
-    public void display() {
-        if (type.equalsIgnoreCase(&quot;histogram&quot;)) {
-            // 显示柱状图
-        }
-        if (type.equalsIgnoreCase(&quot;pie&quot;)) {
-            // 显示饼状图
-        }
-        if (type.equalsIgnoreCase(&quot;line&quot;)) {
-            // 显示折线图
-        }
-    }
-}</code></pre>
-<h3 id="1-2-存在的问题"><a href="#1-2-存在的问题" class="headerlink" title="1.2 存在的问题"></a>1.2 存在的问题</h3><p>该类在设计时存在如下几个问题：</p>
-<ol>
-<li>Chart 类中包含许多 if…else 代码块，代码冗长，难以阅读、维护和测试；大量的条件判断还将影响系统的性能</li>
-<li>Chart 类职责过重，负责初始化和显示所有图表对象。违反了“单一职责原则”，不利于类的重用和维护；而且将大量的对象初始化代码写在构造函数中，在初始化对象时需要条件判断，降低了对象创建的效率</li>
-<li>违反了“开闭原则”，当需要增加新类型的图表时，必须修改 Chart 对象的代码</li>
-<li>客户端只能通过 new 关键字来直接创建 Chart 对象，与客户端耦合度较高，对象的创建和使用无法分离</li>
-<li>客户端中缺少其它初始化设置，如果在客户端对图表的颜色、高度等进行设置，则会在每次创建对象时都会出现，导致代码的重复</li>
-</ol>
-<h3 id="1-3-解决思路"><a href="#1-3-解决思路" class="headerlink" title="1.3 解决思路"></a>1.3 解决思路</h3><p>引入工厂类，进行抽象与拆分</p>
-<h2 id="二、简单工厂模式"><a href="#二、简单工厂模式" class="headerlink" title="二、简单工厂模式"></a>二、简单工厂模式</h2><h3 id="2-1-设计流程"><a href="#2-1-设计流程" class="headerlink" title="2.1 设计流程"></a>2.1 设计流程</h3><ol>
-<li>将需要创建的各种不同对象的相关代码封装到不同的类中，这些类称为具体产品类</li>
-<li>将它们公共的代码进行抽象和提取后封装在一个抽象产品类中，每个具体产品类都是抽象产品类的子类</li>
-<li>提供一个工厂类用于创建各种产品，在工厂类中提供一个创建产品的工厂方法，该方法可以根据所传入的参数不同创建不同的具体对象</li>
-<li>客户端只需调用工厂类的方法并传入相应的参数即可得到一个产品对象</li>
-</ol>
-<h3 id="2-2-简单工厂模式模式的定义"><a href="#2-2-简单工厂模式模式的定义" class="headerlink" title="2.2 简单工厂模式模式的定义"></a>2.2 简单工厂模式模式的定义</h3><p>定义一个工厂类，可以根据参数的不同返回不同类的实例，被创建的实例通常都具有共同的父类。因为在简单工厂模式中用于创建实例的方法是静态方法，<br>因此简单工厂模式又被称为静态工厂模式，属于类创建型模式。</p>
-<h3 id="2-3-简单工厂模式中的几个角色"><a href="#2-3-简单工厂模式中的几个角色" class="headerlink" title="2.3 简单工厂模式中的几个角色"></a>2.3 简单工厂模式中的几个角色</h3><ol>
-<li>Factory（工厂角色）<ol>
-<li>即工厂类，是简单工厂模式的核心，负责实现创建所有产品实例的内部逻辑；</li>
-<li>工厂类可以被外界直接调用，创建所需的产品对象；</li>
-<li>在工厂类中提供了静态的工厂方法，返回类型为抽象产品类；</li>
-</ol>
-</li>
-<li>Product（抽象产品角色）<ol>
-<li>是工厂类所创建的对象的父类，封装各产品对象的公共方法</li>
-<li>抽象产品类的引入，提供了系统的灵活性，使得在工厂类只需定义一个通用的工厂方法，因为所创建的具体产品对象都是其子类对象</li>
-</ol>
-</li>
-<li>ConcreteProduct（具体产品角色）<ol>
-<li>是简单工厂模式的创建目标，所有被创建的对象都充当这个角色的某个类的实例。</li>
-<li>每个具体产品角色都继承了抽象产品角色，需要实现在抽象产品中声明的抽象方法</li>
-</ol>
-</li>
-</ol>
-<h2 id="三、具体实现"><a href="#三、具体实现" class="headerlink" title="三、具体实现"></a>三、具体实现</h2><h3 id="3-1-产品抽象类"><a href="#3-1-产品抽象类" class="headerlink" title="3.1 产品抽象类"></a>3.1 产品抽象类</h3><pre><code class="java">/**
- * 使用简单工厂模式时，需要先对产品类进行重构
- * 根据实际情况设计一个产品层次结构，将所有产品类公共的代码移至抽象类，并声明一些抽象方法供具体产品类类实现
- */
-public interface Chart {
-    void display();
-}</code></pre>
-<h3 id="3-2-具体产品类"><a href="#3-2-具体产品类" class="headerlink" title="3.2 具体产品类"></a>3.2 具体产品类</h3><pre><code class="java">/**
- * 具体产品类实现了抽象产品类中声明的抽象业务方法，不同的具体产品类可以提供不同的实现
- */
-public class HistogramChart implements Chart {
-    public HistogramChart() {
-        System.out.println(&quot;生成柱状图&quot;);
-    }
-
-    @Override
-    public void display() {
-        System.out.println(&quot;显示柱状图&quot;);
-    }
-}
-
-public class LineChart implements Chart {
-    public LineChart() {
-        System.out.println(&quot;生成折线图&quot;);
-    }
-
-    @Override
-    public void display() {
-        System.out.println(&quot;显示折线图&quot;);
-    }
-}
-
-public class PieChart implements Chart {
-    public PieChart() {
-        System.out.println(&quot;生成饼状图&quot;);
-    }
-
-    @Override
-    public void display() {
-        System.out.println(&quot;显示饼状图&quot;);
-    }
-}</code></pre>
-<h3 id="3-3-工厂方法类"><a href="#3-3-工厂方法类" class="headerlink" title="3.3 工厂方法类"></a>3.3 工厂方法类</h3><pre><code class="java">/**
- * 简单工厂模式的核心就是工厂类
- * 通过工厂类的静态工厂方法来创建具体产品对象，而非直接通过new来创建产品对象
- */
-public class ChartFactory {
-    public static Chart getChart(String type) {
-        switch (type) {
-            case &quot;histogram&quot;:
-                return new HistogramChart();
-            case &quot;pic&quot;:
-                return new PieChart();
-            case &quot;line&quot;:
-                return new LineChart();
-            default:
-                return null;
-        }
-    }
-}</code></pre>
-<h3 id="3-4-客户端测试"><a href="#3-4-客户端测试" class="headerlink" title="3.4 客户端测试"></a>3.4 客户端测试</h3><pre><code class="java">/**
- * 客户端测试代码
- */
+<h2 id="一、设置测试环境"><a href="#一、设置测试环境" class="headerlink" title="一、设置测试环境"></a>一、设置测试环境</h2><p>需要先引入 spring-security-test 依赖，这样就可以直接在 @SpringBootTest 中集成 Security 的测试环境，就是这么简单.</p>
+<pre><code class="java">@RunWith(SpringRunner.class)
+@SpringBootTest
 public class DemoTest {
-    public static void main(String[] args) {
-        Chart pie = ChartFactory.getChart(&quot;pie&quot;);
-        pie.display();
+    // .. 一些 JUnit 单元测试方法
+}</code></pre>
+<h2 id="二、常用注解"><a href="#二、常用注解" class="headerlink" title="二、常用注解"></a>二、常用注解</h2><p>单元测试要尽量做到“单元”化，只测试一个具体的功能，而不用将MVC、DAO各层都测试一遍。</p>
+<p>因此这些注解可以帮助我们建立一个模拟的测试环境，使我们的测试代码只关注业务是否正常执行，代码是否正确。而不用考虑用户是否登陆，是否需要重新授权等问题。</p>
+<h3 id="1-WithMockUser"><a href="#1-WithMockUser" class="headerlink" title="1. @WithMockUser"></a>1. @WithMockUser</h3><p>在方法上使用一个模拟的用户，而不用真的去注册并登陆。</p>
+<p>该注解会 Mock 一个用户名为‘user’，密码为 ’password‘，角色为 ’ROLE_USER’ 的Authentication，并将其注入到 SecurityContext 中。</p>
+<pre><code class="java">@Test
+@WithMockUser
+public void getMessageByUser() {
+    // 查询SecurityContext 上下文环境，可以取到 Mock 的模拟用户数据
+    String username = ((UserDetails)SecurityContextHolder.getSecurityContext().getAuthentication().getPrincipal()).getUsername();
+    // ......
+}</code></pre>
+<blockquote>
+<p>思考：如果我们使用的是自定义的 CustomUserDetails 呢？比如扩展了 UserDetails 的属性，增加了 level 等级属性，那么将如何Mock并从上下文中获取呢？    –这将会在下一节“自定义注解”中说明</p>
+</blockquote>
+<h3 id="2-WithAnonymousUser"><a href="#2-WithAnonymousUser" class="headerlink" title="2. @WithAnonymousUser"></a>2. @WithAnonymousUser</h3><p>当需要用户登录，但是不需要用户的信息时，可以考虑以匿名用户的身份运行一些测试。这样会更加方便。</p>
+<h3 id="3-WithUserDetails"><a href="#3-WithUserDetails" class="headerlink" title="3. @WithUserDetails"></a>3. @WithUserDetails</h3><p>使用自定义的 UserDetailsService 来创建身份验证的主题，但是需要用户存在。在正常业务中，可能还涉及到数据库查询，如果包含数据库查询，还需要与业务逻辑的数据库隔离等等问题。</p>
+<p>自定义查找的用户名，以及自定义用来查找的 UserDetailsService。</p>
+<pre><code class="java">@WithUserDetails(value = &quot;customUsername&quot;, userDetailsServiceBeanName = &quot;myUserDetailsService&quot;)</code></pre>
+<h2 id="三、完整的测试案例"><a href="#三、完整的测试案例" class="headerlink" title="三、完整的测试案例"></a>三、完整的测试案例</h2><p>UserService 用户业务服务，提供一个创建用户的功能，并且在保存之前，记录当前创建人。</p>
+<pre><code class="java">// 用户业务服务
+@Service
+public class UserService {
+    // 创建用户，并且指定创建人与创建时间
+    public User createUser(User user){
+        // 从当前环境中取出当前主体的用户名
+        String username = ((UserDetails)SecurityContextHolder.getSecurityContext().getAuthentication().getPrincipal()).getUsername();
+        // 保存新建用户的创建者、创建时间
+        user.setCreateUser(username);
+        user.setCreateDate(new Date());
+        return save(user);
     }
 }</code></pre>
-<h2 id="四、总结"><a href="#四、总结" class="headerlink" title="四、总结"></a>四、总结</h2><p>简单工厂模式提供了专门的工厂类用于创建对象，将对象的创建和对象的使用分离。</p>
-<h3 id="4-1-优点"><a href="#4-1-优点" class="headerlink" title="4.1 优点"></a>4.1 优点</h3><ol>
-<li>工厂类包含必要的判断逻辑，可以决定何时创建哪一个实例。免除客户端直接创建产品对象的职责，而仅仅“消费”产品。实现了对象创建和使用的分离</li>
-<li>客户端无需知道所创建的具体产品类的类名，只需要知道具体参数即可。</li>
-<li>可以将具体参数引入配置文件，在不修改客户端代码的情况下增删具体产品类，在一定程序上提供了系统灵活度。</li>
+<p>测试用户在创建时，是否设置了创建人（即@WithMockUser 是否把用户注入了SecurityContext中）。</p>
+<pre><code class="java">@Runwith(SpringRunner.class)
+@SpringBootTest
+public class UserServiceTest {
+    @Autowired
+    UserService userService;
+
+    @Test
+    @WithMockUser(username = &quot;admin&quot;, roles = {&quot;ADMIN&quot;,&quot;USER&quot;})
+    public void test(){
+        User user = userService.create(new User(&quot;张三&quot;));
+        Assertions.assertThat(user.getCreateUser()).isEqualsTo(&quot;admin&quot;);
+    }
+}</code></pre>
+</div><hr></div><div class="recent-post-item article-container"><a class="article-title" href="/2019/07/19/读书笔记/《SpringSecurity》/7.核心服务/">《Spring Security》第七章 Spring Security 中的核心服务</a><time class="post-meta__date"><i class="fa fa-calendar" aria-hidden="true"></i> 2019-07-19</time><span class="article-meta"><span class="article-meta__separator">|</span><i class="fa fa-inbox article-meta__icon" aria-hidden="true"></i><a class="article-meta__categories" href="/categories/读书笔记/">读书笔记</a><i class="fa fa-angle-right" aria-hidden="true"></i><i class="fa fa-inbox article-meta__icon" aria-hidden="true"></i><a class="article-meta__categories" href="/categories/读书笔记/Spring-Security/">Spring Security</a></span><span class="article-meta tags"><span class="article-meta__separator">|</span><i class="fa fa-tag article-meta__icon" aria-hidden="true"></i><a class="article-meta__tags" href="/tags/hide/">hide</a><span class="article-meta__link">-</span><i class="fa fa-tag article-meta__icon" aria-hidden="true"></i><a class="article-meta__tags" href="/tags/Spring-Security/">Spring Security</a></span><div class="content"><h1 id="第七章-Spring-Security-中的核心服务"><a href="#第七章-Spring-Security-中的核心服务" class="headerlink" title="第七章 Spring Security 中的核心服务"></a>第七章 Spring Security 中的核心服务</h1><p><img src="https://i.loli.net/2019/07/19/5d315f6f3a2c585678.png" alt="SpringSecurity中的核心组件与服务"></p>
+<h2 id="一、核心接口与其实现"><a href="#一、核心接口与其实现" class="headerlink" title="一、核心接口与其实现"></a>一、核心接口与其实现</h2><p>在 <code>第五章 SpringSecurity 中的核心组件</code> 与 <code>第六章 SpringSecurity 身份认证流程</code> 中介绍了 Spring Security 体系结构及其核心类。下面更加深入的了解一些核心接口与其实现方法。</p>
+<p>上图描述了一个请求认证，大致需要经过的过滤器、接口，及各个接口的子类实现。</p>
+<p>其中标黄的部分是下面讲解的重点。</p>
+<blockquote>
+<p>具体的接口与实现类的含义，可以参考官方网站中的解释并结合图中的关系进行梳理。我只会挑选一些核心的实现方法来说。</p>
+</blockquote>
+<blockquote>
+<p>如果不想看源码，请直接看我写的注释，也能明白这些类的执行过程。</p>
+</blockquote>
+<h3 id="1-UsernamePasswordAuthenticationFilter"><a href="#1-UsernamePasswordAuthenticationFilter" class="headerlink" title="1. UsernamePasswordAuthenticationFilter"></a>1. UsernamePasswordAuthenticationFilter</h3><p>拦截并处理用户的登录请求</p>
+<pre><code class="java">public Authentication attemptAuthentication(HttpServletRequest request,
+                                            HttpServletResponse response) throws AuthenticationException {
+    // 1. 登录认证请求必须是POST
+    if (postOnly &amp;&amp; !request.getMethod().equals(&quot;POST&quot;)) {
+        throw new AuthenticationServiceException(
+            &quot;Authentication method not supported: &quot; + request.getMethod());
+    }
+
+    // 2. 检查请求 request 中是否包含 username、password 参数
+    String username = obtainUsername(request);
+    String password = obtainPassword(request);
+
+    if (username == null) {
+        username = &quot;&quot;;
+    }
+
+    if (password == null) {
+        password = &quot;&quot;;
+    }
+
+    username = username.trim();
+
+    // 3. 将 username、password 封装为一个 UsernamePasswordAuthenticationToken 对象
+    // 该对象是 Authentication 的实现类
+    UsernamePasswordAuthenticationToken authRequest = new UsernamePasswordAuthenticationToken(
+        username, password);
+
+    setDetails(request, authRequest);
+
+    // 4. 调用 AuthenticationManager 的认证方法
+    return this.getAuthenticationManager().authenticate(authRequest);
+}</code></pre>
+<h3 id="2-ProviderManager"><a href="#2-ProviderManager" class="headerlink" title="2. ProviderManager"></a>2. ProviderManager</h3><p>上面调用 authenticate(authRequset) 的 AuthenticationManager 是一个接口类，其具体实现是 ProviderManager。当然，也可以选择其他实现类或者自定义。</p>
+<pre><code class="java">/**
+ * 该方法用于验证 authentication（也就是上面传入的 UsernamePasswordAuthenticationToken）
+ */
+public Authentication authenticate(Authentication authentication)
+    throws AuthenticationException {
+    Class&lt;? extends Authentication&gt; toTest = authentication.getClass();
+    AuthenticationException lastException = null;
+    Authentication result = null;
+    boolean debug = logger.isDebugEnabled();
+
+    // 1. 循环遍历 AuthenticationProvider 的实现类集合
+    // 如果有超过一个的 provider 支持，则使用第一个
+    // 如果一个都不支持，则返回 AuthenticationException 异常
+    for (AuthenticationProvider provider : getProviders()) {
+        // 2. 判断是否支持
+        if (!provider.supports(toTest)) {
+            continue;
+        }
+
+        if (debug) {
+            logger.debug(&quot;Authentication attempt using &quot;
+                         + provider.getClass().getName());
+        }
+
+        try {
+            // 3. 调用 provider 的认证，下面会以 DaoAuthenticationProvider 为例进行介绍
+            result = provider.authenticate(authentication);
+
+            if (result != null) {
+                copyDetails(authentication, result);
+                break;
+            }
+        }
+        catch (AccountStatusException e) {
+            prepareException(e, authentication);
+            throw e;
+        }
+        catch (InternalAuthenticationServiceException e) {
+            prepareException(e, authentication);
+            throw e;
+        }
+        catch (AuthenticationException e) {
+            lastException = e;
+        }
+    }
+
+    if (result == null &amp;&amp; parent != null) {
+        try {
+            // 4. 进行父类的认证尝试
+            result = parent.authenticate(authentication);
+        }
+        catch (ProviderNotFoundException e) {
+
+        }
+        catch (AuthenticationException e) {
+            lastException = e;
+        }
+    }
+
+    if (result != null) {
+        if (eraseCredentialsAfterAuthentication
+            &amp;&amp; (result instanceof CredentialsContainer)) {
+            // 5. 认证完成，请求结束之后，删除 SecurityContextHolder 中保存的 SecurityContext，清除相关数据
+            ((CredentialsContainer) result).eraseCredentials();
+        }
+
+        // 6. 发送验证成功的事件
+        eventPublisher.publishAuthenticationSuccess(result);
+        return result;
+    }
+
+    // 7. 身份验证失败，抛出异常
+    if (lastException == null) {
+        lastException = new ProviderNotFoundException(messages.getMessage(
+            &quot;ProviderManager.providerNotFound&quot;,
+            new Object[] { toTest.getName() },
+            &quot;No AuthenticationProvider found for {0}&quot;));
+    }
+
+    prepareException(lastException, authentication);
+
+    throw lastException;
+}</code></pre>
+<h3 id="3-DaoAuthenticationProvider"><a href="#3-DaoAuthenticationProvider" class="headerlink" title="3. DaoAuthenticationProvider"></a>3. DaoAuthenticationProvider</h3><p>DaoAuthenticationProvider 包含两个接口属性 PasswordEncoder 与 UserDetailsService，通过 UserDetailsService 加载用户数据，并使用 PasswordEncoder 比较 UserDetails.password 与 token.password 是否相等。</p>
+<p>以此来决定是否认证成功。</p>
+<pre><code class="java">protected final UserDetails retrieveUser(String username,
+                                         UsernamePasswordAuthenticationToken authentication)
+    throws AuthenticationException {
+    prepareTimingAttackProtection();
+    try {
+        // 调用 UserDetailsService 的 loadUserByUsername 方法，查询装载 UserDetails
+        // 在实际开发中，通常会自定义 UserDetailsService 的实现，例如将数据库查询的 User 对象与 UserDetails 对象进行一个适配
+        // 适配者也需要我们自己定义，如 CustomUserDetails 实现 UserDetails，并将 user.role 转换为 authority等。
+        UserDetails loadedUser = this.getUserDetailsService().loadUserByUsername(username);
+        if (loadedUser == null) {
+            throw new InternalAuthenticationServiceException(
+                &quot;UserDetailsService returned null, which is an interface contract violation&quot;);
+        }
+        return loadedUser;
+    }
+    catch (UsernameNotFoundException ex) {
+        mitigateAgainstTimingAttack(authentication);
+        throw ex;
+    }
+    catch (InternalAuthenticationServiceException ex) {
+        throw ex;
+    }
+    catch (Exception ex) {
+        throw new InternalAuthenticationServiceException(ex.getMessage(), ex);
+    }
+}</code></pre>
+<h3 id="4-UserDetailsService"><a href="#4-UserDetailsService" class="headerlink" title="4. UserDetailsService"></a>4. UserDetailsService</h3><p>UserDetailsService 是整个 Dao 认证框架的核心，用来装载特殊的用户数据。</p>
+<p>因为该类为接口类，只声明了一个 loadUserByUsername(String) 方法，所以这里我们使用自定义实现来演示在日常开发场景中的使用过程：</p>
+<pre><code class="java">// 1. 实现 UserDetailsService 接口，自定义获取用户的方法
+@Service
+public class DemoUserDetailsService implements UserDetailsService {
+
+    // 2. 注入数据库查询实例，这里不限数据库，只要能获取到用户即可。自己new的也行
+    @Autowired
+    private UserService userService;
+
+    @Override
+    UserDetails loadUserByUsername(String username) throws UsernameNotFoundException {
+        // 3. 从数据库中查询到 User 对象
+        DBUser user = userService.findUserByUsername(username);
+        if(user == null){
+            throw new AuthenticationCredentialsNotFoundException(&quot;user not found.&quot;)；
+        }
+        // 4. 将 DBUser 包装为一个 UserDetails 对象，并将 user.roles 转换为 Authority
+        return User.withDefaultPasswordEncoder().username(user.username).password(user.password).authorities(user.roles);
+    }
+}</code></pre>
+<h2 id="二、其他"><a href="#二、其他" class="headerlink" title="二、其他"></a>二、其他</h2><p>上面几个类大致说明了，如果将数据库的用户转换为 Spring Security 支持的 Authentication 对象的。</p>
+<p>其它如内存认证、jdbcDaoImpl 的实现不再赘述。</p>
+<p>还有如自定义 PasswordEncoder、自定义 UserDetails 等其它实现，就不一一列举了，网上一搜一大把。</p>
+</div><hr></div><div class="recent-post-item article-container"><a class="article-title" href="/2019/07/18/读书笔记/《SpringSecurity》/6.身份认证流程/">《Spring Security》第六章 SpringSecurity 身份认证流程</a><time class="post-meta__date"><i class="fa fa-calendar" aria-hidden="true"></i> 2019-07-18</time><span class="article-meta"><span class="article-meta__separator">|</span><i class="fa fa-inbox article-meta__icon" aria-hidden="true"></i><a class="article-meta__categories" href="/categories/读书笔记/">读书笔记</a><i class="fa fa-angle-right" aria-hidden="true"></i><i class="fa fa-inbox article-meta__icon" aria-hidden="true"></i><a class="article-meta__categories" href="/categories/读书笔记/Spring-Security/">Spring Security</a></span><span class="article-meta tags"><span class="article-meta__separator">|</span><i class="fa fa-tag article-meta__icon" aria-hidden="true"></i><a class="article-meta__tags" href="/tags/hide/">hide</a><span class="article-meta__link">-</span><i class="fa fa-tag article-meta__icon" aria-hidden="true"></i><a class="article-meta__tags" href="/tags/Spring-Security/">Spring Security</a></span><div class="content"><h1 id="第六章-SpringSecurity-身份认证流程"><a href="#第六章-SpringSecurity-身份认证流程" class="headerlink" title="第六章 SpringSecurity 身份认证流程"></a>第六章 SpringSecurity 身份认证流程</h1><h2 id="一、标准的身份认证"><a href="#一、标准的身份认证" class="headerlink" title="一、标准的身份认证"></a>一、标准的身份认证</h2><p>一个标准的身份验证流程：</p>
+<ol>
+<li>用户提供用户名与密码</li>
+<li>系统验证用户名密码是否正确</li>
+<li>获取该用户的上下文信息（如角色列表、权限等）</li>
+<li>为用户建立安全上下文</li>
+<li>访问受保护资源时，通过上下文信息验证权限</li>
 </ol>
-<h3 id="4-2-缺点"><a href="#4-2-缺点" class="headerlink" title="4.2 缺点"></a>4.2 缺点</h3><ol>
-<li>工厂类的职责过重，集中了所有产品的创建逻辑。一旦工厂类出现问题，整个系统都会受到影响</li>
-<li>使用简单工厂模式势必会增加系统中类的个数，增加了系统的复杂度和理解难度</li>
-<li>系统拓展难度，新增产品时必须修改工厂逻辑，在产品类型较多时，可能造成工厂逻辑过于复杂，不利于系统扩展和维护</li>
-<li>简单工厂模式由于使用了静态工厂方法，造成工厂角色无法形成基于继承的等级结构</li>
+<p>以下示例来自于 <code>Spring Security Reference</code>，演示了一个简单的迷你认证环境。</p>
+<h3 id="模拟身份认证"><a href="#模拟身份认证" class="headerlink" title="模拟身份认证"></a>模拟身份认证</h3><pre><code class="java">public class AuthenticationExample {
+private static AuthenticationManager am = new SampleAuthenticationManager();
+
+public static void main(String[] args) throws Exception {
+    BufferedReader in = new BufferedReader(new InputStreamReader(System.in));
+
+    while(true) {
+        // 1. 接收用户名与密码
+    System.out.println(&quot;Please enter your username:&quot;);
+    String name = in.readLine();
+    System.out.println(&quot;Please enter your password:&quot;);
+    String password = in.readLine();
+    try {
+        // 2. 生成 token
+        Authentication request = new UsernamePasswordAuthenticationToken(name, password);
+        // 3. 验证 token 是否正确
+        Authentication result = am.authenticate(request);
+        // 4. 将认证主题注入上下文
+        SecurityContextHolder.getContext().setAuthentication(result);
+        break;
+    } catch(AuthenticationException e) {
+        System.out.println(&quot;Authentication failed: &quot; + e.getMessage());
+    }
+    }
+    System.out.println(&quot;Successfully authenticated. Security context contains: &quot; +
+            SecurityContextHolder.getContext().getAuthentication());
+}
+}
+
+class SampleAuthenticationManager implements AuthenticationManager {
+static final List&lt;GrantedAuthority&gt; AUTHORITIES = new ArrayList&lt;GrantedAuthority&gt;();
+
+static {
+    AUTHORITIES.add(new SimpleGrantedAuthority(&quot;ROLE_USER&quot;));
+}
+
+public Authentication authenticate(Authentication auth) throws AuthenticationException {
+    if (auth.getName().equals(auth.getCredentials())) {
+    return new UsernamePasswordAuthenticationToken(auth.getName(),
+        auth.getCredentials(), AUTHORITIES);
+    }
+    throw new BadCredentialsException(&quot;Bad Credentials&quot;);
+}
+}</code></pre>
+<p>通常情况下，这个流程是由 Spring Security 内部执行的，但是这大致显示了 Spring Security 通过 username、password 构建一个 SecurityContext 的过程。</p>
+<h3 id="直接设置-SecurityContextHolder"><a href="#直接设置-SecurityContextHolder" class="headerlink" title="直接设置 SecurityContextHolder"></a>直接设置 SecurityContextHolder</h3><p>如果你需要在一个已经拥有身份认证的系统（如自定义了过滤器或MVC控制器、拥有自己的认证系统等）中，接入 Spring Security 环境。</p>
+<p>只需要在原有系统中读取第三方用户信息，构建一个 Spring Security 特定的 Authentication 对象，并将其放入 SecurityContextHolder 中即可。</p>
+<h2 id="二、Web应用中的身份验证"><a href="#二、Web应用中的身份验证" class="headerlink" title="二、Web应用中的身份验证"></a>二、Web应用中的身份验证</h2><p>在一个Web 应用程序中使用 Spring Security 访问受保护的资源，流程如下：</p>
+<p><img src="https://i.loli.net/2019/07/19/5d312c9031ea155349.png" alt="访问资源的验证及认证流程"></p>
+<p>Spring Security 中提供了不同的类负责上图中的不同流程，主要参与者（按照使用顺序）是 ExceptionTranslationFilter、AuthenticationEntryPoint和 authentication mechanism。负责调用的是 AuthenticationManager。</p>
+<p><img src="https://i.loli.net/2019/07/19/5d312f3a9d38248120.png" alt="安全拦截器与安全对象模型"></p>
+<h3 id="ExceptionTranslationFilter"><a href="#ExceptionTranslationFilter" class="headerlink" title="ExceptionTranslationFilter"></a>ExceptionTranslationFilter</h3><p>ExceptionTranslationFilter 是一个 Spring Security 过滤器，负责检测所有引发的 Spring Security 异常。通常情况下，异常都是由 AbstractSecurityInterceptor 引发的，它是授权服务的主要提供者。</p>
+<p>ExceptionTranslationFilter 在验证主题时(如图中的 ③⑦)，负责返回错误代码403(即认证成功，但是缺少权限的情况)，或者启动 AuthenticationEntryPoint（尚未登录）。</p>
+<h3 id="AuthenticationEntryPoint"><a href="#AuthenticationEntryPoint" class="headerlink" title="AuthenticationEntryPoint"></a>AuthenticationEntryPoint</h3><p>负责为 web 应用程序提供一个默认的身份认证策略(③ )。</p>
+<h3 id="Authentication-Mechanism-认证机制"><a href="#Authentication-Mechanism-认证机制" class="headerlink" title="Authentication Mechanism 认证机制"></a>Authentication Mechanism 认证机制</h3><p>浏览器提供了身份验证凭据之后，服务器就需要收集这些身份信息，并进入“身份验证机制”。将用户验证的凭据生成一个“request”对象，然后交给 AuthenticationManager。</p>
+<p>如果 AuthenticationManager 验证接收回完全填充的 Authentication 对象后，它将认为请求有效，并将 Authentication 放入 SecurityContextHolder 中，并进行重试请求。</p>
+<p>如果 AuthenticationManager 拒绝请求，身份验证机制将要求用户重新进行认证（跳转至url或者返回http状态码）。</p>
+<h3 id="Store-SecurityContext"><a href="#Store-SecurityContext" class="headerlink" title="Store SecurityContext"></a>Store SecurityContext</h3><p>在 Spring Security 中，由 SecurityContextPersistenceFilter 来承担在请求之间存储 SecurityContext，它默认将 SecurityContext 作为HttpSession 的属性存储。</p>
+<p>每个请求都会将 SecurityContext 恢复到 SecurityContextHolder 汇总，并且在请求完成时清除 SecurityContextHolder。这样做是十分安全的，且您不应该直接与 HttpSession交互，而应当总是与 SecurityContextHolder 交互。</p>
+<p>如果在不使用 HttpSession 的应用程序(如 无状态的 Restful web 服务)中，对每个请求进行身份验证。SecurityContextPersistenceFilter 依然十分重要，因为它会确保 SecurityContextHolder 在每个请求之后被清除。</p>
+<p>您可以通过自定义 SecurityContextPersistenceFilter 的行为，为每个请求创建一个新的 SecurityContext。以防止一个线程中的更改影响另一个线程，或者在临时更改上下文的地方创建一个新实例。</p>
+<h3 id="Access-Control-访问控制"><a href="#Access-Control-访问控制" class="headerlink" title="Access-Control 访问控制"></a>Access-Control 访问控制</h3><p>在 Spring Security 中负责访问控制决策的接口是 AccessDecisionManager，它具有一个 decide 方法，该方法使用 Authentication 对象代表请求访问的主体、安全对象、和一个基于该对象的安全元数据属性列表（如角色列表属性等）。</p>
+<h3 id="Spring-Security-与-AOP"><a href="#Spring-Security-与-AOP" class="headerlink" title="Spring Security 与 AOP"></a>Spring Security 与 AOP</h3><p>AOP 中提供了如：before、after、throws、around通知。Spring Security 为方法调用和 Web 请求提供了一个大致的建议，通过 around 通知，可以决定该方法是否继续调用，是否修改响应，以及是否抛出异常。</p>
+</div><hr></div><div class="recent-post-item article-container"><a class="article-title" href="/2019/07/18/读书笔记/《SpringSecurity》/5.体系结构/">《Spring Security》第五章 SpringSecurity 中的核心组件</a><time class="post-meta__date"><i class="fa fa-calendar" aria-hidden="true"></i> 2019-07-18</time><span class="article-meta"><span class="article-meta__separator">|</span><i class="fa fa-inbox article-meta__icon" aria-hidden="true"></i><a class="article-meta__categories" href="/categories/读书笔记/">读书笔记</a><i class="fa fa-angle-right" aria-hidden="true"></i><i class="fa fa-inbox article-meta__icon" aria-hidden="true"></i><a class="article-meta__categories" href="/categories/读书笔记/Spring-Security/">Spring Security</a></span><span class="article-meta tags"><span class="article-meta__separator">|</span><i class="fa fa-tag article-meta__icon" aria-hidden="true"></i><a class="article-meta__tags" href="/tags/hide/">hide</a><span class="article-meta__link">-</span><i class="fa fa-tag article-meta__icon" aria-hidden="true"></i><a class="article-meta__tags" href="/tags/Spring-Security/">Spring Security</a></span><div class="content"><h1 id="第五章-SpringSecurity-中的核心组件"><a href="#第五章-SpringSecurity-中的核心组件" class="headerlink" title="第五章 SpringSecurity 中的核心组件"></a>第五章 SpringSecurity 中的核心组件</h1><p>通过前四章简单介绍了下 SpringSecurity 的命名空间配置和Java 配置，已经可以简单一个基于 Spring Security 的应用程序。</p>
+<p>下面，将会研究其中一些在整个框架中使用的中心接口、类和抽象概念，了解它们如何协同工作，以支持 Spring Security 中的身份验证和访问控制。</p>
+<h2 id="一、SecurityContextHolder"><a href="#一、SecurityContextHolder" class="headerlink" title="一、SecurityContextHolder"></a>一、SecurityContextHolder</h2><p>Spring-Security-Core 中对 SecurityContextHolder 的介绍如下：</p>
+<pre><code class="html">Associates a given {@link SecurityContext} with the current execution thread.
+将给定的{@link SecurityContext}与当前执行线程关联。</code></pre>
+<p>SecurityContextHolder 用于存储应用程序当前Security 上下文的地方，其中包含当前使用应用程序的主体的细节。</p>
+<p>默认情况下，SecurityContextHolder 使用ThreadLocal 来存储这些细节，如果在处理完当前主体的请求之后清除线程，那么这种方式就是非常安全的。</p>
+<p>一般没有必要修改SecurityContextHolder 的默认值，但是 SpringSecurity 提供了修改的途径。</p>
+<h2 id="二、SecurityContext"><a href="#二、SecurityContext" class="headerlink" title="二、SecurityContext"></a>二、SecurityContext</h2><pre><code class="html">Interface defining the minimum security information associated with the current thread of execution.</code></pre>
+<p>与安全信息相关的抽象接口，用来获取或设置 <code>Authentication</code> 。</p>
+<h2 id="三、Authentication"><a href="#三、Authentication" class="headerlink" title="三、Authentication"></a>三、Authentication</h2><p>实现了 <code>Principal</code> 与序列化的接口，包含了当前请求的主体信息。通常是保存在 <code>SecurityContext</code> 中。</p>
+<p>获取方法如下：</p>
+<pre><code class="java">public String getUsernameBySecurityContext(){
+    Object principal = SecurityContextHolder.getContext().getAuthentication().getPrincipal();
+    String username;
+    if(prinicpal instanceof UserDetails){
+        username = ((UserDetails)principal).getUsername();
+
+    }else {
+        username = principal.toString();
+    }
+    return username;
+}</code></pre>
+<h2 id="四、GrantedAuthority"><a href="#四、GrantedAuthority" class="headerlink" title="四、GrantedAuthority"></a>四、GrantedAuthority</h2><p>除了用户主体之外，身份验证还提供了一额外的方法 getAuthorities()，该方法返回一个 GrantedAuthority 对象数组。</p>
+<p>GrantedAuthority 通常为“角色”，用于配置 web授权、方法授权、域对象授权等。该属性通常由 UserDetailsService 加载给 UserDetails。</p>
+<p>如果一个用户有几千个这种权限，内存的消耗将会是非常巨大的。</p>
+<h2 id="五、UserDetails"><a href="#五、UserDetails" class="headerlink" title="五、UserDetails"></a>五、UserDetails</h2><p>从上面代码可以看出 <code>Authentication</code> 在大部分情况下是可以直接转换为 <code>UserDetails</code> 对象的。他表示一个主体，可以看做是用户数据库与 SecurityContextHolder 之间的适配器。</p>
+<p>UserDetails 是 SpringSecurity 的核心接口，可以通过继承 UserDetails 来实现自定义的方法与属性。</p>
+<h3 id="扩展UserDetails"><a href="#扩展UserDetails" class="headerlink" title="扩展UserDetails"></a>扩展UserDetails</h3><p>通过自定义 UserDetails 的实现，我们可以将其作为数据库实体与Authentication 的适配者。</p>
+<p>数据库实体 User：</p>
+<pre><code class="java">@Data
+@Document(collection = &quot;db_user&quot;)
+class User{
+    @Id
+    private String id;
+    private String username;
+    private String password;
+    private String[] roles;
+}</code></pre>
+<p>适配器实体 CustomUserDetails：</p>
+<pre><code class="java">@EqualsAndHashCode(callSuper = true)
+@Data
+public class CustomUserDetails extends User implements UserDetails {
+
+    @Override
+    public Collection&lt;? extends GrantedAuthority&gt; getAuthorities() {
+        return AuthorityUtils.createAuthorityList(super.getRoles());
+    }
+
+    @Override
+    public String getPassword() {
+        return super.getPassword();
+    }
+
+    @Override
+    public String getUsername() {
+        return super.getUsername();
+    }
+
+    @Override
+    public boolean isAccountNonExpired() {
+        return false;
+    }
+
+    @Override
+    public boolean isAccountNonLocked() {
+        return false;
+    }
+
+    @Override
+    public boolean isCredentialsNonExpired() {
+        return false;
+    }
+
+    @Override
+    public boolean isEnabled() {
+        return false;
+    }
+}</code></pre>
+<p>这样，我们就可以通过 CustomUserDetails 在 User 与 Authentication 之间相互转换，实现数据库认证 SpringSecurity。</p>
+<p>那么 UserDetails 对象是从哪里创建的呢？就是下面的 UserDetailsService 类。</p>
+<h2 id="六、UserDetailsService"><a href="#六、UserDetailsService" class="headerlink" title="六、UserDetailsService"></a>六、UserDetailsService</h2><p>UserDetailsService 只有一个特殊方法，接收一个 string 的用户名参数，并返回一个 UserDetails。</p>
+<pre><code class="java">UserDetails loadUserByUsername(String username) throws UsernameNotFoundException;</code></pre>
+<p>通过自定义实现 UserDetailsService，返回自己的 CustomUserDetails 对象。</p>
+<pre><code class="java">@Service
+public class CustomUserDetailsService implements UserDetailsService {
+
+    @Autowired
+    private UserService userService;
+
+    @Override
+    public UserDetails loadUserByUsername(String username) throws UsernameNotFoundException {
+        User user = userService.findByUsername(username);
+        if(user == null)
+            throw new UsernameNotFoundException(&quot;user not found&quot;);
+
+        final CustomUserDetails userDetails = new CustomUserDetails();
+        BeanUtils.copyProperties(user,userDetails);
+        // todo 一些其他附加属性等
+        return userDetails;
+    }
+}</code></pre>
+</div><hr></div><div class="recent-post-item article-container"><a class="article-title" href="/2019/07/18/读书笔记/《SpringSecurity》/4.示例/">《Spring Security》第四章 示例</a><time class="post-meta__date"><i class="fa fa-calendar" aria-hidden="true"></i> 2019-07-18</time><span class="article-meta"><span class="article-meta__separator">|</span><i class="fa fa-inbox article-meta__icon" aria-hidden="true"></i><a class="article-meta__categories" href="/categories/读书笔记/">读书笔记</a><i class="fa fa-angle-right" aria-hidden="true"></i><i class="fa fa-inbox article-meta__icon" aria-hidden="true"></i><a class="article-meta__categories" href="/categories/读书笔记/Spring-Security/">Spring Security</a></span><span class="article-meta tags"><span class="article-meta__separator">|</span><i class="fa fa-tag article-meta__icon" aria-hidden="true"></i><a class="article-meta__tags" href="/tags/hide/">hide</a><span class="article-meta__link">-</span><i class="fa fa-tag article-meta__icon" aria-hidden="true"></i><a class="article-meta__tags" href="/tags/Spring-Security/">Spring Security</a></span><div class="content"><h1 id="第四章-示例"><a href="#第四章-示例" class="headerlink" title="第四章 示例"></a>第四章 示例</h1><p>示例请参考  <a href="https://spring.io/spring-security/index.html" target="_blank" rel="noopener">官方网站：http://spring.io/spring-security/</a>，或者 <a href="https://github.com/spring-projects/spring-security/tree/master/samples" target="_blank" rel="noopener">Github</a></p>
+</div><hr></div><div class="recent-post-item article-container"><a class="article-title" href="/2019/07/18/读书笔记/《SpringSecurity》/3.方法级别的安全配置/">《Spring Security》第三章 基于方法级别的安全配置</a><time class="post-meta__date"><i class="fa fa-calendar" aria-hidden="true"></i> 2019-07-18</time><span class="article-meta"><span class="article-meta__separator">|</span><i class="fa fa-inbox article-meta__icon" aria-hidden="true"></i><a class="article-meta__categories" href="/categories/读书笔记/">读书笔记</a><i class="fa fa-angle-right" aria-hidden="true"></i><i class="fa fa-inbox article-meta__icon" aria-hidden="true"></i><a class="article-meta__categories" href="/categories/读书笔记/Spring-Security/">Spring Security</a></span><span class="article-meta tags"><span class="article-meta__separator">|</span><i class="fa fa-tag article-meta__icon" aria-hidden="true"></i><a class="article-meta__tags" href="/tags/hide/">hide</a><span class="article-meta__link">-</span><i class="fa fa-tag article-meta__icon" aria-hidden="true"></i><a class="article-meta__tags" href="/tags/Spring-Security/">Spring Security</a></span><div class="content"><h1 id="第三章-基于方法级别的安全配置"><a href="#第三章-基于方法级别的安全配置" class="headerlink" title="第三章 基于方法级别的安全配置"></a>第三章 基于方法级别的安全配置</h1><p>Spring Security 提供了两种方法级别的安全配置，一个是框架的原始注释 @secure ，另一个新的基于表达式的注释。</p>
+<blockquote>
+<p>可以针对单个 Bean 进行保护，也可以使用 AspectJ 风格的切入点跨服务层保护多个 Bean。</p>
+</blockquote>
+<h2 id="一、EnableGlobalMethodSecurity-注解"><a href="#一、EnableGlobalMethodSecurity-注解" class="headerlink" title="一、EnableGlobalMethodSecurity 注解"></a>一、EnableGlobalMethodSecurity 注解</h2><p>在任何 <code>@Configuration</code> 实例上使用 <code>@EnableGlobalMethodSecurity</code> 注释，启用基于注释的安全性。示例如下：</p>
+<pre><code class="java">@EnableGlobalMethodSecurity(securedEnabled = true)
+@Configuration
+public class MethodSecurityConfig {
+    // ...
+}</code></pre>
+<p>然后向方法添加注释，将相应地限制对该方法的访问。这些信息将会被传递给 AccessDecisionManager：</p>
+<pre><code class="java">public interface BankService {
+    @Secured(&quot;IS_AUTHENTICATED_ANONYMOUSLY&quot;)
+    public Account readAccount(Long id);
+
+    @Secured(&quot;IS_AUTHENTICATED_ANONYMOUSLY&quot;)
+    public Account[] findAccounts();
+
+    @Secured(&quot;ROLE_TELLER&quot;)
+    public Account post(Account account, double amount);
+}</code></pre>
+<p>或者使用 基于表达式的语法：</p>
+<pre><code class="java">@EnableGlobalMethodSecurity(prePostEnabled = true)
+@Configuration
+public class MethodSecurityConfig {
+    // ...
+}</code></pre>
+<pre><code class="java">public interface BankService {
+    @PreAuthorize(&quot;isAnnoymous()&quot;)
+    public Account readAccount(Long id);
+
+    @PreAuthorize(&quot;isAnnoymous()&quot;)
+    public Account[] findAccounts();
+
+    @PreAuthorize(&quot;hasAuthority(&#39;ROLE_TELLER&#39;)&quot;)
+    public Account post(Account account, double amount);
+}</code></pre>
+<h2 id="二、自定义方法安全配置"><a href="#二、自定义方法安全配置" class="headerlink" title="二、自定义方法安全配置"></a>二、自定义方法安全配置</h2><p>如果需要执行比 @EnableGlobalMethodSecurity 注释提供的更复杂的操作，可以扩展 GlobalMethodSecurityConfiguration。</p>
+<pre><code class="java">@EnableGlobalMethodSecurity(prePostEnabled = true)
+public class methodSecurityConfig extends GlobalMethodSecurityConfiguration {
+    @Override
+    protected MethodSecurityExpressionHandler createExpressionHandler(){
+        // create and return custom handler
+        return expressionHandler;
+    }
+}</code></pre>
+</div><hr></div><div class="recent-post-item article-container"><a class="article-title" href="/2019/07/18/读书笔记/《SpringSecurity》/2.配置/">《Spring Security》第二章 Java配置SpringSecurity</a><time class="post-meta__date"><i class="fa fa-calendar" aria-hidden="true"></i> 2019-07-18</time><span class="article-meta"><span class="article-meta__separator">|</span><i class="fa fa-inbox article-meta__icon" aria-hidden="true"></i><a class="article-meta__categories" href="/categories/读书笔记/">读书笔记</a><i class="fa fa-angle-right" aria-hidden="true"></i><i class="fa fa-inbox article-meta__icon" aria-hidden="true"></i><a class="article-meta__categories" href="/categories/读书笔记/Spring-Security/">Spring Security</a></span><span class="article-meta tags"><span class="article-meta__separator">|</span><i class="fa fa-tag article-meta__icon" aria-hidden="true"></i><a class="article-meta__tags" href="/tags/hide/">hide</a><span class="article-meta__link">-</span><i class="fa fa-tag article-meta__icon" aria-hidden="true"></i><a class="article-meta__tags" href="/tags/Spring-Security/">Spring Security</a></span><div class="content"><h1 id="第二章-Java配置SpringSecurity"><a href="#第二章-Java配置SpringSecurity" class="headerlink" title="第二章 Java配置SpringSecurity"></a>第二章 Java配置SpringSecurity</h1><p>从 Spring 3.1 以后，Spring框架支持了对 Java 配置的支持，所以这里就不再细述 XML 的配置方式了。感兴趣的可以直接 <a href="https://docs.spring.io/spring-security/site/docs/5.0.5.RELEASE/reference/htmlsingle/#ns-config" target="_blank" rel="noopener">查看 SpringSecurity 文档</a>，里面详细描述了 Java Configuration 对应的XML Configuration。</p>
+<p>Spring Security 提供了许多 Java Configuration 的 Samples 示例，详见 <a href="https://github.com/spring-projects/spring-security/tree/master/samples/javaconfig" target="_blank" rel="noopener">Samples</a>。</p>
+<h2 id="一、创建-Spring-Security-Java-配置"><a href="#一、创建-Spring-Security-Java-配置" class="headerlink" title="一、创建 Spring Security Java 配置"></a>一、创建 Spring Security Java 配置</h2><pre><code class="java">@EnableWebSecurity
+public class WebSecurityConfig implements WebMvcConfigurer {
+    @Bean
+    public UserDetailsService userDetailsService() throws Exception {
+        InMemoryUserDetailsManager manager = new InMemoryUserDetailsManager();           
+        manager.createUser(
+            User.withDefaultPasswordEncoder()
+                .username(&quot;user&quot;)
+                .password(&quot;password&quot;)
+                .roles(&quot;USER&quot;)
+                .build()
+        );
+        return manager;
+    }
+}</code></pre>
+<p>查看 <code>@EnableWebSecurity</code> 的代码，可以发现其引入了 <code>WebSecurityConfiguration.class</code> 的配置类。</p>
+<p>该配置创建了一个 <code>SpringSecurityFilterChain</code> 的过滤器，负责应用程序内部的所有安全（如保护应用的URL、验证提交的用户名密码、重定向至登录表单等等）。</p>
+<p>其具有的主要功能如下：</p>
+<ol>
+<li>默认对应用程序中的每个 URL 进行身份验证</li>
+<li>生成一个登录表单</li>
+<li>允许用户使用表单的username、password进行身份认证</li>
+<li>允许用户使用 logout 注销</li>
+<li>预防 CSRF 攻击</li>
+<li>维持会话固定（Session Fixation）</li>
+<li>集成安全报头（Security Header）<ol>
+<li>X-Content-Type-Options</li>
+<li>Cache Control - 缓存控制</li>
+<li>X-XSS-Protection integration - 保护X-XSS一体化</li>
+<li>X-Frame-Options integration to help prevent - 防止点击劫持</li>
 </ol>
-<h3 id="4-3-适用场景"><a href="#4-3-适用场景" class="headerlink" title="4.3 适用场景"></a>4.3 适用场景</h3><ol>
-<li>工厂类负责创建的对象较少，因为需要创建的对象较少，不会造成工厂方法中的业务逻辑太过复杂</li>
-<li>客户端只知道传入工厂类的参数，对于如何创建对象并不关心</li>
+</li>
+<li>与 Servlet API 集成<ol>
+<li>HttpServletRequset#getRemoteUser()</li>
+<li>HttpServletRequest#getUserPrincipal()</li>
+<li>HttpServletRequest#isUserInRole(String)</li>
+<li>HttpServletRequest#login(String,String)</li>
+<li>HttpServletRequest#logout()</li>
 </ol>
-</div><hr></div><nav id="pagination"><div class="pagination"><a class="extend prev" rel="prev" href="/page/20/"><i class="fa fa-chevron-left"></i></a><a class="page-number" href="/">1</a><span class="space">&hellip;</span><a class="page-number" href="/page/20/">20</a><span class="page-number current">21</span><a class="page-number" href="/page/22/">22</a><span class="space">&hellip;</span><a class="page-number" href="/page/31/">31</a><a class="extend next" rel="next" href="/page/22/"><i class="fa fa-chevron-right"></i></a></div></nav></div></div><footer><div class="layout" id="footer"><div class="copyright">&copy;2013 - 2020 By koral</div><div class="framework-info"><span>驱动 - </span><a href="http://hexo.io"><span>Hexo</span></a><span class="footer-separator">|</span><span>主题 - </span><a href="https://github.com/Molunerfinn/hexo-theme-melody"><span>Melody</span></a></div><div class="busuanzi"><script async src="//busuanzi.ibruce.info/busuanzi/2.3/busuanzi.pure.mini.js"></script><span id="busuanzi_container_site_uv"><i class="fa fa-user"></i><span id="busuanzi_value_site_uv"></span><span></span></span><span class="footer-separator">|</span><span id="busuanzi_container_site_pv"><i class="fa fa-eye"></i><span id="busuanzi_value_site_pv"></span><span></span></span></div></div></footer><i class="fa fa-arrow-up" id="go-up" aria-hidden="true"></i><script src="https://cdn.jsdelivr.net/npm/animejs@latest/anime.min.js"></script><script src="https://cdn.jsdelivr.net/npm/jquery@latest/dist/jquery.min.js"></script><script src="https://cdn.jsdelivr.net/npm/@fancyapps/fancybox@latest/dist/jquery.fancybox.min.js"></script><script src="https://cdn.jsdelivr.net/npm/velocity-animate@latest/velocity.min.js"></script><script src="https://cdn.jsdelivr.net/npm/velocity-ui-pack@latest/velocity.ui.min.js"></script><script src="/js/utils.js?version=1.7.0"></script><script src="/js/fancybox.js?version=1.7.0"></script><script src="/js/sidebar.js?version=1.7.0"></script><script src="/js/copy.js?version=1.7.0"></script><script src="/js/fireworks.js?version=1.7.0"></script><script src="/js/transition.js?version=1.7.0"></script><script src="/js/scroll.js?version=1.7.0"></script><script src="/js/head.js?version=1.7.0"></script><script>if(/Android|webOS|iPhone|iPod|iPad|BlackBerry/i.test(navigator.userAgent)) {
+</li>
+</ol>
+<h2 id="二、HttpSecurity-配置"><a href="#二、HttpSecurity-配置" class="headerlink" title="二、HttpSecurity 配置"></a>二、HttpSecurity 配置</h2><p>在开启 Java 配置之后，会默认开启所有路径的验证、表单登录、退出支持等等操作，但是我们并没有提供配置，这是因为 WebSecurityConfigurerAdapter 提供了一个默认的 <code>configure(HttpSecurity http)</code> 配置，如下所示：</p>
+<pre><code class="java">    /**
+     * Override this method to configure the {@link HttpSecurity}. Typically subclasses
+     * should not invoke this method by calling super as it may override their
+     * configuration. The default configuration is:
+     *
+     * &lt;pre&gt;
+     * http.authorizeRequests().anyRequest().authenticated().and().formLogin().and().httpBasic();
+     * &lt;/pre&gt;
+     *
+     * @param http the {@link HttpSecurity} to modify
+     * @throws Exception if an error occurs
+     */
+    // @formatter:off
+    protected void configure(HttpSecurity http) throws Exception {
+        logger.debug(&quot;Using default configure(HttpSecurity). If subclassed this will potentially override subclass configure(HttpSecurity).&quot;);
+
+        http
+            .authorizeRequests()
+                .anyRequest().authenticated() // 配置对应用程序的所有请求都需要身份验证
+                .and()
+            .formLogin().and() // 开启表单登录
+            .httpBasic();  // 允许使用 Http Basic 方式登录
+    }</code></pre>
+<h2 id="三、Java-配置和表单登录"><a href="#三、Java-配置和表单登录" class="headerlink" title="三、Java 配置和表单登录"></a>三、Java 配置和表单登录</h2><p>一般情况下，我们会使用自己定义的登录页面，而不是SpringSecurity默认提供的登录页面。因此，我们可以修改 HttpSecurity 的配置：</p>
+<pre><code class="java">protected void configure(HttpSecurity http) throws Exception {
+    http
+        .authorizeRequests()
+        .anyRequest().authenticated()
+        .and()
+        .formLogin()
+            .loginPage(&quot;/login&quot;) // 指定登录页位置
+            .permitAll();  // 允许所有用户访问基于表单登录关联的所有url权限
+}</code></pre>
+<h2 id="四、授权请求"><a href="#四、授权请求" class="headerlink" title="四、授权请求"></a>四、授权请求</h2><p>默认情况下， HttpSecurity选择拦截所有的请求，并且只要有身份认证即可访问。我们可以通过 <code>http.authorizeRequest()</code> 方法添加多个子类来指定 url 的自定义需求。</p>
+<pre><code class="java">protected void configure(HttpSecurity http) throws Exception {
+    http
+        .authorizeRequests()    // 按照子类的顺序进行匹配
+            .antMatcher(&quot;/resources/**&quot;,&quot;signup&quot;,&quot;/about&quot;).permitAll() // 允许指定路径无需认证
+            .antMatcher(&quot;/admin/**&quot;).hasRole(&quot;ADMIN&quot;)    // 指定路径需要 ADMIN 权限
+            .antMatcher(&quot;/db/**&quot;).access(&quot;hasRole(&#39;ADMIN&#39;) and hasRole(&#39;DBA&#39;)&quot;) // 使用 hasRole 表达式，这样不需要 ROLE 前缀
+            .anyRequest().authenticated() // 其他所有请求都需要身份验证
+            .and()
+        .formLogin()
+            .loginPage(&quot;/login&quot;)
+            .permitAll();
+}</code></pre>
+<h2 id="五、登出处理"><a href="#五、登出处理" class="headerlink" title="五、登出处理"></a>五、登出处理</h2><p>在使用 <code>WebSecurityConfigurerAdapter</code> 时，将会自动开启注销功能，访问 <code>/logout</code> 后会执行如下操作使用户注销：</p>
+<ol>
+<li>使用 Http Session 无效</li>
+<li>清理任何与 RememberMe 相关的身份验证</li>
+<li>清理 SecurityContextHolder</li>
+<li>跳转到 “/login?logout”</li>
+</ol>
+<p>或者，也可以自定义注销需求：</p>
+<pre><code class="java">protected void configure(HttpSecurity http) throws Exception {
+    http
+        .authorizeRequests()
+            .antMatcher(&quot;/resources/**&quot;,&quot;signup&quot;,&quot;/about&quot;).permitAll()
+            .antMatcher(&quot;/admin/**&quot;).hasRole(&quot;ADMIN&quot;)
+            .antMatcher(&quot;/db/**&quot;).access(&quot;hasRole(&#39;ADMIN&#39;) and hasRole(&#39;DBA&#39;)&quot;)
+            .anyRequest().authenticated()
+            .and()
+        .formLogin()
+            .loginPage(&quot;/login&quot;)
+            .permitAll()
+            .and()
+        .logout()                                // 提供注销支持
+            .logoutUrl(&quot;/my/logout&quot;)            // 触发注销操作的 url，如果开启了 CSRF保护，则此请求需要是POST
+            .logoutSuccessUrl(&quot;/my/index&quot;)         // 注销后要重定向的URL，默认为 /login?logout
+            .logoutSuccessHandler(logoutSuccessHandler)    // 自定义登出成功处理器
+            .invalidateHttpSession(true)        // 在注销时是否需要使 HttpSession 无效
+            .addLogoutHandler(logoutHandler)    // 添加登出处理器
+            .deleteCookies(cookieNamesToClear);    // 注销成功时删除指定的 cookie，这是一种显式添加 CookieClearingLogoutHandler 的方式
+}</code></pre>
+<h3 id="5-1-LogoutHandler-登出处理器"><a href="#5-1-LogoutHandler-登出处理器" class="headerlink" title="5.1 LogoutHandler 登出处理器"></a>5.1 LogoutHandler 登出处理器</h3><p>LogoutHandler 实现能够参与注销处理的类，通过调用它们来执行必要的清理，且不会引发异常。各种实现如下：</p>
+<ol>
+<li>PersistentTokenBasedRememberMeServices</li>
+<li>TokenBasedRememberMeServices</li>
+<li>CookieClearingLogoutHandler</li>
+<li>CsrfLogoutHandler</li>
+<li>SecurityContextLogoutHandler</li>
+</ol>
+<p>以上处理器实现，大致能做到见名识义。</p>
+<h3 id="5-2-LogoutSuccessHandler-登出成功处理器"><a href="#5-2-LogoutSuccessHandler-登出成功处理器" class="headerlink" title="5.2 LogoutSuccessHandler 登出成功处理器"></a>5.2 LogoutSuccessHandler 登出成功处理器</h3><p>与 LogoutHandler 类似，但是可能会引发异常。在 LogoutFilter 成功注销之后，LogoutSuccessHandler 会处理例如重定向或转发到适当的目标，具体实现如下：</p>
+<ol>
+<li>SimpleUrlLogoutSuccessHandler<ol>
+<li>注销成功之后返回到指定 url，默认为 /login?logout</li>
+</ol>
+</li>
+<li>HttpStatusReturningLogoutSuccessHandler<ol>
+<li>允许在注销成功之后返回一个普通的 HTTP 状态码，而不是重定向至 URL</li>
+</ol>
+</li>
+</ol>
+<h3 id="5-3-其他的登出考虑"><a href="#5-3-其他的登出考虑" class="headerlink" title="5.3 其他的登出考虑"></a>5.3 其他的登出考虑</h3><ol>
+<li>测试登录</li>
+<li>csrf注意事项</li>
+<li>单点登出</li>
+</ol>
+<h2 id="六、WebFlux-Security"><a href="#六、WebFlux-Security" class="headerlink" title="六、WebFlux Security"></a>六、WebFlux Security</h2><p>关于 Spring-WebFlux 具体是什么，可以详见 <a href="https://blog.csdn.net/get_set/article/details/79480233" target="_blank" rel="noopener">《Spring-WebFlux》</a>。</p>
+<pre><code class="java">@EnableWebFluxSecurity
+public class HelloWebfluxSecurityConfig {
+    @Bean
+    public SecurityWebFilterChain spirngSecurityFilterChain(ServerHttpSecurity http) {
+        http
+            .authorizeExchange()
+                .anyExchange().authenticated()
+                .and()
+            .httpBasic()
+                .and()
+            .formLogin();
+    }
+}</code></pre>
+<h2 id="七、OAuth-2-0"><a href="#七、OAuth-2-0" class="headerlink" title="七、OAuth 2.0"></a>七、OAuth 2.0</h2><p>TODO：<a href="https://docs.spring.io/spring-security/site/docs/5.0.5.RELEASE/reference/htmlsingle/#jc-oauth2login" target="_blank" rel="noopener">@see</a></p>
+<h2 id="八、Authentication-认证"><a href="#八、Authentication-认证" class="headerlink" title="八、Authentication 认证"></a>八、Authentication 认证</h2><h3 id="8-1-内存认证-In-Memory-Authentication"><a href="#8-1-内存认证-In-Memory-Authentication" class="headerlink" title="8.1 内存认证(In-Memory Authentication)"></a>8.1 内存认证(In-Memory Authentication)</h3><p>直接在内存中配置多个用户，示例如下：</p>
+<pre><code class="java">@Bean
+public UserDetailsService userDetailsService() throws Exception {
+    UserBuilder user = User.withDefaultPasswordEncoder();
+    InMemoryUserDetailsManager manager = new InMemoryUserDetailsManager();
+    manager.createUser(users.username(&quot;user&quot;).password(&quot;password&quot;).roles(&quot;USER&quot;).build());
+    manager.createUser(users.username(&quot;admin&quot;).password(&quot;password&quot;).roles(&quot;ADMIN&quot;).build());
+    return manager;
+}</code></pre>
+<h3 id="8-2-JDBC认证"><a href="#8-2-JDBC认证" class="headerlink" title="8.2 JDBC认证"></a>8.2 JDBC认证</h3><pre><code class="java">@Autowired
+private DataSource dataSource;
+
+@Autowired
+public void configureGlobal(AuthenticationManagerBuilder auth) throws Exception {
+    UserBuilder user = User.withDefaultPasswordEncoder();
+    auth
+        .jdbcAuthentication()
+        .dataSource(dataSource)
+        .withDefaultSchema()
+        .withUser(users.username(&quot;user&quot;).password(&quot;password&quot;).roles(&quot;USER&quot;))
+        .withUser(users.username(&quot;admin&quot;).password(&quot;password&quot;).roles(&quot;ADMIN&quot;));
+}</code></pre>
+<blockquote>
+<p>其他如：LDAP认证、AuthenticationProvider、UseDetailsService不再赘述。</p>
+</blockquote>
+<h2 id="九、多重-HttpSecurity-配置"><a href="#九、多重-HttpSecurity-配置" class="headerlink" title="九、多重 HttpSecurity 配置"></a>九、多重 HttpSecurity 配置</h2><pre><code class="java">@EnableWebSecurity
+public class MultiHttpSecurityConfig {
+    @Configuration
+    @Order(1)
+    public static class ApiWebSecurityConfigurationAdapter extends WebSecurityConfigurerAdapter {
+        protected void configure(HttpSecurity http) throws Exception {
+            http
+                .antMatch(&quot;/api/**&quot;)
+                .authorizeRequests()
+                    .anyRequest().hasRole(&quot;ADMIN&quot;)
+                    .and()
+                .httpBasic();
+        }
+    }
+
+    @Configuration
+    public static class FormLoginWebSecurityConfigurerAdapter extends WebSecurityConfigurerAdapter {
+
+        @Override
+        protected void configure(HttpSecurity http) throws Exception {
+            http
+                .authorizeRequests()
+                    .anyRequest().authenticated()
+                    .and()
+                .formLogin();
+        }
+    }
+}</code></pre>
+<p>如果请求的url以 /api/ 开头，将使用 <code>ApiWebSecurityConfigurationAdapter</code> 配置。其他请求使用 <code>FormLoginWebSecurityConfigurerAdapter</code> 配置。</p>
+</div><hr></div><div class="recent-post-item article-container"><a class="article-title" href="/2019/07/18/读书笔记/《SpringSecurity》/1.序言/">《Spring Security》第一章 SpringSecurity 介绍</a><time class="post-meta__date"><i class="fa fa-calendar" aria-hidden="true"></i> 2019-07-18</time><span class="article-meta"><span class="article-meta__separator">|</span><i class="fa fa-inbox article-meta__icon" aria-hidden="true"></i><a class="article-meta__categories" href="/categories/读书笔记/">读书笔记</a><i class="fa fa-angle-right" aria-hidden="true"></i><i class="fa fa-inbox article-meta__icon" aria-hidden="true"></i><a class="article-meta__categories" href="/categories/读书笔记/Spring-Security/">Spring Security</a></span><span class="article-meta tags"><span class="article-meta__separator">|</span><i class="fa fa-tag article-meta__icon" aria-hidden="true"></i><a class="article-meta__tags" href="/tags/hide/">hide</a><span class="article-meta__link">-</span><i class="fa fa-tag article-meta__icon" aria-hidden="true"></i><a class="article-meta__tags" href="/tags/Spring-Security/">Spring Security</a></span><div class="content"><h1 id="第一章-SpringSecurity-介绍"><a href="#第一章-SpringSecurity-介绍" class="headerlink" title="第一章 SpringSecurity 介绍"></a>第一章 SpringSecurity 介绍</h1><p>应用程序的安全性主要体现在两个方面：<code>身份验证(authentication)</code> 和<code>授权(authorization)（或叫做 访问控制(access-control)）</code>，同样，这也是 SpringSecurity 的两大目标。</p>
+<h2 id="一、身份验证-Authentication"><a href="#一、身份验证-Authentication" class="headerlink" title="一、身份验证 Authentication"></a>一、身份验证 Authentication</h2><p>Spring Security 支持以下的技术集成，这里只写几种常见的并简单介绍：</p>
+<ol>
+<li>HTTP BASIC authentication headers<ol>
+<li>请求头身份验证</li>
+<li>需要在请求头中添加 “Authorization： Basic 用户和密码的base64加密字符串”</li>
+<li>或者在url中添加用户名和密码：“<a href="http://username:password@api.luokaiii.cn/login”" target="_blank" rel="noopener">http://username:password@api.luokaiii.cn/login”</a></li>
+</ol>
+</li>
+<li>LDAP<ol>
+<li>一种非常常见的跨平台身份验证，常见于大型服务</li>
+<li>通过WSS3.0 和轻量级目录协议LDAP一起搭建的认证方式</li>
+<li>做法是：将用户数据放在LDAP服务器上，通过LDAP服务器上的数据对用户进行认证处理。</li>
+<li>即登录时将用户名密码，发送给 LDAP服务器进行匹配，判断是否通过认证</li>
+</ol>
+</li>
+<li>Form-based authentication<ol>
+<li>表单身份验证</li>
+</ol>
+</li>
+<li>OpenID authentication<ol>
+<li>一种去中心化的网上身份认证系统</li>
+<li>使用方法：在一个支持OpenID身份提供者的网站上进行注册，然后使用该网站提供的url来进行认证</li>
+</ol>
+</li>
+<li>Jasig Central Authentication Service（CAS）<ol>
+<li>CAS 集中式认证服务封路系统，也是一个流行的开源单点登录系统</li>
+<li>CAS 系统一般分为 CAS Server(负责对用户进行认证) 和 CAS Client(处理用户名、密码等凭证)</li>
+<li>流程为：用户访问Client服务 》 Client重定向至SSO服务器 》 身份认证 》 返回一个 Service Ticket 》 SSO服务器验证Ticket 》 允许访问</li>
+</ol>
+</li>
+<li>Automatic ‘remember-me’ authentication<ol>
+<li>记住我</li>
+</ol>
+</li>
+<li>Anonymous authentication<ol>
+<li>你们身份验证</li>
+</ol>
+</li>
+<li>Java Open Source Single Sing-On<ol>
+<li>Java 开源的单点登录 JOSSO</li>
+</ol>
+</li>
+</ol>
+<h2 id="二、Spring-Security-依赖管理"><a href="#二、Spring-Security-依赖管理" class="headerlink" title="二、Spring Security 依赖管理"></a>二、Spring Security 依赖管理</h2><p>获取 Spring Security 的最小依赖如下：</p>
+<pre><code class="xml">&lt;dependencies&gt;
+&lt;!-- ... other dependency elements ... --&gt;
+&lt;dependency&gt;
+    &lt;groupId&gt;org.springframework.security&lt;/groupId&gt;
+    &lt;artifactId&gt;spring-security-web&lt;/artifactId&gt;
+    &lt;version&gt;5.0.5.RELEASE&lt;/version&gt;
+&lt;/dependency&gt;
+&lt;dependency&gt;
+    &lt;groupId&gt;org.springframework.security&lt;/groupId&gt;
+    &lt;artifactId&gt;spring-security-config&lt;/artifactId&gt;
+    &lt;version&gt;5.0.5.RELEASE&lt;/version&gt;
+&lt;/dependency&gt;
+&lt;/dependencies&gt;</code></pre>
+<h3 id="Core-spring-security-core-jar"><a href="#Core-spring-security-core-jar" class="headerlink" title="Core - spring-security-core.jar"></a>Core - spring-security-core.jar</h3><p>包含核心身份验证和访问控制类、接口、远程处理支持和基本的API。是 Spring Security 应用程序的基础包。</p>
+<ul>
+<li>org.springframework.security.core<ul>
+<li>包含Context上下文、UserDetails、UserDetailsService、jdbc验证、memory验证、token、Authority、Principal等支持</li>
+</ul>
+</li>
+<li>org.springframework.security.access<ul>
+<li>访问控制类和接口</li>
+<li>包含Method拦截器、AccessDeniedException、认证失败事件、无授权事件、日志监听、访问拦截器等</li>
+</ul>
+</li>
+<li>org.springframework.security.authentication<ul>
+<li>包含数据库验证、RememberMe、Test、Token、Exception等支持</li>
+</ul>
+</li>
+<li>org.springframework.security.provisioning<ul>
+<li>包含创建、更新、删除、修改密码等操作UserDetails的接口，支持memory、JDBC两种类型</li>
+</ul>
+</li>
+</ul>
+<h3 id="Web-spring-security-web-jar"><a href="#Web-spring-security-web-jar" class="headerlink" title="Web - spring-security-web.jar"></a>Web - spring-security-web.jar</h3><p>包含过滤器和相关的网络安全基础设施代码。</p>
+<p>是 web 身份验证服务和基于 url 访问控制的基础。</p>
+<h3 id="Config-spring-security-config-jar"><a href="#Config-spring-security-config-jar" class="headerlink" title="Config - spring-security-config.jar"></a>Config - spring-security-config.jar</h3><p>包含 安全名称空间解析代码(或者Java配置代码)，即xml配置和java配置。</p>
+<blockquote>
+<p> — 以下包都是可选的 —-</p>
+</blockquote>
+<h3 id="CAS-spring-security-cas-jar"><a href="#CAS-spring-security-cas-jar" class="headerlink" title="CAS - spring-security-cas.jar"></a>CAS - spring-security-cas.jar</h3><p>Spring Security 的 CAS 客户端集成，对 CAS 单点登录服务器使用 。SpringSecurityWeb 身份验证的基础。</p>
+<h3 id="Test-spring-security-test-jar"><a href="#Test-spring-security-test-jar" class="headerlink" title="Test - spring-security-test.jar"></a>Test - spring-security-test.jar</h3><p>支持使用 Spring Security 进行测试。后面会详细说明 Spring Security 是如何进行测试的。</p>
+<h3 id="LDAP-spring-security-ldap-jar"><a href="#LDAP-spring-security-ldap-jar" class="headerlink" title="LDAP - spring-security-ldap.jar"></a>LDAP - spring-security-ldap.jar</h3><p>LDAP 身份验证和配置代码，如果需要使用 LDAP 身份验证或管理 LDAP 用户条目，则必须使用此依赖</p>
+<h3 id="OAuth-2-0-Core-spring-security-oauth2-core-jar"><a href="#OAuth-2-0-Core-spring-security-oauth2-core-jar" class="headerlink" title="OAuth 2.0 Core - spring-security-oauth2-core.jar"></a>OAuth 2.0 Core - spring-security-oauth2-core.jar</h3><p>OAuth 2.0 授权框架和 OpenID Connect Core 1.0 的核心类和接口。</p>
+<p>客户机、资源服务器、授权服务器都需要此依赖。</p>
+<h3 id="OAuth-2-0-Client-spring-security-oauth2-client-jar"><a href="#OAuth-2-0-Client-spring-security-oauth2-client-jar" class="headerlink" title="OAuth 2.0 Client - spring-security-oauth2-client.jar"></a>OAuth 2.0 Client - spring-security-oauth2-client.jar</h3><p>OAuth 2.0 客户端，当需要使用 OAuth2.0 登录或者 OAuth客户端支持时使用。</p>
+<h3 id="OAuth-2-0-JOSE-spring-security-oauth2-jose-jar"><a href="#OAuth-2-0-JOSE-spring-security-oauth2-jose-jar" class="headerlink" title="OAuth 2.0 JOSE - spring-security-oauth2-jose.jar"></a>OAuth 2.0 JOSE - spring-security-oauth2-jose.jar</h3><p>包含 Spring Security 对 JOSE(JavaScritp 对象签名和加密)框架的支持，包含如下规范：</p>
+<ul>
+<li>JSON Web Token - JWT</li>
+<li>JSON Web Signature - JWS</li>
+<li>JSON Web Encryption - JWE</li>
+<li>JSON Web Key - JWK</li>
+</ul>
+<h3 id="OpenID-spring-security-openid-jar"><a href="#OpenID-spring-security-openid-jar" class="headerlink" title="OpenID - spring-security-openid.jar"></a>OpenID - spring-security-openid.jar</h3><p>支持 OpenID web 身份验证，用于根据外部 OpenID服务器对用户进行身份验证。</p>
+<h3 id="ACL-spring-security-acl-jar"><a href="#ACL-spring-security-acl-jar" class="headerlink" title="ACL - spring-security-acl.jar"></a>ACL - spring-security-acl.jar</h3><p>专用域对象 ACL 的实现。</p>
+</div><hr></div><div class="recent-post-item article-container"><a class="article-title" href="/2019/07/18/读书笔记/《SpringSecurity》/0.目录/">《Spring Security》文档笔记</a><span class="article-meta"><i class="fa fa-thumb-tack article-meta__icon sticky"></i><span class="sticky">置顶</span><span class="article-meta__separator" style="margin-right: 0.3rem">|</span></span><time class="post-meta__date"><i class="fa fa-calendar" aria-hidden="true"></i> 2019-07-18</time><span class="article-meta"><span class="article-meta__separator">|</span><i class="fa fa-inbox article-meta__icon" aria-hidden="true"></i><a class="article-meta__categories" href="/categories/读书笔记/">读书笔记</a><i class="fa fa-angle-right" aria-hidden="true"></i><i class="fa fa-inbox article-meta__icon" aria-hidden="true"></i><a class="article-meta__categories" href="/categories/读书笔记/Spring-Security/">Spring Security</a></span><span class="article-meta tags"><span class="article-meta__separator">|</span><i class="fa fa-tag article-meta__icon" aria-hidden="true"></i><a class="article-meta__tags" href="/tags/Spring-Security/">Spring Security</a></span><div class="content"><blockquote>
+<p>SpringSecurity 是一个强大的、高度可定制的身份验证和访问控制框架，它是确保基于 Spring 的应用程序安全的事实标准。<br>Spring Security is a powerful and highly customizable authentication and access-control framework. It is the de-facto standard for securing Spring-based applications.</p>
+</blockquote></div><a class="more" href="/2019/07/18/读书笔记/《SpringSecurity》/0.目录/#more">阅读更多</a><hr></div><div class="recent-post-item article-container"><a class="article-title" href="/2019/07/17/读书笔记/《JavaDesignPatterns》/17.命令模式/">《Java Design Patterns》第十五章 命令模式 - 请求发送者和接收者解耦</a><time class="post-meta__date"><i class="fa fa-calendar" aria-hidden="true"></i> 2019-07-17</time><span class="article-meta"><span class="article-meta__separator">|</span><i class="fa fa-inbox article-meta__icon" aria-hidden="true"></i><a class="article-meta__categories" href="/categories/读书笔记/">读书笔记</a><i class="fa fa-angle-right" aria-hidden="true"></i><i class="fa fa-inbox article-meta__icon" aria-hidden="true"></i><a class="article-meta__categories" href="/categories/读书笔记/设计模式/">设计模式</a></span><span class="article-meta tags"><span class="article-meta__separator">|</span><i class="fa fa-tag article-meta__icon" aria-hidden="true"></i><a class="article-meta__tags" href="/tags/hide/">hide</a><span class="article-meta__link">-</span><i class="fa fa-tag article-meta__icon" aria-hidden="true"></i><a class="article-meta__tags" href="/tags/设计模式/">设计模式</a></span><div class="content"><h1 id="第十五章-命令模式-请求发送者和接收者解耦"><a href="#第十五章-命令模式-请求发送者和接收者解耦" class="headerlink" title="第十五章 命令模式 - 请求发送者和接收者解耦"></a>第十五章 命令模式 - 请求发送者和接收者解耦</h1><h2 id="一、命令模式"><a href="#一、命令模式" class="headerlink" title="一、命令模式"></a>一、命令模式</h2><p>命令模式（Command Pattern）：将一个请求封装为一个对象，从而让我们可用不同的请求对客户进行参数化；对请求排队或者记录请求日志，以及支持可撤销的操作。</p>
+<p>命令模式是一种对象行为型模式，又称为动作模式或事务模式。</p>
+<p>命令模式中包含的几个角色：</p>
+<ol>
+<li>Command - 抽象命令类<ol>
+<li>声明了用于执行请求的 execute() 等方法，通过这些方法可以调用请求接收者的相关操作</li>
+</ol>
+</li>
+<li>ConcreteCommand - 具体命令类<ol>
+<li>实现抽象命令类中声明的方法</li>
+<li>对应具体的接收者对象，将接收者对象的动作绑定其中</li>
+<li>在实现execute() 方法时，调用接收者对象的相关操作</li>
+</ol>
+</li>
+<li>Invoker - 调用者<ol>
+<li>请求的发送者，通过命令对象来执行请求</li>
+<li>调用者并不需要在设计时确定其接收者，因此它只与抽象命令类保持关联</li>
+<li>在程序运行时，注入一个具体命令对象，再调用具体命令对象的execute() 方法</li>
+<li>从而间接调用请求接收者的相关操作</li>
+</ol>
+</li>
+<li>Receiver - 接收者<ol>
+<li>接收者执行与请求相关的操作，它具体实现对请求的业务处理</li>
+</ol>
+</li>
+</ol>
+<p>命令模式的本质是对请求进行封装，一个请求对应一个命令，将发出命令的责任和执行命令的责任分隔开。</p>
+<h2 id="二、命令模式的关键-抽象命令类"><a href="#二、命令模式的关键-抽象命令类" class="headerlink" title="二、命令模式的关键 - 抽象命令类"></a>二、命令模式的关键 - 抽象命令类</h2><p>请求发送者只需要针对抽象命令类编程即可。</p>
+<pre><code class="java">// 抽象命令类
+abstract class Command {
+    // 声明公共的执行方法
+    public abstract void execute();
+}</code></pre>
+<pre><code class="java">// 请求发送者 - 调用者
+class Invoker {
+    // 请求发送者只需要针对 Command 编程即可，具体命令类在运行时指定
+    private Command command;
+
+    // 通过构造函数或者setter方法注入Command
+    public Invoker(Command command){
+        this.command = command;
+    }
+
+    // 用于调用命令类的 execute 方法
+    public void call(){
+        command.execute();
+    }
+}</code></pre>
+<pre><code class="java">// 具体命令类
+class ConcreteCommand extends Command {
+    // 维持一个对请求接收者对象的引用
+    private Receiver receiver; // 如果需要多个接收者，可以将该对象改为List等集合对象
+
+    public void execute(){
+        // 调用请求接收者的业务处理方法
+        receiver.action();
+    }
+}</code></pre>
+<pre><code class="java">class Receiver {
+    public void action(){
+        // 具体操作
+    }
+}</code></pre>
+<h2 id="三、完整实现"><a href="#三、完整实现" class="headerlink" title="三、完整实现"></a>三、完整实现</h2><pre><code class="java">// 功能键设计窗口类
+class FBSettingWindow{
+    // 窗口标题
+    private String title;
+    // List集合，存储所有的功能按键
+    private List&lt;FunctionButton&gt; functionButtons = new ArrayList&lt;&gt;();
+
+    public String getTitle() {
+        return title;
+    }
+
+    public void setTitle(String title) {
+        this.title = title;
+    }
+
+    public void addFunctionButton(FunctionButton fb){
+        functionButtons.add(fb);
+    }
+
+    public void removeFunctionButton(FunctionButton fb){
+        functionButtons.remove(fb);
+    }
+
+    // 显示窗口及功能
+    public void display(){
+        System.out.println(&quot;显示窗口：&quot;+this.title);
+        System.out.println(&quot;显示功能键&quot;);
+        for (FunctionButton functionButton : functionButtons) {
+            System.out.println(functionButton.getName());
+        }
+    }
+}
+
+// 功能按键 - 请求发送者
+class FunctionButton {
+    // 按键名称
+    private String name;
+    // 维持一个抽象命令的引用
+    private Command command;
+
+    public String getName() {
+        return name;
+    }
+
+    public Command getCommand() {
+        return command;
+    }
+
+    public void setName(String name) {
+        this.name = name;
+    }
+
+    public void setCommand(Command command) {
+        this.command = command;
+    }
+
+    public void onClick(){
+        System.out.println(&quot;点击按键：&quot;);
+        command.execute();
+    }
+}
+
+// 抽象命令类
+abstract class Command {
+    public abstract void execute();
+}
+
+// 帮助命令类 - 具体命令类
+class HelpCommand extends Command {
+    private HelpHandler helpHandler;
+
+    public HelpCommand() {
+        helpHandler = new HelpHandler();
+    }
+
+    @Override
+    public void execute() {
+        helpHandler.action();
+    }
+}
+
+// 最小化命令类 - 具体命令类
+class MinimizeCommand extends Command {
+    private MinimizeHandler handler;
+
+    public MinimizeCommand() {
+        handler = new MinimizeHandler();
+    }
+
+    @Override
+    public void execute() {
+        handler.action();
+    }
+}
+
+// 帮助处理类 - 请求接收者
+class HelpHandler {
+    public void action(){
+        System.out.println(&quot;显示文档&quot;);
+    }
+}
+
+// 最小化处理类 - 请求接收者
+class MinimizeHandler {
+    public void action (){
+        System.out.println(&quot;最小化！&quot;);
+    }
+}
+
+public class CommandPattern {
+    public static void main(String[] args) {
+        final FBSettingWindow window = new FBSettingWindow();
+        window.setTitle(&quot;功能键设置&quot;);
+
+        final FunctionButton button1 = new FunctionButton();
+        button1.setName(&quot;按钮1&quot;);
+        final FunctionButton button2 = new FunctionButton();
+        button2.setName(&quot;按钮2&quot;);
+
+        final HelpCommand helpCommand = new HelpCommand();
+        final MinimizeCommand minimizeCommand = new MinimizeCommand();
+
+        button1.setCommand(helpCommand);
+        button2.setCommand(minimizeCommand);
+
+        window.addFunctionButton(button1);
+        window.addFunctionButton(button2);
+        window.display();
+
+        button1.onClick();
+        button2.onClick();
+    }
+}</code></pre>
+<blockquote>
+<p>如果需要增加一个新的命令，只需要增加一个具体命令类，将命令类与具体的处理类进行关联，并注入到某个功能键即可。原有代码无需修改，符合“开闭原则”。</p>
+</blockquote>
+<h2 id="四、命令队列"><a href="#四、命令队列" class="headerlink" title="四、命令队列"></a>四、命令队列</h2><p>当我们点击一个按钮后，需要执行多次命令操作，且命令是可重用的。此时我们可以使用“命令队列”的方式来设计，此时，请求发送者不再维护单独的一个Command，而是一个CommandQueue，存储多个命令对象:</p>
+<pre><code class="java">class FunctionButton {
+    private String name;
+    private CommandQueue commandQueue;
+}
+class CommandQueue {
+    private List&lt;Command&gt; commands = new ArrayList&lt;&gt;();
+
+    public void addCommand(Command command){
+        commands.add(command);
+    }
+
+    public void removeCommand(Command command){
+        commands.remove(command);
+    }
+
+    public void display(){
+        for(Command cd:commands){
+            cd.execute();
+        }
+    }
+}</code></pre>
+<blockquote>
+<p>命令队列类似于“批处理”的概念，可以对一组对象（命令）进行批量操作。如果请求接收者没有严格的先后次序，还可以通过多线程技术来并发调用对象的execute方法，从而提高程序执行效率。</p>
+<h2 id="五、撤销操作的实现"><a href="#五、撤销操作的实现" class="headerlink" title="五、撤销操作的实现"></a>五、撤销操作的实现</h2><p>在命令模式中，可以通过调用命令对象的 execute() 方法来实现对请求的处理，如果需要撤销操作，可以在命令类中增加一个逆向操作来实现。</p>
+<p>也可以通过保存对象的历史状态来实现撤销，如“备忘录模式”。</p>
+<p>我们可以在具体的Handler 中，保存上次执行时的状态，并提供一个方法以便恢复至保存的状态。</p>
+</blockquote>
+<pre><code class="java">class AdderHandler{
+    private int number;
+
+    public int add(int i){
+        number += i;
+        return number;
+    }
+}
+
+class AdderCommand extends Command {
+    private AdderHandler handler;
+    private int history;
+
+    public AdderCommand(AdderHandler handler){
+        this.handler = handler;
+    }
+
+    @Override
+    public void add(int value){
+        int result = handler.add(value);
+        history = value;
+        System.out.print(&quot;加法结果为：&quot;+result);
+    }
+
+    @Override
+    public void undo(){
+        // 使用保存的状态实现撤销操作
+        int result = handler.add(-history);
+        System.out.print(&quot;撤销后的结果为：&quot;+result);
+    }
+}</code></pre>
+<blockquote>
+<p>注，该撤销操作只能执行一次，如果需要执行多次，可以使用集合来保存 <code>histroy</code></p>
+</blockquote>
+<h2 id="六、宏命令"><a href="#六、宏命令" class="headerlink" title="六、宏命令"></a>六、宏命令</h2><p>宏命令（Macro Command）又称为组合命令，是组合模式和命令联合的产物。</p>
+<p>宏命令是一个具体的命令类，拥有一个集合属性，在该集合中包含了对其他命令对象的引用。通常宏命令不直接与请求接收者交互，而是通过它的成员来调用接收者的方法。</p>
+<p>当调用宏命令的 execute 方法时，会递归调用它的每个成员命令的 execute 方法，成员既可以是一个简单命令，也可以是宏命令。</p>
+<h2 id="七、总结"><a href="#七、总结" class="headerlink" title="七、总结"></a>七、总结</h2><p>命令模式是一种 <code>使用频率非常高</code> 的设计模式，可以将请求发送者和接收者解耦。发送者通过命令对象间接引用请求接收者，使得系统具有更好的灵活性和可扩展性。</p>
+<h3 id="优点"><a href="#优点" class="headerlink" title="优点"></a>优点</h3><ol>
+<li>降低系统耦合，请求发送者与接收者不直接引用，相互独立</li>
+<li>方便扩展，增加新的命令不会影响其他类，无需修改系统代码，符合“开闭原则”</li>
+<li>可以比较简单的设计一个命令队列或组合命令（宏命令）</li>
+<li>为请求的撤销、恢复操作提供了一种设计和实现方案</li>
+</ol>
+<h3 id="缺点"><a href="#缺点" class="headerlink" title="缺点"></a>缺点</h3><ol>
+<li>可能会导致系统中存在过多的命令类，因为每个接收者都需要设计一个具体命令类来调用</li>
+</ol>
+<h3 id="适用场景"><a href="#适用场景" class="headerlink" title="适用场景"></a>适用场景</h3><ol>
+<li>系统需要请求发送者与接收者解耦，彼此互不影响，互不相知</li>
+<li>系统需要使用一组命令或者宏命令</li>
+<li>系统需要支持撤销、恢复操作</li>
+<li>系统需要在不同的时间指定请求、将请求排队和执行请求</li>
+</ol>
+<h2 id="八、练习"><a href="#八、练习" class="headerlink" title="八、练习"></a>八、练习</h2><pre><code class="tex"> 命令模式
+ Sunny软件公司欲开发一个基于Windows平台的公告板系统。
+ 该系统提供了一个主菜单(Menu)，
+ 在主菜单中包含了一些菜单项(MenuItem)，
+ 可以通过Menu类的addMenuItem()方法增加菜单项。
+ 菜单项的主要方法是click()，
+ 每一个菜单项包含一个抽象命令类，
+ 具体命令类包括OpenCommand(打开命令)，CreateCommand(新建命令)，EditCommand(编辑命令)等，
+ 命令类具有一个execute()方法，
+ 用于调用公告板系统界面类(BoardScreen)的open()、create()、edit()等方法。
+ 试使用命令模式设计该系统，
+ 以便降低MenuItem类与BoardScreen类之间的耦合度</code></pre>
+<pre><code class="java">/**
+ * 命令模式
+ * Sunny软件公司欲开发一个基于Windows平台的公告板系统。
+ * 该系统提供了一个主菜单(Menu)，
+ * 在主菜单中包含了一些菜单项(MenuItem)，
+ * 可以通过Menu类的addMenuItem()方法增加菜单项。
+ * 菜单项的主要方法是click()，
+ * 每一个菜单项包含一个抽象命令类，
+ * 具体命令类包括OpenCommand(打开命令)，CreateCommand(新建命令)，EditCommand(编辑命令)等，
+ * 命令类具有一个execute()方法，
+ * 用于调用公告板系统界面类(BoardScreen)的open()、create()、edit()等方法。
+ * 试使用命令模式设计该系统，
+ * 以便降低MenuItem类与BoardScreen类之间的耦合度
+ */
+// 主菜单 - 类似于之前的窗口界面，包含多个按钮（菜单项）
+class Menu{
+    private List&lt;MenuItem&gt; menuItems = new ArrayList&lt;&gt;();
+
+    public void addItem(MenuItem item){
+        menuItems.add(item);
+    }
+
+    public void display(){
+        System.out.println(&quot;------显示菜单:-----&quot;);
+        for (MenuItem menuItem : menuItems) {
+            System.out.println(menuItem.getName());
+        }
+    }
+}
+
+// 菜单项 - 请求发送者
+class MenuItem {
+    private String name;
+    private Command command;
+
+    public MenuItem(String name){
+        this.name = name;
+    }
+
+    public String getName() {
+        return name;
+    }
+
+    public void setCommand(Command command){
+        this.command = command;
+    }
+
+    public void create(){
+        command.create();
+    }
+
+    public void edit(){
+        command.edit();
+    }
+
+    public void open(){
+        command.open();
+    }
+}
+
+// 抽象命令类
+abstract class Command {
+    abstract void create();
+    abstract void edit();
+    abstract void open();
+}
+
+// 宏命令 - 一组命令的集合，宏命令一般不直接操作接收者，而是通过集合中的对象属性来操作
+class MacroCommand extends Command {
+    private List&lt;Command&gt; commands = new ArrayList&lt;&gt;();
+
+    public void addCommand(Command command){
+        this.commands.add(command);
+    }
+
+    @Override
+    void create() {
+        for (Command command : commands) {
+            command.create();
+        }
+    }
+
+    @Override
+    void edit() {
+        for (Command command : commands) {
+            command.edit();
+        }
+    }
+
+    @Override
+    void open() {
+        for (Command command : commands) {
+            command.open();
+        }
+    }
+}
+
+// 具体命令类
+class BoardScreenCommand extends Command{
+    private BoardScreenHandler handler;
+
+    public BoardScreenCommand(){
+        handler = new BoardScreenHandler();
+    }
+
+    @Override
+    void create() {
+        handler.create();
+    }
+
+    @Override
+    void edit() {
+        handler.edit();
+    }
+
+    @Override
+    void open() {
+        handler.open();
+    }
+}
+
+// 请求接收者，也就是具体的处理类
+class BoardScreenHandler {
+    public void open(){
+        System.out.println(&quot;打开公告板&quot;);
+    }
+    public void create(){
+        System.out.println(&quot;创建公告板&quot;);
+    }
+    public void edit(){
+        System.out.println(&quot;修改公告板&quot;);
+    }
+}
+
+public class CommandPattern {
+    public static void main(String[] args) {
+        final Menu menu = new Menu();
+
+        final MenuItem menuItem = new MenuItem(&quot;公告板管理&quot;);
+        final MenuItem menuItem1 = new MenuItem(&quot;高噶&quot;);
+
+        final Command command = new BoardScreenCommand();
+
+        final MacroCommand command1 = new MacroCommand();
+        command1.addCommand(command);
+        command1.addCommand(command);
+
+        menuItem.setCommand(command);
+        menuItem1.setCommand(command1);
+
+        menu.addItem(menuItem);
+        menu.addItem(menuItem1);
+
+        menu.display();
+        menuItem.create();
+        menuItem.open();
+        System.out.println(&quot;----宏命令执行------&quot;);
+        menuItem1.create();
+        menuItem1.edit();
+        menuItem1.open();
+    }
+}</code></pre>
+</div><hr></div><nav id="pagination"><div class="pagination"><a class="extend prev" rel="prev" href="/page/20/"><i class="fa fa-chevron-left"></i></a><a class="page-number" href="/">1</a><span class="space">&hellip;</span><a class="page-number" href="/page/20/">20</a><span class="page-number current">21</span><a class="page-number" href="/page/22/">22</a><span class="space">&hellip;</span><a class="page-number" href="/page/32/">32</a><a class="extend next" rel="next" href="/page/22/"><i class="fa fa-chevron-right"></i></a></div></nav></div></div><footer><div class="layout" id="footer"><div class="copyright">&copy;2013 - 2020 By koral</div><div class="framework-info"><span>驱动 - </span><a href="http://hexo.io"><span>Hexo</span></a><span class="footer-separator">|</span><span>主题 - </span><a href="https://github.com/Molunerfinn/hexo-theme-melody"><span>Melody</span></a></div><div class="busuanzi"><script async src="//busuanzi.ibruce.info/busuanzi/2.3/busuanzi.pure.mini.js"></script><span id="busuanzi_container_site_uv"><i class="fa fa-user"></i><span id="busuanzi_value_site_uv"></span><span></span></span><span class="footer-separator">|</span><span id="busuanzi_container_site_pv"><i class="fa fa-eye"></i><span id="busuanzi_value_site_pv"></span><span></span></span></div></div></footer><i class="fa fa-arrow-up" id="go-up" aria-hidden="true"></i><script src="https://cdn.jsdelivr.net/npm/animejs@latest/anime.min.js"></script><script src="https://cdn.jsdelivr.net/npm/jquery@latest/dist/jquery.min.js"></script><script src="https://cdn.jsdelivr.net/npm/@fancyapps/fancybox@latest/dist/jquery.fancybox.min.js"></script><script src="https://cdn.jsdelivr.net/npm/velocity-animate@latest/velocity.min.js"></script><script src="https://cdn.jsdelivr.net/npm/velocity-ui-pack@latest/velocity.ui.min.js"></script><script src="/js/utils.js?version=1.7.0"></script><script src="/js/fancybox.js?version=1.7.0"></script><script src="/js/sidebar.js?version=1.7.0"></script><script src="/js/copy.js?version=1.7.0"></script><script src="/js/fireworks.js?version=1.7.0"></script><script src="/js/transition.js?version=1.7.0"></script><script src="/js/scroll.js?version=1.7.0"></script><script src="/js/head.js?version=1.7.0"></script><script>if(/Android|webOS|iPhone|iPod|iPad|BlackBerry/i.test(navigator.userAgent)) {
   $('#nav').addClass('is-mobile')
   $('footer').addClass('is-mobile')
   $('#top-container').addClass('is-mobile')
