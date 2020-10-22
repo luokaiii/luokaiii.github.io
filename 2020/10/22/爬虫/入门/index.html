@@ -1,0 +1,121 @@
+<!DOCTYPE html><html lang="zh-Hans"><head><meta name="generator" content="Hexo 3.9.0"><meta charset="UTF-8"><meta http-equiv="X-UA-Compatible" content="IE=edge"><meta name="viewport" content="width=device-width, initial-scale=1, maximum-scale=1"><meta name="description" content="爬虫入门"><meta name="keywords" content="hide,爬虫"><meta name="author" content="koral"><meta name="copyright" content="koral"><title>爬虫入门 | 凯</title><link rel="shortcut icon" href="/melody-favicon.ico"><link rel="stylesheet" href="/css/index.css?version=1.7.0"><link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/font-awesome@latest/css/font-awesome.min.css?version=1.7.0"><meta name="format-detection" content="telephone=no"><meta http-equiv="x-dns-prefetch-control" content="on"><link rel="dns-prefetch" href="https://cdn.jsdelivr.net"><meta http-equiv="Cache-Control" content="no-transform"><meta http-equiv="Cache-Control" content="no-siteapp"><script>var GLOBAL_CONFIG = { 
+  root: '/',
+  algolia: undefined,
+  localSearch: undefined,
+  copy: {
+    success: '复制成功',
+    error: '复制错误',
+    noSupport: '浏览器不支持'
+  }
+} </script></head><body><i class="fa fa-arrow-right" id="toggle-sidebar" aria-hidden="true"></i><div id="sidebar" data-display="true"><div class="toggle-sidebar-info text-center"><span data-toggle="切换文章详情">切换站点概览</span><hr></div><div class="sidebar-toc"><div class="sidebar-toc__title">目录</div><div class="sidebar-toc__progress"><span class="progress-notice">你已经读了</span><span class="progress-num">0</span><span class="progress-percentage">%</span><div class="sidebar-toc__progress-bar"></div></div><div class="sidebar-toc__content"><ol class="toc"><li class="toc-item toc-level-2"><a class="toc-link" href="#目录"><span class="toc-number">1.</span> <span class="toc-text">目录</span></a><ol class="toc-child"><li class="toc-item toc-level-3"><a class="toc-link" href="#Requests-库入门"><span class="toc-number">1.1.</span> <span class="toc-text">Requests 库入门</span></a></li><li class="toc-item toc-level-3"><a class="toc-link" href="#网络爬虫的尺寸"><span class="toc-number">1.2.</span> <span class="toc-text">网络爬虫的尺寸</span></a></li><li class="toc-item toc-level-3"><a class="toc-link" href="#Robots协议"><span class="toc-number">1.3.</span> <span class="toc-text">Robots协议</span></a></li><li class="toc-item toc-level-3"><a class="toc-link" href="#修改请求头"><span class="toc-number">1.4.</span> <span class="toc-text">修改请求头</span></a></li><li class="toc-item toc-level-3"><a class="toc-link" href="#图片爬取全代码"><span class="toc-number">1.5.</span> <span class="toc-text">图片爬取全代码</span></a></li></ol></li></ol></div></div><div class="author-info hide"><div class="author-info__avatar text-center"><img src="/img/avatar.png"></div><div class="author-info__name text-center">koral</div><div class="author-info__description text-center">罗凯的博客主页</div><hr><div class="author-info-articles"><a class="author-info-articles__archives article-meta" href="/archives"><span class="pull-left">文章</span><span class="pull-right">314</span></a><a class="author-info-articles__tags article-meta" href="/tags"><span class="pull-left">标签</span><span class="pull-right">48</span></a><a class="author-info-articles__categories article-meta" href="/categories"><span class="pull-left">分类</span><span class="pull-right">59</span></a></div></div></div><div id="content-outer"><div class="no-bg" id="top-container"><div id="page-header"><span class="pull-left"> <a id="site-name" href="/index.html">凯</a></span><i class="fa fa-bars toggle-menu pull-right" aria-hidden="true"></i><span class="pull-right menus">   <a class="site-page" href="/">首页</a><a class="site-page" href="/archives">归档</a><a class="site-page" href="/tags">标签</a><a class="site-page" href="/categories">分类</a><a class="site-page" href="/about">关于我</a></span><span class="pull-right"></span></div><div id="post-info"><div id="post-title">爬虫入门</div><div id="post-meta"><time class="post-meta__date"><i class="fa fa-calendar" aria-hidden="true"></i> 2020-10-22</time><span class="post-meta__separator">|</span><i class="fa fa-inbox post-meta__icon" aria-hidden="true"></i><a class="post-meta__categories" href="/categories/爬虫/">爬虫</a></div></div></div><div class="layout" id="content-inner"><article id="post"><div class="article-container" id="post-content"><h2 id="目录"><a href="#目录" class="headerlink" title="目录"></a>目录</h2><ol>
+<li>Requests 自动爬取HTML页面；自动网络请求提交</li>
+<li>robots.txt 网络爬虫排除标准</li>
+<li>Beautiful Soup 解析HTML页面；信息标记与提取方法</li>
+</ol>
+<h3 id="Requests-库入门"><a href="#Requests-库入门" class="headerlink" title="Requests 库入门"></a>Requests 库入门</h3><p>安装requests库：pip install requests</p>
+<p>测试requests库：</p>
+<pre><code class="python">&gt;&gt;&gt; import requests
+&gt;&gt;&gt; r = requests.get(&quot;http://www.baidu.com&quot;)
+&gt;&gt;&gt; r.status_code
+200
+&gt;&gt;&gt; r.encoding = &#39;utf-8&#39;
+&gt;&gt;&gt; r.text
+&#39;!&lt;DOCTYPE html&gt; ......&#39;</code></pre>
+<p>Response对象的属性</p>
+<table>
+<thead>
+<tr>
+<th>属性</th>
+<th>说明</th>
+</tr>
+</thead>
+<tbody><tr>
+<td>r.status_code</td>
+<td>HTTP状态码</td>
+</tr>
+<tr>
+<td>r.text</td>
+<td>HTTP响应内容的字符串形式</td>
+</tr>
+<tr>
+<td>r.encoding</td>
+<td>header中的响应编码方式</td>
+</tr>
+<tr>
+<td>r.apparent_encoding</td>
+<td>备选编码方式</td>
+</tr>
+<tr>
+<td>r.content</td>
+<td>HTTP内容的二进制形式</td>
+</tr>
+</tbody></table>
+<h3 id="网络爬虫的尺寸"><a href="#网络爬虫的尺寸" class="headerlink" title="网络爬虫的尺寸"></a>网络爬虫的尺寸</h3><table>
+<thead>
+<tr>
+<th>规模</th>
+<th>库</th>
+</tr>
+</thead>
+<tbody><tr>
+<td>小规模，速度不敏感</td>
+<td>Requests库</td>
+</tr>
+<tr>
+<td>中规模，速度敏感</td>
+<td>Scrapy库</td>
+</tr>
+<tr>
+<td>全网数据</td>
+<td>定制开发</td>
+</tr>
+</tbody></table>
+<h3 id="Robots协议"><a href="#Robots协议" class="headerlink" title="Robots协议"></a>Robots协议</h3><p>Robots Exclusion Standard 网络爬虫排除标准</p>
+<p>如：京东Robots协议 <a href="https://www.jd.com/robots.txt" target="_blank" rel="noopener">https://www.jd.com/robots.txt</a></p>
+<pre><code>User-agent: * 
+Disallow: /?* 
+Disallow: /pop/*.html 
+Disallow: /pinpai/*.html?* 
+User-agent: EtaoSpider 
+Disallow: / 
+User-agent: HuihuiSpider 
+Disallow: / 
+User-agent: GwdangSpider 
+Disallow: / 
+User-agent: WochachaSpider 
+Disallow: /</code></pre><h3 id="修改请求头"><a href="#修改请求头" class="headerlink" title="修改请求头"></a>修改请求头</h3><pre><code class="python">import requests
+url = &quot;https://www.amazon.cn/gp/product/xxx&quot;
+try:
+    kv = {&#39;user-agent&#39;: &#39;Mozilla/5.0&#39;}
+    r = requests.get(url, headers=kv)
+    r.raise_for_status()
+    r.encoding = r.apparent_encoding
+    // 打印1000-2000行的内容
+    print(r.text[1000:2000])
+    // 打印响应的长度
+    print(len(r.text))
+except:
+    print(&quot;爬取失败&quot;)</code></pre>
+<h3 id="图片爬取全代码"><a href="#图片爬取全代码" class="headerlink" title="图片爬取全代码"></a>图片爬取全代码</h3><pre><code class="python">import requests
+import os
+url = &quot;http://image.xxx.com/sss.jpg&quot;
+root = &quot;D://pics//&quot;
+path = root + url.split(&#39;/&#39;)[-1]
+try:
+    if not os.path.exists(root):
+        os.mkdir(root)
+    if not os.path.exists(path):
+        r = requests.get(url)
+        with open(path, &#39;wb&#39;) as f:
+            f.write(r.content)
+            f.close()
+            print(&quot;文件保存成功&quot;)
+    else:
+        print(&quot;文件已存在&quot;)
+except:
+    print(&quot;爬取失败&quot;)</code></pre>
+</div></article><div class="post-copyright"><div class="post-copyright__author"><span class="post-copyright-meta">文章作者: </span><span class="post-copyright-info"><a href="mailto:undefined">koral</a></span></div><div class="post-copyright__type"><span class="post-copyright-meta">文章链接: </span><span class="post-copyright-info"><a href="http://luokaiii.github.io/2020/10/22/爬虫/入门/">http://luokaiii.github.io/2020/10/22/爬虫/入门/</a></span></div><div class="post-copyright__notice"><span class="post-copyright-meta">版权声明: </span><span class="post-copyright-info">本博客所有文章除特别声明外，均采用 <a href="https://creativecommons.org/licenses/by-nc-sa/4.0/">CC BY-NC-SA 4.0</a> 许可协议。转载请注明来自 <a href="http://luokaiii.github.io">凯</a>！</span></div></div><div class="post-meta__tag-list"><a class="post-meta__tags" href="/tags/hide/">hide</a><a class="post-meta__tags" href="/tags/爬虫/">爬虫</a></div><nav id="pagination"><div class="prev-post pull-left"><a href="/2020/10/22/爬虫/2.bs/"><i class="fa fa-chevron-left">  </i><span>BeautifulSoup</span></a></div><div class="next-post pull-right"><a href="/2020/10/22/信息技术教资/综合素质/重点/"><span>综合素质</span><i class="fa fa-chevron-right"></i></a></div></nav></div></div><footer><div class="layout" id="footer"><div class="copyright">&copy;2013 - 2020 By koral</div><div class="framework-info"><span>驱动 - </span><a href="http://hexo.io"><span>Hexo</span></a><span class="footer-separator">|</span><span>主题 - </span><a href="https://github.com/Molunerfinn/hexo-theme-melody"><span>Melody</span></a></div><div class="busuanzi"><script async src="//busuanzi.ibruce.info/busuanzi/2.3/busuanzi.pure.mini.js"></script><span id="busuanzi_container_page_pv"><i class="fa fa-file"></i><span id="busuanzi_value_page_pv"></span><span></span></span></div></div></footer><i class="fa fa-arrow-up" id="go-up" aria-hidden="true"></i><script src="https://cdn.jsdelivr.net/npm/animejs@latest/anime.min.js"></script><script src="https://cdn.jsdelivr.net/npm/jquery@latest/dist/jquery.min.js"></script><script src="https://cdn.jsdelivr.net/npm/@fancyapps/fancybox@latest/dist/jquery.fancybox.min.js"></script><script src="https://cdn.jsdelivr.net/npm/velocity-animate@latest/velocity.min.js"></script><script src="https://cdn.jsdelivr.net/npm/velocity-ui-pack@latest/velocity.ui.min.js"></script><script src="/js/utils.js?version=1.7.0"></script><script src="/js/fancybox.js?version=1.7.0"></script><script src="/js/sidebar.js?version=1.7.0"></script><script src="/js/copy.js?version=1.7.0"></script><script src="/js/fireworks.js?version=1.7.0"></script><script src="/js/transition.js?version=1.7.0"></script><script src="/js/scroll.js?version=1.7.0"></script><script src="/js/head.js?version=1.7.0"></script><script>if(/Android|webOS|iPhone|iPod|iPad|BlackBerry/i.test(navigator.userAgent)) {
+  $('#nav').addClass('is-mobile')
+  $('footer').addClass('is-mobile')
+  $('#top-container').addClass('is-mobile')
+}</script></body></html>
